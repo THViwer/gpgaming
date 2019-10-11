@@ -7,7 +7,7 @@
         <module>treasure-web</module>
 		<module>treasure-player</module>
 		<module>base-setting</module>
-		<module>activitys</module>
+		<module>activities</module>
 		<module>balance</module>
 		<module>platforms</module>
 		<module>account</module>
