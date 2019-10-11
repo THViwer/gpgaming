@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: player
+
+
+server:
+  servlet:
+    context-path: /api/v1/player

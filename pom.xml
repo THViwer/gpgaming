@@ -4,15 +4,15 @@
 	<modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
-        <module>treasure-web</module>
+        <!--<module>treasure-web</module>-->
 		<module>treasure-player</module>
-		<module>base-setting</module>
-		<module>activities</module>
-		<module>balance</module>
-		<module>platforms</module>
-		<module>account</module>
-		<module>auth</module>
-		<module>bet</module>
+		<!--<module>base-setting</module>-->
+		<!--<module>activities</module>-->
+		<!--<module>balance</module>-->
+		<!--<module>platforms</module>-->
+		<!--<module>account</module>-->
+		<!--<module>auth</module>-->
+		<!--<module>bet</module>-->
 	</modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
