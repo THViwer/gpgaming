@@ -12,8 +12,7 @@ class UserDaoImpl(
 
     override fun get(id: Int): User {
 
-        val sql = "select * from user where id = ?"
-        return JdbcBuilder.query(jdbcTemplate, sql).executeOnlyOne {  rs ->
+        return JdbcBuilder.query(jdbcTemplate, "user").where("id", id).executeOnlyOne {  rs ->
             val name = rs.getString("name")
             User(id = id, name = name)
         }
