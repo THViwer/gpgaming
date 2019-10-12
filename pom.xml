@@ -11,8 +11,8 @@
 
 	<modules>
 		<!--<module>treasure-web</module>-->
-		<module>account</module>
 		<module>utils</module>
+		<module>core-service</module>
 		<module>treasure-player</module>
 	</modules>
 
