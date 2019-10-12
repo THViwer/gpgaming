@@ -6,13 +6,8 @@
     <modules>
         <!--<module>treasure-web</module>-->
 		<module>treasure-player</module>
-		<!--<module>base-setting</module>-->
-		<module>activities</module>
-		<!--<module>balance</module>-->
-		<!--<module>platforms</module>-->
 		<module>account</module>
-		<!--<module>auth</module>-->
-		<!--<module>bet</module>-->
+        <module>utils</module>
 	</modules>
 
 	<groupId>com.onepiece</groupId>
