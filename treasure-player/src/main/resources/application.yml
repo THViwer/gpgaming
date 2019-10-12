@@ -10,6 +10,24 @@ spring:
   profiles:
     active: dev
 
+  redis:
+    host: localhost
+    port: 6379
+  output:
+    ansi:
+      enabled: always
+
 server:
   servlet:
     context-path: /api/v1/player
+
+jwt:
+  header: Authorization
+  secret: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCFljRsWfgyl3+k
+  expiration: 7
+  tokenHead: "Bearer "
+  route:
+    authentication:
+      path: auth
+      refresh: refresh
+      register: "auth/register"

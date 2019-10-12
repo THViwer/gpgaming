@@ -65,6 +65,10 @@ class DefaultRedisService(
         return objectMapper.readValue(json, clz)
     }
 
+    override fun <T> get(key: String, clz: Class<T>, function: () -> T?): T? {
+        return this.get(key = key, clz = clz, timeout = null, function = function)
+    }
+
     override  fun delete(vararg keys: String) {
         redisTemplate.delete(keys.toList())
 

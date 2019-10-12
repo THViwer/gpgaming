@@ -12,6 +12,8 @@ interface RedisService {
 
     fun <T> get(key: String, clz: Class<T>): T?
 
+    fun <T> get(key: String, clz: Class<T>, function: () -> T?): T?
+
     fun delete(vararg keys: String)
 
 }
