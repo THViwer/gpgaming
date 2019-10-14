@@ -14,10 +14,10 @@ class UserController(
         val userService: UserService,
         val authService: AuthService,
         val objectMapping: ObjectMapper
-) {
+): UserApi {
 
     @GetMapping("/{id}")
-    fun get(@PathVariable("id") id: Int): UserVo {
+    override fun get(@PathVariable("id") id: Int): UserVo {
         val user =  userService.get(id)
 
         //TODO check hash
