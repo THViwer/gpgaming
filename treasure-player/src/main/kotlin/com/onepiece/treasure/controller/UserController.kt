@@ -17,7 +17,7 @@ class UserController(
 ): UserApi {
 
     @GetMapping("/{id}")
-    override fun get(@PathVariable("id") id: Int): UserVo {
+    override  fun get(@PathVariable("id") id: Int): UserVo {
         val user =  userService.get(id)
 
         //TODO check hash
