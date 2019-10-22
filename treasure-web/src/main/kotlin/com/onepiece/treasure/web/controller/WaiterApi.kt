@@ -1,12 +1,14 @@
 package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.account.model.enums.Status
+import com.onepiece.treasure.web.controller.value.PermissionVo
 import com.onepiece.treasure.web.controller.value.WaiterCo
 import com.onepiece.treasure.web.controller.value.WaiterUo
 import com.onepiece.treasure.web.controller.value.WaiterVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -30,6 +32,10 @@ interface WaiterApi {
     @ApiOperation(tags = ["waiter"], value = "update")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun update(@RequestBody waiterUo: WaiterUo)
+
+
+    @ApiOperation(tags = ["waiter"], value = "permissions")
+    fun permission(@PathVariable("memberId") memberId: Int): List<PermissionVo>
 
 
 }

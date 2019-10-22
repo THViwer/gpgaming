@@ -1,10 +1,7 @@
 package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.account.model.enums.Status
-import com.onepiece.treasure.web.controller.value.WaiterCo
-import com.onepiece.treasure.web.controller.value.WaiterUo
-import com.onepiece.treasure.web.controller.value.WaiterValueFactory
-import com.onepiece.treasure.web.controller.value.WaiterVo
+import com.onepiece.treasure.web.controller.value.*
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -26,5 +23,10 @@ class WaiterApiController : WaiterApi {
 
     @PutMapping
     override fun update(@RequestBody waiterUo: WaiterUo) {
+    }
+
+    @GetMapping("/permission/{memberId}")
+    override fun permission(@PathVariable("memberId") memberId: Int): List<PermissionVo> {
+        return PermissionValueFactory.generatorPermissionVo()
     }
 }
