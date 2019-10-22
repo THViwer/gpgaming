@@ -34,4 +34,6 @@ interface MemberApi {
 
     @ApiOperation(tags = ["member"], value = "balance detail")
     fun balance(@PathVariable("memberId") memberId: Int): BalanceDetail
+
+
 }
