@@ -5,7 +5,7 @@ import org.springframework.boot.runApplication
 
 
 @SpringBootApplication
-class PlayerApplication
+open class PlayerApplication
 
 fun main(args: Array<String>) {
     runApplication<PlayerApplication>()

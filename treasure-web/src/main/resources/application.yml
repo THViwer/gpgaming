@@ -1,6 +1,6 @@
 spring:
   application:
-    name: player
+    name: web
   datasource:
     druid:
       driver-class-name: com.mysql.jdbc.Driver
@@ -19,8 +19,8 @@ spring:
 
 server:
   servlet:
-    context-path: /api/v1/player
-  port: 8002
+    context-path: /api/v1/web
+  port: 8001
 
 jwt:
   header: Authorization

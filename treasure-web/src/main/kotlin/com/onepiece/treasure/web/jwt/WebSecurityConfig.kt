@@ -1,4 +1,4 @@
-package com.onepiece.treasure.jwt
+package com.onepiece.treasure.web.jwt
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean

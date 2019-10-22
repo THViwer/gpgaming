@@ -13,6 +13,7 @@
 		<!--<module>treasure-web</module>-->
 		<module>utils</module>
 		<module>core-service</module>
+		<module>treasure-web</module>
 		<module>treasure-player</module>
 	</modules>
 

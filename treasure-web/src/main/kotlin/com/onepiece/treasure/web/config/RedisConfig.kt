@@ -1,4 +1,4 @@
-package com.onepiece.treasure.config
+package com.onepiece.treasure.web.config
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
