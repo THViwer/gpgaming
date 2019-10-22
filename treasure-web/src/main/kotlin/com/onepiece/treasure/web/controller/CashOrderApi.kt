@@ -19,7 +19,7 @@ interface CashOrderApi {
     fun topup(
             @RequestParam(value = "state", required = false) state: TopUpState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
-            @RequestParam(value = "username", required = false) username: String,
+            @RequestParam(value = "username", required = false) username: String?,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("minCreatedTime") minCreatedTime: LocalDateTime,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("maxCreatedTime") maxCreatedTime: LocalDateTime
     ): List<TopUpVo>
