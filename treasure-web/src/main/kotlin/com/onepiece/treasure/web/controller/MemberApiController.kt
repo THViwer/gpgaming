@@ -1,12 +1,13 @@
 package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.account.model.enums.Status
+import com.onepiece.treasure.web.controller.basic.BasicController
 import com.onepiece.treasure.web.controller.value.*
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/member")
-class MemberApiController : MemberApi {
+class MemberApiController : BasicController(), MemberApi {
 
     @GetMapping
     override fun query(
