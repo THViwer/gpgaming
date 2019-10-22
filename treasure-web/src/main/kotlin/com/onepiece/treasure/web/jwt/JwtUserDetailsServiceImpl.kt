@@ -1,6 +1,5 @@
 package com.onepiece.treasure.web.jwt
 
-import com.onepiece.treasure.account.dao.UserDao
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
