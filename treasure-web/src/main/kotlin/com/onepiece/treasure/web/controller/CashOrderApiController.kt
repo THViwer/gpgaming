@@ -15,9 +15,9 @@ class CashOrderApiController : BasicController(), CashOrderApi {
 
     @GetMapping("/topup")
     override fun topup(
-            @RequestParam("state") state: TopUpState?,
-            @RequestParam("orderId") orderId: String?,
-            @RequestParam("username") username: String,
+            @RequestParam(value = "state", required = false) state: TopUpState?,
+            @RequestParam(value = "orderId", required = false) orderId: String?,
+            @RequestParam(value = "username", required = false) username: String,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("minCreatedTime") minCreatedTime: LocalDateTime,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("maxCreatedTime") maxCreatedTime: LocalDateTime
     ): List<TopUpVo> {
