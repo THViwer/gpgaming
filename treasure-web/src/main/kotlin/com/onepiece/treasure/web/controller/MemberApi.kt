@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
-@Api(tags = ["member"], description = " ")
+@Api(tags = ["user"], description = " ")
 interface MemberApi {
 
-    @ApiOperation(tags = ["member"], value = "query")
+    @ApiOperation(tags = ["user"], value = "member -> query")
     fun query(
             @RequestParam(value = "id") id: Int,
             @RequestParam(value = "username", required = false) username: String?,
@@ -25,13 +25,13 @@ interface MemberApi {
             @RequestParam(defaultValue = "10") size: Int
     ): MemberPage
 
-    @ApiOperation(tags = ["member"], value = "update")
+    @ApiOperation(tags = ["user"], value = "member -> update")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun change(
             @RequestBody memberUo: MemberUo
     )
 
-    @ApiOperation(tags = ["member"], value = "balance detail")
+    @ApiOperation(tags = ["user"], value = "member -> balance detail")
     fun balance(@PathVariable("memberId") memberId: Int): BalanceDetail
 
 

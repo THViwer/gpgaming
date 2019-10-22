@@ -9,17 +9,17 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 
-@Api(tags = ["domain"], description = " ")
+@Api(tags = ["setting"], description = " ")
 interface DomainApi {
 
-    @ApiOperation(tags = ["domain"], value = "all")
+    @ApiOperation(tags = ["setting"], value = "domain -> all")
     fun all(): List<DomainVo>
 
-    @ApiOperation(tags = ["domain"], value = "create")
+    @ApiOperation(tags = ["setting"], value = "domain -> create")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun create(@RequestBody domainCo: DomainCo)
 
-    @ApiOperation(tags = ["domain"], value = "update")
+    @ApiOperation(tags = ["setting"], value = "domain -> update")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun update(@RequestBody domainUo: DomainUo)
 

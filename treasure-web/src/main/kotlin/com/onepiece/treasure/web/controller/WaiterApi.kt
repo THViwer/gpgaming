@@ -14,25 +14,25 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
 
-@Api(tags = ["waiter"], description = " ")
+@Api(tags = ["user"], description = " ")
 interface WaiterApi {
 
-    @ApiOperation(tags = ["waiter"], value = "query")
+    @ApiOperation(tags = ["user"], value = "waiter -> query")
     fun query(
             @RequestParam(value = "username", required = false) username: String?,
             @RequestParam(value = "name", required = false) name: String?,
             @RequestParam(value = "status", required = false) status: Status?
     ): List<WaiterVo>
 
-    @ApiOperation(tags = ["waiter"], value = "create")
+    @ApiOperation(tags = ["user"], value = "waiter -> create")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun create(@RequestBody waiterCo: WaiterCo)
 
-    @ApiOperation(tags = ["waiter"], value = "update")
+    @ApiOperation(tags = ["user"], value = "waiter -> update")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun update(@RequestBody waiterUo: WaiterUo)
 
-    @ApiOperation(tags = ["waiter"], value = "permissions")
+    @ApiOperation(tags = ["user"], value = "waiter -> permissions")
     fun permission(@PathVariable("memberId") memberId: Int): List<PermissionVo>
 
 

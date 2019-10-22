@@ -8,28 +8,28 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 
-@Api(tags = ["level"], description = " ")
+@Api(tags = ["user"], description = " ")
 interface LevelApi {
 
-    @ApiOperation(tags = ["level"], value = "all")
+    @ApiOperation(tags = ["user"], value = "level -> all")
     fun all(): List<LevelVo>
 
-    @ApiOperation(tags = ["level"], value = "可用列表")
+    @ApiOperation(tags = ["user"], value = "level -> level list can use")
     fun normalList(): List<LevelVo>
 
-    @ApiOperation(tags = ["level"], value = "create")
+    @ApiOperation(tags = ["user"], value = "level -> create")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun create(@RequestBody levelCo: LevelCo)
 
-    @ApiOperation(tags = ["level"], value = "update")
+    @ApiOperation(tags = ["user"], value = "level -> update")
     fun update(@RequestBody levelUo: LevelUo)
 
-    @ApiOperation(tags = ["level"], value = "level move")
+    @ApiOperation(tags = ["user"], value = "level -> level move")
     fun move(
             @RequestBody levelMoveDo: LevelMoveDo
     ): LevelMoveVo
 
-    @ApiOperation(tags = ["level"], value = "check level move")
+    @ApiOperation(tags = ["user"], value = "level -> check level move")
     fun checkMove(@PathVariable("sequence") sequence: String): LevelMoveCheckVo
 
 }
