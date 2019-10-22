@@ -25,7 +25,6 @@ interface MemberApi {
             @RequestParam(defaultValue = "10") size: Int
     ): MemberPage
 
-
     @ApiOperation(tags = ["member"], value = "update")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun change(
@@ -34,6 +33,8 @@ interface MemberApi {
 
     @ApiOperation(tags = ["member"], value = "balance detail")
     fun balance(@PathVariable("memberId") memberId: Int): BalanceDetail
+
+
 
 
 }

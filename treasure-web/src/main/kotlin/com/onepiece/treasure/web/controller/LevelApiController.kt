@@ -1,10 +1,7 @@
 package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.account.model.enums.Status
-import com.onepiece.treasure.web.controller.value.LevelCo
-import com.onepiece.treasure.web.controller.value.LevelUo
-import com.onepiece.treasure.web.controller.value.LevelValueFactory
-import com.onepiece.treasure.web.controller.value.LevelVo
+import com.onepiece.treasure.web.controller.value.*
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -27,5 +24,15 @@ class LevelApiController : LevelApi {
 
     @PutMapping
     override fun update(@RequestBody levelUo: LevelUo) {
+    }
+
+    @PutMapping("/move")
+    override fun move(@RequestBody levelMoveDo: LevelMoveDo): LevelMoveVo {
+        return LevelValueFactory.generatorLevelMoveVo()
+    }
+
+    @GetMapping("/move/check/{sequence}")
+    override fun checkMove(@PathVariable sequence: String): LevelMoveCheckVo {
+        return LevelValueFactory.generatorLevelMoveCheckVo()
     }
 }

@@ -3,6 +3,7 @@ package com.onepiece.treasure.web.controller.value
 import com.onepiece.treasure.account.model.enums.Status
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
+import java.util.*
 
 object LevelValueFactory {
 
@@ -16,6 +17,14 @@ object LevelValueFactory {
         val v4 = v1.copy(id = 4, name = "停用", total = 0, status = Status.Stop)
 
         return listOf(v1, v2, v3, v4)
+    }
+
+    fun generatorLevelMoveVo(): LevelMoveVo {
+        return LevelMoveVo(sequence = UUID.randomUUID().toString())
+    }
+
+    fun generatorLevelMoveCheckVo(): LevelMoveCheckVo {
+        return LevelMoveCheckVo(done = true)
     }
 
 }
@@ -56,4 +65,26 @@ data class LevelCo(
 
         @ApiModelProperty("状态")
         val status: Status?
+)
+
+data class LevelMoveDo(
+
+        @ApiModelProperty("充值金额")
+        val totalTopUp: Int,
+
+        @ApiModelProperty("存款次数")
+        val totalTopUpSequence: Int
+
+)
+
+data class LevelMoveVo(
+
+        @ApiModelProperty("执行序列")
+        val sequence: String
+)
+
+data class LevelMoveCheckVo(
+
+        @ApiModelProperty("是否执行完成")
+        val done: Boolean
 )
