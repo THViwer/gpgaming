@@ -24,7 +24,6 @@ interface WaiterApi {
             @RequestParam(value = "status", required = false) status: Status?
     ): List<WaiterVo>
 
-
     @ApiOperation(tags = ["waiter"], value = "create")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun create(@RequestBody waiterCo: WaiterCo)
@@ -32,7 +31,6 @@ interface WaiterApi {
     @ApiOperation(tags = ["waiter"], value = "update")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun update(@RequestBody waiterUo: WaiterUo)
-
 
     @ApiOperation(tags = ["waiter"], value = "permissions")
     fun permission(@PathVariable("memberId") memberId: Int): List<PermissionVo>
