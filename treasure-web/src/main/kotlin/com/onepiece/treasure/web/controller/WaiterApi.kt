@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
 
-@Api(tags = ["member"], description = " ")
+@Api(tags = ["waiter"], description = " ")
 interface WaiterApi {
 
-    @ApiOperation(tags = ["member"], value = "query")
+    @ApiOperation(tags = ["waiter"], value = "query")
     fun query(
             @RequestParam(value = "username", required = false) username: String?,
             @RequestParam(value = "name", required = false) name: String?,
@@ -23,11 +23,11 @@ interface WaiterApi {
     ): List<WaiterVo>
 
 
-    @ApiOperation(tags = ["member"], value = "create")
+    @ApiOperation(tags = ["waiter"], value = "create")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun create(@RequestBody waiterCo: WaiterCo)
 
-    @ApiOperation(tags = ["member"], value = "update")
+    @ApiOperation(tags = ["waiter"], value = "update")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun update(@RequestBody waiterUo: WaiterUo)
 
