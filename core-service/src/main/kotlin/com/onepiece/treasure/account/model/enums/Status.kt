@@ -6,8 +6,6 @@ enum class Status {
     Normal,
 
     // 停用
-    Stop,
+    Stop
 
-    // 已删除
-    Delete
 }
