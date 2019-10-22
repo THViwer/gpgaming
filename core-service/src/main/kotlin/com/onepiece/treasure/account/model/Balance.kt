@@ -8,7 +8,7 @@ import java.time.LocalDateTime
  */
 data class Balance (
 
-        // id
+        // id 主键
         val id: Int,
 
         // 厅主Id
