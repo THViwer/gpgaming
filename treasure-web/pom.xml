@@ -158,10 +158,10 @@
         <!--<testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>-->
         <plugins>
             <!-- 会导致编译失败 -->
-            <!--<plugin>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <!--<plugin>-->
             <!--<groupId>org.jetbrains.kotlin</groupId>-->
             <!--<artifactId>kotlin-maven-plugin</artifactId>-->
