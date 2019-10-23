@@ -1,20 +1,34 @@
 package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.MemberDao
+import com.onepiece.treasure.core.dao.basic.BasicDao
 import com.onepiece.treasure.core.dao.value.MemberCo
 import com.onepiece.treasure.core.dao.value.MemberQuery
 import com.onepiece.treasure.core.dao.value.MemberUo
 import com.onepiece.treasure.core.model.Member
 import com.onepiece.treasure.core.model.enums.Status
 import com.onepiece.treasure.utils.JdbcBuilder
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
 @Repository
-class MemberDaoImpl(
-        private val jdbcTemplate: JdbcTemplate
-) : MemberDao {
+class MemberDaoImpl: BasicDao<Member>("member"), MemberDao {
+
+    override fun mapper(): (rs: ResultSet) -> Member {
+        return { rs ->
+            val id = rs.getInt("id")
+            val clientId = rs.getInt("client_id")
+            val username = rs.getString("username")
+            val password = rs.getString("password")
+            val levelId = rs.getInt("level_id")
+            val status = rs.getString("status").let { Status.valueOf(it) }
+            val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val loginTime = rs.getTimestamp("login_time").toLocalDateTime()
+
+            Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
+                    status = status, createdTime = createdTime, loginTime = loginTime)
+        }
+    }
 
     override fun create(memberCo: MemberCo): Boolean {
         return JdbcBuilder.insert(jdbcTemplate, "member")
@@ -71,19 +85,7 @@ class MemberDaoImpl(
                 .execute(mapper())
     }
 
-    private fun mapper ():(rs: ResultSet) -> Member {
-        return { rs ->
-            val id = rs.getInt("id")
-            val clientId = rs.getInt("client_id")
-            val username = rs.getString("username")
-            val password = rs.getString("password")
-            val levelId = rs.getInt("level_id")
-            val status = rs.getString("status").let { Status.valueOf(it) }
-            val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            val loginTime = rs.getTimestamp("login_time").toLocalDateTime()
 
-            Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
-                    status = status, createdTime = createdTime, loginTime = loginTime)
-        }
-    }
+
+
 }
