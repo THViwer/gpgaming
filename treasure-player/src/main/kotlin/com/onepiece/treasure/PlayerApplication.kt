@@ -7,6 +7,6 @@ import org.springframework.boot.runApplication
 @SpringBootApplication
 open class PlayerApplication
 
-fun main(args: Array<String>) {
+fun main() {
     runApplication<PlayerApplication>()
 }

@@ -17,8 +17,8 @@ class CashOrderApiController : BasicController(), CashOrderApi {
             @RequestParam(value = "state", required = false) state: TopUpState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "username", required = false) username: String?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("minCreatedTime") minCreatedTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("maxCreatedTime") maxCreatedTime: LocalDateTime
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startCreatedTime") startCreatedTime: LocalDateTime,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endCreatedTime") endCreatedTime: LocalDateTime
     ): List<TopUpVo> {
         return TopUpValueFactory.generatorTopUoVos()
     }
@@ -36,8 +36,8 @@ class CashOrderApiController : BasicController(), CashOrderApi {
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "username", required = false) username: String?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("minCreatedTime") minCreatedTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("maxCreatedTime") maxCreatedTime: LocalDateTime
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startCreatedTime") startCreatedTime: LocalDateTime,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endCreatedTime") endCreatedTime: LocalDateTime
     ): List<WithdrawVo> {
         return WithdrawValueFactory.generatorWithdrawVos()
     }
