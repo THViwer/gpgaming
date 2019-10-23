@@ -1,6 +1,6 @@
 package com.onepiece.treasure.web.controller.value
 
-import com.onepiece.treasure.account.model.enums.PlatformCategory
+import com.onepiece.treasure.core.model.enums.PlatformCategory
 import io.swagger.annotations.ApiModelProperty
 
 object PlatformValueFactory {

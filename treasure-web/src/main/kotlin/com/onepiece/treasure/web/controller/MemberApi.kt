@@ -1,6 +1,6 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.account.model.enums.Status
+import com.onepiece.treasure.core.model.enums.Status
 import com.onepiece.treasure.web.controller.value.BalanceDetail
 import com.onepiece.treasure.web.controller.value.MemberPage
 import com.onepiece.treasure.web.controller.value.MemberUo

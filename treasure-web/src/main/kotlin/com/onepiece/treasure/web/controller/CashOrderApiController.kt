@@ -1,7 +1,7 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.account.model.enums.TopUpState
-import com.onepiece.treasure.account.model.enums.WithdrawState
+import com.onepiece.treasure.core.model.enums.TopUpState
+import com.onepiece.treasure.core.model.enums.WithdrawState
 import com.onepiece.treasure.web.controller.basic.BasicController
 import com.onepiece.treasure.web.controller.value.*
 import org.springframework.format.annotation.DateTimeFormat

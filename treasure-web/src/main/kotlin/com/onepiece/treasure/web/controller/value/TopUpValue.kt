@@ -1,6 +1,6 @@
 package com.onepiece.treasure.web.controller.value
 
-import com.onepiece.treasure.account.model.enums.TopUpState
+import com.onepiece.treasure.core.model.enums.TopUpState
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 import java.time.LocalDateTime

@@ -1,6 +1,6 @@
 package com.onepiece.treasure.jwt
 
-import com.onepiece.treasure.account.service.UserService
+import com.onepiece.treasure.core.service.UserService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
