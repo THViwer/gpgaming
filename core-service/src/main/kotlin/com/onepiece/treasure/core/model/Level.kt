@@ -1,6 +1,7 @@
 package com.onepiece.treasure.core.model
 
 import com.onepiece.treasure.core.model.enums.Status
+import java.time.LocalDateTime
 
 /**
  * 会员等级
@@ -17,5 +18,8 @@ data class Level(
         val name: String,
 
         // 状态
-        val status: Status
+        val status: Status,
+
+        // 创建时间
+        val createdTime: LocalDateTime
 )

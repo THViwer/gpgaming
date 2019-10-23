@@ -49,6 +49,11 @@ class Insert(
         val sql = this.build()
         return jdbcTemplate.update(sql, *param.toTypedArray())
     }
+
+    fun executeOnlyOne(): Boolean {
+        return execute() == 1
+    }
+
 }
 
 class Query(
@@ -59,6 +64,8 @@ class Query(
     private val columns = arrayListOf<String>()
     private val param = arrayListOf<Any>()
     var orderBy: String? = null
+    var current: Int? = null
+    var size: Int? = null
 
     fun where(k: String, v: Any?): Query {
         if (v == null) return this
@@ -85,24 +92,36 @@ class Query(
         return this
     }
 
+    fun limit(current: Int, size: Int): Query {
+        this.current = current
+        this.size = size
+        return this
+    }
+
+
     private fun build(): String {
 
         val names = columns.joinToString(separator = " and ")
 
         val queryColumn = returnColumns?: "*"
 
-        val sql =  if (columns.isEmpty()) {
+        val begin =  if (columns.isEmpty()) {
             "select $queryColumn from `$table`"
         } else {
             "select $queryColumn from `$table` where $names"
         }
 
-        return if (orderBy.isNullOrBlank()) {
-            sql
-        } else {
-            "$sql order by $orderBy"
+        val sql = StringBuilder(begin)
+
+        if (!orderBy.isNullOrBlank()) {
+            sql.append(" order by $orderBy")
         }
 
+        if (current != null && size != null) {
+            sql.append(" limit $current, $size")
+        }
+
+        return sql.toString()
     }
 
     fun <T> execute(function: (rs: ResultSet) -> T): List<T> {
@@ -119,6 +138,7 @@ class Query(
     fun <T> executeMaybeOne(function: (rs: ResultSet) -> T): T? {
         return this.execute(function).firstOrNull()
     }
+
 
     fun count(): Int {
         val sql = this.build()
@@ -187,6 +207,10 @@ class Update(
     fun execute(): Int {
         val sql = this.build()
         return jdbcTemplate.update(sql, *param.toTypedArray())
+    }
+
+    fun executeOnlyOne(): Boolean {
+        return execute() == 1
     }
 
 }
