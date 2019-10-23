@@ -1,6 +1,5 @@
 package com.onepiece.treasure.web.jwt
 
-import com.onepiece.treasure.core.service.UserService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -21,17 +20,19 @@ class AuthServiceImpl(
         private val authenticationManager: AuthenticationManager,
         private val userDetailsService: UserDetailsService,
         private val jwtTokenUtil: JwtTokenUtil,
-        private val tokenStore: TokenStore,
-        private val userService: UserService
+        private val tokenStore: TokenStore
+//        private val userService: UserService
 ) : AuthService {
 
     override fun login(id: Int): MobileUser {
 
 
-        val user = userService.get(id)
-
-        val username = user.name
-        val password = user.name
+//        val user = userService.get(id)
+//
+//        val username = user.name
+//        val password = user.name
+        val username = "admin"
+        val password = "123456"
 
         val upToken = UsernamePasswordAuthenticationToken(username, username)
         val authentication = authenticationManager.authenticate(upToken)
@@ -41,21 +42,21 @@ class AuthServiceImpl(
         val userDetails = userDetailsService.loadUserByUsername(username)
         val token = jwtTokenUtil.generateToken(userDetails)
 
-        val jwtUser = JwtUser(id = user.id, musername = username, mpassword = password, lastPasswordResetDate = Date())
+        val jwtUser = JwtUser(id = 1, musername = username, mpassword = password, lastPasswordResetDate = Date())
         tokenStore.storeAccessToken(username = username, token = token, jwtUser = jwtUser)
 
-        return MobileUser(userId = user.id, token = token)
+        return MobileUser(userId = 1, token = token)
     }
 
 
     override fun refresh(id: Int) {
 
-        val user = userService.get(id)
+//        val user = userService.get(id)
+//
+//        val username = user.name
+//        val password = user.name
 
-        val username = user.name
-        val password = user.name
-
-        val jwtUser = JwtUser(id = user.id, musername = username, mpassword = password, lastPasswordResetDate = Date())
+        val jwtUser = JwtUser(id = 1, musername = "admin", mpassword = "admin", lastPasswordResetDate = Date())
         tokenStore.refresh(jwtUser)
     }
 }

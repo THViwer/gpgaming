@@ -22,6 +22,9 @@ data class Wallet(
         // 总充值金额
         val totalBalance: BigDecimal,
 
+        // 总存款次数
+        val totalFrequency: Int,
+
         // 总优惠金额
         val giftBalance: BigDecimal,
 
