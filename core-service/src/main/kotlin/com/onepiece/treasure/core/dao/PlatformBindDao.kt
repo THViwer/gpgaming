@@ -1,4 +1,4 @@
-package com.onepiece.treasure.core
+package com.onepiece.treasure.core.dao
 
 import com.onepiece.treasure.core.dao.basic.BasicDao
 import com.onepiece.treasure.core.dao.value.PlatformBindCo

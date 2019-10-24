@@ -1,6 +1,7 @@
 package com.onepiece.treasure.core.model
 
 import java.math.BigDecimal
+import java.time.LocalDateTime
 
 /**
  * 主钱包
@@ -29,5 +30,5 @@ data class Wallet(
         val giftBalance: BigDecimal,
 
         // 创建时间
-        val createdTime: Int
+        val createdTime: LocalDateTime
 )

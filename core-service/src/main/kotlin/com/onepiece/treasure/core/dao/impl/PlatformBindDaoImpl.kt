@@ -1,6 +1,6 @@
 package com.onepiece.treasure.core.dao.impl
 
-import com.onepiece.treasure.core.PlatformBindDao
+import com.onepiece.treasure.core.dao.PlatformBindDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import com.onepiece.treasure.core.dao.value.PlatformBindCo
 import com.onepiece.treasure.core.dao.value.PlatformBindUo
