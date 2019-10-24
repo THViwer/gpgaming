@@ -18,7 +18,7 @@ class CashApiController : BasicController(), CashApi {
         return MemberBankValueFactory.generatorMemberBanks()
     }
 
-    @PutMapping("/bank")
+    @PostMapping("/bank")
     override fun bankCreate(@RequestBody memberBankCo: MemberBankCo) {
     }
 
