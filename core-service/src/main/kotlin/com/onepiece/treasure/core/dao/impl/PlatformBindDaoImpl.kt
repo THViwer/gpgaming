@@ -20,8 +20,8 @@ class PlatformBindDaoImpl : BasicDaoImpl<PlatformBind>("platform_bind"), Platfor
             val clientId = rs.getInt("client_id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
             val status = rs.getString("status").let { Status.valueOf(it) }
-            val openTime = rs.getTimestamp("open_time").toLocalDateTime()
-            PlatformBind(id = id, clientId = clientId, platform = platform, status = status, openTime = openTime)
+            val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            PlatformBind(id = id, clientId = clientId, platform = platform, status = status, createdTime = createdTime)
         }
     }
 

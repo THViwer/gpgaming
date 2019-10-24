@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 /**
  * 会员信息表
  */
-data class Member(
+data class csMember(
         val id: Int,
 
         // 厅主Id

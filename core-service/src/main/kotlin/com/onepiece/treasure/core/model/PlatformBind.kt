@@ -22,6 +22,6 @@ data class PlatformBind(
         val status: Status,
 
         // 开通时间
-        val openTime: LocalDateTime
+        val createdTime: LocalDateTime
 
 )
