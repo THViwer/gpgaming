@@ -1,9 +1,8 @@
 package com.onepiece.treasure.controller
 
-import com.onepiece.treasure.core.model.enums.TopUpState
+import com.onepiece.treasure.core.model.enums.DepositState
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
-import com.onepiece.treasure.core.model.MemberBank
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
@@ -29,25 +28,25 @@ class CashApiController : BasicController(), CashApi {
     @GetMapping("/topUp")
     override fun topUp(
             @RequestParam(value = "orderId", required = false) orderId: String?,
-            @RequestParam(value = "state", required = false) state: TopUpState?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startCreatedTime") startCreatedTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endCreatedTime") endCreatedTime: LocalDateTime,
+            @RequestParam(value = "state", required = false) state: DepositState?,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
-    ): CashTopUpPage {
-        return CashValueFactory.generatorCashTopUpPage()
+    ): CashDepositPage {
+        return CashValueFactory.generatorCashDepositPage()
     }
 
 
     @PutMapping("/topUp")
-    override fun topUp(@RequestBody cashTopUpReq: CashTopUpReq): CashTopUpResp {
-        return CashTopUpResp(orderId = UUID.randomUUID().toString())
+    override fun topUp(@RequestBody cashTopUpReq: CashDepositReq): CashDepositResp {
+        return CashDepositResp(orderId = UUID.randomUUID().toString())
     }
 
     @GetMapping("/withdraw")
     override fun withdraw(
             @RequestParam(value = "orderId", required = false) orderId: String?,
-            @RequestParam(value = "state", required = false) state: TopUpState?,
+            @RequestParam(value = "state", required = false) state: DepositState?,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startCreatedTime") startCreatedTime: LocalDateTime,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endCreatedTime") endCreatedTime: LocalDateTime,
             @RequestParam(value = "current", defaultValue = "0") current: Int,

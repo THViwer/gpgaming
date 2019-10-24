@@ -2,12 +2,11 @@ package com.onepiece.treasure.core.dao
 
 import com.onepiece.treasure.core.dao.basic.BasicDao
 import com.onepiece.treasure.core.dao.value.*
-import com.onepiece.treasure.core.model.TopUpOrder
-import com.onepiece.treasure.core.model.WithdrawOrder
+import com.onepiece.treasure.core.model.Withdraw
 
-interface WithdrawOrderDao: BasicDao<WithdrawOrder> {
+interface WithdrawDao: BasicDao<Withdraw> {
 
-    fun query(query: TopUpOrderQuery): List<WithdrawOrder>
+    fun query(query: WithdrawQuery): List<Withdraw>
 
     fun create(orderCo: WithdrawOrderCo): Boolean
 

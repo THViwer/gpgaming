@@ -1,20 +1,20 @@
 package com.onepiece.treasure.core.dao.impl
 
-import com.onepiece.treasure.core.dao.WithdrawOrderDao
+import com.onepiece.treasure.core.dao.WithdrawDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.core.dao.value.TopUpOrderQuery
 import com.onepiece.treasure.core.dao.value.WithdrawOrderCo
 import com.onepiece.treasure.core.dao.value.WithdrawOrderUo
-import com.onepiece.treasure.core.model.WithdrawOrder
+import com.onepiece.treasure.core.dao.value.WithdrawQuery
+import com.onepiece.treasure.core.model.Withdraw
 import com.onepiece.treasure.core.model.enums.WithdrawState
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.util.*
 
 @Repository
-class WithdrawOrderDaoImpl : BasicDaoImpl<WithdrawOrder>("withdraw_order"), WithdrawOrderDao {
+class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw_order"), WithdrawDao {
 
-    override fun mapper(): (rs: ResultSet) -> WithdrawOrder {
+    override fun mapper(): (rs: ResultSet) -> Withdraw {
         return { rs ->
             val id = rs.getInt("id")
             val orderId = rs.getString("order_id")
@@ -27,13 +27,13 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<WithdrawOrder>("withdraw_order"), With
             val remarks = rs.getString("remarks")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val endTime = rs.getTimestamp("end_time")?.toLocalDateTime()
-            WithdrawOrder(id = id, orderId = orderId, processId = processId, clientId = clientId, memberId = memberId,
+            Withdraw(id = id, orderId = orderId, processId = processId, clientId = clientId, memberId = memberId,
                     memberBankId = memberBankId, money = money, state = state, remarks = remarks, createdTime = createdTime,
                     endTime = endTime)
         }
     }
 
-    override fun query(query: TopUpOrderQuery): List<WithdrawOrder> {
+    override fun query(query: WithdrawQuery): List<Withdraw> {
         return query().where("client_id", query.clientId)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_tiem <= ?", query.endTime)

@@ -2,11 +2,11 @@ package com.onepiece.treasure.core.dao.value
 
 import com.onepiece.treasure.core.model.enums.Banks
 import com.onepiece.treasure.core.model.enums.OrderState
-import com.onepiece.treasure.core.model.enums.TopUpState
+import com.onepiece.treasure.core.model.enums.DepositState
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-data class TopUpOrderQuery(
+data class DepositQuery(
 
         val clientId: Int,
 
@@ -18,10 +18,10 @@ data class TopUpOrderQuery(
 
         val memberId: Int?,
 
-        val state: TopUpState?
+        val state: DepositState?
 )
 
-data class TopUpOrderCo(
+data class DepositCo(
 
         // 订单Id
         val orderId: String,
@@ -46,7 +46,7 @@ data class TopUpOrderCo(
 )
 
 
-data class TopUpOrderUo(
+data class DepositUo(
 
         // 订单Id
         val orderId: String,

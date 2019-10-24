@@ -1,35 +1,35 @@
 package com.onepiece.treasure.web.controller.value
 
-import com.onepiece.treasure.core.model.enums.TopUpState
+import com.onepiece.treasure.core.model.enums.DepositState
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 
-object TopUpValueFactory {
+object DepositValueFactory {
 
-    fun generatorTopUoVos(): List<TopUpVo> {
+    fun generatorDeposits(): List<DepositVo> {
 
         val uploadImage = "https://image.flaticon.com/sprites/new_packs/148705-essential-collection.png"
         val now = LocalDateTime.now()
 
-        val t1 = TopUpVo(orderId = UUID.randomUUID().toString(), money = BigDecimal(100), bankId = 1, bankName = "工商银行", bankCardNumber = "6222222", memberId = 1,
-                name = "张三", state = TopUpState.Process, uploadImage = uploadImage, createdTime = now, successfulTime = null, bankOrderId = null, remark = null)
+        val t1 = DepositVo(orderId = UUID.randomUUID().toString(), money = BigDecimal(100), bankId = 1, bankName = "工商银行", bankCardNumber = "6222222", memberId = 1,
+                name = "张三", state = DepositState.Process, uploadImage = uploadImage, createdTime = now, successfulTime = null, bankOrderId = null, remark = null)
         val t2 = t1.copy(orderId = UUID.randomUUID().toString(), money = BigDecimal(200), name = "李四", bankCardNumber = "6333333",
-                state = TopUpState.Successful, successfulTime = now, memberId = 2)
+                state = DepositState.Successful, successfulTime = now, memberId = 2)
 
         val t3 = t1.copy(orderId = UUID.randomUUID().toString(), money = BigDecimal(300), name = "王五", bankCardNumber = "6444444",
-                state = TopUpState.Fail, remark = "信息错误", memberId = 3)
+                state = DepositState.Fail, remark = "信息错误", memberId = 3)
 
         val t4 = t1.copy(orderId = UUID.randomUUID().toString(), money = BigDecimal(400), name = "赵六", bankCardNumber = "6555555",
-                state = TopUpState.Close, memberId = 4)
+                state = DepositState.Close, memberId = 4)
 
         return listOf(t1, t2, t3, t4)
     }
 
 }
 
-data class TopUpVo(
+data class DepositVo(
 
         @ApiModelProperty("订单Id")
         val orderId: String,
@@ -56,7 +56,7 @@ data class TopUpVo(
         val name: String,
 
         @ApiModelProperty("状态")
-        val state: TopUpState,
+        val state: DepositState,
 
         @ApiModelProperty("备注")
         val remark: String?,
@@ -72,13 +72,13 @@ data class TopUpVo(
 
 )
 
-data class TopUpUo(
+data class DepositUo(
 
         @ApiModelProperty("订单Id")
         val orderId: Int,
 
         @ApiModelProperty("订单状态")
-        val state: TopUpState,
+        val state: DepositState,
 
         @ApiModelProperty("备注")
         val remark: String?

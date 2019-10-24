@@ -1,6 +1,6 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.core.model.enums.TopUpState
+import com.onepiece.treasure.core.model.enums.DepositState
 import com.onepiece.treasure.core.model.enums.WithdrawState
 import com.onepiece.treasure.web.controller.basic.BasicController
 import com.onepiece.treasure.web.controller.value.*
@@ -12,23 +12,23 @@ import java.time.LocalDateTime
 @RequestMapping("/cash")
 class CashOrderApiController : BasicController(), CashOrderApi {
 
-    @GetMapping("/topup")
-    override fun topup(
-            @RequestParam(value = "state", required = false) state: TopUpState?,
+    @GetMapping("/deposit")
+    override fun deposit(
+            @RequestParam(value = "state", required = false) state: DepositState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "username", required = false) username: String?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startCreatedTime") startCreatedTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endCreatedTime") endCreatedTime: LocalDateTime
-    ): List<TopUpVo> {
-        return TopUpValueFactory.generatorTopUoVos()
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime
+    ): List<DepositVo> {
+        return DepositValueFactory.generatorDeposits()
     }
 
-    @PutMapping("/topup")
-    override fun check(@RequestBody topUpUo: TopUpUo) {
+    @PutMapping("/deposit")
+    override fun check(@RequestBody depositUo: DepositUo) {
     }
 
-    @PutMapping("/topup/enforcement")
-    override fun enforcement(@RequestBody topUpUo: TopUpUo) {
+    @PutMapping("/deposit/enforcement")
+    override fun enforcement(@RequestBody depositUo: DepositUo) {
     }
 
     @GetMapping("/withdraw")
@@ -36,8 +36,8 @@ class CashOrderApiController : BasicController(), CashOrderApi {
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "username", required = false) username: String?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startCreatedTime") startCreatedTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endCreatedTime") endCreatedTime: LocalDateTime
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime
     ): List<WithdrawVo> {
         return WithdrawValueFactory.generatorWithdrawVos()
     }

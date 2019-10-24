@@ -1,17 +1,19 @@
 package com.onepiece.treasure.core.model
 
-import com.onepiece.treasure.core.model.enums.WithdrawState
+import com.onepiece.treasure.core.model.enums.Banks
+import com.onepiece.treasure.core.model.enums.DepositState
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
 /**
  * 充值订单
  */
-data class WithdrawOrder(
-
-        val id: Int,
+data class Deposit(
 
         // id
+        val id: Int,
+
+        // orderId
         val orderId: String,
 
         // 流程Id 用于乐观锁
@@ -23,14 +25,20 @@ data class WithdrawOrder(
         // 会员Id
         val memberId: Int,
 
-        // 会员银行卡Id
-        val memberBankId: Int,
+        // 充值银行
+        val bank: Banks,
 
-        // 提款金额
+        // 银行卡号
+        val bankCardNumber: String,
+
+        // 充值金额
         val money: BigDecimal,
 
-        // 取款状态
-        val state: WithdrawState,
+        // 上传图片地址
+        val imgPath: String,
+
+        // 充值状态
+        val state: DepositState,
 
         // 备注
         val remarks: String?,
@@ -38,6 +46,6 @@ data class WithdrawOrder(
         // 创建时间
         val createdTime: LocalDateTime,
 
-        // 订单结束时间
+        // 订单关闭时间
         val endTime: LocalDateTime?
 )

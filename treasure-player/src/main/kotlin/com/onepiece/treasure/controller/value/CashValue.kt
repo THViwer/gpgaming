@@ -1,6 +1,6 @@
 package com.onepiece.treasure.controller.value
 
-import com.onepiece.treasure.core.model.enums.TopUpState
+import com.onepiece.treasure.core.model.enums.DepositState
 import com.onepiece.treasure.core.model.enums.WithdrawState
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
@@ -9,19 +9,19 @@ import java.util.*
 
 object CashValueFactory {
 
-    fun generatorCashTopUpPage(): CashTopUpPage {
+    fun generatorCashDepositPage(): CashDepositPage {
 
         val now = LocalDateTime.now()
 
-        val t1 = CashTopUpVo(orderId = UUID.randomUUID().toString(), money = BigDecimal(100), state = TopUpState.Process,
+        val t1 = CashDepositVo(orderId = UUID.randomUUID().toString(), money = BigDecimal(100), state = DepositState.Process,
                 createdTime = now, successfulTime = null, remark = null)
-        val t2 = t1.copy(orderId = UUID.randomUUID().toString(), money = BigDecimal(200), state = TopUpState.Successful,
+        val t2 = t1.copy(orderId = UUID.randomUUID().toString(), money = BigDecimal(200), state = DepositState.Successful,
                 createdTime = now, successfulTime = null)
-        val t3 = t1.copy(orderId = UUID.randomUUID().toString(), money = BigDecimal(300), state = TopUpState.Fail,
+        val t3 = t1.copy(orderId = UUID.randomUUID().toString(), money = BigDecimal(300), state = DepositState.Fail,
                 createdTime = now)
 
         val data = listOf(t1, t2, t3)
-        return CashTopUpPage(data = data, total = 100)
+        return CashDepositPage(data = data, total = 100)
     }
 
     fun generatorCashWithdrawPage(): CashWithdrawPage {
@@ -42,24 +42,24 @@ object CashValueFactory {
 
 }
 
-data class CashTopUpQuery(
+data class CashDepositQuery(
 
         @ApiModelProperty("订单Id")
         val orderId: String?,
 
         @ApiModelProperty("订单状态")
-        val state: TopUpState?
+        val state: DepositState?
 
 )
 
-data class CashTopUpPage(
+data class CashDepositPage(
 
-        val data: List<CashTopUpVo>,
+        val data: List<CashDepositVo>,
 
         val total: Int
 )
 
-data class CashTopUpVo(
+data class CashDepositVo(
 
         @ApiModelProperty("订单Id")
         val orderId: String,
@@ -68,7 +68,7 @@ data class CashTopUpVo(
         val money: BigDecimal,
 
         @ApiModelProperty("充值状态")
-        val state: TopUpState,
+        val state: DepositState,
 
         @ApiModelProperty("备注")
         val remark: String?,
@@ -81,7 +81,7 @@ data class CashTopUpVo(
 
 )
 
-data class CashTopUpReq(
+data class CashDepositReq(
 
         @ApiModelProperty("厅主银行卡Id")
         val clientBankId: Int,
@@ -99,7 +99,7 @@ data class CashTopUpReq(
         val uploadImage: String
 )
 
-data class CashTopUpResp(
+data class CashDepositResp(
 
         @ApiModelProperty("订单Id")
         val orderId: String

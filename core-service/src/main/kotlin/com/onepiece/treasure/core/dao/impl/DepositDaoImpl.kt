@@ -1,21 +1,19 @@
 package com.onepiece.treasure.core.dao.impl
 
-import com.onepiece.treasure.core.dao.TopUpOrderDao
+import com.onepiece.treasure.core.dao.DepositDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.core.dao.value.TopUpOrderCo
-import com.onepiece.treasure.core.dao.value.TopUpOrderQuery
-import com.onepiece.treasure.core.dao.value.TopUpOrderUo
-import com.onepiece.treasure.core.model.TopUpOrder
+import com.onepiece.treasure.core.dao.value.*
+import com.onepiece.treasure.core.model.Deposit
 import com.onepiece.treasure.core.model.enums.Banks
-import com.onepiece.treasure.core.model.enums.TopUpState
+import com.onepiece.treasure.core.model.enums.DepositState
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.util.*
 
 @Repository
-class TopUpOrderDaoImpl : BasicDaoImpl<TopUpOrder>("topup_order"), TopUpOrderDao {
+class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
 
-    override fun mapper(): (rs: ResultSet) -> TopUpOrder {
+    override fun mapper(): (rs: ResultSet) -> Deposit {
         return { rs ->
             val id = rs.getInt("id")
             val orderId = rs.getString("order_id")
@@ -26,17 +24,17 @@ class TopUpOrderDaoImpl : BasicDaoImpl<TopUpOrder>("topup_order"), TopUpOrderDao
             val bankCardNumber = rs.getString("bank_card_number")
             val money = rs.getBigDecimal("money")
             val imgPath = rs.getString("imgPath")
-            val state = rs.getString("state").let { TopUpState.valueOf(it) }
+            val state = rs.getString("state").let { DepositState.valueOf(it) }
             val remarks = rs.getString("remarks")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val endTime = rs.getTimestamp("end_time")?.toLocalDateTime()
-            TopUpOrder(id = id, orderId = orderId, clientId = clientId, memberId = memberId, bank = bank, money = money,
+            Deposit(id = id, orderId = orderId, clientId = clientId, memberId = memberId, bank = bank, money = money,
                     imgPath = imgPath, state = state, remarks = remarks, createdTime = createdTime, endTime = endTime,
                     bankCardNumber = bankCardNumber, processId = processId)
         }
     }
 
-    override fun query(query: TopUpOrderQuery): List<TopUpOrder> {
+    override fun query(query: DepositQuery): List<Deposit> {
         return query().where("client_id", query.clientId)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
@@ -46,21 +44,21 @@ class TopUpOrderDaoImpl : BasicDaoImpl<TopUpOrder>("topup_order"), TopUpOrderDao
                 .execute(mapper())
     }
 
-    override fun create(orderCo: TopUpOrderCo): Boolean {
-        return insert().set("order_id", orderCo.orderId)
+    override fun create(depositCo: DepositCo): Boolean {
+        return insert().set("order_id", depositCo.orderId)
                 .set("process_id", UUID.randomUUID().toString())
-                .set("client_id", orderCo.clientId)
-                .set("member_id", orderCo.memberId)
-                .set("bank", orderCo.bank)
-                .set("bank_card_number", orderCo.bankCardNumber)
-                .set("money", orderCo.money)
-                .set("imgPath", orderCo.imgPath)
-                .set("state", TopUpState.Process)
+                .set("client_id", depositCo.clientId)
+                .set("member_id", depositCo.memberId)
+                .set("bank", depositCo.bank)
+                .set("bank_card_number", depositCo.bankCardNumber)
+                .set("money", depositCo.money)
+                .set("imgPath", depositCo.imgPath)
+                .set("state", DepositState.Process)
                 .executeOnlyOne()
     }
 
-    override fun update(orderUo: TopUpOrderUo): Boolean {
-        val sql = "update topup_order set state = ?, remarks = ?, process_id = ? where order_id = ? and process_id = ?"
-        return jdbcTemplate.update(sql, orderUo.state.name, orderUo.remarks, UUID.randomUUID().toString(), orderUo.orderId, orderUo.processId) == 1
+    override fun update(depositUo: DepositUo): Boolean {
+        val sql = "update deposit set state = ?, remarks = ?, process_id = ? where order_id = ? and process_id = ?"
+        return jdbcTemplate.update(sql, depositUo.state.name, depositUo.remarks, UUID.randomUUID().toString(), depositUo.orderId, depositUo.processId) == 1
     }
 }

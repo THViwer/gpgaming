@@ -1,9 +1,9 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.core.model.enums.TopUpState
+import com.onepiece.treasure.core.model.enums.DepositState
 import com.onepiece.treasure.core.model.enums.WithdrawState
-import com.onepiece.treasure.web.controller.value.TopUpUo
-import com.onepiece.treasure.web.controller.value.TopUpVo
+import com.onepiece.treasure.web.controller.value.DepositUo
+import com.onepiece.treasure.web.controller.value.DepositVo
 import com.onepiece.treasure.web.controller.value.WithdrawUo
 import com.onepiece.treasure.web.controller.value.WithdrawVo
 import io.swagger.annotations.Api
@@ -18,30 +18,30 @@ import java.time.LocalDateTime
 @Api(tags = ["cash"], description = " ")
 interface CashOrderApi {
 
-    @ApiOperation(tags = ["cash"], value = "topup -> query")
-    fun topup(
-            @RequestParam(value = "state", required = false) state: TopUpState?,
+    @ApiOperation(tags = ["cash"], value = "deposit -> query")
+    fun deposit(
+            @RequestParam(value = "state", required = false) state: DepositState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "username", required = false) username: String?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startCreatedTime") startCreatedTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endCreatedTime") endCreatedTime: LocalDateTime
-    ): List<TopUpVo>
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime
+    ): List<DepositVo>
 
-    @ApiOperation(tags = ["cash"], value = "topup -> check")
+    @ApiOperation(tags = ["cash"], value = "deposit -> check")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun check(@RequestBody topUpUo: TopUpUo)
+    fun check(@RequestBody depositUo: DepositUo)
 
-    @ApiOperation(tags = ["cash"], value = "topup -> enforcement")
+    @ApiOperation(tags = ["cash"], value = "deposit -> enforcement")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun enforcement(@RequestBody topUpUo: TopUpUo)
+    fun enforcement(@RequestBody depositUo: DepositUo)
 
     @ApiOperation(tags = ["cash"], value = "withdraw -> query")
     fun withdraw(
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "username", required = false) username: String?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startCreatedTime") startCreatedTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endCreatedTime") endCreatedTime: LocalDateTime
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime
     ): List<WithdrawVo>
 
     @ApiOperation(tags = ["cash"], value = "withdraw -> check")

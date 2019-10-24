@@ -1,6 +1,6 @@
 package com.onepiece.treasure.core.model.enums
 
-enum class TopUpState {
+enum class DepositState {
 
     Process,
 
