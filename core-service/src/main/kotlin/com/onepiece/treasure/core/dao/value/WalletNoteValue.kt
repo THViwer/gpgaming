@@ -13,5 +13,17 @@ data class WalletNoteCo(
         val event: WalletEvent,
 
         // 备注
-        val remark: String
+        val remarks: String
+)
+
+data class WalletNoteQuery(
+
+        // 厅主Id
+        val clientId: Int,
+
+        // 会员Id
+        val memberId: Int,
+
+        // 事件
+        val event: WalletEvent
 )

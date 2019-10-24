@@ -18,7 +18,7 @@ data class WalletNote(
         val event: WalletEvent,
 
         // 备注
-        val remark: String,
+        val remarks: String,
 
         // 创建时间
         val createdTime: LocalDateTime
