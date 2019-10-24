@@ -15,7 +15,7 @@ data class Balance (
         val clientId: Int,
 
         // 当前余额
-        val currentBalance: BigDecimal,
+        val balance: BigDecimal,
 
         // 总余额
         val totalBalance: BigDecimal,

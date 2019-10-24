@@ -1,8 +1,8 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.web.controller.value.DomainCo
-import com.onepiece.treasure.web.controller.value.DomainUo
-import com.onepiece.treasure.web.controller.value.DomainVo
+import com.onepiece.treasure.web.controller.value.WebSiteCo
+import com.onepiece.treasure.web.controller.value.WebSiteUo
+import com.onepiece.treasure.web.controller.value.WebSiteVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
@@ -10,18 +10,16 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 
 @Api(tags = ["setting"], description = " ")
-interface DomainApi {
+interface WebSiteApi {
 
     @ApiOperation(tags = ["setting"], value = "domain -> all")
-    fun all(): List<DomainVo>
+    fun all(): List<WebSiteVo>
 
-    @ApiOperation(tags = ["setting"], value = "domain -> create")
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    fun create(@RequestBody domainCo: DomainCo)
+    @ApiOperation(tags = ["setting"], value = "domain -> ")
+    fun create(@RequestBody webSiteCo: WebSiteCo)
 
     @ApiOperation(tags = ["setting"], value = "domain -> update")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    fun update(@RequestBody domainUo: DomainUo)
-
+    fun update(@RequestBody webSiteUo: WebSiteUo)
 
 }

@@ -7,25 +7,24 @@ import java.time.LocalDateTime
 
 object DomainValueFactory {
 
-    fun generatorDomains(): List<DomainVo> {
+    fun generatorWebSites(): List<WebSiteVo> {
 
         val now = LocalDateTime.now()
-        val d1 = DomainVo(id = 1, path = "http://www.baidu.com", status = Status.Normal, createdTime = now)
-        val d2 = d1.copy(id = 2, path = "http://www.google.com", status = Status.Normal)
-        val d3 = d1.copy(id = 3, path = "http://www.taobao.com", status = Status.Normal)
-
-        return listOf(d1, d2, d3)
+        val w1 = WebSiteVo(id = 1, domain = "http://www.baidu.com", createdTime = now, status = Status.Normal)
+        val w2 = w1.copy(id = 2, domain = "http://www.google.com", status = Status.Stop)
+        val w3 = w1.copy(id = 3, domain = "http://www.taobal.com")
+        return listOf(w1, w2, w3)
     }
 
 }
 
-data class DomainVo(
+data class WebSiteVo(
 
         @ApiModelProperty("id")
         val id: Int,
 
         @ApiModelProperty("域名地址")
-        val path: String,
+        val domain: String,
 
         @ApiModelProperty("状态")
         val status: Status,
@@ -34,22 +33,22 @@ data class DomainVo(
         val createdTime: LocalDateTime
 )
 
-data class DomainCo(
+data class WebSiteCo(
 
         @ApiModelProperty("域名地址")
-        val path: String
+        val domain: String
 
 )
 
-data class DomainUo(
+data class WebSiteUo(
 
         @ApiModelProperty("id")
         val id: Int,
 
         @ApiModelProperty("域名地址")
-        val path: String?,
+        val domain: String,
 
         @ApiModelProperty("状态")
-        val status: Status?
+        val status: Status
 
 )
