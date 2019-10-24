@@ -3,14 +3,6 @@ package com.onepiece.treasure.core.model
 import com.onepiece.treasure.core.model.enums.WalletEvent
 import java.time.LocalDateTime
 
-data class WalletQuery(
-
-        val clientId: Int,
-
-        val memberId: Int,
-
-        val event: WalletEvent
-)
 data class WalletNote(
 
         // id
