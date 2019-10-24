@@ -15,7 +15,7 @@ data class ClientBank(
         val clientId: Int,
 
         // 银行卡号
-        val cardNo: String,
+        val bankCardNumber: String,
 
         // 银行名称
         val cardName: String,
