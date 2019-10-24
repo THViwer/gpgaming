@@ -1,7 +1,7 @@
 package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.ClientDao
-import com.onepiece.treasure.core.dao.basic.BasicDao
+import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import com.onepiece.treasure.core.dao.value.ClientCo
 import com.onepiece.treasure.core.dao.value.ClientUo
 import com.onepiece.treasure.core.model.Client
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
 @Repository
-class ClientDaoImpl : BasicDao<Client>("client"), ClientDao {
+class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
 
     override fun mapper(): (rs: ResultSet) -> Client {
         return { rs ->

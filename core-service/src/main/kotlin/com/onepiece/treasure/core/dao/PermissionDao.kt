@@ -1,11 +1,11 @@
 package com.onepiece.treasure.core.dao
 
-import com.onepiece.treasure.core.dao.basic.BasicQueryDao
+import com.onepiece.treasure.core.dao.basic.BasicDao
 import com.onepiece.treasure.core.dao.value.PermissionCo
 import com.onepiece.treasure.core.dao.value.PermissionUo
 import com.onepiece.treasure.core.model.Permission
 
-interface PermissionDao: BasicQueryDao<Permission> {
+interface PermissionDao: BasicDao<Permission> {
 
     fun create(permissionCo: PermissionCo): Boolean
 

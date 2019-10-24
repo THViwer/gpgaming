@@ -1,7 +1,7 @@
 package com.onepiece.treasure.core.model
 
 import com.onepiece.treasure.core.model.enums.OrderState
-import com.onepiece.treasure.core.model.enums.Platforms
+import com.onepiece.treasure.core.model.enums.Platform
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -17,7 +17,7 @@ data class PlatformTransfer(
         val clientId: Int,
 
         // 平台
-        val platform: Platforms,
+        val platform: Platform,
 
         // 平台钱包Id
         val platformWalletId: Int,

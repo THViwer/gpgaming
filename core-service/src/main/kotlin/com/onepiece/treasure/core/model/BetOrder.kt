@@ -1,7 +1,7 @@
 package com.onepiece.treasure.core.model
 
 import com.onepiece.treasure.core.model.enums.BetState
-import com.onepiece.treasure.core.model.enums.Platforms
+import com.onepiece.treasure.core.model.enums.Platform
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -23,7 +23,7 @@ data class BetOrder(
         val state: BetState,
 
         // 平台
-        val platform: Platforms,
+        val platform: Platform,
 
         // 下注金额
         val betMoney: BigDecimal,

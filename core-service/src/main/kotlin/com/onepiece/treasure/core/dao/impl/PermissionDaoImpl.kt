@@ -2,7 +2,7 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.core.dao.PermissionDao
-import com.onepiece.treasure.core.dao.basic.BasicDao
+import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import com.onepiece.treasure.core.dao.value.PermissionCo
 import com.onepiece.treasure.core.dao.value.PermissionUo
 import com.onepiece.treasure.core.model.Permission
@@ -13,7 +13,7 @@ import java.sql.ResultSet
 @Repository
 class PermissionDaoImpl(
         private val objectMapper: ObjectMapper
-) : BasicDao<Permission>("permission"), PermissionDao {
+) : BasicDaoImpl<Permission>("permission"), PermissionDao {
 
     override fun mapper(): (rs: ResultSet) -> Permission {
 

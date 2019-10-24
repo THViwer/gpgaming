@@ -1,7 +1,7 @@
 package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.MemberDao
-import com.onepiece.treasure.core.dao.basic.BasicDao
+import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import com.onepiece.treasure.core.dao.value.MemberCo
 import com.onepiece.treasure.core.dao.value.MemberQuery
 import com.onepiece.treasure.core.dao.value.MemberUo
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
 @Repository
-class MemberDaoImpl: BasicDao<Member>("member"), MemberDao {
+class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
 
     override fun mapper(): (rs: ResultSet) -> Member {
         return { rs ->

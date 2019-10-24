@@ -1,6 +1,6 @@
 package com.onepiece.treasure.core.model
 
-import com.onepiece.treasure.core.model.enums.Platforms
+import com.onepiece.treasure.core.model.enums.Platform
 import java.math.BigDecimal
 
 /**
@@ -33,6 +33,6 @@ data class PlatformWallet(
         val currentStreamFlow: BigDecimal,
 
         // 平台
-        val platform: Platforms
+        val platform: Platform
 
 )

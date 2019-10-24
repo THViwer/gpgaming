@@ -1,7 +1,7 @@
 package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.WaiterDao
-import com.onepiece.treasure.core.dao.basic.BasicDao
+import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import com.onepiece.treasure.core.dao.value.WaiterCo
 import com.onepiece.treasure.core.dao.value.WaiterUo
 import com.onepiece.treasure.core.model.Waiter
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
 @Repository
-class WaiterDaoImpl : BasicDao<Waiter>("waiter"), WaiterDao {
+class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
 
     override fun mapper(): (rs: ResultSet) -> Waiter {
         return { rs ->

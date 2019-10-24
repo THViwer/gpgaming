@@ -1,41 +1,11 @@
 package com.onepiece.treasure.core.dao.basic
 
-import com.onepiece.treasure.utils.Insert
-import com.onepiece.treasure.utils.JdbcBuilder
-import com.onepiece.treasure.utils.Query
-import com.onepiece.treasure.utils.Update
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.jdbc.core.JdbcTemplate
-import java.sql.ResultSet
+interface BasicDao<T> {
 
-abstract class BasicDao<T>(
-        private val table: String
-): BasicQueryDao<T> {
+    fun get(id: Int): T
 
-    @Autowired
-    lateinit var jdbcTemplate: JdbcTemplate
+    fun all(clientId: Int): List<T>
 
-    abstract fun mapper(): (rs: ResultSet) -> T
-
-
-    override fun get(id: Int): T {
-        return query().where("id", id).executeOnlyOne(mapper())
-    }
-
-    override fun all(): List<T> {
-        return query().execute(mapper())
-    }
-
-    fun insert(): Insert {
-        return JdbcBuilder.insert(jdbcTemplate, table)
-    }
-
-    fun query(returnColumns: String? = null): Query {
-        return Query(jdbcTemplate, table, returnColumns)
-    }
-
-    fun update(): Update {
-        return Update(jdbcTemplate, table)
-    }
+    fun all(): List<T>
 
 }

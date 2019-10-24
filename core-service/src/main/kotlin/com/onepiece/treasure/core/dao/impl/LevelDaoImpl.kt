@@ -1,7 +1,7 @@
 package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.LevelDao
-import com.onepiece.treasure.core.dao.basic.BasicDao
+import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import com.onepiece.treasure.core.dao.value.LevelCo
 import com.onepiece.treasure.core.dao.value.LevelUo
 import com.onepiece.treasure.core.model.Level
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
 @Repository
-class LevelDaoImpl: BasicDao<Level>("level"), LevelDao {
+class LevelDaoImpl: BasicDaoImpl<Level>("level"), LevelDao {
 
     override fun mapper(): (rs: ResultSet) -> Level {
 
