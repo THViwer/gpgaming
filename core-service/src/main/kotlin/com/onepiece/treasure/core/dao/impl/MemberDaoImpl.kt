@@ -7,7 +7,6 @@ import com.onepiece.treasure.core.dao.value.MemberQuery
 import com.onepiece.treasure.core.dao.value.MemberUo
 import com.onepiece.treasure.core.model.Member
 import com.onepiece.treasure.core.model.enums.Status
-import com.onepiece.treasure.utils.JdbcBuilder
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
@@ -31,7 +30,7 @@ class MemberDaoImpl: BasicDao<Member>("member"), MemberDao {
     }
 
     override fun create(memberCo: MemberCo): Boolean {
-        return JdbcBuilder.insert(jdbcTemplate, "member")
+        return insert()
                 .set("client_id", memberCo.clientId)
                 .set("username", memberCo.username)
                 .set("password", memberCo.password)
@@ -40,8 +39,7 @@ class MemberDaoImpl: BasicDao<Member>("member"), MemberDao {
     }
 
     override fun update(memberUo: MemberUo): Boolean {
-
-        return JdbcBuilder.update(jdbcTemplate, "member")
+        return update()
                 .set("password", memberUo.password)
                 .set("status", memberUo.status)
                 .set("level_id", memberUo.levelId)
@@ -51,7 +49,7 @@ class MemberDaoImpl: BasicDao<Member>("member"), MemberDao {
     }
 
     override fun total(query: MemberQuery): Int {
-        return JdbcBuilder.query(jdbcTemplate, "member", "count (*) as count")
+        return query("count (*) as count")
                 .where("client_id", query.clientId)
                 .where("username", query.username)
                 .where("status", query.status)
@@ -62,7 +60,7 @@ class MemberDaoImpl: BasicDao<Member>("member"), MemberDao {
     }
 
     override fun query(query: MemberQuery, current: Int, size: Int): List<Member> {
-        return JdbcBuilder.query(jdbcTemplate, "member")
+        return query()
                 .where("client_id", query.clientId)
                 .where("username", query.username)
                 .where("status", query.status)
@@ -74,8 +72,7 @@ class MemberDaoImpl: BasicDao<Member>("member"), MemberDao {
     }
 
     override fun list(query: MemberQuery): List<Member> {
-
-        return JdbcBuilder.query(jdbcTemplate, "member")
+        return query()
                 .where("client_id", query.clientId)
                 .where("username", query.username)
                 .where("status", query.status)
@@ -84,8 +81,5 @@ class MemberDaoImpl: BasicDao<Member>("member"), MemberDao {
                 .asWhere("created_time <= ?", query.endTime)
                 .execute(mapper())
     }
-
-
-
 
 }

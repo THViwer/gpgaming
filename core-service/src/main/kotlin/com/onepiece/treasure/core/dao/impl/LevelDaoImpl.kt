@@ -1,12 +1,11 @@
 package com.onepiece.treasure.core.dao.impl
 
-import com.onepiece.treasure.core.dao.basic.BasicDao
 import com.onepiece.treasure.core.dao.LevelDao
+import com.onepiece.treasure.core.dao.basic.BasicDao
 import com.onepiece.treasure.core.dao.value.LevelCo
 import com.onepiece.treasure.core.dao.value.LevelUo
 import com.onepiece.treasure.core.model.Level
 import com.onepiece.treasure.core.model.enums.Status
-import com.onepiece.treasure.utils.JdbcBuilder
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
@@ -27,14 +26,14 @@ class LevelDaoImpl: BasicDao<Level>("level"), LevelDao {
     }
 
     override fun create(levelCo: LevelCo): Boolean {
-        return JdbcBuilder.insert(jdbcTemplate, "level")
+        return insert()
                 .set("client_id", levelCo.clientId)
                 .set("name", levelCo.name)
                 .executeOnlyOne()
     }
 
     override fun update(levelUo: LevelUo): Boolean {
-        return JdbcBuilder.update(jdbcTemplate, "table")
+        return update()
                 .set("name", levelUo.name)
                 .set("status", levelUo.status)
                 .where("id", levelUo.id)
