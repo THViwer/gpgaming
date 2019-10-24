@@ -3,6 +3,7 @@ package com.onepiece.treasure.controller
 import com.onepiece.treasure.core.model.enums.TopUpState
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
+import com.onepiece.treasure.core.model.MemberBank
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
@@ -11,6 +12,19 @@ import java.util.*
 @RestController
 @RequestMapping("/cash")
 class CashApiController : BasicController(), CashApi {
+
+    @GetMapping("/bank")
+    override fun banks(): List<MemberBankVo> {
+        return MemberBankValueFactory.generatorMemberBanks()
+    }
+
+    @PutMapping("/bank")
+    override fun bankCreate(@RequestBody memberBankCo: MemberBankCo) {
+    }
+
+    @PutMapping("/bank")
+    override fun bankUpdate(@RequestBody memberBankUo: MemberBankUo) {
+    }
 
     @GetMapping("/topUp")
     override fun topUp(
