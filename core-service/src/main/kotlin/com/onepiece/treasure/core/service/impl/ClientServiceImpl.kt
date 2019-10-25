@@ -9,7 +9,6 @@ import com.onepiece.treasure.beans.value.database.LoginValue
 import com.onepiece.treasure.core.dao.ClientDao
 import com.onepiece.treasure.core.service.ClientService
 import com.onepiece.treasure.core.service.LevelService
-import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
