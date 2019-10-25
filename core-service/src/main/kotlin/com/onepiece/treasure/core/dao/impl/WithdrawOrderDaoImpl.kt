@@ -35,7 +35,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw_order"), WithdrawD
     override fun query(query: WithdrawQuery): List<Withdraw> {
         return query().where("client_id", query.clientId)
                 .asWhere("created_time > ?", query.startTime)
-                .asWhere("created_tiem <= ?", query.endTime)
+                .asWhere("created_time <= ?", query.endTime)
                 .where("order_id", query.orderId)
                 .where("member_id", query.memberId)
                 .where("state", query.state)

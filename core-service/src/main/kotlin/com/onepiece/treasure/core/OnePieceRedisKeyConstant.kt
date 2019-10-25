@@ -6,4 +6,6 @@ object OnePieceRedisKeyConstant {
 
     fun level(clientId: Int) = "level:$clientId"
 
+    fun webSite(clientId: Int) = "webSite:$clientId"
+
 }

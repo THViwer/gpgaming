@@ -53,7 +53,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                 .set("bank", depositCo.bank)
                 .set("bank_card_number", depositCo.bankCardNumber)
                 .set("money", depositCo.money)
-                .set("imgPath", depositCo.imgPath)
+                .set("img_path", depositCo.imgPath)
                 .set("state", DepositState.Process)
                 .executeOnlyOne()
     }
