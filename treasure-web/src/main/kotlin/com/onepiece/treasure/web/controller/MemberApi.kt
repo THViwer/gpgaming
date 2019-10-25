@@ -6,18 +6,21 @@ import com.onepiece.treasure.beans.value.internet.web.MemberPage
 import com.onepiece.treasure.beans.value.internet.web.MemberUo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
+import java.time.LocalDateTime
 
 @Api(tags = ["user"], description = " ")
 interface MemberApi {
 
     @ApiOperation(tags = ["user"], value = "member -> query")
     fun query(
-            @RequestParam(value = "id") id: Int,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime,
             @RequestParam(value = "username", required = false) username: String?,
             @RequestParam(value = "levelId", required = false) levelId: Int?,
             @RequestParam(value = "status", required = false) status: Status?,

@@ -54,7 +54,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
     }
 
     override fun total(query: MemberQuery): Int {
-        return query("count (*) as count")
+        return query("count(*) as count")
                 .where("client_id", query.clientId)
                 .where("username", query.username)
                 .where("status", query.status)

@@ -20,26 +20,26 @@ object MemberValueFactory {
 
 
 }
-
-data class MemberQuery (
-
-        val id: Int,
-
-        @ApiModelProperty("用户名")
-        val username: String?,
-
-        @ApiModelProperty("层级Id")
-        val levelId: Int?,
-
-        @ApiModelProperty("状态")
-        val status: Status?,
-
-        @ApiModelProperty("当前数据")
-        val current: Int = 0,
-
-        @ApiModelProperty("每页条数")
-        val size: Int = 10
-)
+//
+//data class MemberQuery (
+//
+//        val id: Int,
+//
+//        @ApiModelProperty("用户名")
+//        val username: String?,
+//
+//        @ApiModelProperty("层级Id")
+//        val levelId: Int?,
+//
+//        @ApiModelProperty("状态")
+//        val status: Status?,
+//
+//        @ApiModelProperty("当前数据")
+//        val current: Int = 0,
+//
+//        @ApiModelProperty("每页条数")
+//        val size: Int = 10
+//)
 
 data class MemberPage(
 
