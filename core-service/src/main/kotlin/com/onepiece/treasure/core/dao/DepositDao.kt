@@ -1,10 +1,10 @@
 package com.onepiece.treasure.core.dao
 
 import com.onepiece.treasure.core.dao.basic.BasicDao
-import com.onepiece.treasure.core.dao.value.DepositCo
-import com.onepiece.treasure.core.dao.value.DepositQuery
-import com.onepiece.treasure.core.dao.value.DepositUo
-import com.onepiece.treasure.core.model.Deposit
+import com.onepiece.treasure.beans.value.database.DepositCo
+import com.onepiece.treasure.beans.value.database.DepositQuery
+import com.onepiece.treasure.beans.value.database.DepositUo
+import com.onepiece.treasure.beans.model.Deposit
 
 interface DepositDao: BasicDao<Deposit> {
 

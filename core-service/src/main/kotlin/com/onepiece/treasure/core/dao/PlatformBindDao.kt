@@ -1,9 +1,9 @@
 package com.onepiece.treasure.core.dao
 
 import com.onepiece.treasure.core.dao.basic.BasicDao
-import com.onepiece.treasure.core.dao.value.PlatformBindCo
-import com.onepiece.treasure.core.dao.value.PlatformBindUo
-import com.onepiece.treasure.core.model.PlatformBind
+import com.onepiece.treasure.beans.value.database.PlatformBindCo
+import com.onepiece.treasure.beans.value.database.PlatformBindUo
+import com.onepiece.treasure.beans.model.PlatformBind
 
 interface PlatformBindDao : BasicDao<PlatformBind> {
 

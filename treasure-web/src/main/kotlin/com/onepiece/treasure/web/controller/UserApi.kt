@@ -1,8 +1,8 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.web.controller.value.ChangePwdReq
-import com.onepiece.treasure.web.controller.value.LoginReq
-import com.onepiece.treasure.web.controller.value.LoginResp
+import com.onepiece.treasure.beans.value.internet.web.ChangePwdReq
+import com.onepiece.treasure.beans.value.internet.web.LoginReq
+import com.onepiece.treasure.beans.value.internet.web.LoginResp
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.RequestBody

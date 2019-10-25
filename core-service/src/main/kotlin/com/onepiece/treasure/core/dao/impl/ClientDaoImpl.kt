@@ -2,10 +2,10 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.ClientDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.core.dao.value.ClientCo
-import com.onepiece.treasure.core.dao.value.ClientUo
-import com.onepiece.treasure.core.model.Client
-import com.onepiece.treasure.core.model.enums.Status
+import com.onepiece.treasure.beans.value.database.ClientCo
+import com.onepiece.treasure.beans.value.database.ClientUo
+import com.onepiece.treasure.beans.model.Client
+import com.onepiece.treasure.beans.enums.Status
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 

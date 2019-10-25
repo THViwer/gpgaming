@@ -1,9 +1,9 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.core.model.enums.DepositState
-import com.onepiece.treasure.core.model.enums.WithdrawState
+import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.enums.WithdrawState
+import com.onepiece.treasure.beans.value.internet.web.*
 import com.onepiece.treasure.web.controller.basic.BasicController
-import com.onepiece.treasure.web.controller.value.*
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime

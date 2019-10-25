@@ -2,10 +2,10 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.WaiterDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.core.dao.value.WaiterCo
-import com.onepiece.treasure.core.dao.value.WaiterUo
-import com.onepiece.treasure.core.model.Waiter
-import com.onepiece.treasure.core.model.enums.Status
+import com.onepiece.treasure.beans.value.database.WaiterCo
+import com.onepiece.treasure.beans.value.database.WaiterUo
+import com.onepiece.treasure.beans.model.Waiter
+import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.utils.JdbcBuilder
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet

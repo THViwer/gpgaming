@@ -1,11 +1,12 @@
 package com.onepiece.treasure.core.dao
 
-import com.onepiece.treasure.core.dao.value.MemberCo
-import com.onepiece.treasure.core.dao.value.MemberQuery
-import com.onepiece.treasure.core.dao.value.MemberUo
-import com.onepiece.treasure.core.model.Member
+import com.onepiece.treasure.core.dao.basic.BasicDao
+import com.onepiece.treasure.beans.value.database.MemberCo
+import com.onepiece.treasure.beans.value.database.MemberQuery
+import com.onepiece.treasure.beans.value.database.MemberUo
+import com.onepiece.treasure.beans.model.Member
 
-interface MemberDao {
+interface MemberDao: BasicDao<Member> {
 
     fun create(memberCo: MemberCo): Boolean
 

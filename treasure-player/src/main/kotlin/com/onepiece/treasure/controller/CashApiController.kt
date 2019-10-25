@@ -1,6 +1,6 @@
 package com.onepiece.treasure.controller
 
-import com.onepiece.treasure.core.model.enums.DepositState
+import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
 import org.springframework.format.annotation.DateTimeFormat

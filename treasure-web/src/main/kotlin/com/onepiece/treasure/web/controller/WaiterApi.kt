@@ -1,10 +1,10 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.core.model.enums.Status
-import com.onepiece.treasure.web.controller.value.PermissionVo
-import com.onepiece.treasure.web.controller.value.WaiterCo
-import com.onepiece.treasure.web.controller.value.WaiterUo
-import com.onepiece.treasure.web.controller.value.WaiterVo
+import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.value.internet.web.PermissionVo
+import com.onepiece.treasure.beans.value.internet.web.WaiterCo
+import com.onepiece.treasure.beans.value.internet.web.WaiterUo
+import com.onepiece.treasure.beans.value.internet.web.WaiterVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus

@@ -1,7 +1,7 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.web.controller.value.PlatformUo
-import com.onepiece.treasure.web.controller.value.PlatformVo
+import com.onepiece.treasure.beans.value.internet.web.PlatformUo
+import com.onepiece.treasure.beans.value.internet.web.PlatformVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus

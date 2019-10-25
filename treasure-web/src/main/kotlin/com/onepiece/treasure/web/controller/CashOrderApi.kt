@@ -1,11 +1,11 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.core.model.enums.DepositState
-import com.onepiece.treasure.core.model.enums.WithdrawState
-import com.onepiece.treasure.web.controller.value.DepositUo
-import com.onepiece.treasure.web.controller.value.DepositVo
-import com.onepiece.treasure.web.controller.value.WithdrawUo
-import com.onepiece.treasure.web.controller.value.WithdrawVo
+import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.enums.WithdrawState
+import com.onepiece.treasure.beans.value.internet.web.DepositUo
+import com.onepiece.treasure.beans.value.internet.web.DepositVo
+import com.onepiece.treasure.beans.value.internet.web.WithdrawUo
+import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat

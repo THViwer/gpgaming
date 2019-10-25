@@ -2,11 +2,11 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.WithdrawDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.core.dao.value.WithdrawOrderCo
-import com.onepiece.treasure.core.dao.value.WithdrawOrderUo
-import com.onepiece.treasure.core.dao.value.WithdrawQuery
-import com.onepiece.treasure.core.model.Withdraw
-import com.onepiece.treasure.core.model.enums.WithdrawState
+import com.onepiece.treasure.beans.value.database.WithdrawOrderCo
+import com.onepiece.treasure.beans.value.database.WithdrawOrderUo
+import com.onepiece.treasure.beans.value.database.WithdrawQuery
+import com.onepiece.treasure.beans.model.Withdraw
+import com.onepiece.treasure.beans.enums.WithdrawState
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.util.*

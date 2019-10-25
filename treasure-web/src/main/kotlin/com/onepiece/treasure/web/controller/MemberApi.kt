@@ -1,9 +1,9 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.core.model.enums.Status
-import com.onepiece.treasure.web.controller.value.BalanceDetail
-import com.onepiece.treasure.web.controller.value.MemberPage
-import com.onepiece.treasure.web.controller.value.MemberUo
+import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.value.internet.web.BalanceDetail
+import com.onepiece.treasure.beans.value.internet.web.MemberPage
+import com.onepiece.treasure.beans.value.internet.web.MemberUo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus

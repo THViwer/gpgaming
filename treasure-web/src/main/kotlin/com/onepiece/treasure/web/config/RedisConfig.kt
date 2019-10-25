@@ -9,6 +9,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
+import com.onepiece.treasure.utils.EmptyRedisService
+import com.onepiece.treasure.utils.RedisService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -43,7 +45,7 @@ open class RedisConfig {
 
         val redisTemplate = RedisTemplate<String, String>()
         //参照StringRedisTemplate内部实现指定序列化器
-        redisTemplate.setConnectionFactory(factory)
+        redisTemplate.connectionFactory = factory
         redisTemplate.keySerializer = keySerializer()
         redisTemplate.hashKeySerializer = keySerializer()
         redisTemplate.valueSerializer = valueSerializer()
@@ -54,13 +56,19 @@ open class RedisConfig {
     }
 
     @Bean
+    open fun redisService(): RedisService {
+        return EmptyRedisService()
+    }
+
+
+    @Bean
     open fun tokenRedisTemplate(factory: LettuceConnectionFactory): RedisTemplate<String, Any> {
 
         //        factory.setDatabase(1);
 
         val redisTemplate = RedisTemplate<String, Any>()
         //参照StringRedisTemplate内部实现指定序列化器
-        redisTemplate.setConnectionFactory(factory)
+        redisTemplate.connectionFactory = factory
         redisTemplate.keySerializer = keySerializer()
         redisTemplate.hashKeySerializer = keySerializer()
         redisTemplate.valueSerializer = JdkSerializationRedisSerializer()

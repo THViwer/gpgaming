@@ -2,10 +2,8 @@ package com.onepiece.treasure.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.data.redis.core.RedisTemplate
-import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
 
-@Component
 class DefaultRedisService(
         private val redisTemplate: RedisTemplate<String, String>,
         private val objectMapper: ObjectMapper

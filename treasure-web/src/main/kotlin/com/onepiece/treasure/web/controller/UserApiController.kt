@@ -1,10 +1,10 @@
 package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.web.controller.basic.BasicController
-import com.onepiece.treasure.web.controller.value.ChangePwdReq
-import com.onepiece.treasure.web.controller.value.LoginReq
-import com.onepiece.treasure.web.controller.value.LoginResp
-import com.onepiece.treasure.web.controller.value.UserValueFactory
+import com.onepiece.treasure.beans.value.internet.web.ChangePwdReq
+import com.onepiece.treasure.beans.value.internet.web.LoginReq
+import com.onepiece.treasure.beans.value.internet.web.LoginResp
+import com.onepiece.treasure.beans.value.internet.web.UserValueFactory
 import org.springframework.web.bind.annotation.*
 
 @RestController

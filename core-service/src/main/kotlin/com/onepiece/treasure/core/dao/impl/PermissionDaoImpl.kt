@@ -3,10 +3,10 @@ package com.onepiece.treasure.core.dao.impl
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.core.dao.PermissionDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.core.dao.value.PermissionCo
-import com.onepiece.treasure.core.dao.value.PermissionUo
-import com.onepiece.treasure.core.model.Permission
-import com.onepiece.treasure.core.model.PermissionDetail
+import com.onepiece.treasure.beans.value.database.PermissionCo
+import com.onepiece.treasure.beans.value.database.PermissionUo
+import com.onepiece.treasure.beans.model.Permission
+import com.onepiece.treasure.beans.model.PermissionDetail
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 

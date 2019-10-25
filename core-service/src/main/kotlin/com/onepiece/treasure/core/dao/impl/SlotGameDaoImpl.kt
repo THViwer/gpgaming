@@ -2,11 +2,11 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.SlotGameDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.core.dao.value.SlotGameCo
-import com.onepiece.treasure.core.dao.value.SlotGameUo
-import com.onepiece.treasure.core.model.SlotGame
-import com.onepiece.treasure.core.model.enums.Platform
-import com.onepiece.treasure.core.model.enums.Status
+import com.onepiece.treasure.beans.value.database.SlotGameCo
+import com.onepiece.treasure.beans.value.database.SlotGameUo
+import com.onepiece.treasure.beans.model.SlotGame
+import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.Status
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 

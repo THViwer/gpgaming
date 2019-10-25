@@ -2,11 +2,11 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.MemberBankDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.core.dao.value.MemberBankCo
-import com.onepiece.treasure.core.dao.value.MemberBankUo
-import com.onepiece.treasure.core.model.MemberBank
-import com.onepiece.treasure.core.model.enums.Banks
-import com.onepiece.treasure.core.model.enums.Status
+import com.onepiece.treasure.beans.value.database.MemberBankCo
+import com.onepiece.treasure.beans.value.database.MemberBankUo
+import com.onepiece.treasure.beans.model.MemberBank
+import com.onepiece.treasure.beans.enums.Banks
+import com.onepiece.treasure.beans.enums.Status
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 

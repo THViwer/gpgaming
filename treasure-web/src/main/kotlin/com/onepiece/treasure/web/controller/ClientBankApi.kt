@@ -1,8 +1,8 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.web.controller.value.ClientBankCo
-import com.onepiece.treasure.web.controller.value.ClientBankUo
-import com.onepiece.treasure.web.controller.value.ClientBankVo
+import com.onepiece.treasure.beans.value.internet.web.ClientBankCo
+import com.onepiece.treasure.beans.value.internet.web.ClientBankUo
+import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus

@@ -15,6 +15,7 @@
 		<module>core-service</module>
 		<module>treasure-web</module>
 		<module>treasure-player</module>
-	</modules>
+        <module>core-beans</module>
+    </modules>
 
 </project>

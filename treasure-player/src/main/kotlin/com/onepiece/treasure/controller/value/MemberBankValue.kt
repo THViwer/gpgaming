@@ -1,7 +1,7 @@
 package com.onepiece.treasure.controller.value
 
-import com.onepiece.treasure.core.model.enums.Banks
-import com.onepiece.treasure.core.model.enums.Status
+import com.onepiece.treasure.beans.enums.Banks
+import com.onepiece.treasure.beans.enums.Status
 import java.time.LocalDateTime
 
 object MemberBankValueFactory {

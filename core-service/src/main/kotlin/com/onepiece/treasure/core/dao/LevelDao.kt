@@ -1,9 +1,9 @@
 package com.onepiece.treasure.core.dao
 
 import com.onepiece.treasure.core.dao.basic.BasicDao
-import com.onepiece.treasure.core.dao.value.LevelCo
-import com.onepiece.treasure.core.dao.value.LevelUo
-import com.onepiece.treasure.core.model.Level
+import com.onepiece.treasure.beans.value.database.LevelCo
+import com.onepiece.treasure.beans.value.database.LevelUo
+import com.onepiece.treasure.beans.model.Level
 
 interface LevelDao: BasicDao<Level> {
 

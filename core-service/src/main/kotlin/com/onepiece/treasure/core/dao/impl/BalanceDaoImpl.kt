@@ -2,10 +2,9 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.BalanceDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.core.dao.value.BalanceCo
-import com.onepiece.treasure.core.dao.value.BalanceUo
-import com.onepiece.treasure.core.model.Balance
-import com.onepiece.treasure.utils.JdbcBuilder
+import com.onepiece.treasure.beans.value.database.BalanceCo
+import com.onepiece.treasure.beans.value.database.BalanceUo
+import com.onepiece.treasure.beans.model.Balance
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 import java.sql.ResultSet

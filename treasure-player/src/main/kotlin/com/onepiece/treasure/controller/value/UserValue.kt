@@ -1,6 +1,6 @@
 package com.onepiece.treasure.controller.value
 
-import com.onepiece.treasure.core.model.enums.Role
+import com.onepiece.treasure.beans.enums.Role
 import io.swagger.annotations.ApiModelProperty
 import java.util.*
 

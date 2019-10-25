@@ -1,9 +1,9 @@
 package com.onepiece.treasure.core.dao
 
 import com.onepiece.treasure.core.dao.basic.BasicDao
-import com.onepiece.treasure.core.dao.value.PermissionCo
-import com.onepiece.treasure.core.dao.value.PermissionUo
-import com.onepiece.treasure.core.model.Permission
+import com.onepiece.treasure.beans.value.database.PermissionCo
+import com.onepiece.treasure.beans.value.database.PermissionUo
+import com.onepiece.treasure.beans.model.Permission
 
 interface PermissionDao: BasicDao<Permission> {
 

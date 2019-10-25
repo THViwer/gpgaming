@@ -2,10 +2,10 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.WalletNoteDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.core.dao.value.WalletNoteCo
-import com.onepiece.treasure.core.dao.value.WalletNoteQuery
-import com.onepiece.treasure.core.model.WalletNote
-import com.onepiece.treasure.core.model.enums.WalletEvent
+import com.onepiece.treasure.beans.value.database.WalletNoteCo
+import com.onepiece.treasure.beans.value.database.WalletNoteQuery
+import com.onepiece.treasure.beans.model.WalletNote
+import com.onepiece.treasure.beans.enums.WalletEvent
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 

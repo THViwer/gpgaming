@@ -1,8 +1,10 @@
 package com.onepiece.treasure.core.dao
 
 import com.onepiece.treasure.core.dao.basic.BasicDao
-import com.onepiece.treasure.core.dao.value.*
-import com.onepiece.treasure.core.model.Withdraw
+import com.onepiece.treasure.beans.model.Withdraw
+import com.onepiece.treasure.beans.value.database.WithdrawOrderCo
+import com.onepiece.treasure.beans.value.database.WithdrawOrderUo
+import com.onepiece.treasure.beans.value.database.WithdrawQuery
 
 interface WithdrawDao: BasicDao<Withdraw> {
 

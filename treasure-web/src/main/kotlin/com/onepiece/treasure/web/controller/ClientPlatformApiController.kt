@@ -1,9 +1,9 @@
 package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.web.controller.basic.BasicController
-import com.onepiece.treasure.web.controller.value.PlatformUo
-import com.onepiece.treasure.web.controller.value.PlatformValueFactory
-import com.onepiece.treasure.web.controller.value.PlatformVo
+import com.onepiece.treasure.beans.value.internet.web.PlatformUo
+import com.onepiece.treasure.beans.value.internet.web.PlatformValueFactory
+import com.onepiece.treasure.beans.value.internet.web.PlatformVo
 import org.springframework.web.bind.annotation.*
 
 @RestController

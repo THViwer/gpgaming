@@ -2,10 +2,12 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.DepositDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.core.dao.value.*
-import com.onepiece.treasure.core.model.Deposit
-import com.onepiece.treasure.core.model.enums.Banks
-import com.onepiece.treasure.core.model.enums.DepositState
+import com.onepiece.treasure.beans.model.Deposit
+import com.onepiece.treasure.beans.enums.Banks
+import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.value.database.DepositCo
+import com.onepiece.treasure.beans.value.database.DepositQuery
+import com.onepiece.treasure.beans.value.database.DepositUo
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.util.*

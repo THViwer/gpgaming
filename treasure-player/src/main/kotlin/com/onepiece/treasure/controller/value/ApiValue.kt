@@ -1,8 +1,8 @@
 package com.onepiece.treasure.controller.value
 
-import com.onepiece.treasure.core.model.enums.GameCategory
-import com.onepiece.treasure.core.model.enums.PlatformCategory
-import com.onepiece.treasure.core.model.enums.Status
+import com.onepiece.treasure.beans.enums.GameCategory
+import com.onepiece.treasure.beans.enums.PlatformCategory
+import com.onepiece.treasure.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 
 object ApiValueFactory {

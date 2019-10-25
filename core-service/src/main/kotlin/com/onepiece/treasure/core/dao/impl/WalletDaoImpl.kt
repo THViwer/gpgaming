@@ -2,9 +2,9 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.core.dao.WalletDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.core.dao.value.WalletCo
-import com.onepiece.treasure.core.dao.value.WalletUo
-import com.onepiece.treasure.core.model.Wallet
+import com.onepiece.treasure.beans.value.database.WalletCo
+import com.onepiece.treasure.beans.value.database.WalletUo
+import com.onepiece.treasure.beans.model.Wallet
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 import java.sql.ResultSet

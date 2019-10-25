@@ -63,6 +63,13 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- inner service -->
+        <dependency>
+            <groupId>com.onepiece</groupId>
+            <artifactId>core-beans</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 

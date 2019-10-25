@@ -1,10 +1,10 @@
 package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.web.controller.basic.BasicController
-import com.onepiece.treasure.web.controller.value.DomainValueFactory
-import com.onepiece.treasure.web.controller.value.WebSiteCo
-import com.onepiece.treasure.web.controller.value.WebSiteUo
-import com.onepiece.treasure.web.controller.value.WebSiteVo
+import com.onepiece.treasure.beans.value.internet.web.DomainValueFactory
+import com.onepiece.treasure.beans.value.internet.web.WebSiteCo
+import com.onepiece.treasure.beans.value.internet.web.WebSiteUo
+import com.onepiece.treasure.beans.value.internet.web.WebSiteVo
 import org.springframework.web.bind.annotation.*
 
 @RestController
