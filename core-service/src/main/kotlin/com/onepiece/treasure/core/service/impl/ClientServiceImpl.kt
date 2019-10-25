@@ -17,8 +17,7 @@ import java.time.LocalDateTime
 @Service
 class ClientServiceImpl(
         private val clientDao: ClientDao,
-        private val levelService: LevelService,
-        private val redisService: RedisService
+        private val levelService: LevelService
 ) : ClientService {
 
     override fun login(loginValue: LoginValue): Client {
