@@ -3,11 +3,9 @@ package com.onepiece.treasure.core.service.impl
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Client
-import com.onepiece.treasure.beans.value.database.ClientCo
-import com.onepiece.treasure.beans.value.database.ClientUo
-import com.onepiece.treasure.beans.value.database.LevelCo
-import com.onepiece.treasure.beans.value.database.LoginValue
+import com.onepiece.treasure.beans.value.database.*
 import com.onepiece.treasure.core.dao.ClientDao
+import com.onepiece.treasure.core.service.BalanceService
 import com.onepiece.treasure.core.service.ClientService
 import com.onepiece.treasure.core.service.LevelService
 import org.springframework.stereotype.Service
@@ -17,7 +15,8 @@ import java.time.LocalDateTime
 @Service
 class ClientServiceImpl(
         private val clientDao: ClientDao,
-        private val levelService: LevelService
+        private val levelService: LevelService,
+        private val balanceService: BalanceService
 ) : ClientService {
 
     override fun login(loginValue: LoginValue): Client {
@@ -47,6 +46,10 @@ class ClientServiceImpl(
         // create default level
         val levelCo = LevelCo(clientId = id, name = "default")
         levelService.create(levelCo)
+
+        // create own balance
+        val balanceCo = BalanceCo(clientId = id)
+        balanceService.create(balanceCo)
 
     }
 
