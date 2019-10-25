@@ -24,6 +24,11 @@ class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao
                     createdTime = createdTime)
         }
 
+    override fun findClientBank(clientId: Int): List<ClientBank> {
+        return query().where("client_id", clientId)
+                .execute(mapper)
+    }
+
     override fun create(clientBankCo: ClientBankCo): Boolean {
         return insert().set("client_id", clientBankCo.clientId)
                 .set("bank_card_number", clientBankCo.bankCardNumber)

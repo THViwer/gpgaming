@@ -7,6 +7,8 @@ import com.onepiece.treasure.beans.model.ClientBank
 
 interface ClientBankDao : BasicDao<ClientBank> {
 
+    fun findClientBank(clientId: Int): List<ClientBank>
+
     fun create(clientBankCo: ClientBankCo): Boolean
 
     fun update(clientBankUo: ClientBankUo): Boolean

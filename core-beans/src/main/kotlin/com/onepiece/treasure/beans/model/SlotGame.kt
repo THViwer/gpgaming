@@ -1,5 +1,6 @@
 package com.onepiece.treasure.beans.model
 
+import com.onepiece.treasure.beans.enums.GameCategory
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import java.time.LocalDateTime
@@ -11,6 +12,15 @@ data class SlotGame(
 
         // 平台
         val platform: Platform,
+
+        // 游戏分类
+        val category: GameCategory,
+
+        // 是否热门
+        val hot: Boolean,
+
+        // 是否新游戏
+        val new: Boolean,
 
         // 游戏Id
         val gameId: String,
