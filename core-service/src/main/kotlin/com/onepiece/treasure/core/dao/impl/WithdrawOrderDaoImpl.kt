@@ -14,8 +14,8 @@ import java.util.*
 @Repository
 class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw_order"), WithdrawDao {
 
-    override fun mapper(): (rs: ResultSet) -> Withdraw {
-        return { rs ->
+    override val mapper: (rs: ResultSet) -> Withdraw
+        get() = { rs ->
             val id = rs.getInt("id")
             val orderId = rs.getString("order_id")
             val processId = rs.getString("process_id")
@@ -31,7 +31,6 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw_order"), WithdrawD
                     memberBankId = memberBankId, money = money, state = state, remarks = remarks, createdTime = createdTime,
                     endTime = endTime)
         }
-    }
 
     override fun query(query: WithdrawQuery): List<Withdraw> {
         return query().where("client_id", query.clientId)
@@ -40,7 +39,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw_order"), WithdrawD
                 .where("order_id", query.orderId)
                 .where("member_id", query.memberId)
                 .where("state", query.state)
-                .execute(mapper())
+                .execute(mapper)
 
     }
 

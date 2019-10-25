@@ -1,20 +1,23 @@
 package com.onepiece.treasure.core.service.impl
 
 import com.onepiece.treasure.beans.base.Page
+import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Member
-import com.onepiece.treasure.beans.value.database.MemberCo
-import com.onepiece.treasure.beans.value.database.MemberQuery
-import com.onepiece.treasure.beans.value.database.MemberUo
+import com.onepiece.treasure.beans.value.database.*
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.dao.MemberDao
 import com.onepiece.treasure.core.service.MemberService
+import com.onepiece.treasure.core.service.WalletService
 import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class MemberServiceImpl(
         private val memberDao: MemberDao,
+        private val walletService: WalletService,
         private val redisService: RedisService
 ) : MemberService {
 
@@ -33,16 +36,35 @@ class MemberServiceImpl(
         return Page.of(total = total, data = data)
     }
 
-    override fun login(username: String, password: String): Member {
-        val member  = memberDao.getByUsername(username)
+    override fun login(loginValue: LoginValue): Member {
+
+        // check username and password
+        val member  = memberDao.getByUsername(loginValue.username)
         checkNotNull(member) { OnePieceExceptionCode.LOGIN_FAIL}
-        check(password == member.password) { OnePieceExceptionCode.LOGIN_FAIL }
+        check(loginValue.password == member.password) { OnePieceExceptionCode.LOGIN_FAIL }
+        check(member.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
+
+        // update user for loginIp and loginTime
+        val memberUo = MemberUo(id = member.id, loginIp = loginValue.ip, loginTime = LocalDateTime.now())
+        this.update(memberUo)
+
         return member.copy(password = "")
     }
 
+    @Transactional(rollbackFor = [Exception::class])
     override fun create(memberCo: MemberCo) {
-        val state = memberDao.create(memberCo)
-        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        // check username exist
+        val hasMember = memberDao.getByUsername(memberCo.username)
+        check(hasMember == null) { OnePieceExceptionCode.USERNAME_EXISTENCE }
+
+        // create member
+        val id = memberDao.create(memberCo)
+        check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        // create wallet
+        val walletCo = WalletCo(clientId = memberCo.clientId, memberId = id)
+        walletService.create(walletCo)
     }
 
     override fun update(memberUo: MemberUo) {

@@ -35,7 +35,7 @@ class MemberApiController(
         val data = page.data.map {
             with(it) {
                 MemberVo(id = id, username = it.username, levelId = it.levelId, level = "", name = "name", balance = BigDecimal.ZERO, status = it.status,
-                        createdTime = createdTime, loginTime = loginTime)
+                        createdTime = createdTime, loginIp = loginIp, loginTime = loginTime)
             }
         }
 

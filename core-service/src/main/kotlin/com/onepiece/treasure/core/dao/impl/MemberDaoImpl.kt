@@ -1,20 +1,20 @@
 package com.onepiece.treasure.core.dao.impl
 
-import com.onepiece.treasure.core.dao.MemberDao
-import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
+import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.model.Member
 import com.onepiece.treasure.beans.value.database.MemberCo
 import com.onepiece.treasure.beans.value.database.MemberQuery
 import com.onepiece.treasure.beans.value.database.MemberUo
-import com.onepiece.treasure.beans.model.Member
-import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.core.dao.MemberDao
+import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
 @Repository
 class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
 
-    override fun mapper(): (rs: ResultSet) -> Member {
-        return { rs ->
+    override val mapper: (rs: ResultSet) -> Member
+        get() = { rs ->
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val username = rs.getString("username")
@@ -28,15 +28,14 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime)
         }
-    }
 
-    override fun create(memberCo: MemberCo): Boolean {
+    override fun create(memberCo: MemberCo): Int {
         return insert()
                 .set("client_id", memberCo.clientId)
                 .set("username", memberCo.username)
                 .set("password", memberCo.password)
                 .set("level_id", memberCo.levelId)
-                .execute() == 1
+                .executeGeneratedKey()
     }
 
     override fun update(memberUo: MemberUo): Boolean {
@@ -44,6 +43,8 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("password", memberUo.password)
                 .set("status", memberUo.status)
                 .set("level_id", memberUo.levelId)
+                .set("login_ip", memberUo.loginIp)
+                .set("login_time", memberUo.loginTime)
                 .asWhere("id", memberUo.id)
                 .execute() == 1
 
@@ -51,7 +52,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
 
     override fun getByUsername(username: String): Member? {
         return query().where("username", username)
-                .executeMaybeOne(mapper())
+                .executeMaybeOne(mapper)
     }
 
     override fun total(query: MemberQuery): Int {
@@ -74,7 +75,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
                 .limit(current, size)
-                .execute(mapper())
+                .execute(mapper)
     }
 
     override fun list(query: MemberQuery): List<Member> {
@@ -85,7 +86,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .where("level_id", query.levelId)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
-                .execute(mapper())
+                .execute(mapper)
     }
 
 }

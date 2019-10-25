@@ -12,9 +12,8 @@ import java.sql.ResultSet
 @Repository
 class LevelDaoImpl: BasicDaoImpl<Level>("level"), LevelDao {
 
-    override fun mapper(): (rs: ResultSet) -> Level {
-
-        return { rs ->
+    override val mapper: (rs: ResultSet) -> Level
+        get() = { rs ->
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val name = rs.getString("name")
@@ -22,8 +21,6 @@ class LevelDaoImpl: BasicDaoImpl<Level>("level"), LevelDao {
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             Level(id = id, clientId = clientId, name = name, status = status, createdTime = createdTime)
         }
-
-    }
 
     override fun create(levelCo: LevelCo): Boolean {
         return insert()

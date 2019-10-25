@@ -11,7 +11,7 @@ object MemberValueFactory {
 
         val now = LocalDateTime.now()
         val m1 = MemberVo(id = 1, username = "zhangsan", levelId = 1, level = "默认", name = "张三", balance = BigDecimal.valueOf(100),
-                status = Status.Normal, createdTime = now, loginTime = now)
+                status = Status.Normal, createdTime = now, loginTime = now, loginIp = "198.234.1.23")
         val m2 = m1.copy(id = 2, username = "lisi", levelId = 2, level = "vip", name = "李四", balance = BigDecimal.ZERO)
 
         val data = listOf(m1, m2)
@@ -74,8 +74,11 @@ data class MemberVo(
         @ApiModelProperty("创建时间")
         val createdTime: LocalDateTime,
 
+        @ApiModelProperty("登陆Ip")
+        val loginIp: String?,
+
         @ApiModelProperty("登陆时间")
-        val loginTime: LocalDateTime
+        val loginTime: LocalDateTime?
 
 )
 

@@ -1,21 +1,21 @@
 package com.onepiece.treasure.core.dao.impl
 
-import com.onepiece.treasure.core.dao.MemberBankDao
-import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.beans.value.database.MemberBankCo
-import com.onepiece.treasure.beans.value.database.MemberBankUo
-import com.onepiece.treasure.beans.model.MemberBank
 import com.onepiece.treasure.beans.enums.Banks
 import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.model.MemberBank
+import com.onepiece.treasure.beans.value.database.MemberBankCo
 import com.onepiece.treasure.beans.value.database.MemberBankQuery
+import com.onepiece.treasure.beans.value.database.MemberBankUo
+import com.onepiece.treasure.core.dao.MemberBankDao
+import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
 @Repository
 class MemberBankDaoImpl : BasicDaoImpl<MemberBank>("member_bank"), MemberBankDao {
 
-    override fun mapper(): (rs: ResultSet) -> MemberBank {
-        return { rs ->
+    override val mapper: (rs: ResultSet) -> MemberBank
+        get() = { rs ->
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
@@ -27,7 +27,6 @@ class MemberBankDaoImpl : BasicDaoImpl<MemberBank>("member_bank"), MemberBankDao
             MemberBank(id = id, clientId = clientId, memberId = memberId, bank = bank, name = name, bankCardNumber = bankCardNumber,
                     status = status, createdTime = createdTime)
         }
-    }
 
     override fun query(memberBankQuery: MemberBankQuery): List<MemberBank> {
         return query()
@@ -35,7 +34,7 @@ class MemberBankDaoImpl : BasicDaoImpl<MemberBank>("member_bank"), MemberBankDao
                 .where("member_id", memberBankQuery.memberId)
                 .where("name", memberBankQuery.name)
                 .where("bank_card_number", memberBankQuery.bankCardNumber)
-                .execute(mapper())
+                .execute(mapper)
     }
 
     override fun create(memberBankCo: MemberBankCo): Boolean {

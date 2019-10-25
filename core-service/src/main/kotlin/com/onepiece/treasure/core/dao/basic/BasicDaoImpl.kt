@@ -15,19 +15,19 @@ abstract class BasicDaoImpl<T>(
     @Autowired
     lateinit var jdbcTemplate: JdbcTemplate
 
-    abstract fun mapper(): (rs: ResultSet) -> T
+    abstract val mapper: (rs: ResultSet) -> T
 
 
     override fun get(id: Int): T {
-        return query().where("id", id).executeOnlyOne(mapper())
+        return query().where("id", id).executeOnlyOne(mapper)
     }
 
     override fun all(clientId: Int): List<T> {
-        return query().where("client_id", clientId).execute(mapper())
+        return query().where("client_id", clientId).execute(mapper)
     }
 
     override fun all(): List<T> {
-        return query().execute(mapper())
+        return query().execute(mapper)
     }
 
     fun insert(): Insert {

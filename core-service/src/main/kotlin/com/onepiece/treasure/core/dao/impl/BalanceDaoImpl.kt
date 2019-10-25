@@ -12,8 +12,8 @@ import java.sql.ResultSet
 @Repository
 class BalanceDaoImpl : BasicDaoImpl<Balance>("balance"), BalanceDao {
 
-    override fun mapper(): (rs: ResultSet) -> Balance {
-        return { rs ->
+    override val mapper: (rs: ResultSet) -> Balance
+        get() = {rs ->
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val balance = rs.getBigDecimal("balance")
@@ -22,7 +22,11 @@ class BalanceDaoImpl : BasicDaoImpl<Balance>("balance"), BalanceDao {
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             Balance(id = id, clientId = clientId, balance = balance, totalBalance = totalBalance, giftBalance = giftBalance,
                     createdTime = createdTime)
+
         }
+
+    override fun getClientBalance(clientId: Int): Balance {
+        return query().where("client_id", clientId).executeOnlyOne(mapper)
     }
 
     override fun create(balanceCo: BalanceCo): Boolean {

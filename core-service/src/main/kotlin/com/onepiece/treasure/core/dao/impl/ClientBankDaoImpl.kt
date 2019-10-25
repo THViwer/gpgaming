@@ -11,9 +11,9 @@ import java.sql.ResultSet
 
 @Repository
 class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao {
-
-    override fun mapper(): (rs: ResultSet) -> ClientBank {
-        return { rs ->
+    
+    override val mapper: (rs: ResultSet) -> ClientBank
+        get() = { rs ->
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val bankCardNumber = rs.getString("bank_card_number")
@@ -23,7 +23,6 @@ class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao
             ClientBank(id = id, clientId = clientId, bankCardNumber = bankCardNumber, cardName = cardName, status = status,
                     createdTime = createdTime)
         }
-    }
 
     override fun create(clientBankCo: ClientBankCo): Boolean {
         return insert().set("client_id", clientBankCo.clientId)

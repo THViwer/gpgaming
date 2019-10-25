@@ -37,16 +37,22 @@ data class MemberUo(
         val id: Int,
 
         // 旧密码
-        val oldPassword: String?,
+        val oldPassword: String? = null,
 
         // 密码
-        val password: String?,
+        val password: String? = null,
 
         // 等级Id
-        val levelId: Int?,
+        val levelId: Int? = null,
 
         // 状态
-        val status: Status?
+        val status: Status? = null,
+
+        // 登陆Ip
+        val loginIp: String? = null,
+
+        // 登陆时间
+        val loginTime: LocalDateTime? = null
 )
 
 

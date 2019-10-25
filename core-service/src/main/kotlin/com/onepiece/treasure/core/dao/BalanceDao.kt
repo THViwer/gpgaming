@@ -7,6 +7,8 @@ import com.onepiece.treasure.beans.model.Balance
 
 interface BalanceDao: BasicDao<Balance> {
 
+    fun getClientBalance(clientId: Int): Balance
+
     fun create(balanceCo: BalanceCo): Boolean
 
     fun update(balanceUo: BalanceUo): Boolean

@@ -1,5 +1,6 @@
 package com.onepiece.treasure.core.service.impl
 
+import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Client
 import com.onepiece.treasure.beans.value.database.ClientCo
@@ -23,6 +24,7 @@ class ClientServiceImpl(
         val client = clientDao.findByUsername(loginValue.username)
         checkNotNull(client) { OnePieceExceptionCode.LOGIN_FAIL }
         check(loginValue.password == client.password) { OnePieceExceptionCode.LOGIN_FAIL }
+        check(client.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
 
         // update client
         val clientUo = ClientUo(id = client.id, ip = loginValue.ip, loginTime = LocalDateTime.now())

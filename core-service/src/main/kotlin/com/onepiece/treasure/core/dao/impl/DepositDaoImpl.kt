@@ -1,13 +1,13 @@
 package com.onepiece.treasure.core.dao.impl
 
-import com.onepiece.treasure.core.dao.DepositDao
-import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.beans.model.Deposit
 import com.onepiece.treasure.beans.enums.Banks
 import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.model.Deposit
 import com.onepiece.treasure.beans.value.database.DepositCo
 import com.onepiece.treasure.beans.value.database.DepositQuery
 import com.onepiece.treasure.beans.value.database.DepositUo
+import com.onepiece.treasure.core.dao.DepositDao
+import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.util.*
@@ -15,8 +15,8 @@ import java.util.*
 @Repository
 class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
 
-    override fun mapper(): (rs: ResultSet) -> Deposit {
-        return { rs ->
+    override val mapper: (rs: ResultSet) -> Deposit
+        get() = { rs ->
             val id = rs.getInt("id")
             val orderId = rs.getString("order_id")
             val processId = rs.getString("process_id")
@@ -34,7 +34,6 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                     imgPath = imgPath, state = state, remarks = remarks, createdTime = createdTime, endTime = endTime,
                     bankCardNumber = bankCardNumber, processId = processId)
         }
-    }
 
     override fun query(query: DepositQuery): List<Deposit> {
         return query().where("client_id", query.clientId)
@@ -43,7 +42,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                 .where("member_id", query.memberId)
                 .where("order_id", query.orderId)
                 .where("state", query.state)
-                .execute(mapper())
+                .execute(mapper)
     }
 
     override fun create(depositCo: DepositCo): Boolean {

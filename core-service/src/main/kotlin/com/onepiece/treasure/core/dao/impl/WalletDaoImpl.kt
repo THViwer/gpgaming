@@ -1,10 +1,10 @@
 package com.onepiece.treasure.core.dao.impl
 
-import com.onepiece.treasure.core.dao.WalletDao
-import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
+import com.onepiece.treasure.beans.model.Wallet
 import com.onepiece.treasure.beans.value.database.WalletCo
 import com.onepiece.treasure.beans.value.database.WalletUo
-import com.onepiece.treasure.beans.model.Wallet
+import com.onepiece.treasure.core.dao.WalletDao
+import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 import java.sql.ResultSet
@@ -12,8 +12,8 @@ import java.sql.ResultSet
 @Repository
 class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
 
-    override fun mapper(): (rs: ResultSet) -> Wallet {
-        return { rs ->
+    override val mapper: (rs: ResultSet) -> Wallet
+        get() = { rs ->
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
@@ -25,11 +25,10 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
             Wallet(id = id, clientId = clientId, memberId = memberId, balance = balance, totalBalance = totalBalance, totalFrequency = totalFrequency,
                     giftBalance = giftBalance, createdTime = createdTime)
         }
-    }
 
     override fun getMemberWallet(memberId: Int): Wallet {
         return query().where("member_id", memberId)
-                .executeOnlyOne(mapper())
+                .executeOnlyOne(mapper)
     }
 
     override fun create(walletCo: WalletCo): Boolean {

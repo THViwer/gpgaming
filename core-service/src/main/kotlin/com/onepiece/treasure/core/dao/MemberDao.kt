@@ -8,7 +8,7 @@ import com.onepiece.treasure.beans.model.Member
 
 interface MemberDao: BasicDao<Member> {
 
-    fun create(memberCo: MemberCo): Boolean
+    fun create(memberCo: MemberCo): Int
 
     fun update(memberUo: MemberUo): Boolean
 

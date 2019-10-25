@@ -12,8 +12,8 @@ import java.sql.ResultSet
 @Repository
 class WebSiteDaoImpl : BasicDaoImpl<WebSite>("web_site"), WebSiteDao {
 
-    override fun mapper(): (rs: ResultSet) -> WebSite {
-        return { rs ->
+    override val mapper: (rs: ResultSet) -> WebSite
+        get() = { rs ->
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val domain = rs.getString("domain")
@@ -21,7 +21,6 @@ class WebSiteDaoImpl : BasicDaoImpl<WebSite>("web_site"), WebSiteDao {
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             WebSite(id = id, clientId = clientId, domain = domain, status = status, createdTime = createdTime)
         }
-    }
 
     override fun create(webSiteCo: WebSiteCo): Boolean {
         return insert().set("client_id", webSiteCo.clientId)
