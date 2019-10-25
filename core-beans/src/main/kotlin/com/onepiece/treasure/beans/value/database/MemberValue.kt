@@ -36,6 +36,9 @@ data class MemberUo(
 
         val id: Int,
 
+        // 旧密码
+        val oldPassword: String?,
+
         // 密码
         val password: String?,
 

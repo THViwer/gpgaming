@@ -12,6 +12,8 @@ interface MemberService {
 
     fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member>
 
+    fun login(username: String, password: String): Member
+
     fun create(memberCo: MemberCo)
 
     fun update(memberUo: MemberUo)

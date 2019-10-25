@@ -12,6 +12,8 @@ interface MemberDao: BasicDao<Member> {
 
     fun update(memberUo: MemberUo): Boolean
 
+    fun getByUsername(username: String): Member?
+
     fun total(query: MemberQuery): Int
 
     fun query(query: MemberQuery, current: Int, size: Int): List<Member>

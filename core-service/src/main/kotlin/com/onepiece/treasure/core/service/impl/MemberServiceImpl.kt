@@ -29,18 +29,31 @@ class MemberServiceImpl(
         val total = memberDao.total(query = memberQuery)
         if (total == 0) return Page.empty()
 
-        val data = memberDao.query(memberQuery, 0, 10)
+        val data = memberDao.query(memberQuery, 0, 10).map { it.copy(password = "") }
         return Page.of(total = total, data = data)
     }
 
-    override fun create(memberCo: MemberCo) {
+    override fun login(username: String, password: String): Member {
+        val member  = memberDao.getByUsername(username)
+        checkNotNull(member) { OnePieceExceptionCode.LOGIN_FAIL}
+        check(password == member.password) { OnePieceExceptionCode.LOGIN_FAIL }
+        return member.copy(password = "")
+    }
 
+    override fun create(memberCo: MemberCo) {
         val state = memberDao.create(memberCo)
         check(state) { OnePieceExceptionCode.DB_CHANGE }
     }
 
     override fun update(memberUo: MemberUo) {
+        val member = this.findById(memberUo.id)
+        if (memberUo.oldPassword != null) {
+            check(memberUo.oldPassword == member.password) { OnePieceExceptionCode.PASSWORD_FAIL }
+        }
+
         val state = memberDao.update(memberUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE }
+
+        redisService.delete(OnePieceRedisKeyConstant.member(memberUo.id))
     }
 }
