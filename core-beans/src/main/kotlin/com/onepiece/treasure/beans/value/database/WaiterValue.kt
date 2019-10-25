@@ -1,6 +1,7 @@
 package com.onepiece.treasure.beans.value.database
 
 import com.onepiece.treasure.beans.enums.Status
+import java.time.LocalDateTime
 
 data class WaiterCo(
         // 厅主Id
@@ -21,12 +22,20 @@ data class WaiterUo(
 
         val id: Int,
 
+        val oldPassword: String? = null,
+
         // 密码
-        val password: String,
+        val password: String? = null,
 
         // 名称 昵称
-        val name: String,
+        val name: String? = null,
 
         // 状态
-        val status: Status
+        val status: Status? = null,
+
+        // 登陆Ip
+        val loginIp: String? = null,
+
+        // 登陆时间
+        val loginTime: LocalDateTime? = null
 )

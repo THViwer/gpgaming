@@ -28,6 +28,10 @@ class PermissionDaoImpl(
             Permission(id = id, waiterId = waiterId, permissions = permissions, createdTime = createdTime)
         }
 
+    override fun findWaiterPermissions(waiterId: Int): Permission {
+        return query().where("waiter_id", waiterId)
+                .executeOnlyOne(mapper)
+    }
 
     override fun create(permissionCo: PermissionCo): Boolean {
         return insert().set("waiter_id", permissionCo.waiterId)

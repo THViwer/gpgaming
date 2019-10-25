@@ -1,12 +1,12 @@
 package com.onepiece.treasure.core.dao.impl
 
+import com.onepiece.treasure.beans.enums.WithdrawState
+import com.onepiece.treasure.beans.model.Withdraw
+import com.onepiece.treasure.beans.value.database.WithdrawCo
+import com.onepiece.treasure.beans.value.database.WithdrawQuery
+import com.onepiece.treasure.beans.value.database.WithdrawUo
 import com.onepiece.treasure.core.dao.WithdrawDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
-import com.onepiece.treasure.beans.value.database.WithdrawOrderCo
-import com.onepiece.treasure.beans.value.database.WithdrawOrderUo
-import com.onepiece.treasure.beans.value.database.WithdrawQuery
-import com.onepiece.treasure.beans.model.Withdraw
-import com.onepiece.treasure.beans.enums.WithdrawState
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.util.*
@@ -43,7 +43,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw_order"), WithdrawD
 
     }
 
-    override fun create(orderCo: WithdrawOrderCo): Boolean {
+    override fun create(orderCo: WithdrawCo): Boolean {
         return insert().set("order_id", orderCo.orderId)
                 .set("process_id", UUID.randomUUID().toString())
                 .set("client_id", orderCo.clientId)
@@ -55,7 +55,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw_order"), WithdrawD
                 .executeOnlyOne()
     }
 
-    override fun update(orderUo: WithdrawOrderUo): Boolean {
+    override fun update(orderUo: WithdrawUo): Boolean {
         val sql = "update withdraw_order set state = ? and remarks = ?, process_id = ? where order_id = ? and process_id = ?"
         return jdbcTemplate.update(sql, orderUo.state.name, orderUo.remarks, UUID.randomUUID().toString(), orderUo.orderId, orderUo.processId) == 1
     }

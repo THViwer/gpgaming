@@ -7,6 +7,8 @@ import com.onepiece.treasure.beans.model.Waiter
 
 interface WaiterDao : BasicDao<Waiter> {
 
+    fun findByUsername(username: String): Waiter?
+
     fun create(waiterCo: WaiterCo): Boolean
 
     fun update(waiterUo: WaiterUo): Boolean

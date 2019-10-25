@@ -7,6 +7,8 @@ import com.onepiece.treasure.beans.model.Permission
 
 interface PermissionDao: BasicDao<Permission> {
 
+    fun findWaiterPermissions(waiterId: Int): Permission
+
     fun create(permissionCo: PermissionCo): Boolean
 
     fun update(permissionUo: PermissionUo): Boolean

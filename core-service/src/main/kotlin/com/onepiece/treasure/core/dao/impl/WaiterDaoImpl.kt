@@ -28,6 +28,10 @@ class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
                     createdTime = createdTime, loginIp = loginIp, loginTime = loginTime)
         }
 
+    override fun findByUsername(username: String): Waiter? {
+        return query().where("username", username).executeMaybeOne(mapper)
+    }
+
     override fun create(waiterCo: WaiterCo): Boolean {
         return insert()
                 .set("client_id", waiterCo.clientId)
@@ -43,6 +47,8 @@ class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
                 .set("password", waiterUo.password)
                 .set("name", waiterUo.name)
                 .set("status", waiterUo.status)
+                .set("login_ip", waiterUo.loginIp)
+                .set("login_time", waiterUo.loginTime)
                 .where("id", waiterUo.id)
                 .executeOnlyOne()
     }

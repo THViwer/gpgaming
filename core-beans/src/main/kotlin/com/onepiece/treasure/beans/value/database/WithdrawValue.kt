@@ -20,7 +20,7 @@ data class WithdrawQuery(
         val state: WithdrawState?
 )
 
-data class WithdrawOrderCo(
+data class WithdrawCo(
 
         // id
         val orderId: String,
@@ -43,7 +43,7 @@ data class WithdrawOrderCo(
 )
 
 
-data class WithdrawOrderUo(
+data class WithdrawUo(
 
         // id
         val orderId: String,
