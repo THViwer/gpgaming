@@ -7,7 +7,9 @@ import com.onepiece.treasure.beans.model.Client
 
 interface ClientDao : BasicDao<Client> {
 
-    fun create(clientCo: ClientCo): Boolean
+    fun findByUsername(username: String): Client?
+
+    fun create(clientCo: ClientCo): Int
 
     fun update(clientUo: ClientUo): Boolean
 

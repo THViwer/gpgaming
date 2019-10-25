@@ -27,6 +27,11 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
         }
     }
 
+    override fun getMemberWallet(memberId: Int): Wallet {
+        return query().where("member_id", memberId)
+                .executeOnlyOne(mapper())
+    }
+
     override fun create(walletCo: WalletCo): Boolean {
         return insert().set("client_id", walletCo.clientId)
                 .set("member_id", walletCo.memberId)

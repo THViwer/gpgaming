@@ -22,10 +22,11 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val levelId = rs.getInt("level_id")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            val loginTime = rs.getTimestamp("login_time").toLocalDateTime()
+            val loginIp = rs.getString("login_ip")
+            val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
 
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
-                    status = status, createdTime = createdTime, loginTime = loginTime)
+                    status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime)
         }
     }
 

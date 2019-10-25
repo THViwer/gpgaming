@@ -20,12 +20,17 @@ data class Client(
         // 用户密码
         val password: String,
 
+        // 厅主状态
+        val status: Status,
+
+
         // 创建时间
         val createdTime: LocalDateTime,
 
-        // 登陆时间
-        val loginTime: LocalDateTime,
+        // 当前登陆Ip
+        val loginIp: String?,
 
-        // 厅主状态
-        val status: Status
+        // 登陆时间
+        val loginTime: LocalDateTime?
+
 )

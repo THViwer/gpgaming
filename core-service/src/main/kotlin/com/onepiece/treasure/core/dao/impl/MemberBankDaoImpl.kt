@@ -7,6 +7,7 @@ import com.onepiece.treasure.beans.value.database.MemberBankUo
 import com.onepiece.treasure.beans.model.MemberBank
 import com.onepiece.treasure.beans.enums.Banks
 import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.value.database.MemberBankQuery
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
@@ -26,6 +27,15 @@ class MemberBankDaoImpl : BasicDaoImpl<MemberBank>("member_bank"), MemberBankDao
             MemberBank(id = id, clientId = clientId, memberId = memberId, bank = bank, name = name, bankCardNumber = bankCardNumber,
                     status = status, createdTime = createdTime)
         }
+    }
+
+    override fun query(memberBankQuery: MemberBankQuery): List<MemberBank> {
+        return query()
+                .where("client_id", memberBankQuery.clientId)
+                .where("member_id", memberBankQuery.memberId)
+                .where("name", memberBankQuery.name)
+                .where("bank_card_number", memberBankQuery.bankCardNumber)
+                .execute(mapper())
     }
 
     override fun create(memberBankCo: MemberBankCo): Boolean {

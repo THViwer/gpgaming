@@ -3,6 +3,16 @@ package com.onepiece.treasure.beans.value.database
 import com.onepiece.treasure.beans.enums.Banks
 import com.onepiece.treasure.beans.enums.Status
 
+data class MemberBankQuery(
+        val clientId: Int,
+
+        val memberId: Int?,
+
+        val name: String?,
+
+        val bankCardNumber: String?
+)
+
 data class MemberBankCo(
 
         // 厅主名称

@@ -1,6 +1,7 @@
 package com.onepiece.treasure.utils
 
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import java.sql.ResultSet
 
 
@@ -48,6 +49,19 @@ class Insert(
     fun execute(): Int {
         val sql = this.build()
         return jdbcTemplate.update(sql, *param.toTypedArray())
+    }
+
+    fun executeGeneratedKey(): Int {
+        val sql = this.build()
+
+        val map = (0..columns.size).mapIndexed { index, _ ->
+            columns[index] to param[index]
+        }.toMap()
+
+        return SimpleJdbcInsert(jdbcTemplate)
+                .usingColumns("id")
+                .executeAndReturnKey(map)
+                .toInt()
     }
 
     fun executeOnlyOne(): Boolean {

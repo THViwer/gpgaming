@@ -29,6 +29,9 @@ data class Waiter (
         // 创建时间
         val createdTime: LocalDateTime,
 
+        // 登陆ip
+        val loginIp: String?,
+
         // 登陆时间
-        val loginTime: LocalDateTime
+        val loginTime: LocalDateTime?
 )

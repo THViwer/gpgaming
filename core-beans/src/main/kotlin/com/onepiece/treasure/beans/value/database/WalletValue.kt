@@ -1,5 +1,6 @@
 package com.onepiece.treasure.beans.value.database
 
+import com.onepiece.treasure.beans.enums.WalletEvent
 import java.math.BigDecimal
 
 data class WalletCo(
@@ -19,5 +20,9 @@ data class WalletUo(
 
         val addTotalMoney: BigDecimal,
 
-        val giftMoney: BigDecimal
+        val giftMoney: BigDecimal,
+
+        val event: WalletEvent,
+
+        val remarks: String
 )

@@ -11,7 +11,7 @@ object OnePieceExceptionCode {
     // system error
     const val SYSTEM = "1000"
 
-    const val DB_CHANGE = "1001"
+    const val DB_CHANGE_FAIL = "1001"
 
     // 2000 verification error
 
@@ -20,6 +20,7 @@ object OnePieceExceptionCode {
     // 4000 account error
     const val LOGIN_FAIL = "4001" // 用户名或密码错误
     const val PASSWORD_FAIL = "4002" // 密码错误
+    const val USERNAME_EXISTENCE = "4003" // 用户名已存在
 
     // 5000 cash error
 

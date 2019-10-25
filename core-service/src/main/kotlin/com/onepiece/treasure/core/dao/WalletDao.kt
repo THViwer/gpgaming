@@ -7,6 +7,8 @@ import com.onepiece.treasure.beans.model.Wallet
 
 interface WalletDao: BasicDao<Wallet> {
 
+    fun getMemberWallet(memberId: Int): Wallet
+
     fun create(walletCo: WalletCo): Boolean
 
     fun update(walletUo: WalletUo): Boolean

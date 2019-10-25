@@ -22,15 +22,16 @@ class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
             val name = rs.getString("name")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            val loginTime = rs.getTimestamp("login_time").toLocalDateTime()
+            val loginIp = rs.getString("login_ip")
+            val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
 
             Waiter(id = id, clientId = clientId, username = username, password = password, name = name, status = status,
-                    createdTime = createdTime, loginTime = loginTime)
+                    createdTime = createdTime, loginIp = loginIp, loginTime = loginTime)
         }
     }
 
     override fun create(waiterCo: WaiterCo): Boolean {
-        return JdbcBuilder.insert(jdbcTemplate, "waiter")
+        return insert()
                 .set("client_id", waiterCo.clientId)
                 .set("username", waiterCo.username)
                 .set("password", waiterCo.password)
@@ -40,7 +41,7 @@ class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
     }
 
     override fun update(waiterUo: WaiterUo): Boolean {
-        return JdbcBuilder.update(jdbcTemplate, "waiter")
+        return update()
                 .set("password", waiterUo.password)
                 .set("name", waiterUo.name)
                 .set("status", waiterUo.status)

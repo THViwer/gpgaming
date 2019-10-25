@@ -18,25 +18,33 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
             val brand = rs.getString("brand")
             val username = rs.getString("username")
             val password = rs.getString("password")
-            val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            val loginTime = rs.getTimestamp("login_time").toLocalDateTime()
             val status = rs.getString("status").let { Status.valueOf(it) }
+            val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val loginIp = rs.getString("login_ip")
+            val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
             Client(id = id, brand = brand, username = username, password = password, createdTime = createdTime, loginTime = loginTime,
-                    status = status)
+                    status = status, loginIp = loginIp)
         }
     }
 
-    override fun create(clientCo: ClientCo): Boolean {
+    override fun findByUsername(username: String): Client? {
+        return query().where("username", username)
+                .executeMaybeOne(mapper())
+    }
+
+    override fun create(clientCo: ClientCo): Int {
         return insert().set("brand", clientCo.brand)
                 .set("username", clientCo.username)
                 .set("password", clientCo.password)
                 .set("status", Status.Normal)
-                .executeOnlyOne()
+                .executeGeneratedKey()
     }
 
     override fun update(clientUo: ClientUo): Boolean {
         return update().set("password", clientUo.password)
                 .set("status", clientUo.status)
+                .set("ip", clientUo.ip)
+                .set("login_time", clientUo.loginTime)
                 .where("id", clientUo.id)
                 .executeOnlyOne()
 

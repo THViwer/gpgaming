@@ -42,7 +42,7 @@ class MemberServiceImpl(
 
     override fun create(memberCo: MemberCo) {
         val state = memberDao.create(memberCo)
-        check(state) { OnePieceExceptionCode.DB_CHANGE }
+        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 
     override fun update(memberUo: MemberUo) {
@@ -52,7 +52,7 @@ class MemberServiceImpl(
         }
 
         val state = memberDao.update(memberUo)
-        check(state) { OnePieceExceptionCode.DB_CHANGE }
+        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         redisService.delete(OnePieceRedisKeyConstant.member(memberUo.id))
     }

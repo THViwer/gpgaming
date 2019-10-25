@@ -6,7 +6,7 @@ class EmptyRedisService : RedisService {
     }
 
     override fun <T> getList(key: String, clz: Class<T>, timeout: Int?, function: () -> List<T>): List<T> {
-        return emptyList()
+        return function()
     }
 
     override fun increase(key: String, timeout: Int?): Long {

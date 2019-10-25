@@ -23,10 +23,18 @@ data class ClientUo(
         // 用户Id
         val id: Int,
 
+        // 旧密码
+        val oldPassword: String? = null,
+
         // 用户密码
-        val password: String,
+        val password: String? = null,
 
         // 厅主状态
-        val status: Status
+        val status: Status? = null,
 
+        // 请求Ip
+        val ip: String? = null,
+
+        // 登陆时间
+        val loginTime: LocalDateTime?
 )
