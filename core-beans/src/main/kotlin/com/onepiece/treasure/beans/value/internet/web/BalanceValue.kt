@@ -41,23 +41,8 @@ data class WalletVo(
         @ApiModelProperty("冻结金额")
         val freezeBalance: BigDecimal,
 
-        @ApiModelProperty("赠送金额")
-        val giftBalance: BigDecimal,
-
-        @ApiModelProperty("当前投注金额")
-        val currentBet: BigDecimal,
-
-        @ApiModelProperty("需要投注")
-        val demandBet: BigDecimal,
-
-        @ApiModelProperty("总打码量")
-        val totalBet: BigDecimal,
-
         @ApiModelProperty("总充值金额")
         val totalBalance: BigDecimal,
-
-        @ApiModelProperty("总存款次数")
-        val totalFrequency: Int,
 
         @ApiModelProperty("总优惠金额")
         val totalGiftBalance: BigDecimal

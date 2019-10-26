@@ -8,7 +8,7 @@ import com.onepiece.treasure.core.service.WebSiteService
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/domain")
+@RequestMapping("/webSite")
 class WebSiteApiController(
         private val webSiteService: WebSiteService
 ): BasicController(), WebSiteApi {

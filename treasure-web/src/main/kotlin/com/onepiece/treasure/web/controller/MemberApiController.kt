@@ -5,7 +5,10 @@ import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.database.MemberQuery
 import com.onepiece.treasure.beans.value.database.MemberUo
-import com.onepiece.treasure.beans.value.internet.web.*
+import com.onepiece.treasure.beans.value.internet.web.MemberPage
+import com.onepiece.treasure.beans.value.internet.web.MemberUoReq
+import com.onepiece.treasure.beans.value.internet.web.MemberVo
+import com.onepiece.treasure.beans.value.internet.web.WalletVo
 import com.onepiece.treasure.core.service.MemberService
 import com.onepiece.treasure.core.service.WalletService
 import com.onepiece.treasure.web.controller.basic.BasicController
@@ -70,8 +73,7 @@ class MemberApiController(
 
         val walletVo = with(wallet) {
             WalletVo(id = wallet.id, memberId = wallet.memberId, platform = platform, balance = balance, freezeBalance = freezeBalance,
-                    currentBet = currentBet, demandBet = demandBet, totalGiftBalance = totalGiftBalance, totalBet = totalBet,
-                    totalFrequency = totalFrequency, totalBalance = totalBalance, giftBalance = giftBalance)
+                    totalGiftBalance = totalGiftBalance, totalBalance = totalBalance)
         }
 
         return when (platform) {
