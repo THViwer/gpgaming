@@ -50,9 +50,6 @@ data class ClientBankCoReq(
         @ApiModelProperty("层级Id")
         val levelId: Int?,
 
-        @ApiModelProperty("银行Id")
-        val bankId: Int,
-
         @ApiModelProperty("银行信息")
         val bank: Bank,
 

@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @Api(tags = ["setting"], description = " ")
 interface ClientBankApi {
 
-    @ApiOperation(tags = ["setting"], value = "bank -> all")
+    @ApiOperation(tags = ["setting"], value = "bank")
     fun all(): List<ClientBankVo>
 
-    @ApiOperation(tags = ["setting"], value = "clientBank -> create")
+    @ApiOperation(tags = ["setting"], value = "clientBank")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun create(@RequestBody clientBankCoReq: ClientBankCoReq)
 
-    @ApiOperation(tags = ["setting"], value = "clientBank -> update")
+    @ApiOperation(tags = ["setting"], value = "clientBank")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun update(@RequestBody clientBankUoReq: ClientBankUoReq)
 

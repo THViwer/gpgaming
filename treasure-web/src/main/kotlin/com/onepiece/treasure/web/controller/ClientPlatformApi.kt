@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @Api(tags = ["setting"], description = " ")
 interface ClientPlatformApi {
 
-    @ApiOperation(tags = ["setting"], value = "platform -> all")
+    @ApiOperation(tags = ["setting"], value = "")
     fun all(): List<PlatformVo>
 
-    @ApiOperation(tags = ["setting"], value = "platform -> update")
+    @ApiOperation(tags = ["setting"], value = "")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun update(@RequestBody platformUoReq: PlatformUoReq)
 

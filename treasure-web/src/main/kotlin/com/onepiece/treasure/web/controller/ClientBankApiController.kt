@@ -28,7 +28,7 @@ class ClientBankApiController(
     @PostMapping
     override fun create(@RequestBody clientBankCoReq: ClientBankCoReq) {
         val clientBankCo = ClientBankCo(clientId = clientId, bank = clientBankCoReq.bank, bankCardNumber = clientBankCoReq.bankCardNumber,
-                name = clientBankCoReq.name, levelId = clientBankCoReq.bankId)
+                name = clientBankCoReq.name, levelId = clientBankCoReq.levelId)
         clientBankService.create(clientBankCo)
 
     }

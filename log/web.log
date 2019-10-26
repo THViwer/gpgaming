@@ -130,3 +130,519 @@
  at [Source: (PushbackInputStream); line: 3, column: 1] (through reference chain: com.onepiece.treasure.beans.value.internet.web.WebSiteUoReq["status"])]
 [2m2019-10-26 21:48:22.772[0;39m [33m WARN[0;39m [35m8097[0;39m [2m---[0;39m [2m[nio-8001-exec-9][0;39m [36m.w.s.m.s.DefaultHandlerExceptionResolver[0;39m [2m:[0;39m Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Instantiation of [simple type, class com.onepiece.treasure.beans.value.internet.web.WebSiteUoReq] value failed for JSON property status due to missing (therefore NULL) value for creator parameter status which is a non-nullable type; nested exception is com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException: Instantiation of [simple type, class com.onepiece.treasure.beans.value.internet.web.WebSiteUoReq] value failed for JSON property status due to missing (therefore NULL) value for creator parameter status which is a non-nullable type
  at [Source: (PushbackInputStream); line: 3, column: 1] (through reference chain: com.onepiece.treasure.beans.value.internet.web.WebSiteUoReq["status"])]
+[2m2019-10-26 21:53:08.526[0;39m [32m INFO[0;39m [35m8097[0;39m [2m---[0;39m [2m[       Thread-3][0;39m [36mo.s.s.concurrent.ThreadPoolTaskExecutor [0;39m [2m:[0;39m Shutting down ExecutorService 'applicationTaskExecutor'
+[2m2019-10-26 21:53:08.565[0;39m [32m INFO[0;39m [35m8097[0;39m [2m---[0;39m [2m[       Thread-3][0;39m [36mcom.alibaba.druid.pool.DruidDataSource  [0;39m [2m:[0;39m {dataSource-1} closed
+[2m2019-10-26 21:53:14.611[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mc.o.treasure.web.WebApplicationKt       [0;39m [2m:[0;39m Starting WebApplicationKt on cabbage-mac.local with PID 8205 (/Users/cabbage/workspace/onepiece/treasure/treasure-web/target/classes started by cabbage in /Users/cabbage/workspace/onepiece/treasure)
+[2m2019-10-26 21:53:14.623[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mc.o.treasure.web.WebApplicationKt       [0;39m [2m:[0;39m The following profiles are active: dev
+[2m2019-10-26 21:53:16.248[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.s.d.r.c.RepositoryConfigurationDelegate[0;39m [2m:[0;39m Multiple Spring Data modules found, entering strict repository configuration mode!
+[2m2019-10-26 21:53:16.252[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.s.d.r.c.RepositoryConfigurationDelegate[0;39m [2m:[0;39m Bootstrapping Spring Data repositories in DEFAULT mode.
+[2m2019-10-26 21:53:16.291[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.s.d.r.c.RepositoryConfigurationDelegate[0;39m [2m:[0;39m Finished Spring Data repository scanning in 25ms. Found 0 repository interfaces.
+[2m2019-10-26 21:53:16.736[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration' of type [org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration$$EnhancerBySpringCGLIB$$8648cfb6] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 21:53:16.747[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$ed9b077c] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 21:53:16.770[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'objectPostProcessor' of type [org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 21:53:16.772[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@53016b11' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 21:53:16.776[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration' of type [org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration$$EnhancerBySpringCGLIB$$ab1d7268] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 21:53:16.780[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 21:53:16.789[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.hateoas.config.HateoasConfiguration' of type [org.springframework.hateoas.config.HateoasConfiguration$$EnhancerBySpringCGLIB$$6d1b54ae] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 21:53:17.281[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.b.w.embedded.tomcat.TomcatWebServer [0;39m [2m:[0;39m Tomcat initialized with port(s): 8001 (http)
+[2m2019-10-26 21:53:17.313[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.apache.catalina.core.StandardService  [0;39m [2m:[0;39m Starting service [Tomcat]
+[2m2019-10-26 21:53:17.313[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36morg.apache.catalina.core.StandardEngine [0;39m [2m:[0;39m Starting Servlet engine: [Apache Tomcat/9.0.26]
+[2m2019-10-26 21:53:17.444[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.a.c.c.C.[.[localhost].[/api/v1/web]   [0;39m [2m:[0;39m Initializing Spring embedded WebApplicationContext
+[2m2019-10-26 21:53:17.445[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.web.context.ContextLoader           [0;39m [2m:[0;39m Root WebApplicationContext: initialization completed in 2699 ms
+[2m2019-10-26 21:53:18.644[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mc.a.d.s.b.a.DruidDataSourceAutoConfigure[0;39m [2m:[0;39m Init DruidDataSource
+[2m2019-10-26 21:53:18.880[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mcom.alibaba.druid.pool.DruidDataSource  [0;39m [2m:[0;39m {dataSource-1} inited
+[2m2019-10-26 21:53:20.296[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mpertySourcedRequestMappingHandlerMapping[0;39m [2m:[0;39m Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+[2m2019-10-26 21:53:20.721[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.s.web.DefaultSecurityFilterChain    [0;39m [2m:[0;39m Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@17e8c38c, org.springframework.security.web.context.SecurityContextPersistenceFilter@77e5c765, org.springframework.security.web.header.HeaderWriterFilter@51aaa9d4, org.springframework.security.web.authentication.logout.LogoutFilter@768d27e8, com.onepiece.treasure.web.jwt.JwtAuthenticationTokenFilter@356f20b7, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5daa621b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6773bab2, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5c4516ec, org.springframework.security.web.session.SessionManagementFilter@29d33f1, org.springframework.security.web.access.ExceptionTranslationFilter@3095d06b, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@2d5d001f]
+[2m2019-10-26 21:53:20.990[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.s.concurrent.ThreadPoolTaskExecutor [0;39m [2m:[0;39m Initializing ExecutorService 'applicationTaskExecutor'
+[2m2019-10-26 21:53:21.557[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36md.s.w.p.DocumentationPluginsBootstrapper[0;39m [2m:[0;39m Context refreshed
+[2m2019-10-26 21:53:21.580[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36md.s.w.p.DocumentationPluginsBootstrapper[0;39m [2m:[0;39m Found 1 custom documentation plugin(s)
+[2m2019-10-26 21:53:21.706[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36ms.d.s.w.s.ApiListingReferenceScanner    [0;39m [2m:[0;39m Scanning for api listing references
+[2m2019-10-26 21:53:21.934[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: allUsingGET_1
+[2m2019-10-26 21:53:21.941[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: updateUsingPUT_1
+[2m2019-10-26 21:53:21.951[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: allUsingGET_2
+[2m2019-10-26 21:53:21.962[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: createUsingPOST_1
+[2m2019-10-26 21:53:21.979[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: updateUsingPUT_2
+[2m2019-10-26 21:53:22.061[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: createUsingPOST_2
+[2m2019-10-26 21:53:22.076[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: queryUsingGET_1
+[2m2019-10-26 21:53:22.083[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: updateUsingPUT_3
+[2m2019-10-26 21:53:22.093[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: allUsingGET_3
+[2m2019-10-26 21:53:22.098[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: createUsingPOST_3
+[2m2019-10-26 21:53:22.104[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: updateUsingPUT_4
+[2m2019-10-26 21:53:22.180[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.b.w.embedded.tomcat.TomcatWebServer [0;39m [2m:[0;39m Tomcat started on port(s): 8001 (http) with context path '/api/v1/web'
+[2m2019-10-26 21:53:22.187[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[           main][0;39m [36mc.o.treasure.web.WebApplicationKt       [0;39m [2m:[0;39m Started WebApplicationKt in 8.536 seconds (JVM running for 9.21)
+[2m2019-10-26 21:53:27.462[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[nio-8001-exec-2][0;39m [36mo.a.c.c.C.[.[localhost].[/api/v1/web]   [0;39m [2m:[0;39m Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2m2019-10-26 21:53:27.462[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[nio-8001-exec-2][0;39m [36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Initializing Servlet 'dispatcherServlet'
+[2m2019-10-26 21:53:27.504[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[nio-8001-exec-2][0;39m [36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Completed initialization in 41 ms
+[2m2019-10-26 21:53:31.945[0;39m [31mERROR[0;39m [35m8205[0;39m [2m---[0;39m [2m[nio-8001-exec-2][0;39m [36mo.a.c.c.C.[.[.[.[dispatcherServlet]     [0;39m [2m:[0;39m Servlet.service() for servlet [dispatcherServlet] in context with path [/api/v1/web] threw exception [Request processing failed; nested exception is org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad SQL grammar [insert into `client_bank` (client_id,bank,bank_card_number,name,level_id,status) values (?,?,?,?,?,?)]; nested exception is java.sql.SQLSyntaxErrorException: Unknown column 'bank_card_number' in 'field list'] with root cause
+
+java.sql.SQLSyntaxErrorException: Unknown column 'bank_card_number' in 'field list'
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:953)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1092)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1040)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1340)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1025)
+	at com.alibaba.druid.filter.FilterChainImpl.preparedStatement_executeUpdate(FilterChainImpl.java:3201)
+	at com.alibaba.druid.filter.FilterAdapter.preparedStatement_executeUpdate(FilterAdapter.java:1091)
+	at com.alibaba.druid.filter.FilterEventAdapter.preparedStatement_executeUpdate(FilterEventAdapter.java:491)
+	at com.alibaba.druid.filter.FilterChainImpl.preparedStatement_executeUpdate(FilterChainImpl.java:3199)
+	at com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl.executeUpdate(PreparedStatementProxyImpl.java:194)
+	at com.alibaba.druid.pool.DruidPooledPreparedStatement.executeUpdate(DruidPooledPreparedStatement.java:256)
+	at org.springframework.jdbc.core.JdbcTemplate.lambda$update$0(JdbcTemplate.java:867)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:617)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:862)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:917)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:927)
+	at com.onepiece.treasure.utils.Insert.execute(JdbcBuilder.kt:51)
+	at com.onepiece.treasure.utils.Insert.executeOnlyOne(JdbcBuilder.kt:68)
+	at com.onepiece.treasure.core.dao.impl.ClientBankDaoImpl.create(ClientBankDaoImpl.kt:42)
+	at com.onepiece.treasure.core.dao.impl.ClientBankDaoImpl$$FastClassBySpringCGLIB$$d408abc2.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:750)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:139)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:689)
+	at com.onepiece.treasure.core.dao.impl.ClientBankDaoImpl$$EnhancerBySpringCGLIB$$6c3ce4a6.create(<generated>)
+	at com.onepiece.treasure.core.service.impl.ClientBankServiceImpl.create(ClientBankServiceImpl.kt:32)
+	at com.onepiece.treasure.web.controller.ClientBankApiController.create(ClientBankApiController.kt:32)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:105)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:893)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:798)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1040)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:943)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:660)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:113)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:123)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:320)
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.invoke(FilterSecurityInterceptor.java:127)
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.doFilter(FilterSecurityInterceptor.java:91)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:137)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:111)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:170)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at com.onepiece.treasure.web.jwt.JwtAuthenticationTokenFilter.doFilterInternal(JwtAuthenticationTokenFilter.kt:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:74)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:105)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:56)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:215)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:178)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:358)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:271)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:94)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:526)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:860)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1589)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:748)
+
+[2m2019-10-26 21:54:30.395[0;39m [31mERROR[0;39m [35m8205[0;39m [2m---[0;39m [2m[nio-8001-exec-4][0;39m [36mo.a.c.c.C.[.[.[.[dispatcherServlet]     [0;39m [2m:[0;39m Servlet.service() for servlet [dispatcherServlet] in context with path [/api/v1/web] threw exception [Request processing failed; nested exception is org.springframework.dao.DataIntegrityViolationException: PreparedStatementCallback; SQL [insert into `client_bank` (client_id,bank,bank_card_number,name,level_id,status) values (?,?,?,?,?,?)]; Field 'id' doesn't have a default value; nested exception is java.sql.SQLException: Field 'id' doesn't have a default value] with root cause
+
+java.sql.SQLException: Field 'id' doesn't have a default value
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:129)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:953)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1092)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1040)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1340)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1025)
+	at com.alibaba.druid.filter.FilterChainImpl.preparedStatement_executeUpdate(FilterChainImpl.java:3201)
+	at com.alibaba.druid.filter.FilterAdapter.preparedStatement_executeUpdate(FilterAdapter.java:1091)
+	at com.alibaba.druid.filter.FilterEventAdapter.preparedStatement_executeUpdate(FilterEventAdapter.java:491)
+	at com.alibaba.druid.filter.FilterChainImpl.preparedStatement_executeUpdate(FilterChainImpl.java:3199)
+	at com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl.executeUpdate(PreparedStatementProxyImpl.java:194)
+	at com.alibaba.druid.pool.DruidPooledPreparedStatement.executeUpdate(DruidPooledPreparedStatement.java:256)
+	at org.springframework.jdbc.core.JdbcTemplate.lambda$update$0(JdbcTemplate.java:867)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:617)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:862)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:917)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:927)
+	at com.onepiece.treasure.utils.Insert.execute(JdbcBuilder.kt:51)
+	at com.onepiece.treasure.utils.Insert.executeOnlyOne(JdbcBuilder.kt:68)
+	at com.onepiece.treasure.core.dao.impl.ClientBankDaoImpl.create(ClientBankDaoImpl.kt:42)
+	at com.onepiece.treasure.core.dao.impl.ClientBankDaoImpl$$FastClassBySpringCGLIB$$d408abc2.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:750)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:139)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:689)
+	at com.onepiece.treasure.core.dao.impl.ClientBankDaoImpl$$EnhancerBySpringCGLIB$$6c3ce4a6.create(<generated>)
+	at com.onepiece.treasure.core.service.impl.ClientBankServiceImpl.create(ClientBankServiceImpl.kt:32)
+	at com.onepiece.treasure.web.controller.ClientBankApiController.create(ClientBankApiController.kt:32)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:105)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:893)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:798)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1040)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:943)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:660)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:113)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:123)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:320)
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.invoke(FilterSecurityInterceptor.java:127)
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.doFilter(FilterSecurityInterceptor.java:91)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:137)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:111)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:170)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at com.onepiece.treasure.web.jwt.JwtAuthenticationTokenFilter.doFilterInternal(JwtAuthenticationTokenFilter.kt:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:74)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:105)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:56)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:215)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:178)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:358)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:271)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:94)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:526)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:860)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1589)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:748)
+
+[2m2019-10-26 21:54:36.007[0;39m [31mERROR[0;39m [35m8205[0;39m [2m---[0;39m [2m[nio-8001-exec-6][0;39m [36mo.a.c.c.C.[.[.[.[dispatcherServlet]     [0;39m [2m:[0;39m Servlet.service() for servlet [dispatcherServlet] in context with path [/api/v1/web] threw exception [Request processing failed; nested exception is org.springframework.dao.DataIntegrityViolationException: PreparedStatementCallback; SQL [insert into `client_bank` (client_id,bank,bank_card_number,name,level_id,status) values (?,?,?,?,?,?)]; Field 'id' doesn't have a default value; nested exception is java.sql.SQLException: Field 'id' doesn't have a default value] with root cause
+
+java.sql.SQLException: Field 'id' doesn't have a default value
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:129)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:953)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1092)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdateInternal(ClientPreparedStatement.java:1040)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeLargeUpdate(ClientPreparedStatement.java:1340)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeUpdate(ClientPreparedStatement.java:1025)
+	at com.alibaba.druid.filter.FilterChainImpl.preparedStatement_executeUpdate(FilterChainImpl.java:3201)
+	at com.alibaba.druid.filter.FilterAdapter.preparedStatement_executeUpdate(FilterAdapter.java:1091)
+	at com.alibaba.druid.filter.FilterEventAdapter.preparedStatement_executeUpdate(FilterEventAdapter.java:491)
+	at com.alibaba.druid.filter.FilterChainImpl.preparedStatement_executeUpdate(FilterChainImpl.java:3199)
+	at com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl.executeUpdate(PreparedStatementProxyImpl.java:194)
+	at com.alibaba.druid.pool.DruidPooledPreparedStatement.executeUpdate(DruidPooledPreparedStatement.java:256)
+	at org.springframework.jdbc.core.JdbcTemplate.lambda$update$0(JdbcTemplate.java:867)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:617)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:862)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:917)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:927)
+	at com.onepiece.treasure.utils.Insert.execute(JdbcBuilder.kt:51)
+	at com.onepiece.treasure.utils.Insert.executeOnlyOne(JdbcBuilder.kt:68)
+	at com.onepiece.treasure.core.dao.impl.ClientBankDaoImpl.create(ClientBankDaoImpl.kt:42)
+	at com.onepiece.treasure.core.dao.impl.ClientBankDaoImpl$$FastClassBySpringCGLIB$$d408abc2.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:218)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:750)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:139)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:689)
+	at com.onepiece.treasure.core.dao.impl.ClientBankDaoImpl$$EnhancerBySpringCGLIB$$6c3ce4a6.create(<generated>)
+	at com.onepiece.treasure.core.service.impl.ClientBankServiceImpl.create(ClientBankServiceImpl.kt:32)
+	at com.onepiece.treasure.web.controller.ClientBankApiController.create(ClientBankApiController.kt:32)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:105)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:893)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:798)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1040)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:943)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:660)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:113)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at com.alibaba.druid.support.http.WebStatFilter.doFilter(WebStatFilter.java:123)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:320)
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.invoke(FilterSecurityInterceptor.java:127)
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.doFilter(FilterSecurityInterceptor.java:91)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:137)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:111)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:170)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at com.onepiece.treasure.web.jwt.JwtAuthenticationTokenFilter.doFilterInternal(JwtAuthenticationTokenFilter.kt:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:74)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:105)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:56)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:215)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:178)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:358)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:271)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:94)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:526)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:408)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:860)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1589)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.lang.Thread.run(Thread.java:748)
+
+[2m2019-10-26 22:04:18.210[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[       Thread-3][0;39m [36mo.s.s.concurrent.ThreadPoolTaskExecutor [0;39m [2m:[0;39m Shutting down ExecutorService 'applicationTaskExecutor'
+[2m2019-10-26 22:04:18.222[0;39m [32m INFO[0;39m [35m8205[0;39m [2m---[0;39m [2m[       Thread-3][0;39m [36mcom.alibaba.druid.pool.DruidDataSource  [0;39m [2m:[0;39m {dataSource-1} closed
+[2m2019-10-26 22:04:22.635[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mc.o.treasure.web.WebApplicationKt       [0;39m [2m:[0;39m Starting WebApplicationKt on cabbage-mac.local with PID 8226 (/Users/cabbage/workspace/onepiece/treasure/treasure-web/target/classes started by cabbage in /Users/cabbage/workspace/onepiece/treasure)
+[2m2019-10-26 22:04:22.645[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mc.o.treasure.web.WebApplicationKt       [0;39m [2m:[0;39m The following profiles are active: dev
+[2m2019-10-26 22:04:24.210[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.s.d.r.c.RepositoryConfigurationDelegate[0;39m [2m:[0;39m Multiple Spring Data modules found, entering strict repository configuration mode!
+[2m2019-10-26 22:04:24.213[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.s.d.r.c.RepositoryConfigurationDelegate[0;39m [2m:[0;39m Bootstrapping Spring Data repositories in DEFAULT mode.
+[2m2019-10-26 22:04:24.251[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.s.d.r.c.RepositoryConfigurationDelegate[0;39m [2m:[0;39m Finished Spring Data repository scanning in 25ms. Found 0 repository interfaces.
+[2m2019-10-26 22:04:24.832[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration' of type [org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration$$EnhancerBySpringCGLIB$$d912714c] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:04:24.846[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$4064a912] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:04:24.876[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'objectPostProcessor' of type [org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:04:24.878[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@6cdbe5ec' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:04:24.883[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration' of type [org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration$$EnhancerBySpringCGLIB$$fde713fe] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:04:24.887[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:04:24.900[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.hateoas.config.HateoasConfiguration' of type [org.springframework.hateoas.config.HateoasConfiguration$$EnhancerBySpringCGLIB$$bfe4f644] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:04:25.526[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.b.w.embedded.tomcat.TomcatWebServer [0;39m [2m:[0;39m Tomcat initialized with port(s): 8001 (http)
+[2m2019-10-26 22:04:25.563[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.apache.catalina.core.StandardService  [0;39m [2m:[0;39m Starting service [Tomcat]
+[2m2019-10-26 22:04:25.563[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36morg.apache.catalina.core.StandardEngine [0;39m [2m:[0;39m Starting Servlet engine: [Apache Tomcat/9.0.26]
+[2m2019-10-26 22:04:25.698[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.a.c.c.C.[.[localhost].[/api/v1/web]   [0;39m [2m:[0;39m Initializing Spring embedded WebApplicationContext
+[2m2019-10-26 22:04:25.698[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.web.context.ContextLoader           [0;39m [2m:[0;39m Root WebApplicationContext: initialization completed in 2945 ms
+[2m2019-10-26 22:04:27.202[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mc.a.d.s.b.a.DruidDataSourceAutoConfigure[0;39m [2m:[0;39m Init DruidDataSource
+[2m2019-10-26 22:04:27.509[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mcom.alibaba.druid.pool.DruidDataSource  [0;39m [2m:[0;39m {dataSource-1} inited
+[2m2019-10-26 22:04:29.159[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mpertySourcedRequestMappingHandlerMapping[0;39m [2m:[0;39m Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+[2m2019-10-26 22:04:29.653[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.s.web.DefaultSecurityFilterChain    [0;39m [2m:[0;39m Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@44428583, org.springframework.security.web.context.SecurityContextPersistenceFilter@755009f2, org.springframework.security.web.header.HeaderWriterFilter@7ffe8a82, org.springframework.security.web.authentication.logout.LogoutFilter@6127ef86, com.onepiece.treasure.web.jwt.JwtAuthenticationTokenFilter@48d31d25, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1756a471, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@52fe87e0, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@265c0752, org.springframework.security.web.session.SessionManagementFilter@44ec4a38, org.springframework.security.web.access.ExceptionTranslationFilter@25587290, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@28fef9a2]
+[2m2019-10-26 22:04:30.005[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.s.concurrent.ThreadPoolTaskExecutor [0;39m [2m:[0;39m Initializing ExecutorService 'applicationTaskExecutor'
+[2m2019-10-26 22:04:30.664[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36md.s.w.p.DocumentationPluginsBootstrapper[0;39m [2m:[0;39m Context refreshed
+[2m2019-10-26 22:04:30.694[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36md.s.w.p.DocumentationPluginsBootstrapper[0;39m [2m:[0;39m Found 1 custom documentation plugin(s)
+[2m2019-10-26 22:04:30.849[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36ms.d.s.w.s.ApiListingReferenceScanner    [0;39m [2m:[0;39m Scanning for api listing references
+[2m2019-10-26 22:04:31.115[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: allUsingGET_1
+[2m2019-10-26 22:04:31.122[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: updateUsingPUT_1
+[2m2019-10-26 22:04:31.134[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: allUsingGET_2
+[2m2019-10-26 22:04:31.146[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: createUsingPOST_1
+[2m2019-10-26 22:04:31.161[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: updateUsingPUT_2
+[2m2019-10-26 22:04:31.226[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: createUsingPOST_2
+[2m2019-10-26 22:04:31.240[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: queryUsingGET_1
+[2m2019-10-26 22:04:31.247[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: updateUsingPUT_3
+[2m2019-10-26 22:04:31.253[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: allUsingGET_3
+[2m2019-10-26 22:04:31.258[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: createUsingPOST_3
+[2m2019-10-26 22:04:31.264[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: updateUsingPUT_4
+[2m2019-10-26 22:04:31.322[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.b.w.embedded.tomcat.TomcatWebServer [0;39m [2m:[0;39m Tomcat started on port(s): 8001 (http) with context path '/api/v1/web'
+[2m2019-10-26 22:04:31.327[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[           main][0;39m [36mc.o.treasure.web.WebApplicationKt       [0;39m [2m:[0;39m Started WebApplicationKt in 9.674 seconds (JVM running for 10.517)
+[2m2019-10-26 22:04:42.612[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[nio-8001-exec-1][0;39m [36mo.a.c.c.C.[.[localhost].[/api/v1/web]   [0;39m [2m:[0;39m Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2m2019-10-26 22:04:42.613[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[nio-8001-exec-1][0;39m [36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Initializing Servlet 'dispatcherServlet'
+[2m2019-10-26 22:04:42.643[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[nio-8001-exec-1][0;39m [36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Completed initialization in 29 ms
+[2m2019-10-26 22:05:10.606[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[       Thread-3][0;39m [36mo.s.s.concurrent.ThreadPoolTaskExecutor [0;39m [2m:[0;39m Shutting down ExecutorService 'applicationTaskExecutor'
+[2m2019-10-26 22:05:10.613[0;39m [32m INFO[0;39m [35m8226[0;39m [2m---[0;39m [2m[       Thread-3][0;39m [36mcom.alibaba.druid.pool.DruidDataSource  [0;39m [2m:[0;39m {dataSource-1} closed
+[2m2019-10-26 22:05:15.080[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mc.o.treasure.web.WebApplicationKt       [0;39m [2m:[0;39m Starting WebApplicationKt on cabbage-mac.local with PID 8231 (/Users/cabbage/workspace/onepiece/treasure/treasure-web/target/classes started by cabbage in /Users/cabbage/workspace/onepiece/treasure)
+[2m2019-10-26 22:05:15.090[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mc.o.treasure.web.WebApplicationKt       [0;39m [2m:[0;39m The following profiles are active: dev
+[2m2019-10-26 22:05:16.794[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.s.d.r.c.RepositoryConfigurationDelegate[0;39m [2m:[0;39m Multiple Spring Data modules found, entering strict repository configuration mode!
+[2m2019-10-26 22:05:16.797[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.s.d.r.c.RepositoryConfigurationDelegate[0;39m [2m:[0;39m Bootstrapping Spring Data repositories in DEFAULT mode.
+[2m2019-10-26 22:05:16.835[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.s.d.r.c.RepositoryConfigurationDelegate[0;39m [2m:[0;39m Finished Spring Data repository scanning in 25ms. Found 0 repository interfaces.
+[2m2019-10-26 22:05:17.370[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration' of type [org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration$$EnhancerBySpringCGLIB$$baa9b80b] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:05:17.387[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$21fbefd1] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:05:17.421[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'objectPostProcessor' of type [org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:05:17.423[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler@57cabdc3' of type [org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:05:17.429[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration' of type [org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration$$EnhancerBySpringCGLIB$$df7e5abd] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:05:17.434[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'methodSecurityMetadataSource' of type [org.springframework.security.access.method.DelegatingMethodSecurityMetadataSource] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:05:17.446[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mtrationDelegate$BeanPostProcessorChecker[0;39m [2m:[0;39m Bean 'org.springframework.hateoas.config.HateoasConfiguration' of type [org.springframework.hateoas.config.HateoasConfiguration$$EnhancerBySpringCGLIB$$a17c3d03] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+[2m2019-10-26 22:05:18.016[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.b.w.embedded.tomcat.TomcatWebServer [0;39m [2m:[0;39m Tomcat initialized with port(s): 8001 (http)
+[2m2019-10-26 22:05:18.057[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.apache.catalina.core.StandardService  [0;39m [2m:[0;39m Starting service [Tomcat]
+[2m2019-10-26 22:05:18.057[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36morg.apache.catalina.core.StandardEngine [0;39m [2m:[0;39m Starting Servlet engine: [Apache Tomcat/9.0.26]
+[2m2019-10-26 22:05:18.190[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.a.c.c.C.[.[localhost].[/api/v1/web]   [0;39m [2m:[0;39m Initializing Spring embedded WebApplicationContext
+[2m2019-10-26 22:05:18.191[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.web.context.ContextLoader           [0;39m [2m:[0;39m Root WebApplicationContext: initialization completed in 3011 ms
+[2m2019-10-26 22:05:19.459[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mc.a.d.s.b.a.DruidDataSourceAutoConfigure[0;39m [2m:[0;39m Init DruidDataSource
+[2m2019-10-26 22:05:19.665[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mcom.alibaba.druid.pool.DruidDataSource  [0;39m [2m:[0;39m {dataSource-1} inited
+[2m2019-10-26 22:05:21.834[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mpertySourcedRequestMappingHandlerMapping[0;39m [2m:[0;39m Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+[2m2019-10-26 22:05:22.196[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.s.web.DefaultSecurityFilterChain    [0;39m [2m:[0;39m Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@11a7840f, org.springframework.security.web.context.SecurityContextPersistenceFilter@7ee3a2ed, org.springframework.security.web.header.HeaderWriterFilter@208185c0, org.springframework.security.web.authentication.logout.LogoutFilter@38ad86b1, com.onepiece.treasure.web.jwt.JwtAuthenticationTokenFilter@3593e074, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@38363e96, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1368e2f7, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1d3e5a05, org.springframework.security.web.session.SessionManagementFilter@4504a4ed, org.springframework.security.web.access.ExceptionTranslationFilter@af94b0b, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@698e1bf5]
+[2m2019-10-26 22:05:22.931[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.s.concurrent.ThreadPoolTaskExecutor [0;39m [2m:[0;39m Initializing ExecutorService 'applicationTaskExecutor'
+[2m2019-10-26 22:05:23.624[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36md.s.w.p.DocumentationPluginsBootstrapper[0;39m [2m:[0;39m Context refreshed
+[2m2019-10-26 22:05:23.658[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36md.s.w.p.DocumentationPluginsBootstrapper[0;39m [2m:[0;39m Found 1 custom documentation plugin(s)
+[2m2019-10-26 22:05:23.847[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36ms.d.s.w.s.ApiListingReferenceScanner    [0;39m [2m:[0;39m Scanning for api listing references
+[2m2019-10-26 22:05:24.206[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: allUsingGET_1
+[2m2019-10-26 22:05:24.218[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: updateUsingPUT_1
+[2m2019-10-26 22:05:24.261[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: allUsingGET_2
+[2m2019-10-26 22:05:24.281[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: createUsingPOST_1
+[2m2019-10-26 22:05:24.313[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: updateUsingPUT_2
+[2m2019-10-26 22:05:24.415[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: createUsingPOST_2
+[2m2019-10-26 22:05:24.446[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: queryUsingGET_1
+[2m2019-10-26 22:05:24.462[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: updateUsingPUT_3
+[2m2019-10-26 22:05:24.476[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: allUsingGET_3
+[2m2019-10-26 22:05:24.483[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: createUsingPOST_3
+[2m2019-10-26 22:05:24.494[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36m.d.s.w.r.o.CachingOperationNameGenerator[0;39m [2m:[0;39m Generating unique operation named: updateUsingPUT_4
+[2m2019-10-26 22:05:24.580[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mo.s.b.w.embedded.tomcat.TomcatWebServer [0;39m [2m:[0;39m Tomcat started on port(s): 8001 (http) with context path '/api/v1/web'
+[2m2019-10-26 22:05:24.585[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[           main][0;39m [36mc.o.treasure.web.WebApplicationKt       [0;39m [2m:[0;39m Started WebApplicationKt in 10.428 seconds (JVM running for 11.273)
+[2m2019-10-26 22:05:26.273[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[nio-8001-exec-1][0;39m [36mo.a.c.c.C.[.[localhost].[/api/v1/web]   [0;39m [2m:[0;39m Initializing Spring DispatcherServlet 'dispatcherServlet'
+[2m2019-10-26 22:05:26.274[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[nio-8001-exec-1][0;39m [36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Initializing Servlet 'dispatcherServlet'
+[2m2019-10-26 22:05:26.304[0;39m [32m INFO[0;39m [35m8231[0;39m [2m---[0;39m [2m[nio-8001-exec-1][0;39m [36mo.s.web.servlet.DispatcherServlet       [0;39m [2m:[0;39m Completed initialization in 30 ms
