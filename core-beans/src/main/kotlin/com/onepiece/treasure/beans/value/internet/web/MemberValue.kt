@@ -96,3 +96,19 @@ data class MemberUoReq(
         @ApiModelProperty("状态")
         val status: Status
 )
+
+data class MemberCoReq(
+
+        @ApiModelProperty("用户名")
+        val username: String,
+
+        @ApiModelProperty("密码")
+        val password: String,
+
+        @ApiModelProperty("安全密码")
+        val safetyPassword: String,
+
+        @ApiModelProperty("层级")
+        val levelId: Int
+
+)

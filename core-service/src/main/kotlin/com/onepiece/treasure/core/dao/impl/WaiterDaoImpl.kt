@@ -32,14 +32,14 @@ class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
         return query().where("username", username).executeMaybeOne(mapper)
     }
 
-    override fun create(waiterCo: WaiterCo): Boolean {
+    override fun create(waiterCo: WaiterCo): Int {
         return insert()
                 .set("client_id", waiterCo.clientId)
                 .set("username", waiterCo.username)
                 .set("password", waiterCo.password)
                 .set("name", waiterCo.name)
                 .set("status", Status.Normal)
-                .executeOnlyOne()
+                .executeGeneratedKey()
     }
 
     override fun update(waiterUo: WaiterUo): Boolean {

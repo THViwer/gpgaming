@@ -9,7 +9,7 @@ interface WaiterDao : BasicDao<Waiter> {
 
     fun findByUsername(username: String): Waiter?
 
-    fun create(waiterCo: WaiterCo): Boolean
+    fun create(waiterCo: WaiterCo): Int
 
     fun update(waiterUo: WaiterUo): Boolean
 

@@ -22,7 +22,7 @@ class EmptyRedisService : RedisService {
     }
 
     override fun <T> get(key: String, clz: Class<T>, function: () -> T?): T? {
-        return null
+        return function()
     }
 
     override fun delete(vararg keys: String) {

@@ -3,12 +3,10 @@ package com.onepiece.treasure.web.controller
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.value.database.MemberCo
 import com.onepiece.treasure.beans.value.database.MemberQuery
 import com.onepiece.treasure.beans.value.database.MemberUo
-import com.onepiece.treasure.beans.value.internet.web.MemberPage
-import com.onepiece.treasure.beans.value.internet.web.MemberUoReq
-import com.onepiece.treasure.beans.value.internet.web.MemberVo
-import com.onepiece.treasure.beans.value.internet.web.WalletVo
+import com.onepiece.treasure.beans.value.internet.web.*
 import com.onepiece.treasure.core.service.MemberService
 import com.onepiece.treasure.core.service.WalletService
 import com.onepiece.treasure.web.controller.basic.BasicController
@@ -51,9 +49,7 @@ class MemberApiController(
     }
 
     @PutMapping
-    override fun change(
-            @RequestBody memberUoReq: MemberUoReq
-    ) {
+    override fun update(@RequestBody memberUoReq: MemberUoReq) {
 
         val member = memberService.getMember(memberUoReq.id)
         check(member.clientId == clientId) { OnePieceExceptionCode.AUTHORITY_FAIL }
@@ -63,26 +59,32 @@ class MemberApiController(
         memberService.update(memberUo)
     }
 
+    @PostMapping
+    override fun create(@RequestBody memberCoReq: MemberCoReq) {
+        val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password,
+                safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId)
+        memberService.create(memberCo)
+    }
+
     @GetMapping("/wallet/{memberId}")
     override fun balance(
-            @PathVariable(value = "memberId") memberId: Int,
-            @RequestParam(value = "platform") platform: Platform
+            @PathVariable(value = "memberId") memberId: Int
     ): WalletVo {
 
         val wallet = walletService.getMemberWallet(memberId)
 
-        val walletVo = with(wallet) {
-            WalletVo(id = wallet.id, memberId = wallet.memberId, platform = platform, balance = balance, freezeBalance = freezeBalance,
+        return with(wallet) {
+            WalletVo(id = wallet.id, memberId = wallet.memberId, balance = balance, freezeBalance = freezeBalance,
                     totalGiftBalance = totalGiftBalance, totalBalance = totalBalance)
         }
 
-        return when (platform) {
-            Platform.Center -> walletVo
-            else -> {
-                //TODO 从平台中查询余额
-                walletVo.copy(balance = BigDecimal.valueOf(100))
-            }
+//        return when (platform) {
+//            Platform.Center -> walletVo
+//            else -> {
+//                TODO 从平台中查询余额
+//                walletVo.copy(balance = BigDecimal.valueOf(100))
+//            }
 
-        }
+//        }
     }
 }

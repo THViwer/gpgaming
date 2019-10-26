@@ -18,7 +18,7 @@ class WalletServiceImpl(
 ) : WalletService {
 
     override fun getMemberWallet(memberId: Int): Wallet {
-        return walletDao.get(memberId)
+        return walletDao.getMemberWallet(memberId)
     }
 
     override fun create(walletCo: WalletCo) {

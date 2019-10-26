@@ -1,14 +1,13 @@
 package com.onepiece.treasure.core.dao
 
-import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.core.dao.basic.BasicDao
+import com.onepiece.treasure.beans.model.Wallet
 import com.onepiece.treasure.beans.value.database.WalletCo
 import com.onepiece.treasure.beans.value.database.WalletUo
-import com.onepiece.treasure.beans.model.Wallet
+import com.onepiece.treasure.core.dao.basic.BasicDao
 
 interface WalletDao: BasicDao<Wallet> {
 
-    fun getMemberWallet(memberId: Int, platform: Platform): Wallet
+    fun getMemberWallet(memberId: Int): Wallet
 
     fun create(walletCo: WalletCo): Boolean
 

@@ -38,6 +38,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("password", memberCo.password)
                 .set("safety_password", memberCo.safetyPassword)
                 .set("level_id", memberCo.levelId)
+                .set("status", Status.Normal)
                 .executeGeneratedKey()
     }
 
@@ -49,7 +50,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("level_id", memberUo.levelId)
                 .set("login_ip", memberUo.loginIp)
                 .set("login_time", memberUo.loginTime)
-                .asWhere("id", memberUo.id)
+                .where("id", memberUo.id)
                 .execute() == 1
 
     }

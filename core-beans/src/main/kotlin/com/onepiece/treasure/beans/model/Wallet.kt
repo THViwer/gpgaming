@@ -1,6 +1,5 @@
 package com.onepiece.treasure.beans.model
 
-import com.onepiece.treasure.beans.enums.Platform
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -17,9 +16,6 @@ data class Wallet(
 
         // 会员Id
         val memberId: Int,
-
-        // 平台
-        val platform: Platform,
 
         // 余额
         val balance: BigDecimal,

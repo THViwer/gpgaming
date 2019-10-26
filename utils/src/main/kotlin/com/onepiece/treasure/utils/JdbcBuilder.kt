@@ -52,14 +52,13 @@ class Insert(
     }
 
     fun executeGeneratedKey(): Int {
-        val sql = this.build()
-
-        val map = (0..columns.size).mapIndexed { index, _ ->
+        val map = (0 until columns.size).mapIndexed { index, _ ->
             columns[index] to param[index]
         }.toMap()
 
         return SimpleJdbcInsert(jdbcTemplate)
-                .usingColumns("id")
+                .withTableName(table)
+                .usingGeneratedKeyColumns("id")
                 .executeAndReturnKey(map)
                 .toInt()
     }

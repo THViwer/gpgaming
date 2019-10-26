@@ -32,9 +32,6 @@ data class WalletVo(
         @ApiModelProperty("会员Id")
         val memberId: Int,
 
-        @ApiModelProperty("钱包名称")
-        val platform: Platform,
-
         @ApiModelProperty("余额")
         val balance: BigDecimal,
 

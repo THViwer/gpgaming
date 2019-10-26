@@ -42,7 +42,7 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
     override fun update(clientUo: ClientUo): Boolean {
         return update().set("password", clientUo.password)
                 .set("status", clientUo.status)
-                .set("ip", clientUo.ip)
+                .set("login_ip", clientUo.ip)
                 .set("login_time", clientUo.loginTime)
                 .where("id", clientUo.id)
                 .executeOnlyOne()

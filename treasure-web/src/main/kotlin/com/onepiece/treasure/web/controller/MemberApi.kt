@@ -1,7 +1,7 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.value.internet.web.MemberCoReq
 import com.onepiece.treasure.beans.value.internet.web.MemberPage
 import com.onepiece.treasure.beans.value.internet.web.MemberUoReq
 import com.onepiece.treasure.beans.value.internet.web.WalletVo
@@ -18,7 +18,7 @@ import java.time.LocalDateTime
 @Api(tags = ["user"], description = " ")
 interface MemberApi {
 
-    @ApiOperation(tags = ["user"], value = "member -> query")
+    @ApiOperation(tags = ["user"], value = "")
     fun query(
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime,
@@ -29,16 +29,19 @@ interface MemberApi {
             @RequestParam(defaultValue = "10") size: Int
     ): MemberPage
 
-    @ApiOperation(tags = ["user"], value = "member -> update")
+    @ApiOperation(tags = ["user"], value = "")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    fun change(
-            @RequestBody memberUoReq: MemberUoReq
-    )
+    fun update(@RequestBody memberUoReq: MemberUoReq)
+
+    @ApiOperation(tags = ["user"], value = "")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    fun create(@RequestBody memberCoReq: MemberCoReq)
+
+
 
     @ApiOperation(tags = ["user"], value = "member -> balance detail")
     fun balance(
-            @PathVariable(value = "memberId") memberId: Int,
-            @RequestParam(value = "platform") platform: Platform
+            @PathVariable(value = "memberId") memberId: Int
     ): WalletVo
 
 

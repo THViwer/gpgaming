@@ -33,6 +33,7 @@ class UserApiController(
             LoginResp(id = client.id, clientId = client.id, username = client.username, role = Role.Client, token = UUID.randomUUID().toString())
 
         } catch (e: Exception) {
+            e.printStackTrace()
             val waiter = waiterService.login(loginValue)
 
             LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = Role.Client, token = UUID.randomUUID().toString())
