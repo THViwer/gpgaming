@@ -16,7 +16,7 @@ interface WalletDao: BasicDao<Wallet> {
 
     fun transfer(walletUo: WalletUo): Boolean
 
-    fun bet(walletUo: WalletUo): Boolean
+//    fun bet(walletUo: WalletUo): Boolean
 
 
 }

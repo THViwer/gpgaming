@@ -30,17 +30,12 @@ class WalletServiceImpl(
 
         val wallet = this.getMemberWallet(walletUo.memberId)
 
-
-
         val state = when (walletUo.event) {
             WalletEvent.TOPUP, WalletEvent.WITHDRAW, WalletEvent.REPARATION -> {
                 walletDao.update(walletUo)
             }
             WalletEvent.TRANSFER, WalletEvent.TRANSFER_OUT -> {
                 walletDao.transfer(walletUo)
-            }
-            WalletEvent.BET -> {
-                walletDao.bet(walletUo)
             }
         }
 
