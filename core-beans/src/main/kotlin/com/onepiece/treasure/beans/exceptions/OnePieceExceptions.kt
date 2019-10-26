@@ -23,6 +23,7 @@ object OnePieceExceptionCode {
     const val PASSWORD_FAIL = "4002" // 密码错误
     const val USERNAME_EXISTENCE = "4003" // 用户名已存在
     const val USER_STOP = "4004" // 用户被停用
+    const val SAFETY_PASSWORD_FAIL = "4005" // 安全码错误
 
     // 5000 cash error
     const val ORDER_EXPIRED = "5001" // 订单操作过期

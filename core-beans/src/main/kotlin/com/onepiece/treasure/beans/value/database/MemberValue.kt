@@ -28,6 +28,9 @@ data class MemberCo(
         // 密码
         val password: String,
 
+        // 安全密码
+        val safetyPassword: String,
+
         // 等级Id
         val levelId: Int
 )
@@ -41,6 +44,12 @@ data class MemberUo(
 
         // 密码
         val password: String? = null,
+
+        // 旧安全密码
+        val oldSafetyPassword: String? = null,
+
+        // 安全密码
+        val safetyPassword: String? = null,
 
         // 等级Id
         val levelId: Int? = null,

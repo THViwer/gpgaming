@@ -18,6 +18,9 @@ data class Member(
         // 密码
         val password: String,
 
+        // 安全密码
+        val safetyPassword: String,
+
         // 等级Id
         val levelId: Int,
 

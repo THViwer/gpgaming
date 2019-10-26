@@ -33,15 +33,15 @@ data class LoginReq(
         val username: String,
 
         @ApiModelProperty("密码")
-        val passwd: String
+        val password: String
 )
 
 data class ChangePwdReq(
 
         @ApiModelProperty("旧密码")
-        val passwd: String,
+        val oldPassword: String,
 
         @ApiModelProperty("新密码")
-        val newPasswd: String
+        val password: String
 
 )

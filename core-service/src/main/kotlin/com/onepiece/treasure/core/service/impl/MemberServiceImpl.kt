@@ -72,6 +72,9 @@ class MemberServiceImpl(
         if (memberUo.oldPassword != null) {
             check(memberUo.oldPassword == member.password) { OnePieceExceptionCode.PASSWORD_FAIL }
         }
+        if (memberUo.oldSafetyPassword != null) {
+            check(memberUo.oldPassword == member.password) { OnePieceExceptionCode.SAFETY_PASSWORD_FAIL }
+        }
 
         val state = memberDao.update(memberUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
