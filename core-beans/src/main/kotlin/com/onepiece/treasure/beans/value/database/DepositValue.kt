@@ -33,13 +33,13 @@ data class DepositCo(
         val memberId: Int,
 
         // 存款人姓名
-        val name: String,
+        val memberName: String,
 
         // 充值银行
-        val bank: Bank,
+        val memberBank: Bank,
 
         // 银行卡号
-        val bankCardNumber: String,
+        val memberBankCardNumber: String,
 
         // 厅主银行卡Id
         val clientBankId: Int,
@@ -67,8 +67,26 @@ data class DepositUo(
         val processId: String,
 
         // 充值状态
-        val state: OrderState,
+        val state: DepositState,
 
         // 备注
         val remarks: String?
+)
+
+data class DepositLockUo(
+
+        // 厅主Id
+        val clientId: Int,
+
+        // 订单Id
+        val orderId: String,
+
+        // 流程Id
+        val processId: String,
+
+        // 锁定人员
+        val lockWaiterId: Int,
+
+        // 锁定人名称
+        val lockWaiterName: String
 )

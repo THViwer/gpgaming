@@ -2,9 +2,9 @@ package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.enums.WithdrawState
-import com.onepiece.treasure.beans.value.internet.web.DepositUo
+import com.onepiece.treasure.beans.value.internet.web.DepositUoReq
 import com.onepiece.treasure.beans.value.internet.web.DepositVo
-import com.onepiece.treasure.beans.value.internet.web.WithdrawUo
+import com.onepiece.treasure.beans.value.internet.web.WithdrawUoReq
 import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -27,13 +27,17 @@ interface CashOrderApi {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime
     ): List<DepositVo>
 
+    @ApiOperation(tags = ["cash"], value = "deposit -> lock")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun tryLock(@RequestParam("orderId") orderId: String)
+
     @ApiOperation(tags = ["cash"], value = "deposit -> check")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun check(@RequestBody depositUo: DepositUo)
+    fun check(@RequestBody depositUoReq: DepositUoReq)
 
-    @ApiOperation(tags = ["cash"], value = "deposit -> enforcement")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun enforcement(@RequestBody depositUo: DepositUo)
+//    @ApiOperation(tags = ["cash"], value = "deposit -> enforcement")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    fun enforcement(@RequestBody depositUoReq: DepositUoReq)
 
     @ApiOperation(tags = ["cash"], value = "withdraw -> query")
     fun withdraw(
@@ -44,8 +48,12 @@ interface CashOrderApi {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime
     ): List<WithdrawVo>
 
+    @ApiOperation(tags = ["cash"], value = "withdraw -> lock")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun withdrawLock(@RequestParam("orderId") orderId: String)
+
     @ApiOperation(tags = ["cash"], value = "withdraw -> check")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun withdrawCheck(@RequestBody withdrawUo: WithdrawUo)
+    fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawUoReq)
 
 }

@@ -12,4 +12,6 @@ abstract class BasicController {
 
     val role = Role.Client
 
+    val name = "zhangdan"
+
 }

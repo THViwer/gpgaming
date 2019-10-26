@@ -198,6 +198,13 @@ class Update(
         return this
     }
 
+    fun asWhere(k: String): Update {
+
+        whereColumns.add(k)
+
+        return this
+    }
+
 
     fun asWhere(k: String, v: Any?): Update {
         if (v == null) return this

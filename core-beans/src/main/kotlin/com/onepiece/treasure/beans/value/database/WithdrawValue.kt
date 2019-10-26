@@ -1,5 +1,6 @@
 package com.onepiece.treasure.beans.value.database
 
+import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.WithdrawState
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -31,8 +32,17 @@ data class WithdrawCo(
         // 会员Id
         val memberId: Int,
 
+        // 会员名称
+        val memberName: String,
+
         // 会员银行卡Id
         val memberBankId: Int,
+
+        // 取款银行
+        val memberBank: Bank,
+
+        // 取款银行卡号
+        val memberBankCardNumber: String,
 
         // 提款金额
         val money: BigDecimal,
@@ -42,6 +52,23 @@ data class WithdrawCo(
 
 )
 
+data class WithdrawLockUo(
+
+        // 厅主Id
+        val clientId: Int,
+
+        // 订单Id
+        val orderId: String,
+
+        // 流程Id
+        val processId: String,
+
+        // 锁定人员
+        val lockWaiterId: Int,
+
+        // 锁定人名称
+        val lockWaiterName: String
+)
 
 data class WithdrawUo(
 

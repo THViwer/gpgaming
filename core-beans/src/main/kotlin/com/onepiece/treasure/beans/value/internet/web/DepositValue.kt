@@ -39,13 +39,13 @@ data class DepositVo(
         val money: BigDecimal,
 
         @ApiModelProperty("银行")
-        val bank: Bank,
+        val memberBank: Bank,
 
         @ApiModelProperty("存款人姓名")
-        val name: String,
+        val memberName: String,
 
         @ApiModelProperty("银行卡号")
-        val bankCardNumber: String,
+        val memberBankCardNumber: String,
 
         @ApiModelProperty("厅主银行卡Id")
         val clientBankId: Int,
@@ -79,10 +79,10 @@ data class DepositVo(
 
 )
 
-data class DepositUo(
+data class DepositUoReq(
 
         @ApiModelProperty("订单Id")
-        val orderId: Int,
+        val orderId: String,
 
         @ApiModelProperty("订单状态")
         val state: DepositState,

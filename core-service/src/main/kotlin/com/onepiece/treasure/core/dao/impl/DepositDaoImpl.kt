@@ -4,6 +4,7 @@ import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.model.Deposit
 import com.onepiece.treasure.beans.value.database.DepositCo
+import com.onepiece.treasure.beans.value.database.DepositLockUo
 import com.onepiece.treasure.beans.value.database.DepositQuery
 import com.onepiece.treasure.beans.value.database.DepositUo
 import com.onepiece.treasure.core.dao.DepositDao
@@ -22,9 +23,9 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
             val processId = rs.getString("process_id")
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
-            val name = rs.getString("name")
-            val bank = rs.getString("bank").let { Bank.valueOf(it) }
-            val bankCardNumber = rs.getString("bank_card_number")
+            val memberName = rs.getString("member_name")
+            val memberBank = rs.getString("member_bank").let { Bank.valueOf(it) }
+            val memberBankCardNumber = rs.getString("member_bank_card_number")
             val clientBankId = rs.getInt("client_bank_id")
             val clientBankCardNumber = rs.getString("client_bank_card_number")
             val clientBankName = rs.getString("client_bank_name")
@@ -32,13 +33,22 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
             val imgPath = rs.getString("imgPath")
             val state = rs.getString("state").let { DepositState.valueOf(it) }
             val remarks = rs.getString("remarks")
+            val lockWaiterId = rs.getInt("lock_waiter_id")
+            val lockWaiterName = rs.getString("lock_waiter_name")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val endTime = rs.getTimestamp("end_time")?.toLocalDateTime()
-            Deposit(id = id, orderId = orderId, clientId = clientId, memberId = memberId, bank = bank, money = money,
+            Deposit(id = id, orderId = orderId, clientId = clientId, memberId = memberId, memberBank = memberBank, money = money,
                     imgPath = imgPath, state = state, remarks = remarks, createdTime = createdTime, endTime = endTime,
-                    bankCardNumber = bankCardNumber, processId = processId, name = name, clientBankId = clientBankId,
-                    clientBankName = clientBankName, clientBankCardNumber = clientBankCardNumber)
+                    memberBankCardNumber = memberBankCardNumber, processId = processId, memberName = memberName, clientBankId = clientBankId,
+                    clientBankName = clientBankName, clientBankCardNumber = clientBankCardNumber, lockWaiterId = lockWaiterId,
+                    lockWaiterName = lockWaiterName)
         }
+
+    override fun findDeposit(clientId: Int, orderId: String): Deposit {
+        return query().where("client_id", clientId)
+                .where("order_id", orderId)
+                .executeOnlyOne(mapper)
+    }
 
     override fun query(query: DepositQuery): List<Deposit> {
         return query().where("client_id", query.clientId)
@@ -51,14 +61,25 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                 .execute(mapper)
     }
 
+    override fun lock(depositLockUo: DepositLockUo): Boolean {
+        return update().set("lock_waiter_id", depositLockUo.lockWaiterId)
+                .set("lock_waiter_name", depositLockUo.lockWaiterName)
+                .set("process_id", UUID.randomUUID().toString())
+                .where("client_id", depositLockUo.clientId)
+                .where("order_id", depositLockUo.orderId)
+                .where("process_id", depositLockUo.processId)
+                .asWhere("lock_waiter_id is null")
+                .executeOnlyOne()
+    }
+
     override fun create(depositCo: DepositCo): Boolean {
         return insert().set("order_id", depositCo.orderId)
                 .set("process_id", UUID.randomUUID().toString())
                 .set("client_id", depositCo.clientId)
                 .set("member_id", depositCo.memberId)
-                .set("name", depositCo.name)
-                .set("bank", depositCo.bank)
-                .set("bank_card_number", depositCo.bankCardNumber)
+                .set("member_name", depositCo.memberName)
+                .set("member_bank", depositCo.memberBank)
+                .set("member_bank_card_number", depositCo.memberBankCardNumber)
                 .set("client_bank_id", depositCo.clientBankId)
                 .set("client_bank_name", depositCo.clientBankName)
                 .set("client_bank_card_number", depositCo.clientBankCardNumber)

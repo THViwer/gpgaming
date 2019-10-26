@@ -26,13 +26,13 @@ data class Deposit(
         val memberId: Int,
 
         // 充值银行
-        val bank: Bank,
+        val memberBank: Bank,
 
         // 银行卡号
-        val bankCardNumber: String,
+        val memberBankCardNumber: String,
 
         // 存款人姓名
-        val name: String,
+        val memberName: String,
 
         // 厅主银行卡Id
         val clientBankId: Int,
@@ -54,6 +54,12 @@ data class Deposit(
 
         // 备注
         val remarks: String?,
+
+        // 锁定人员Id
+        val lockWaiterId: Int?,
+
+        // 锁定人员名称
+        val lockWaiterName: String?,
 
         // 创建时间
         val createdTime: LocalDateTime,

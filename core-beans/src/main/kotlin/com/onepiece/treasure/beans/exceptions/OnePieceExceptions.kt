@@ -25,6 +25,7 @@ object OnePieceExceptionCode {
     const val USER_STOP = "4004" // 用户被停用
 
     // 5000 cash error
+    const val ORDER_EXPIRED = "5001" // 订单操作过期
 
 
 }
