@@ -6,6 +6,8 @@ import com.onepiece.treasure.beans.value.database.ClientBankUo
 
 interface ClientBankService {
 
+    fun get(id: Int): ClientBank
+
     fun findClientBank(clientId: Int): List<ClientBank>
 
     fun create(clientBankCo: ClientBankCo)

@@ -47,6 +47,9 @@ data class ClientBankVo(
 
 data class ClientBankCoReq(
 
+        @ApiModelProperty("层级Id")
+        val levelId: Int?,
+
         @ApiModelProperty("银行Id")
         val bankId: Int,
 

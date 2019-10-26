@@ -4,7 +4,6 @@ import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.model.MemberBank
 import com.onepiece.treasure.beans.value.database.MemberBankCo
-import com.onepiece.treasure.beans.value.database.MemberBankQuery
 import com.onepiece.treasure.beans.value.database.MemberBankUo
 import com.onepiece.treasure.core.dao.MemberBankDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
@@ -28,13 +27,10 @@ class MemberBankDaoImpl : BasicDaoImpl<MemberBank>("member_bank"), MemberBankDao
                     status = status, createdTime = createdTime)
         }
 
-    override fun query(memberBankQuery: MemberBankQuery): List<MemberBank> {
-        return query()
-                .where("client_id", memberBankQuery.clientId)
-                .where("member_id", memberBankQuery.memberId)
-                .where("name", memberBankQuery.name)
-                .where("bank_card_number", memberBankQuery.bankCardNumber)
+    override fun query(memberId: Int): List<MemberBank> {
+        return query().where("member_id", memberId)
                 .execute(mapper)
+
     }
 
     override fun create(memberBankCo: MemberBankCo): Boolean {

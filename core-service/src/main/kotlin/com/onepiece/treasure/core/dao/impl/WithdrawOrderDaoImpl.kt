@@ -46,17 +46,26 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw_order"), WithdrawD
                 .executeOnlyOne(mapper)
     }
 
-    override fun query(query: WithdrawQuery): List<Withdraw> {
+    override fun query(query: WithdrawQuery, current: Int, size: Int): List<Withdraw> {
         return query().where("client_id", query.clientId)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
                 .where("order_id", query.orderId)
                 .where("member_id", query.memberId)
                 .where("state", query.state)
+                .limit(current, size)
                 .execute(mapper)
-
     }
 
+    override fun total(query: WithdrawQuery): Int {
+        return query(" count(*) as count").where("client_id", query.clientId)
+                .asWhere("created_time > ?", query.startTime)
+                .asWhere("created_time <= ?", query.endTime)
+                .where("order_id", query.orderId)
+                .where("member_id", query.memberId)
+                .where("state", query.state)
+                .count()
+    }
 
     override fun lock(withdraLockUo: DepositLockUo): Boolean {
         return update().set("lock_waiter_id", withdraLockUo.lockWaiterId)

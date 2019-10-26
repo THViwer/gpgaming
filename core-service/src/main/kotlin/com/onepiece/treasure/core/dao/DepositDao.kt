@@ -11,7 +11,9 @@ interface DepositDao: BasicDao<Deposit> {
 
     fun findDeposit(clientId: Int, orderId: String): Deposit
 
-    fun query(query: DepositQuery): List<Deposit>
+    fun query(query: DepositQuery, current: Int, size: Int): List<Deposit>
+
+    fun total(query: DepositQuery): Int
 
     fun create(depositCo: DepositCo): Boolean
 

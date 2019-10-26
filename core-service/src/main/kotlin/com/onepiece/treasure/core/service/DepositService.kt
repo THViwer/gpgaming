@@ -1,5 +1,6 @@
 package com.onepiece.treasure.core.service
 
+import com.onepiece.treasure.beans.base.Page
 import com.onepiece.treasure.beans.model.Deposit
 import com.onepiece.treasure.beans.value.database.DepositCo
 import com.onepiece.treasure.beans.value.database.DepositLockUo
@@ -11,6 +12,8 @@ interface DepositService {
     fun findDeposit(clientId: Int, orderId: String): Deposit
 
     fun query(depositQuery: DepositQuery): List<Deposit>
+
+    fun query(depositQuery: DepositQuery, current: Int, size: Int): Page<Deposit>
 
     fun create(depositCo: DepositCo)
 

@@ -3,15 +3,6 @@ package com.onepiece.treasure.beans.value.database
 import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.Status
 
-data class MemberBankQuery(
-        val clientId: Int,
-
-        val memberId: Int?,
-
-        val name: String?,
-
-        val bankCardNumber: String?
-)
 
 data class MemberBankCo(
 
@@ -37,15 +28,15 @@ data class MemberBankUo(
         val id: Int,
 
         // 银行
-        val bank: Bank,
+        val bank: Bank? = null,
 
         // 会员姓名
-        val name: String,
+        val name: String? = null,
 
         // 银行卡号
-        val bankCardNumber: String,
+        val bankCardNumber: String? = null,
 
         // 状态
-        val status: Status
+        val status: Status? = null
 
 )

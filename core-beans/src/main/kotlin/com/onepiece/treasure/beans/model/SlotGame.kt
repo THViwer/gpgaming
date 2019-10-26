@@ -25,6 +25,12 @@ data class SlotGame(
         // 游戏Id
         val gameId: String,
 
+        // 游戏名称
+        val name: String,
+
+        // 游戏图标
+        val icon: String,
+
         // 状态
         val status: Status,
 

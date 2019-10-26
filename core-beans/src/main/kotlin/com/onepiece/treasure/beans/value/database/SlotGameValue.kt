@@ -9,10 +9,25 @@ data class SlotGameCo(
         // 平台
         val platform: Platform,
 
-        // 游戏Id
-        val gameId: String
+        // 游戏类目
+        val category: GameCategory,
 
-        )
+        // 游戏Id
+        val gameId: String,
+
+        // 是否热门游戏
+        val hot: Boolean,
+
+        // 是否新游戏
+        val new: Boolean,
+
+        // 游戏名称
+        val name: String,
+
+        // 游戏图标
+        val icon: String
+
+)
 
 
 data class SlotGameUo(
@@ -34,6 +49,12 @@ data class SlotGameUo(
 
         // 游戏Id
         val gameId: String? = null,
+
+        // 游戏名称
+        val name: String? = null,
+
+        // 游戏图标
+        val icon: String? = null,
 
         // 状态
         val status: Status? = null

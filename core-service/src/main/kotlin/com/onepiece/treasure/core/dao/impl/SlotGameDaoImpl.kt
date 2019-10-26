@@ -22,10 +22,12 @@ class SlotGameDaoImpl : BasicDaoImpl<SlotGame>("slot_game"), SlotGameDao {
             val hot = rs.getBoolean("hot")
             val new = rs.getBoolean("new")
             val gameId = rs.getString("game_id")
+            val name = rs.getString("name")
+            val icon = rs.getString("icon")
             val status = rs.getString("status").let{ Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             SlotGame(id = id, platform = platform, gameId = gameId, status = status, createdTime = createdTime, category = category,
-                    hot = hot, new = new)
+                    hot = hot, new = new, name = name, icon = icon)
         }
 
     override fun findByPlatform(platform: Platform): List<SlotGame> {
@@ -35,7 +37,12 @@ class SlotGameDaoImpl : BasicDaoImpl<SlotGame>("slot_game"), SlotGameDao {
 
     override fun create(slotGameCo: SlotGameCo): Boolean {
         return insert().set("platform", slotGameCo.platform)
-                .set("gameId", slotGameCo.gameId)
+                .set("game_id", slotGameCo.gameId)
+                .set("category", slotGameCo.category)
+                .set("hot", slotGameCo.hot)
+                .set("new", slotGameCo.new)
+                .set("name", slotGameCo.name)
+                .set("icon", slotGameCo.icon)
                 .executeOnlyOne()
     }
 
@@ -46,6 +53,8 @@ class SlotGameDaoImpl : BasicDaoImpl<SlotGame>("slot_game"), SlotGameDao {
                 .set("category", slotGameUo.category)
                 .set("hot", slotGameUo.hot)
                 .set("new", slotGameUo.new)
+                .set("name", slotGameUo.name)
+                .set("icon", slotGameUo.icon)
                 .where("id", slotGameUo.id)
                 .executeOnlyOne()
     }

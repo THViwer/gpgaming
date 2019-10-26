@@ -1,46 +1,13 @@
 package com.onepiece.treasure.controller.value
 
+import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.WithdrawState
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
-
-object CashValueFactory {
-
-    fun generatorCashDepositPage(): CashDepositPage {
-
-        val now = LocalDateTime.now()
-
-        val t1 = CashDepositVo(orderId = UUID.randomUUID().toString(), money = BigDecimal(100), state = DepositState.Process,
-                createdTime = now, successfulTime = null, remark = null)
-        val t2 = t1.copy(orderId = UUID.randomUUID().toString(), money = BigDecimal(200), state = DepositState.Successful,
-                createdTime = now, successfulTime = null)
-        val t3 = t1.copy(orderId = UUID.randomUUID().toString(), money = BigDecimal(300), state = DepositState.Fail,
-                createdTime = now)
-
-        val data = listOf(t1, t2, t3)
-        return CashDepositPage(data = data, total = 100)
-    }
-
-    fun generatorCashWithdrawPage(): CashWithdrawPage {
-
-
-        val now = LocalDateTime.now()
-
-        val w1 = CashWithdrawVo(orderId = UUID.randomUUID().toString(), money = BigDecimal(100), state = WithdrawState.Process,
-                bankName = "工商银行", bankCardNumber = "6222222", name = "张三", createdTime = now, successfulTime = null, remark = null)
-        val w2 = w1.copy(orderId = UUID.randomUUID().toString(), money = BigDecimal(200), state = WithdrawState.Successful,
-                successfulTime = now, remark = "topup successful")
-        val w3 = w1.copy(orderId = UUID.randomUUID().toString(), money = BigDecimal(300), state = WithdrawState.Fail)
-        val data = listOf(w1, w2, w3)
-
-        return CashWithdrawPage(data = data, total = 37)
-    }
-
-
-}
 
 data class CashDepositQuery(
 
@@ -70,6 +37,18 @@ data class CashDepositVo(
         @ApiModelProperty("充值状态")
         val state: DepositState,
 
+        @ApiModelProperty("充值银行")
+        val memberBank: Bank,
+
+        @ApiModelProperty("银行卡号")
+        val memberBankCardNumber: String,
+
+        @ApiModelProperty("存款人姓名")
+        val memberName: String,
+
+        @ApiModelProperty("上传图片地址")
+        val imgPath: String,
+
         @ApiModelProperty("备注")
         val remark: String?,
 
@@ -77,26 +56,29 @@ data class CashDepositVo(
         val createdTime: LocalDateTime,
 
         @ApiModelProperty("订单成功时间")
-        val successfulTime: LocalDateTime?
+        val endTime: LocalDateTime?
 
 )
 
-data class CashDepositReq(
+data class DepositCoReq(
 
         @ApiModelProperty("厅主银行卡Id")
         val clientBankId: Int,
 
-        @ApiModelProperty("银行卡Id")
-        val bankId: Int,
-
         @ApiModelProperty("银行卡号")
-        val bankCardNumber: String,
+        val memberBankCardNumber: String,
+
+        @ApiModelProperty("充值银行")
+        val memberBank: Bank,
+
+        @ApiModelProperty("会员姓名")
+        val memberName: String,
 
         @ApiModelProperty("充值金额")
         val money: BigDecimal,
 
         @ApiModelProperty("截图证明")
-        val uploadImage: String
+        val imgPath: String
 )
 
 data class CashDepositResp(
@@ -143,13 +125,16 @@ data class CashWithdrawVo(
         val successfulTime: LocalDateTime?
 )
 
-data class CashWithdrawReq(
+data class WithdrawCoReq(
 
         @ApiModelProperty("银行卡号")
-        val bankId: Int,
+        val memberBankId: Int,
 
         @ApiModelProperty("取款金额")
-        val money: BigDecimal
+        val money: BigDecimal,
+
+        @ApiModelProperty("取款密码")
+        val safetyPassword: String
 )
 
 data class CashWithdrawResp(
@@ -161,14 +146,23 @@ data class CashWithdrawResp(
 
 data class CashTransferReq(
 
-        @ApiModelProperty("转出钱包Id")
-        val walletId: Int,
-
         @ApiModelProperty("转入钱包Id")
-        val acceptWalletId: Int,
+        val platform: Platform,
+
+        @ApiModelProperty("TransferIn 中心 -> 平台，TransferOut 平台 -> 中心")
+        val action: TransferAction,
 
         @ApiModelProperty("转出金额")
         val money: BigDecimal
 
 )
+
+enum class TransferAction {
+
+        // 中心 -> 平台
+        TransferIn,
+
+        // 平台 -> 中心
+        TransferOut
+}
 

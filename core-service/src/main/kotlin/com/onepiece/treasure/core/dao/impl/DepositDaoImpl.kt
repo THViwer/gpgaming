@@ -50,15 +50,26 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                 .executeOnlyOne(mapper)
     }
 
-    override fun query(query: DepositQuery): List<Deposit> {
+    override fun query(query: DepositQuery, current: Int, size: Int): List<Deposit> {
         return query().where("client_id", query.clientId)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
                 .where("member_id", query.memberId)
                 .where("order_id", query.orderId)
                 .where("state", query.state)
-                .limit(0, 1000)
+                .limit(current, size)
                 .execute(mapper)
+    }
+
+    override fun total(query: DepositQuery): Int {
+        return query(" count(*) as count")
+                .where("client_id", query.clientId)
+                .asWhere("created_time > ?", query.startTime)
+                .asWhere("created_time <= ?", query.endTime)
+                .where("member_id", query.memberId)
+                .where("order_id", query.orderId)
+                .where("state", query.state)
+                .count()
     }
 
     override fun lock(depositLockUo: DepositLockUo): Boolean {

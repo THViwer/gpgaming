@@ -1,6 +1,10 @@
 package com.onepiece.treasure.controller
 
+import com.onepiece.treasure.beans.base.Page
 import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.enums.WithdrawState
+import com.onepiece.treasure.beans.value.internet.web.DepositVo
+import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
 import com.onepiece.treasure.controller.value.*
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -19,37 +23,37 @@ interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "bank")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    fun bankCreate(@RequestBody memberBankCo: MemberBankCo)
+    fun bankCreate(@RequestBody memberBankCoReq: MemberBankCoReq)
 
     @ApiOperation(tags = ["cash"], value = "bank")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    fun bankUpdate(@RequestBody memberBankUo: MemberBankUo)
+    fun bankUpdate(@RequestBody memberBankUoReq: MemberBankUoReq)
 
-    @ApiOperation(tags = ["cash"], value = "topup")
-    fun topUp(
+    @ApiOperation(tags = ["cash"], value = "deposit")
+    fun deposit(
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: DepositState?,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
-    ): CashDepositPage
+    ): Page<DepositVo>
 
-    @ApiOperation(tags = ["cash"], value = "topup")
-    fun topUp(@RequestBody cashTopUpReq: CashDepositReq): CashDepositResp
+    @ApiOperation(tags = ["cash"], value = "deposit")
+    fun deposit(@RequestBody depositCoReq: DepositCoReq): CashDepositResp
 
     @ApiOperation(tags = ["cash"], value = "withdraw")
     fun withdraw(
             @RequestParam(value = "orderId", required = false) orderId: String?,
-            @RequestParam(value = "state", required = false) state: DepositState?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startCreatedTime") startCreatedTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endCreatedTime") endCreatedTime: LocalDateTime,
+            @RequestParam(value = "state", required = false) state: WithdrawState?,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
-    ): CashWithdrawPage
+    ): Page<WithdrawVo>
 
     @ApiOperation(tags = ["cash"], value = "withdraw")
-    fun withdraw(@RequestBody cashWithdrawReq: CashWithdrawReq): CashWithdrawResp
+    fun withdraw(@RequestBody withdrawCoReq: WithdrawCoReq): CashWithdrawResp
 
     @ApiOperation(tags = ["cash"], value = "transfer")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)

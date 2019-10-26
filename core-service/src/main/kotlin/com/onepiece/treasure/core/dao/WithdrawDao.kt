@@ -11,7 +11,9 @@ interface WithdrawDao: BasicDao<Withdraw> {
 
     fun findWithdraw(clientId: Int, orderId: String): Withdraw
 
-    fun query(query: WithdrawQuery): List<Withdraw>
+    fun query(query: WithdrawQuery, current: Int, size: Int): List<Withdraw>
+
+    fun total(query: WithdrawQuery): Int
 
     fun create(orderCo: WithdrawCo): Boolean
 

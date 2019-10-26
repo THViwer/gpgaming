@@ -3,7 +3,6 @@ package com.onepiece.treasure.core.service.impl
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.MemberBank
 import com.onepiece.treasure.beans.value.database.MemberBankCo
-import com.onepiece.treasure.beans.value.database.MemberBankQuery
 import com.onepiece.treasure.beans.value.database.MemberBankUo
 import com.onepiece.treasure.core.dao.MemberBankDao
 import com.onepiece.treasure.core.service.MemberBankService
@@ -14,8 +13,8 @@ class MemberBankServiceImpl(
         private val memberBankDao: MemberBankDao
 ): MemberBankService {
 
-    override fun query(memberBankQuery: MemberBankQuery): List<MemberBank> {
-        return memberBankDao.query(memberBankQuery)
+    override fun query(memberId: Int): List<MemberBank> {
+        return memberBankDao.query(memberId)
     }
 
     override fun create(memberBankCo: MemberBankCo) {

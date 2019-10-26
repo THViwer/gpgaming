@@ -2,76 +2,62 @@ package com.onepiece.treasure.controller.value
 
 import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.Status
+import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
-
-object MemberBankValueFactory {
-
-    fun generatorMemberBanks(): List<MemberBankVo> {
-        val now = LocalDateTime.now()
-        val b1 = MemberBankVo(id = 1, clientId = 1, memberId = 1, bank = Bank.ABC, name = "张三", bankCardNumber = "622222", status = Status.Normal, createdTime = now)
-        val b2 = b1.copy(id = 2, bank = Bank.ICBC, bankCardNumber = "6333333")
-        val b3 = b1.copy(id = 3, bankCardNumber = "644444")
-
-        return listOf(b1, b2, b3)
-    }
-
-}
 
 data class MemberBankVo(
 
-        // id
         val id: Int,
 
-        // 厅主名称
+        @ApiModelProperty("厅主名称")
         val clientId: Int,
 
-        // 会员Id
+        @ApiModelProperty("会员Id")
         val memberId: Int,
 
-        // 银行
+        @ApiModelProperty("银行")
         val bank: Bank,
 
-        // 会员姓名
+        @ApiModelProperty("会员姓名")
         val name: String,
 
-        // 银行卡号
+        @ApiModelProperty("银行卡号")
         val bankCardNumber: String,
 
-        // 状态
+        @ApiModelProperty("状态")
         val status: Status,
 
-        // 创建时间
+        @ApiModelProperty("创建时间")
         val createdTime: LocalDateTime
 )
 
 
-data class MemberBankCo(
+data class MemberBankCoReq(
 
-        // 银行
+        @ApiModelProperty("银行")
         val bank: Bank,
 
-        // 会员姓名
+        @ApiModelProperty("会员姓名")
         val name: String,
 
-        // 银行卡号
+        @ApiModelProperty("银行卡号")
         val bankCardNumber: String
 
 )
 
-data class MemberBankUo(
-        // id
+data class MemberBankUoReq(
         val id: Int,
 
-        // 银行
-        val bank: Bank,
+        @ApiModelProperty("银行")
+        val bank: Bank?,
 
         // 会员姓名
-        val name: String,
+//        val name: String,
 
-        // 银行卡号
-        val bankCardNumber: String,
+        @ApiModelProperty("银行卡号")
+        val bankCardNumber: String?,
 
-        // 状态
-        val status: Status
+        @ApiModelProperty("状态")
+        val status: Status?
 
 )

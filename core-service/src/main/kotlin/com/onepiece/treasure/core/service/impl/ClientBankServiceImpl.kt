@@ -16,6 +16,11 @@ class ClientBankServiceImpl(
         private val redisService: RedisService
 ): ClientBankService {
 
+    override fun get(id: Int): ClientBank {
+        //TODO 使用缓存
+        return clientBankDao.get(id)
+    }
+
     override fun findClientBank(clientId: Int): List<ClientBank> {
         val redisKey = OnePieceRedisKeyConstant.clientBanks(clientId)
         return redisService.getList(redisKey, ClientBank::class.java) {

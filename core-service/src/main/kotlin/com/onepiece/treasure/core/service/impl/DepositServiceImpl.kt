@@ -1,5 +1,6 @@
 package com.onepiece.treasure.core.service.impl
 
+import com.onepiece.treasure.beans.base.Page
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Deposit
 import com.onepiece.treasure.beans.value.database.DepositCo
@@ -20,7 +21,16 @@ class DepositServiceImpl(
     }
 
     override fun query(depositQuery: DepositQuery): List<Deposit> {
-        return depositDao.query(depositQuery)
+        return depositDao.query(query = depositQuery, current = 0, size = 1000)
+    }
+
+    override fun query(depositQuery: DepositQuery, current: Int, size: Int): Page<Deposit> {
+
+        val total = depositDao.total(depositQuery)
+        if (total == 0) return Page.empty()
+
+        val data = depositDao.query(depositQuery, current, size)
+        return Page.of(total, data)
     }
 
     override fun create(depositCo: DepositCo) {
