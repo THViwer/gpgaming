@@ -12,17 +12,35 @@ data class WalletCo(
 
 data class WalletUo(
 
+        val id: Int,
+
+        // 厅主Id
         val clientId: Int,
 
+        // 会员Id
         val memberId: Int,
 
+        // 进程Id
+        val processId: String,
+
+        // 金额
         val money: BigDecimal,
 
-        val addTotalMoney: BigDecimal,
+        // 冻结金额
+        val freezeMoney: BigDecimal,
 
+        // 下注金额
+        val bet: BigDecimal,
+
+        // 添加余额
+        val addBalance: BigDecimal,
+
+        // 赠送金额
         val giftMoney: BigDecimal,
 
+        // 钱包事件
         val event: WalletEvent,
 
+        // 备注
         val remarks: String
 )

@@ -16,6 +16,7 @@ object OnePieceExceptionCode {
     // 2000 verification error
 
     // 3000 auth check error
+    const val AUTHORITY_FAIL = "3001"
 
     // 4000 account error
     const val LOGIN_FAIL = "4001" // 用户名或密码错误

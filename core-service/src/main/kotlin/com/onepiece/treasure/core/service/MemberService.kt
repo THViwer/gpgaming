@@ -9,7 +9,7 @@ import com.onepiece.treasure.beans.value.database.MemberUo
 
 interface MemberService {
 
-    fun findById(id: Int): Member
+    fun getMember(id: Int): Member
 
     fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member>
 

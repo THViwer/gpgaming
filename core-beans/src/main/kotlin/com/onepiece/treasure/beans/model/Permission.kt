@@ -23,7 +23,7 @@ data class Permission(
 data class PermissionDetail(
 
         // 权限Id
-        val permissionId: Int,
+        val resourceId: Int,
 
         // 是否有效
         val effective: Boolean

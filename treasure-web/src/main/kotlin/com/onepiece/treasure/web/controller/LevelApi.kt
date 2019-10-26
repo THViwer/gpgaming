@@ -19,10 +19,10 @@ interface LevelApi {
 
     @ApiOperation(tags = ["user"], value = "level -> create")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    fun create(@RequestBody levelCo: LevelCo)
+    fun create(@RequestBody levelCoReq: LevelCoReq)
 
     @ApiOperation(tags = ["user"], value = "level -> update")
-    fun update(@RequestBody levelUo: LevelUo)
+    fun update(@RequestBody levelUoReq: LevelUoReq)
 
     @ApiOperation(tags = ["user"], value = "level -> level move")
     fun move(

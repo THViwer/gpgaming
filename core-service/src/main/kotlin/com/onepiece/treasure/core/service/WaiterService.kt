@@ -7,6 +7,8 @@ import com.onepiece.treasure.beans.value.database.WaiterUo
 
 interface WaiterService {
 
+    fun get(id: Int): Waiter
+
     fun findClientWaiters(clientId: Int): List<Waiter>
 
     fun login(loginValue: LoginValue): Waiter

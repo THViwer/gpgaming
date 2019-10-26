@@ -1,5 +1,6 @@
 package com.onepiece.treasure.beans.model
 
+import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.Status
 import java.time.LocalDateTime
 
@@ -14,11 +15,14 @@ data class ClientBank(
         // 厅主名称
         val clientId: Int,
 
+        // 银行
+        val bank: Bank,
+
         // 银行卡号
         val bankCardNumber: String,
 
         // 银行名称
-        val cardName: String,
+        val name: String,
 
         // 状态
         val status: Status,

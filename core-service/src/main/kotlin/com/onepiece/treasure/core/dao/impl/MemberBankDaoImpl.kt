@@ -1,6 +1,6 @@
 package com.onepiece.treasure.core.dao.impl
 
-import com.onepiece.treasure.beans.enums.Banks
+import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.model.MemberBank
 import com.onepiece.treasure.beans.value.database.MemberBankCo
@@ -19,7 +19,7 @@ class MemberBankDaoImpl : BasicDaoImpl<MemberBank>("member_bank"), MemberBankDao
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
-            val bank = rs.getString("bank").let { Banks.valueOf(it) }
+            val bank = rs.getString("bank").let { Bank.valueOf(it) }
             val name = rs.getString("name")
             val bankCardNumber = rs.getString("bank_card_number")
             val status = rs.getString("status").let { Status.valueOf(it) }

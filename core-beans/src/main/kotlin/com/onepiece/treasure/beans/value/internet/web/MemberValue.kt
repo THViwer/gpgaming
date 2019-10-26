@@ -82,7 +82,7 @@ data class MemberVo(
 
 )
 
-data class MemberUo(
+data class MemberUoReq(
 
         @ApiModelProperty("id")
         val id: Int,

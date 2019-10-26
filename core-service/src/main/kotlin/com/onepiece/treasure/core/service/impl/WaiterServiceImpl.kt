@@ -16,6 +16,10 @@ class WaiterServiceImpl(
         private val waiterDao: WaiterDao
 ) : WaiterService {
 
+    override fun get(id: Int): Waiter {
+        return waiterDao.get(id)
+    }
+
     override fun findClientWaiters(clientId: Int): List<Waiter> {
         return waiterDao.all(clientId)
     }

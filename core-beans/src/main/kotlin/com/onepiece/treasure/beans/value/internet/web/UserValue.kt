@@ -6,9 +6,9 @@ import java.util.*
 
 object UserValueFactory {
 
-    fun generatorLoginResp(): LoginResp {
-        return LoginResp(id = 1, username = "zhangsan", role = Role.Client, token = UUID.randomUUID().toString())
-    }
+//    fun generatorLoginResp(): LoginResp {
+//        return LoginResp(id = 1, username = "zhangsan", role = Role.Client, token = UUID.randomUUID().toString())
+//    }
 
 }
 
@@ -16,6 +16,9 @@ data class LoginResp(
 
         @ApiModelProperty("id")
         val id: Int,
+
+        @ApiModelProperty("厅主Id")
+        val clientId: Int,
 
         @ApiModelProperty("用户名")
         val username: String,
@@ -33,15 +36,15 @@ data class LoginReq(
         val username: String,
 
         @ApiModelProperty("密码")
-        val passwd: String
+        val password: String
 )
 
 data class ChangePwdReq(
 
         @ApiModelProperty("旧密码")
-        val passwd: String,
+        val oldPassword: String,
 
         @ApiModelProperty("新密码")
-        val newPasswd: String
+        val password: String
 
 )

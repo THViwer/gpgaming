@@ -1,5 +1,6 @@
 package com.onepiece.treasure.core.service.impl
 
+import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Level
 import com.onepiece.treasure.beans.value.database.LevelCo
@@ -33,6 +34,10 @@ class LevelServiceImpl(
     override fun update(levelUo: LevelUo) {
 
         val level = levelDao.get(levelUo.id)
+
+        if (levelUo.status == Status.Stop) {
+            //TODO 检察层级下是否还有人
+        }
 
         val state = levelDao.update(levelUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }

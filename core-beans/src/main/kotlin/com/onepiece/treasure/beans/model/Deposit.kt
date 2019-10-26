@@ -1,6 +1,6 @@
 package com.onepiece.treasure.beans.model
 
-import com.onepiece.treasure.beans.enums.Banks
+import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.DepositState
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -26,7 +26,7 @@ data class Deposit(
         val memberId: Int,
 
         // 充值银行
-        val bank: Banks,
+        val bank: Bank,
 
         // 银行卡号
         val bankCardNumber: String,

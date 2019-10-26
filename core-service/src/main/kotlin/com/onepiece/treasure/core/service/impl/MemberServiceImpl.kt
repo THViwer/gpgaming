@@ -21,7 +21,7 @@ class MemberServiceImpl(
         private val redisService: RedisService
 ) : MemberService {
 
-    override fun findById(id: Int): Member {
+    override fun getMember(id: Int): Member {
         val redisKey = OnePieceRedisKeyConstant.member(id)
         return redisService.get(redisKey, Member::class.java) {
             memberDao.get(id)
@@ -68,7 +68,7 @@ class MemberServiceImpl(
     }
 
     override fun update(memberUo: MemberUo) {
-        val member = this.findById(memberUo.id)
+        val member = this.getMember(memberUo.id)
         if (memberUo.oldPassword != null) {
             check(memberUo.oldPassword == member.password) { OnePieceExceptionCode.PASSWORD_FAIL }
         }

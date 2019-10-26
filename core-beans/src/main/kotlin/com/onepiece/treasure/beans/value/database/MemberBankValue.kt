@@ -1,6 +1,6 @@
 package com.onepiece.treasure.beans.value.database
 
-import com.onepiece.treasure.beans.enums.Banks
+import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.Status
 
 data class MemberBankQuery(
@@ -22,7 +22,7 @@ data class MemberBankCo(
         val memberId: Int,
 
         // 银行
-        val bank: Banks,
+        val bank: Bank,
 
         // 会员姓名
         val name: String,
@@ -37,7 +37,7 @@ data class MemberBankUo(
         val id: Int,
 
         // 银行
-        val bank: Banks,
+        val bank: Bank,
 
         // 会员姓名
         val name: String,

@@ -1,6 +1,6 @@
 package com.onepiece.treasure.beans.model
 
-import com.onepiece.treasure.beans.enums.Banks
+import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.Status
 import java.time.LocalDateTime
 
@@ -19,7 +19,7 @@ data class MemberBank(
         val memberId: Int,
 
         // 银行
-        val bank: Banks,
+        val bank: Bank,
 
         // 会员姓名
         val name: String,

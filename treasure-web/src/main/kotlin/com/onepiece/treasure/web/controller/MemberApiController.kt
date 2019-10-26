@@ -1,9 +1,13 @@
 package com.onepiece.treasure.web.controller
 
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.database.MemberQuery
+import com.onepiece.treasure.beans.value.database.MemberUo
 import com.onepiece.treasure.beans.value.internet.web.*
 import com.onepiece.treasure.core.service.MemberService
+import com.onepiece.treasure.core.service.WalletService
 import com.onepiece.treasure.web.controller.basic.BasicController
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
@@ -13,7 +17,8 @@ import java.time.LocalDateTime
 @RestController
 @RequestMapping("/member")
 class MemberApiController(
-        private val memberService: MemberService
+        private val memberService: MemberService,
+        private val walletService: WalletService
 ) : BasicController(), MemberApi {
 
     @GetMapping
@@ -44,13 +49,38 @@ class MemberApiController(
 
     @PutMapping
     override fun change(
-            @RequestBody memberUo: MemberUo
+            @RequestBody memberUoReq: MemberUoReq
     ) {
 
+        val member = memberService.getMember(memberUoReq.id)
+        check(member.clientId == clientId) { OnePieceExceptionCode.AUTHORITY_FAIL }
+
+        val memberUo = MemberUo(id = memberUoReq.id, levelId = memberUoReq.levelId, password = memberUoReq.password,
+                status = memberUoReq.status)
+        memberService.update(memberUo)
     }
 
-    @GetMapping("/balance/{memberId}")
-    override fun balance(@PathVariable("memberId") memberId: Int): BalanceDetail {
-        return BalanceValueFactory.generatorBalanceDetail()
+    @GetMapping("/wallet/{memberId}")
+    override fun balance(
+            @PathVariable(value = "memberId") memberId: Int,
+            @RequestParam(value = "platform") platform: Platform
+    ): WalletVo {
+
+        val wallet = walletService.getMemberWallet(memberId)
+
+        val walletVo = with(wallet) {
+            WalletVo(id = wallet.id, memberId = wallet.memberId, platform = platform, balance = balance, freezeBalance = freezeBalance,
+                    currentBet = currentBet, demandBet = demandBet, totalGiftBalance = totalGiftBalance, totalBet = totalBet,
+                    totalFrequency = totalFrequency, totalBalance = totalBalance, giftBalance = giftBalance)
+        }
+
+        return when (platform) {
+            Platform.Center -> walletVo
+            else -> {
+                //TODO 从平台中查询余额
+                walletVo.copy(balance = BigDecimal.valueOf(100))
+            }
+
+        }
     }
 }

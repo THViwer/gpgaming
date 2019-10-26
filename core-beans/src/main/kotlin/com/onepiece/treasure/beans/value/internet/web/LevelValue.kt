@@ -47,7 +47,7 @@ data class LevelVo(
         val createdTime: LocalDateTime
 )
 
-data class LevelUo(
+data class LevelUoReq(
         @ApiModelProperty("id")
         val id: Int,
 
@@ -58,13 +58,11 @@ data class LevelUo(
         val status: Status?
 )
 
-data class LevelCo(
+data class LevelCoReq(
 
         @ApiModelProperty("名称")
-        val name: String?,
+        val name: String
 
-        @ApiModelProperty("状态")
-        val status: Status?
 )
 
 data class LevelMoveDo(

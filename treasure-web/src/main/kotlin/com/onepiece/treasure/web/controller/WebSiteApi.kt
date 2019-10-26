@@ -1,7 +1,7 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.beans.value.internet.web.WebSiteCo
-import com.onepiece.treasure.beans.value.internet.web.WebSiteUo
+import com.onepiece.treasure.beans.value.internet.web.WebSiteCoReq
+import com.onepiece.treasure.beans.value.internet.web.WebSiteUoReq
 import com.onepiece.treasure.beans.value.internet.web.WebSiteVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -16,10 +16,10 @@ interface WebSiteApi {
     fun all(): List<WebSiteVo>
 
     @ApiOperation(tags = ["setting"], value = "domain -> ")
-    fun create(@RequestBody webSiteCo: WebSiteCo)
+    fun create(@RequestBody webSiteCoReq: WebSiteCoReq)
 
     @ApiOperation(tags = ["setting"], value = "domain -> update")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    fun update(@RequestBody webSiteUo: WebSiteUo)
+    fun update(@RequestBody webSiteUoReq: WebSiteUoReq)
 
 }

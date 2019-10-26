@@ -1,6 +1,6 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.beans.value.internet.web.PlatformUo
+import com.onepiece.treasure.beans.value.internet.web.PlatformUoReq
 import com.onepiece.treasure.beans.value.internet.web.PlatformVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -16,6 +16,6 @@ interface ClientPlatformApi {
 
     @ApiOperation(tags = ["setting"], value = "platform -> update")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    fun update(@RequestBody platformUo: PlatformUo)
+    fun update(@RequestBody platformUoReq: PlatformUoReq)
 
 }

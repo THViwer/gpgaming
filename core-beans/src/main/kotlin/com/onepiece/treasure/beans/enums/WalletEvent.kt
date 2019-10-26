@@ -15,6 +15,10 @@ enum class WalletEvent {
     TRANSFER_OUT,
 
     // 补偿
-    REPARATION
+    REPARATION,
+
+    // 投注
+    BET
+
 
 }

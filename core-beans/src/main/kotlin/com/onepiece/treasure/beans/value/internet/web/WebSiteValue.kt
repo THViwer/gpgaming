@@ -33,14 +33,14 @@ data class WebSiteVo(
         val createdTime: LocalDateTime
 )
 
-data class WebSiteCo(
+data class WebSiteCoReq(
 
         @ApiModelProperty("域名地址")
         val domain: String
 
 )
 
-data class WebSiteUo(
+data class WebSiteUoReq(
 
         @ApiModelProperty("id")
         val id: Int,

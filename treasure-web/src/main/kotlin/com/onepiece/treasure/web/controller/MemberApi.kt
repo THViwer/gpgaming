@@ -1,9 +1,10 @@
 package com.onepiece.treasure.web.controller
 
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
-import com.onepiece.treasure.beans.value.internet.web.BalanceDetail
 import com.onepiece.treasure.beans.value.internet.web.MemberPage
-import com.onepiece.treasure.beans.value.internet.web.MemberUo
+import com.onepiece.treasure.beans.value.internet.web.MemberUoReq
+import com.onepiece.treasure.beans.value.internet.web.WalletVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
@@ -31,11 +32,14 @@ interface MemberApi {
     @ApiOperation(tags = ["user"], value = "member -> update")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun change(
-            @RequestBody memberUo: MemberUo
+            @RequestBody memberUoReq: MemberUoReq
     )
 
     @ApiOperation(tags = ["user"], value = "member -> balance detail")
-    fun balance(@PathVariable("memberId") memberId: Int): BalanceDetail
+    fun balance(
+            @PathVariable(value = "memberId") memberId: Int,
+            @RequestParam(value = "platform") platform: Platform
+    ): WalletVo
 
 
 

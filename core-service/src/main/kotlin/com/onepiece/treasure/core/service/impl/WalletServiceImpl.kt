@@ -1,5 +1,6 @@
 package com.onepiece.treasure.core.service.impl
 
+import com.onepiece.treasure.beans.enums.WalletEvent
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Wallet
 import com.onepiece.treasure.beans.value.database.WalletCo
@@ -29,7 +30,20 @@ class WalletServiceImpl(
 
         val wallet = this.getMemberWallet(walletUo.memberId)
 
-        val state = walletDao.update(walletUo)
+
+
+        val state = when (walletUo.event) {
+            WalletEvent.TOPUP, WalletEvent.WITHDRAW, WalletEvent.REPARATION -> {
+                walletDao.update(walletUo)
+            }
+            WalletEvent.TRANSFER, WalletEvent.TRANSFER_OUT -> {
+                walletDao.transfer(walletUo)
+            }
+            WalletEvent.BET -> {
+                walletDao.bet(walletUo)
+            }
+        }
+
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // TODO async insert wallet note

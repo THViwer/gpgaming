@@ -36,5 +36,5 @@ data class ClientUo(
         val ip: String? = null,
 
         // 登陆时间
-        val loginTime: LocalDateTime?
+        val loginTime: LocalDateTime? = null
 )

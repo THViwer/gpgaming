@@ -1,7 +1,7 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.beans.value.internet.web.ClientBankCo
-import com.onepiece.treasure.beans.value.internet.web.ClientBankUo
+import com.onepiece.treasure.beans.value.internet.web.ClientBankCoReq
+import com.onepiece.treasure.beans.value.internet.web.ClientBankUoReq
 import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -17,10 +17,10 @@ interface ClientBankApi {
 
     @ApiOperation(tags = ["setting"], value = "clientBank -> create")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    fun create(@RequestBody clientBankCo: ClientBankCo)
+    fun create(@RequestBody clientBankCoReq: ClientBankCoReq)
 
     @ApiOperation(tags = ["setting"], value = "clientBank -> update")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    fun update(@RequestBody clientBankUo: ClientBankUo)
+    fun update(@RequestBody clientBankUoReq: ClientBankUoReq)
 
 }

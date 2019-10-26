@@ -1,6 +1,6 @@
 package com.onepiece.treasure.core.dao.impl
 
-import com.onepiece.treasure.beans.enums.Banks
+import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.model.Deposit
 import com.onepiece.treasure.beans.value.database.DepositCo
@@ -22,7 +22,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
             val processId = rs.getString("process_id")
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
-            val bank = rs.getString("bank").let { Banks.valueOf(it) }
+            val bank = rs.getString("bank").let { Bank.valueOf(it) }
             val bankCardNumber = rs.getString("bank_card_number")
             val money = rs.getBigDecimal("money")
             val imgPath = rs.getString("imgPath")

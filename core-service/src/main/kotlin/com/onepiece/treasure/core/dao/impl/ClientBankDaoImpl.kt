@@ -1,5 +1,6 @@
 package com.onepiece.treasure.core.dao.impl
 
+import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.core.dao.ClientBankDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import com.onepiece.treasure.beans.value.database.ClientBankCo
@@ -16,11 +17,12 @@ class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao
         get() = { rs ->
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
+            val bank = rs.getString("bank").let { Bank.valueOf(it) }
             val bankCardNumber = rs.getString("bank_card_number")
-            val cardName = rs.getString("card_name")
+            val name = rs.getString("name")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            ClientBank(id = id, clientId = clientId, bankCardNumber = bankCardNumber, cardName = cardName, status = status,
+            ClientBank(id = id, clientId = clientId, bank = bank, bankCardNumber = bankCardNumber, name = name, status = status,
                     createdTime = createdTime)
         }
 
@@ -31,15 +33,18 @@ class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao
 
     override fun create(clientBankCo: ClientBankCo): Boolean {
         return insert().set("client_id", clientBankCo.clientId)
+                .set("bank", clientBankCo.bank)
                 .set("bank_card_number", clientBankCo.bankCardNumber)
-                .set("card_name", clientBankCo.cardName)
+                .set("name", clientBankCo.name)
                 .set("status", Status.Normal)
                 .executeOnlyOne()
     }
 
     override fun update(clientBankUo: ClientBankUo): Boolean {
         return update().set("bank_card_number", clientBankUo.bankCardNumber)
-                .set("card_name", clientBankUo.cardName)
+                .set("bank", clientBankUo.bank)
+                .set("name", clientBankUo.name)
+                .set("bank_card_number", clientBankUo.bankCardNumber)
                 .set("status", clientBankUo.status)
                 .where("id", clientBankUo.id)
                 .executeOnlyOne()
