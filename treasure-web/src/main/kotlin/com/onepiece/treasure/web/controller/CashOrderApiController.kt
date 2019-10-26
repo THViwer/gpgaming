@@ -2,7 +2,9 @@ package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.enums.WithdrawState
+import com.onepiece.treasure.beans.value.database.DepositQuery
 import com.onepiece.treasure.beans.value.internet.web.*
+import com.onepiece.treasure.core.service.DepositService
 import com.onepiece.treasure.web.controller.basic.BasicController
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
@@ -10,7 +12,10 @@ import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/cash")
-class CashOrderApiController : BasicController(), CashOrderApi {
+class CashOrderApiController(
+        private val depositService: DepositService,
+        private val withdrawService: DepositService
+) : BasicController(), CashOrderApi {
 
     @GetMapping("/deposit")
     override fun deposit(
@@ -20,7 +25,14 @@ class CashOrderApiController : BasicController(), CashOrderApi {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime
     ): List<DepositVo> {
-        return DepositValueFactory.generatorDeposits()
+        val depositQuery = DepositQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state)
+        return depositService.query(depositQuery).map {
+            with(it) {
+                DepositVo(orderId = it.orderId, money = money, bank = bank, bankCardNumber = bankCardNumber, name = name, imgPath = imgPath,
+                        createdTime = createdTime, remark = remarks, endTime = endTime, clientBankId = clientBankId, clientBankCardNumber = clientBankCardNumber,
+                        clientBankName = clientBankName, bankOrderId = null, memberId = memberId, state = it.state)
+            }
+        }
     }
 
     @PutMapping("/deposit")

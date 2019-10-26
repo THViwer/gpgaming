@@ -15,7 +15,10 @@ data class ClientBankCo(
         val bankCardNumber: String,
 
         // 银行名称
-        val name: String
+        val name: String,
+
+        // 层级
+        val levelId: Int?
 )
 
 data class ClientBankUo(
@@ -33,6 +36,9 @@ data class ClientBankUo(
         val name: String? = null,
 
         // 状态
-        val status: Status? = null
+        val status: Status? = null,
+
+        // 层级
+        val levelId: Int? = null
 
 )

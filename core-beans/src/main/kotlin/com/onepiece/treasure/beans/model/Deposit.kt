@@ -31,6 +31,18 @@ data class Deposit(
         // 银行卡号
         val bankCardNumber: String,
 
+        // 存款人姓名
+        val name: String,
+
+        // 厅主银行卡Id
+        val clientBankId: Int,
+
+        // 厅主银行卡号
+        val clientBankCardNumber: String,
+
+        // 厅主银行卡姓名
+        val clientBankName: String,
+
         // 充值金额
         val money: BigDecimal,
 

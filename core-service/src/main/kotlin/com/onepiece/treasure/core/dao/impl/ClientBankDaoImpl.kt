@@ -20,10 +20,11 @@ class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao
             val bank = rs.getString("bank").let { Bank.valueOf(it) }
             val bankCardNumber = rs.getString("bank_card_number")
             val name = rs.getString("name")
+            val levelId = rs.getInt("level_id")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             ClientBank(id = id, clientId = clientId, bank = bank, bankCardNumber = bankCardNumber, name = name, status = status,
-                    createdTime = createdTime)
+                    createdTime = createdTime, levelId = levelId)
         }
 
     override fun findClientBank(clientId: Int): List<ClientBank> {
@@ -36,6 +37,7 @@ class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao
                 .set("bank", clientBankCo.bank)
                 .set("bank_card_number", clientBankCo.bankCardNumber)
                 .set("name", clientBankCo.name)
+                .set("level_id", clientBankCo.levelId)
                 .set("status", Status.Normal)
                 .executeOnlyOne()
     }
@@ -46,6 +48,7 @@ class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao
                 .set("name", clientBankUo.name)
                 .set("bank_card_number", clientBankUo.bankCardNumber)
                 .set("status", clientBankUo.status)
+                .set("level_id", clientBankUo.levelId)
                 .where("id", clientBankUo.id)
                 .executeOnlyOne()
     }

@@ -21,6 +21,9 @@ data class ClientBank(
         // 银行卡号
         val bankCardNumber: String,
 
+        // 层级Id
+        val levelId: Int?,
+
         // 银行名称
         val name: String,
 
