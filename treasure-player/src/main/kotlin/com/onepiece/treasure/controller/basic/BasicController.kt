@@ -3,9 +3,11 @@ package com.onepiece.treasure.controller.basic
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.treasure.core.service.PlatformMemberService
+import org.springframework.beans.factory.annotation.Autowired
 
 abstract class BasicController {
 
+    @Autowired
     lateinit var platformMemberService: PlatformMemberService
 
     val clientId = 1

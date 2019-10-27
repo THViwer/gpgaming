@@ -45,6 +45,12 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                 .set("member_id", platformMemberCo.memberId)
                 .set("username", platformMemberCo.username)
                 .set("password", platformMemberCo.password)
+                .set("current_bet", BigDecimal.ZERO)
+                .set("demand_bet", BigDecimal.ZERO)
+                .set("gift_balance", BigDecimal.ZERO)
+                .set("total_bet", BigDecimal.ZERO)
+                .set("total_balance", BigDecimal.ZERO)
+                .set("total_gift_balance", BigDecimal.ZERO)
                 .executeGeneratedKey()
     }
 

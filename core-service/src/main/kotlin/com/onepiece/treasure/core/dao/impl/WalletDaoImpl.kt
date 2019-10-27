@@ -116,7 +116,7 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
                 .set("process_id", UUID.randomUUID().toString())
                 .where("id", walletTransferOutUo.id)
                 .where("process_id", walletTransferOutUo.processId)
-                .asWhere("balance <= ${walletTransferOutUo.money}")
+                .asWhere("balance >= ${walletTransferOutUo.money}")
                 .executeOnlyOne()
     }
 
