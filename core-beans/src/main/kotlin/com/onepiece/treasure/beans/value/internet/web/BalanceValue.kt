@@ -39,7 +39,10 @@ data class WalletVo(
         val freezeBalance: BigDecimal,
 
         @ApiModelProperty("总充值金额")
-        val totalBalance: BigDecimal,
+        val totalDepositBalance: BigDecimal,
+
+        @ApiModelProperty("总取款金额")
+        val totalWithdrawBalance: BigDecimal,
 
         @ApiModelProperty("总优惠金额")
         val totalGiftBalance: BigDecimal

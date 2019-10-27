@@ -11,6 +11,7 @@ import com.onepiece.treasure.core.dao.DepositDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
+import java.time.LocalDateTime
 import java.util.*
 
 @Repository
@@ -30,7 +31,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
             val clientBankCardNumber = rs.getString("client_bank_card_number")
             val clientBankName = rs.getString("client_bank_name")
             val money = rs.getBigDecimal("money")
-            val imgPath = rs.getString("imgPath")
+            val imgPath = rs.getString("img_path")
             val state = rs.getString("state").let { DepositState.valueOf(it) }
             val remarks = rs.getString("remarks")
             val lockWaiterId = rs.getInt("lock_waiter_id")
@@ -101,8 +102,13 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
     }
 
     override fun update(depositUo: DepositUo): Boolean {
-        val sql = "update deposit set state = ?, remarks = ?, process_id = ? where order_id = ? and process_id = ? and lock_waiter_id = ?"
-        return jdbcTemplate.update(sql, depositUo.state.name, depositUo.remarks, UUID.randomUUID().toString(), depositUo.orderId,
-                depositUo.processId, depositUo.lockWaiterId) == 1
+        return update().set("state", depositUo.state)
+                .set("remarks", depositUo.remarks)
+                .set("process_id", UUID.randomUUID().toString())
+                .set("end_time", LocalDateTime.now())
+                .where("order_id", depositUo.orderId)
+                .where("process_id", depositUo.processId)
+                .where("lock_waiter_id", depositUo.lockWaiterId)
+                .executeOnlyOne()
     }
 }

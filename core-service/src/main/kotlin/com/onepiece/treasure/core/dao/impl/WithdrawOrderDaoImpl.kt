@@ -11,10 +11,11 @@ import com.onepiece.treasure.core.dao.WithdrawDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
+import java.time.LocalDateTime
 import java.util.*
 
 @Repository
-class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw_order"), WithdrawDao {
+class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
 
     override val mapper: (rs: ResultSet) -> Withdraw
         get() = { rs ->
@@ -85,6 +86,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw_order"), WithdrawD
                 .set("member_id", orderCo.memberId)
                 .set("member_bank_id", orderCo.memberBankId)
                 .set("member_name", orderCo.memberBankId)
+                .set("member_bank", orderCo.memberBank)
                 .set("member_bank_card_number", orderCo.memberBankCardNumber)
                 .set("money", orderCo.money)
                 .set("state", WithdrawState.Process)
@@ -95,8 +97,9 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw_order"), WithdrawD
     override fun check(orderUo: WithdrawUo): Boolean {
         return update()
                 .set("state", orderUo.state)
-                .set("process", UUID.randomUUID().toString())
+                .set("process_id", UUID.randomUUID().toString())
                 .set("remarks", orderUo.remarks)
+                .set("end_time", LocalDateTime.now())
                 .where("client_id", orderUo.clientId)
                 .where("order_id", orderUo.orderId)
                 .where("process_id", orderUo.processId)

@@ -58,7 +58,7 @@ class DepositServiceImpl(
         if (depositUo.state == DepositState.Successful) {
             val remarks = depositUoReq.remarks?: "waiterId:${depositUoReq.waiterId} check"
             val walletUo = WalletUo(clientId = depositUo.clientId, memberId = order.memberId, event = WalletEvent.DEPOSIT, remarks = remarks,
-                    money = order.money)
+                    money = order.money, waiterId = depositUoReq.waiterId, eventId = order.orderId)
             walletService.update(walletUo)
         }
     }

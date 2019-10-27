@@ -91,10 +91,10 @@ data class DepositUoReq(
         @ApiModelProperty("备注")
         val remarks: String?,
 
-        @ApiIgnore
+        @ApiModelProperty(hidden = true)
         val clientId: Int = 0,
 
-        @ApiIgnore
+        @ApiModelProperty(hidden = true)
         val waiterId: Int = 0
 
 )

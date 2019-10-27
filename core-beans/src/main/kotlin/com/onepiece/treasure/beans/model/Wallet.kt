@@ -24,7 +24,10 @@ data class Wallet(
         val freezeBalance: BigDecimal,
 
         // 总充值金额
-        val totalBalance: BigDecimal,
+        val totalDepositBalance: BigDecimal,
+
+        // 总取款金额
+        val totalWithdrawBalance: BigDecimal,
 
         // 总优惠金额
         val totalGiftBalance: BigDecimal,

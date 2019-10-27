@@ -79,7 +79,7 @@ class MemberApiController(
 
         return with(wallet) {
             WalletVo(id = wallet.id, memberId = wallet.memberId, balance = balance, freezeBalance = freezeBalance,
-                    totalGiftBalance = totalGiftBalance, totalBalance = totalBalance)
+                    totalGiftBalance = totalGiftBalance, totalDepositBalance = totalDepositBalance, totalWithdrawBalance = totalWithdrawBalance)
         }
 
 //        return when (platform) {

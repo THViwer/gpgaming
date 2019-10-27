@@ -3,6 +3,7 @@ package com.onepiece.treasure.controller
 import com.onepiece.treasure.beans.base.Page
 import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.enums.WithdrawState
+import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
 import com.onepiece.treasure.beans.value.internet.web.DepositVo
 import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
 import com.onepiece.treasure.controller.value.*
@@ -28,6 +29,9 @@ interface CashApi {
     @ApiOperation(tags = ["cash"], value = "bank")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun bankUpdate(@RequestBody memberBankUoReq: MemberBankUoReq)
+
+    @ApiOperation(tags = ["cash"], value = "client banks")
+    fun clientBanks(): List<ClientBankVo>
 
     @ApiOperation(tags = ["cash"], value = "deposit")
     fun deposit(

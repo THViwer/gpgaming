@@ -16,11 +16,14 @@ class WalletNoteDaoImpl : BasicDaoImpl<WalletNote>("wallet_note"), WalletNoteDao
         get() = { rs ->
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
+            val waiterId = rs.getInt("waiter_id")
             val memberId = rs.getInt("member_id")
+            val eventId = rs.getString("event_id")
             val event = rs.getString("event").let { WalletEvent.valueOf(it) }
             val remarks = rs.getString("remarks")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            WalletNote(id = id, clientId = clientId, memberId = memberId, event = event, remarks = remarks, createdTime = createdTime)
+            WalletNote(id = id, clientId = clientId, memberId = memberId, event = event, remarks = remarks, createdTime = createdTime,
+                    waiterId = waiterId, eventId = eventId)
         }
 
 
@@ -33,7 +36,9 @@ class WalletNoteDaoImpl : BasicDaoImpl<WalletNote>("wallet_note"), WalletNoteDao
 
     override fun create(walletNoteCo: WalletNoteCo): Boolean {
         return insert().set("client_id", walletNoteCo.clientId)
+                .set("waiter_id", walletNoteCo.waiterId)
                 .set("member_id", walletNoteCo.memberId)
+                .set("event_id", walletNoteCo.eventId)
                 .set("event", walletNoteCo.event)
                 .set("remarks", walletNoteCo.remarks)
                 .executeOnlyOne()

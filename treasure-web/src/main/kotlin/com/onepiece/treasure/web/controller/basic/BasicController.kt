@@ -15,7 +15,7 @@ abstract class BasicController {
 
     val currentIp = "192.168.2.1"
 
-    val role = Role.Client
+    val role = Role.Waiter
 
     val name = "zhangdan"
 

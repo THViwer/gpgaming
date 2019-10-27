@@ -19,17 +19,18 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
             val balance = rs.getBigDecimal("balance")
             val freezeBalance = rs.getBigDecimal("freeze_balance")
 
-            val totalBalance = rs.getBigDecimal("total_balance")
+            val totalDepositBalance = rs.getBigDecimal("total_deposit_balance")
+            val totalWithdrawBalance = rs.getBigDecimal("total_withdraw_balance")
             val totalGiftBalance = rs.getBigDecimal("total_gift_balance")
             val totalDepositFrequency = rs.getInt("total_deposit_frequency")
             val totalWithdrawFrequency = rs.getInt("total_withdraw_frequency")
 
             val processId = rs.getString("process_id")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            Wallet(id = id, clientId = clientId, memberId = memberId, balance = balance, totalBalance = totalBalance,
+            Wallet(id = id, clientId = clientId, memberId = memberId, balance = balance, totalDepositBalance = totalDepositBalance,
                     totalDepositFrequency = totalDepositFrequency, createdTime = createdTime,
                     processId = processId, freezeBalance = freezeBalance, totalWithdrawFrequency = totalWithdrawFrequency,
-                    totalGiftBalance = totalGiftBalance)
+                    totalGiftBalance = totalGiftBalance, totalWithdrawBalance = totalWithdrawBalance)
         }
 
     override fun getMemberWallet(memberId: Int): Wallet {
@@ -66,7 +67,7 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
 
     override fun deposit(walletDepositUo: WalletDepositUo): Boolean {
         return update().asSet("balance = balance + ${walletDepositUo.money}")
-                .asSet("total_balance = total_balance + ${walletDepositUo.money}")
+                .asSet("total_deposit_balance = total_deposit_balance + ${walletDepositUo.money}")
                 .asSet("total_deposit_frequency = total_deposit_frequency + 1")
                 .set("process_id", UUID.randomUUID().toString())
                 .where("id", walletDepositUo.id)
@@ -86,12 +87,20 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
     override fun withdraw(walletWithdrawUo: WalletWithdrawUo): Boolean {
         return update().asSet("freeze_balance = freeze_balance - ${walletWithdrawUo.money}")
                 .asSet("total_withdraw_frequency = total_withdraw_frequency + 1")
+                .asSet("total_withdraw_balance = total_withdraw_balance + ${walletWithdrawUo.money}")
                 .set("process_id", UUID.randomUUID().toString())
                 .where("id", walletWithdrawUo.id)
                 .where("process_id", walletWithdrawUo.processId)
                 .executeOnlyOne()
-
     }
+
+    override fun withdrawFail(walletWithdrawUo: WalletWithdrawUo): Boolean {
+        return update().asSet("freeze_balance = freeze_balance - ${walletWithdrawUo.money}")
+                .asSet("balance = balance + ${walletWithdrawUo.money}")
+                .set("process_id", UUID.randomUUID().toString())
+                .where("id", walletWithdrawUo.id)
+                .where("process_id", walletWithdrawUo.processId)
+                .executeOnlyOne()    }
 
     override fun transferIn(walletTransferInUo: WalletTransferInUo): Boolean {
         return update().asSet("balance = balance + ${walletTransferInUo.money}")

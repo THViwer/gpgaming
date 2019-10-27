@@ -43,7 +43,7 @@ class CashOrderApiController(
         }
     }
 
-    @GetMapping("/deposit/lock")
+    @PutMapping("/deposit/lock")
     override fun tryLock(@RequestParam("orderId") orderId: String) {
         val order = depositService.findDeposit(clientId, orderId)
         check(order.state ==  DepositState.Close || order.state == DepositState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
@@ -81,7 +81,7 @@ class CashOrderApiController(
         }
     }
 
-    @GetMapping("/withdraw/lock")
+    @PutMapping("/withdraw/lock")
     override fun withdrawLock(@RequestParam("orderId") orderId: String) {
         val order = withdrawService.findWithdraw(clientId, orderId)
         check( order.state == WithdrawState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }

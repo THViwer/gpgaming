@@ -20,6 +20,8 @@ interface WalletDao: BasicDao<Wallet> {
 
     fun withdraw(walletWithdrawUo: WalletWithdrawUo): Boolean
 
+    fun withdrawFail(walletWithdrawUo: WalletWithdrawUo): Boolean
+
     fun transferIn(walletTransferInUo: WalletTransferInUo): Boolean
 
     fun transferOut(walletTransferOutUo: WalletTransferOutUo): Boolean

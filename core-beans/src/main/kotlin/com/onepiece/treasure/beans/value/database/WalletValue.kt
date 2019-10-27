@@ -14,6 +14,8 @@ data class WalletUo(
 
         val clientId: Int,
 
+        val waiterId: Int?,
+
         val memberId: Int,
 
         // 金额
@@ -21,6 +23,9 @@ data class WalletUo(
 
         // 赠送金额
         val giftBalance: BigDecimal = BigDecimal.ZERO,
+
+        // 事件Id
+        val eventId: String?,
 
         // 钱包事件
         val event: WalletEvent,

@@ -6,8 +6,13 @@ data class WalletNoteCo(
         // 厅主Id
         val clientId: Int,
 
+        val waiterId: Int?,
+
         // 会员Id
         val memberId: Int,
+
+        // 事件Id
+        val eventId: String?,
 
         // 事件
         val event: WalletEvent,

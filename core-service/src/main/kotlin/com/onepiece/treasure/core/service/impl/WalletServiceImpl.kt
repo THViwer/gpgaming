@@ -8,7 +8,6 @@ import com.onepiece.treasure.core.dao.WalletDao
 import com.onepiece.treasure.core.dao.WalletNoteDao
 import com.onepiece.treasure.core.service.WalletService
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
 
 @Service
 class WalletServiceImpl(
@@ -29,16 +28,23 @@ class WalletServiceImpl(
 
         val wallet = this.getMemberWallet(walletUo.memberId)
 
-         val state = when (walletUo.event) {
+        val state = when (walletUo.event) {
 
             WalletEvent.DEPOSIT -> {
                 val walletDepositUo = WalletDepositUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
                 walletDao.deposit(walletDepositUo)
             }
+            WalletEvent.FREEZE -> {
+                val walletFreezeUo = WalletFreezeUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
+                walletDao.freeze(walletFreezeUo)
+            }
             WalletEvent.WITHDRAW -> {
                 val walletWithdrawUo = WalletWithdrawUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
                 walletDao.withdraw(walletWithdrawUo)
-
+            }
+            WalletEvent.WITHDRAW_FAIL -> {
+                val walletWithdrawUo = WalletWithdrawUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
+                walletDao.withdrawFail(walletWithdrawUo)
             }
             WalletEvent.TRANSFER_IN -> {
                 val transferInUo = WalletTransferInUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
@@ -53,7 +59,8 @@ class WalletServiceImpl(
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // TODO async insert wallet note
-        val walletNoteCo = WalletNoteCo(clientId = walletUo.clientId, memberId = wallet.memberId, event = walletUo.event, remarks = walletUo.remarks)
+        val walletNoteCo = WalletNoteCo(clientId = walletUo.clientId, memberId = wallet.memberId, event = walletUo.event, remarks = walletUo.remarks,
+                waiterId = walletUo.waiterId, eventId = walletUo.eventId)
         val wnState = walletNoteDao.create(walletNoteCo)
         check(wnState) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }

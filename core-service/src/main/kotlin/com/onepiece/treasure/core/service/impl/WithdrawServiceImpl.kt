@@ -37,6 +37,10 @@ class WithdrawServiceImpl(
     override fun create(withdrawCo: WithdrawCo) {
         val state = withdrawDao.create(withdrawCo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        val walletUo = WalletUo(clientId = withdrawCo.clientId, waiterId = null, memberId = withdrawCo.memberId, money = withdrawCo.money,
+                eventId = withdrawCo.orderId, event = WalletEvent.FREEZE, remarks = "memberId:${withdrawCo.memberId} freeze")
+        walletService.update(walletUo)
     }
 
     override fun lock(withdrawLockUo: DepositLockUo) {
@@ -54,11 +58,23 @@ class WithdrawServiceImpl(
         val state = withdrawDao.check(withdrawUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
-        if (withdrawUoReq.state == WithdrawState.Successful) {
-            val remarks = withdrawUoReq.remarks ?: "waiterId:${withdrawUoReq.waiterId} check"
-            val walletUo = WalletUo(clientId = withdrawUoReq.clientId, memberId = order.memberId, money = order.money, event = WalletEvent.WITHDRAW,
-                    remarks = remarks)
-            walletService.update(walletUo)
+
+        when (withdrawUoReq.state) {
+            WithdrawState.Successful -> {
+                val remarks = withdrawUoReq.remarks ?: "waiterId:${withdrawUoReq.waiterId} check"
+                val walletUo = WalletUo(clientId = withdrawUoReq.clientId, memberId = order.memberId, money = order.money, event = WalletEvent.WITHDRAW,
+                        remarks = remarks, waiterId = withdrawUoReq.waiterId, eventId = order.orderId)
+                walletService.update(walletUo)
+            }
+            WithdrawState.Fail -> {
+                val remarks = withdrawUoReq.remarks ?: "waiterId:${withdrawUoReq.waiterId} withdraw fail"
+                val walletUo = WalletUo(clientId = withdrawUoReq.clientId, memberId = order.memberId, money = order.money, event = WalletEvent.WITHDRAW_FAIL,
+                        remarks = remarks, waiterId = withdrawUoReq.waiterId, eventId = order.orderId)
+                walletService.update(walletUo)
+            }
+            else -> {
+                //TODO NOTHING
+            }
         }
 
     }

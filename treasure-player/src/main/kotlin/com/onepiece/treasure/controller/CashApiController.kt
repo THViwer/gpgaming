@@ -2,10 +2,12 @@ package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.base.Page
 import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.enums.WalletEvent
 import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.database.*
+import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
 import com.onepiece.treasure.beans.value.internet.web.DepositVo
 import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
 import com.onepiece.treasure.controller.basic.BasicController
@@ -16,7 +18,6 @@ import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.*
 
 @RestController
 @RequestMapping("/cash")
@@ -54,7 +55,16 @@ class CashApiController(
         val memberBankUo = MemberBankUo(id = memberBankUoReq.id, bank = memberBankUoReq.bank, bankCardNumber = memberBankUoReq.bankCardNumber,
                 status = memberBankUoReq.status)
         memberBankService.update(memberBankUo)
+    }
 
+    @GetMapping("/client/banks")
+    override fun clientBanks(): List<ClientBankVo> {
+        return clientBankService.findClientBank(clientId).filter { it.status == Status.Normal }.map {
+            with(it) {
+                ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
+                        status = status, createdTime = createdTime)
+            }
+        }
     }
 
     @GetMapping("/deposit")
@@ -86,7 +96,7 @@ class CashApiController(
     }
 
 
-    @PutMapping("/deposit")
+    @PostMapping("/deposit")
     override fun deposit(@RequestBody depositCoReq: DepositCoReq): CashDepositResp {
 
         val clientBank = clientBankService.get(depositCoReq.clientBankId)
@@ -129,7 +139,7 @@ class CashApiController(
         return Page.of(page.total, data)
     }
 
-    @PutMapping("/withdraw")
+    @PostMapping("/withdraw")
     override fun withdraw(@RequestBody withdrawCoReq: WithdrawCoReq): CashWithdrawResp {
 
         // check bank id
@@ -163,7 +173,8 @@ class CashApiController(
                 val giftBalance = BigDecimal.ZERO
 
                 // 中心钱包扣款
-                val walletUo = WalletUo(clientId = clientId, memberId = id, event = WalletEvent.TRANSFER_OUT, money = cashTransferReq.money, remarks = "transfer center to platform")
+                val walletUo = WalletUo(clientId = clientId, memberId = id, event = WalletEvent.TRANSFER_OUT, money = cashTransferReq.money,
+                        remarks = "transfer center to platform", waiterId = null, eventId = null)
                 walletService.update(walletUo)
 
                 //TODO 调用平台接口充值
@@ -187,7 +198,8 @@ class CashApiController(
                 check(wallet.balance.toDouble() - cashTransferReq.money.toDouble() > 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
 
                 // 中心钱包加钱
-                val walletUo = WalletUo(clientId = clientId, memberId = id, event = WalletEvent.TRANSFER_IN, money = cashTransferReq.money, remarks = "transfer platform to center")
+                val walletUo = WalletUo(clientId = clientId, memberId = id, event = WalletEvent.TRANSFER_IN, money = cashTransferReq.money,
+                        remarks = "transfer platform to center", waiterId = null, eventId = null)
                 walletService.update(walletUo)
 
                 //TODO 调用平台接口取款

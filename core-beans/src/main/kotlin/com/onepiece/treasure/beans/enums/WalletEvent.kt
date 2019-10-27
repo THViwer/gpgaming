@@ -5,8 +5,14 @@ enum class WalletEvent {
     // 充值
     DEPOSIT,
 
+    // 冻结
+    FREEZE,
+
     // 取款
     WITHDRAW,
+
+    // 取款失败
+    WITHDRAW_FAIL,
 
     // 转账
     TRANSFER_IN,
