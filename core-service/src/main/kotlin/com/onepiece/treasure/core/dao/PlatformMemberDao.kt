@@ -10,7 +10,7 @@ interface PlatformMemberDao: BasicDao<PlatformMember> {
 
     fun findPlatformMember(memberId: Int): List<PlatformMember>
 
-    fun create(platformMemberCo: PlatformMemberCo): Boolean
+    fun create(platformMemberCo: PlatformMemberCo): Int
 
     fun bet(platformMemberBetUo: PlatformMemberBetUo): Boolean
 

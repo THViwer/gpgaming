@@ -5,7 +5,7 @@ import com.onepiece.treasure.beans.model.Deposit
 import com.onepiece.treasure.beans.value.database.DepositCo
 import com.onepiece.treasure.beans.value.database.DepositLockUo
 import com.onepiece.treasure.beans.value.database.DepositQuery
-import com.onepiece.treasure.beans.value.database.DepositUo
+import com.onepiece.treasure.beans.value.internet.web.DepositUoReq
 
 interface DepositService {
 
@@ -19,6 +19,6 @@ interface DepositService {
 
     fun lock(depositLockUo: DepositLockUo)
 
-    fun update(depositUo: DepositUo)
+    fun check(depositUoReq: DepositUoReq)
 
 }

@@ -3,7 +3,9 @@ package com.onepiece.treasure.web.controller
 import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.treasure.beans.value.database.*
+import com.onepiece.treasure.beans.value.database.DepositLockUo
+import com.onepiece.treasure.beans.value.database.DepositQuery
+import com.onepiece.treasure.beans.value.database.WithdrawQuery
 import com.onepiece.treasure.beans.value.internet.web.DepositUoReq
 import com.onepiece.treasure.beans.value.internet.web.DepositVo
 import com.onepiece.treasure.beans.value.internet.web.WithdrawUoReq
@@ -52,13 +54,8 @@ class CashOrderApiController(
 
     @PutMapping("/deposit")
     override fun check(@RequestBody depositUoReq: DepositUoReq) {
-
-        val order = depositService.findDeposit(clientId, depositUoReq.orderId)
-        check(order.state ==  DepositState.Close || order.state == DepositState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
-
-        val depositUo = DepositUo(orderId = depositUoReq.orderId, processId = order.processId, state = depositUoReq.state,
-                remarks = depositUoReq.remark)
-        depositService.update(depositUo)
+        val req = depositUoReq.copy(clientId = clientId, waiterId = id)
+        depositService.check(req)
     }
 
 //    @PutMapping("/deposit/enforcement")
@@ -95,11 +92,9 @@ class CashOrderApiController(
 
     @PutMapping("/withdraw")
     override fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawUoReq) {
-        val order = withdrawService.findWithdraw(clientId, withdrawUoReq.orderId)
-        check( order.state == WithdrawState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
 
-        val withdrawUo = WithdrawUo(orderId = withdrawUoReq.orderId, processId = order.processId, state = withdrawUoReq.state, remarks = withdrawUoReq.remarks)
-        withdrawService.update(withdrawUo)
+        val req = withdrawUoReq.copy(clientId = clientId, waiterId = waiterId)
+        withdrawService.check(req)
 
     }
 }

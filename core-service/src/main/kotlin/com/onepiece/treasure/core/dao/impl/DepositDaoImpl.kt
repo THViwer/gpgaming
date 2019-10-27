@@ -101,7 +101,8 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
     }
 
     override fun update(depositUo: DepositUo): Boolean {
-        val sql = "update deposit set state = ?, remarks = ?, process_id = ? where order_id = ? and process_id = ?"
-        return jdbcTemplate.update(sql, depositUo.state.name, depositUo.remarks, UUID.randomUUID().toString(), depositUo.orderId, depositUo.processId) == 1
+        val sql = "update deposit set state = ?, remarks = ?, process_id = ? where order_id = ? and process_id = ? and lock_waiter_id = ?"
+        return jdbcTemplate.update(sql, depositUo.state.name, depositUo.remarks, UUID.randomUUID().toString(), depositUo.orderId,
+                depositUo.processId, depositUo.lockWaiterId) == 1
     }
 }

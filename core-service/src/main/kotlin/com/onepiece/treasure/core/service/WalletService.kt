@@ -2,6 +2,8 @@ package com.onepiece.treasure.core.service
 
 import com.onepiece.treasure.beans.model.Wallet
 import com.onepiece.treasure.beans.value.database.WalletCo
+import com.onepiece.treasure.beans.value.database.WalletTransferInUo
+import com.onepiece.treasure.beans.value.database.WalletTransferOutUo
 import com.onepiece.treasure.beans.value.database.WalletUo
 
 interface WalletService {

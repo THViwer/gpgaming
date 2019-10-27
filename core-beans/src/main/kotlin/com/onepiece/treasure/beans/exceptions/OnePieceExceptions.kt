@@ -27,6 +27,9 @@ object OnePieceExceptionCode {
 
     // 5000 cash error
     const val ORDER_EXPIRED = "5001" // 订单操作过期
+    const val TRANSFER_OUT_BET_FAIL = "5002" // 不可转出 打码量不足
+    const val BALANCE_SHORT_FAIL = "5003" // 余额不足
+    const val SAFETY_PASSWORD_CHECK_FAIL = "5004" // 取款密码错误
 
 
 }

@@ -2,6 +2,7 @@ package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.base.Page
 import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.enums.WalletEvent
 import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.database.*
@@ -10,12 +11,10 @@ import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.OrderIdBuilder
-import com.onepiece.treasure.core.service.ClientBankService
-import com.onepiece.treasure.core.service.DepositService
-import com.onepiece.treasure.core.service.MemberBankService
-import com.onepiece.treasure.core.service.WithdrawService
+import com.onepiece.treasure.core.service.*
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 
@@ -26,8 +25,11 @@ class CashApiController(
         private val depositService: DepositService,
         private val withdrawService: WithdrawService,
         private val clientBankService: ClientBankService,
-        private val orderIdBuilder: OrderIdBuilder
+        private val orderIdBuilder: OrderIdBuilder,
+        private val walletService: WalletService,
+        private val memberService: MemberService
 ) : BasicController(), CashApi {
+
 
     @GetMapping("/bank")
     override fun banks(): List<MemberBankVo> {
@@ -130,14 +132,18 @@ class CashApiController(
     @PutMapping("/withdraw")
     override fun withdraw(@RequestBody withdrawCoReq: WithdrawCoReq): CashWithdrawResp {
 
+        // check bank id
         val memberBank = memberBankService.query(id).find { it.id == withdrawCoReq.memberBankId }
         checkNotNull(memberBank) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
+        // check safety password
+        memberService.checkSafetyPassword(id = id, safetyPassword = withdrawCoReq.safetyPassword)
+
+        // create order
         val orderId = orderIdBuilder.generatorWithdrawOrderId()
         val withdrawCo = WithdrawCo(orderId = orderId, clientId = clientId, memberId = id, memberName = memberBank.name,
                 memberBank = memberBank.bank, memberBankCardNumber = memberBank.bankCardNumber, memberBankId = memberBank.id,
                 money = withdrawCoReq.money, remarks = null)
-
         withdrawService.create(withdrawCo)
 
         return CashWithdrawResp(orderId = orderId)
@@ -146,6 +152,46 @@ class CashApiController(
     @PutMapping("/transfer")
     override fun transfer(@RequestBody cashTransferReq: CashTransferReq) {
 
+        val platformMemberVo = getPlatformMember(cashTransferReq.platform)
+        val platformMember = platformMemberService.get(platformMemberVo.id)
 
+        when (cashTransferReq.action) {
+            // 中心钱包 -> 平台钱包
+            TransferAction.TransferIn -> {
+
+                // 活动赠送金额
+                val giftBalance = BigDecimal.ZERO
+
+                // 中心钱包扣款
+                val walletUo = WalletUo(clientId = clientId, memberId = id, event = WalletEvent.TRANSFER_OUT, money = cashTransferReq.money, remarks = "transfer center to platform")
+                walletService.update(walletUo)
+
+                //TODO 调用平台接口充值
+
+                // 平台钱包更改信息
+                val demandBet = if (giftBalance == BigDecimal.ZERO) {
+                    BigDecimal.ZERO
+                } else {
+                    giftBalance.plus(cashTransferReq.money).multiply(BigDecimal.valueOf(1.2))
+                }
+                val platformMemberTransferUo = PlatformMemberTransferUo(id = platformMember.id, money = cashTransferReq.money, giftBalance = giftBalance, demandBet = demandBet)
+                platformMemberService.transferIn(platformMemberTransferUo)
+            }
+            // 平台钱包 -> 中心钱包
+            TransferAction.TransferOut -> {
+
+                // 检查是否满足打码量
+                check(platformMember.currentBet > platformMember.demandBet) { OnePieceExceptionCode.TRANSFER_OUT_BET_FAIL }
+                // 检查余额
+                val wallet = walletService.getMemberWallet(id)
+                check(wallet.balance.toDouble() - cashTransferReq.money.toDouble() > 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
+
+                // 中心钱包加钱
+                val walletUo = WalletUo(clientId = clientId, memberId = id, event = WalletEvent.TRANSFER_IN, money = cashTransferReq.money, remarks = "transfer platform to center")
+                walletService.update(walletUo)
+
+                //TODO 调用平台接口取款
+            }
+        }
     }
 }

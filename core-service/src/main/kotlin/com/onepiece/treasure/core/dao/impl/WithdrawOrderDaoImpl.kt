@@ -92,8 +92,15 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw_order"), WithdrawD
                 .executeOnlyOne()
     }
 
-    override fun update(orderUo: WithdrawUo): Boolean {
-        val sql = "update withdraw_order set state = ? and remarks = ?, process_id = ? where order_id = ? and process_id = ?"
-        return jdbcTemplate.update(sql, orderUo.state.name, orderUo.remarks, UUID.randomUUID().toString(), orderUo.orderId, orderUo.processId) == 1
+    override fun check(orderUo: WithdrawUo): Boolean {
+        return update()
+                .set("state", orderUo.state)
+                .set("process", UUID.randomUUID().toString())
+                .set("remarks", orderUo.remarks)
+                .where("client_id", orderUo.clientId)
+                .where("order_id", orderUo.orderId)
+                .where("process_id", orderUo.processId)
+                .where("lock_waiter_id", orderUo.waiterId)
+                .executeOnlyOne()
     }
 }

@@ -75,6 +75,10 @@ data class WithdrawUo(
         // id
         val orderId: String,
 
+        val clientId: Int,
+
+        val waiterId: Int,
+
         // 流程Id 用于乐观锁
         val processId: String,
 

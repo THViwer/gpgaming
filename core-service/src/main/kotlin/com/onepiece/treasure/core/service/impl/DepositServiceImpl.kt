@@ -1,19 +1,21 @@
 package com.onepiece.treasure.core.service.impl
 
 import com.onepiece.treasure.beans.base.Page
+import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.enums.WalletEvent
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Deposit
-import com.onepiece.treasure.beans.value.database.DepositCo
-import com.onepiece.treasure.beans.value.database.DepositLockUo
-import com.onepiece.treasure.beans.value.database.DepositQuery
-import com.onepiece.treasure.beans.value.database.DepositUo
+import com.onepiece.treasure.beans.value.database.*
+import com.onepiece.treasure.beans.value.internet.web.DepositUoReq
 import com.onepiece.treasure.core.dao.DepositDao
 import com.onepiece.treasure.core.service.DepositService
+import com.onepiece.treasure.core.service.WalletService
 import org.springframework.stereotype.Service
 
 @Service
 class DepositServiceImpl(
-        private val depositDao: DepositDao
+        private val depositDao: DepositDao,
+        private val walletService: WalletService
 ) : DepositService {
 
     override fun findDeposit(clientId: Int, orderId: String): Deposit {
@@ -43,10 +45,22 @@ class DepositServiceImpl(
         check(state) { OnePieceExceptionCode.ORDER_EXPIRED }
     }
 
-    override fun update(depositUo: DepositUo) {
+    override fun check(depositUoReq: DepositUoReq) {
+        val order = depositDao.findDeposit(depositUoReq.clientId, depositUoReq.orderId)
+        check(order.state ==  DepositState.Close || order.state == DepositState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
+
+        val depositUo = DepositUo(clientId = order.clientId, orderId = order.orderId, processId = order.processId,
+                state = depositUoReq.state, remarks = depositUoReq.remarks, lockWaiterId = depositUoReq.waiterId)
         val state = depositDao.update(depositUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
-        //TODO 操作金额
+        //if state == Successful, deposit money
+        if (depositUo.state == DepositState.Successful) {
+            val remarks = depositUoReq.remarks?: "waiterId:${depositUoReq.waiterId} check"
+            val walletUo = WalletUo(clientId = depositUo.clientId, memberId = order.memberId, event = WalletEvent.DEPOSIT, remarks = remarks,
+                    money = order.money)
+            walletService.update(walletUo)
+        }
     }
+
 }

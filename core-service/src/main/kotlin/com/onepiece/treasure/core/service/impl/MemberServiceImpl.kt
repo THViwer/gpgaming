@@ -51,6 +51,11 @@ class MemberServiceImpl(
         return member.copy(password = "")
     }
 
+    override fun checkSafetyPassword(id: Int, safetyPassword: String) {
+        val member = memberDao.get(id)
+        check(member.safetyPassword == safetyPassword) { OnePieceExceptionCode.SAFETY_PASSWORD_CHECK_FAIL }
+    }
+
     @Transactional(rollbackFor = [Exception::class])
     override fun create(memberCo: MemberCo) {
 

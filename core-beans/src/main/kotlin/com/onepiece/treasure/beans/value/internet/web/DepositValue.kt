@@ -3,6 +3,7 @@ package com.onepiece.treasure.beans.value.internet.web
 import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.DepositState
 import io.swagger.annotations.ApiModelProperty
+import springfox.documentation.annotations.ApiIgnore
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
@@ -88,6 +89,12 @@ data class DepositUoReq(
         val state: DepositState,
 
         @ApiModelProperty("备注")
-        val remark: String?
+        val remarks: String?,
+
+        @ApiIgnore
+        val clientId: Int = 0,
+
+        @ApiIgnore
+        val waiterId: Int = 0
 
 )

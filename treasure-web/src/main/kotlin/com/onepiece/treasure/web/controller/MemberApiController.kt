@@ -1,12 +1,12 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.database.MemberCo
 import com.onepiece.treasure.beans.value.database.MemberQuery
 import com.onepiece.treasure.beans.value.database.MemberUo
 import com.onepiece.treasure.beans.value.internet.web.*
+import com.onepiece.treasure.core.service.LevelService
 import com.onepiece.treasure.core.service.MemberService
 import com.onepiece.treasure.core.service.WalletService
 import com.onepiece.treasure.web.controller.basic.BasicController
@@ -19,7 +19,8 @@ import java.time.LocalDateTime
 @RequestMapping("/member")
 class MemberApiController(
         private val memberService: MemberService,
-        private val walletService: WalletService
+        private val walletService: WalletService,
+        private val levelService: LevelService
 ) : BasicController(), MemberApi {
 
     @GetMapping
@@ -38,10 +39,13 @@ class MemberApiController(
         val page = memberService.query(query, current, size)
         if (page.total == 0) return MemberPage(total = 0, data = emptyList())
 
+        val levels = levelService.all(clientId).map { it.id to it }.toMap()
+
         val data = page.data.map {
             with(it) {
-                MemberVo(id = id, username = it.username, levelId = it.levelId, level = "", name = "name", balance = BigDecimal.ZERO, status = it.status,
-                        createdTime = createdTime, loginIp = loginIp, loginTime = loginTime)
+                MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]!!.name,
+                        name = "name", balance = BigDecimal.ZERO, status = it.status,createdTime = createdTime,
+                        loginIp = loginIp, loginTime = loginTime)
             }
         }
 

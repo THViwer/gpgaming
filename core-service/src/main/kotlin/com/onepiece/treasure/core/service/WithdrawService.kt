@@ -6,6 +6,8 @@ import com.onepiece.treasure.beans.value.database.DepositLockUo
 import com.onepiece.treasure.beans.value.database.WithdrawCo
 import com.onepiece.treasure.beans.value.database.WithdrawQuery
 import com.onepiece.treasure.beans.value.database.WithdrawUo
+import com.onepiece.treasure.beans.value.internet.web.DepositUoReq
+import com.onepiece.treasure.beans.value.internet.web.WithdrawUoReq
 
 interface WithdrawService {
 
@@ -19,6 +21,7 @@ interface WithdrawService {
 
     fun lock(withdrawLockUo: DepositLockUo)
 
-    fun update(withdrawUo: WithdrawUo)
+    fun check(withdrawUoReq: WithdrawUoReq)
+
 
 }

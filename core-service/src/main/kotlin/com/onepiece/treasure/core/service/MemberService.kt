@@ -15,6 +15,8 @@ interface MemberService {
 
     fun login(loginValue: LoginValue): Member
 
+    fun checkSafetyPassword(id: Int, safetyPassword: String)
+
     fun create(memberCo: MemberCo)
 
     fun update(memberUo: MemberUo)

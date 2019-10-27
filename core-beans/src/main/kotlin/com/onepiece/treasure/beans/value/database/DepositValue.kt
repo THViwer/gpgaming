@@ -60,6 +60,8 @@ data class DepositCo(
 
 data class DepositUo(
 
+        val clientId: Int,
+
         // 订单Id
         val orderId: String,
 
@@ -70,7 +72,10 @@ data class DepositUo(
         val state: DepositState,
 
         // 备注
-        val remarks: String?
+        val remarks: String?,
+
+        // 锁定客服Id
+        val lockWaiterId: Int
 )
 
 data class DepositLockUo(

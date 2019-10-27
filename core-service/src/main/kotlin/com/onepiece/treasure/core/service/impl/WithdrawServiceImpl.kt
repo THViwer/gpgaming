@@ -1,19 +1,21 @@
 package com.onepiece.treasure.core.service.impl
 
 import com.onepiece.treasure.beans.base.Page
+import com.onepiece.treasure.beans.enums.WalletEvent
+import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Withdraw
-import com.onepiece.treasure.beans.value.database.DepositLockUo
-import com.onepiece.treasure.beans.value.database.WithdrawCo
-import com.onepiece.treasure.beans.value.database.WithdrawQuery
-import com.onepiece.treasure.beans.value.database.WithdrawUo
+import com.onepiece.treasure.beans.value.database.*
+import com.onepiece.treasure.beans.value.internet.web.WithdrawUoReq
 import com.onepiece.treasure.core.dao.WithdrawDao
+import com.onepiece.treasure.core.service.WalletService
 import com.onepiece.treasure.core.service.WithdrawService
 import org.springframework.stereotype.Service
 
 @Service
 class WithdrawServiceImpl(
-        private val withdrawDao: WithdrawDao
+        private val withdrawDao: WithdrawDao,
+        private val walletService: WalletService
 ) : WithdrawService {
 
     override fun findWithdraw(clientId: Int, orderId: String): Withdraw {
@@ -42,10 +44,22 @@ class WithdrawServiceImpl(
         check(state) { OnePieceExceptionCode.ORDER_EXPIRED }
     }
 
-    override fun update(withdrawUo: WithdrawUo) {
-        val state = withdrawDao.update(withdrawUo)
+    override fun check(withdrawUoReq: WithdrawUoReq) {
+
+        val order = withdrawDao.findWithdraw(withdrawUoReq.clientId, withdrawUoReq.orderId)
+        check( order.state == WithdrawState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
+
+        val withdrawUo = WithdrawUo(orderId = withdrawUoReq.orderId, processId = order.processId, state = withdrawUoReq.state,
+                remarks = withdrawUoReq.remarks, clientId = withdrawUoReq.clientId, waiterId = withdrawUoReq.waiterId)
+        val state = withdrawDao.check(withdrawUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
-        //TODO 操作用户余额
+        if (withdrawUoReq.state == WithdrawState.Successful) {
+            val remarks = withdrawUoReq.remarks ?: "waiterId:${withdrawUoReq.waiterId} check"
+            val walletUo = WalletUo(clientId = withdrawUoReq.clientId, memberId = order.memberId, money = order.money, event = WalletEvent.WITHDRAW,
+                    remarks = remarks)
+            walletService.update(walletUo)
+        }
+
     }
 }

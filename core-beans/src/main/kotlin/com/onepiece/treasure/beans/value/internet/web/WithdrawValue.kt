@@ -1,8 +1,10 @@
 package com.onepiece.treasure.beans.value.internet.web
 
 import com.onepiece.treasure.beans.enums.Bank
+import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.enums.WithdrawState
 import io.swagger.annotations.ApiModelProperty
+import springfox.documentation.annotations.ApiIgnore
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
@@ -74,6 +76,13 @@ data class WithdrawUoReq(
         val state: WithdrawState,
 
         @ApiModelProperty("备注")
-        val remarks: String?
+        val remarks: String?,
+
+        @ApiIgnore
+        val clientId: Int = 0,
+
+        @ApiIgnore
+        val waiterId: Int = 0
 
 )
+

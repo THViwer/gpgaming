@@ -40,12 +40,12 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
 
     }
 
-    override fun create(platformMemberCo: PlatformMemberCo): Boolean {
+    override fun create(platformMemberCo: PlatformMemberCo): Int {
         return insert().set("platform", platformMemberCo.platform)
                 .set("member_id", platformMemberCo.memberId)
                 .set("username", platformMemberCo.username)
                 .set("password", platformMemberCo.password)
-                .executeOnlyOne()
+                .executeGeneratedKey()
     }
 
     override fun bet(platformMemberBetUo: PlatformMemberBetUo): Boolean {

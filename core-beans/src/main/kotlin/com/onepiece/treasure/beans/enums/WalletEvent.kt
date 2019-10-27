@@ -3,19 +3,19 @@ package com.onepiece.treasure.beans.enums
 enum class WalletEvent {
 
     // 充值
-    TOPUP,
+    DEPOSIT,
 
     // 取款
     WITHDRAW,
 
     // 转账
-    TRANSFER,
+    TRANSFER_IN,
 
     // 转出
     TRANSFER_OUT,
 
     // 补偿
-    REPARATION
+//    REPARATION
 
     // 投注
 //    BET
