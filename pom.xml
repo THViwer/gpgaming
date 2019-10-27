@@ -16,6 +16,7 @@
 		<module>treasure-web</module>
 		<module>treasure-player</module>
         <module>core-beans</module>
+        <module>games</module>
     </modules>
 
 </project>
