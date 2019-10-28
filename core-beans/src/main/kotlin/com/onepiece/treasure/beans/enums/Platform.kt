@@ -10,7 +10,10 @@ enum class Platform(
 
     AG(PlatformCategory.Slot, "ag"),
 
-    SUN(PlatformCategory.Slot, "sun")
+    SUN(PlatformCategory.Slot, "sun"),
+
+    Joker(PlatformCategory.Slot, "joker")
+
     ;
 
     companion object {

@@ -64,6 +64,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- okHttp -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.2.2</version>
+        </dependency>
+
         <!-- inner service -->
         <dependency>
             <groupId>com.onepiece</groupId>
