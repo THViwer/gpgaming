@@ -17,4 +17,8 @@ object OnePieceRedisKeyConstant {
     fun openPlatforms(clientId: Int) = "platforms:open:$clientId"
 
     fun myPlatformMembers(memberId: Int) = "platform:member:$memberId"
+
+    fun betCache(unionId: String) = "bet:cache:$unionId"
+
+    fun jokerNextId() = "joker:nextId"
 }

@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: task
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      username: service
+      password: OnePiece123!@#
+      url: jdbc:mysql://94.237.76.206:3306/onepiece?useUnicode=true&characterEncoding=UTF-8
+  profiles:
+    active: dev
+
+  redis:
+    host: localhost
+    port: 6379
+  output:
+    ansi:
+      enabled: always
+
+server:
+  servlet:
+    context-path: /api/v1/task
+  port: 8002
+
+jwt:
+  header: Authorization
+  secret: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCFljRsWfgyl3+k
+  expiration: 7
+  tokenHead: "Bearer "
+  route:
+    authentication:
+      path: auth
+      refresh: refresh
+      register: "auth/register"

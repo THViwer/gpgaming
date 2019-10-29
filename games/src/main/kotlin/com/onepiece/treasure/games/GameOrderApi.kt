@@ -4,6 +4,6 @@ import java.time.LocalDate
 
 interface GameOrderApi {
 
-    fun synOrder(startDate: LocalDate, endDate: LocalDate, nextId: String)
+    fun synOrder(startDate: LocalDate, endDate: LocalDate): String
 
 }

@@ -17,6 +17,7 @@
 		<module>treasure-player</module>
         <module>core-beans</module>
         <module>games</module>
+        <module>report-task</module>
     </modules>
 
 </project>
