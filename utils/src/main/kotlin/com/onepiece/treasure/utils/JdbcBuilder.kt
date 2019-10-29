@@ -38,7 +38,7 @@ class Insert(
         return this
     }
 
-    private fun build(): String {
+    fun build(): String {
 
         val names = columns.joinToString(separator = ",")
         val questions = (0 until columns.size).joinToString(separator = ","){ "?" }

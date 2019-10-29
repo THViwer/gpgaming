@@ -1,0 +1,11 @@
+package com.onepiece.treasure.core.order
+
+import com.onepiece.treasure.core.dao.basic.BasicDao
+
+interface JokerBetOrderDao: BasicDao<JokerBetOrder> {
+
+    fun creates(orders: List<JokerBetOrder>)
+
+    fun query(query: JokerBetOrderValue.Query): List<JokerBetOrder>
+
+}
