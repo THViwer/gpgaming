@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 
 data class JokerBalanceResult(
-        @JsonProperty("Username")
-        val username: String,
 
-        @JsonProperty("Credit")
-        val credit: BigDecimal
+        @JsonProperty("Amount")
+        val amount: BigDecimal
 )

@@ -2,7 +2,7 @@ package com.onepiece.treasure.beans.exceptions
 
 import java.lang.RuntimeException
 
-class LogicException(code: Int): RuntimeException()
+class LogicException(code: String): RuntimeException()
 
 //class BusinessException(code: Int): RuntimeException()
 
@@ -32,5 +32,8 @@ object OnePieceExceptionCode {
     const val BALANCE_SHORT_FAIL = "5003" // 余额不足
     const val SAFETY_PASSWORD_CHECK_FAIL = "5004" // 取款密码错误
 
+    // 60000 platform method error
+    const val PLATFORM_METHOD_FAIL = "6001" // 平台方式错误
+    const val PLATFORM_TRANSFER_ORDERID_EXIST = "6002" // 转账订单已存在
 
 }

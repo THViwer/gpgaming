@@ -1,13 +1,15 @@
 package com.onepiece.treasure.games
 
-import com.onepiece.treasure.games.joker.value.JokerBalanceResult
+import com.onepiece.treasure.games.value.TransferResult
+import java.math.BigDecimal
 
 interface GameCashApi {
 
-    fun balance(username: String): JokerBalanceResult
+    fun wallet(username: String): BigDecimal
 
-    fun transferIn()
+    fun clientBalance(): BigDecimal
 
-    fun transferOut()
+    fun transfer(username: String, orderId: String, money: BigDecimal): TransferResult
+
 
 }
