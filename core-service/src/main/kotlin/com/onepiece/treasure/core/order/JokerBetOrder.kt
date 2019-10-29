@@ -7,6 +7,10 @@ data class JokerBetOrder(
 
         val oCode: String,
 
+        val clientId: Int,
+
+        val memberId: Int,
+
         val username: String,
 
         val gameCode: String,

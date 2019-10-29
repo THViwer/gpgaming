@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Timestamp
+import java.time.LocalDate
 
 
 @Repository
@@ -14,6 +15,8 @@ class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"),Joker
     override val mapper: (rs: ResultSet) -> JokerBetOrder
         get() = { rs ->
             val oCode = rs.getString("o_code")
+            val clientId = rs.getInt("client_id")
+            val memberId = rs.getInt("member_id")
             val username = rs.getString("username")
             val gameCode = rs.getString("game_code")
             val description = rs.getString("description")
@@ -24,7 +27,8 @@ class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"),Joker
             val appId = rs.getString("app_id")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             JokerBetOrder(oCode = oCode, username = username, gameCode = gameCode, description = description, type = type,
-                    amount = amount, result = result, time = time, appId = appId, createdTime = createdTime)
+                    amount = amount, result = result, time = time, appId = appId, createdTime = createdTime, clientId = clientId,
+                    memberId = memberId)
         }
 
     override fun creates(orders: List<JokerBetOrder>) {
@@ -67,4 +71,27 @@ class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"),Joker
                 .limit(0, 500)
                 .execute(mapper)
     }
+
+    override fun report(startDate: LocalDate, endDate: LocalDate): List<JokerBetOrderValue.JokerReport> {
+
+        val sql = """
+            select 
+                client_id, member_id, sum(amount) as amount, sum(result) as result from joker_bet_order 
+            where 
+                time > ? and time <= ? 
+            group by client_id, member_id
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql, arrayOf(startDate, endDate)) { rs, _ ->
+
+            val clientId = rs.getInt("client_id")
+            val memberId = rs.getInt("member_id")
+            val amount = rs.getBigDecimal("amount")
+            val result = rs.getBigDecimal("result")
+
+            JokerBetOrderValue.JokerReport(clientId = clientId, memberId = memberId, amount = amount, result = result)
+        }
+
+    }
+
 }
