@@ -11,7 +11,6 @@ import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.OrderIdBuilder
 import com.onepiece.treasure.core.service.*
-import com.onepiece.treasure.games.GameCashApi
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -28,8 +27,7 @@ open class CashApiController(
         private val orderIdBuilder: OrderIdBuilder,
         private val walletService: WalletService,
         private val memberService: MemberService,
-        private val transferOrderService: TransferOrderService,
-        private val jokerGameCashApi: GameCashApi
+        private val transferOrderService: TransferOrderService
 ) : BasicController(), CashApi {
 
 
@@ -204,7 +202,7 @@ open class CashApiController(
 
 
                 //TODO 调用平台接口充值
-                jokerGameCashApi.transfer(platformMember.username, transferOrderId, cashTransferReq.money.plus(giftBalance))
+                gamePlatformUtil.getPlatformBuild(cashTransferReq.to).gameCashApi.transfer(platformMember.username, transferOrderId, cashTransferReq.money.plus(giftBalance))
 
                 // 平台钱包更改信息
                 val demandBet = if (giftBalance == BigDecimal.ZERO) {
@@ -241,6 +239,7 @@ open class CashApiController(
                 walletService.update(walletUo)
 
                 //TODO 调用平台接口取款
+                gamePlatformUtil.getPlatformBuild(cashTransferReq.to).gameCashApi.transfer(platformMember.username, transferOrderId, cashTransferReq.money.negate())
 
                 // 更新转账订单
                 val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = TransferState.Successful)
@@ -254,7 +253,7 @@ open class CashApiController(
         return when (platform) {
             Platform.Joker -> {
                 val platformMemberVo = getPlatformMember(platform)
-                jokerGameCashApi.wallet(username = platformMemberVo.platformUsername)
+                gamePlatformUtil.getPlatformBuild(platform).gameCashApi.wallet(username = platformMemberVo.platformUsername)
             }
             else -> walletService.getMemberWallet(current().id).balance
         }

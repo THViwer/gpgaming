@@ -10,7 +10,6 @@ import com.onepiece.treasure.controller.value.SlotMenu
 import com.onepiece.treasure.controller.value.StartGameResp
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.SlotGameService
-import com.onepiece.treasure.games.GameApi
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -44,7 +43,7 @@ class ApiController(
 ////            else -> slotGameService.findByPlatform(platform)
 ////        }
 
-        val games = jokerGameApi.games().map {
+        val games = gamePlatformUtil.getPlatformBuild(platform).gameApi.games().map {
             SlotMenu(gameId = it.gameId, gameName = it.gameName, category = GameCategory.ARCADE, icon = it.icon,
                     hot = true, new = true, status = Status.Normal)
         }
@@ -70,7 +69,9 @@ class ApiController(
 
         val platformMember = getPlatformMember(platform)
 
-        val gamePath = jokerGameApi.start(username = platformMember.platformUsername, gameId = gameId, redirectUrl = "http://www.baidu.com")
+        val gamePath = gamePlatformUtil.getPlatformBuild(platform)
+                .gameApi
+                .start(username = platformMember.platformUsername, gameId = gameId, redirectUrl = "http://www.baidu.com")
 
         return StartGameResp(path = gamePath)
     }

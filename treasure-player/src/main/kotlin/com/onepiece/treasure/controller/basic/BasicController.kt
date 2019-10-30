@@ -3,7 +3,7 @@ package com.onepiece.treasure.controller.basic
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.treasure.core.service.PlatformMemberService
-import com.onepiece.treasure.games.GameApi
+import com.onepiece.treasure.games.GamePlatformUtil
 import com.onepiece.treasure.jwt.JwtUser
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
@@ -17,7 +17,7 @@ abstract class BasicController {
     lateinit var platformMemberService: PlatformMemberService
 
     @Autowired
-    lateinit var jokerGameApi: GameApi
+    lateinit var gamePlatformUtil: GamePlatformUtil
 
     val ip = "192.68.2.31"
 
@@ -59,7 +59,7 @@ abstract class BasicController {
         val platformUsername = "$clientIdStr$id"
 
 
-        jokerGameApi.register(platformUsername, "123456")
+        gamePlatformUtil.getPlatformBuild(platform).gameApi.register(platformUsername, "123456")
 
         return platformMemberService.create(memberId = id, platform = platform, platformUsername = platformUsername)
     }
