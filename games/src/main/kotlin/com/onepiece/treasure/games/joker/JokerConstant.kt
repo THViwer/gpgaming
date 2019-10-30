@@ -13,8 +13,8 @@ import kotlin.collections.ArrayList
 
 object JokerConstant {
 
-//    val url = "http://www.joker.com"
-    const val url = "http://94.237.64.70:81"
+    val url = "http://api688.net:81"
+//    const val url = "http://94.237.64.70:81"
 
     const val appId = "F1S8"
 
