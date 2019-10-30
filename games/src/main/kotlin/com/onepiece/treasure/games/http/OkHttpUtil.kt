@@ -3,15 +3,16 @@ package com.onepiece.treasure.games.http
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.exceptions.LogicException
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import org.slf4j.LoggerFactory
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Component
+import org.springframework.security.config.web.server.ServerHttpSecurity.http
+import com.onepiece.treasure.games.http.OkHttpUtil
+
+
 
 
 @Suppress("UNCHECKED_CAST")
@@ -92,9 +93,12 @@ class OkHttpUtil(
     }
 
     fun <T> doPost(url: String, urlParam: String, responseClass: Class<T>, function: ((code: Int) -> String)? = null): T {
+
+        val body = RequestBody.create(null, byteArrayOf())
+
         val request = Request.Builder()
                 .url(url)
-                .method("post", null)
+                .method("post", body)
                 .build()
         return client.newCall(request).execute().use { response ->
 
