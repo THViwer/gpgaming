@@ -2,6 +2,7 @@ package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.base.Page
 import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
 import com.onepiece.treasure.beans.value.internet.web.DepositVo
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Api(tags = ["cash"], description = " ")
@@ -62,5 +64,8 @@ interface CashApi {
     @ApiOperation(tags = ["cash"], value = "transfer")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun transfer(@RequestBody cashTransferReq: CashTransferReq)
+
+    @ApiOperation(tags = ["balance"], value = "transfer")
+    fun balance(@RequestParam("platform") platform: Platform):BigDecimal
 
 }

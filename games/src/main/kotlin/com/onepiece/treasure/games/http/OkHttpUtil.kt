@@ -7,8 +7,7 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-
-
+import java.util.concurrent.TimeUnit
 
 
 @Suppress("UNCHECKED_CAST")
@@ -19,7 +18,11 @@ class OkHttpUtil(
 
     private val log = LoggerFactory.getLogger(OkHttpUtil::class.java)
 
-    private val client = OkHttpClient()
+    private val client = OkHttpClient.Builder()
+            .connectTimeout(5000, TimeUnit.SECONDS) //连接超时
+            .readTimeout(5000, TimeUnit.SECONDS) //读取超时
+            .writeTimeout(5000, TimeUnit.SECONDS) //写超时
+            .build()
     private val JSON = "application/json; charset=utf-8".toMediaType()
 
     fun doPostForm(url: String, body: FormBody){

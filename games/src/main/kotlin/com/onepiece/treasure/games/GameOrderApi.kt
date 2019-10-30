@@ -1,9 +1,9 @@
 package com.onepiece.treasure.games
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 interface GameOrderApi {
 
-    fun synOrder(startDate: LocalDate, endDate: LocalDate): String
+    fun synOrder(startTime: LocalDateTime, endTime: LocalDateTime): String
 
 }

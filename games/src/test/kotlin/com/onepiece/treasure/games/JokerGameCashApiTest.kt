@@ -23,7 +23,7 @@ class JokerGameCashApiTest: BaseTest() {
 
     @Test
     fun transfer() {
-        val result = gameApi.transfer(username = username, money = BigDecimal.valueOf(-200), orderId = UUID.randomUUID().toString().replace("-", ""))
+        val result = gameApi.transfer(username = username, money = BigDecimal.valueOf(-97.66), orderId = UUID.randomUUID().toString().replace("-", ""))
         println(result)
     }
 

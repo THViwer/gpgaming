@@ -11,6 +11,8 @@ import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.OrderIdBuilder
 import com.onepiece.treasure.core.service.*
+import com.onepiece.treasure.games.GameCashApi
+import com.onepiece.treasure.games.joker.JokerGameCashApi
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -27,7 +29,8 @@ open class CashApiController(
         private val orderIdBuilder: OrderIdBuilder,
         private val walletService: WalletService,
         private val memberService: MemberService,
-        private val transferOrderService: TransferOrderService
+        private val transferOrderService: TransferOrderService,
+        private val jokerGameCashApi: GameCashApi
 ) : BasicController(), CashApi {
 
 
@@ -227,5 +230,11 @@ open class CashApiController(
                 transferOrderService.update(transferOrderUo)
             }
         }
+    }
+
+    @GetMapping("/balance")
+    override fun balance(@RequestParam platform: Platform): BigDecimal {
+        val platformMemberVo = getPlatformMember(platform)
+        return jokerGameCashApi.wallet(username = platformMemberVo.platformUsername)
     }
 }

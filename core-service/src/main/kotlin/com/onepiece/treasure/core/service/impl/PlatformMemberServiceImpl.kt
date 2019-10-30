@@ -23,9 +23,9 @@ class PlatformMemberServiceImpl(
         return platformMemberDao.get(id)
     }
 
-    override fun create(memberId: Int, platform: Platform): PlatformMemberVo {
+    override fun create(memberId: Int, platform: Platform, platformUsername: String): PlatformMemberVo {
 
-        val platformMemberCo = PlatformMemberCo(platform = platform, memberId = memberId, username = "${platform}_$memberId",
+        val platformMemberCo = PlatformMemberCo(platform = platform, memberId = memberId, username = platformUsername,
                 password = "123456")
         val id = platformMemberDao.create(platformMemberCo)
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }

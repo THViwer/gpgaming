@@ -10,7 +10,6 @@ import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.games.joker.value.BetResult
 import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -22,18 +21,19 @@ class JokerGameOrderApi(
         private val redisService: RedisService
 ) : GameOrderApi {
 
-    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm")
+    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    override fun synOrder(startDate: LocalDate, endDate: LocalDate): String {
+    override fun synOrder(startTime: LocalDateTime, endTime: LocalDateTime): String {
 
         val nextId = redisService.get(OnePieceRedisKeyConstant.jokerNextId(), String::class.java) {
             //TODO 从数据库中查询
-            UUID.randomUUID().toString()
-        }!!
+            UUID.randomUUID().toString().replace("-", "")
+            null
+        }
 
         val (url, formBody) = JokerParamBuilder.instance("TS")
-                .set("StartDate", startDate.format(dateFormatter))
-                .set("EndDate", endDate.format(dateFormatter))
+                .set("StartDate", startTime.format(dateFormatter))
+                .set("EndDate", endTime.format(dateFormatter))
                 .set("NextId", nextId)
                 .build()
 
@@ -41,12 +41,12 @@ class JokerGameOrderApi(
 
         val orders = betResult.data.getValue("Game").map {
             val username = it.username
-            val clientId = username.substring(0, 2).toInt()
-            val memberId = username.substring(2, username.length).toInt()
+            val clientId = username.substring(0, 3).toInt()
+            val memberId = username.substring(3, username.length).toInt()
             val now = LocalDateTime.now()
 
             JokerBetOrder(oCode = it.oCode, clientId = clientId, memberId = memberId, gameCode = it.gameCode, description = it.description,
-                    type = it.type, amount = it.Amount, result = it.result, time = it.time, appId = it.appId, createdTime = now, username = username)
+                    type = it.type, amount = it.Amount, result = it.result, time = it.time.toLocalDateTime(), appId = it.appId, createdTime = now, username = username)
         }
 
         jokerBetOrderDao.creates(orders)
@@ -58,12 +58,12 @@ class JokerGameOrderApi(
 
             BetCacheVo(memberId = memberId, bet = money, platform = Platform.Joker)
         }
-        val redisKey = OnePieceRedisKeyConstant.betCache(nextId)
+        val redisKey = OnePieceRedisKeyConstant.betCache("")
         redisService.put(redisKey, caches)
 
         // 下一次的值set到redis中
         redisService.put(OnePieceRedisKeyConstant.jokerNextId(), betResult.nextId)
 
-        return nextId
+        return ""
     }
 }
