@@ -1,10 +1,7 @@
 package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.base.Page
-import com.onepiece.treasure.beans.enums.DepositState
-import com.onepiece.treasure.beans.enums.Status
-import com.onepiece.treasure.beans.enums.WalletEvent
-import com.onepiece.treasure.beans.enums.WithdrawState
+import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.database.*
 import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
@@ -15,20 +12,22 @@ import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.OrderIdBuilder
 import com.onepiece.treasure.core.service.*
 import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/cash")
-class CashApiController(
+open class CashApiController(
         private val memberBankService: MemberBankService,
         private val depositService: DepositService,
         private val withdrawService: WithdrawService,
         private val clientBankService: ClientBankService,
         private val orderIdBuilder: OrderIdBuilder,
         private val walletService: WalletService,
-        private val memberService: MemberService
+        private val memberService: MemberService,
+        private val transferOrderService: TransferOrderService
 ) : BasicController(), CashApi {
 
 
@@ -160,6 +159,7 @@ class CashApiController(
     }
 
     @PutMapping("/transfer")
+    @Transactional(rollbackFor = [Exception::class])
     override fun transfer(@RequestBody cashTransferReq: CashTransferReq) {
 
         val platformMemberVo = getPlatformMember(cashTransferReq.platform)
@@ -177,6 +177,13 @@ class CashApiController(
                         remarks = "transfer center to platform", waiterId = null, eventId = null)
                 walletService.update(walletUo)
 
+                // 生成转账订单
+                val transferOrderId = orderIdBuilder.generatorTransferOrderId()
+                val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = id, money = cashTransferReq.money, giftMoney = giftBalance,
+                        from = Platform.Center, to = cashTransferReq.platform)
+                transferOrderService.create(transferOrderCo)
+
+
                 //TODO 调用平台接口充值
 
                 // 平台钱包更改信息
@@ -187,6 +194,11 @@ class CashApiController(
                 }
                 val platformMemberTransferUo = PlatformMemberTransferUo(id = platformMember.id, money = cashTransferReq.money, giftBalance = giftBalance, demandBet = demandBet)
                 platformMemberService.transferIn(platformMemberTransferUo)
+
+                // 更新转账订单
+                val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = TransferState.Successful)
+                transferOrderService.update(transferOrderUo)
+
             }
             // 平台钱包 -> 中心钱包
             TransferAction.TransferOut -> {
@@ -197,12 +209,22 @@ class CashApiController(
                 val wallet = walletService.getMemberWallet(id)
                 check(wallet.balance.toDouble() - cashTransferReq.money.toDouble() > 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
 
+                // 生成转账订单
+                val transferOrderId = orderIdBuilder.generatorTransferOrderId()
+                val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = id, money = cashTransferReq.money, giftMoney = BigDecimal.ZERO,
+                        from = cashTransferReq.platform, to = Platform.Center)
+                transferOrderService.create(transferOrderCo)
+
                 // 中心钱包加钱
                 val walletUo = WalletUo(clientId = clientId, memberId = id, event = WalletEvent.TRANSFER_IN, money = cashTransferReq.money,
                         remarks = "transfer platform to center", waiterId = null, eventId = null)
                 walletService.update(walletUo)
 
                 //TODO 调用平台接口取款
+
+                // 更新转账订单
+                val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = TransferState.Successful)
+                transferOrderService.update(transferOrderUo)
             }
         }
     }

@@ -34,10 +34,12 @@ data class PlatformMemberTransferUo(
 )
 
 data class PlatformMemberBetUo(
-        val id: Int,
+        val memberId: Int,
 
-        // 余额
-        val balance: BigDecimal,
+        val platform: Platform,
+
+//         余额
+//        val balance: BigDecimal,
 
         // 打码量
         val bet: BigDecimal

@@ -1,5 +1,7 @@
 package com.onepiece.treasure.games.joker
 
+import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.order.JokerBetOrder
 import com.onepiece.treasure.core.order.JokerBetOrderDao
@@ -53,7 +55,8 @@ class JokerGameOrderApi(
         val caches = orders.groupBy { it.memberId }.map {
             val memberId = it.key
             val money = it.value.sumByDouble { it.amount.toDouble() }.toBigDecimal().setScale(2, 2)
-            "${memberId}_$money"
+
+            BetCacheVo(memberId = memberId, bet = money, platform = Platform.Joker)
         }
         val redisKey = OnePieceRedisKeyConstant.betCache(nextId)
         redisService.put(redisKey, caches)

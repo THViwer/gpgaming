@@ -14,5 +14,9 @@ class OrderIdBuilder {
         return UUID.randomUUID().toString()
     }
 
+    fun generatorTransferOrderId(): String {
+        return UUID.randomUUID().toString()
+    }
+
 
 }

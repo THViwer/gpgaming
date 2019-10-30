@@ -215,7 +215,7 @@ class Update(
         return this
     }
 
-    private fun build(): String {
+    fun build(): String {
 
         val setColumns = columns.joinToString(separator = ", ")
         val whereColumns = whereColumns.joinToString(separator = " and ")

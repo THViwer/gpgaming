@@ -55,10 +55,10 @@ class PlatformMemberServiceImpl(
         return platformMemberDao.findPlatformMember(memberId)
     }
 
-    override fun bet(platformMemberBetUo: PlatformMemberBetUo) {
-        val state = platformMemberDao.bet(platformMemberBetUo)
-        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
-    }
+//    override fun bet(platformMemberBetUo: PlatformMemberBetUo) {
+//        val state = platformMemberDao.bet(platformMemberBetUo)
+//        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+//    }
 
     override fun transferIn(platformMemberTransferUo: PlatformMemberTransferUo) {
         val state = platformMemberDao.transferIn(platformMemberTransferUo)

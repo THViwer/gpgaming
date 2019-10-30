@@ -2,9 +2,9 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.PlatformMember
-import com.onepiece.treasure.beans.value.database.PlatformMemberBetUo
 import com.onepiece.treasure.beans.value.database.PlatformMemberCo
 import com.onepiece.treasure.beans.value.database.PlatformMemberTransferUo
+import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.dao.PlatformMemberDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
@@ -54,14 +54,13 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                 .executeGeneratedKey()
     }
 
-    override fun bet(platformMemberBetUo: PlatformMemberBetUo): Boolean {
-        return update()
-                .asSet("current_bet = current_bet + ${platformMemberBetUo.bet}")
-                .asSet("total_bet = total_bet + ${platformMemberBetUo.bet}")
-                .where("id", platformMemberBetUo.id)
-                .executeOnlyOne()
-
-    }
+//    override fun bet(platformMemberBetUo: PlatformMemberBetUo): Boolean {
+//        return update()
+//                .asSet("current_bet = current_bet + ${platformMemberBetUo.bet}")
+//                .asSet("total_bet = total_bet + ${platformMemberBetUo.bet}")
+//                .where("id", platformMemberBetUo.id)
+//                .executeOnlyOne()
+//    }
 
     override fun transferIn(platformMemberTransferUo: PlatformMemberTransferUo): Boolean {
         return update()
@@ -74,4 +73,12 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                 .executeOnlyOne()
     }
 
+    override fun batchBet(data: List<BetCacheVo>) {
+
+        val sqls = data.map {
+            "update platform_member set current_bet = current_bet = ${it.bet}, total_bet = total_bet + ${it.bet} where member_id = ${it.memberId} and platform = ${it.platform.name}"
+        }
+        jdbcTemplate.batchUpdate(*sqls.toTypedArray())
+
+    }
 }
