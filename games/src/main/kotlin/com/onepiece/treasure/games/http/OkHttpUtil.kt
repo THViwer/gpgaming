@@ -94,6 +94,10 @@ class OkHttpUtil(
                 .method("post", null)
                 .build()
         return client.newCall(request).execute().use { response ->
+            println(response)
+            println(response.code)
+            println(response.message)
+            println(String(response.body?.bytes()?:"error".toByteArray()))
             when {
                 response.code == 200 || response.code == 201 -> {
                     val bytes = response.body!!.bytes()
