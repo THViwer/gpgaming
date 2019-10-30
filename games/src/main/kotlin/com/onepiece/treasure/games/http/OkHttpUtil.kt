@@ -25,7 +25,7 @@ class OkHttpUtil(
     fun <T> doGet(url: String, urlParam: String, responseClass: Class<T>): T {
 
         val request = Request.Builder()
-                .url("$url$urlParam")
+                .url("$url?$urlParam")
                 .build()
 
         val response = client.newCall(request).execute()

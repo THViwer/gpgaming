@@ -4,7 +4,7 @@ interface JokerValue {
 
     val appId: String
         get() {
-            return "app1"
+            return "F1S8"
         }
 
     val timestamp: Int
@@ -14,6 +14,8 @@ interface JokerValue {
 
     val signature: String
         get() {
+            // Base64 (HMAC_SHA1 (“Method=CU&Timestamp=1447061919&Username=tester”,secret_key))
+
             return "Signature=hello"
         }
 
