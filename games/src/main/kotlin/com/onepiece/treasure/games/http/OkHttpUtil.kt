@@ -9,6 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.slf4j.LoggerFactory
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Component
 
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Component
 class OkHttpUtil(
         private val objectMapper: ObjectMapper
 )  {
+
+    private val log = LoggerFactory.getLogger(OkHttpUtil::class.java)
 
     private val client = OkHttpClient()
     private val JSON = "application/json; charset=utf-8".toMediaType()
@@ -94,10 +97,12 @@ class OkHttpUtil(
                 .method("post", null)
                 .build()
         return client.newCall(request).execute().use { response ->
-            println(response)
-            println(response.code)
-            println(response.message)
-            println(String(response.body?.bytes()?:"error".toByteArray()))
+
+            log.warn("response = $response")
+            log.warn("code = ${response.code}")
+            log.warn("message = ${response.message}")
+            val msg = String(response.body?.bytes()?:"error".toByteArray())
+            log.warn("msg = $msg")
             when {
                 response.code == 200 || response.code == 201 -> {
                     val bytes = response.body!!.bytes()
