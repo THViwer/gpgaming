@@ -3,8 +3,11 @@ package com.onepiece.treasure.games.http
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.exceptions.LogicException
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
-import okhttp3.*
+import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
@@ -58,7 +61,8 @@ class OkHttpUtil(
                 }
                 else -> {
                     val json = response.body!!.bytes()
-                    println(String(json))
+                    log.info("request url : $url")
+                    log.info("result json : ${String(json)}")
                     objectMapper.readValue(json, clz)
                 }
             }

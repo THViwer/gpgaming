@@ -25,9 +25,8 @@ data class JokerBetOrderVo(
         @JsonProperty("RoundID")
         val roundId: String,
 
-
         @JsonProperty("Amount")
-        val Amount: BigDecimal,
+        val amount: BigDecimal,
 
         @JsonProperty("FreeAmount")
         val freeAmount: BigDecimal,

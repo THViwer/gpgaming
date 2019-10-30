@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
+import com.onepiece.treasure.utils.DefaultRedisService
 import com.onepiece.treasure.utils.EmptyRedisService
 import com.onepiece.treasure.utils.RedisService
 import org.springframework.context.annotation.Bean
@@ -55,8 +56,11 @@ open class RedisConfig {
     }
 
     @Bean
-    open fun redisService(): RedisService {
-        return EmptyRedisService()
+    open fun redisService(
+            redisTemplate: RedisTemplate<String, String>,
+            objectMapper: ObjectMapper
+    ): RedisService {
+        return DefaultRedisService(redisTemplate, objectMapper)
     }
 
 

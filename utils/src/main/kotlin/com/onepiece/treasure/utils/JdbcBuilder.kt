@@ -43,7 +43,7 @@ class Insert(
         val names = columns.joinToString(separator = ",")
         val questions = (0 until columns.size).joinToString(separator = ","){ "?" }
 
-        return "insert into `$table` ($names) values ($questions)"
+        return "insert ignore into `$table` ($names) values ($questions)"
     }
 
     fun execute(): Int {

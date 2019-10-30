@@ -17,15 +17,23 @@ data class JokerBetOrder(
 
         val description: String,
 
-        val type: String,
+        val roundId: String,
 
         val amount: BigDecimal,
+
+        val freeAmount: BigDecimal,
 
         val result: BigDecimal,
 
         val time: LocalDateTime,
 
+        val details: String?,
+
         val appId: String,
+
+        val currencyCode: String,
+
+        val type: String,
 
         // 创建时间
         val createdTime: LocalDateTime

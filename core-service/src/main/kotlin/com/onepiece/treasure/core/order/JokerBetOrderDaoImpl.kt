@@ -25,15 +25,21 @@ class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"),Joker
             val result = rs.getBigDecimal("result")
             val time = rs.getTimestamp("time").toLocalDateTime()
             val appId = rs.getString("app_id")
+            val currencyCode = rs.getString("currency_code")
+            val details = rs.getString("details")
+            val freeAmount = rs.getBigDecimal("free_amount")
+            val roundId = rs.getString("round_id")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             JokerBetOrder(oCode = oCode, username = username, gameCode = gameCode, description = description, type = type,
                     amount = amount, result = result, time = time, appId = appId, createdTime = createdTime, clientId = clientId,
-                    memberId = memberId)
+                    memberId = memberId, currencyCode = currencyCode, details = details, freeAmount = freeAmount, roundId = roundId)
         }
 
     override fun creates(orders: List<JokerBetOrder>) {
         val sql = insert()
                 .set("o_code", "")
+                .set("client_id", "")
+                .set("member_id", "")
                 .set("username", "")
                 .set("game_code", "")
                 .set("description", "")
@@ -42,12 +48,18 @@ class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"),Joker
                 .set("result", "")
                 .set("time", "")
                 .set("app_id", "")
+                .set("currency_code", "")
+                .set("details", "")
+                .set("free_amount", "")
+                .set("round_id", "")
                 .build()
         jdbcTemplate.batchUpdate(sql, object: BatchPreparedStatementSetter {
             override fun setValues(ps: PreparedStatement, index: Int) {
                 val order = orders[index]
                 var x = 0
                 ps.setString(++x, order.oCode)
+                ps.setInt(++x, order.clientId)
+                ps.setInt(++x, order.memberId)
                 ps.setString(++x, order.username)
                 ps.setString(++x, order.gameCode)
                 ps.setString(++x, order.description)
@@ -56,6 +68,10 @@ class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"),Joker
                 ps.setBigDecimal(++x, order.result)
                 ps.setTimestamp(++x, Timestamp.valueOf(order.time))
                 ps.setString(++x, order.appId)
+                ps.setString(++x, order.currencyCode)
+                ps.setString(++x, order.details)
+                ps.setBigDecimal(++x, order.freeAmount)
+                ps.setString(++x, order.roundId)
             }
 
             override fun getBatchSize(): Int {
