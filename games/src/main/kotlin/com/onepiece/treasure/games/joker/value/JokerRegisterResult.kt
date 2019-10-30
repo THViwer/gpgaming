@@ -5,6 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class JokerRegisterResult(
 
         @JsonProperty("Status")
-        val status: String
+        val status: String,
 
+        @JsonProperty("Data")
+        val data: JokerRegisterResultVo
+
+
+)
+
+data class JokerRegisterResultVo(
+
+        @JsonProperty("Username")
+        val username: String,
+
+        @JsonProperty("Status")
+        val status: String
 )

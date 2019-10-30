@@ -9,5 +9,8 @@ data class JokerWalletResult(
         val username: String,
 
         @JsonProperty("Credit")
-        val credit: BigDecimal
+        val credit: BigDecimal,
+
+        @JsonProperty("FreeCredit")
+        val freeCredit: BigDecimal
 )

@@ -1,7 +1,5 @@
 package com.onepiece.treasure.games.joker
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.games.GameCashApi
 import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.games.joker.value.JokerBalanceResult
@@ -13,38 +11,33 @@ import java.math.BigDecimal
 
 @Service
 class JokerGameCashApi(
-        private val okHttpUtil: OkHttpUtil,
-        private val objectMapper: ObjectMapper
+        private val okHttpUtil: OkHttpUtil
 ) : GameCashApi {
 
     override fun wallet(username: String): BigDecimal {
-        val urlParam = JokerParamBuilder.instance("GC")
+        val (url, formBody) = JokerParamBuilder.instance("GC")
                 .set("Username", username)
                 .build()
 
-        val result =  okHttpUtil.doPost(JokerConstant.url, urlParam, JokerWalletResult::class.java)
+        val result =  okHttpUtil.doPostForm(url, formBody, JokerWalletResult::class.java)
         return result.credit
     }
 
     override fun clientBalance(): BigDecimal {
-        val urlParam = JokerParamBuilder.instance("JP").build()
-        val result = okHttpUtil.doGet(JokerConstant.url, urlParam, JokerBalanceResult::class.java)
+        val (url, formBody) = JokerParamBuilder.instance("JP").build()
+        val result = okHttpUtil.doPostForm(url, formBody, JokerBalanceResult::class.java)
         return result.amount
     }
 
     override fun transfer(username: String, orderId: String, money: BigDecimal): TransferResult {
-        val urlParam = JokerParamBuilder.instance("TC")
+        val (url, formBody) = JokerParamBuilder.instance("TC")
+                .set("Amount", money.toString())
                 .set("RequestID", orderId)
                 .set("Username", username)
                 .build()
 
-        val result = okHttpUtil.doPost(JokerConstant.url, urlParam, JokerTransferResult::class.java) { code ->
-            when (code) {
-                400 -> OnePieceExceptionCode.PLATFORM_TRANSFER_ORDERID_EXIST
-                else -> OnePieceExceptionCode.PLATFORM_METHOD_FAIL
-            }
-        }
-        return TransferResult(orderId = result.requestId, platformOrderId = result.requestId, balance = result.beforeCredit,
+        val result = okHttpUtil.doPostForm(url, formBody, JokerTransferResult::class.java)
+        return TransferResult(orderId = result.requestId, platformOrderId = result.requestId, balance = result.credit,
                 afterBalance = result.beforeCredit)
     }
 

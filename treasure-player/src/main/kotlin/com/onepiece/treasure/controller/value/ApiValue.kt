@@ -64,13 +64,13 @@ data class PlatformVo(
 data class SlotMenu(
 
         @ApiModelProperty("游戏Id")
-        val id: Int,
+        val gameId: String,
 
         @ApiModelProperty("游戏类目")
         val category: GameCategory,
 
         @ApiModelProperty("游戏名称")
-        val name: String,
+        val gameName: String,
 
         @ApiModelProperty("游戏图标")
         val icon: String,

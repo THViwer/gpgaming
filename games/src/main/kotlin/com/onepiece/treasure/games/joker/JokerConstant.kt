@@ -1,19 +1,22 @@
 package com.onepiece.treasure.games.joker
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.treasure.games.http.OkHttpUtil
-import com.onepiece.treasure.games.joker.value.JokerBalanceResult
-import com.onepiece.treasure.games.joker.value.JokerWalletResult
+import com.onepiece.treasure.games.joker.value.JokerSlotGame
+import com.onepiece.treasure.games.joker.value.JokerSlotGameResult
+import okhttp3.FormBody
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.HmacUtils
 import org.apache.commons.codec.net.URLCodec
-import org.springframework.util.Base64Utils
-import java.util.*
-import kotlin.collections.ArrayList
+import java.net.URLEncoder
 
 object JokerConstant {
 
     val url = "http://api688.net:81"
+//    val gameUrl = "http://www.gwc688.net"
+    //TODO 做测试
+    val gameUrl = "http://94.237.64.70/iframe.html"
 //    const val url = "http://94.237.64.70:81"
 
     const val appId = "F1S8"
@@ -24,53 +27,79 @@ class JokerParamBuilder private constructor(
         val method: String
 ){
 
-     val data: ArrayList<String> = arrayListOf()
+    private val data = hashMapOf<String, String>()
+    private val timestamp = System.currentTimeMillis() / 1000
 
     companion object {
         fun instance(method: String): JokerParamBuilder {
-            return JokerParamBuilder(method)
+            val builder = JokerParamBuilder(method)
+            builder.data["Method"] = method
+            builder.data["Timestamp"] = "${builder.timestamp}"
+            return builder
         }
     }
 
     fun set(k: String, v: String): JokerParamBuilder {
-        data.add("$k=$v")
+        data[k] = v
         return this
     }
 
-    fun build(): String {
-        val urlParam = data.joinToString(separator = "&").let {
-            if (it.isBlank()) "" else "&$it"
+    fun build(): Pair<String, FormBody> {
+        val urlParam = data.map { "${it.key}=${it.value}" }.sorted().joinToString(separator = "&")
+
+        val bytes = HmacUtils.getHmacSha1("qc8y6kbyinc14".toByteArray()).doFinal(urlParam.toByteArray())
+        val sign = URLEncoder.encode(Base64.encodeBase64String(bytes), "utf-8")
+
+        val urlParamCodec = "AppID=${JokerConstant.appId}&Signature=${sign}"
+        return "${JokerConstant.url}?$urlParamCodec" to getFormBody()
+    }
+
+    fun getFormBody(): FormBody {
+        val builder = FormBody.Builder()
+//                .add("Method", method)
+//                .add("Timestamp", "$timestamp")
+        data.map {
+            builder.add(it.key, it.value)
         }
-        val timestamp = System.currentTimeMillis() / 1000
-        val signParam = "Method=$method&Timestamp=$timestamp$urlParam"
-
-        val bytes = HmacUtils.getHmacSha1("qc8y6kbyinc14".toByteArray()).doFinal(signParam.toByteArray())
-        val sign = Base64.encodeBase64String(bytes)
-
-        return "AppID=${JokerConstant.appId}&Signature=${sign}&$signParam"
+        return builder.build()
     }
 
 }
 
 
 fun main() {
+
     val mapper = jacksonObjectMapper()
     val okHttpUtil = OkHttpUtil(mapper)
+//
+//    val url = "http://api688.net:81"
+//
+//    val client = OkHttpClient()
+//
+//
+//    val timestamp = System.currentTimeMillis() / 1000
+//    val body = FormBody.Builder()
+//            .add("Method", "ListGames")
+//            .add("Timestamp", "$timestamp")
+//            .build()
+//
+//    val signParam = "Method=ListGames&Timestamp=$timestamp"
+//    val bytes = HmacUtils.getHmacSha1("qc8y6kbyinc14".toByteArray()).doFinal(signParam.toByteArray())
+//    val sign = Base64.encodeBase64String(bytes)
+//
+//    val request = Request.Builder()
+//            .url("$url?AppID=F1S8&Signature=$sign")
+//            .post(body)
+//            .build()
+//    val response = client.newCall(request).execute()
+//    println(response)
+//    println(String(response.body!!.bytes()))
 
-    val urlParam = JokerParamBuilder.instance("JP").build()
-//    val result = okHttpUtil.doPost(JokerConstant.url, urlParam, String::class.java)
-//    println(result)
-    println(urlParam)
+    val type = object: TypeReference<List<JokerSlotGame>>(){}
 
-//\
-//     http://api688.net:81/?AppID=F1S8&Signature=msNyXDibzSGnBD6PXukqYWRuJdw=&Method=JP&Timestamp=1572416112
+    val (url, formBody) = JokerParamBuilder.instance("ListGames").build()
 
-//    curl -X POST -d "AppID=F1S8&Signature=msNyXDibzSGnBD6PXukqYWRuJdw=&Method=JP&Timestamp=1572416112" http://api688.net:81
+    val data = okHttpUtil.doPostForm(url, formBody, JokerSlotGameResult::class.java)
+    println(data)
 
-    val x = String(URLCodec.decodeUrl("AppID=F1S8&Signature=msNyXDibzSGnBD6PXukqYWRuJdw=".toByteArray()))
-    println(x)
-
-    // curl -d 'Method=JP&Timestamp=1572416112' http://api688.net:81?AppID=F1S8&Signature=msNyXDibzSGnBD6PXukqYWRuJdw=
-    // curl -d 'Method=JP&Timestamp=1572416112' http://api688.net:81?&Signature=msNyXDibzSGnBD6PXukqYWRuJdw=
-    // curl -d 'AppID=F1S8&Signature=msNyXDibzSGnBD6PXukqYWRuJdw=Method=JP&Timestamp=1572416112' http://api688.net:81
 }

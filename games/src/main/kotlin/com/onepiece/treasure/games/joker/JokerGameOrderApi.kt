@@ -31,13 +31,13 @@ class JokerGameOrderApi(
             UUID.randomUUID().toString()
         }!!
 
-        val urlParam = JokerParamBuilder.instance("TS")
+        val (url, formBody) = JokerParamBuilder.instance("TS")
                 .set("StartDate", startDate.format(dateFormatter))
                 .set("EndDate", endDate.format(dateFormatter))
                 .set("NextId", nextId)
                 .build()
 
-        val betResult = okHttpUtil.doPost(JokerConstant.url, urlParam, BetResult::class.java)
+        val betResult = okHttpUtil.doPostForm(url, formBody, BetResult::class.java)
 
         val orders = betResult.data.getValue("Game").map {
             val username = it.username

@@ -1,0 +1,82 @@
+package com.onepiece.treasure.games.joker
+
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.games.GameApi
+import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.games.joker.value.JokerLoginResult
+import com.onepiece.treasure.games.joker.value.JokerRegisterResult
+import com.onepiece.treasure.games.joker.value.JokerSlotGame
+import com.onepiece.treasure.games.joker.value.JokerSlotGameResult
+import com.onepiece.treasure.games.value.SlotGame
+import org.springframework.stereotype.Service
+
+@Service
+class JokerGameApi(
+        private val okHttpUtil: OkHttpUtil,
+        private val objectMapper: ObjectMapper
+) : GameApi {
+
+    override fun register(username: String, password: String) {
+
+        // register
+        val (url, formBody) = JokerParamBuilder.instance("CU")
+                .set("Username", username)
+                .build()
+
+        val registerResult = okHttpUtil.doPostForm(url, formBody, JokerRegisterResult:: class.java)
+//        check(registerResult.status == "Created") { OnePieceExceptionCode.PLATFORM_MEMBER_REGISTER_FAIL }
+
+        // set password
+        val (url2, formBody2) = JokerParamBuilder.instance("SP")
+                .set("Username", username)
+                .set("Password", password)
+                .build()
+        okHttpUtil.doPostForm(url2, formBody2)
+    }
+
+    override fun games(): List<SlotGame> {
+
+        val (url, formBody) = JokerParamBuilder.instance("ListGames").build()
+
+        val data: List<JokerSlotGame> = okHttpUtil.doPostForm(url, formBody, JokerSlotGameResult::class.java).listGames
+
+        return data.map {
+            val platforms = it.supportedPlatForms.split(",").map { platformName ->
+                when (platformName) {
+                    "Desktop" -> SlotGame.GamePlatform.PC
+                    "Mobile" -> SlotGame.GamePlatform.Mobile
+                    else -> SlotGame.GamePlatform.PC
+                }
+            }.toList()
+
+            val specials = it.specials?.split(",")?.map { sp ->
+                when (sp) {
+                    "new" -> SlotGame.Special.New
+                    "hot" -> SlotGame.Special.Hot
+                    else -> SlotGame.Special.Hot
+                }
+            }?: emptyList()
+
+            SlotGame(gameId = it.gameCode, gameName = it.gameName, platforms = platforms, specials = specials, icon = it.image1)
+        }
+    }
+
+    private fun login(username: String): String {
+
+        val (url, formBody) = JokerParamBuilder.instance("RT")
+                .set("Username", username)
+                .build()
+        val result = okHttpUtil.doPostForm(url, formBody, JokerLoginResult::class.java)
+        return result.token
+    }
+
+    override fun start(username: String, gameId: String, redirectUrl: String): String {
+        val token = this.login(username = username)
+        return "${JokerConstant.gameUrl}?token=$token&game=$gameId&redirectUrl=$redirectUrl"
+    }
+
+    override fun start(platform: Platform) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}

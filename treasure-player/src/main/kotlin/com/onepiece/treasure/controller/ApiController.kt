@@ -1,6 +1,8 @@
 package com.onepiece.treasure.controller
 
+import com.onepiece.treasure.beans.enums.GameCategory
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.ConfigVo
 import com.onepiece.treasure.controller.value.PlatformVo
@@ -8,13 +10,16 @@ import com.onepiece.treasure.controller.value.SlotMenu
 import com.onepiece.treasure.controller.value.StartGameResp
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.SlotGameService
+import com.onepiece.treasure.games.GameApi
+import com.onepiece.treasure.games.value.SlotGame
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api")
 class ApiController(
         private val platformBindService: PlatformBindService,
-        private val slotGameService: SlotGameService
+        private val slotGameService: SlotGameService,
+        private val jokerGameApi: GameApi
 ) : BasicController(), Api {
 
     @GetMapping("/{clientId}")
@@ -30,11 +35,27 @@ class ApiController(
 
     @GetMapping("/slot/menu")
     override fun slotMenu(@RequestParam("platform") platform: Platform): List<SlotMenu> {
-        val slotGames = slotGameService.findByPlatform(platform)
-        return slotGames.map{
-            SlotMenu(id = it.id, category = it.category, name = it.name, icon = it.icon, hot = it.hot, new = it.new,
-                status = it.status)
+//        val slotGames = when(platform) {
+////
+////            Platform.Joker -> {
+////                jokerGameApi.games().map {
+////                    SlotMenu(gameId = it.gameId, gameName = it.gameName, category = GameCategory.ARCADE, icon = it.icon,
+////                            hot = true, new = true, status = Status.Normal)
+////                }
+////            }
+////            else -> slotGameService.findByPlatform(platform)
+////        }
+
+        val games = jokerGameApi.games().map {
+            SlotMenu(gameId = it.gameId, gameName = it.gameName, category = GameCategory.ARCADE, icon = it.icon,
+                    hot = true, new = true, status = Status.Normal)
         }
+
+        return games
+//        return slotGames.map{
+//            SlotMenu(id = it.id, category = it.category, name = it.name, icon = it.icon, hot = it.hot, new = it.new,
+//                status = it.status)
+//        }
     }
 
 
