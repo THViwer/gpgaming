@@ -51,6 +51,8 @@ class WalletServiceImpl(
                 walletDao.transferIn(transferInUo)
             }
             WalletEvent.TRANSFER_OUT -> {
+                check(wallet.balance >= walletUo.money) { OnePieceExceptionCode.BALANCE_NOT_WORTH}
+
                 val transferOutUo = WalletTransferOutUo(id = wallet.id, processId = wallet.processId, money = walletUo.money, giftMoney = walletUo.giftBalance)
                 walletDao.transferOut(transferOutUo)
             }

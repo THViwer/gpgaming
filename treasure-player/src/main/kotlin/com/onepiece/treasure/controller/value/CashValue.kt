@@ -7,7 +7,6 @@ import com.onepiece.treasure.beans.enums.WithdrawState
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.*
 
 data class CashDepositQuery(
 
@@ -146,23 +145,23 @@ data class CashWithdrawResp(
 
 data class CashTransferReq(
 
-        @ApiModelProperty("转入钱包Id")
-        val platform: Platform,
+        @ApiModelProperty("转出钱包")
+        val from: Platform,
 
-        @ApiModelProperty("TransferIn 中心 -> 平台，TransferOut 平台 -> 中心")
-        val action: TransferAction,
+        @ApiModelProperty("转入的钱包")
+        val to: Platform,
 
         @ApiModelProperty("转出金额")
         val money: BigDecimal
 
 )
 
-enum class TransferAction {
-
-        // 中心 -> 平台
-        TransferIn,
-
-        // 平台 -> 中心
-        TransferOut
-}
+//enum class TransferAction {
+//
+//        // 中心 -> 平台
+//        TransferIn,
+//
+//        // 平台 -> 中心
+//        TransferOut
+//}
 

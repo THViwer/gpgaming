@@ -36,8 +36,8 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"),Trans
                 .set("member_id", transferOrderCo.memberId)
                 .set("money", transferOrderCo.money)
                 .set("gift_money", transferOrderCo.giftMoney)
-                .set("from", transferOrderCo.from)
-                .set("to", transferOrderCo.to)
+                .set("`from`", transferOrderCo.from)
+                .set("`to`", transferOrderCo.to)
                 .set("state", TransferState.Process)
                 .executeOnlyOne()
 

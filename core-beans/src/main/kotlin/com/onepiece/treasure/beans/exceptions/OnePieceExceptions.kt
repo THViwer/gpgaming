@@ -31,6 +31,7 @@ object OnePieceExceptionCode {
     const val TRANSFER_OUT_BET_FAIL = "5002" // 不可转出 打码量不足
     const val BALANCE_SHORT_FAIL = "5003" // 余额不足
     const val SAFETY_PASSWORD_CHECK_FAIL = "5004" // 取款密码错误
+    const val BALANCE_NOT_WORTH = "5005" // 余额不足
 
     // 60000 platform method error
     const val PLATFORM_METHOD_FAIL = "6001" // 平台方式错误

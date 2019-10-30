@@ -65,7 +65,7 @@ interface CashApi {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun transfer(@RequestBody cashTransferReq: CashTransferReq)
 
-    @ApiOperation(tags = ["balance"], value = "transfer")
+    @ApiOperation(tags = ["cash"], value = "balance")
     fun balance(@RequestParam("platform") platform: Platform):BigDecimal
 
 }

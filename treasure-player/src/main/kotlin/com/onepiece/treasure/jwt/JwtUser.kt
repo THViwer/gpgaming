@@ -1,21 +1,35 @@
 package com.onepiece.treasure.jwt
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.onepiece.treasure.beans.enums.Platform
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.util.*
 
+
 data class JwtUser(
+
+        val clientId: Int,
+
         val id: Int,
 //        val level: String,
 //        val memberEndTime: LocalDateTime?,
         val musername: String,
+
         val mpassword: String,
+
         val lastPasswordResetDate: Date
+
+//        val platformMembers: List<PlatformMemberVo>
 ) : UserDetails {
+
+    data class PlatformMemberVo (
+            val platform: Platform,
+
+            val username: String,
+
+            val password: String
+    )
 
     @JsonIgnore
     override fun getAuthorities(): List<GrantedAuthority> {

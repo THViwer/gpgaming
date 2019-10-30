@@ -22,7 +22,8 @@ interface Api {
     fun start(@PathVariable("id") id: Int): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "start slot game")
-    fun startSlotGame(@PathVariable("id") id: Int): StartGameResp
+    fun startSlotGame(@RequestParam("platform") platform: Platform,
+                      @RequestParam("gameId") gameId: String): StartGameResp
 
 
 }

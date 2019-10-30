@@ -35,6 +35,16 @@ data class LoginReq(
         @ApiModelProperty("密码")
         val password: String
 )
+data class RegisterReq(
+        @ApiModelProperty("用户名")
+        val username: String,
+
+        @ApiModelProperty("密码")
+        val password: String,
+
+        @ApiModelProperty("安全密码")
+        val safetyPassword: String
+)
 
 data class ChangePwdReq(
 

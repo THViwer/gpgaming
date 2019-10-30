@@ -1,5 +1,7 @@
 package com.onepiece.treasure.jwt
 
+import com.onepiece.treasure.core.dao.MemberDao
+import com.onepiece.treasure.core.service.PlatformMemberService
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -8,15 +10,18 @@ import java.util.*
 
 @Service
 class JwtUserDetailsServiceImpl(
-        private val passwordEncoder: PasswordEncoder
+        private val passwordEncoder: PasswordEncoder,
+        private val memberDao: MemberDao,
+        private val platformMemberService: PlatformMemberService
 ): UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {
 
 //        val user = userDao.getByUsername(username)!!
 
-        return JwtUser(id = 1, musername = username, mpassword = passwordEncoder.encode(username),
-                lastPasswordResetDate = Date()
-        )
+        val member = memberDao.getByUsername(username)!!
+
+        return JwtUser(clientId = member.clientId, id = member.id, musername = username, mpassword = passwordEncoder.encode(username),
+                lastPasswordResetDate = Date())
     }
 }

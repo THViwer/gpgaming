@@ -11,15 +11,13 @@ import com.onepiece.treasure.controller.value.StartGameResp
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.SlotGameService
 import com.onepiece.treasure.games.GameApi
-import com.onepiece.treasure.games.value.SlotGame
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api")
 class ApiController(
         private val platformBindService: PlatformBindService,
-        private val slotGameService: SlotGameService,
-        private val jokerGameApi: GameApi
+        private val slotGameService: SlotGameService
 ) : BasicController(), Api {
 
     @GetMapping("/{clientId}")
@@ -61,11 +59,19 @@ class ApiController(
 
     @GetMapping("/start/{id}")
     override fun start(@PathVariable("id") id: Int): StartGameResp {
-        return StartGameResp(id = id, path = "http://www.baidu.com")
+        return StartGameResp(path = "http://www.baidu.com")
     }
 
-    @GetMapping("/start/slot/{id}")
-    override fun startSlotGame(@PathVariable("id") id: Int): StartGameResp {
-        return StartGameResp(id = id, path = "http://www.google.com")
+
+    @GetMapping("/start/slot")
+    override fun startSlotGame(
+            @RequestParam("platform") platform: Platform,
+            @RequestParam("gameId") gameId: String): StartGameResp {
+
+        val platformMember = getPlatformMember(platform)
+
+        val gamePath = jokerGameApi.start(username = platformMember.platformUsername, gameId = gameId, redirectUrl = "http://www.baidu.com")
+
+        return StartGameResp(path = gamePath)
     }
 }

@@ -89,9 +89,6 @@ data class SlotMenu(
 
 data class StartGameResp(
 
-        @ApiModelProperty("平台Id")
-        val id: Int,
-
         @ApiModelProperty("平台地址")
         val path: String
 )

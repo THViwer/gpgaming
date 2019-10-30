@@ -12,7 +12,6 @@ import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.OrderIdBuilder
 import com.onepiece.treasure.core.service.*
 import com.onepiece.treasure.games.GameCashApi
-import com.onepiece.treasure.games.joker.JokerGameCashApi
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -36,7 +35,8 @@ open class CashApiController(
 
     @GetMapping("/bank")
     override fun banks(): List<MemberBankVo> {
-        return memberBankService.query(id).map {
+        val memberId = this.current().id
+        return memberBankService.query(memberId).map {
             with(it) {
                 MemberBankVo(id = id, name = name, bank = bank, bankCardNumber = bankCardNumber, status = status,
                         createdTime = createdTime, clientId = clientId, memberId = memberId)
@@ -47,7 +47,8 @@ open class CashApiController(
     @PostMapping("/bank")
     override fun bankCreate(@RequestBody memberBankCoReq: MemberBankCoReq) {
 
-        val memberBankCo = MemberBankCo(clientId = clientId, memberId = id, bank = memberBankCoReq.bank, name = memberBankCoReq.name,
+        val (clientId, memberId) = this.currentClientIdAndMemberId()
+        val memberBankCo = MemberBankCo(clientId = clientId, memberId = memberId, bank = memberBankCoReq.bank, name = memberBankCoReq.name,
                 bankCardNumber = memberBankCoReq.bankCardNumber)
         memberBankService.create(memberBankCo)
     }
@@ -61,7 +62,7 @@ open class CashApiController(
 
     @GetMapping("/client/banks")
     override fun clientBanks(): List<ClientBankVo> {
-        return clientBankService.findClientBank(clientId).filter { it.status == Status.Normal }.map {
+        return clientBankService.findClientBank(current().clientId).filter { it.status == Status.Normal }.map {
             with(it) {
                 ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
                         status = status, createdTime = createdTime)
@@ -79,8 +80,10 @@ open class CashApiController(
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): Page<DepositVo> {
 
+        val (clientId, memberId) = this.currentClientIdAndMemberId()
+
         val depositQuery = DepositQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId,
-                memberId = id, state = state)
+                memberId = memberId, state = state)
 
         val page = depositService.query(depositQuery, current, size)
         if (page.total == 0) return Page.empty()
@@ -102,10 +105,10 @@ open class CashApiController(
     override fun deposit(@RequestBody depositCoReq: DepositCoReq): CashDepositResp {
 
         val clientBank = clientBankService.get(depositCoReq.clientBankId)
-
         val orderId = orderIdBuilder.generatorDepositOrderId()
 
-        val depositCo = DepositCo(orderId = orderId, memberId = id, memberName = depositCoReq.memberName, memberBankCardNumber = depositCoReq.memberBankCardNumber,
+        val (clientId, memberId) = this.currentClientIdAndMemberId()
+        val depositCo = DepositCo(orderId = orderId, memberId = memberId, memberName = depositCoReq.memberName, memberBankCardNumber = depositCoReq.memberBankCardNumber,
                 memberBank = depositCoReq.memberBank, clientId = clientId, clientBankId = clientBank.id, clientBankName = clientBank.name,
                 clientBankCardNumber = clientBank.bankCardNumber, money = depositCoReq.money, imgPath = depositCoReq.imgPath)
         depositService.create(depositCo)
@@ -124,8 +127,10 @@ open class CashApiController(
     ): Page<WithdrawVo> {
 
 
+        val (clientId, memberId) = this.currentClientIdAndMemberId()
+
         val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId,
-                memberId = id, state = state)
+                memberId = memberId, state = state)
 
         val page = withdrawService.query(withdrawQuery, current, size)
         if (page.total == 0) return Page.empty()
@@ -144,16 +149,18 @@ open class CashApiController(
     @PostMapping("/withdraw")
     override fun withdraw(@RequestBody withdrawCoReq: WithdrawCoReq): CashWithdrawResp {
 
+        val (clientId, memberId) = currentClientIdAndMemberId()
+
         // check bank id
-        val memberBank = memberBankService.query(id).find { it.id == withdrawCoReq.memberBankId }
+        val memberBank = memberBankService.query(memberId).find { it.id == withdrawCoReq.memberBankId }
         checkNotNull(memberBank) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
         // check safety password
-        memberService.checkSafetyPassword(id = id, safetyPassword = withdrawCoReq.safetyPassword)
+        memberService.checkSafetyPassword(id = memberId, safetyPassword = withdrawCoReq.safetyPassword)
 
         // create order
         val orderId = orderIdBuilder.generatorWithdrawOrderId()
-        val withdrawCo = WithdrawCo(orderId = orderId, clientId = clientId, memberId = id, memberName = memberBank.name,
+        val withdrawCo = WithdrawCo(orderId = orderId, clientId = clientId, memberId = memberId, memberName = memberBank.name,
                 memberBank = memberBank.bank, memberBankCardNumber = memberBank.bankCardNumber, memberBankId = memberBank.id,
                 money = withdrawCoReq.money, remarks = null)
         withdrawService.create(withdrawCo)
@@ -164,30 +171,40 @@ open class CashApiController(
     @PutMapping("/transfer")
     @Transactional(rollbackFor = [Exception::class])
     override fun transfer(@RequestBody cashTransferReq: CashTransferReq) {
+        check(cashTransferReq.from != cashTransferReq.to) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
-        val platformMemberVo = getPlatformMember(cashTransferReq.platform)
-        val platformMember = platformMemberService.get(platformMemberVo.id)
+        val (clientId, memberId) = currentClientIdAndMemberId()
 
-        when (cashTransferReq.action) {
+
+        val platformMember = if (cashTransferReq.from == Platform.Center) {
+            val platformMemberVo = getPlatformMember(cashTransferReq.to)
+            platformMemberService.get(platformMemberVo.id)
+        } else {
+            val platformMemberVo = getPlatformMember(cashTransferReq.from)
+            platformMemberService.get(platformMemberVo.id)
+        }
+
+        when (cashTransferReq.from) {
             // 中心钱包 -> 平台钱包
-            TransferAction.TransferIn -> {
+            Platform.Center -> {
 
                 // 活动赠送金额
                 val giftBalance = BigDecimal.ZERO
 
                 // 中心钱包扣款
-                val walletUo = WalletUo(clientId = clientId, memberId = id, event = WalletEvent.TRANSFER_OUT, money = cashTransferReq.money,
+                val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_OUT, money = cashTransferReq.money,
                         remarks = "transfer center to platform", waiterId = null, eventId = null)
                 walletService.update(walletUo)
 
                 // 生成转账订单
                 val transferOrderId = orderIdBuilder.generatorTransferOrderId()
-                val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = id, money = cashTransferReq.money, giftMoney = giftBalance,
-                        from = Platform.Center, to = cashTransferReq.platform)
+                val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = cashTransferReq.money, giftMoney = giftBalance,
+                        from = cashTransferReq.from, to = cashTransferReq.to)
                 transferOrderService.create(transferOrderCo)
 
 
                 //TODO 调用平台接口充值
+                jokerGameCashApi.transfer(platformMember.username, transferOrderId, cashTransferReq.money.plus(giftBalance))
 
                 // 平台钱包更改信息
                 val demandBet = if (giftBalance == BigDecimal.ZERO) {
@@ -204,22 +221,22 @@ open class CashApiController(
 
             }
             // 平台钱包 -> 中心钱包
-            TransferAction.TransferOut -> {
+            else -> {
 
                 // 检查是否满足打码量
                 check(platformMember.currentBet > platformMember.demandBet) { OnePieceExceptionCode.TRANSFER_OUT_BET_FAIL }
                 // 检查余额
-                val wallet = walletService.getMemberWallet(id)
+                val wallet = walletService.getMemberWallet(memberId)
                 check(wallet.balance.toDouble() - cashTransferReq.money.toDouble() > 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
 
                 // 生成转账订单
                 val transferOrderId = orderIdBuilder.generatorTransferOrderId()
-                val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = id, money = cashTransferReq.money, giftMoney = BigDecimal.ZERO,
-                        from = cashTransferReq.platform, to = Platform.Center)
+                val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = cashTransferReq.money, giftMoney = BigDecimal.ZERO,
+                        from = cashTransferReq.from, to = cashTransferReq.to)
                 transferOrderService.create(transferOrderCo)
 
                 // 中心钱包加钱
-                val walletUo = WalletUo(clientId = clientId, memberId = id, event = WalletEvent.TRANSFER_IN, money = cashTransferReq.money,
+                val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_IN, money = cashTransferReq.money,
                         remarks = "transfer platform to center", waiterId = null, eventId = null)
                 walletService.update(walletUo)
 
@@ -234,7 +251,12 @@ open class CashApiController(
 
     @GetMapping("/balance")
     override fun balance(@RequestParam platform: Platform): BigDecimal {
-        val platformMemberVo = getPlatformMember(platform)
-        return jokerGameCashApi.wallet(username = platformMemberVo.platformUsername)
+        return when (platform) {
+            Platform.Joker -> {
+                val platformMemberVo = getPlatformMember(platform)
+                jokerGameCashApi.wallet(username = platformMemberVo.platformUsername)
+            }
+            else -> walletService.getMemberWallet(current().id).balance
+        }
     }
 }

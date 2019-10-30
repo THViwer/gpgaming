@@ -6,6 +6,8 @@ import com.onepiece.treasure.beans.value.database.LevelUo
 
 interface LevelService {
 
+    fun getDefaultLevel(clientId: Int): Level
+
     fun all(clientId: Int): List<Level>
 
     fun create(levelCo: LevelCo)

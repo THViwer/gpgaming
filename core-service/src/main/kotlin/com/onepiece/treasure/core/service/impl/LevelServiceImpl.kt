@@ -17,6 +17,10 @@ class LevelServiceImpl(
         private val redisService: RedisService
 ): LevelService {
 
+    override fun getDefaultLevel(clientId: Int): Level {
+        return all(clientId).first { it.name == "default" }
+    }
+
     override fun all(clientId: Int): List<Level> {
         val redisKey = OnePieceRedisKeyConstant.level(clientId)
         return redisService.getList(redisKey, Level::class.java) {
