@@ -17,8 +17,8 @@ class JokerTask(
 
     @Scheduled(cron="0/10 * *  * * ? ")   //每10秒执行一
     fun syncOrder() {
-        val endTime = LocalDateTime.now()
-        val startTime = endTime.minusHours(10)
+        val endTime = LocalDateTime.now().plusHours(1)
+        val startTime = endTime.minusHours(2)
 
         log.info("startTime = $startTime, endTime = $endTime")
 

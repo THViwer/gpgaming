@@ -12,6 +12,7 @@ import com.onepiece.treasure.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -50,7 +51,7 @@ class JokerGameOrderApi(
             val now = LocalDateTime.now()
 
             JokerBetOrder(oCode = it.oCode, clientId = clientId, memberId = memberId, gameCode = it.gameCode, description = it.description,
-                    type = it.type, amount = it.amount, result = it.result, time = it.time.toLocalDateTime(), appId = it.appId, createdTime = now,
+                    type = it.type, amount = it.amount, result = it.result, time = it.time.withZoneSameInstant(ZoneId.of("Asia/Shanghai")).toLocalDateTime(), appId = it.appId, createdTime = now,
                     username = username, currencyCode = it.currencyCode, details = it.details, freeAmount = it.freeAmount, roundId = it.roundId)
         }
 

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import java.math.BigDecimal
+import java.time.ZoneId
 import java.time.ZonedDateTime
 
 data class JokerBetOrderVo(
@@ -81,5 +82,8 @@ fun main() {
                 .registerModule(JavaTimeModule())
 
         val result = mapper.readValue<BetResult>(json)
-        println(result)
+
+        val time = (result.data["Game"] ?: error("")).first().time
+        println(time)
+        println(time.withZoneSameInstant(ZoneId.of("Asia/Shanghai")).toLocalDateTime())
 }
