@@ -20,7 +20,7 @@ spring:
 server:
   servlet:
     context-path: /api/v1/task
-  port: 8002
+  port: 8003
 
 jwt:
   header: Authorization
