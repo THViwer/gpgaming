@@ -25,7 +25,7 @@ class JokerGameOrderApi(
 
     private val log = LoggerFactory.getLogger(JokerGameCashApi::class.java)
 
-    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
     override fun synOrder(startTime: LocalDateTime, endTime: LocalDateTime): String {
 
@@ -55,7 +55,7 @@ class JokerGameOrderApi(
                     username = username, currencyCode = it.currencyCode, details = it.details, freeAmount = it.freeAmount, roundId = it.roundId)
         }
 
-        if (orders != null) {
+        if (orders != null && orders.isNotEmpty()) {
             jokerBetOrderDao.creates(orders)
             // 放到缓存
             val caches = orders.groupBy { it.memberId }.map {
@@ -64,13 +64,13 @@ class JokerGameOrderApi(
 
                 BetCacheVo(memberId = memberId, bet = money, platform = Platform.Joker)
             }
-            val redisKey = OnePieceRedisKeyConstant.betCache("")
+            val redisKey = OnePieceRedisKeyConstant.betCache(nextId)
             redisService.put(redisKey, caches)
 
             // 下一次的值set到redis中
             redisService.put(OnePieceRedisKeyConstant.jokerNextId(), betResult.nextId)
         }
 
-        return if (betResult.nextId.isNotBlank()) betResult.nextId else nextId
+        return nextId
     }
 }

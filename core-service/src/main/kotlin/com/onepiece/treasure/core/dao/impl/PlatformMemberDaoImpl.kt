@@ -76,7 +76,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
     override fun batchBet(data: List<BetCacheVo>) {
 
         val sqls = data.map {
-            "update platform_member set current_bet = current_bet = ${it.bet}, total_bet = total_bet + ${it.bet} where member_id = ${it.memberId} and platform = ${it.platform.name}"
+            "update platform_member set current_bet = current_bet + ${it.bet}, total_bet = total_bet + ${it.bet} where member_id = ${it.memberId} and platform = '${it.platform.name}'"
         }
         jdbcTemplate.batchUpdate(*sqls.toTypedArray())
 
