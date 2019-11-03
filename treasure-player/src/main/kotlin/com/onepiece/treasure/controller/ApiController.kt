@@ -4,57 +4,57 @@ import com.onepiece.treasure.beans.enums.GameCategory
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.controller.basic.BasicController
-import com.onepiece.treasure.controller.value.ConfigVo
-import com.onepiece.treasure.controller.value.PlatformVo
-import com.onepiece.treasure.controller.value.SlotMenu
-import com.onepiece.treasure.controller.value.StartGameResp
-import com.onepiece.treasure.core.service.PlatformBindService
-import com.onepiece.treasure.core.service.SlotGameService
+import com.onepiece.treasure.controller.value.*
+import com.onepiece.treasure.core.service.*
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api")
 class ApiController(
         private val platformBindService: PlatformBindService,
-        private val slotGameService: SlotGameService
+        private val slotGameService: SlotGameService,
+        private val promotionService: PromotionService,
+        private val advertService: AdvertService,
+        private val announcementService: AnnouncementService
 ) : BasicController(), Api {
 
-    @GetMapping("/{clientId}")
-    override fun config(@PathVariable("clientId") clientId: Int): ConfigVo {
+    @GetMapping
+    override fun config(@RequestHeader("clientId") clientId: Int): ConfigVo {
 
         val platformBinds = platformBindService.findClientPlatforms(clientId)
         val platforms = platformBinds.map {
             PlatformVo(id = it.id, name = it.platform.cname, category = it.platform.category, status = it.status)
         }
 
-        return ConfigVo(platforms = platforms)
+        val announcementVo = announcementService.last(clientId)?.let {
+            AnnouncementVo(title = it.title, content = it.content, createdTime = it.createdTime)
+        }
+
+        val adverts = advertService.all(clientId).map {
+            AdvertVo(id = it.id, order = it.order, icon = it.icon, touchIcon = it.touchIcon, position = it.position, link = it.link)
+        }
+
+        return ConfigVo(platforms = platforms, announcementVo = announcementVo, adverts = adverts)
+    }
+
+    @GetMapping("/promotion")
+    override fun promotion(@RequestHeader("clientId") clientId: Int): List<PromotionVo> {
+        val promotions = promotionService.all(clientId)
+        return promotions.map {
+            PromotionVo(id = it.id, clientId = it.clientId, category = it.category, stopTime = it.stopTime, top = it.top, icon = it.icon,
+                    title = it.title, synopsis = it.synopsis, content = it.content, status = it.status, createdTime = it.createdTime)
+        }
+
     }
 
     @GetMapping("/slot/menu")
     override fun slotMenu(@RequestParam("platform") platform: Platform): List<SlotMenu> {
-//        val slotGames = when(platform) {
-////
-////            Platform.Joker -> {
-////                jokerGameApi.games().map {
-////                    SlotMenu(gameId = it.gameId, gameName = it.gameName, category = GameCategory.ARCADE, icon = it.icon,
-////                            hot = true, new = true, status = Status.Normal)
-////                }
-////            }
-////            else -> slotGameService.findByPlatform(platform)
-////        }
 
-        val games = gamePlatformUtil.getPlatformBuild(platform).gameApi.games().map {
+        return gamePlatformUtil.getPlatformBuild(platform).gameApi.games().map {
             SlotMenu(gameId = it.gameId, gameName = it.gameName, category = GameCategory.ARCADE, icon = it.icon,
                     hot = true, new = true, status = Status.Normal)
         }
-
-        return games
-//        return slotGames.map{
-//            SlotMenu(id = it.id, category = it.category, name = it.name, icon = it.icon, hot = it.hot, new = it.new,
-//                status = it.status)
-//        }
     }
-
 
     @GetMapping("/start/{id}")
     override fun start(@PathVariable("id") id: Int): StartGameResp {

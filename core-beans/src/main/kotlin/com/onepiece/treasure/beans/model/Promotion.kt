@@ -21,6 +21,9 @@ data class Promotion (
         // 结束时间, 如果为null 则无限时间
         val stopTime: LocalDateTime?,
 
+        // 是否置顶
+        val top: Boolean,
+
         // 图标
         val icon: String,
 

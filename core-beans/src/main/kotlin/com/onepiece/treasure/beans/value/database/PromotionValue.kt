@@ -15,6 +15,9 @@ data class PromotionCo(
         // 结束时间, 如果为null 则无限时间
         val stopTime: LocalDateTime?,
 
+        // 是否置顶
+        val top: Boolean,
+
         // 图标
         val icon: String,
 
@@ -38,6 +41,9 @@ data class PromotionUo(
 
         // 结束时间, 如果为null 则无限时间
         val stopTime: LocalDateTime?,
+
+        // 是否置顶
+        val top: Boolean? = null,
 
         // 图标
         val icon: String? = null,

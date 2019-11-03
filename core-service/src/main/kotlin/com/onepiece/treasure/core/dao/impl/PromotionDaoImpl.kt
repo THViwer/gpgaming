@@ -19,6 +19,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val clientId = rs.getInt("client_id")
             val category = rs.getString("category").let { PromotionCategory.valueOf(it) }
             val stopTime = rs.getTimestamp("stop_time")?.toLocalDateTime()
+            val top = rs.getBoolean("top")
             val icon = rs.getString("icon")
             val title = rs.getString("title")
             val synopsis = rs.getString("synopsis")
@@ -26,7 +27,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             Promotion(id = id, category = category, stopTime = stopTime, icon = icon, title = title, synopsis = synopsis,
-                    content = content, status = status, createdTime = createdTime, clientId = clientId)
+                    content = content, status = status, createdTime = createdTime, clientId = clientId, top = top)
         }
 
     override fun create(promotionCo: PromotionCo): Boolean {
@@ -34,6 +35,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("client_id", promotionCo.clientId)
                 .set("category", promotionCo.category)
                 .set("stop_time", promotionCo.stopTime)
+                .set("top", promotionCo.top)
                 .set("icon", promotionCo.icon)
                 .set("title", promotionCo.title)
                 .set("synopsis", promotionCo.synopsis)
@@ -46,6 +48,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
         return update()
                 .set("category", promotionUo.category)
                 .set("stop_time", promotionUo.stopTime)
+                .set("top", promotionUo.top)
                 .set("icon", promotionUo.icon)
                 .set("title", promotionUo.title)
                 .set("synopsis", promotionUo.synopsis)

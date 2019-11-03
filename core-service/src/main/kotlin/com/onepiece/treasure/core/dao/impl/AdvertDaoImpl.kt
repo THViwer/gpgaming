@@ -3,8 +3,8 @@ package com.onepiece.treasure.core.dao.impl
 import com.onepiece.treasure.beans.enums.AdvertType
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.model.Advert
-import com.onepiece.treasure.beans.value.database.AdverUo
 import com.onepiece.treasure.beans.value.database.AdvertCo
+import com.onepiece.treasure.beans.value.database.AdvertUo
 import com.onepiece.treasure.core.dao.AdvertDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
@@ -39,7 +39,7 @@ class AdvertDaoImpl: BasicDaoImpl<Advert>("advert"), AdvertDao {
                 .executeOnlyOne()
     }
 
-    override fun update(advertUo: AdverUo): Boolean {
+    override fun update(advertUo: AdvertUo): Boolean {
         return update()
                 .set("icon", advertUo.icon)
                 .set("touch_icon", advertUo.touchIcon)

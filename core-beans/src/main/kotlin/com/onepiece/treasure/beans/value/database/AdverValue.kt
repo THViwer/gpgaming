@@ -24,7 +24,7 @@ data class AdvertCo(
         val link: String
 )
 
-data class AdverUo(
+data class AdvertUo(
 
         val id: Int,
 

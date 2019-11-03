@@ -21,4 +21,10 @@ object OnePieceRedisKeyConstant {
     fun betCache(unionId: String) = "bet:cache:$unionId"
 
     fun jokerNextId() = "joker:nextId"
+
+    fun lastAnnouncement(clientId: Int) = "announcement:last:$clientId"
+
+    fun adverts(clientId: Int) = "advert:$clientId"
+
+    fun promotions(clientId: Int) = "promotion:$clientId"
 }
