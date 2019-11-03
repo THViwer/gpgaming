@@ -9,6 +9,7 @@ import com.onepiece.treasure.core.dao.AdvertDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
+import java.time.LocalDateTime
 
 @Repository
 class AdvertDaoImpl: BasicDaoImpl<Advert>("advert"), AdvertDao {
@@ -24,8 +25,9 @@ class AdvertDaoImpl: BasicDaoImpl<Advert>("advert"), AdvertDao {
             val order = rs.getInt("order")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
             Advert(id = id, clientId = clientId, icon = icon, touchIcon = touchIcon, position = position, link = link, order = order,
-                    status = status, createdTime = createdTime)
+                    status = status, createdTime = createdTime, updatedTime = updatedTime)
         }
 
     override fun create(advertCo: AdvertCo): Boolean {
@@ -46,6 +48,7 @@ class AdvertDaoImpl: BasicDaoImpl<Advert>("advert"), AdvertDao {
                 .set("position", advertUo.position)
                 .set("link", advertUo.link)
                 .set("status", advertUo.status)
+                .set("updated_time", LocalDateTime.now())
                 .where("id", advertUo.id)
                 .executeOnlyOne()
 

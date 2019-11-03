@@ -7,6 +7,7 @@ import com.onepiece.treasure.core.dao.AnnouncementDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
+import java.time.LocalDateTime
 
 @Repository
 class AnnouncementDaoImpl : BasicDaoImpl<Announcement>("announcement"), AnnouncementDao {
@@ -18,7 +19,8 @@ class AnnouncementDaoImpl : BasicDaoImpl<Announcement>("announcement"), Announce
             val title = rs.getString("title")
             val content = rs.getString("content")
             val createdTme = rs.getTimestamp("created_time").toLocalDateTime()
-            Announcement(id = id, clientId = clientId, title = title, content = content, createdTime = createdTme)
+            val updateTime = rs.getTimestamp("updated_time").toLocalDateTime()
+            Announcement(id = id, clientId = clientId, title = title, content = content, createdTime = createdTme, updatedTime = updateTime)
         }
 
     override fun create(announcementCo: AnnouncementCo): Boolean {
@@ -33,6 +35,7 @@ class AnnouncementDaoImpl : BasicDaoImpl<Announcement>("announcement"), Announce
         return update()
                 .set("title", announcementUo.title)
                 .set("content", announcementUo.content)
+                .set("updated_time", LocalDateTime.now())
                 .executeOnlyOne()
     }
 }

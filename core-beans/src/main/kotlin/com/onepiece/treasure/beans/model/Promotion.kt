@@ -40,6 +40,9 @@ data class Promotion (
         val status: Status,
 
         // 创建时间
-        val createdTime: LocalDateTime
+        val createdTime: LocalDateTime,
+
+        // 更新时间
+        val updatedTime: LocalDateTime
 
 )

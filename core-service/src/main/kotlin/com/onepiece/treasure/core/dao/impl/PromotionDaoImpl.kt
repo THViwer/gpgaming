@@ -9,6 +9,8 @@ import com.onepiece.treasure.core.dao.PromotionDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Repository
 class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
@@ -26,8 +28,9 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val content = rs.getString("content")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
             Promotion(id = id, category = category, stopTime = stopTime, icon = icon, title = title, synopsis = synopsis,
-                    content = content, status = status, createdTime = createdTime, clientId = clientId, top = top)
+                    content = content, status = status, createdTime = createdTime, clientId = clientId, top = top, updatedTime = updatedTime)
         }
 
     override fun create(promotionCo: PromotionCo): Boolean {
@@ -54,6 +57,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("synopsis", promotionUo.synopsis)
                 .set("content", promotionUo.content)
                 .set("status", promotionUo.status)
+                .set("updated_time", LocalDateTime.now())
                 .where("id", promotionUo.id)
                 .executeOnlyOne()
     }

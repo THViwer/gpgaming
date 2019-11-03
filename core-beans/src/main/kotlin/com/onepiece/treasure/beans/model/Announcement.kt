@@ -20,5 +20,8 @@ data class Announcement(
         val content: String,
 
         // 创建时间
-        val createdTime: LocalDateTime
+        val createdTime: LocalDateTime,
+
+        // 更新时间
+        val updatedTime: LocalDateTime
 )
