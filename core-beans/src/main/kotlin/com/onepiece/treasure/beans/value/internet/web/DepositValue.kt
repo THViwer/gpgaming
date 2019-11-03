@@ -98,3 +98,18 @@ data class DepositUoReq(
         val waiterId: Int = 0
 
 )
+
+data class ArtificialCoReq(
+
+        @ApiModelProperty("会员Id")
+        val memberId: Int,
+
+        @ApiModelProperty("添加金额")
+        val money: BigDecimal,
+
+        @ApiModelProperty("备注")
+        val remarks: String,
+
+        @ApiModelProperty("密码")
+        val password: String
+)

@@ -3,13 +3,13 @@ package com.onepiece.treasure.web.controller
 import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.value.database.ArtificialOrderCo
 import com.onepiece.treasure.beans.value.database.DepositLockUo
 import com.onepiece.treasure.beans.value.database.DepositQuery
 import com.onepiece.treasure.beans.value.database.WithdrawQuery
-import com.onepiece.treasure.beans.value.internet.web.DepositUoReq
-import com.onepiece.treasure.beans.value.internet.web.DepositVo
-import com.onepiece.treasure.beans.value.internet.web.WithdrawUoReq
-import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
+import com.onepiece.treasure.beans.value.internet.web.*
+import com.onepiece.treasure.core.OrderIdBuilder
+import com.onepiece.treasure.core.service.ArtificialOrderService
 import com.onepiece.treasure.core.service.DepositService
 import com.onepiece.treasure.core.service.WithdrawService
 import com.onepiece.treasure.web.controller.basic.BasicController
@@ -21,7 +21,9 @@ import java.time.LocalDateTime
 @RequestMapping("/cash")
 class CashOrderApiController(
         private val depositService: DepositService,
-        private val withdrawService: WithdrawService
+        private val withdrawService: WithdrawService,
+        private val artificialOrderService: ArtificialOrderService,
+        private val orderIdBuilder: OrderIdBuilder
 ) : BasicController(), CashOrderApi {
 
     @GetMapping("/deposit")
@@ -58,9 +60,13 @@ class CashOrderApiController(
         depositService.check(req)
     }
 
-//    @PutMapping("/deposit/enforcement")
-//    override fun enforcement(@RequestBody depositUoReq: DepositUoReq) {
-//    }
+    @PutMapping("/deposit/artificial")
+    override fun artificial(@RequestBody artificialCoReq: ArtificialCoReq) {
+        val orderId = orderIdBuilder.generatorArtificialOrderId()
+        val artificialOrderCo = ArtificialOrderCo(orderId = orderId, clientId = clientId, memberId = artificialCoReq.memberId, money = artificialCoReq.money,
+                remarks = artificialCoReq.remarks, operatorId = waiterId, operatorRole = role)
+        artificialOrderService.create(artificialOrderCo)
+    }
 
     @GetMapping("/withdraw")
     override fun withdraw(

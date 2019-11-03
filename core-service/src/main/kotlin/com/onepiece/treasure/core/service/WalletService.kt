@@ -5,6 +5,7 @@ import com.onepiece.treasure.beans.value.database.WalletCo
 import com.onepiece.treasure.beans.value.database.WalletTransferInUo
 import com.onepiece.treasure.beans.value.database.WalletTransferOutUo
 import com.onepiece.treasure.beans.value.database.WalletUo
+import java.math.BigDecimal
 
 interface WalletService {
 
@@ -12,6 +13,6 @@ interface WalletService {
 
     fun create(walletCo: WalletCo)
 
-    fun update(walletUo: WalletUo)
+    fun update(walletUo: WalletUo): BigDecimal
 
 }

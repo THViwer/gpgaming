@@ -2,11 +2,9 @@ package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.enums.WithdrawState
-import com.onepiece.treasure.beans.value.internet.web.DepositUoReq
-import com.onepiece.treasure.beans.value.internet.web.DepositVo
-import com.onepiece.treasure.beans.value.internet.web.WithdrawUoReq
-import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
+import com.onepiece.treasure.beans.value.internet.web.*
 import io.swagger.annotations.Api
+import io.swagger.annotations.ApiModelProperty
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
@@ -35,9 +33,9 @@ interface CashOrderApi {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun check(@RequestBody depositUoReq: DepositUoReq)
 
-//    @ApiOperation(tags = ["cash"], value = "deposit -> enforcement")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    fun enforcement(@RequestBody depositUoReq: DepositUoReq)
+    @ApiOperation(tags = ["cash"], value = "deposit -> artificial")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun artificial(@RequestBody artificialCoReq: ArtificialCoReq)
 
     @ApiOperation(tags = ["cash"], value = "withdraw -> query")
     fun withdraw(

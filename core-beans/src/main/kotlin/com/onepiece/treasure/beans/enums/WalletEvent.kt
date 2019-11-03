@@ -20,6 +20,9 @@ enum class WalletEvent {
     // 转出
     TRANSFER_OUT,
 
+    // 人工出入款
+    Artificial
+
     // 补偿
 //    REPARATION
 

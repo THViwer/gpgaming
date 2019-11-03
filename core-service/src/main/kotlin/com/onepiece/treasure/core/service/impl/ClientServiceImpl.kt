@@ -10,6 +10,7 @@ import com.onepiece.treasure.core.service.ClientService
 import com.onepiece.treasure.core.service.LevelService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Service
@@ -57,4 +58,24 @@ class ClientServiceImpl(
         val state = clientDao.update(clientUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
+
+    override fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal) {
+        val state =  this.tryUpdateEarnestBalance(index = 0, id = id, earnestBalance = earnestBalance)
+        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+    }
+
+    private fun tryUpdateEarnestBalance(index: Int, id: Int, earnestBalance: BigDecimal): Boolean {
+
+        if (index >= 3 ) return false
+
+        val client = clientDao.get(id)
+        val state = clientDao.updateEarnestBalance(id = id, earnestBalance = earnestBalance, processId = client.processId)
+
+        if (!state) {
+            return tryUpdateEarnestBalance(index = index + 1, id = id, earnestBalance = earnestBalance)
+        }
+
+        return state
+    }
+
 }

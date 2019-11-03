@@ -1,6 +1,7 @@
 package com.onepiece.treasure.beans.model
 
 import com.onepiece.treasure.beans.enums.Status
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 /**
@@ -20,9 +21,14 @@ data class Client(
         // 用户密码
         val password: String,
 
+        // 保证金
+        val earnestBalance: BigDecimal,
+
+        // 进程Id
+        val processId: String,
+
         // 厅主状态
         val status: Status,
-
 
         // 创建时间
         val createdTime: LocalDateTime,

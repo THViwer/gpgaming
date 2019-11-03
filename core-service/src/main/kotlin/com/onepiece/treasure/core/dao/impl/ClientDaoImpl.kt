@@ -7,7 +7,9 @@ import com.onepiece.treasure.beans.value.database.ClientUo
 import com.onepiece.treasure.core.dao.ClientDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
 import java.sql.ResultSet
+import java.util.*
 
 @Repository
 class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
@@ -18,12 +20,14 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
             val brand = rs.getString("brand")
             val username = rs.getString("username")
             val password = rs.getString("password")
+            val earnestBalance = rs.getBigDecimal("earnest_balance")
+            val processId = rs.getString("process_id")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val loginIp = rs.getString("login_ip")
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
             Client(id = id, brand = brand, username = username, password = password, createdTime = createdTime, loginTime = loginTime,
-                    status = status, loginIp = loginIp)
+                    status = status, loginIp = loginIp, earnestBalance = earnestBalance, processId = processId)
         }
 
     override fun findByUsername(username: String): Client? {
@@ -35,6 +39,7 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
         return insert().set("brand", clientCo.brand)
                 .set("username", clientCo.username)
                 .set("password", clientCo.password)
+                .set("processId", UUID.randomUUID().toString())
                 .set("status", Status.Normal)
                 .executeGeneratedKey()
     }
@@ -46,6 +51,15 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
                 .set("login_time", clientUo.loginTime)
                 .where("id", clientUo.id)
                 .executeOnlyOne()
+    }
 
+    override fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal, processId: String): Boolean {
+        return update()
+                .asSet("earnest_balance = earnest_balance + $earnestBalance")
+                .set("process_id", UUID.randomUUID().toString())
+                .where("id", id)
+                .where("process_id", processId)
+                .asWhere("earnest_balance >= ?", earnestBalance)
+                .executeOnlyOne()
     }
 }

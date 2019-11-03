@@ -8,6 +8,7 @@ import com.onepiece.treasure.core.dao.WalletDao
 import com.onepiece.treasure.core.dao.WalletNoteDao
 import com.onepiece.treasure.core.service.WalletService
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 
 @Service
 class WalletServiceImpl(
@@ -24,7 +25,7 @@ class WalletServiceImpl(
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 
-    override fun update(walletUo: WalletUo) {
+    override fun update(walletUo: WalletUo): BigDecimal {
 
         val wallet = this.getMemberWallet(walletUo.memberId)
 
@@ -46,7 +47,7 @@ class WalletServiceImpl(
                 val walletWithdrawUo = WalletWithdrawUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
                 walletDao.withdrawFail(walletWithdrawUo)
             }
-            WalletEvent.TRANSFER_IN -> {
+            WalletEvent.TRANSFER_IN, WalletEvent.Artificial -> {
                 val transferInUo = WalletTransferInUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
                 walletDao.transferIn(transferInUo)
             }
@@ -65,5 +66,7 @@ class WalletServiceImpl(
                 waiterId = walletUo.waiterId, eventId = walletUo.eventId)
         val wnState = walletNoteDao.create(walletNoteCo)
         check(wnState) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        return wallet.balance.plus(walletUo.money)
     }
 }
