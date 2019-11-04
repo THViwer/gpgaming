@@ -10,7 +10,7 @@ import java.time.LocalDate
 
 
 @Repository
-class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"),JokerBetOrderDao {
+class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"), JokerBetOrderDao {
 
     override val mapper: (rs: ResultSet) -> JokerBetOrder
         get() = { rs ->
@@ -35,7 +35,7 @@ class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"),Joker
                     memberId = memberId, currencyCode = currencyCode, details = details, freeAmount = freeAmount, roundId = roundId)
         }
 
-    override fun creates(orders: List<JokerBetOrder>) {
+    override fun create(orders: List<JokerBetOrder>) {
         val sql = insert()
                 .set("o_code", "")
                 .set("client_id", "")
@@ -80,7 +80,7 @@ class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"),Joker
         })
     }
 
-    override fun query(query: JokerBetOrderValue.Query): List<JokerBetOrder> {
+    override fun query(query: BetOrderValue.Query): List<JokerBetOrder> {
         return query().asWhere("time > ?", query.startTime)
                 .asWhere("time <= ?", query.endTime)
                 .where("username", query.username)
@@ -88,7 +88,7 @@ class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"),Joker
                 .execute(mapper)
     }
 
-    override fun report(startDate: LocalDate, endDate: LocalDate): List<JokerBetOrderValue.JokerReport> {
+    override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderValue.Report> {
 
         val sql = """
             select 
@@ -105,7 +105,7 @@ class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"),Joker
             val amount = rs.getBigDecimal("amount")
             val result = rs.getBigDecimal("result")
 
-            JokerBetOrderValue.JokerReport(clientId = clientId, memberId = memberId, amount = amount, result = result)
+            BetOrderValue.Report(clientId = clientId, memberId = memberId, amount = amount, result = result)
         }
 
     }

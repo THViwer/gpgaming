@@ -1,20 +1,9 @@
 package com.onepiece.treasure.games.joker
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onepiece.treasure.games.http.OkHttpUtil
-import com.onepiece.treasure.games.joker.value.BetResult
-import com.onepiece.treasure.games.joker.value.JokerSlotGame
-import com.onepiece.treasure.games.joker.value.JokerSlotGameResult
 import okhttp3.FormBody
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.HmacUtils
-import org.apache.commons.codec.net.URLCodec
 import java.net.URLEncoder
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 object JokerConstant {
 
@@ -72,59 +61,59 @@ class JokerParamBuilder private constructor(
 
 }
 
-
-fun main() {
-
-    val mapper = jacksonObjectMapper()
-    val okHttpUtil = OkHttpUtil(mapper)
 //
-//    val url = "http://api688.net:81"
+//fun main() {
 //
-//    val client = OkHttpClient()
+//    val mapper = jacksonObjectMapper()
+//    val okHttpUtil = OkHttpUtil(mapper)
+////
+////    val url = "http://api688.net:81"
+////
+////    val client = OkHttpClient()
+////
+////
+////    val timestamp = System.currentTimeMillis() / 1000
+////    val body = FormBody.Builder()
+////            .add("Method", "ListGames")
+////            .add("Timestamp", "$timestamp")
+////            .build()
+////
+////    val signParam = "Method=ListGames&Timestamp=$timestamp"
+////    val bytes = HmacUtils.getHmacSha1("qc8y6kbyinc14".toByteArray()).doFinal(signParam.toByteArray())
+////    val sign = Base64.encodeBase64String(bytes)
+////
+////    val request = Request.Builder()
+////            .url("$url?AppID=F1S8&Signature=$sign")
+////            .post(body)
+////            .build()
+////    val response = client.newCall(request).execute()
+////    println(response)
+////    println(String(response.body!!.bytes()))
+//
+////    val type = object: TypeReference<List<JokerSlotGame>>(){}
+//////
+//////    val (url, formBody) = JokerParamBuilder.instance("ListGames").build()
+//////
+//////    val data = okHttpUtil.doPostForm(url, formBody, JokerSlotGameResult::class.java)
+//////    println(data)
 //
 //
-//    val timestamp = System.currentTimeMillis() / 1000
-//    val body = FormBody.Builder()
-//            .add("Method", "ListGames")
-//            .add("Timestamp", "$timestamp")
+//    val endTime = LocalDateTime.now()
+//    val startTime = LocalDateTime.now().minusHours(1)
+//
+//    // 2019-10-30T18:38:10
+//    println("startTime = $startTime, endTime = $endTime")
+//
+//    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+//
+//
+//    val (url, formBody) = JokerParamBuilder.instance("TS")
+//            .set("StartDate", startTime.format(dateFormatter))
+//            .set("EndDate", endTime.format(dateFormatter))
+//            .set("NextId", UUID.randomUUID().toString().replace("-", ""))
 //            .build()
 //
-//    val signParam = "Method=ListGames&Timestamp=$timestamp"
-//    val bytes = HmacUtils.getHmacSha1("qc8y6kbyinc14".toByteArray()).doFinal(signParam.toByteArray())
-//    val sign = Base64.encodeBase64String(bytes)
+//    val betResult = okHttpUtil.doPostForm(url, formBody, BetResult::class.java)
+//    println(betResult)
 //
-//    val request = Request.Builder()
-//            .url("$url?AppID=F1S8&Signature=$sign")
-//            .post(body)
-//            .build()
-//    val response = client.newCall(request).execute()
-//    println(response)
-//    println(String(response.body!!.bytes()))
-
-//    val type = object: TypeReference<List<JokerSlotGame>>(){}
-////
-////    val (url, formBody) = JokerParamBuilder.instance("ListGames").build()
-////
-////    val data = okHttpUtil.doPostForm(url, formBody, JokerSlotGameResult::class.java)
-////    println(data)
-
-
-    val endTime = LocalDateTime.now()
-    val startTime = LocalDateTime.now().minusHours(1)
-
-    // 2019-10-30T18:38:10
-    println("startTime = $startTime, endTime = $endTime")
-
-    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-
-
-    val (url, formBody) = JokerParamBuilder.instance("TS")
-            .set("StartDate", startTime.format(dateFormatter))
-            .set("EndDate", endTime.format(dateFormatter))
-            .set("NextId", UUID.randomUUID().toString().replace("-", ""))
-            .build()
-
-    val betResult = okHttpUtil.doPostForm(url, formBody, BetResult::class.java)
-    println(betResult)
-
-}
+//}

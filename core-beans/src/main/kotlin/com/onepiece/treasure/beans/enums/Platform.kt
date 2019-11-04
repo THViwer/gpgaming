@@ -8,11 +8,9 @@ enum class Platform(
     // 中心 用于钱包 不用于游戏
     Center(PlatformCategory.Slot, "center"),
 
-    AG(PlatformCategory.Slot, "ag"),
+    Joker(PlatformCategory.Slot, "joker"),
 
-    SUN(PlatformCategory.Slot, "sun"),
-
-    Joker(PlatformCategory.Slot, "joker")
+    Cta666(PlatformCategory.LiveVideo, "cta666")
 
     ;
 

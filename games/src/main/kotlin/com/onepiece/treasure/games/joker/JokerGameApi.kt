@@ -2,6 +2,7 @@ package com.onepiece.treasure.games.joker
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.StartPlatform
 import com.onepiece.treasure.games.GameApi
 import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.games.joker.value.JokerLoginResult
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service
 class JokerGameApi(
         private val okHttpUtil: OkHttpUtil,
         private val objectMapper: ObjectMapper
-) : GameApi {
+) : GameApi() {
 
     override fun register(username: String, password: String) {
 
@@ -71,12 +72,16 @@ class JokerGameApi(
         return result.token
     }
 
-    override fun start(username: String, gameId: String, redirectUrl: String): String {
+    override fun start(username: String, gameId: String, redirectUrl: String): Map<StartPlatform, String> {
         val token = this.login(username = username)
-        return "${JokerConstant.gameUrl}?token=$token&game=$gameId&redirectUrl=$redirectUrl"
+        val path = "${JokerConstant.gameUrl}?token=$token&game=$gameId&redirectUrl=$redirectUrl"
+
+        return mapOf(
+                StartPlatform.Pc to path,
+                StartPlatform.Wap to path
+        )
     }
 
-    override fun start(platform: Platform) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+
+
 }

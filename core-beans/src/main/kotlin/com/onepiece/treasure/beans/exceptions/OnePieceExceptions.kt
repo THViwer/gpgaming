@@ -36,5 +36,7 @@ object OnePieceExceptionCode {
     // 60000 platform method error
     const val PLATFORM_METHOD_FAIL = "6001" // 平台方式错误
     const val PLATFORM_TRANSFER_ORDERID_EXIST = "6002" // 转账订单已存在
+    const val PLATFORM_AEGIS = "6003" // 平台维护
+    const val PLATFORM_REQUEST_ERROR = "6004" // 平台调用接口错误
 
 }

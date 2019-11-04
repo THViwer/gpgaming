@@ -2,16 +2,18 @@ package com.onepiece.treasure.task
 
 import com.onepiece.treasure.games.GameOrderApi
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @Component
-class JokerTask(
-        private val jokerGameOrderApi: GameOrderApi,
+class Cta666Task(
+
+        private val cat666GameOrderApi: GameOrderApi,
         private val betCacheUtil: BetCacheUtil
 ) {
-    private val log = LoggerFactory.getLogger(JokerTask::class.java)
+    private val log = LoggerFactory.getLogger(Cta666Task::class.java)
 
     @Scheduled(cron="0/10 * *  * * ? ")   //每10秒执行一
     fun syncOrder() {
@@ -20,7 +22,7 @@ class JokerTask(
 
         log.info("startTime = $startTime, endTime = $endTime")
 
-        val unionId = jokerGameOrderApi.synOrder(startTime = startTime, endTime = endTime)
+        val unionId = cat666GameOrderApi.synOrder(startTime = startTime, endTime = endTime)
 
         betCacheUtil.handler(unionId)
 

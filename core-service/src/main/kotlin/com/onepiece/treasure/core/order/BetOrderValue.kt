@@ -3,7 +3,7 @@ package com.onepiece.treasure.core.order
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-sealed class JokerBetOrderValue {
+sealed class BetOrderValue {
 
     data class Query(
 
@@ -15,7 +15,7 @@ sealed class JokerBetOrderValue {
 
     )
 
-    data class JokerReport(
+    data class Report(
 
             val clientId: Int,
 
