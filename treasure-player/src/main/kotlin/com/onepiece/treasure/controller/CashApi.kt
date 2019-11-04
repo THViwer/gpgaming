@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import java.math.BigDecimal
@@ -66,6 +67,6 @@ interface CashApi {
     fun transfer(@RequestBody cashTransferReq: CashTransferReq)
 
     @ApiOperation(tags = ["cash"], value = "balance")
-    fun balance(@RequestParam("platform") platform: Platform):BigDecimal
+    fun balance(@RequestHeader("platform") platform: Platform):BigDecimal
 
 }

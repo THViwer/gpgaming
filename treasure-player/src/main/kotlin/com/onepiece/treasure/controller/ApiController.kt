@@ -2,6 +2,7 @@ package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.enums.GameCategory
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.StartPlatform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api")
 class ApiController(
         private val platformBindService: PlatformBindService,
-        private val slotGameService: SlotGameService,
         private val promotionService: PromotionService,
         private val advertService: AdvertService,
         private val announcementService: AnnouncementService
@@ -56,9 +56,12 @@ class ApiController(
         }
     }
 
-    @GetMapping("/start/{id}")
-    override fun start(@PathVariable("id") id: Int): StartGameResp {
-        return StartGameResp(path = "http://www.baidu.com")
+    @GetMapping("/start")
+    override fun start(@RequestHeader("platform") platform: Platform): StartGameResp {
+        val platformMember = getPlatformMember(platform)
+
+        val map = gamePlatformUtil.getPlatformBuild(platform).gameApi.start(platformMember.platformUsername, platformMember.platformPassword)
+        return StartGameResp(path = map[StartPlatform.Pc] ?: error(""))
     }
 
 
@@ -69,10 +72,9 @@ class ApiController(
 
         val platformMember = getPlatformMember(platform)
 
-        val gamePath = gamePlatformUtil.getPlatformBuild(platform)
-                .gameApi
+        val maps = gamePlatformUtil.getPlatformBuild(platform).gameApi
                 .start(username = platformMember.platformUsername, gameId = gameId, redirectUrl = "http://www.baidu.com")
 
-        return StartGameResp(path = gamePath)
+        return StartGameResp(path = maps[StartPlatform.Pc] ?: error(""))
     }
 }

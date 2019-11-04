@@ -13,7 +13,7 @@ class JokerTask(
 ) {
     private val log = LoggerFactory.getLogger(JokerTask::class.java)
 
-    @Scheduled(cron="0/10 * *  * * ? ")   //每10秒执行一
+//    @Scheduled(cron="0/10 * *  * * ? ")
     fun syncOrder() {
         val endTime = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0)
         val startTime = endTime.minusHours(2)

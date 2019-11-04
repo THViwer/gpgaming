@@ -24,10 +24,10 @@ interface Api {
     fun slotMenu(@RequestParam("platform") platform: Platform): List<SlotMenu>
 
     @ApiOperation(tags = ["api"], value = "start game")
-    fun start(@PathVariable("id") id: Int): StartGameResp
+    fun start(@RequestHeader("platform") platform: Platform): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "start slot game")
-    fun startSlotGame(@RequestParam("platform") platform: Platform,
+    fun startSlotGame(@RequestHeader("platform") platform: Platform,
                       @RequestParam("gameId") gameId: String): StartGameResp
 
 

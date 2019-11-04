@@ -7,7 +7,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
 
 @Service
-class Cat666GameApi(
+class Cta666GameApi(
         private val okHttpUtil: OkHttpUtil
 ) : GameApi() {
 
@@ -34,7 +34,7 @@ class Cat666GameApi(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, Cat666Result.Register::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, Cta666Result.Register::class.java)
         Cat666Constant.checkCode(result.codeId)
 
     }
@@ -49,19 +49,19 @@ class Cat666GameApi(
                 "lang":"$lang",
                 "member":{
                     "username":"$username",
-                    "password":"$password"//可以不传,如果密码不同,将自动修改会员登入密码
+                    "password":"$password"
                 }
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, Cat666Result.StartGame::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, Cta666Result.StartGame::class.java)
         Cat666Constant.checkCode(result.codeId)
 
         return mapOf(
-                StartPlatform.Pc to result.list[0],
-                StartPlatform.Wap to result.list[1],
-                StartPlatform.Android to result.list[2],
-                StartPlatform.Ios to result.list[2]
+                StartPlatform.Pc to "${result.list[0]}${result.token}",
+                StartPlatform.Wap to "${result.list[1]}${result.token}",
+                StartPlatform.Android to "${result.list[2]}${result.token}",
+                StartPlatform.Ios to "${result.list[2]}${result.token}"
         )
 
     }

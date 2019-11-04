@@ -105,7 +105,7 @@ class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"), Joke
             val amount = rs.getBigDecimal("amount")
             val result = rs.getBigDecimal("result")
 
-            BetOrderValue.Report(clientId = clientId, memberId = memberId, amount = amount, result = result)
+            BetOrderValue.Report(clientId = clientId, memberId = memberId, bet = amount, win = result)
         }
 
     }

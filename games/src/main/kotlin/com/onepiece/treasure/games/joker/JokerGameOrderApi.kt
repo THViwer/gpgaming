@@ -56,7 +56,7 @@ class JokerGameOrderApi(
         }
 
         if (orders != null && orders.isNotEmpty()) {
-            jokerBetOrderDao.creates(orders)
+            jokerBetOrderDao.create(orders)
             // 放到缓存
             val caches = orders.groupBy { it.memberId }.map {
                 val memberId = it.key

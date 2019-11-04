@@ -69,10 +69,10 @@ class OkHttpUtil(
         }
     }
 
-    fun <T> doPostJson(url: String, data: Any, clz: Class<T>): T {
+    fun <T> doPostJson(url: String, json: String, clz: Class<T>): T {
 
-        val jsonData = objectMapper.writeValueAsString(data)
-        val body = jsonData.toRequestBody(JSON)
+//        val jsonData = objectMapper.writeValueAsString(data)
+        val body = json.toRequestBody(JSON)
 
         val request = Request.Builder()
                 .url(url)
@@ -80,11 +80,12 @@ class OkHttpUtil(
                 .build()
         val response = client.newCall(request).execute()
         if (response.code != 200) {
-            throw LogicException(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
+            error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
-        val json = response.body!!.string()
-        return objectMapper.readValue(json, clz)
+        val responseData = response.body!!.string()
+        log.info("response json data : $responseData")
+        return objectMapper.readValue(responseData, clz)
     }
 
 }

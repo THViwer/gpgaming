@@ -34,10 +34,10 @@ data class Cta666BetOrder(
         val platformMemberId: Long,
 
         // TODO 游戏下注时间
-        val betTime: String,
+        val betTime: LocalDateTime?,
 
         // TODO 游戏结算时间	可以为空
-        val calTime: String?,
+        val calTime: LocalDateTime?,
 
         // 派彩金额 (输赢应扣除下注金额)	可以为空
         val winOrLoss: BigDecimal?,
@@ -50,6 +50,21 @@ data class Cta666BetOrder(
 
         // 好路追注金额	betPoints为总金额
         val betPointsz: BigDecimal,
+
+        // 有效下注金额
+        val availableBet: BigDecimal?,
+
+        // 用户名
+        val userName: String,
+
+        // 游戏结果
+        val result: String?,
+
+        // 下注注单
+        val betDetail: String?,
+
+        // 好路追注注单
+        val betDetailz: String?,
 
         // 下注时客户端IP
         val ip: String,

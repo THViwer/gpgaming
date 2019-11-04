@@ -1,8 +1,10 @@
 package com.onepiece.treasure.games.cta666
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import java.math.BigDecimal
+import java.time.LocalDateTime
 
-sealed class Cat666Result {
+sealed class Cta666Result {
 
 
     data class Register(
@@ -21,8 +23,6 @@ sealed class Cat666Result {
             val codeId: Int,
 
             val token: String,
-
-            val random: String,
 
             val list: List<String>
     )
@@ -67,7 +67,7 @@ sealed class Cat666Result {
 
             val random: String,
 
-            val list: List<BetDetail>
+            val list: List<BetDetail>?
     )
 
     data class BetDetail(
@@ -88,7 +88,7 @@ sealed class Cat666Result {
             val playId: Long,
 
             // 游戏类型
-            val GameType: Int,
+            val gameType: Int,
 
             // 游戏Id
             val gameId: Int,
@@ -97,10 +97,12 @@ sealed class Cat666Result {
             val memberId: Long,
 
             // TODO 游戏下注时间
-            val betTime: String,
+            @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+            val betTime: LocalDateTime,
 
             // TODO 游戏结算时间	可以为空
-            val calTime: String?,
+            @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+            val calTime: LocalDateTime?,
 
             // 派彩金额 (输赢应扣除下注金额)	可以为空
             val winOrLoss: BigDecimal?,
@@ -113,6 +115,21 @@ sealed class Cat666Result {
 
             // 好路追注金额	betPoints为总金额
             val betPointsz: BigDecimal,
+
+            // 有效下注金额
+            val availableBet: BigDecimal?,
+
+            // 用户名
+            val userName: String,
+
+            // 游戏结果
+            val result: String?,
+
+            // 下注注单
+            val betDetail: String?,
+
+            // 好路追注注单
+            val betDetailz: String?,
 
             // 下注时客户端IP
             val ip: String,

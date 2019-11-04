@@ -17,13 +17,17 @@ sealed class BetOrderValue {
 
     data class Report(
 
+            //  厅主Id
             val clientId: Int,
 
+            // 会员 Id
             val memberId: Int,
 
-            val amount: BigDecimal,
+            // 下注金额
+            val bet: BigDecimal,
 
-            val result: BigDecimal
+            // 盈利金额
+            val win: BigDecimal
 
     )
 

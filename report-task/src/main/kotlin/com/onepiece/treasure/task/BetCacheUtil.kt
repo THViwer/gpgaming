@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component
 @Component
 open class BetCacheUtil(
         private val redisService: RedisService,
-        private val platformMemberService: PlatformMemberService,
         private val platformMemberDao: PlatformMemberDao
 ) {
 

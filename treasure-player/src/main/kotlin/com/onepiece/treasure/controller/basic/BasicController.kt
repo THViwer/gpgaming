@@ -54,6 +54,11 @@ abstract class BasicController {
             clientId < 10 -> "00$clientId"
             clientId < 100 -> "0$clientId"
             else -> "$clientId"
+        }.let {
+            when (platform) {
+                Platform.Cta666 -> "c$it"
+                else -> it
+            }
         }
 
         val platformUsername = "$clientIdStr$id"

@@ -21,7 +21,7 @@ class Cta666GameCashApi(
                 "member":{"username":"$username"}
             } 
         """.trimIndent()
-        val result = okHttpUtil.doPostJson(param.url, data, Cat666Result.Balance::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, Cta666Result.Balance::class.java)
         return result.member.balance
     }
 
@@ -38,7 +38,7 @@ class Cta666GameCashApi(
             {
                 "token":"${param.token}",
                 "random":"${param.random}",
-                "data":"${orderId}",
+                "data":"$orderId",
                 "member":{
                     "username":"$username",
                     "amount":${money}
@@ -46,7 +46,7 @@ class Cta666GameCashApi(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, Cat666Result.Transfer::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, Cta666Result.Transfer::class.java)
 
         return TransferResult(orderId = orderId, afterBalance = result.member.balance, platformOrderId = result.data,
                 balance = result.member.balance.subtract(money))

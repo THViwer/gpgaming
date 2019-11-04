@@ -1,7 +1,9 @@
 package com.onepiece.treasure.core.order
 
 import java.sql.PreparedStatement
+import java.sql.Timestamp
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 interface BetOrderDao<T> {
 
@@ -18,4 +20,8 @@ fun PreparedStatement.setIntOrNull(index: Int, v: Int?) {
 
 fun PreparedStatement.setLongOrNull(index: Int, v: Long?) {
     if (v == null) this.setNull(index, java.sql.Types.BIGINT) else this.setLong(index, v)
+}
+
+fun PreparedStatement.setTimestampOrNull(index: Int, dateTime: LocalDateTime?) {
+    if (dateTime == null) this.setNull(index, java.sql.Types.TIMESTAMP) else this.setTimestamp(index, Timestamp.valueOf(dateTime))
 }

@@ -22,12 +22,17 @@ class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), 
             val gameType = rs.getInt("game_type")
             val gameId = rs.getInt("game_id")
             val platformMemberId = rs.getLong("platform_member_id")
-            val betTime = rs.getString("bet_time")
-            val calTime = rs.getString("cal_time")
+            val betTime = rs.getTimestamp("bet_time")?.toLocalDateTime()
+            val calTime = rs.getTimestamp("cal_time")?.toLocalDateTime()
             val winOrLoss = rs.getBigDecimal("win_or_loss")
             val winOrLossz = rs.getBigDecimal("win_or_lossz")
             val betPoints = rs.getBigDecimal("bet_points")
             val betPointsz = rs.getBigDecimal("bet_pointsz")
+            val availableBet = rs.getBigDecimal("available_bet")
+            val username = rs.getString("username")
+            val result = rs.getString("result")
+            val betDetail = rs.getString("bet_detail")
+            val betDetailz = rs.getString("bet_detailz")
             val ip = rs.getString("ip")
             val ext = rs.getString("ext")
             val isRevocation = rs.getInt("is_revocation")
@@ -42,7 +47,8 @@ class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), 
                     playId = playId, gameType = gameType, gameId = gameId, platformMemberId = platformMemberId, betTime = betTime,
                     calTime = calTime, winOrLoss = winOrLoss, winOrLossz = winOrLossz, betPoints = betPoints, betPointsz = betPointsz,
                     ip = ip, ext = ext, isRevocation = isRevocation, balanceBefore = balanceBefore, parentBetId = parentBetId,
-                    currencyId = currencyId, deviceType = deviceType, pluginId = pluginId, createdTime = createdTime)
+                    currencyId = currencyId, deviceType = deviceType, pluginId = pluginId, createdTime = createdTime, availableBet = availableBet,
+                    userName = username, result = result, betDetail = betDetail, betDetailz = betDetailz)
         }
 
     override fun create(orders: List<Cta666BetOrder>) {
@@ -63,6 +69,11 @@ class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), 
                 .set("win_or_lossz", "")
                 .set("bet_points", "")
                 .set("bet_pointsz", "")
+                .set("available_bet", "")
+                .set("username", "")
+                .set("result", "")
+                .set("bet_detail", "")
+                .set("bet_detailz", "")
                 .set("ip", "")
                 .set("ext", "")
                 .set("is_revocation", "")
@@ -87,10 +98,17 @@ class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), 
                 ps.setInt(++x, order.gameType)
                 ps.setInt(++x, order.gameId)
                 ps.setLongOrNull(++x, order.platformMemberId)
-                ps.setString(++x, order.betTime)
-                ps.setString(++x, order.calTime)
+                ps.setTimestampOrNull(++x, order.betTime)
+                ps.setTimestampOrNull(++x, order.calTime)
                 ps.setBigDecimal(++x, order.winOrLoss)
                 ps.setBigDecimal(++x, order.winOrLossz)
+                ps.setBigDecimal(++x, order.betPoints)
+                ps.setBigDecimal(++x, order.betPointsz)
+                ps.setBigDecimal(++x, order.availableBet)
+                ps.setString(++x, order.userName)
+                ps.setString(++x, order.result)
+                ps.setString(++x, order.betDetail)
+                ps.setString(++x, order.betDetailz)
                 ps.setString(++x, order.ip)
                 ps.setString(++x, order.ext)
                 ps.setInt(++x, order.isRevocation)
@@ -120,7 +138,7 @@ class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), 
     override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderValue.Report> {
         val sql = """
             select 
-                client_id, member_id, sum(bet_points) as amount, sum(win_or_loss) as result from cta666_bet_order 
+                client_id, member_id, sum(bet_points) as bet, sum(win_or_loss) as win from cta666_bet_order 
             where 
                 time > ? and time <= ? 
             group by client_id, member_id
@@ -130,10 +148,10 @@ class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), 
 
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
-            val amount = rs.getBigDecimal("amount")
-            val result = rs.getBigDecimal("result")
+            val bet = rs.getBigDecimal("bet")
+            val win = rs.getBigDecimal("win")
 
-            BetOrderValue.Report(clientId = clientId, memberId = memberId, amount = amount, result = result)
+            BetOrderValue.Report(clientId = clientId, memberId = memberId, bet = bet, win = win)
         }
 
     }
