@@ -191,7 +191,7 @@ open class CashApiController(
                 val giftBalance = BigDecimal.ZERO
 
                 // 检查保证金是否足够
-                clientService.updateEarnestBalance(id = clientId, earnestBalance = cashTransferReq.money)
+                clientService.updateEarnestBalance(id = clientId, earnestBalance = cashTransferReq.money.negate())
 
                 // 中心钱包扣款
                 val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_OUT, money = cashTransferReq.money,
@@ -233,7 +233,7 @@ open class CashApiController(
 
 
                 // 检查保证金是否足够
-                clientService.updateEarnestBalance(id = clientId, earnestBalance = cashTransferReq.money.negate())
+                clientService.updateEarnestBalance(id = clientId, earnestBalance = cashTransferReq.money)
 
                 // 生成转账订单
                 val transferOrderId = orderIdBuilder.generatorTransferOrderId()
