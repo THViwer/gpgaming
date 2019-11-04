@@ -43,9 +43,6 @@ data class AdvertCoReq(
         @ApiModelProperty("排序")
         val order: Int,
 
-        @ApiModelProperty("厅主Id")
-        val clientId: Int,
-
         @ApiModelProperty("图标")
         val icon: String,
 

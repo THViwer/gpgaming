@@ -36,6 +36,7 @@ class AnnouncementDaoImpl : BasicDaoImpl<Announcement>("announcement"), Announce
                 .set("title", announcementUo.title)
                 .set("content", announcementUo.content)
                 .set("updated_time", LocalDateTime.now())
+                .where("id", announcementUo.id)
                 .executeOnlyOne()
     }
 }

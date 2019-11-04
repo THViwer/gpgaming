@@ -19,7 +19,7 @@ class AdvertDaoImpl: BasicDaoImpl<Advert>("advert"), AdvertDao {
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val icon = rs.getString("icon")
-            val touchIcon = rs.getString("touch _icon")
+            val touchIcon = rs.getString("touch_icon")
             val position = rs.getString("position").let { AdvertType.valueOf(it) }
             val link = rs.getString("link")
             val order = rs.getInt("order")
