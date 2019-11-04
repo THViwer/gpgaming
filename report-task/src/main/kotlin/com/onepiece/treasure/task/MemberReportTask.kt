@@ -22,7 +22,7 @@ class MemberReportTask(
         val now = LocalDateTime.now()
         val data = reports.map {
             MemberReport(id = -1, day = startDate, clientId = it.clientId, memberId = it.memberId, platform = Platform.Joker,
-                    bet = it.amount, money = it.result, createdTime = now)
+                    bet = it.bet, money = it.win, createdTime = now)
         }
         memberReportDao.creates(data)
 
