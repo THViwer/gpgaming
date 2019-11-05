@@ -1,6 +1,7 @@
 package com.onepiece.treasure.beans.value.database
 
 import com.onepiece.treasure.beans.enums.WalletEvent
+import java.math.BigDecimal
 
 data class WalletNoteCo(
         // 厅主Id
@@ -16,6 +17,9 @@ data class WalletNoteCo(
 
         // 事件
         val event: WalletEvent,
+
+        // 操作金额
+        val money: BigDecimal,
 
         // 备注
         val remarks: String

@@ -1,6 +1,7 @@
 package com.onepiece.treasure.beans.model
 
 import com.onepiece.treasure.beans.enums.WalletEvent
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class WalletNote(
@@ -22,6 +23,9 @@ data class WalletNote(
 
         // 事件
         val event: WalletEvent,
+
+        // 操作金额
+        val money: BigDecimal,
 
         // 备注
         val remarks: String,

@@ -5,29 +5,35 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-data class MemberReport(
+data class ClientPlatformDailyReport(
 
+        // id
         val id: Int,
 
-        // 日期
+        // 报表日期
         val day: LocalDate,
 
         // 厅主Id
         val clientId: Int,
 
-        // 会员Id
-        val memberId: Int,
-
-        // 平台Id
+        // 平台
         val platform: Platform,
 
         // 下注金额
         val bet: BigDecimal,
 
-        // 金额  正数: 会员赢钱、厅主输钱 负数：会员输钱、厅主赢钱
-        val money: BigDecimal,
+        // 盈利金额
+        val win: BigDecimal,
+
+        // 转入金额
+        val transferIn: BigDecimal,
+
+        // 转出金额
+        val transferOut: BigDecimal,
+
 
         // 创建时间
         val createdTime: LocalDateTime
+
 
 )

@@ -2,15 +2,20 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.model.Deposit
 import com.onepiece.treasure.beans.value.database.DepositCo
 import com.onepiece.treasure.beans.value.database.DepositLockUo
 import com.onepiece.treasure.beans.value.database.DepositQuery
 import com.onepiece.treasure.beans.value.database.DepositUo
+import com.onepiece.treasure.beans.value.internet.web.ClientDepositReportVo
+import com.onepiece.treasure.beans.value.internet.web.ClientWithdrawReportVo
+import com.onepiece.treasure.beans.value.internet.web.DepositReportVo
 import com.onepiece.treasure.core.dao.DepositDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -110,5 +115,31 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                 .where("process_id", depositUo.processId)
                 .where("lock_waiter_id", depositUo.lockWaiterId)
                 .executeOnlyOne()
+    }
+
+    override fun report(startDate: LocalDate, endDate: LocalDate): List<DepositReportVo> {
+        return query("client_id, member_id, sum(money) as money")
+                .where("state", DepositState.Successful)
+                .asWhere("end_time > ?", startDate)
+                .asWhere("end_time <= ?", endDate)
+                .execute { rs ->
+                    val clientId = rs.getInt("client_id")
+                    val memberId = rs.getInt("member_id")
+                    val money = rs.getBigDecimal("money")
+                    DepositReportVo(clientId = clientId, memberId = memberId, money = money)
+                }
+    }
+
+    override fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo> {
+        return query("client_id, sum(money) as money, count(client_id) as count")
+                .where("state", WithdrawState.Successful)
+                .asWhere("end_time >= ?", startDate)
+                .asWhere("end_time < ?", endDate)
+                .execute { rs ->
+                    val clientId = rs.getInt("client_id")
+                    val count = rs.getInt("count")
+                    val money = rs.getBigDecimal("money")
+                    ClientDepositReportVo(clientId = clientId,  count = count, money = money)
+                }
     }
 }

@@ -3,6 +3,7 @@ package com.onepiece.treasure.games.joker
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
+import com.onepiece.treasure.core.order.BetOrderValue
 import com.onepiece.treasure.core.order.JokerBetOrder
 import com.onepiece.treasure.core.order.JokerBetOrderDao
 import com.onepiece.treasure.games.GameOrderApi
@@ -11,6 +12,7 @@ import com.onepiece.treasure.games.joker.value.BetResult
 import com.onepiece.treasure.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -72,5 +74,9 @@ class JokerGameOrderApi(
         }
 
         return nextId
+    }
+
+    override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderValue.Report> {
+        return jokerBetOrderDao.report(startDate = startDate, endDate = endDate)
     }
 }

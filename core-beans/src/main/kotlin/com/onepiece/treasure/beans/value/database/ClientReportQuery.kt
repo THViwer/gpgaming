@@ -2,11 +2,12 @@ package com.onepiece.treasure.beans.value.database
 
 import java.time.LocalDate
 
-data class MemberReportQuery(
+data class ClientReportQuery(
 
-        val memberId: Int,
+        val clientId: Int,
 
         val startDate: LocalDate,
 
         val endDate: LocalDate
+
 )

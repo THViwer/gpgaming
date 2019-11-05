@@ -6,11 +6,14 @@ import com.onepiece.treasure.beans.enums.WalletEvent
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Deposit
 import com.onepiece.treasure.beans.value.database.*
+import com.onepiece.treasure.beans.value.internet.web.ClientDepositReportVo
+import com.onepiece.treasure.beans.value.internet.web.DepositReportVo
 import com.onepiece.treasure.beans.value.internet.web.DepositUoReq
 import com.onepiece.treasure.core.dao.DepositDao
 import com.onepiece.treasure.core.service.DepositService
 import com.onepiece.treasure.core.service.WalletService
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class DepositServiceImpl(
@@ -63,4 +66,11 @@ class DepositServiceImpl(
         }
     }
 
+    override fun report(startDate: LocalDate, endDate: LocalDate): List<DepositReportVo> {
+        return depositDao.report(startDate, endDate)
+    }
+
+    override fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

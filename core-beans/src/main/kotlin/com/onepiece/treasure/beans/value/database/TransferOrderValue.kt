@@ -3,6 +3,7 @@ package com.onepiece.treasure.beans.value.database
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.TransferState
 import java.math.BigDecimal
+import java.time.LocalDate
 
 data class TransferOrderCo(
         // 订单Id
@@ -31,4 +32,11 @@ data class TransferOrderUo(
         val orderId: String,
 
         val state: TransferState
+)
+
+data class TransferOrderReportQuery(
+
+        val startDate: LocalDate,
+
+        val endDate: LocalDate
 )

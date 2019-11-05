@@ -6,11 +6,14 @@ import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Withdraw
 import com.onepiece.treasure.beans.value.database.*
+import com.onepiece.treasure.beans.value.internet.web.ClientWithdrawReportVo
+import com.onepiece.treasure.beans.value.internet.web.WithdrawReportVo
 import com.onepiece.treasure.beans.value.internet.web.WithdrawUoReq
 import com.onepiece.treasure.core.dao.WithdrawDao
 import com.onepiece.treasure.core.service.WalletService
 import com.onepiece.treasure.core.service.WithdrawService
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class WithdrawServiceImpl(
@@ -77,5 +80,13 @@ class WithdrawServiceImpl(
             }
         }
 
+    }
+
+    override fun report(startDate: LocalDate, endDate: LocalDate): List<WithdrawReportVo> {
+         return withdrawDao.report(startDate, endDate)
+    }
+
+    override fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientWithdrawReportVo> {
+        return withdrawDao.reportByClient(startDate, endDate)
     }
 }

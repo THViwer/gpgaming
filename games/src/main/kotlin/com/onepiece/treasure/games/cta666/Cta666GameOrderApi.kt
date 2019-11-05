@@ -3,19 +3,21 @@ package com.onepiece.treasure.games.cta666
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
+import com.onepiece.treasure.core.order.BetOrderValue
 import com.onepiece.treasure.core.order.Cta666BetOrder
 import com.onepiece.treasure.core.order.Cta666BetOrderDao
 import com.onepiece.treasure.games.GameOrderApi
 import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
 @Service
 class Cta666GameOrderApi(
         private val okHttpUtil: OkHttpUtil,
-        private val catCta666BetOrderDao: Cta666BetOrderDao,
+        private val cta666BetOrderDao: Cta666BetOrderDao,
         private val redisService: RedisService
 ): GameOrderApi {
 
@@ -51,7 +53,7 @@ class Cta666GameOrderApi(
                         currencyId = currencyId, deviceType = deviceType, pluginId = pluginId, result = it.result, userName = userName, createdTime = now)
             }
         }
-        catCta666BetOrderDao.create(orders)
+        cta666BetOrderDao.create(orders)
 
         // 放到缓存
         val caches = orders.groupBy { it.memberId }.map {
@@ -85,5 +87,9 @@ class Cta666GameOrderApi(
         val result = okHttpUtil.doPostJson(param.url, data, Cta666Result.Mark::class.java)
         Cat666Constant.checkCode(result.codeId)
 
+    }
+
+    override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderValue.Report> {
+        return cta666BetOrderDao.report(startDate = startDate, endDate = endDate)
     }
 }

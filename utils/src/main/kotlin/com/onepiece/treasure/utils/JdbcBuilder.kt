@@ -1,7 +1,9 @@
 package com.onepiece.treasure.utils
 
+import org.springframework.jdbc.core.BatchPreparedStatementSetter
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
+import java.sql.PreparedStatement
 import java.sql.ResultSet
 
 
@@ -11,12 +13,60 @@ object JdbcBuilder {
         return Insert(jdbcTemplate, table)
     }
 
+    fun <T> batchInsert(jdbcTemplate: JdbcTemplate, table: String, data: List<T>): BatchInsert<T> {
+        return BatchInsert(jdbcTemplate, table, data)
+    }
+
     fun query(jdbcTemplate: JdbcTemplate, table: String, returnColumns: String? = null): Query {
         return Query(jdbcTemplate, table, returnColumns)
     }
 
     fun update(jdbcTemplate: JdbcTemplate, table: String): Update {
         return Update(jdbcTemplate, table)
+    }
+
+}
+
+class BatchInsert<T>(
+        private val jdbcTemplate: JdbcTemplate,
+        private val table: String,
+        private val data: List<T>
+) {
+
+
+    private val columns = arrayListOf<String>()
+//    val fs = arrayListOf<(ps: PreparedStatement, entity: T) -> Unit>()
+
+
+    fun set(column: String): BatchInsert<T> {
+        columns.add("`$column`")
+        return this
+    }
+
+
+//    fun set(column: String, f1: (ps: PreparedStatement, entity: T) -> Unit): BatchInsert<T> {
+//        columns.add("`$column`")
+//        fs.add(f1)
+//        return this
+//    }
+
+
+    fun execute(function: (ps: PreparedStatement, entity: T) -> Any?) {
+        val batch = object: BatchPreparedStatementSetter{
+            override fun setValues(ps: PreparedStatement, i: Int) {
+                function(ps, data[i])
+            }
+
+            override fun getBatchSize(): Int {
+                return data.size
+            }
+        }
+
+        val names = columns.joinToString(separator = ",")
+        val values = columns.joinToString(separator = ",") { "?" }
+        val sql = "insert ignore into `table` ($names) values ($values)"
+
+        jdbcTemplate.batchUpdate(sql, batch)
     }
 
 }
@@ -37,6 +87,7 @@ class Insert(
         param.add(value)
         return this
     }
+
 
     fun build(): String {
 
@@ -77,6 +128,7 @@ class Query(
     private val columns = arrayListOf<String>()
     private val param = arrayListOf<Any>()
     var orderBy: String? = null
+    var groupBy: String? = null
     var current: Int? = null
     var size: Int? = null
 
@@ -97,6 +149,11 @@ class Query(
 
         val value = if (v is Enum<*>) v.name else v
         param.add(value)
+        return this
+    }
+
+    fun group(groupBy: String): Query {
+        this.groupBy = groupBy
         return this
     }
 
@@ -125,6 +182,10 @@ class Query(
         }
 
         val sql = StringBuilder(begin)
+
+        if (!groupBy.isNullOrBlank()) {
+            sql.append(" group by $groupBy ")
+        }
 
         if (!orderBy.isNullOrBlank()) {
             sql.append(" order by $orderBy")

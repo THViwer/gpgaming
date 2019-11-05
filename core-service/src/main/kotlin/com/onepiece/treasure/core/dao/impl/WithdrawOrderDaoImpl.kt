@@ -7,10 +7,13 @@ import com.onepiece.treasure.beans.value.database.DepositLockUo
 import com.onepiece.treasure.beans.value.database.WithdrawCo
 import com.onepiece.treasure.beans.value.database.WithdrawQuery
 import com.onepiece.treasure.beans.value.database.WithdrawUo
+import com.onepiece.treasure.beans.value.internet.web.ClientWithdrawReportVo
+import com.onepiece.treasure.beans.value.internet.web.WithdrawReportVo
 import com.onepiece.treasure.core.dao.WithdrawDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -105,5 +108,31 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
                 .where("process_id", orderUo.processId)
                 .where("lock_waiter_id", orderUo.waiterId)
                 .executeOnlyOne()
+    }
+
+    override fun report(startDate: LocalDate, endDate: LocalDate): List<WithdrawReportVo> {
+        return query("client_id, member_id, sum(money) as money")
+                .where("state", WithdrawState.Successful)
+                .asWhere("end_time >= ?", startDate)
+                .asWhere("end_time < ?", endDate)
+                .execute { rs ->
+                    val clientId = rs.getInt("client_id")
+                    val memberId = rs.getInt("member_id")
+                    val money = rs.getBigDecimal("money")
+                    WithdrawReportVo(clientId = clientId, memberId = memberId, money = money)
+                }
+    }
+
+    override fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientWithdrawReportVo> {
+        return query("client_id, sum(money) as money, count(client_id) as count")
+                .where("state", WithdrawState.Successful)
+                .asWhere("end_time >= ?", startDate)
+                .asWhere("end_time < ?", endDate)
+                .execute { rs ->
+                    val clientId = rs.getInt("client_id")
+                    val count = rs.getInt("count")
+                    val money = rs.getBigDecimal("money")
+                    ClientWithdrawReportVo(clientId = clientId,  count = count, money = money)
+                }
     }
 }

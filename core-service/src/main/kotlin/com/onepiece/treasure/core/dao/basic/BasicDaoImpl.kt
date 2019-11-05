@@ -1,9 +1,6 @@
 package com.onepiece.treasure.core.dao.basic
 
-import com.onepiece.treasure.utils.Insert
-import com.onepiece.treasure.utils.JdbcBuilder
-import com.onepiece.treasure.utils.Query
-import com.onepiece.treasure.utils.Update
+import com.onepiece.treasure.utils.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import java.sql.ResultSet
@@ -34,6 +31,10 @@ abstract class BasicDaoImpl<T>(
         return JdbcBuilder.insert(jdbcTemplate, table)
     }
 
+    fun <T> batchInsert(data: List<T>): BatchInsert<T> {
+        return JdbcBuilder.batchInsert(jdbcTemplate, table, data)
+    }
+
     fun query(returnColumns: String? = null): Query {
         return Query(jdbcTemplate, table, returnColumns)
     }
@@ -41,5 +42,6 @@ abstract class BasicDaoImpl<T>(
     fun update(): Update {
         return Update(jdbcTemplate, table)
     }
+
 
 }

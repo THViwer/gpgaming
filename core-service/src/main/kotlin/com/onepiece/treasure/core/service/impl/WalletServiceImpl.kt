@@ -63,7 +63,7 @@ class WalletServiceImpl(
 
         // TODO async insert wallet note
         val walletNoteCo = WalletNoteCo(clientId = walletUo.clientId, memberId = wallet.memberId, event = walletUo.event, remarks = walletUo.remarks,
-                waiterId = walletUo.waiterId, eventId = walletUo.eventId)
+                waiterId = walletUo.waiterId, eventId = walletUo.eventId, money = walletUo.money)
         val wnState = walletNoteDao.create(walletNoteCo)
         check(wnState) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 

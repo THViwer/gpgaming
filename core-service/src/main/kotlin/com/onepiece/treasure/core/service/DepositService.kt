@@ -5,7 +5,11 @@ import com.onepiece.treasure.beans.model.Deposit
 import com.onepiece.treasure.beans.value.database.DepositCo
 import com.onepiece.treasure.beans.value.database.DepositLockUo
 import com.onepiece.treasure.beans.value.database.DepositQuery
+import com.onepiece.treasure.beans.value.internet.web.ClientDepositReportVo
+import com.onepiece.treasure.beans.value.internet.web.ClientWithdrawReportVo
+import com.onepiece.treasure.beans.value.internet.web.DepositReportVo
 import com.onepiece.treasure.beans.value.internet.web.DepositUoReq
+import java.time.LocalDate
 
 interface DepositService {
 
@@ -20,5 +24,10 @@ interface DepositService {
     fun lock(depositLockUo: DepositLockUo)
 
     fun check(depositUoReq: DepositUoReq)
+
+    fun report(startDate: LocalDate, endDate: LocalDate): List<DepositReportVo>
+
+    fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo>
+
 
 }
