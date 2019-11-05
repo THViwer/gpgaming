@@ -41,6 +41,8 @@ class MemberPlatformDailyReportDaoImpl : BasicDaoImpl<MemberPlatformDailyReport>
                 .set("platform", "")
                 .set("bet", "")
                 .set("win", "")
+                .set("transfer_in", "")
+                .set("transfer_out", "")
                 .build()
         jdbcTemplate.batchUpdate(sql, object: BatchPreparedStatementSetter {
             override fun setValues(ps: PreparedStatement, index: Int) {
@@ -52,6 +54,8 @@ class MemberPlatformDailyReportDaoImpl : BasicDaoImpl<MemberPlatformDailyReport>
                 ps.setString(++x, report.platform.name)
                 ps.setBigDecimal(++x, report.bet)
                 ps.setBigDecimal(++x, report.win)
+                ps.setBigDecimal(++x, report.transferIn)
+                ps.setBigDecimal(++x, report.transferOut)
             }
 
             override fun getBatchSize(): Int {
@@ -70,8 +74,8 @@ class MemberPlatformDailyReportDaoImpl : BasicDaoImpl<MemberPlatformDailyReport>
 
     override fun report(startDate: LocalDate, endDate: LocalDate): List<MemberPlatformDailyReportVo> {
         return query("client_id, member_id, sum(bet) as bet, sum(win) as win, sum(transfer_in) as transfer_in, sum(transfer_out) as transfer_out")
-                .asWhere("day > ?", startDate)
-                .asWhere("day <= ?", endDate)
+                .asWhere("day >= ?", startDate)
+                .asWhere("day < ?", endDate)
                 .group("client_id, member_id")
                 .execute { rs ->
                     val clientId = rs.getInt("client_id")

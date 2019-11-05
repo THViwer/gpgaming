@@ -64,7 +64,7 @@ class BatchInsert<T>(
 
         val names = columns.joinToString(separator = ",")
         val values = columns.joinToString(separator = ",") { "?" }
-        val sql = "insert ignore into `table` ($names) values ($values)"
+        val sql = "insert ignore into `$table` ($names) values ($values)"
 
         jdbcTemplate.batchUpdate(sql, batch)
     }

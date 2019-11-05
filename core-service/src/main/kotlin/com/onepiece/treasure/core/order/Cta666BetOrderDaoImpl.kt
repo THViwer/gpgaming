@@ -140,7 +140,7 @@ class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), 
             select 
                 client_id, member_id, sum(bet_points) as bet, sum(win_or_loss) as win from cta666_bet_order 
             where 
-                time > ? and time <= ? 
+                cal_time >= ? and cal_time < ? 
             group by client_id, member_id
         """.trimIndent()
 

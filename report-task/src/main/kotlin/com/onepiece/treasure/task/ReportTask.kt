@@ -28,7 +28,7 @@ class ReportTask(
 
 
     // 会员平台日报表
-    fun startMemberDailyReport(startDate: LocalDate) {
+    fun startMemberPlatformDailyReport(startDate: LocalDate) {
 
         val endDate = startDate.plusDays(1)
 
@@ -48,7 +48,7 @@ class ReportTask(
                     val transferInMoney = transferReports[transferInKey]?.money ?: BigDecimal.ZERO
                     val transferOutMoney = transferReports[transferOutKey]?.money ?: BigDecimal.ZERO
 
-                    MemberPlatformDailyReport(id = -1, day = startDate, clientId = it.clientId, memberId = it.memberId, platform = Platform.Joker,
+                    MemberPlatformDailyReport(id = -1, day = startDate, clientId = it.clientId, memberId = it.memberId, platform = platform,
                             bet = it.bet, win = it.win, createdTime = now, transferIn = transferInMoney, transferOut = transferOutMoney)
                 }
                 memberPlatformDailyReportService.create(reports)
@@ -61,16 +61,18 @@ class ReportTask(
     // 会员日报表
     fun startMemberReport(startDate: LocalDate) {
 
+        val endDate = startDate.plusDays(1)
+
+
+
+        val depositReports = depositService.report(startDate, endDate)
+                .map { it.memberId to it }.toMap()
+        val withdrawReports = withdrawService.report(startDate, endDate)
+                .map { it.memberId to it }.toMap()
+
+
         val now = LocalDateTime.now()
-
-
-        val depositReports = depositService.report(startDate, startDate.plusDays(1))
-                .map { it.memberId to it }.toMap()
-        val withdrawReports = withdrawService.report(startDate, startDate.plusDays(1))
-                .map { it.memberId to it }.toMap()
-
-
-        val reports = memberPlatformDailyReportService.report(startDate, startDate.plusDays(1)).map {
+        val reports = memberPlatformDailyReportService.report(startDate, endDate).map {
 
             val deposit = depositReports[it.memberId]?.money?: BigDecimal.ZERO
             val withdraw = withdrawReports[it.memberId]?.money?: BigDecimal.ZERO
@@ -87,14 +89,14 @@ class ReportTask(
         val endDate = startDate.plusDays(1)
 
         val transferReports = transferOrderService.reportByClient(startDate, endDate).map {
-            "${it.clientId}_${it.platform}_${it.from}_${it.to}" to it
+            "${it.clientId}_${it.from}_${it.to}" to it
         }.toMap()
 
         val now = LocalDateTime.now()
 
         val reports = memberPlatformDailyReportService.reportByClient(startDate, endDate).map {
-            val transferInKey = "${it.clientId}_${it.platform}_${Platform.Center}_${it.platform}"
-            val transferOutKey = "${it.clientId}_${it.platform}_${it.platform}_${Platform.Center}"
+            val transferInKey = "${it.clientId}_${Platform.Center}_${it.platform}"
+            val transferOutKey = "${it.clientId}_${it.platform}_${Platform.Center}"
 
             val transferIn = transferReports[transferInKey]?.money?: BigDecimal.ZERO
             val transferOut = transferReports[transferOutKey]?.money?: BigDecimal.ZERO

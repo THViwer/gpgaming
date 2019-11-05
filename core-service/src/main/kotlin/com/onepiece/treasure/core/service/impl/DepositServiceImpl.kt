@@ -71,6 +71,6 @@ class DepositServiceImpl(
     }
 
     override fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return depositDao.reportByClient(startDate, endDate)
     }
 }

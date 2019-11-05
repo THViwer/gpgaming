@@ -121,8 +121,6 @@ data class ClientPlatformTransferReportVo(
 
         val clientId: Int,
 
-        val platform: Platform,
-
         val from: Platform,
 
         val to: Platform,

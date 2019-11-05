@@ -226,7 +226,7 @@ open class CashApiController(
             else -> {
 
                 // 检查是否满足打码量
-                check(platformMember.currentBet > platformMember.demandBet) { OnePieceExceptionCode.TRANSFER_OUT_BET_FAIL }
+                check(platformMember.currentBet >= platformMember.demandBet) { OnePieceExceptionCode.TRANSFER_OUT_BET_FAIL }
                 // 检查余额
                 val wallet = walletService.getMemberWallet(memberId)
                 check(wallet.balance.toDouble() - cashTransferReq.money.toDouble() > 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
@@ -247,7 +247,7 @@ open class CashApiController(
                 walletService.update(walletUo)
 
                 //TODO 调用平台接口取款
-                gamePlatformUtil.getPlatformBuild(cashTransferReq.to).gameCashApi.transfer(platformMember.username, transferOrderId, cashTransferReq.money.negate())
+                gamePlatformUtil.getPlatformBuild(cashTransferReq.from).gameCashApi.transfer(platformMember.username, transferOrderId, cashTransferReq.money.negate())
 
                 // 更新转账订单
                 val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = TransferState.Successful)

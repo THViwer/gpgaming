@@ -115,6 +115,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
                 .where("state", WithdrawState.Successful)
                 .asWhere("end_time >= ?", startDate)
                 .asWhere("end_time < ?", endDate)
+                .group("client_id, member_id")
                 .execute { rs ->
                     val clientId = rs.getInt("client_id")
                     val memberId = rs.getInt("member_id")
@@ -128,6 +129,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
                 .where("state", WithdrawState.Successful)
                 .asWhere("end_time >= ?", startDate)
                 .asWhere("end_time < ?", endDate)
+                .group("client_id")
                 .execute { rs ->
                     val clientId = rs.getInt("client_id")
                     val count = rs.getInt("count")
