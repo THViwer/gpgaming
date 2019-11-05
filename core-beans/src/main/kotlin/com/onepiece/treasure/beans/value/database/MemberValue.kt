@@ -4,13 +4,15 @@ import com.onepiece.treasure.beans.enums.Status
 import java.time.LocalDateTime
 
 data class MemberQuery(
-        val clientId: Int,
+        val clientId: Int?,
 
         val username: String?,
 
         val status: Status?,
 
         val levelId: Int?,
+
+        val ids: List<Int>? = null,
 
         val startTime: LocalDateTime?,
 

@@ -6,8 +6,8 @@ import com.onepiece.treasure.beans.enums.WalletEvent
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Deposit
 import com.onepiece.treasure.beans.value.database.*
-import com.onepiece.treasure.beans.value.internet.web.ClientDepositReportVo
-import com.onepiece.treasure.beans.value.internet.web.DepositReportVo
+import com.onepiece.treasure.beans.value.database.ClientDepositReportVo
+import com.onepiece.treasure.beans.value.database.DepositReportVo
 import com.onepiece.treasure.beans.value.internet.web.DepositUoReq
 import com.onepiece.treasure.core.dao.DepositDao
 import com.onepiece.treasure.core.service.DepositService

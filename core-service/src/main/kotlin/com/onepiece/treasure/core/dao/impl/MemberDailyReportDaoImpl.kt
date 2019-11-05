@@ -2,13 +2,11 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.beans.model.MemberDailyReport
 import com.onepiece.treasure.beans.value.database.MemberReportQuery
-import com.onepiece.treasure.beans.value.internet.web.MemberDailyReportVo
 import com.onepiece.treasure.core.dao.MemberDailyReportDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.Date
 import java.sql.ResultSet
-import java.time.LocalDate
 
 @Repository
 class MemberDailyReportDaoImpl : BasicDaoImpl<MemberDailyReport>("member_daily_report"), MemberDailyReportDao {

@@ -3,8 +3,8 @@ package com.onepiece.treasure.core.dao.impl
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.MemberPlatformDailyReport
 import com.onepiece.treasure.beans.value.database.MemberReportQuery
-import com.onepiece.treasure.beans.value.internet.web.ClientPlatformDailyReportVo
-import com.onepiece.treasure.beans.value.internet.web.MemberPlatformDailyReportVo
+import com.onepiece.treasure.beans.value.database.ClientPlatformDailyReportVo
+import com.onepiece.treasure.beans.value.database.MemberPlatformDailyReportVo
 import com.onepiece.treasure.core.dao.MemberPlatformDailyReportDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.jdbc.core.BatchPreparedStatementSetter

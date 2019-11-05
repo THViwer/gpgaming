@@ -86,6 +86,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
     override fun list(query: MemberQuery): List<Member> {
         return query()
                 .where("client_id", query.clientId)
+                .whereIn("id", query.ids)
                 .where("username", query.username)
                 .where("status", query.status)
                 .where("level_id", query.levelId)

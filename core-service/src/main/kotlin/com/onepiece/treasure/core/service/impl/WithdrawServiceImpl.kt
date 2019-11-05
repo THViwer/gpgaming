@@ -6,8 +6,8 @@ import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Withdraw
 import com.onepiece.treasure.beans.value.database.*
-import com.onepiece.treasure.beans.value.internet.web.ClientWithdrawReportVo
-import com.onepiece.treasure.beans.value.internet.web.WithdrawReportVo
+import com.onepiece.treasure.beans.value.database.ClientWithdrawReportVo
+import com.onepiece.treasure.beans.value.database.WithdrawReportVo
 import com.onepiece.treasure.beans.value.internet.web.WithdrawUoReq
 import com.onepiece.treasure.core.dao.WithdrawDao
 import com.onepiece.treasure.core.service.WalletService

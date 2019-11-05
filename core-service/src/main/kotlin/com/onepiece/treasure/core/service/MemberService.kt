@@ -11,6 +11,10 @@ interface MemberService {
 
     fun getMember(id: Int): Member
 
+    fun findByIds(ids: List<Int>): List<Member>
+
+    fun findByUsername(username: String?): Member?
+
     fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member>
 
     fun login(loginValue: LoginValue): Member

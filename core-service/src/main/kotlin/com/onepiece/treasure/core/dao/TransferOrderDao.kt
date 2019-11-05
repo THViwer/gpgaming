@@ -3,8 +3,8 @@ package com.onepiece.treasure.core.dao
 import com.onepiece.treasure.beans.model.TransferOrder
 import com.onepiece.treasure.beans.value.database.TransferOrderCo
 import com.onepiece.treasure.beans.value.database.TransferOrderUo
-import com.onepiece.treasure.beans.value.internet.web.ClientPlatformTransferReportVo
-import com.onepiece.treasure.beans.value.internet.web.MemberTransferReportVo
+import com.onepiece.treasure.beans.value.database.ClientPlatformTransferReportVo
+import com.onepiece.treasure.beans.value.database.MemberTransferReportVo
 import com.onepiece.treasure.core.dao.basic.BasicDao
 import java.time.LocalDate
 

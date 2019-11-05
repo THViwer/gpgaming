@@ -4,10 +4,9 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.TransferState
 import com.onepiece.treasure.beans.model.TransferOrder
 import com.onepiece.treasure.beans.value.database.TransferOrderCo
-import com.onepiece.treasure.beans.value.database.TransferOrderReportQuery
 import com.onepiece.treasure.beans.value.database.TransferOrderUo
-import com.onepiece.treasure.beans.value.internet.web.ClientPlatformTransferReportVo
-import com.onepiece.treasure.beans.value.internet.web.MemberTransferReportVo
+import com.onepiece.treasure.beans.value.database.ClientPlatformTransferReportVo
+import com.onepiece.treasure.beans.value.database.MemberTransferReportVo
 import com.onepiece.treasure.core.dao.TransferOrderDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository

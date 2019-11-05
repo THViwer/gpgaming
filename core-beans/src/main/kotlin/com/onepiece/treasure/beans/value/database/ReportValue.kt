@@ -1,4 +1,4 @@
-package com.onepiece.treasure.beans.value.internet.web
+package com.onepiece.treasure.beans.value.database
 
 import com.onepiece.treasure.beans.enums.Platform
 import java.math.BigDecimal

@@ -6,7 +6,7 @@ data class MemberReportQuery(
 
         val clientId: Int,
 
-        val memberId: Int,
+        val memberId: Int?,
 
         val startDate: LocalDate,
 

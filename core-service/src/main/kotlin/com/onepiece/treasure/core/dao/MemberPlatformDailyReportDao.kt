@@ -2,8 +2,8 @@ package com.onepiece.treasure.core.dao
 
 import com.onepiece.treasure.beans.model.MemberPlatformDailyReport
 import com.onepiece.treasure.beans.value.database.MemberReportQuery
-import com.onepiece.treasure.beans.value.internet.web.ClientPlatformDailyReportVo
-import com.onepiece.treasure.beans.value.internet.web.MemberPlatformDailyReportVo
+import com.onepiece.treasure.beans.value.database.ClientPlatformDailyReportVo
+import com.onepiece.treasure.beans.value.database.MemberPlatformDailyReportVo
 import com.onepiece.treasure.core.dao.basic.BasicDao
 import java.time.LocalDate
 

@@ -7,8 +7,8 @@ import com.onepiece.treasure.beans.value.database.DepositLockUo
 import com.onepiece.treasure.beans.value.database.WithdrawCo
 import com.onepiece.treasure.beans.value.database.WithdrawQuery
 import com.onepiece.treasure.beans.value.database.WithdrawUo
-import com.onepiece.treasure.beans.value.internet.web.ClientWithdrawReportVo
-import com.onepiece.treasure.beans.value.internet.web.WithdrawReportVo
+import com.onepiece.treasure.beans.value.database.ClientWithdrawReportVo
+import com.onepiece.treasure.beans.value.database.WithdrawReportVo
 import com.onepiece.treasure.core.dao.WithdrawDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
@@ -134,7 +134,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
                     val clientId = rs.getInt("client_id")
                     val count = rs.getInt("count")
                     val money = rs.getBigDecimal("money")
-                    ClientWithdrawReportVo(clientId = clientId,  count = count, money = money)
+                    ClientWithdrawReportVo(clientId = clientId, count = count, money = money)
                 }
     }
 }

@@ -2,7 +2,7 @@ package com.onepiece.treasure.core.service.impl
 
 import com.onepiece.treasure.beans.model.ClientPlatformDailyReport
 import com.onepiece.treasure.beans.value.database.ClientReportQuery
-import com.onepiece.treasure.beans.value.internet.web.ClientReportVo
+import com.onepiece.treasure.beans.value.database.ClientReportVo
 import com.onepiece.treasure.core.dao.ClientPlatformDailyReportDao
 import com.onepiece.treasure.core.service.ClientPlatformDailyReportService
 import org.springframework.stereotype.Service

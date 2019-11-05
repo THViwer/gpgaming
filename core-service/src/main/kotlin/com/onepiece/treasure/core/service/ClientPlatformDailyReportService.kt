@@ -2,7 +2,7 @@ package com.onepiece.treasure.core.service
 
 import com.onepiece.treasure.beans.model.ClientPlatformDailyReport
 import com.onepiece.treasure.beans.value.database.ClientReportQuery
-import com.onepiece.treasure.beans.value.internet.web.ClientReportVo
+import com.onepiece.treasure.beans.value.database.ClientReportVo
 import java.time.LocalDate
 
 interface ClientPlatformDailyReportService  {

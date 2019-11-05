@@ -3,7 +3,7 @@ package com.onepiece.treasure.core.dao.impl
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.ClientPlatformDailyReport
 import com.onepiece.treasure.beans.value.database.ClientReportQuery
-import com.onepiece.treasure.beans.value.internet.web.ClientReportVo
+import com.onepiece.treasure.beans.value.database.ClientReportVo
 import com.onepiece.treasure.core.dao.ClientPlatformDailyReportDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository

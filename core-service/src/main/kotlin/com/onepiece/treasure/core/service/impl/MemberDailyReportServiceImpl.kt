@@ -2,11 +2,9 @@ package com.onepiece.treasure.core.service.impl
 
 import com.onepiece.treasure.beans.model.MemberDailyReport
 import com.onepiece.treasure.beans.value.database.MemberReportQuery
-import com.onepiece.treasure.beans.value.internet.web.MemberDailyReportVo
 import com.onepiece.treasure.core.dao.MemberDailyReportDao
 import com.onepiece.treasure.core.service.MemberDailyReportService
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 
 @Service
 class MemberDailyReportServiceImpl(

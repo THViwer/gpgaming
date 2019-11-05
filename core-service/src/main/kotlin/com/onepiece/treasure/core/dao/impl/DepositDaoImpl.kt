@@ -8,9 +8,8 @@ import com.onepiece.treasure.beans.value.database.DepositCo
 import com.onepiece.treasure.beans.value.database.DepositLockUo
 import com.onepiece.treasure.beans.value.database.DepositQuery
 import com.onepiece.treasure.beans.value.database.DepositUo
-import com.onepiece.treasure.beans.value.internet.web.ClientDepositReportVo
-import com.onepiece.treasure.beans.value.internet.web.ClientWithdrawReportVo
-import com.onepiece.treasure.beans.value.internet.web.DepositReportVo
+import com.onepiece.treasure.beans.value.database.ClientDepositReportVo
+import com.onepiece.treasure.beans.value.database.DepositReportVo
 import com.onepiece.treasure.core.dao.DepositDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
@@ -141,7 +140,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                     val clientId = rs.getInt("client_id")
                     val count = rs.getInt("count")
                     val money = rs.getBigDecimal("money")
-                    ClientDepositReportVo(clientId = clientId,  count = count, money = money)
+                    ClientDepositReportVo(clientId = clientId, count = count, money = money)
                 }
     }
 }

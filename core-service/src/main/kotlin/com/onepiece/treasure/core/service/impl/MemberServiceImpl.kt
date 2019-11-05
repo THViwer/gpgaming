@@ -28,6 +28,16 @@ class MemberServiceImpl(
         }!!
     }
 
+    override fun findByIds(ids: List<Int>): List<Member> {
+        val query = MemberQuery(ids = ids, clientId = null, startTime = null, endTime = null, status = null, levelId = null, username = null)
+        return memberDao.list(query).toList()
+    }
+
+    override fun findByUsername(username: String?): Member? {
+        if (username.isNullOrBlank()) return null
+        return memberDao.getByUsername(username)?.copy(password = "", safetyPassword = "")
+    }
+
     override fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member> {
         val total = memberDao.total(query = memberQuery)
         if (total == 0) return Page.empty()

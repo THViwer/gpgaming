@@ -3,8 +3,8 @@ package com.onepiece.treasure.core.service.impl
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.database.TransferOrderCo
 import com.onepiece.treasure.beans.value.database.TransferOrderUo
-import com.onepiece.treasure.beans.value.internet.web.ClientPlatformTransferReportVo
-import com.onepiece.treasure.beans.value.internet.web.MemberTransferReportVo
+import com.onepiece.treasure.beans.value.database.ClientPlatformTransferReportVo
+import com.onepiece.treasure.beans.value.database.MemberTransferReportVo
 import com.onepiece.treasure.core.dao.TransferOrderDao
 import com.onepiece.treasure.core.service.TransferOrderService
 import org.springframework.stereotype.Service

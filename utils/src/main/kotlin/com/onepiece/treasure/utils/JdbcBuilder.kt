@@ -142,6 +142,14 @@ class Query(
         return this
     }
 
+    fun whereIn(k: String, vs: List<Any>?): Query {
+        if (vs == null) return this
+
+        columns.add("$k in (${vs.joinToString(separator = ",")})")
+
+        return this
+    }
+
     fun asWhere(k: String, v: Any?): Query {
         if (v == null) return this
 
