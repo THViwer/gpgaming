@@ -1,9 +1,6 @@
 package com.onepiece.treasure.controller.value
 
-import com.onepiece.treasure.beans.enums.AdvertType
-import com.onepiece.treasure.beans.enums.GameCategory
-import com.onepiece.treasure.beans.enums.PlatformCategory
-import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.enums.*
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
@@ -64,6 +61,9 @@ data class PlatformVo(
         @ApiModelProperty("名称")
         val name: String,
 
+        @ApiModelProperty("图标")
+        val icon: String,
+
         @ApiModelProperty("类目")
         val category: PlatformCategory,
 
@@ -99,5 +99,17 @@ data class SlotMenu(
 data class StartGameResp(
 
         @ApiModelProperty("平台地址")
+        val path: String
+)
+
+data class DownloadAppVo(
+
+        // 平台
+        val platform: Platform,
+
+        // 图标
+        val icon: String,
+
+        // 下载地址
         val path: String
 )

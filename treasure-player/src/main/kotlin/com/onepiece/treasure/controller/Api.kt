@@ -2,10 +2,7 @@ package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.Promotion
-import com.onepiece.treasure.controller.value.ConfigVo
-import com.onepiece.treasure.controller.value.PromotionVo
-import com.onepiece.treasure.controller.value.SlotMenu
-import com.onepiece.treasure.controller.value.StartGameResp
+import com.onepiece.treasure.controller.value.*
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.PathVariable
@@ -29,6 +26,8 @@ interface Api {
     @ApiOperation(tags = ["api"], value = "start slot game")
     fun startSlotGame(@RequestHeader("platform") platform: Platform,
                       @RequestParam("gameId") gameId: String): StartGameResp
+    @ApiOperation(tags = ["api"], value = "down app game (ios or android)")
+    fun down(@PathVariable("mobilePlatform") mobilePlatform: String): List<DownloadAppVo>
 
 
 }

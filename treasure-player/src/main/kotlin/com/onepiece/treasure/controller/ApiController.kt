@@ -23,7 +23,7 @@ class ApiController(
 
         val platformBinds = platformBindService.findClientPlatforms(clientId)
         val platforms = platformBinds.map {
-            PlatformVo(id = it.id, name = it.platform.cname, category = it.platform.category, status = it.status)
+            PlatformVo(id = it.id, name = it.platform.cname, category = it.platform.category, status = it.status, icon = it.platform.icon)
         }
 
         val announcementVo = announcementService.last(clientId)?.let {
@@ -76,5 +76,25 @@ class ApiController(
                 .start(username = platformMember.platformUsername, gameId = gameId, redirectUrl = "http://www.baidu.com")
 
         return StartGameResp(path = maps[StartPlatform.Pc] ?: error(""))
+    }
+
+
+    @GetMapping("/down/{mobilePlatform}")
+    override fun down(@PathVariable("mobilePlatform") mobilePlatform: String): List<DownloadAppVo> {
+        return when (mobilePlatform) {
+            "ios" -> {
+                val joker = DownloadAppVo(Platform.Joker, Platform.Joker.icon, "http//:www.baidu.com")
+                val cta666 = DownloadAppVo(Platform.Cta666, Platform.Cta666.icon, "http//:www.baidu.com")
+                listOf(joker, cta666)
+            }
+            else -> {
+                val joker = DownloadAppVo(Platform.Joker, Platform.Joker.icon, "http//:www.baidu.com")
+                val cta666 = DownloadAppVo(Platform.Cta666, Platform.Cta666.icon, "http//:www.baidu.com")
+                listOf(joker, cta666)
+            }
+        }
+
+
+
     }
 }
