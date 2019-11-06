@@ -9,7 +9,7 @@ import java.math.BigDecimal
 @Service
 class Cta666GameCashApi(
         private val okHttpUtil: OkHttpUtil
-) : GameCashApi {
+) : GameCashApi() {
 
     override fun wallet(username: String): BigDecimal {
 

@@ -15,7 +15,7 @@ class Cta666GameApi(
     val currency = "MYR"
     val lang = "en"
 
-    override fun register(username: String, password: String) {
+    override fun register(username: String, password: String): String {
 
         val param = Cat666ParamBuilder.instance("signup")
 
@@ -37,6 +37,7 @@ class Cta666GameApi(
         val result = okHttpUtil.doPostJson(param.url, data, Cta666Result.Register::class.java)
         Cat666Constant.checkCode(result.codeId)
 
+        return username
     }
 
     override fun start(username: String, password: String): Map<StartPlatform, String> {

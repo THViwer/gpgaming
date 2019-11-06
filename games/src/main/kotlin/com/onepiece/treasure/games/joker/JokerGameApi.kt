@@ -14,11 +14,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class JokerGameApi(
-        private val okHttpUtil: OkHttpUtil,
-        private val objectMapper: ObjectMapper
+        private val okHttpUtil: OkHttpUtil
 ) : GameApi() {
 
-    override fun register(username: String, password: String) {
+    override fun register(username: String, password: String): String {
 
         // register
         val (url, formBody) = JokerParamBuilder.instance("CU")
@@ -34,6 +33,8 @@ class JokerGameApi(
                 .set("Password", password)
                 .build()
         okHttpUtil.doPostForm(url2, formBody2)
+
+        return username
     }
 
     override fun games(): List<SlotGame> {

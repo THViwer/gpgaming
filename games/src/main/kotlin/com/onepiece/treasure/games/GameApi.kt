@@ -7,7 +7,7 @@ import com.onepiece.treasure.games.value.SlotGame
 
 abstract class GameApi {
 
-    abstract  fun register(username: String, password: String)
+    abstract  fun register(username: String, password: String): String
 
     open fun games(): List<SlotGame> {
         throw LogicException(OnePieceExceptionCode.AUTHORITY_FAIL)

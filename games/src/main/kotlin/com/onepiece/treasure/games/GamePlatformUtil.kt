@@ -6,12 +6,15 @@ import org.springframework.stereotype.Component
 @Component
 class GamePlatformUtil(
         private val jokerPlatformCommon: PlatformCommon,
-        private val cta666PlatformCommon: Cta666PlatformCommon
+        private val cta666PlatformCommon: Cta666PlatformCommon,
+        private val kiss918PlatformCommon: Kiss918PlatformCommon
 )  {
 
     fun getPlatformBuild(platform: Platform): PlatformCommon {
         return when (platform) {
             Platform.Joker -> jokerPlatformCommon
+            Platform.Kiss918 -> kiss918PlatformCommon
+
             Platform.Cta666 -> cta666PlatformCommon
             else -> error("")
         }
@@ -62,4 +65,20 @@ class Cta666PlatformCommon(
 
     override val gameOrderApi: GameOrderApi
         get() = cta666GameOrderApi
+}
+
+@Component
+class Kiss918PlatformCommon(
+        val kiss918GameApi: GameApi,
+        val kiss918GameCashApi: GameCashApi,
+        val kiss918GameOrderApi: GameOrderApi
+
+) : PlatformCommon {
+
+    override val gameApi: GameApi
+        get() = kiss918GameApi
+    override val gameCashApi: GameCashApi
+        get() = kiss918GameCashApi
+    override val gameOrderApi: GameOrderApi
+        get() = kiss918GameOrderApi
 }

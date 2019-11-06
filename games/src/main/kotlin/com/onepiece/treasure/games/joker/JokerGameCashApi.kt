@@ -12,7 +12,7 @@ import java.math.BigDecimal
 @Service
 class JokerGameCashApi(
         private val okHttpUtil: OkHttpUtil
-) : GameCashApi {
+) : GameCashApi() {
 
     override fun wallet(username: String): BigDecimal {
         val (url, formBody) = JokerParamBuilder.instance("GC")

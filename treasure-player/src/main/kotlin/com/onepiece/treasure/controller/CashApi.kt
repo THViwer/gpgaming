@@ -22,21 +22,21 @@ import java.time.LocalDateTime
 @Api(tags = ["cash"], description = " ")
 interface CashApi {
 
-    @ApiOperation(tags = ["cash"], value = "bank")
+    @ApiOperation(tags = ["cash"], value = "银行列表")
     fun banks(): List<MemberBankVo>
 
-    @ApiOperation(tags = ["cash"], value = "bank")
+    @ApiOperation(tags = ["cash"], value = "银行创建")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun bankCreate(@RequestBody memberBankCoReq: MemberBankCoReq)
 
-    @ApiOperation(tags = ["cash"], value = "bank")
+    @ApiOperation(tags = ["cash"], value = "银行修改")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun bankUpdate(@RequestBody memberBankUoReq: MemberBankUoReq)
 
-    @ApiOperation(tags = ["cash"], value = "client banks")
+    @ApiOperation(tags = ["cash"], value = "厅主银行卡列表")
     fun clientBanks(): List<ClientBankVo>
 
-    @ApiOperation(tags = ["cash"], value = "deposit")
+    @ApiOperation(tags = ["cash"], value = "充值列表")
     fun deposit(
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: DepositState?,
@@ -46,10 +46,10 @@ interface CashApi {
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): Page<DepositVo>
 
-    @ApiOperation(tags = ["cash"], value = "deposit")
+    @ApiOperation(tags = ["cash"], value = "充值")
     fun deposit(@RequestBody depositCoReq: DepositCoReq): CashDepositResp
 
-    @ApiOperation(tags = ["cash"], value = "withdraw")
+    @ApiOperation(tags = ["cash"], value = "取款列表")
     fun withdraw(
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: WithdrawState?,
@@ -59,14 +59,14 @@ interface CashApi {
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): Page<WithdrawVo>
 
-    @ApiOperation(tags = ["cash"], value = "withdraw")
+    @ApiOperation(tags = ["cash"], value = "取款")
     fun withdraw(@RequestBody withdrawCoReq: WithdrawCoReq): CashWithdrawResp
 
-    @ApiOperation(tags = ["cash"], value = "transfer")
+    @ApiOperation(tags = ["cash"], value = "转账")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun transfer(@RequestBody cashTransferReq: CashTransferReq)
 
-    @ApiOperation(tags = ["cash"], value = "balance")
+    @ApiOperation(tags = ["cash"], value = "查询余额")
     fun balance(@RequestHeader("platform") platform: Platform):BigDecimal
 
 }

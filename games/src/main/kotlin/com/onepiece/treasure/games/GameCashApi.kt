@@ -3,13 +3,15 @@ package com.onepiece.treasure.games
 import com.onepiece.treasure.games.value.TransferResult
 import java.math.BigDecimal
 
-interface GameCashApi {
+abstract class GameCashApi {
 
-    fun wallet(username: String): BigDecimal
+    abstract fun wallet(username: String): BigDecimal
 
-    fun clientBalance(): BigDecimal
+    open fun clientBalance(): BigDecimal {
+        return BigDecimal.valueOf(-1)
+    }
 
-    fun transfer(username: String, orderId: String, money: BigDecimal): TransferResult
+    abstract fun transfer(username: String, orderId: String, money: BigDecimal): TransferResult
 
 
 }

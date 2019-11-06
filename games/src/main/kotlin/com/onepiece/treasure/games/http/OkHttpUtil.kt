@@ -26,6 +26,26 @@ class OkHttpUtil(
             .build()
     private val JSON = "application/json; charset=utf-8".toMediaType()
 
+
+    fun <T> doGet(url: String, clz: Class<T>): T {
+        val request = Request.Builder()
+                .url(url)
+                .get()
+                .build()
+
+        val response = client.newCall(request).execute()
+        check(response.code == 200) { OnePieceExceptionCode.PLATFORM_METHOD_FAIL }
+
+        val json = response.body!!.string()
+        log.info("response data: $json")
+
+        if (clz == String::class.java)
+            return json as T
+
+        return objectMapper.readValue(json, clz)
+    }
+
+
     fun doPostForm(url: String, body: FormBody){
         doPostForm(url, body, String::class.java) { code, response ->
             OnePieceExceptionCode.PLATFORM_METHOD_FAIL

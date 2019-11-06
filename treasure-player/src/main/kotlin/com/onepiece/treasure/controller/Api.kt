@@ -12,21 +12,23 @@ import org.springframework.web.bind.annotation.RequestParam
 @Api(tags = ["api"], description = " ")
 interface Api {
 
-    @ApiOperation(tags = ["api"], value = "config")
+    @ApiOperation(tags = ["api"], value = "首页配置")
     fun config(@RequestHeader("clientId") clientId: Int): ConfigVo
 
+    @ApiOperation(tags = ["api"], value = "优惠活动")
     fun promotion(@RequestHeader("clientId") clientId: Int): List<PromotionVo>
 
-    @ApiOperation(tags = ["api"], value = "slot menu")
+    @ApiOperation(tags = ["api"], value = "老虎机菜单")
     fun slotMenu(@RequestParam("platform") platform: Platform): List<SlotMenu>
 
-    @ApiOperation(tags = ["api"], value = "start game")
+    @ApiOperation(tags = ["api"], value = "开始游戏(平台)")
     fun start(@RequestHeader("platform") platform: Platform): StartGameResp
 
-    @ApiOperation(tags = ["api"], value = "start slot game")
+    @ApiOperation(tags = ["api"], value = "开始游戏(老虎机)")
     fun startSlotGame(@RequestHeader("platform") platform: Platform,
                       @RequestParam("gameId") gameId: String): StartGameResp
-    @ApiOperation(tags = ["api"], value = "down app game (ios or android)")
+
+    @ApiOperation(tags = ["api"], value = "下载客户端(ios或android)")
     fun down(@PathVariable("mobilePlatform") mobilePlatform: String): List<DownloadAppVo>
 
 
