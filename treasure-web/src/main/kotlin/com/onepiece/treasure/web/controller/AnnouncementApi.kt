@@ -17,7 +17,6 @@ interface AnnouncementApi  {
     fun create(@RequestBody announcementCoReq: AnnouncementCoReq)
 
     @ApiOperation(tags = ["index"], value = "")
-
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody announcementUoReq: AnnouncementUoReq)
 
