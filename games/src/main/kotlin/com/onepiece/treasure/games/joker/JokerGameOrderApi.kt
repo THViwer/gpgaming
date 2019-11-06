@@ -79,4 +79,8 @@ class JokerGameOrderApi(
     override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderValue.Report> {
         return jokerBetOrderDao.report(startDate = startDate, endDate = endDate)
     }
+
+    override fun query(query: BetOrderValue.Query): Any {
+        return jokerBetOrderDao.query(query)
+    }
 }

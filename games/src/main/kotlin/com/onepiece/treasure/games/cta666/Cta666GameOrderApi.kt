@@ -8,6 +8,7 @@ import com.onepiece.treasure.core.order.Cta666BetOrder
 import com.onepiece.treasure.core.order.Cta666BetOrderDao
 import com.onepiece.treasure.games.GameOrderApi
 import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.games.value.GameOrderQuery
 import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -91,5 +92,9 @@ class Cta666GameOrderApi(
 
     override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderValue.Report> {
         return cta666BetOrderDao.report(startDate = startDate, endDate = endDate)
+    }
+
+    override fun query(query: BetOrderValue.Query): Any {
+        return cta666BetOrderDao.query(query)
     }
 }

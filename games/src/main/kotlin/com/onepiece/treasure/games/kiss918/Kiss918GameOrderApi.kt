@@ -6,6 +6,7 @@ import com.onepiece.treasure.games.http.OkHttpUtil
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.*
 
 @Service
 class Kiss918GameOrderApi(
@@ -13,10 +14,14 @@ class Kiss918GameOrderApi(
 ) : GameOrderApi {
 
     override fun synOrder(startTime: LocalDateTime, endTime: LocalDateTime): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return UUID.randomUUID().toString().replace("-", "")
     }
 
     override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderValue.Report> {
+        return emptyList()
+    }
+
+    override fun query(query: BetOrderValue.Query): Any {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
