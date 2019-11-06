@@ -16,11 +16,11 @@ class Kiss918GameReportApi(
 
     override fun memberReport(username: String, startDate: LocalDate, endDate: LocalDate): List<ReportVo> {
 
-        val url = Kiss918Builder.instance("/ashx/AccountReport.ashx")
+        val url = Kiss918Builder.instance(path = "/ashx/AccountReport.ashx")
                 .set("userName", username)
                 .set("sDate", startDate.toString())
                 .set("eDate", endDate.toString())
-                .build()
+                .build(username = username)
         val result = okHttpUtil.doGet(url, Kiss918Value.ReportResult::class.java)
         log.info("member report: $result")
 
@@ -32,11 +32,11 @@ class Kiss918GameReportApi(
 
     override fun clientReport(startDate: LocalDate, endDate: LocalDate): List<ReportVo> {
 
-        val url = Kiss918Builder.instance("/ashx/AgentMoneyLog.ashx")
+        val url = Kiss918Builder.instance(path = "/ashx/AgentMoneyLog.ashx")
                 .set("userName", Kiss918Constant.AGENT_CODE)
                 .set("sDate", startDate.toString())
                 .set("eDate", endDate.toString())
-                .build()
+                .build(username = Kiss918Constant.AGENT_CODE)
         val result = okHttpUtil.doGet(url, Kiss918Value.ReportResult::class.java)
         log.info("member report: $result")
 

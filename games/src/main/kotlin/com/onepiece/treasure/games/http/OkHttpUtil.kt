@@ -28,6 +28,7 @@ class OkHttpUtil(
 
 
     fun <T> doGet(url: String, clz: Class<T>): T {
+        log.info("request url: $url")
         val request = Request.Builder()
                 .url(url)
                 .get()

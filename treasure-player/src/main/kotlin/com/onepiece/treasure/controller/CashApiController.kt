@@ -259,11 +259,11 @@ open class CashApiController(
     @GetMapping("/balance")
     override fun balance(@RequestHeader platform: Platform): BigDecimal {
         return when (platform) {
-            Platform.Joker, Platform.Cta666 -> {
+            Platform.Center -> walletService.getMemberWallet(current().id).balance
+            else -> {
                 val platformMemberVo = getPlatformMember(platform)
                 gamePlatformUtil.getPlatformBuild(platform).gameCashApi.wallet(username = platformMemberVo.platformUsername)
             }
-            else -> walletService.getMemberWallet(current().id).balance
         }
     }
 }

@@ -1,10 +1,23 @@
 package com.onepiece.treasure.games.kiss918
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 import java.time.LocalDate
 
 sealed class Kiss918Value {
+
+    data class RegisterUsernameResult(
+
+        val account: String,
+
+        val code: Int,
+
+        val msg: String,
+
+        val success: Boolean
+
+    )
 
     data class TransferResult(
 
@@ -20,39 +33,53 @@ sealed class Kiss918Value {
     )
 
     data class Userinfo(
+
+            @JsonProperty("Account")
             val account: String,
 
+            @JsonProperty("Agent")
             val agent: String,
 
+            @JsonProperty("DisOnlineDay")
             val disOnlineDay: Int,
 
+            @JsonProperty("GameID")
             val gameId: String,
 
+            @JsonProperty("LobbyIdx")
             val lobbyIdx: Int,
 
+            @JsonProperty("MoneyNum")
             val moneyNumber: BigDecimal,
 
+            @JsonProperty("Name")
             val name: String,
 
+            @JsonProperty("Redme")
             val redme: String,
 
+            @JsonProperty("Rownum")
             val rownum: Int,
 
+            @JsonProperty("ScoreNum")
             val socreNum: BigDecimal,
 
+            @JsonProperty("Status")
             val status: Int,
 
+            @JsonProperty("TableID")
             val tableID: Int,
 
+            @JsonProperty("Tel")
             val tel: String,
 
+            @JsonProperty("Type")
             val type: Int,
 
+            @JsonProperty("UserAreaID")
             val userAreaID: Int,
 
             val idx: Int,
-
-            val pwd: String,
 
             val success: Boolean
     )

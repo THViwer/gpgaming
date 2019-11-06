@@ -19,6 +19,8 @@ open class BetCacheUtil(
         val caches = redisService.getList(OnePieceRedisKeyConstant.betCache(unionId), BetCacheVo::class.java) { emptyList()}
         //TODO 处理打码量
 
+        redisService.delete(OnePieceRedisKeyConstant.betCache(unionId))
+
         if (caches.isEmpty()) return
 
         platformMemberDao.batchBet(caches)

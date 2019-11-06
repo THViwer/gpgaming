@@ -13,6 +13,7 @@ object Kiss918Constant {
 }
 
 class Kiss918Builder(
+        private val domain: String,
         private val path: String,
         private val time: Long
 ) {
@@ -23,8 +24,8 @@ class Kiss918Builder(
     )
 
     companion object {
-        fun instance(path: String): Kiss918Builder {
-            return Kiss918Builder(path = path, time = System.currentTimeMillis())
+        fun instance(domain: String = Kiss918Constant.API_URL, path: String): Kiss918Builder {
+            return Kiss918Builder(domain = domain, path = path, time = System.currentTimeMillis())
         }
     }
 
@@ -33,15 +34,15 @@ class Kiss918Builder(
         return this
     }
 
-    private fun sign(): String {
-        val signStr = "${Kiss918Constant.AUTH_CODE}${Kiss918Constant.AGENT_CODE}${time}${Kiss918Constant.SECRET_KEY}".toLowerCase()
+    private fun sign(beforeParam: String?, username: String): String {
+        val signStr = "${beforeParam?: ""}${Kiss918Constant.AUTH_CODE}${username}${time}${Kiss918Constant.SECRET_KEY}".toLowerCase()
         return DigestUtils.md5Hex(signStr)
     }
 
-    fun build(): String {
-        val sign = sign()
+    fun build(beforeParam: String? = null, username: String): String {
+        val sign = sign(beforeParam, username).toUpperCase()
         param.add("sign=$sign")
-        return "${Kiss918Constant.API_URL2}$path?${param.joinToString(separator = ",")}"
+        return "${Kiss918Constant.API_URL}$path?${param.joinToString(separator = "&")}"
     }
 
 }

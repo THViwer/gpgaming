@@ -1,7 +1,9 @@
 package com.onepiece.treasure.games.kiss918
 
+import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.games.GameApi
 import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.games.utils.DESUtil
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -14,29 +16,35 @@ class Kiss918GameApi(
 
     override fun register(username: String, password: String): String {
 
-        val url = Kiss918Builder.instance("/ashx/account/account.ashx")
+        val url = Kiss918Builder.instance(path = "/ashx/account/account.ashx")
+                .set("loginUser", Kiss918Constant.AGENT_CODE)
+                .set("userName", Kiss918Constant.AGENT_CODE)
+                .set("UserAreaId", "1")
                 .set("action", "RandomUserName")
-                .build()
+                .build(Kiss918Constant.AGENT_CODE, Kiss918Constant.AGENT_CODE)
 
-
-        val result = okHttpUtil.doGet(url, String::class.java)
+        val result = okHttpUtil.doGet(url, Kiss918Value.RegisterUsernameResult::class.java)
         log.info("generator username result: $result")
-        val generatorUsername = "sfaf"
+        check(result.success) { OnePieceExceptionCode.PLATFORM_METHOD_FAIL }
 
-        val addPlayerUrl = Kiss918Builder.instance("/ashx/account/account.ashx")
-                .set("action", "AddPlayer")
+        val generatorUsername = result.account
+
+//        val newPassword = DESUtil.encrypt("fawfwfsfa", Kiss918Constant.SECRET_KEY)
+        val addPlayerUrl = Kiss918Builder.instance(path = "/ashx/account/account.ashx")
+                .set("action", "AddUser")
                 .set("agent", Kiss918Constant.AGENT_CODE)
-                .set("passwd", password)
+                .set("PassWd", password)
                 .set("userName", generatorUsername)
-                .set("name", generatorUsername)
+                .set("Name", generatorUsername)
                 .set("tel", "1234124141241")
-                .set("Memo", generatorUsername)
-                .set("UserType", "11")
-                .build()
+                .set("Memo", "-")
+                .set("UserType", "1")
+                .set("UserAreaId", "1")// number
+                .set("pwdtype", "1")
+                .build(username = generatorUsername)
         val addPlayerResult = okHttpUtil.doGet(addPlayerUrl, String::class.java)
         log.info("add player result : $addPlayerResult")
 
         return generatorUsername
-
     }
 }
