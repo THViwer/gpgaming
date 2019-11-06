@@ -23,7 +23,8 @@ class ApiController(
 
         val platformBinds = platformBindService.findClientPlatforms(clientId)
         val platforms = platformBinds.map {
-            PlatformVo(id = it.id, name = it.platform.cname, category = it.platform.category, status = it.status, icon = it.platform.icon)
+            PlatformVo(id = it.id, name = it.platform.cname, category = it.platform.category, status = it.status, icon = it.platform.icon,
+                    starts = it.platform.starts)
         }
 
         val announcementVo = announcementService.last(clientId)?.let {
@@ -93,8 +94,13 @@ class ApiController(
                 listOf(joker, cta666)
             }
         }
+    }
 
-
+    @GetMapping("/platform/member")
+    override fun platformMemberDetail(@RequestHeader("platform") platform: Platform): PlatformMembrerDetail {
+        return getPlatformMember(platform).let {
+            PlatformMembrerDetail(username = it.platformUsername, password = it.platformPassword)
+        }
 
     }
 }

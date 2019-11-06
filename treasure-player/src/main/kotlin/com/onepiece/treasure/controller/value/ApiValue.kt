@@ -68,7 +68,10 @@ data class PlatformVo(
         val category: PlatformCategory,
 
         @ApiModelProperty("平台状态")
-        val status: Status
+        val status: Status,
+
+        @ApiModelProperty("支持启动平台")
+        val starts: List<StartPlatform>
 )
 
 data class SlotMenu(
@@ -112,4 +115,10 @@ data class DownloadAppVo(
 
         // 下载地址
         val path: String
+)
+
+data class PlatformMembrerDetail(
+        val username: String,
+
+        val password: String
 )

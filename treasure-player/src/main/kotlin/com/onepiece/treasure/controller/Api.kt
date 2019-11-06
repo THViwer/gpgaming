@@ -1,7 +1,6 @@
 package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.model.Promotion
 import com.onepiece.treasure.controller.value.*
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -30,6 +29,9 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "下载客户端(ios或android)")
     fun down(@PathVariable("mobilePlatform") mobilePlatform: String): List<DownloadAppVo>
+
+    @ApiOperation(tags = ["api"], value = "获得游戏平台的账号密码")
+    fun platformMemberDetail(@RequestHeader("platform") platform: Platform): PlatformMembrerDetail
 
 
 }
