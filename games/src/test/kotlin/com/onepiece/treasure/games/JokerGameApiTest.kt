@@ -7,7 +7,7 @@ import java.util.*
 
 class JokerGameApiTest: BaseTest() {
 
-    val gameApi = JokerGameApi(okHttpUtil, mapper)
+    val gameApi = JokerGameApi(okHttpUtil)
 
     @Test
     fun register() {
