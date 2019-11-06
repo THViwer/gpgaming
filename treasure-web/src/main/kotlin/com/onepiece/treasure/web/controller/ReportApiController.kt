@@ -28,8 +28,8 @@ class ReportApiController(
 
     @GetMapping("/member/platform")
     override fun memberPlatformDaily(
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam("startTime") startDate: LocalDate,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam("startTime") endDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") endDate: LocalDate,
             @RequestParam(value = "username", required = false) username: String?
     ): List<MemberPlatformReportWebVo> {
 
@@ -53,8 +53,8 @@ class ReportApiController(
 
     @GetMapping("/member")
     override fun memberDaily(
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam("startTime") startDate: LocalDate,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam("startTime") endDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") endDate: LocalDate,
             @RequestParam(value = "username", required = false) username: String?
     ): List<MemberReportWebVo> {
 
@@ -80,8 +80,8 @@ class ReportApiController(
 
     @GetMapping("/client/platform")
     override fun clientPlatformDaily(
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam("startTime") startDate: LocalDate,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam("startTime") endDate: LocalDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") endDate: LocalDate
     ): List<ClientPlatformDailyReport> {
         val query = ClientReportQuery(clientId = clientId, startDate = startDate, endDate = endDate)
         //TODO 查询今天的
@@ -90,8 +90,8 @@ class ReportApiController(
 
     @GetMapping("/client")
     override fun clientDaily(
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam("startTime") startDate: LocalDate,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam("startTime") endDate: LocalDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") endDate: LocalDate
     ): List<ClientDailyReport> {
         val query = ClientReportQuery(clientId = clientId, startDate = startDate, endDate = endDate)
         //TODO 查询今天的

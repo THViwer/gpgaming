@@ -31,8 +31,8 @@ class CashOrderApiController(
             @RequestParam(value = "state", required = false) state: DepositState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "username", required = false) username: String?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
     ): List<DepositVo> {
         val depositQuery = DepositQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state)
         return depositService.query(depositQuery).map {
@@ -73,8 +73,8 @@ class CashOrderApiController(
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "username", required = false) username: String?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
     ): List<WithdrawVo> {
 
         val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state)

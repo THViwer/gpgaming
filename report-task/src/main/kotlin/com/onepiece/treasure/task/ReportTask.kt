@@ -114,7 +114,6 @@ class ReportTask(
     fun startClientReport(startDate: LocalDate) {
         val endDate = startDate.plusDays(1)
 
-
         val depositReports = depositService.reportByClient(startDate, startDate.plusDays(1))
                 .map { it.clientId to it }.toMap()
         val withdrawReports = withdrawService.reportByClient(startDate, startDate.plusDays(1))

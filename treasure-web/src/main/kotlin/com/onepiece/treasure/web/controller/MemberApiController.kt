@@ -25,8 +25,8 @@ class MemberApiController(
 
     @GetMapping
     override fun query(
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime,
+           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
+           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime,
             @RequestParam(value = "username", required = false) username: String?,
             @RequestParam(value = "levelId", required = false) levelId: Int?,
             @RequestParam(value = "status", required = false) status: Status?,

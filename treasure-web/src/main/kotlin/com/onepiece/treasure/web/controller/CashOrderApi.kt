@@ -21,8 +21,8 @@ interface CashOrderApi {
             @RequestParam(value = "state", required = false) state: DepositState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "username", required = false) username: String?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
     ): List<DepositVo>
 
     @ApiOperation(tags = ["cash"], value = "deposit -> lock")
@@ -42,8 +42,8 @@ interface CashOrderApi {
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "username", required = false) username: String?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
     ): List<WithdrawVo>
 
     @ApiOperation(tags = ["cash"], value = "withdraw -> lock")
