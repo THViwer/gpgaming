@@ -9,13 +9,13 @@ sealed class Kiss918Value {
 
     data class RegisterUsernameResult(
 
-        val account: String,
+            val account: String,
 
-        val code: Int,
+            val code: Int,
 
-        val msg: String,
+            val msg: String,
 
-        val success: Boolean
+            val success: Boolean
 
     )
 
@@ -92,16 +92,32 @@ sealed class Kiss918Value {
 
             val success: Boolean,
 
-            val result: List<Report>
+            val results: List<Report>
 
     )
 
     data class Report(
 
+            val type: Int,
+
+            @JsonProperty("mydate")
             @JsonFormat(pattern = "yyyy-MM-dd")
             val myDate: LocalDate,
 
-            val win: BigDecimal
+            val win: BigDecimal,
+
+            val selfwin: BigDecimal,
+
+            val pump: Int,
+
+            val yield: Int,
+
+            val press: BigDecimal,
+
+            val agentwin: BigDecimal,
+
+            val jtime: Long
+
     )
 
 

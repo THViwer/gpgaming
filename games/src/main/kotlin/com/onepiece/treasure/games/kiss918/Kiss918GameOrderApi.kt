@@ -6,6 +6,7 @@ import com.onepiece.treasure.games.http.OkHttpUtil
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Service
@@ -21,7 +22,18 @@ class Kiss918GameOrderApi(
         return emptyList()
     }
 
+    val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     override fun query(query: BetOrderValue.Query): Any {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val url = Kiss918Builder.instance(Kiss918Constant.API_ORDER_URL, path = "/ashx/GameLog.ashx")
+                .set("pageIndex", "1")
+                .set("pageSize", "1000")
+                .set("userName", query.username)
+                .set("sDate", query.startTime.format(dateTimeFormatter))
+                .set("eDate", query.endTime.format(dateTimeFormatter))
+                .build(username = query.username)
+
+        val result = okHttpUtil.doGet(url, String::class.java)
+
+        return result;
     }
 }

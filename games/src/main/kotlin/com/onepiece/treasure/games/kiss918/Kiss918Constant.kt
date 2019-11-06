@@ -8,7 +8,7 @@ object Kiss918Constant {
     const val AUTH_CODE = "MthBAKyqdZRrKEKRuJvy"
     const val SECRET_KEY = "j7ZNS4e79Sr7Fa2SX325"
     const val API_URL = "http://api.918kiss.com:9991"
-    const val API_URL2 = "http://api.918kiss.com:9919"
+    const val API_ORDER_URL = "http://api.918kiss.com:9919"
 
 }
 
@@ -42,7 +42,7 @@ class Kiss918Builder(
     fun build(beforeParam: String? = null, username: String): String {
         val sign = sign(beforeParam, username).toUpperCase()
         param.add("sign=$sign")
-        return "${Kiss918Constant.API_URL}$path?${param.joinToString(separator = "&")}"
+        return "$domain$path?${param.joinToString(separator = "&")}"
     }
 
 }

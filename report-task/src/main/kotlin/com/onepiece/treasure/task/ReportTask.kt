@@ -63,8 +63,6 @@ class ReportTask(
 
         val endDate = startDate.plusDays(1)
 
-
-
         val depositReports = depositService.report(startDate, endDate)
                 .map { it.memberId to it }.toMap()
         val withdrawReports = withdrawService.report(startDate, endDate)

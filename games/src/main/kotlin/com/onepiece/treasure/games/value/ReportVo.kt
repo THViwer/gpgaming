@@ -8,5 +8,7 @@ data class ReportVo(
 
         val day: LocalDate,
 
-        val win: BigDecimal
+        val win: BigDecimal,
+
+        val bet: BigDecimal
 )
