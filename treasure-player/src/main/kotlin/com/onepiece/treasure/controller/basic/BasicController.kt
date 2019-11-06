@@ -62,11 +62,9 @@ abstract class BasicController {
         }
 
         val platformUsername = "$clientIdStr$id"
+        val generatorUsername = gamePlatformUtil.getPlatformBuild(platform).gameApi.register(platformUsername, "123456")
 
-
-        gamePlatformUtil.getPlatformBuild(platform).gameApi.register(platformUsername, "123456")
-
-        return platformMemberService.create(memberId = id, platform = platform, platformUsername = platformUsername)
+        return platformMemberService.create(memberId = id, platform = platform, platformUsername = generatorUsername)
     }
 
 }
