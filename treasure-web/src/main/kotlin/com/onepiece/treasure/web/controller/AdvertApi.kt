@@ -19,7 +19,6 @@ interface AdvertApi  {
     fun create(@RequestBody advertCoReq: AdvertCoReq)
 
     @ApiOperation(tags = ["index"], value = "")
-
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody advertUoReq: AdvertUoReq)
 
