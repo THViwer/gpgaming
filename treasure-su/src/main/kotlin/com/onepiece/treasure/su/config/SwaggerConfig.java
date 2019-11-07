@@ -40,7 +40,7 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.onepiece.treasure.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.onepiece.treasure.su.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .securitySchemes(newArrayList(apiKey()))
@@ -52,7 +52,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
 //                .apis(RequestHandlerSelectors.any())
-                .apis(RequestHandlerSelectors.basePackage("com.onepiece.treasure.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.onepiece.treasure.su.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .pathMapping("/")

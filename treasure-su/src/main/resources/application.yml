@@ -4,9 +4,9 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.jdbc.Driver
-      username: service
+      username: service_dev
       password: OnePiece123!@#
-      url: jdbc:mysql://94.237.76.206:3306/onepiece?useUnicode=true&characterEncoding=UTF-8
+      url: jdbc:mysql://94.237.76.206:3306/onepiece_dev?useUnicode=true&characterEncoding=UTF-8
   profiles:
     active: dev
 
@@ -20,7 +20,7 @@ spring:
 server:
   servlet:
     context-path: /api/v1/su
-  port: 8001
+  port: 8004
 
 jwt:
   header: Authorization

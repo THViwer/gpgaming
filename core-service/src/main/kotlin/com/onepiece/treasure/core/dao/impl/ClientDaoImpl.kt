@@ -17,17 +17,15 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
     override val mapper: (rs: ResultSet) -> Client
         get() = { rs ->
             val id = rs.getInt("id")
-            val brand = rs.getString("brand")
             val username = rs.getString("username")
             val password = rs.getString("password")
             val name = rs.getString("name")
-            val processId = rs.getString("process_id")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val loginIp = rs.getString("login_ip")
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
-            Client(id = id, brand = brand, username = username, password = password, createdTime = createdTime, loginTime = loginTime,
-                    status = status, loginIp = loginIp, name = name, processId = processId)
+            Client(id = id, username = username, password = password, createdTime = createdTime, loginTime = loginTime,
+                    status = status, loginIp = loginIp, name = name)
         }
 
     override fun findByUsername(username: String): Client? {
@@ -40,7 +38,6 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
                 .set("username", clientCo.username)
                 .set("password", clientCo.password)
                 .set("name", clientCo.name)
-                .set("processId", UUID.randomUUID().toString())
                 .set("status", Status.Normal)
                 .executeGeneratedKey()
     }
@@ -55,13 +52,13 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
                 .executeOnlyOne()
     }
 
-    override fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal, processId: String): Boolean {
-        return update()
-                .asSet("earnest_balance = earnest_balance + $earnestBalance")
-                .set("process_id", UUID.randomUUID().toString())
-                .where("id", id)
-                .where("process_id", processId)
-                .asWhere("earnest_balance >= ?", earnestBalance)
-                .executeOnlyOne()
-    }
+//    override fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal, processId: String): Boolean {
+//        return update()
+//                .asSet("earnest_balance = earnest_balance + $earnestBalance")
+//                .set("process_id", UUID.randomUUID().toString())
+//                .where("id", id)
+//                .where("process_id", processId)
+//                .asWhere("earnest_balance >= ?", earnestBalance)
+//                .executeOnlyOne()
+//    }
 }

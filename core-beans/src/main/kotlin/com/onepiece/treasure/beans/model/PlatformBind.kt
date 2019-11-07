@@ -1,8 +1,12 @@
 package com.onepiece.treasure.beans.model
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.model.token.ClientToken
+import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -29,8 +33,8 @@ data class PlatformBind(
         // 保证金
         val earnestBalance: BigDecimal,
 
-        // token信息
-        val clientToken: ClientToken,
+        // tokenJson
+        val tokenJson: String,
 
         // 进程Id
         val processId: String,
@@ -41,4 +45,15 @@ data class PlatformBind(
         // 开通时间
         val createdTime: LocalDateTime
 
-)
+) {
+
+    // token信息
+    val clientToken: ClientToken
+        get() {
+            return when (platform) {
+                Platform.Kiss918 -> jacksonObjectMapper().readValue<Kiss918ClientToken>(tokenJson)
+                else -> jacksonObjectMapper().readValue<DefaultClientToken>(tokenJson)
+            }
+        }
+
+}

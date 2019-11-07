@@ -12,9 +12,6 @@ data class Client(
         // 用户Id
         val id: Int,
 
-        // 品牌
-        val brand: String,
-
         // 昵称
         val name: String,
 
@@ -25,7 +22,7 @@ data class Client(
         val password: String,
 
         // 进程Id
-        val processId: String,
+//        val processId: String,
 
         // 厅主状态
         val status: Status,

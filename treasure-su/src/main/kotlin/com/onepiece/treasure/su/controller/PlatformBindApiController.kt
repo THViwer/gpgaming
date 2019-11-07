@@ -1,5 +1,6 @@
 package com.onepiece.treasure.su.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.value.database.PlatformBindCo
@@ -12,7 +13,8 @@ import java.math.BigDecimal
 @RestController
 @RequestMapping("/client/platform")
 class PlatformBindApiController(
-        private val platformBindService: PlatformBindService
+        private val platformBindService: PlatformBindService,
+        private val objectMapper: ObjectMapper
 ) : PlatformBindApi {
 
 
@@ -39,9 +41,9 @@ class PlatformBindApiController(
         return Platform.all().map { platform ->
             bindMap[platform]?.let {
                 PlatformBindSuValue.PlatformBindVo(platform = platform, backUrl = "-", clientId = clientId, earnestBalance = it.earnestBalance,
-                        username = it.username, password = it.password, open = it.status == Status.Normal)
+                        username = it.username, password = it.password, open = it.status == Status.Normal, tokenJson = objectMapper.writeValueAsString(it.clientToken))
             }?:PlatformBindSuValue.PlatformBindVo(platform = platform, backUrl = "-", clientId = clientId, earnestBalance = BigDecimal.valueOf(-1),
-                    username = "-", password = "-", open = false)
+                    username = "-", password = "-", open = false, tokenJson = "-")
 
         }
 

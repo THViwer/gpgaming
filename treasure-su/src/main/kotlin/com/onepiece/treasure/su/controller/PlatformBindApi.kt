@@ -15,7 +15,6 @@ interface PlatformBindApi {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun create(@RequestBody platformBindCoReq: PlatformBindSuValue.PlatformBindCoReq)
 
-
     @ApiOperation(tags = ["client"], value = "平台 -> 修改")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody platformBindUoReq: PlatformBindSuValue.PlatformBindUoReq)

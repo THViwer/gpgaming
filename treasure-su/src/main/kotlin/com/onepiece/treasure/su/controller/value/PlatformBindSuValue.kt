@@ -2,6 +2,7 @@ package com.onepiece.treasure.su.controller.value
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.model.token.ClientToken
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 
@@ -20,6 +21,9 @@ sealed class PlatformBindSuValue {
 
             @ApiModelProperty("是否开通")
             val open: Boolean,
+
+            @ApiModelProperty("token_json")
+            val tokenJson: String,
 
             @ApiModelProperty("保证金")
             val earnestBalance: BigDecimal,
