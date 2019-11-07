@@ -1,7 +1,5 @@
 package com.onepiece.treasure.games.joker
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.StartPlatform
 import com.onepiece.treasure.games.GameApi
 import com.onepiece.treasure.games.http.OkHttpUtil
@@ -9,6 +7,7 @@ import com.onepiece.treasure.games.joker.value.JokerLoginResult
 import com.onepiece.treasure.games.joker.value.JokerRegisterResult
 import com.onepiece.treasure.games.joker.value.JokerSlotGame
 import com.onepiece.treasure.games.joker.value.JokerSlotGameResult
+import com.onepiece.treasure.games.value.ClientAuthVo
 import com.onepiece.treasure.games.value.SlotGame
 import org.springframework.stereotype.Service
 
@@ -17,7 +16,7 @@ class JokerGameApi(
         private val okHttpUtil: OkHttpUtil
 ) : GameApi() {
 
-    override fun register(username: String, password: String): String {
+    override fun register(clientAuthVo: ClientAuthVo?, username: String, password: String): String {
 
         // register
         val (url, formBody) = JokerParamBuilder.instance("CU")
@@ -64,7 +63,7 @@ class JokerGameApi(
         }
     }
 
-    private fun login(username: String): String {
+    private fun login(username: String?): String {
 
         val (url, formBody) = JokerParamBuilder.instance("RT")
                 .set("Username", username)
@@ -73,7 +72,7 @@ class JokerGameApi(
         return result.token
     }
 
-    override fun start(username: String, gameId: String, redirectUrl: String): Map<StartPlatform, String> {
+    override fun start(clientAuthVo: ClientAuthVo?, username: String, gameId: String, redirectUrl: String): Map<StartPlatform, String> {
         val token = this.login(username = username)
         val path = "${JokerConstant.gameUrl}?token=$token&game=$gameId&redirectUrl=$redirectUrl"
 

@@ -206,7 +206,8 @@ open class CashApiController(
 
 
                 //TODO 调用平台接口充值
-                gamePlatformUtil.getPlatformBuild(cashTransferReq.to).gameCashApi.transfer(platformMember.username, transferOrderId, cashTransferReq.money.plus(giftBalance))
+                gamePlatformUtil.getPlatformBuild(cashTransferReq.to).gameCashApi
+                        .transfer(getClientAuthVo(cashTransferReq.to),platformMember.username, transferOrderId, cashTransferReq.money.plus(giftBalance))
 
                 // 平台钱包更改信息
                 val demandBet = if (giftBalance == BigDecimal.ZERO) {
@@ -247,7 +248,8 @@ open class CashApiController(
                 walletService.update(walletUo)
 
                 //TODO 调用平台接口取款
-                gamePlatformUtil.getPlatformBuild(cashTransferReq.from).gameCashApi.transfer(platformMember.username, transferOrderId, cashTransferReq.money.negate())
+                gamePlatformUtil.getPlatformBuild(cashTransferReq.from).gameCashApi
+                        .transfer(getClientAuthVo(cashTransferReq.from), platformMember.username, transferOrderId, cashTransferReq.money.negate())
 
                 // 更新转账订单
                 val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = TransferState.Successful)

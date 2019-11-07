@@ -3,6 +3,7 @@ package com.onepiece.treasure.games.kiss918
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.games.GameApi
 import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.games.value.ClientAuthVo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -13,14 +14,16 @@ class Kiss918GameApi(
 
     private val log = LoggerFactory.getLogger(Kiss918GameApi::class.java)
 
-    override fun register(username: String, password: String): String {
+    override fun register(clientAuthVo: ClientAuthVo?, username: String, password: String): String {
+
+        val agentName = clientAuthVo?.username?: Kiss918Constant.AGENT_CODE
 
         val url = Kiss918Builder.instance(path = "/ashx/account/account.ashx")
-                .set("loginUser", Kiss918Constant.AGENT_CODE)
-                .set("userName", Kiss918Constant.AGENT_CODE)
+                .set("loginUser", agentName)
+                .set("userName", agentName)
                 .set("UserAreaId", "1")
                 .set("action", "RandomUserName")
-                .build(Kiss918Constant.AGENT_CODE, Kiss918Constant.AGENT_CODE)
+                .build(Kiss918Constant.AGENT_CODE, agentName)
 
         val result = okHttpUtil.doGet(url, Kiss918Value.RegisterUsernameResult::class.java)
         log.info("generator username result: $result")
@@ -31,7 +34,7 @@ class Kiss918GameApi(
 //        val newPassword = DESUtil.encrypt("fawfwfsfa", Kiss918Constant.SECRET_KEY)
         val addPlayerUrl = Kiss918Builder.instance(path = "/ashx/account/account.ashx")
                 .set("action", "AddUser")
-                .set("agent", Kiss918Constant.AGENT_CODE)
+                .set("agent", agentName)
                 .set("PassWd", password)
                 .set("userName", generatorUsername)
                 .set("Name", generatorUsername)

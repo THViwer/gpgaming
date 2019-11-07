@@ -3,6 +3,7 @@ package com.onepiece.treasure.games.cta666
 import com.onepiece.treasure.beans.enums.StartPlatform
 import com.onepiece.treasure.games.GameApi
 import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.games.value.ClientAuthVo
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
 
@@ -15,7 +16,7 @@ class Cta666GameApi(
     val currency = "MYR"
     val lang = "en"
 
-    override fun register(username: String, password: String): String {
+    override fun register(clientAuthVo: ClientAuthVo?, username: String, password: String): String {
 
         val param = Cat666ParamBuilder.instance("signup")
 
@@ -40,7 +41,7 @@ class Cta666GameApi(
         return username
     }
 
-    override fun start(username: String, password: String): Map<StartPlatform, String> {
+    override fun start(clientAuthVo: ClientAuthVo?, username: String, password: String): Map<StartPlatform, String> {
 
         val param = Cat666ParamBuilder.instance("login")
         val data = """

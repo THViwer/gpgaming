@@ -8,6 +8,9 @@ data class PlatformBindCo(
         // 厅主Id
         val clientId: Int,
 
+        val username: String?,
+
+        val password: String?,
         // 平台
         val platform: Platform
 
@@ -16,6 +19,10 @@ data class PlatformBindCo(
 data class PlatformBindUo(
 
         val id: Int,
+
+        val username: String?,
+
+        val password: String?,
 
         // 状态
         val status: Status

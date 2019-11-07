@@ -18,20 +18,30 @@ class PlatformBindDaoImpl : BasicDaoImpl<PlatformBind>("platform_bind"), Platfor
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
+            val username = rs.getString("username")
+            val password = rs.getString("password")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            PlatformBind(id = id, clientId = clientId, platform = platform, status = status, createdTime = createdTime)
+            PlatformBind(id = id, clientId = clientId, platform = platform, status = status, createdTime = createdTime,
+                    username = username, password = password)
         }
 
+    override fun find(platform: Platform): List<PlatformBind> {
+        return query().where("platform", platform).execute(mapper)
+    }
 
     override fun create(platformBindCo: PlatformBindCo): Boolean {
         return insert().set("client_id", platformBindCo.clientId)
                 .set("platform", platformBindCo.platform)
+                .set("username", platformBindCo.username)
+                .set("password", platformBindCo.password)
                 .executeOnlyOne()
     }
 
     override fun update(platformBindUo: PlatformBindUo): Boolean {
         return update().set("status", platformBindUo.status)
+                .set("username", platformBindUo.username)
+                .set("password", platformBindUo.password)
                 .where("id", platformBindUo.id)
                 .executeOnlyOne()
     }

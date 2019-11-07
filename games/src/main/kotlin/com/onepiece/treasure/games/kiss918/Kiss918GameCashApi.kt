@@ -2,6 +2,7 @@ package com.onepiece.treasure.games.kiss918
 
 import com.onepiece.treasure.games.GameCashApi
 import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.games.value.ClientAuthVo
 import com.onepiece.treasure.games.value.TransferResult
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -11,7 +12,7 @@ class Kiss918GameCashApi(
         private val okHttpUtil: OkHttpUtil
 ) : GameCashApi() {
 
-    override fun wallet(username: String): BigDecimal {
+    override fun wallet(clientAuthVo: ClientAuthVo?, username: String): BigDecimal {
 
         val url = Kiss918Builder.instance(path = "/ashx/account/account.ashx")
                 .set("action", "getUserInfo")
@@ -22,7 +23,7 @@ class Kiss918GameCashApi(
         return userinfo.moneyNumber
     }
 
-    override fun transfer(username: String, orderId: String, money: BigDecimal): TransferResult {
+    override fun transfer(clientAuthVo: ClientAuthVo?, username: String, orderId: String, money: BigDecimal): TransferResult {
         val url = Kiss918Builder.instance(path = "/ashx/account/setScore.ashx")
                 .set("action", "setServerScore")
                 .set("orderid", orderId)

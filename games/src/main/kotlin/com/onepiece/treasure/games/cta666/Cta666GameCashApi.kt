@@ -2,6 +2,7 @@ package com.onepiece.treasure.games.cta666
 
 import com.onepiece.treasure.games.GameCashApi
 import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.games.value.ClientAuthVo
 import com.onepiece.treasure.games.value.TransferResult
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -11,7 +12,7 @@ class Cta666GameCashApi(
         private val okHttpUtil: OkHttpUtil
 ) : GameCashApi() {
 
-    override fun wallet(username: String): BigDecimal {
+    override fun wallet(clientAuthVo: ClientAuthVo?, username: String): BigDecimal {
 
         val param = Cat666ParamBuilder.instance("getBalance")
         val data = """
@@ -25,11 +26,11 @@ class Cta666GameCashApi(
         return result.member.balance
     }
 
-    override fun clientBalance(): BigDecimal {
+    override fun clientBalance(clientAuthVo: ClientAuthVo?): BigDecimal {
         return BigDecimal.valueOf(-1)
     }
 
-    override fun transfer(username: String, orderId: String, money: BigDecimal): TransferResult {
+    override fun transfer(clientAuthVo: ClientAuthVo?,username: String, orderId: String, money: BigDecimal): TransferResult {
 
 
         val param = Cat666ParamBuilder.instance("transfer")

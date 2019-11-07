@@ -2,6 +2,7 @@ package com.onepiece.treasure.games.kiss918
 
 import com.onepiece.treasure.games.GameReportApi
 import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.games.value.ClientAuthVo
 import com.onepiece.treasure.games.value.ReportVo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -14,7 +15,7 @@ class Kiss918GameReportApi(
 
     private val log = LoggerFactory.getLogger(Kiss918GameReportApi::class.java)
 
-    override fun memberReport(username: String, startDate: LocalDate, endDate: LocalDate): List<ReportVo> {
+    override fun memberReport(clientAuthVo: ClientAuthVo?, username: String, startDate: LocalDate, endDate: LocalDate): List<ReportVo> {
 
         val url = Kiss918Builder.instance(domain = Kiss918Constant.API_ORDER_URL, path = "/ashx/AccountReport.ashx")
                 .set("userName", username)
@@ -30,10 +31,10 @@ class Kiss918GameReportApi(
 
     }
 
-    override fun clientReport(startDate: LocalDate, endDate: LocalDate): List<ReportVo> {
+    override fun clientReport(clientAuthVo: ClientAuthVo?, startDate: LocalDate, endDate: LocalDate): List<ReportVo> {
 
         val url = Kiss918Builder.instance(domain = Kiss918Constant.API_ORDER_URL, path = "/ashx/AgentMoneyLog.ashx")
-                .set("userName", Kiss918Constant.AGENT_CODE)
+                .set("userName", clientAuthVo!!.username!!)
                 .set("sDate", startDate.toString())
                 .set("eDate", endDate.toString())
                 .build(username = Kiss918Constant.AGENT_CODE)

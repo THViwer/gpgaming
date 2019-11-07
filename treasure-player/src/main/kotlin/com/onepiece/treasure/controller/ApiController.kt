@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api")
 class ApiController(
-        private val platformBindService: PlatformBindService,
         private val promotionService: PromotionService,
         private val advertService: AdvertService,
         private val announcementService: AnnouncementService
@@ -61,7 +60,8 @@ class ApiController(
     override fun start(@RequestHeader("platform") platform: Platform): StartGameResp {
         val platformMember = getPlatformMember(platform)
 
-        val map = gamePlatformUtil.getPlatformBuild(platform).gameApi.start(platformMember.platformUsername, platformMember.platformPassword)
+        val map = gamePlatformUtil.getPlatformBuild(platform)
+                .gameApi.start(getClientAuthVo(platform), platformMember.platformUsername, platformMember.platformPassword)
         return StartGameResp(path = map[StartPlatform.Pc] ?: error(""))
     }
 

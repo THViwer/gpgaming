@@ -9,6 +9,7 @@ import com.onepiece.treasure.core.order.JokerBetOrderDao
 import com.onepiece.treasure.games.GameOrderApi
 import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.games.joker.value.BetResult
+import com.onepiece.treasure.games.value.ClientAuthVo
 import com.onepiece.treasure.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -29,7 +30,7 @@ class JokerGameOrderApi(
 
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
-    override fun synOrder(startTime: LocalDateTime, endTime: LocalDateTime): String {
+    override fun synOrder(clientAuthVo: ClientAuthVo?, startTime: LocalDateTime, endTime: LocalDateTime): String {
 
         val nextId = redisService.get(OnePieceRedisKeyConstant.jokerNextId(), String::class.java) {
             //TODO 从数据库中查询
@@ -76,11 +77,11 @@ class JokerGameOrderApi(
         return nextId
     }
 
-    override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderValue.Report> {
+    override fun report(clientAuthVo: ClientAuthVo?, startDate: LocalDate, endDate: LocalDate): List<BetOrderValue.Report> {
         return jokerBetOrderDao.report(startDate = startDate, endDate = endDate)
     }
 
-    override fun query(query: BetOrderValue.Query): Any {
+    override fun query(clientAuthVo: ClientAuthVo?, query: BetOrderValue.Query): Any {
         return jokerBetOrderDao.query(query)
     }
 }

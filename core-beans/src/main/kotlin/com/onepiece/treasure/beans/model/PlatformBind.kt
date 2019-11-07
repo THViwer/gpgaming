@@ -18,6 +18,12 @@ data class PlatformBind(
         // 平台
         val platform: Platform,
 
+        // 用户名
+        val username: String?,
+
+        // 密码
+        val password: String?,
+
         // 状态
         val status: Status,
 

@@ -2,9 +2,12 @@ package com.onepiece.treasure.controller.basic
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.value.internet.web.PlatformMemberVo
+import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.GamePlatformUtil
+import com.onepiece.treasure.games.value.ClientAuthVo
 import com.onepiece.treasure.jwt.JwtUser
+import com.onepiece.treasure.utils.StringUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.context.request.RequestContextHolder
@@ -18,6 +21,9 @@ abstract class BasicController {
 
     @Autowired
     lateinit var gamePlatformUtil: GamePlatformUtil
+
+    @Autowired
+    lateinit var platformBindService: PlatformBindService
 
     val ip = "192.68.2.31"
 
@@ -61,26 +67,26 @@ abstract class BasicController {
             }
         }
 
+
+        val clientAuthVo = getClientAuthVo(platform)
+
         val platformUsername = "$clientIdStr$id"
-        val password = "${generateNonce(3)}${generateNumNonce(3)}".capitalize()
-        val generatorUsername = gamePlatformUtil.getPlatformBuild(platform).gameApi.register(platformUsername, password)
+        val password = StringUtil.generatePassword()
+        val generatorUsername = gamePlatformUtil.getPlatformBuild(platform).gameApi.register(clientAuthVo, platformUsername, password)
 
         return platformMemberService.create(memberId = id, platform = platform, platformUsername = generatorUsername, platformPassword = password)
     }
 
-    fun generateNonce(size: Int): String {
-        val nonceScope = "abcdefghijklmnopqrstuvwxyz"
-        val scopeSize = nonceScope.length
-        val nonceItem: (Int) -> Char = { nonceScope[(scopeSize * Math.random()).toInt()] }
-        return Array(size, nonceItem).joinToString("")
-    }
-    fun generateNumNonce(size: Int): String {
-        val nonceScope = "1234567890"
-        val scopeSize = nonceScope.length
-        val nonceItem: (Int) -> Char = { nonceScope[(scopeSize * Math.random()).toInt()] }
-        return Array(size, nonceItem).joinToString("")
-    }
 
+    fun getClientAuthVo(platform: Platform): ClientAuthVo {
+        return when (platform) {
+            Platform.Kiss918 -> {
+                val bind = platformBindService.findClientPlatforms(current().clientId).find { it.platform == platform }!!
+                ClientAuthVo.ofKiss918(bind.username!!)
+            }
+            else -> ClientAuthVo.empty()
+        }
+    }
 
 
 }

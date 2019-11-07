@@ -1,17 +1,18 @@
 package com.onepiece.treasure.games
 
+import com.onepiece.treasure.games.value.ClientAuthVo
 import com.onepiece.treasure.games.value.TransferResult
 import java.math.BigDecimal
 
 abstract class GameCashApi {
 
-    abstract fun wallet(username: String): BigDecimal
+    abstract fun wallet(clientAuthVo: ClientAuthVo? = null, username: String): BigDecimal
 
-    open fun clientBalance(): BigDecimal {
+    open fun clientBalance(clientAuthVo: ClientAuthVo? = null): BigDecimal {
         return BigDecimal.valueOf(-1)
     }
 
-    abstract fun transfer(username: String, orderId: String, money: BigDecimal): TransferResult
+    abstract fun transfer(clientAuthVo: ClientAuthVo? = null, username: String, orderId: String, money: BigDecimal): TransferResult
 
 
 }

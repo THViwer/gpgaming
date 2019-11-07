@@ -1,6 +1,7 @@
 package com.onepiece.treasure.task
 
 import com.onepiece.treasure.games.GameOrderApi
+import com.onepiece.treasure.games.value.ClientAuthVo
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -20,7 +21,7 @@ class JokerTask(
 
         log.info("startTime = $startTime, endTime = $endTime")
 
-        val unionId = jokerGameOrderApi.synOrder(startTime = startTime, endTime = endTime)
+        val unionId = jokerGameOrderApi.synOrder(clientAuthVo = ClientAuthVo.empty(), startTime = startTime, endTime = endTime)
 
         betCacheUtil.handler(unionId)
 

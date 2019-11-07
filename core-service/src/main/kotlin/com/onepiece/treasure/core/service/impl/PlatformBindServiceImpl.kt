@@ -1,5 +1,6 @@
 package com.onepiece.treasure.core.service.impl
 
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.PlatformBind
 import com.onepiece.treasure.beans.value.database.PlatformBindCo
@@ -15,6 +16,10 @@ class PlatformBindServiceImpl(
         private val platformBindDao: PlatformBindDao,
         private val redisService: RedisService
 ) : PlatformBindService {
+
+    override fun find(platform: Platform): List<PlatformBind> {
+        return platformBindDao.find(platform)
+    }
 
     override fun findClientPlatforms(clientId: Int): List<PlatformBind> {
         val redisKey = OnePieceRedisKeyConstant.openPlatforms(clientId)

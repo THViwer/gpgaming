@@ -1,8 +1,8 @@
 package com.onepiece.treasure.task
 
 import com.onepiece.treasure.games.GameOrderApi
+import com.onepiece.treasure.games.value.ClientAuthVo
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -22,7 +22,7 @@ class Cta666Task(
 
         log.info("startTime = $startTime, endTime = $endTime")
 
-        val unionId = cta666GameOrderApi.synOrder(startTime = startTime, endTime = endTime)
+        val unionId = cta666GameOrderApi.synOrder(clientAuthVo = ClientAuthVo.empty(), startTime = startTime, endTime = endTime)
 
         betCacheUtil.handler(unionId)
 
