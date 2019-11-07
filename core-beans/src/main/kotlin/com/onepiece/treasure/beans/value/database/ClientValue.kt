@@ -5,6 +5,9 @@ import java.time.LocalDateTime
 
 data class ClientCo(
 
+        // 昵称
+        val name: String,
+
         // 用户名
         val username: String,
 
@@ -17,6 +20,9 @@ data class ClientUo(
 
         // 用户Id
         val id: Int,
+
+        // 昵称
+        val name: String?,
 
         // 旧密码
         val oldPassword: String? = null,

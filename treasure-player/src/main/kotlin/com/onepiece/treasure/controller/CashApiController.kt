@@ -27,8 +27,7 @@ open class CashApiController(
         private val orderIdBuilder: OrderIdBuilder,
         private val walletService: WalletService,
         private val memberService: MemberService,
-        private val transferOrderService: TransferOrderService,
-        private val clientService: ClientService
+        private val transferOrderService: TransferOrderService
 ) : BasicController(), CashApi {
 
 
@@ -191,7 +190,8 @@ open class CashApiController(
                 val giftBalance = BigDecimal.ZERO
 
                 // 检查保证金是否足够
-                clientService.updateEarnestBalance(id = clientId, earnestBalance = cashTransferReq.money.negate())
+//                clientService.updateEarnestBalance(id = clientId, earnestBalance = cashTransferReq.money.negate())
+                platformBindService.updateEarnestBalance(clientId = clientId, platform = cashTransferReq.to, earnestBalance = cashTransferReq.money.negate())
 
                 // 中心钱包扣款
                 val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_OUT, money = cashTransferReq.money,
@@ -234,7 +234,9 @@ open class CashApiController(
 
 
                 // 检查保证金是否足够
-                clientService.updateEarnestBalance(id = clientId, earnestBalance = cashTransferReq.money)
+//                clientService.updateEarnestBalance(id = clientId, earnestBalance = cashTransferReq.money)
+                platformBindService.updateEarnestBalance(clientId = clientId, platform = cashTransferReq.from, earnestBalance = cashTransferReq.money)
+
 
                 // 生成转账订单
                 val transferOrderId = orderIdBuilder.generatorTransferOrderId()

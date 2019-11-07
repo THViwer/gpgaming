@@ -16,6 +16,6 @@ interface ClientService {
 
     fun update(clientUo: ClientUo)
 
-    fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal)
+//    fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal)
 
 }

@@ -28,6 +28,9 @@ data class PlatformBind(
         // 保证金
         val earnestBalance: BigDecimal,
 
+        // 进程Id
+        val processId: String,
+
         // 状态
         val status: Status,
 

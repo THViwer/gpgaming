@@ -10,6 +10,7 @@ import com.onepiece.treasure.core.dao.PlatformBindDao
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 
 @Service
 class PlatformBindServiceImpl(
@@ -37,5 +38,14 @@ class PlatformBindServiceImpl(
     override fun update(platformBindUo: PlatformBindUo) {
         val state = platformBindDao.update(platformBindUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+    }
+
+    override fun updateEarnestBalance(clientId: Int, platform: Platform, earnestBalance: BigDecimal) {
+
+        val bind = this.findClientPlatforms(clientId).find { it.platform == platform }
+        checkNotNull(bind) { OnePieceExceptionCode.DATA_FAIL }
+
+        platformBindDao.updateEarnestBalance(bind.id, earnestBalance, bind.processId)
+
     }
 }

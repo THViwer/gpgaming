@@ -24,9 +24,6 @@ data class Client(
         // 用户密码
         val password: String,
 
-        // 保证金
-        val earnestBalance: BigDecimal,
-
         // 进程Id
         val processId: String,
 

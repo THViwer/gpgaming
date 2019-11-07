@@ -10,8 +10,8 @@ object OnePieceExceptionCode {
 
     // system error
     const val SYSTEM = "1000"
-
     const val DB_CHANGE_FAIL = "1001"
+    const val DATA_FAIL = "1002" // 数据异常
 
     // 2000 verification error
 

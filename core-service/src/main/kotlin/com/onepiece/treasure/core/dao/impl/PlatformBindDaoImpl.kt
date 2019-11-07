@@ -8,7 +8,9 @@ import com.onepiece.treasure.beans.value.database.PlatformBindUo
 import com.onepiece.treasure.core.dao.PlatformBindDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
 import java.sql.ResultSet
+import java.util.*
 
 @Repository
 class PlatformBindDaoImpl : BasicDaoImpl<PlatformBind>("platform_bind"), PlatformBindDao {
@@ -20,10 +22,12 @@ class PlatformBindDaoImpl : BasicDaoImpl<PlatformBind>("platform_bind"), Platfor
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
             val username = rs.getString("username")
             val password = rs.getString("password")
+            val earnestBalance = rs.getBigDecimal("earnest_balance")
+            val processId = rs.getString("process_id")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             PlatformBind(id = id, clientId = clientId, platform = platform, status = status, createdTime = createdTime,
-                    username = username, password = password)
+                    username = username, password = password, processId = processId, earnestBalance = earnestBalance)
         }
 
     override fun find(platform: Platform): List<PlatformBind> {
@@ -35,6 +39,7 @@ class PlatformBindDaoImpl : BasicDaoImpl<PlatformBind>("platform_bind"), Platfor
                 .set("platform", platformBindCo.platform)
                 .set("username", platformBindCo.username)
                 .set("password", platformBindCo.password)
+                .set("process_id", UUID.randomUUID().toString())
                 .executeOnlyOne()
     }
 
@@ -45,4 +50,23 @@ class PlatformBindDaoImpl : BasicDaoImpl<PlatformBind>("platform_bind"), Platfor
                 .where("id", platformBindUo.id)
                 .executeOnlyOne()
     }
+
+    override fun find(clientId: Int, platform: Platform): PlatformBind {
+        return query()
+                .where("client_id", clientId)
+                .where("platform", platform)
+                .executeOnlyOne(mapper)
+
+    }
+
+    override fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal, processId: String): Boolean {
+        return update()
+                .asSet("earnest_balance = earnest_balance + $earnestBalance")
+                .set("process_id", UUID.randomUUID().toString())
+                .where("id", id)
+                .where("process_id", processId)
+                .asWhere("earnest_balance >= ?", earnestBalance)
+                .executeOnlyOne()
+    }
+
 }

@@ -20,14 +20,14 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
             val brand = rs.getString("brand")
             val username = rs.getString("username")
             val password = rs.getString("password")
-            val earnestBalance = rs.getBigDecimal("earnest_balance")
+            val name = rs.getString("name")
             val processId = rs.getString("process_id")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val loginIp = rs.getString("login_ip")
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
             Client(id = id, brand = brand, username = username, password = password, createdTime = createdTime, loginTime = loginTime,
-                    status = status, loginIp = loginIp, earnestBalance = earnestBalance, processId = processId)
+                    status = status, loginIp = loginIp, name = name, processId = processId)
         }
 
     override fun findByUsername(username: String): Client? {
@@ -36,9 +36,10 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
     }
 
     override fun create(clientCo: ClientCo): Int {
-        return insert().set("brand", clientCo.brand)
+        return insert()
                 .set("username", clientCo.username)
                 .set("password", clientCo.password)
+                .set("name", clientCo.name)
                 .set("processId", UUID.randomUUID().toString())
                 .set("status", Status.Normal)
                 .executeGeneratedKey()
@@ -46,6 +47,7 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
 
     override fun update(clientUo: ClientUo): Boolean {
         return update().set("password", clientUo.password)
+                .set("name", clientUo.name)
                 .set("status", clientUo.status)
                 .set("login_ip", clientUo.ip)
                 .set("login_time", clientUo.loginTime)

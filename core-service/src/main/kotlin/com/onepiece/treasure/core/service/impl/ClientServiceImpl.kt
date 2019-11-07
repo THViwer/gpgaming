@@ -10,7 +10,6 @@ import com.onepiece.treasure.core.service.ClientService
 import com.onepiece.treasure.core.service.LevelService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Service
@@ -31,7 +30,7 @@ class ClientServiceImpl(
         check(client.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
 
         // update client
-        val clientUo = ClientUo(id = client.id, ip = loginValue.ip, loginTime = LocalDateTime.now())
+        val clientUo = ClientUo(id = client.id, ip = loginValue.ip, loginTime = LocalDateTime.now(), name = null)
         this.update(clientUo)
 
         return client.copy(password = "")
@@ -63,23 +62,23 @@ class ClientServiceImpl(
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 
-    override fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal) {
-        val state =  this.tryUpdateEarnestBalance(index = 0, id = id, earnestBalance = earnestBalance)
-        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
-    }
-
-    private fun tryUpdateEarnestBalance(index: Int, id: Int, earnestBalance: BigDecimal): Boolean {
-
-        if (index >= 3 ) return false
-
-        val client = clientDao.get(id)
-        val state = clientDao.updateEarnestBalance(id = id, earnestBalance = earnestBalance, processId = client.processId)
-
-        if (!state) {
-            return tryUpdateEarnestBalance(index = index + 1, id = id, earnestBalance = earnestBalance)
-        }
-
-        return state
-    }
+//    override fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal) {
+//        val state =  this.tryUpdateEarnestBalance(index = 0, id = id, earnestBalance = earnestBalance)
+//        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+//    }
+//
+//    private fun tryUpdateEarnestBalance(index: Int, id: Int, earnestBalance: BigDecimal): Boolean {
+//
+//        if (index >= 3 ) return false
+//
+//        val client = clientDao.get(id)
+//        val state = clientDao.updateEarnestBalance(id = id, earnestBalance = earnestBalance, processId = client.processId)
+//
+//        if (!state) {
+//            return tryUpdateEarnestBalance(index = index + 1, id = id, earnestBalance = earnestBalance)
+//        }
+//
+//        return state
+//    }
 
 }
