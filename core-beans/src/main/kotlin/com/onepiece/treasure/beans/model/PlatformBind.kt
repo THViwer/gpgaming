@@ -2,6 +2,7 @@ package com.onepiece.treasure.beans.model
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.model.token.ClientToken
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -27,6 +28,9 @@ data class PlatformBind(
 
         // 保证金
         val earnestBalance: BigDecimal,
+
+        // token信息
+        val clientToken: ClientToken,
 
         // 进程Id
         val processId: String,

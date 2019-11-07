@@ -9,6 +9,9 @@ data class PlatformMember(
         // id
         val id: Int,
 
+        // 厅主Id
+        val clientId: Int,
+
         // 平台
         val platform: Platform,
 

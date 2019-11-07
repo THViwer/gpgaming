@@ -22,6 +22,14 @@ class PlatformBindServiceImpl(
         return platformBindDao.find(platform)
     }
 
+    override fun find(clientId: Int, platform: Platform): PlatformBind {
+
+        val redisKey = OnePieceRedisKeyConstant.openPlatform(clientId, platform)
+        return redisService.get(redisKey, PlatformBind::class.java) {
+            this.findClientPlatforms(clientId).find { it.platform == platform }
+        }!!
+    }
+
     override fun findClientPlatforms(clientId: Int): List<PlatformBind> {
         val redisKey = OnePieceRedisKeyConstant.openPlatforms(clientId)
 
@@ -33,11 +41,20 @@ class PlatformBindServiceImpl(
     override fun create(platformBindCo: PlatformBindCo) {
         val state = platformBindDao.create(platformBindCo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        redisService.delete(OnePieceRedisKeyConstant.openPlatforms(platformBindCo.clientId))
     }
 
     override fun update(platformBindUo: PlatformBindUo) {
+        val bind = platformBindDao.get(platformBindUo.id)
+
         val state = platformBindDao.update(platformBindUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        redisService.delete(
+                OnePieceRedisKeyConstant.openPlatforms(bind.clientId),
+                OnePieceRedisKeyConstant.openPlatform(bind.clientId, bind.platform)
+        )
     }
 
     override fun updateEarnestBalance(clientId: Int, platform: Platform, earnestBalance: BigDecimal) {

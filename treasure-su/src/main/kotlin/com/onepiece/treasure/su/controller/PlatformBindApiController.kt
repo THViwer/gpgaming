@@ -19,14 +19,14 @@ class PlatformBindApiController(
     @PostMapping
     override fun create(@RequestBody platformBindCoReq: PlatformBindSuValue.PlatformBindCoReq) {
         val platformBindCo = PlatformBindCo(clientId = platformBindCoReq.clientId, username = platformBindCoReq.username,
-                password = platformBindCoReq.password, earnestBalance = platformBindCoReq.earnestBalance, platform = platformBindCoReq.platform)
+                password = platformBindCoReq.password, earnestBalance = platformBindCoReq.earnestBalance, platform = platformBindCoReq.platform, tokenJson = platformBindCoReq.tokenJson)
         platformBindService.create(platformBindCo)
     }
 
     @PutMapping
     override fun update(@RequestBody platformBindUoReq: PlatformBindSuValue.PlatformBindUoReq) {
         val platformBindUo = PlatformBindUo(id = platformBindUoReq.id, username = platformBindUoReq.username, password = platformBindUoReq.password,
-                earnestBalance = platformBindUoReq.earnestBalance, status = platformBindUoReq.status)
+                earnestBalance = platformBindUoReq.earnestBalance, status = platformBindUoReq.status, tokenJson = platformBindUoReq.tokenJson)
         platformBindService.update(platformBindUo)
 
     }

@@ -14,6 +14,8 @@ object OnePieceRedisKeyConstant {
 
     fun clientBanks(clientId: Int) = "clientBank:$clientId"
 
+    fun openPlatform(clientId: Int, platform: Platform) = "platform:open:$clientId:$platform"
+
     fun openPlatforms(clientId: Int) = "platforms:open:$clientId"
 
     fun myPlatformMembers(memberId: Int) = "platform:member:$memberId"

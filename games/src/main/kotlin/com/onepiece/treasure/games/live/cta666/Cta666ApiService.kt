@@ -6,11 +6,11 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.order.Cta666BetOrder
-import com.onepiece.treasure.games.cta666.Cat666Constant
-import com.onepiece.treasure.games.cta666.Cat666ParamBuilder
-import com.onepiece.treasure.games.cta666.Cta666Result
+import com.onepiece.treasure.games.old.cta666.Cat666Constant
+import com.onepiece.treasure.games.old.cta666.Cat666ParamBuilder
+import com.onepiece.treasure.games.old.cta666.Cta666Result
 import com.onepiece.treasure.games.http.OkHttpUtil
-import com.onepiece.treasure.games.token.DefaultClientToken
+import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.utils.RedisService
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
@@ -37,7 +37,7 @@ class Cta666ApiService(
         }
     }
 
-    override fun signup(token: DefaultClientToken, username: String, password: String) {
+    override fun signup(token: DefaultClientToken, username: String, password: String): String {
 
         val param = Cta666Build.instance(token, "signup")
 
@@ -58,6 +58,8 @@ class Cta666ApiService(
 
         val result = okHttpUtil.doPostJson(param.url, data, Cta666Value.SignupResult::class.java)
         checkCode(result.codeId)
+
+        return username
     }
 
     override fun login(token: DefaultClientToken, username: String, startPlatform: StartPlatform): String {

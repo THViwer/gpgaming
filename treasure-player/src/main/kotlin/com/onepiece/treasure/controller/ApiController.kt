@@ -2,11 +2,12 @@ package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.enums.GameCategory
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.enums.StartPlatform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
-import com.onepiece.treasure.core.service.*
+import com.onepiece.treasure.core.service.AdvertService
+import com.onepiece.treasure.core.service.AnnouncementService
+import com.onepiece.treasure.core.service.PromotionService
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -50,7 +51,9 @@ class ApiController(
     @GetMapping("/slot/menu")
     override fun slotMenu(@RequestParam("platform") platform: Platform): List<SlotMenu> {
 
-        return gamePlatformUtil.getPlatformBuild(platform).gameApi.games().map {
+        val member = current()
+
+        return gameApi.slotGames(clientId = member.clientId, platform = platform).map {
             SlotMenu(gameId = it.gameId, gameName = it.gameName, category = GameCategory.ARCADE, icon = it.icon,
                     hot = true, new = true, status = Status.Normal)
         }
@@ -60,9 +63,9 @@ class ApiController(
     override fun start(@RequestHeader("platform") platform: Platform): StartGameResp {
         val platformMember = getPlatformMember(platform)
 
-        val map = gamePlatformUtil.getPlatformBuild(platform)
-                .gameApi.start(getClientAuthVo(platform), platformMember.platformUsername, platformMember.platformPassword)
-        return StartGameResp(path = map[StartPlatform.Pc] ?: error(""))
+        val member = current()
+        val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform)
+        return StartGameResp(path = gameUrl)
     }
 
 
@@ -72,11 +75,11 @@ class ApiController(
             @RequestParam("gameId") gameId: String): StartGameResp {
 
         val platformMember = getPlatformMember(platform)
+        val member = current()
 
-        val maps = gamePlatformUtil.getPlatformBuild(platform).gameApi
-                .start(username = platformMember.platformUsername, gameId = gameId, redirectUrl = "http://www.baidu.com")
+        val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform, gameId = gameId)
+        return StartGameResp(path = gameUrl)
 
-        return StartGameResp(path = maps[StartPlatform.Pc] ?: error(""))
     }
 
 

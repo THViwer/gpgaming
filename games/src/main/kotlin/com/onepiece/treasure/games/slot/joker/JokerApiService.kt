@@ -6,7 +6,12 @@ import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.order.JokerBetOrder
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.http.OkHttpUtil
-import com.onepiece.treasure.games.token.DefaultClientToken
+import com.onepiece.treasure.games.old.joker.value.JokerRegisterResult
+import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.games.old.joker.JokerParamBuilder
+import com.onepiece.treasure.games.old.joker.value.JokerSlotGame
+import com.onepiece.treasure.games.old.joker.value.JokerSlotGameResult
+import com.onepiece.treasure.games.value.SlotGame
 import com.onepiece.treasure.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -25,6 +30,54 @@ class JokerApiService(
 
     private val log = LoggerFactory.getLogger(JokerApiService::class.java)
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+
+
+    override fun slotGames(token: DefaultClientToken): List<SlotGame> {
+        val (url, formBody) = JokerBuild.instance("ListGames").build(token)
+
+        val data: List<JokerSlotGame> = okHttpUtil.doPostForm(url, formBody, JokerSlotGameResult::class.java).listGames
+
+        return data.map {
+            val platforms = it.supportedPlatForms.split(",").map { platformName ->
+                when (platformName) {
+                    "Desktop" -> SlotGame.GamePlatform.PC
+                    "Mobile" -> SlotGame.GamePlatform.Mobile
+                    else -> SlotGame.GamePlatform.PC
+                }
+            }.toList()
+
+            val specials = it.specials?.split(",")?.map { sp ->
+                when (sp) {
+                    "new" -> SlotGame.Special.New
+                    "hot" -> SlotGame.Special.Hot
+                    else -> SlotGame.Special.Hot
+                }
+            }?: emptyList()
+
+            SlotGame(gameId = it.gameCode, gameName = it.gameName, platforms = platforms, specials = specials, icon = it.image1)
+        }
+    }
+
+    override fun register(token: DefaultClientToken, username: String, password: String): String {
+
+        // register
+        val (url, formBody) = JokerBuild.instance("CU")
+                .set("Username", username)
+                .build(token)
+
+        val registerResult = okHttpUtil.doPostForm(url, formBody, JokerRegisterResult:: class.java)
+//        check(registerResult.status == "Created") { OnePieceExceptionCode.PLATFORM_MEMBER_REGISTER_FAIL }
+
+        // set password
+        val (url2, formBody2) = JokerBuild.instance("SP")
+                .set("Username", username)
+                .set("Password", password)
+                .build(token)
+        okHttpUtil.doPostForm(url2, formBody2)
+
+        return username
+
+    }
 
     override fun getCredit(token: DefaultClientToken, username: String): BigDecimal {
         val (url, formBody) = JokerBuild.instance("GC")

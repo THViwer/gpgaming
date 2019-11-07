@@ -18,6 +18,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
         get() = { rs ->
 
             val id = rs.getInt("id")
+            val clientId = rs.getInt("client_id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
             val memberId = rs.getInt("member_id")
             val username = rs.getString("username")
@@ -31,7 +32,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             PlatformMember(id = id, platform = platform, memberId = memberId, username = username, password = password,
                     currentBet = currentBet, demandBet = demandBet, giftBalance = giftBalance, totalBet = totalBet,
-                    totalBalance = totalBalance, totalGiftBalance = totalGiftBalance, createdTime = createdTime)
+                    totalBalance = totalBalance, totalGiftBalance = totalGiftBalance, createdTime = createdTime, clientId = clientId)
         }
 
     override fun findPlatformMember(memberId: Int): List<PlatformMember> {
@@ -42,6 +43,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
 
     override fun create(platformMemberCo: PlatformMemberCo): Int {
         return insert().set("platform", platformMemberCo.platform)
+                .set("client_id", platformMemberCo.clientId)
                 .set("member_id", platformMemberCo.memberId)
                 .set("username", platformMemberCo.username)
                 .set("password", platformMemberCo.password)

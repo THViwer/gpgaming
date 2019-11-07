@@ -1,8 +1,7 @@
 package com.onepiece.treasure.games.slot.joker
 
 import com.onepiece.treasure.games.GameConstant
-import com.onepiece.treasure.games.joker.JokerConstant
-import com.onepiece.treasure.games.token.DefaultClientToken
+import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import okhttp3.FormBody
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.HmacUtils

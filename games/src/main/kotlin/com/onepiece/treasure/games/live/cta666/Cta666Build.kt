@@ -1,8 +1,8 @@
 package com.onepiece.treasure.games.live.cta666
 
 import com.onepiece.treasure.games.GameConstant
-import com.onepiece.treasure.games.cta666.Cat666Constant
-import com.onepiece.treasure.games.token.DefaultClientToken
+import com.onepiece.treasure.games.old.cta666.Cat666Constant
+import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.*
 

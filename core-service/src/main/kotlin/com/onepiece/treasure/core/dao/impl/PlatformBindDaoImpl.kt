@@ -1,8 +1,12 @@
 package com.onepiece.treasure.core.dao.impl
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.model.PlatformBind
+import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
 import com.onepiece.treasure.beans.value.database.PlatformBindCo
 import com.onepiece.treasure.beans.value.database.PlatformBindUo
 import com.onepiece.treasure.core.dao.PlatformBindDao
@@ -13,7 +17,9 @@ import java.sql.ResultSet
 import java.util.*
 
 @Repository
-class PlatformBindDaoImpl : BasicDaoImpl<PlatformBind>("platform_bind"), PlatformBindDao {
+class PlatformBindDaoImpl(
+        private val objectMapper: ObjectMapper
+) : BasicDaoImpl<PlatformBind>("platform_bind"), PlatformBindDao {
 
     override val mapper: (rs: ResultSet) -> PlatformBind
         get() = { rs ->
@@ -26,8 +32,16 @@ class PlatformBindDaoImpl : BasicDaoImpl<PlatformBind>("platform_bind"), Platfor
             val processId = rs.getString("process_id")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+
+            val tokenJson = rs.getString("token_json")
+            val clientToken = when (platform) {
+                Platform.Kiss918 -> objectMapper.readValue<Kiss918ClientToken>(tokenJson)
+                else -> objectMapper.readValue<DefaultClientToken>(tokenJson)
+            }
+
             PlatformBind(id = id, clientId = clientId, platform = platform, status = status, createdTime = createdTime,
-                    username = username, password = password, processId = processId, earnestBalance = earnestBalance)
+                    username = username, password = password, processId = processId, earnestBalance = earnestBalance,
+                    clientToken = clientToken)
         }
 
     override fun find(platform: Platform): List<PlatformBind> {
@@ -39,6 +53,7 @@ class PlatformBindDaoImpl : BasicDaoImpl<PlatformBind>("platform_bind"), Platfor
                 .set("platform", platformBindCo.platform)
                 .set("username", platformBindCo.username)
                 .set("password", platformBindCo.password)
+                .set("token_json", platformBindCo.tokenJson)
                 .set("process_id", UUID.randomUUID().toString())
                 .executeOnlyOne()
     }
@@ -47,6 +62,7 @@ class PlatformBindDaoImpl : BasicDaoImpl<PlatformBind>("platform_bind"), Platfor
         return update().set("status", platformBindUo.status)
                 .set("username", platformBindUo.username)
                 .set("password", platformBindUo.password)
+                .set("token_json", platformBindUo.tokenJson)
                 .where("id", platformBindUo.id)
                 .executeOnlyOne()
     }

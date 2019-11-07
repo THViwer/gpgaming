@@ -12,6 +12,9 @@ data class PlatformBindCo(
         // 保证金
         val earnestBalance: BigDecimal,
 
+        // token信息
+        val tokenJson: String,
+
         // 用户名
         val username: String,
 
@@ -33,6 +36,9 @@ data class PlatformBindUo(
 
         // 密码
         val password: String?,
+
+        // token信息
+        val tokenJson: String?,
 
         // 保证金
         val earnestBalance: BigDecimal?,

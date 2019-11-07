@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/platform")
-class ClientPlatformApiController(
-        private val platformBindService: PlatformBindService
-): BasicController(), ClientPlatformApi {
+class ClientPlatformApiController(): BasicController(), ClientPlatformApi {
 
     @GetMapping
     override fun all(): List<PlatformVo> {
@@ -40,7 +38,7 @@ class ClientPlatformApiController(
         val platform = platformBindService.findClientPlatforms(clientId).find { it.id == platformUoReq.id }
         checkNotNull(platform) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
-        val platformBindUo = PlatformBindUo(id = platformUoReq.id, status = platformUoReq.status)
+        val platformBindUo = PlatformBindUo(id = platformUoReq.id, status = platformUoReq.status, earnestBalance = null, username = null, password = null, tokenJson = null)
         platformBindService.update(platformBindUo)
     }
 }

@@ -1,7 +1,7 @@
 package com.onepiece.treasure.games.live.cta666
 
 import com.onepiece.treasure.beans.enums.StartPlatform
-import com.onepiece.treasure.games.token.DefaultClientToken
+import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import java.math.BigDecimal
 
 interface Cta666Api {
@@ -9,7 +9,7 @@ interface Cta666Api {
     /**
      * 注册用户
      */
-    fun signup(token: DefaultClientToken, username: String, password: String)
+    fun signup(token: DefaultClientToken, username: String, password: String): String
 
 
     /**

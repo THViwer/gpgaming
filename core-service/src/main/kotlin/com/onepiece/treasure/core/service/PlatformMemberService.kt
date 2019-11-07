@@ -10,7 +10,7 @@ interface PlatformMemberService {
 
     fun get(id: Int): PlatformMember
 
-    fun create(memberId: Int, platform: Platform, platformUsername: String, platformPassword: String): PlatformMemberVo
+    fun create(clientId: Int, memberId: Int, platform: Platform, platformUsername: String, platformPassword: String): PlatformMemberVo
 
     fun myPlatforms(memberId: Int): List<PlatformMemberVo>
 

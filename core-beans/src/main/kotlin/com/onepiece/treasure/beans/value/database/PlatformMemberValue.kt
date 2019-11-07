@@ -5,6 +5,9 @@ import java.math.BigDecimal
 
 data class PlatformMemberCo(
 
+        // 厅主Id
+        val clientId: Int,
+
         // 平台
         val platform: Platform,
 

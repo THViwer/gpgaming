@@ -40,6 +40,9 @@ sealed class PlatformBindSuValue {
             @ApiModelProperty("平台")
             val platform: Platform,
 
+            @ApiModelProperty("token信息")
+            val tokenJson: String,
+
             @ApiModelProperty("是否开通")
             val open: Boolean,
 
@@ -57,6 +60,9 @@ sealed class PlatformBindSuValue {
     data class PlatformBindUoReq(
             @ApiModelProperty("id")
             val id: Int,
+
+            @ApiModelProperty("token信息")
+            val tokenJson: String,
 
             @ApiModelProperty("保证金")
             val earnestBalance: BigDecimal?,

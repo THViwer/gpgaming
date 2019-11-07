@@ -1,8 +1,7 @@
 package com.onepiece.treasure.games.slot.joker
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.onepiece.treasure.games.joker.value.BetGame
-import com.onepiece.treasure.games.joker.value.JokerBetOrderVo
+import com.onepiece.treasure.games.old.joker.value.BetGame
 import java.math.BigDecimal
 import java.time.ZonedDateTime
 

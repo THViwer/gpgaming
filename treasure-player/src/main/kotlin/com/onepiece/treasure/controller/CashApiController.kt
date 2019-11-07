@@ -206,8 +206,9 @@ open class CashApiController(
 
 
                 //TODO 调用平台接口充值
-                gamePlatformUtil.getPlatformBuild(cashTransferReq.to).gameCashApi
-                        .transfer(getClientAuthVo(cashTransferReq.to),platformMember.username, transferOrderId, cashTransferReq.money.plus(giftBalance))
+                gameApi.transfer(clientId = clientId, platformUsername = platformMember.username, orderId = transferOrderId, amount = cashTransferReq.money.plus(giftBalance),
+                        platform = cashTransferReq.to)
+
 
                 // 平台钱包更改信息
                 val demandBet = if (giftBalance == BigDecimal.ZERO) {
@@ -250,8 +251,8 @@ open class CashApiController(
                 walletService.update(walletUo)
 
                 //TODO 调用平台接口取款
-                gamePlatformUtil.getPlatformBuild(cashTransferReq.from).gameCashApi
-                        .transfer(getClientAuthVo(cashTransferReq.from), platformMember.username, transferOrderId, cashTransferReq.money.negate())
+                gameApi.transfer(clientId = clientId, platformUsername = platformMember.username, orderId = transferOrderId, amount = cashTransferReq.money.negate(),
+                        platform = cashTransferReq.from)
 
                 // 更新转账订单
                 val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = TransferState.Successful)
@@ -262,11 +263,12 @@ open class CashApiController(
 
     @GetMapping("/balance")
     override fun balance(@RequestHeader platform: Platform): BigDecimal {
+        val member = current()
         return when (platform) {
             Platform.Center -> walletService.getMemberWallet(current().id).balance
             else -> {
                 val platformMemberVo = getPlatformMember(platform)
-                gamePlatformUtil.getPlatformBuild(platform).gameCashApi.wallet(username = platformMemberVo.platformUsername)
+                gameApi.balance(clientId = member.clientId, platformUsername = platformMemberVo.platformUsername, platform = platform)
             }
         }
     }

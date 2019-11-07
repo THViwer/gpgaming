@@ -1,6 +1,6 @@
 //package com.onepiece.treasure.task
 //
-//import com.onepiece.treasure.games.GameOrderApi
+//import com.onepiece.treasure.games.old.GameOrderApi
 //import com.onepiece.treasure.games.value.ClientAuthVo
 //import org.slf4j.LoggerFactory
 //import org.springframework.scheduling.annotation.Scheduled

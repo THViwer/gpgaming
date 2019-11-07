@@ -6,8 +6,8 @@
 //import com.onepiece.treasure.beans.model.MemberDailyReport
 //import com.onepiece.treasure.beans.model.MemberPlatformDailyReport
 //import com.onepiece.treasure.core.service.*
-//import com.onepiece.treasure.games.GamePlatformUtil
-//import com.onepiece.treasure.games.GameReportApi
+//import com.onepiece.treasure.games.old.GamePlatformUtil
+//import com.onepiece.treasure.games.old.GameReportApi
 //import com.onepiece.treasure.games.value.ClientAuthVo
 //import org.springframework.stereotype.Component
 //import java.math.BigDecimal

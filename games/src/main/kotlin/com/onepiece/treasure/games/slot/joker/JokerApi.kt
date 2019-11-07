@@ -1,11 +1,22 @@
 package com.onepiece.treasure.games.slot.joker
 
-import com.onepiece.treasure.games.token.DefaultClientToken
+import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.games.value.SlotGame
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 interface JokerApi {
+
+    /**
+     * 游戏列表
+     */
+    fun slotGames(token: DefaultClientToken): List<SlotGame>
+
+    /**
+     * 注册账号
+     */
+    fun register(token: DefaultClientToken, username: String, password: String): String
 
     /**
      * 获得余额

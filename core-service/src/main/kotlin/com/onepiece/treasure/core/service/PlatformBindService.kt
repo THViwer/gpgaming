@@ -10,6 +10,8 @@ interface PlatformBindService {
 
     fun find(platform: Platform): List<PlatformBind>
 
+    fun find(clientId: Int, platform: Platform): PlatformBind
+
     fun findClientPlatforms(clientId: Int): List<PlatformBind>
 
     fun create(platformBindCo: PlatformBindCo)

@@ -4,10 +4,9 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
-import com.onepiece.treasure.games.GamePlatformUtil
+import com.onepiece.treasure.games.GameApi
 import com.onepiece.treasure.games.value.ClientAuthVo
 import com.onepiece.treasure.jwt.JwtUser
-import com.onepiece.treasure.utils.StringUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.context.request.RequestContextHolder
@@ -20,10 +19,10 @@ abstract class BasicController {
     lateinit var platformMemberService: PlatformMemberService
 
     @Autowired
-    lateinit var gamePlatformUtil: GamePlatformUtil
+    lateinit var platformBindService: PlatformBindService
 
     @Autowired
-    lateinit var platformBindService: PlatformBindService
+    lateinit var gameApi: GameApi
 
     val ip = "192.68.2.31"
 
@@ -45,36 +44,16 @@ abstract class BasicController {
     }
 
     fun getPlatformMember(platform: Platform): PlatformMemberVo {
-        val platforms = platformMemberService.myPlatforms(memberId = current().id)
-        return platforms.find { platform == it.platform } ?: return this.registerPlatformMember(platform)
-    }
-
-    fun registerPlatformMember(platform: Platform): PlatformMemberVo {
-
         val member = current()
-        val clientId = member.clientId
-        val id = member.id
+        val platforms = platformMemberService.myPlatforms(memberId = member.id)
+        val platformMember = platforms.find { platform == it.platform }
 
-
-        val clientIdStr = when  {
-            clientId < 10 -> "00$clientId"
-            clientId < 100 -> "0$clientId"
-            else -> "$clientId"
-        }.let {
-            when (platform) {
-                Platform.Cta666 -> "c$it"
-                else -> it
-            }
+        if (platformMember == null) {
+            gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform)
+            return this.getPlatformMember(platform)
         }
 
-
-        val clientAuthVo = getClientAuthVo(platform)
-
-        val platformUsername = "$clientIdStr$id"
-        val password = StringUtil.generatePassword()
-        val generatorUsername = gamePlatformUtil.getPlatformBuild(platform).gameApi.register(clientAuthVo, platformUsername, password)
-
-        return platformMemberService.create(memberId = id, platform = platform, platformUsername = generatorUsername, platformPassword = password)
+        return platformMember
     }
 
 

@@ -1,7 +1,7 @@
 package com.onepiece.treasure.games.live.cta666
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.onepiece.treasure.games.cta666.Cta666Result
+import com.onepiece.treasure.games.old.cta666.Cta666Result
 import java.math.BigDecimal
 import java.time.LocalDateTime
 

@@ -8,8 +8,8 @@
 //import com.onepiece.treasure.beans.value.internet.web.MemberPlatformReportWebVo
 //import com.onepiece.treasure.beans.value.internet.web.MemberReportWebVo
 //import com.onepiece.treasure.core.service.*
-//import com.onepiece.treasure.games.GameReportApi
-//import com.onepiece.treasure.games.kiss918.Kiss918GameReportApi
+//import com.onepiece.treasure.games.old.GameReportApi
+//import com.onepiece.treasure.games.old.kiss918.Kiss918GameReportApi
 //import com.onepiece.treasure.web.controller.basic.BasicController
 //import org.springframework.format.annotation.DateTimeFormat
 //import org.springframework.web.bind.annotation.GetMapping

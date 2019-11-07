@@ -1,0 +1,45 @@
+package com.onepiece.treasure.games.old.joker
+
+import com.onepiece.treasure.games.old.GameCashApi
+import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.games.old.joker.value.JokerBalanceResult
+import com.onepiece.treasure.games.old.joker.value.JokerTransferResult
+import com.onepiece.treasure.games.old.joker.value.JokerWalletResult
+import com.onepiece.treasure.games.value.ClientAuthVo
+import com.onepiece.treasure.games.value.TransferResult
+import org.springframework.stereotype.Service
+import java.math.BigDecimal
+
+@Service
+class JokerGameCashApi(
+        private val okHttpUtil: OkHttpUtil
+) : GameCashApi() {
+
+    override fun wallet(clientAuthVo: ClientAuthVo?, username: String): BigDecimal {
+        val (url, formBody) = JokerParamBuilder.instance("GC")
+                .set("Username", username)
+                .build()
+
+        val result =  okHttpUtil.doPostForm(url, formBody, JokerWalletResult::class.java)
+        return result.credit
+    }
+
+    override fun clientBalance(clientAuthVo: ClientAuthVo?): BigDecimal {
+        val (url, formBody) = JokerParamBuilder.instance("JP").build()
+        val result = okHttpUtil.doPostForm(url, formBody, JokerBalanceResult::class.java)
+        return result.amount
+    }
+
+    override fun transfer(clientAuthVo: ClientAuthVo?, username: String, orderId: String, money: BigDecimal): TransferResult {
+        val (url, formBody) = JokerParamBuilder.instance("TC")
+                .set("Amount", money.toString())
+                .set("RequestID", orderId)
+                .set("Username", username)
+                .build()
+
+        val result = okHttpUtil.doPostForm(url, formBody, JokerTransferResult::class.java)
+        return TransferResult(orderId = result.requestId, platformOrderId = result.requestId, balance = result.credit,
+                afterBalance = result.beforeCredit)
+    }
+
+}
