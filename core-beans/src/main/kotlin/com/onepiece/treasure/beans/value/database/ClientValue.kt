@@ -5,17 +5,12 @@ import java.time.LocalDateTime
 
 data class ClientCo(
 
-        // 品牌
-        val brand: String,
-
         // 用户名
         val username: String,
 
         // 用户密码
-        val password: String,
+        val password: String
 
-        // 登陆时间
-        val loginTime: LocalDateTime
 )
 
 data class ClientUo(

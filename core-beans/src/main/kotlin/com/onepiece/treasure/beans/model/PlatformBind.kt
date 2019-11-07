@@ -2,6 +2,7 @@ package com.onepiece.treasure.beans.model
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 /**
@@ -19,10 +20,13 @@ data class PlatformBind(
         val platform: Platform,
 
         // 用户名
-        val username: String?,
+        val username: String,
 
         // 密码
-        val password: String?,
+        val password: String,
+
+        // 保证金
+        val earnestBalance: BigDecimal,
 
         // 状态
         val status: Status,

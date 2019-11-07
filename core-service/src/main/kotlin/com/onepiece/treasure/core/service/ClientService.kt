@@ -8,6 +8,8 @@ import java.math.BigDecimal
 
 interface ClientService {
 
+    fun all(): List<Client>
+
     fun login(loginValue: LoginValue): Client
 
     fun create(clientCo: ClientCo)

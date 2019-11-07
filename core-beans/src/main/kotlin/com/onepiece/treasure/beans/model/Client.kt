@@ -15,6 +15,9 @@ data class Client(
         // 品牌
         val brand: String,
 
+        // 昵称
+        val name: String,
+
         // 用户名
         val username: String,
 

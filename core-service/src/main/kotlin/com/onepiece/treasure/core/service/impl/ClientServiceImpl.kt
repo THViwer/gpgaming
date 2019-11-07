@@ -20,6 +20,10 @@ class ClientServiceImpl(
         private val balanceService: BalanceService
 ) : ClientService {
 
+    override fun all(): List<Client> {
+        return clientDao.all()
+    }
+
     override fun login(loginValue: LoginValue): Client {
         val client = clientDao.findByUsername(loginValue.username)
         checkNotNull(client) { OnePieceExceptionCode.LOGIN_FAIL }
