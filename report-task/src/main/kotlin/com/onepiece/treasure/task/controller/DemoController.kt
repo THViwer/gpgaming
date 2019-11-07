@@ -1,7 +1,5 @@
 package com.onepiece.treasure.task.controller
 
-import com.onepiece.treasure.games.old.GameOrderApi
-import com.onepiece.treasure.games.old.GameReportApi
 import com.onepiece.treasure.task.ReportTask
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
@@ -9,9 +7,7 @@ import java.time.LocalDate
 
 @RestController
 class DemoController(
-        private val reportTask: ReportTask,
-        private val kiss918GameOrderApi: GameOrderApi,
-        private val kiss918GameReportApi: GameReportApi
+        private val reportTask: ReportTask
 ) {
 
     @GetMapping("/report")

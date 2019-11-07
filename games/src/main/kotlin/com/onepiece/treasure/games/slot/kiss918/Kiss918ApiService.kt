@@ -2,10 +2,8 @@ package com.onepiece.treasure.games.slot.kiss918
 
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.games.http.OkHttpUtil
-import com.onepiece.treasure.games.old.kiss918.Kiss918Builder
-import com.onepiece.treasure.games.old.kiss918.Kiss918Constant
-import com.onepiece.treasure.games.old.kiss918.Kiss918Value
 import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
+import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.value.ReportVo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -72,26 +70,26 @@ class Kiss918ApiService(
     }
 
     override fun setScore(token: Kiss918ClientToken, orderId: String, username: String, amount: BigDecimal): String {
-        val url = Kiss918Builder.instance(path = "/ashx/account/setScore.ashx")
+        val url = Kiss918Build.instance(path = "/ashx/account/setScore.ashx")
                 .set("action", "setServerScore")
                 .set("orderid", orderId)
                 .set("scoreNum", "$amount")
                 .set("userName", username)
                 .set("ActionUser", "system")
                 .set("ActionIp", "12.213.1.24")
-                .build(username = username)
+                .build(token = token, username = username)
         val result = okHttpUtil.doGet(url, Kiss918Value.TransferResult::class.java)
         return orderId
     }
 
     override fun gameLog(token: Kiss918ClientToken, username: String, startTime: LocalDateTime, endTime: LocalDateTime): Any {
-        val url = Kiss918Builder.instance(Kiss918Constant.API_ORDER_URL, path = "/ashx/GameLog.ashx")
+        val url = Kiss918Build.instance(GameConstant.KISS918_API_ORDER_URL, path = "/ashx/GameLog.ashx")
                 .set("pageIndex", "1")
                 .set("pageSize", "1000")
                 .set("userName", username)
                 .set("sDate", startTime.format(dateTimeFormatter))
                 .set("eDate", endTime.format(dateTimeFormatter))
-                .build(username = username)
+                .build(token = token, username = username)
 
         val result = okHttpUtil.doGet(url, String::class.java)
         log.info("game log : $result")
@@ -102,11 +100,11 @@ class Kiss918ApiService(
 
     override fun accountReport(token: Kiss918ClientToken, username: String, startDate: LocalDate, endDate: LocalDate): List<ReportVo> {
 
-        val url = Kiss918Builder.instance(domain = Kiss918Constant.API_ORDER_URL, path = "/ashx/AccountReport.ashx")
+        val url = Kiss918Build.instance(domain = GameConstant.KISS918_API_ORDER_URL, path = "/ashx/AccountReport.ashx")
                 .set("userName", username)
                 .set("sDate", startDate.toString())
                 .set("eDate", endDate.toString())
-                .build(username = username)
+                .build(token = token, username = username)
         val result = okHttpUtil.doGet(url, Kiss918Value.ReportResult::class.java)
         log.info("member report: $result")
 
@@ -116,11 +114,11 @@ class Kiss918ApiService(
     }
 
     override fun agentMoneyLog(token: Kiss918ClientToken, startDate: LocalDate, endDate: LocalDate): List<ReportVo> {
-        val url = Kiss918Builder.instance(domain = Kiss918Constant.API_ORDER_URL, path = "/ashx/AgentMoneyLog.ashx")
+        val url = Kiss918Build.instance(domain = GameConstant.KISS918_API_ORDER_URL, path = "/ashx/AgentMoneyLog.ashx")
                 .set("userName", token.appId)
                 .set("sDate", startDate.toString())
                 .set("eDate", endDate.toString())
-                .build(username = Kiss918Constant.AGENT_CODE)
+                .build(token = token, username = token.appId)
         val result = okHttpUtil.doGet(url, Kiss918Value.ReportResult::class.java)
         log.info("member report: $result")
         return result.results.map {

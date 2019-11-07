@@ -1,7 +1,6 @@
 package com.onepiece.treasure.games.live.cta666
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.onepiece.treasure.games.old.cta666.Cta666Result
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -36,7 +35,7 @@ sealed class Cta666Value  {
 
             val random: String,
 
-            val member: Cta666Result.Member
+            val member: Member
 
     )
 
@@ -50,7 +49,14 @@ sealed class Cta666Value  {
             // 转账流水号
             val data: String,
 
-            val member: Cta666Result.Member
+            val member: Member
+    )
+
+    data class Member(
+            val username: String,
+
+            val balance: BigDecimal
+
     )
 
     data class CheckTransferResult(

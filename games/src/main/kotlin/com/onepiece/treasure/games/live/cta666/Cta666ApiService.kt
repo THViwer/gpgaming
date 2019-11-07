@@ -6,9 +6,6 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.order.Cta666BetOrder
-import com.onepiece.treasure.games.old.cta666.Cat666Constant
-import com.onepiece.treasure.games.old.cta666.Cat666ParamBuilder
-import com.onepiece.treasure.games.old.cta666.Cta666Result
 import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.utils.RedisService
@@ -160,7 +157,7 @@ class Cta666ApiService(
     override fun getReport(token: DefaultClientToken): String {
         val processId = UUID.randomUUID().toString().replace("-", "")
 
-        val param = Cat666ParamBuilder.instance("getReport")
+        val param = Cta666Build.instance(token = token, method = "getReport")
         val data = """
             {
                 "token":"${param.token}",
@@ -169,7 +166,7 @@ class Cta666ApiService(
         """.trimIndent()
 
         val result = okHttpUtil.doPostJson(param.url, data, Cta666Value.Report::class.java)
-        Cat666Constant.checkCode(result.codeId)
+        checkCode(result.codeId)
 
         if (result.list == null) return processId
 
@@ -201,15 +198,15 @@ class Cta666ApiService(
 
         // 过滤已结算的
         val ids = result.list.filter { it.isRevocation == 1 }.map { it.id }
-        this.mark(ids)
+        this.mark(token = token, ids = ids)
 
         return processId
     }
 
-    private fun mark(ids: List<Long>) {
+    private fun mark(token: DefaultClientToken, ids: List<Long>) {
 
         val list = ids.joinToString(separator = ",")
-        val param = Cat666ParamBuilder.instance("mark")
+        val param = Cta666Build.instance(token = token, method = "mark")
         val data = """
             {
                 "token":"${param.token}",
@@ -218,8 +215,8 @@ class Cta666ApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, Cta666Result.Mark::class.java)
-        Cat666Constant.checkCode(result.codeId)
+        val result = okHttpUtil.doPostJson(param.url, data, Cta666Value.Mark::class.java)
+        checkCode(result.codeId)
 
     }
 }

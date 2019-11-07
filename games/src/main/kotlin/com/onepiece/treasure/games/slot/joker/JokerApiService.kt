@@ -6,11 +6,7 @@ import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.order.JokerBetOrder
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.http.OkHttpUtil
-import com.onepiece.treasure.games.old.joker.value.JokerRegisterResult
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
-import com.onepiece.treasure.games.old.joker.JokerParamBuilder
-import com.onepiece.treasure.games.old.joker.value.JokerSlotGame
-import com.onepiece.treasure.games.old.joker.value.JokerSlotGameResult
 import com.onepiece.treasure.games.value.SlotGame
 import com.onepiece.treasure.utils.RedisService
 import org.slf4j.LoggerFactory
@@ -35,7 +31,7 @@ class JokerApiService(
     override fun slotGames(token: DefaultClientToken): List<SlotGame> {
         val (url, formBody) = JokerBuild.instance("ListGames").build(token)
 
-        val data: List<JokerSlotGame> = okHttpUtil.doPostForm(url, formBody, JokerSlotGameResult::class.java).listGames
+        val data: List<JokerValue.JokerSlotGame> = okHttpUtil.doPostForm(url, formBody, JokerValue.JokerSlotGameResult::class.java).listGames
 
         return data.map {
             val platforms = it.supportedPlatForms.split(",").map { platformName ->
@@ -65,7 +61,7 @@ class JokerApiService(
                 .set("Username", username)
                 .build(token)
 
-        val registerResult = okHttpUtil.doPostForm(url, formBody, JokerRegisterResult:: class.java)
+        val registerResult = okHttpUtil.doPostForm(url, formBody, JokerValue.JokerRegisterResult:: class.java)
 //        check(registerResult.status == "Created") { OnePieceExceptionCode.PLATFORM_MEMBER_REGISTER_FAIL }
 
         // set password

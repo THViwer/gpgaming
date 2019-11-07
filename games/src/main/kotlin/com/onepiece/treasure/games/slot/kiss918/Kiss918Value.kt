@@ -6,6 +6,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 sealed class Kiss918Value {
+
     data class RegisterUsernameResult(
 
             val account: String,
