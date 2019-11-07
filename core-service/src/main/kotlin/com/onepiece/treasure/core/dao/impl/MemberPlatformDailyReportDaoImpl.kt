@@ -24,12 +24,10 @@ class MemberPlatformDailyReportDaoImpl : BasicDaoImpl<MemberPlatformDailyReport>
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
-            val bet = rs.getBigDecimal("bet")
-            val win = rs.getBigDecimal("win")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            MemberPlatformDailyReport(id = id, day = day, clientId = clientId, platform = platform, bet = bet, win = win,
+            MemberPlatformDailyReport(id = id, day = day, clientId = clientId, platform = platform,
                     createdTime = createdTime, memberId = memberId, transferIn = transferIn, transferOut = transferOut)
         }
 
@@ -39,8 +37,6 @@ class MemberPlatformDailyReportDaoImpl : BasicDaoImpl<MemberPlatformDailyReport>
                 .set("client_id", "")
                 .set("member_Id", "")
                 .set("platform", "")
-                .set("bet", "")
-                .set("win", "")
                 .set("transfer_in", "")
                 .set("transfer_out", "")
                 .build()
@@ -52,8 +48,6 @@ class MemberPlatformDailyReportDaoImpl : BasicDaoImpl<MemberPlatformDailyReport>
                 ps.setInt(++x, report.clientId)
                 ps.setInt(++x, report.memberId)
                 ps.setString(++x, report.platform.name)
-                ps.setBigDecimal(++x, report.bet)
-                ps.setBigDecimal(++x, report.win)
                 ps.setBigDecimal(++x, report.transferIn)
                 ps.setBigDecimal(++x, report.transferOut)
             }
@@ -73,18 +67,16 @@ class MemberPlatformDailyReportDaoImpl : BasicDaoImpl<MemberPlatformDailyReport>
     }
 
     override fun report(startDate: LocalDate, endDate: LocalDate): List<MemberPlatformDailyReportVo> {
-        return query("client_id, member_id, sum(bet) as bet, sum(win) as win, sum(transfer_in) as transfer_in, sum(transfer_out) as transfer_out")
+        return query("client_id, member_id, sum(transfer_in) as transfer_in, sum(transfer_out) as transfer_out")
                 .asWhere("day >= ?", startDate)
                 .asWhere("day < ?", endDate)
                 .group("client_id, member_id")
                 .execute { rs ->
                     val clientId = rs.getInt("client_id")
                     val memberId = rs.getInt("member_id")
-                    val bet = rs.getBigDecimal("bet")
-                    val win = rs.getBigDecimal("win")
                     val transferIn = rs.getBigDecimal("transfer_in")
                     val transferOut = rs.getBigDecimal("transfer_out")
-                    MemberPlatformDailyReportVo(clientId = clientId, memberId = memberId, bet = bet, win = win, transferIn = transferIn,
+                    MemberPlatformDailyReportVo(clientId = clientId, memberId = memberId, transferIn = transferIn,
                             transferOut = transferOut)
                 }
     }
@@ -97,11 +89,9 @@ class MemberPlatformDailyReportDaoImpl : BasicDaoImpl<MemberPlatformDailyReport>
                 .execute { rs ->
                     val clientId = rs.getInt("client_id")
                     val platform = rs.getString("platform").let { Platform.valueOf(it) }
-                    val bet = rs.getBigDecimal("bet")
-                    val win = rs.getBigDecimal("win")
                     val transferIn = rs.getBigDecimal("transfer_in")
                     val transferOut = rs.getBigDecimal("transfer_out")
-                    ClientPlatformDailyReportVo(clientId = clientId, platform = platform, bet = bet, win = win, transferIn = transferIn,
+                    ClientPlatformDailyReportVo(clientId = clientId, platform = platform, transferIn = transferIn,
                             transferOut = transferOut)
                 }
     }

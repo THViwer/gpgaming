@@ -20,12 +20,10 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
             val day = rs.getDate("day").toLocalDate()
             val clientId = rs.getInt("client_id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
-            val bet = rs.getBigDecimal("bet")
-            val win = rs.getBigDecimal("win")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            ClientPlatformDailyReport(id = id, day = day, clientId = clientId, platform = platform, bet = bet, win = win,
+            ClientPlatformDailyReport(id = id, day = day, clientId = clientId, platform = platform,
                     transferIn = transferIn, transferOut = transferOut, createdTime = createdTime)
         }
 
@@ -34,8 +32,6 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
                 .set("day")
                 .set("client_id")
                 .set("platform")
-                .set("bet")
-                .set("win")
                 .set("transfer_in")
                 .set("transfer_out")
                 .execute { ps, entity ->
@@ -43,8 +39,6 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
                     ps.setDate(++x, Date.valueOf(entity.day))
                     ps.setInt(++x, entity.clientId)
                     ps.setString(++x, entity.platform.name)
-                    ps.setBigDecimal(++x, entity.bet)
-                    ps.setBigDecimal(++x, entity.win)
                     ps.setBigDecimal(++x, entity.transferIn)
                     ps.setBigDecimal(++x, entity.transferOut)
                 }
@@ -62,18 +56,16 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
 
     override fun report(startDate: LocalDate, endDate: LocalDate): List<ClientReportVo> {
 
-        return query("client_id, sum(bet) as bet, sum(win) as win, sum(transfer_in) as transfer_in, sum(transfer_out) as transfer_out")
+        return query("client_id, sum(transfer_in) as transfer_in, sum(transfer_out) as transfer_out")
                 .asWhere("day >= ?", startDate)
                 .asWhere("day < ?", endDate)
                 .group("client_id")
                 .execute { rs ->
                     val clientId = rs.getInt("client_id")
-                    val bet = rs.getBigDecimal("bet")
-                    val win = rs.getBigDecimal("win")
                     val transferIn = rs.getBigDecimal("transfer_in")
                     val transferOut = rs.getBigDecimal("transfer_out")
 
-                    ClientReportVo(clientId = clientId, bet = bet, win = win, transferIn = transferIn, transferOut = transferOut)
+                    ClientReportVo(clientId = clientId, transferIn = transferIn, transferOut = transferOut)
                 }
     }
 }

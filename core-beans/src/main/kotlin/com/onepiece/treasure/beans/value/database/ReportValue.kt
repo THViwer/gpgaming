@@ -15,24 +15,13 @@ data class MemberPlatformDailyReportVo(
         val transferIn: BigDecimal,
 
         // 转出金额
-        val transferOut: BigDecimal,
-
-        // 下注金额
-        val bet: BigDecimal,
-
-        // 金额  正数: 会员赢钱、厅主输钱 负数：会员输钱、厅主赢钱
-        val win: BigDecimal
-
+        val transferOut: BigDecimal
 )
 
 data class ClientPlatformDailyReportVo(
         val clientId: Int,
 
         val platform: Platform,
-
-        val bet: BigDecimal,
-
-        val win: BigDecimal,
 
         val transferIn: BigDecimal,
 
@@ -44,10 +33,6 @@ data class MemberDailyReportVo(
         val clientId: Int,
 
         val platform: Platform,
-
-        val bet: BigDecimal,
-
-        val win: BigDecimal,
 
         val transferIn: BigDecimal,
 
@@ -70,13 +55,11 @@ data class ClientDepositReportVo(
 
         val clientId: Int,
 
-
         val money: BigDecimal,
 
         val count: Int
 
 )
-
 
 
 data class WithdrawReportVo(
@@ -93,14 +76,11 @@ data class ClientWithdrawReportVo(
 
         val clientId: Int,
 
-
         val money: BigDecimal,
 
         val count: Int
 
 )
-
-
 
 
 data class MemberTransferReportVo(
@@ -131,10 +111,6 @@ data class ClientPlatformTransferReportVo(
 
 data class ClientReportVo(
         val clientId: Int,
-
-        val bet: BigDecimal,
-
-        val win: BigDecimal,
 
         val transferIn: BigDecimal,
 

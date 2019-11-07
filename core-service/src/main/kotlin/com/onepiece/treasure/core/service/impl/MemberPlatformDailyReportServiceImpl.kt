@@ -1,4 +1,4 @@
-package com.onepiece.treasure.core.dao.impl
+package com.onepiece.treasure.core.service.impl
 
 import com.onepiece.treasure.beans.model.MemberPlatformDailyReport
 import com.onepiece.treasure.beans.value.database.MemberReportQuery

@@ -17,11 +17,11 @@ data class MemberDailyReport(
         // 会员Id
         val memberId: Int,
 
-        // 下注金额
-        val bet: BigDecimal,
-
-        // 金额  正数: 会员赢钱、厅主输钱 负数：会员输钱、厅主赢钱
-        val win: BigDecimal,
+//        // 下注金额
+//        val bet: BigDecimal,
+//
+//        // 金额  正数: 会员赢钱、厅主输钱 负数：会员输钱、厅主赢钱
+//        val win: BigDecimal,
 
         // 转入金额
         val transferIn: BigDecimal,

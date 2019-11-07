@@ -19,11 +19,11 @@ data class ClientPlatformDailyReport(
         // 平台
         val platform: Platform,
 
-        // 下注金额
+/*        // 下注金额
         val bet: BigDecimal,
 
         // 盈利金额
-        val win: BigDecimal,
+        val win: BigDecimal,*/
 
         // 转入金额
         val transferIn: BigDecimal,

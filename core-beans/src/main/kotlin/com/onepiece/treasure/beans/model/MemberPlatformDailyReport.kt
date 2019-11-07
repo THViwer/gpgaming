@@ -27,11 +27,11 @@ data class MemberPlatformDailyReport(
         // 转出金额
         val transferOut: BigDecimal,
 
-        // 下注金额
-        val bet: BigDecimal,
-
-        // 金额  正数: 会员赢钱、厅主输钱 负数：会员输钱、厅主赢钱
-        val win: BigDecimal,
+//        // 下注金额
+//        val bet: BigDecimal,
+//
+//        // 金额  正数: 会员赢钱、厅主输钱 负数：会员输钱、厅主赢钱
+//        val win: BigDecimal,
 
         // 创建时间
         val createdTime: LocalDateTime

@@ -1,6 +1,5 @@
 package com.onepiece.treasure.core.dao.impl
 
-import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.ClientDailyReport
 import com.onepiece.treasure.beans.value.database.ClientReportQuery
 import com.onepiece.treasure.core.dao.ClientDailyReportDao
@@ -19,16 +18,15 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
             val clientId = rs.getInt("client_id")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
-            val bet = rs.getBigDecimal("bet")
-            val win = rs.getBigDecimal("win")
             val depositMoney = rs.getBigDecimal("deposit_money")
             val depositCount = rs.getInt("deposit_count")
             val withdrawMoney = rs.getBigDecimal("withdraw_money")
             val withdrawCount = rs.getInt("withdraw_count")
+            val newMemberCount = rs.getInt("new_member_count")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             ClientDailyReport(id = id, day = day, clientId = clientId, transferIn = transferIn, transferOut = transferOut,
-                    bet = bet, win = win, depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
-                    withdrawCount = withdrawCount, createdTime = createdTime)
+                    depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
+                    withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount)
         }
 
     override fun create(reports: List<ClientDailyReport>) {
@@ -37,8 +35,6 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                 .set("client_id")
                 .set("transfer_in")
                 .set("transfer_out")
-                .set("bet")
-                .set("win")
                 .set("deposit_money")
                 .set("deposit_count")
                 .set("withdraw_money")
@@ -49,8 +45,6 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     ps.setInt(++x, entity.clientId)
                     ps.setBigDecimal(++x, entity.transferIn)
                     ps.setBigDecimal(++x, entity.transferOut)
-                    ps.setBigDecimal(++x, entity.bet)
-                    ps.setBigDecimal(++x, entity.win)
                     ps.setBigDecimal(++x, entity.depositMoney)
                     ps.setInt(++x, entity.depositCount)
                     ps.setBigDecimal(++x, entity.withdrawMoney)

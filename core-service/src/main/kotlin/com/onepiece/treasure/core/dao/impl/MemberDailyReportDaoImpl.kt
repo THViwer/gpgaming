@@ -17,14 +17,12 @@ class MemberDailyReportDaoImpl : BasicDaoImpl<MemberDailyReport>("member_daily_r
             val day = rs.getDate("day").toLocalDate()
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
-            val bet = rs.getBigDecimal("bet")
-            val win = rs.getBigDecimal("win")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
             val depositMoney = rs.getBigDecimal("deposit_money")
             val withdrawMoney = rs.getBigDecimal("withdraw_money")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            MemberDailyReport(id = id, day = day, clientId = clientId, memberId = memberId, bet = bet, win = win,
+            MemberDailyReport(id = id, day = day, clientId = clientId, memberId = memberId,
                     transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney,
                     createdTime = createdTime
             )
@@ -36,8 +34,6 @@ class MemberDailyReportDaoImpl : BasicDaoImpl<MemberDailyReport>("member_daily_r
                 .set("day")
                 .set("client_id")
                 .set("member_id")
-                .set("bet")
-                .set("win")
                 .set("transfer_in")
                 .set("transfer_out")
                 .set("deposit_money")
@@ -47,8 +43,6 @@ class MemberDailyReportDaoImpl : BasicDaoImpl<MemberDailyReport>("member_daily_r
                     ps.setDate(++index, Date.valueOf(entity.day))
                     ps.setInt(++index, entity.clientId)
                     ps.setInt(++index, entity.memberId)
-                    ps.setBigDecimal(++index, entity.bet)
-                    ps.setBigDecimal(++index, entity.win)
                     ps.setBigDecimal(++index, entity.transferIn)
                     ps.setBigDecimal(++index, entity.transferOut)
                     ps.setBigDecimal(++index, entity.depositMoney)
