@@ -12,6 +12,7 @@ import com.onepiece.treasure.core.service.WalletService
 import com.onepiece.treasure.games.live.cta666.Cta666Api
 import com.onepiece.treasure.games.slot.joker.JokerApi
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Api
+import com.onepiece.treasure.games.sport.sbo.SboApi
 import com.onepiece.treasure.games.value.SlotGame
 import com.onepiece.treasure.utils.StringUtil
 import org.springframework.stereotype.Component
@@ -24,7 +25,8 @@ class GameApi(
 
         private val jokerApi: JokerApi,
         private val cta666Api: Cta666Api,
-        private val kiss918Api: Kiss918Api
+        private val kiss918Api: Kiss918Api,
+        private val sboApi: SboApi
 
 ) {
 
@@ -35,7 +37,7 @@ class GameApi(
 
         // 生成用户名
         val generatorUsername = when (platform) {
-            Platform.Joker, Platform.Cta666 -> this.generatorUsername(clientId = clientId, memberId = memberId)
+            Platform.Joker, Platform.Cta666, Platform.Sbo -> this.generatorUsername(clientId = clientId, memberId = memberId)
             Platform.Kiss918 -> ""
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -49,6 +51,7 @@ class GameApi(
             Platform.Joker -> jokerApi.register(token = clientToken as DefaultClientToken, username = generatorUsername, password = generatorPassword)
             Platform.Cta666 -> cta666Api.signup(token = clientToken as DefaultClientToken, username = generatorUsername, password = generatorPassword)
             Platform.Kiss918 -> kiss918Api.addUser(token = clientToken as Kiss918ClientToken, password = generatorPassword)
+            Platform.Sbo -> sboApi.registerPlayer(token = clientToken as DefaultClientToken, username = generatorUsername)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
@@ -77,9 +80,8 @@ class GameApi(
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         return when (platform) {
-            Platform.Cta666 -> {
-                cta666Api.login(token = clientToken as DefaultClientToken, startPlatform = startPlatform, username = platformUsername)
-            }
+            Platform.Cta666 -> cta666Api.login(token = clientToken as DefaultClientToken, startPlatform = startPlatform, username = platformUsername)
+            Platform.Sbo -> sboApi.login(token = clientToken as DefaultClientToken, username = platformUsername)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
@@ -108,6 +110,7 @@ class GameApi(
             Platform.Joker -> jokerApi.getCredit(token = clientToken as DefaultClientToken, username = platformUsername)
             Platform.Cta666 -> cta666Api.getBalance(token = clientToken as DefaultClientToken, username = platformUsername)
             Platform.Kiss918 -> kiss918Api.userinfo(token = clientToken as Kiss918ClientToken, username = platformUsername)
+            Platform.Sbo -> sboApi.getPlayerBalance(token = clientToken as DefaultClientToken, username = platformUsername)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
@@ -124,15 +127,18 @@ class GameApi(
             Platform.Joker -> jokerApi.transferCredit(token = clientToken as DefaultClientToken, username = platformUsername, orderId = orderId, amount = amount)
             Platform.Cta666 -> cta666Api.transfer(token = clientToken as DefaultClientToken, username = platformUsername, orderId = orderId, amount = amount)
             Platform.Kiss918 -> kiss918Api.setScore(token = clientToken as Kiss918ClientToken, username = platformUsername, orderId = orderId, amount = amount)
+            Platform.Sbo -> sboApi.depositOrWithdraw(token = clientToken as DefaultClientToken, username = platformUsername, orderId = orderId, amount = amount)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
 
 
+    // 获得代理token
     private fun getClientToken(clientId: Int, platform: Platform): ClientToken {
         return platformBindService.find(clientId = clientId, platform = platform).clientToken
     }
 
+    // 生成用户名
     private fun generatorUsername(clientId: Int, memberId: Int): String {
         return when  {
             clientId < 10 -> "00$clientId"

@@ -26,7 +26,7 @@ sealed class SboValue {
 
             val error: SboError,
 
-            val serviceId: String
+            val serverId: String
     )
 
     data class SboDepositResult(
@@ -41,7 +41,7 @@ sealed class SboValue {
 
             val error: SboError,
 
-            val serviceId: String
+            val serverId: String
     )
 
     data class SboWithdrawResult(
@@ -57,7 +57,7 @@ sealed class SboValue {
 
             val error: SboError,
 
-            val serviceId: String
+            val serverId: String
 
     )
 
@@ -73,13 +73,14 @@ sealed class SboValue {
 
             val error: SboError,
 
-            val serviceId: String
+            val serverId: String
     )
 
     data class SboPlayerBalanceResult(
+
             val username: String,
 
-            val current: String,
+            val current: String = "",
 
             val balance: BigDecimal,
 
@@ -87,7 +88,7 @@ sealed class SboValue {
 
             val error: SboError,
 
-            val serviceId: String
+            val serverId: String
 
     )
 
@@ -96,7 +97,7 @@ sealed class SboValue {
 
             val error: SboError,
 
-            val serviceId: String
+            val serverId: String
     )
 
     data class PlayerRevenue(
@@ -147,7 +148,7 @@ sealed class SboValue {
 
             val error: SboError,
 
-            val serviceId: String
+            val serverId: String
     )
 
     data class PlayerBet(

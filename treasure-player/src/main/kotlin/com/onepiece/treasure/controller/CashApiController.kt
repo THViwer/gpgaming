@@ -199,7 +199,7 @@ open class CashApiController(
                 walletService.update(walletUo)
 
                 // 生成转账订单
-                val transferOrderId = orderIdBuilder.generatorTransferOrderId()
+                val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = cashTransferReq.to)
                 val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = cashTransferReq.money, giftMoney = giftBalance,
                         from = cashTransferReq.from, to = cashTransferReq.to)
                 transferOrderService.create(transferOrderCo)
@@ -240,7 +240,7 @@ open class CashApiController(
 
 
                 // 生成转账订单
-                val transferOrderId = orderIdBuilder.generatorTransferOrderId()
+                val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = cashTransferReq.from)
                 val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = cashTransferReq.money, giftMoney = BigDecimal.ZERO,
                         from = cashTransferReq.from, to = cashTransferReq.to)
                 transferOrderService.create(transferOrderCo)
