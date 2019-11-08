@@ -35,7 +35,14 @@ enum class Platform(
             PlatformCategory.LiveVideo,
             "cta666",
             "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
-            listOf(StartPlatform.Ios, StartPlatform.Android))
+            listOf(StartPlatform.Ios, StartPlatform.Android)),
+
+    // sport
+    Sbo(
+            PlatformCategory.Sport,
+            "sbo",
+            "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
+            listOf(StartPlatform.Pc, StartPlatform.Wap)),
 
     ;
 

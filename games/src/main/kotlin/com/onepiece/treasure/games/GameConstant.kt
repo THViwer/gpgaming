@@ -17,4 +17,10 @@ object GameConstant  {
 //    const val KISS918_API_ORDER_URL = "http://api.918kiss.com:9919"
     const val KISS918_API_ORDER_URL = "http://94.237.64.70:84"
 
+    // sbo
+//    const val SBO_API_URL = "sboapi.gsoft168.com"
+    const val SBO_API_URL = "http://94.237.64.70:85"
+    const val SBO_START_URL = "http://sports-567gaming.568win.com/welcome2.aspx"
+
+
 }
