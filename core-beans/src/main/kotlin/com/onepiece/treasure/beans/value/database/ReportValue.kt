@@ -46,6 +46,8 @@ data class DepositReportVo(
 
         val memberId: Int,
 
+        val count: Int,
+
         val money: BigDecimal
 
 )
@@ -68,7 +70,9 @@ data class WithdrawReportVo(
 
         val memberId: Int,
 
-        val money: BigDecimal
+        val money: BigDecimal,
+
+        val count: Int
 
 )
 
@@ -83,7 +87,7 @@ data class ClientWithdrawReportVo(
 )
 
 
-data class MemberTransferReportVo(
+data class MemberTransferPlatformReportVo(
 
         val clientId: Int,
 
@@ -95,11 +99,23 @@ data class MemberTransferReportVo(
 
         val money: BigDecimal
 
+
 )
 
-data class ClientPlatformTransferReportVo(
+data class MemberTransferReportVo(
 
         val clientId: Int,
+
+        val memberId: Int,
+
+        val money: BigDecimal
+
+)
+
+data class ClientTransferPlatformReportVo(
+
+        val clientId: Int,
+
 
         val from: Platform,
 
@@ -109,7 +125,7 @@ data class ClientPlatformTransferReportVo(
 
 )
 
-data class ClientReportVo(
+data class ClientTransferReportVo(
         val clientId: Int,
 
         val transferIn: BigDecimal,

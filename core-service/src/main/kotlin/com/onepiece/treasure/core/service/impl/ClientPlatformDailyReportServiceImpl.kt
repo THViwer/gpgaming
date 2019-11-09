@@ -1,8 +1,8 @@
 package com.onepiece.treasure.core.service.impl
 
 import com.onepiece.treasure.beans.model.ClientPlatformDailyReport
+import com.onepiece.treasure.beans.value.database.ClientPlatformDailyReportVo
 import com.onepiece.treasure.beans.value.database.ClientReportQuery
-import com.onepiece.treasure.beans.value.database.ClientReportVo
 import com.onepiece.treasure.core.dao.ClientPlatformDailyReportDao
 import com.onepiece.treasure.core.service.ClientPlatformDailyReportService
 import org.springframework.stereotype.Service
@@ -21,7 +21,7 @@ class ClientPlatformDailyReportServiceImpl(
         return clientPlatformDailyReportDao.query(query)
     }
 
-    override fun report(startDate: LocalDate, endDate: LocalDate): List<ClientReportVo> {
+    override fun report(startDate: LocalDate, endDate: LocalDate): List<ClientPlatformDailyReportVo> {
         return clientPlatformDailyReportDao.report(startDate, endDate)
     }
 }

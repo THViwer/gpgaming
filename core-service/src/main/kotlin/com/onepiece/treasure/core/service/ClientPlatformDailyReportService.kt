@@ -1,8 +1,8 @@
 package com.onepiece.treasure.core.service
 
 import com.onepiece.treasure.beans.model.ClientPlatformDailyReport
+import com.onepiece.treasure.beans.value.database.ClientPlatformDailyReportVo
 import com.onepiece.treasure.beans.value.database.ClientReportQuery
-import com.onepiece.treasure.beans.value.database.ClientReportVo
 import java.time.LocalDate
 
 interface ClientPlatformDailyReportService  {
@@ -11,6 +11,6 @@ interface ClientPlatformDailyReportService  {
 
     fun query(query: ClientReportQuery): List<ClientPlatformDailyReport>
 
-    fun report(startDate: LocalDate, endDate: LocalDate): List<ClientReportVo>
+    fun report(startDate: LocalDate, endDate: LocalDate): List<ClientPlatformDailyReportVo>
 
 }

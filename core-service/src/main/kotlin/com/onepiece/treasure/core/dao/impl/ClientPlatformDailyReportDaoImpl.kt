@@ -2,8 +2,8 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.ClientPlatformDailyReport
+import com.onepiece.treasure.beans.value.database.ClientPlatformDailyReportVo
 import com.onepiece.treasure.beans.value.database.ClientReportQuery
-import com.onepiece.treasure.beans.value.database.ClientReportVo
 import com.onepiece.treasure.core.dao.ClientPlatformDailyReportDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
@@ -54,7 +54,7 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
 
     }
 
-    override fun report(startDate: LocalDate, endDate: LocalDate): List<ClientReportVo> {
+    override fun report(startDate: LocalDate, endDate: LocalDate): List<ClientPlatformDailyReportVo> {
 
         return query("client_id, sum(transfer_in) as transfer_in, sum(transfer_out) as transfer_out")
                 .asWhere("day >= ?", startDate)
@@ -64,8 +64,9 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
                     val clientId = rs.getInt("client_id")
                     val transferIn = rs.getBigDecimal("transfer_in")
                     val transferOut = rs.getBigDecimal("transfer_out")
+                    val platform = rs.getString("platform").let { Platform.valueOf(it) }
 
-                    ClientReportVo(clientId = clientId, transferIn = transferIn, transferOut = transferOut)
+                    ClientPlatformDailyReportVo(clientId = clientId, transferIn = transferIn, transferOut = transferOut, platform = platform)
                 }
     }
 }

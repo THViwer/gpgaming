@@ -25,13 +25,8 @@ class MemberPlatformReportWebVo(
         val transferIn: BigDecimal,
 
         // 转出金额
-        val transferOut: BigDecimal,
+        val transferOut: BigDecimal
 
-        // 下注金额
-        val bet: BigDecimal,
-
-        // 金额  正数: 会员赢钱、厅主输钱 负数：会员输钱、厅主赢钱
-        val win: BigDecimal
 )
 
 
@@ -48,12 +43,6 @@ data class MemberReportWebVo(
 
         // 用户名
         val username :String,
-
-        // 下注金额
-        val bet: BigDecimal,
-
-        // 金额  正数: 会员赢钱、厅主输钱 负数：会员输钱、厅主赢钱
-        val win: BigDecimal,
 
         // 转入金额
         val transferIn: BigDecimal,

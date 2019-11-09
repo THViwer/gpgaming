@@ -9,6 +9,7 @@ import com.onepiece.treasure.core.dao.MemberDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
+import java.time.LocalDate
 
 @Repository
 class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
@@ -95,4 +96,15 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .execute(mapper)
     }
 
+    override fun report(clientId: Int?, startDate: LocalDate, endDate: LocalDate): Map<Int, Int> {
+        return query("client_id, sum(id) as count")
+                .where("client_id", clientId)
+                .asWhere("created_time >= ?", startDate)
+                .asWhere("created_time < ?", endDate)
+                .execute { rs ->
+                    val clientId = rs.getInt("clientId")
+                    val count = rs.getInt("count")
+                    clientId to count
+                }.toMap()
+    }
 }

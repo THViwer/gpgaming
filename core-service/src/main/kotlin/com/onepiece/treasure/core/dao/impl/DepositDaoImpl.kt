@@ -117,7 +117,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
     }
 
     override fun report(startDate: LocalDate, endDate: LocalDate): List<DepositReportVo> {
-        return query("client_id, member_id, sum(money) as money")
+        return query("client_id, member_id, sum(money) as money, sum(money) as count")
                 .where("state", DepositState.Successful)
                 .asWhere("end_time >= ?", startDate)
                 .asWhere("end_time < ?", endDate)
@@ -126,7 +126,8 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                     val clientId = rs.getInt("client_id")
                     val memberId = rs.getInt("member_id")
                     val money = rs.getBigDecimal("money")
-                    DepositReportVo(clientId = clientId, memberId = memberId, money = money)
+                    val count = rs.getInt("count")
+                    DepositReportVo(clientId = clientId, memberId = memberId, money = money, count = count)
                 }
     }
 

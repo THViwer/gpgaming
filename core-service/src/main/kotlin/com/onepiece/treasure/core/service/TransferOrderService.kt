@@ -2,9 +2,6 @@ package com.onepiece.treasure.core.service
 
 import com.onepiece.treasure.beans.value.database.TransferOrderCo
 import com.onepiece.treasure.beans.value.database.TransferOrderUo
-import com.onepiece.treasure.beans.value.database.ClientPlatformTransferReportVo
-import com.onepiece.treasure.beans.value.database.MemberTransferReportVo
-import java.time.LocalDate
 
 interface TransferOrderService {
 
@@ -12,9 +9,9 @@ interface TransferOrderService {
 
     fun update(transferOrderUo: TransferOrderUo)
 
-    fun report(startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo>
+//    fun report(member: Int?, startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo>
 
-    fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientPlatformTransferReportVo>
+//    fun reportByClient(clientId: Int, startDate: LocalDate, endDate: LocalDate): List<ClientPlatformTransferReportVo>
 
 
 }

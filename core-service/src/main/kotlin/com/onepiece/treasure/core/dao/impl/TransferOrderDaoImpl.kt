@@ -3,15 +3,14 @@ package com.onepiece.treasure.core.dao.impl
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.TransferState
 import com.onepiece.treasure.beans.model.TransferOrder
-import com.onepiece.treasure.beans.value.database.TransferOrderCo
-import com.onepiece.treasure.beans.value.database.TransferOrderUo
-import com.onepiece.treasure.beans.value.database.ClientPlatformTransferReportVo
-import com.onepiece.treasure.beans.value.database.MemberTransferReportVo
+import com.onepiece.treasure.beans.value.database.*
 import com.onepiece.treasure.core.dao.TransferOrderDao
+import com.onepiece.treasure.core.dao.TransferReportQuery
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
+import reactor.core.publisher.toMono
+import java.math.BigDecimal
 import java.sql.ResultSet
-import java.time.LocalDate
 
 @Repository
 class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), TransferOrderDao {
@@ -53,33 +52,94 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .executeOnlyOne()
     }
 
-    override fun report(startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo> {
-
+    override fun memberPlatformReport(query: TransferReportQuery): List<MemberTransferPlatformReportVo> {
         return query("client_id, member_id, `from`, `to`, sum(money) as money")
-                .asWhere("created_time >= ?", startDate)
-                .asWhere("created_time < ?", endDate)
-                .group("client_id, member_id, `from`, `to` ")
-                .execute { rs ->
+                .asWhere("created >= ?", query.startDate)
+                .asWhere("created < ?", query.endDate)
+                .where("state", TransferState.Successful)
+                .where("member_id", query.memberId)
+                .group("client_id, member_id, `from`, 'to'")
+                .execute {  rs ->
+
                     val clientId = rs.getInt("client_id")
                     val memberId = rs.getInt("member_id")
                     val from = rs.getString("from").let { Platform.valueOf(it) }
-                    val to = rs.getString("to").let { Platform.valueOf(it) }
+                    val to = rs.getString("to").let{ Platform.valueOf(it) }
                     val money = rs.getBigDecimal("money")
-                    MemberTransferReportVo(clientId = clientId, memberId = memberId, from = from, to = to, money = money)
+
+                    MemberTransferPlatformReportVo(clientId = clientId, memberId = memberId, from = from, to = to, money = money)
                 }
     }
 
-    override fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientPlatformTransferReportVo> {
+    override fun memberReport(query: TransferReportQuery): List<MemberTransferReportVo> {
+        return query("client_id, member_id, sum(money) as money")
+                .asWhere("created >= ?", query.startDate)
+                .asWhere("created < ?", query.endDate)
+                .where("state", TransferState.Successful)
+                .where("from", query.from)
+                .where("to", query.to)
+                .where("member_id", query.memberId)
+                .group("client_id, member_id")
+                .execute {  rs ->
+
+                    val clientId = rs.getInt("client_id")
+                    val memberId = rs.getInt("member_id")
+                    val money = rs.getBigDecimal("money")
+
+                    MemberTransferReportVo(clientId = clientId, memberId = memberId, money = money)
+                }
+
+    }
+
+    override fun clientPlatformReport(query: TransferReportQuery): List<ClientTransferPlatformReportVo> {
         return query("client_id, `from`, `to`, sum(money) as money")
-                .asWhere("created_time >= ?", startDate)
-                .asWhere("created_time < ?", endDate)
-                .group("client_id, `from`, `to` ")
-                .execute { rs ->
+                .asWhere("created >= ?", query.startDate)
+                .asWhere("created < ?", query.endDate)
+                .where("state", TransferState.Successful)
+                .where("client_id", query.clientId)
+                .group("client_id, `from`, 'to'")
+                .execute {  rs ->
+
                     val clientId = rs.getInt("client_id")
                     val from = rs.getString("from").let { Platform.valueOf(it) }
-                    val to = rs.getString("to").let { Platform.valueOf(it) }
+                    val to = rs.getString("to").let{ Platform.valueOf(it) }
                     val money = rs.getBigDecimal("money")
-                    ClientPlatformTransferReportVo(clientId = clientId, from = from, to = to, money = money)
+
+                    ClientTransferPlatformReportVo(clientId = clientId, from = from, to = to, money = money)
                 }
+
     }
+
+    override fun clientReport(query: TransferReportQuery): List<ClientTransferReportVo> {
+
+        return query("client_id, member_id, sum(money) as money")
+                .asWhere("created >= ?", query.startDate)
+                .asWhere("created < ?", query.endDate)
+                .where("state", TransferState.Successful)
+                .where("from", query.from)
+                .where("to", query.to)
+                .where("client_id", query.clientId)
+                .group("client_id")
+                .execute {  rs ->
+
+                    val clientId = rs.getInt("client_id")
+                    val money = rs.getBigDecimal("money")
+
+
+                    val transferIn: BigDecimal
+                    val transferOut: BigDecimal
+
+                    if (query.from == Platform.Center) {
+                        transferIn = money
+                        transferOut = BigDecimal.ZERO
+                    } else {
+                        transferIn = BigDecimal.ZERO
+                        transferOut = money
+                    }
+
+                    ClientTransferReportVo(clientId = clientId, transferIn = transferIn, transferOut = transferOut)
+                }
+
+    }
+
 }
