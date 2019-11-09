@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 @Api(tags = ["cash"], description = " ")
 interface CashOrderApi {
 
-    @ApiOperation(tags = ["cash"], value = "deposit -> query")
+    @ApiOperation(tags = ["cash"], value = "充值 -> 列表")
     fun deposit(
             @RequestParam(value = "state", required = false) state: DepositState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
@@ -25,19 +25,19 @@ interface CashOrderApi {
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
     ): List<DepositVo>
 
-    @ApiOperation(tags = ["cash"], value = "deposit -> lock")
+    @ApiOperation(tags = ["cash"], value = "充值 -> 锁定")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun tryLock(@RequestParam("orderId") orderId: String)
 
-    @ApiOperation(tags = ["cash"], value = "deposit -> check")
+    @ApiOperation(tags = ["cash"], value = "充值 -> 审核")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun check(@RequestBody depositUoReq: DepositUoReq)
 
-    @ApiOperation(tags = ["cash"], value = "deposit -> artificial")
+    @ApiOperation(tags = ["cash"], value = "充值 -> 强行添加金额")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun artificial(@RequestBody artificialCoReq: ArtificialCoReq)
 
-    @ApiOperation(tags = ["cash"], value = "withdraw -> query")
+    @ApiOperation(tags = ["cash"], value = "取款 -> 列表")
     fun withdraw(
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
@@ -46,11 +46,11 @@ interface CashOrderApi {
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
     ): List<WithdrawVo>
 
-    @ApiOperation(tags = ["cash"], value = "withdraw -> lock")
+    @ApiOperation(tags = ["cash"], value = "取款 -> 锁定")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun withdrawLock(@RequestParam("orderId") orderId: String)
 
-    @ApiOperation(tags = ["cash"], value = "withdraw -> check")
+    @ApiOperation(tags = ["cash"], value = "取款 -> 审核")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawUoReq)
 
