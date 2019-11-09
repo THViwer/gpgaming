@@ -1,12 +1,13 @@
 package com.onepiece.treasure.games.slot.joker
 
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.order.JokerBetOrder
+import com.onepiece.treasure.core.order.JokerBetOrderDao
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.http.OkHttpUtil
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.games.value.SlotGame
 import com.onepiece.treasure.utils.RedisService
 import org.slf4j.LoggerFactory
@@ -21,7 +22,8 @@ import java.util.*
 @Service
 class JokerApiService(
         private val okHttpUtil: OkHttpUtil,
-        private val redisService: RedisService
+        private val redisService: RedisService,
+        private val jokerBetOrderDao: JokerBetOrderDao
 ) : JokerApi {
 
     private val log = LoggerFactory.getLogger(JokerApiService::class.java)
@@ -139,6 +141,9 @@ class JokerApiService(
         }
 
         if (orders != null && orders.isNotEmpty()) {
+
+            jokerBetOrderDao.create(orders)
+
             // 放到缓存
             val caches = orders.groupBy { it.memberId }.map {
                 val memberId = it.key

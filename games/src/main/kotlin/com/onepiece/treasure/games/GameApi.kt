@@ -8,6 +8,7 @@ import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
 import com.onepiece.treasure.core.order.BetOrderValue
 import com.onepiece.treasure.core.order.Cta666BetOrderDao
+import com.onepiece.treasure.core.order.JokerBetOrderDao
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.core.service.WalletService
@@ -31,7 +32,8 @@ class GameApi(
         private val kiss918Api: Kiss918Api,
         private val sboApi: SboApi,
 
-        private val cta666BetOrderDao: Cta666BetOrderDao
+        private val cta666BetOrderDao: Cta666BetOrderDao,
+        private val jokerBetOrderDao: JokerBetOrderDao
 
 ) {
 
@@ -141,12 +143,11 @@ class GameApi(
      * 查询下注订单
      */
     fun queryBetOrder(clientId: Int, memberId: Int, platform: Platform, startDate: LocalDate, endDate: LocalDate): Any {
+        val query = BetOrderValue.Query(clientId = clientId, memberId = memberId, startTime = startDate.atStartOfDay(), endTime = endDate.atStartOfDay())
 
         return when (platform) {
-            Platform.Cta666 -> {
-                val query = BetOrderValue.Query(clientId = clientId, memberId = memberId, startTime = startDate.atStartOfDay(), endTime = endDate.atStartOfDay())
-                cta666BetOrderDao.query(query)
-            }
+            Platform.Cta666 -> cta666BetOrderDao.query(query)
+            Platform.Joker -> jokerBetOrderDao.query(query)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
