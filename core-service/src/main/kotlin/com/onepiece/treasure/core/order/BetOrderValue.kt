@@ -1,18 +1,19 @@
 package com.onepiece.treasure.core.order
 
 import java.math.BigDecimal
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 sealed class BetOrderValue {
 
     data class Query(
 
+            val clientId: Int,
+
+            val memberId: Int,
+
             val startTime: LocalDateTime,
 
-            val endTime: LocalDateTime,
-
-            val username: String
+            val endTime: LocalDateTime
 
     )
 

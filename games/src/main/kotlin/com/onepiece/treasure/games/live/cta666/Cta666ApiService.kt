@@ -8,6 +8,7 @@ import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.order.Cta666BetOrder
 import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.core.order.Cta666BetOrderDao
 import com.onepiece.treasure.utils.RedisService
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
@@ -18,7 +19,8 @@ import java.util.*
 @Service
 class Cta666ApiService(
         private val okHttpUtil: OkHttpUtil,
-        private val redisService: RedisService
+        private val redisService: RedisService,
+        private val cta666BetOrderDao: Cta666BetOrderDao
 ) : Cta666Api {
 
     // 暂时用马币
@@ -185,6 +187,8 @@ class Cta666ApiService(
                         currencyId = currencyId, deviceType = deviceType, pluginId = pluginId, result = it.result, userName = userName, createdTime = now)
             }
         }
+        // 存储订单
+        cta666BetOrderDao.create(orders)
 
         // 放到缓存
         val caches = orders.groupBy { it.memberId }.map {

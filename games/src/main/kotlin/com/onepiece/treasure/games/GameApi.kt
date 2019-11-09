@@ -6,6 +6,8 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
+import com.onepiece.treasure.core.order.BetOrderValue
+import com.onepiece.treasure.core.order.Cta666BetOrderDao
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.core.service.WalletService
@@ -17,6 +19,7 @@ import com.onepiece.treasure.games.value.SlotGame
 import com.onepiece.treasure.utils.StringUtil
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
+import java.time.LocalDate
 
 @Component
 class GameApi(
@@ -26,7 +29,9 @@ class GameApi(
         private val jokerApi: JokerApi,
         private val cta666Api: Cta666Api,
         private val kiss918Api: Kiss918Api,
-        private val sboApi: SboApi
+        private val sboApi: SboApi,
+
+        private val cta666BetOrderDao: Cta666BetOrderDao
 
 ) {
 
@@ -130,6 +135,21 @@ class GameApi(
             Platform.Sbo -> sboApi.depositOrWithdraw(token = clientToken as DefaultClientToken, username = platformUsername, orderId = orderId, amount = amount)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
+    }
+
+    /**
+     * 查询下注订单
+     */
+    fun queryBetOrder(clientId: Int, memberId: Int, platform: Platform, startDate: LocalDate, endDate: LocalDate): Any {
+
+        return when (platform) {
+            Platform.Cta666 -> {
+                val query = BetOrderValue.Query(clientId = clientId, memberId = memberId, startTime = startDate.atStartOfDay(), endTime = endDate.atStartOfDay())
+                cta666BetOrderDao.query(query)
+            }
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+
     }
 
 

@@ -129,6 +129,8 @@ class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), 
     override fun query(query: BetOrderValue.Query): List<Cta666BetOrder> {
         return query()
                 //TODO 查询条件
+                .where("client_id", query.clientId)
+                .where("member_id", query.memberId)
                 .asWhere("created_time >= ?", query.startTime)
                 .asWhere("created_time < ?", query.endTime)
                 .execute(mapper)
