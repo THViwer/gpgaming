@@ -16,6 +16,8 @@ interface PlatformMemberService {
 
     fun findPlatformMember(memberId: Int): List<PlatformMember>
 
+    fun find(memberId: Int, platform: Platform): PlatformMemberVo?
+
 //    fun bet(platformMemberBetUo: PlatformMemberBetUo)
 
     fun transferIn(platformMemberTransferUo: PlatformMemberTransferUo)

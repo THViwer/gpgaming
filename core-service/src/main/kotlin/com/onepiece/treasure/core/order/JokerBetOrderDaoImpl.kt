@@ -83,7 +83,8 @@ class JokerBetOrderDaoImpl: BasicDaoImpl<JokerBetOrder>("joker_bet_order"), Joke
     override fun query(query: BetOrderValue.Query): List<JokerBetOrder> {
         return query().asWhere("time >= ?", query.startTime)
                 .asWhere("time < ?", query.endTime)
-                .where("username", query.username)
+                .where("client_id", query.clientId)
+                .where("member_id", query.memberId)
                 .limit(0, 500)
                 .execute(mapper)
     }

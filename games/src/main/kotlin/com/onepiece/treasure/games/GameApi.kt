@@ -150,9 +150,20 @@ class GameApi(
             Platform.Joker -> jokerBetOrderDao.query(query)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
-
     }
 
+    /**
+     * 查询下注订单
+     */
+    fun queryBetOrder(clientId: Int, platformUsername: String, platform: Platform, startDate: LocalDate, endDate: LocalDate): Any {
+        val clientToken = getClientToken(clientId = clientId, platform = platform)
+        return when(platform) {
+            Platform.Kiss918 -> kiss918Api.accountReport(token = clientToken as Kiss918ClientToken, username = platformUsername, startDate = startDate, endDate = endDate)
+            Platform.Sbo -> sboApi.getCustomerReport(token = clientToken as DefaultClientToken, username = platformUsername, startDate = startDate, endDate = endDate)
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+
+    }
 
     // 获得代理token
     private fun getClientToken(clientId: Int, platform: Platform): ClientToken {

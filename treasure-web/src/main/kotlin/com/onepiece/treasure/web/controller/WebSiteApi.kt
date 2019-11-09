@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @Api(tags = ["setting"], description = " ")
 interface WebSiteApi {
 
-    @ApiOperation(tags = ["setting"], value = "webSite")
+    @ApiOperation(tags = ["setting"], value = "域名 -> 列表")
     fun all(): List<WebSiteVo>
 
-    @ApiOperation(tags = ["setting"], value = "webSite")
+    @ApiOperation(tags = ["setting"], value = "域名 -> 创建")
     fun create(@RequestBody webSiteCoReq: WebSiteCoReq)
 
-    @ApiOperation(tags = ["setting"], value = "webSite")
+    @ApiOperation(tags = ["setting"], value = "域名 -> 更新")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun update(@RequestBody webSiteUoReq: WebSiteUoReq)
 

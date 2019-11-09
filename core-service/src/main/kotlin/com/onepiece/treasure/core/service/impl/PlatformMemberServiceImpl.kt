@@ -51,6 +51,10 @@ class PlatformMemberServiceImpl(
 
     }
 
+    override fun find(memberId: Int, platform: Platform): PlatformMemberVo? {
+        return this.myPlatforms(memberId = memberId).find { it.platform == platform }
+    }
+
     override fun findPlatformMember(memberId: Int): List<PlatformMember> {
         return platformMemberDao.findPlatformMember(memberId)
     }

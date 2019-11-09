@@ -10,14 +10,13 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @Api(tags = ["index"], description = " ")
 interface PromotionApi  {
 
-    @ApiOperation(tags = ["index"], value = "")
+    @ApiOperation(tags = ["index"], value = "优惠活动 -> 列表")
     fun all(): List<PromotionVo>
 
-    @ApiOperation(tags = ["index"], value = "")
+    @ApiOperation(tags = ["index"], value = "优惠活动 -> 创建")
     fun create(@RequestBody promotionCoReq: PromotionCoReq)
 
-    @ApiOperation(tags = ["index"], value = "")
-
+    @ApiOperation(tags = ["index"], value = "优惠活动 -> 更新")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody promotionUoReq: PromotionUoReq)
 

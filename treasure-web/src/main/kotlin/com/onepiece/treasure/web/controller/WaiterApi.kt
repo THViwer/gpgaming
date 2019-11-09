@@ -15,18 +15,18 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @Api(tags = ["user"], description = " ")
 interface WaiterApi {
 
-    @ApiOperation(tags = ["user"], value = "waiter -> query")
+    @ApiOperation(tags = ["user"], value = "客服 -> 列表")
     fun query(): List<WaiterVo>
 
-    @ApiOperation(tags = ["user"], value = "waiter -> create")
+    @ApiOperation(tags = ["user"], value = "客服 -> 创建")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun create(@RequestBody waiterCoReq: WaiterCoReq)
 
-    @ApiOperation(tags = ["user"], value = "waiter -> update")
+    @ApiOperation(tags = ["user"], value = "客服 -> 更新")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun update(@RequestBody waiterUoReq: WaiterUoReq)
 
-    @ApiOperation(tags = ["user"], value = "waiter -> permissions")
+    @ApiOperation(tags = ["user"], value = "客服 -> 权限")
     fun permission(@PathVariable("waiterId") waiterId: Int): List<PermissionVo>
 
 

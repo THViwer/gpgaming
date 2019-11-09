@@ -18,7 +18,7 @@ import java.time.LocalDateTime
 @Api(tags = ["user"], description = " ")
 interface MemberApi {
 
-    @ApiOperation(tags = ["user"], value = "")
+    @ApiOperation(tags = ["user"], value = "会员 -> 列表")
     fun query(
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime,
@@ -29,17 +29,17 @@ interface MemberApi {
             @RequestParam(defaultValue = "10") size: Int
     ): MemberPage
 
-    @ApiOperation(tags = ["user"], value = "")
+    @ApiOperation(tags = ["user"], value = "会员 -> 更新")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun update(@RequestBody memberUoReq: MemberUoReq)
 
-    @ApiOperation(tags = ["user"], value = "")
+    @ApiOperation(tags = ["user"], value = "会员 -> 创建")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun create(@RequestBody memberCoReq: MemberCoReq)
 
 
 
-    @ApiOperation(tags = ["user"], value = "member -> balance detail")
+    @ApiOperation(tags = ["user"], value = "会员 -> 金额详情")
     fun balance(
             @PathVariable(value = "memberId") memberId: Int
     ): WalletVo
