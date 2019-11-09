@@ -135,7 +135,7 @@ class Query(
     fun where(k: String, v: Any?): Query {
         if (v == null) return this
 
-        columns.add("$k = ?")
+        columns.add("`$k` = ?")
 
         val value = if (v is Enum<*>) v.name else v
         param.add(value)
@@ -145,7 +145,7 @@ class Query(
     fun whereIn(k: String, vs: List<Any>?): Query {
         if (vs == null) return this
 
-        columns.add("$k in (${vs.joinToString(separator = ",")})")
+        columns.add("`$k` in (${vs.joinToString(separator = ",")})")
 
         return this
     }

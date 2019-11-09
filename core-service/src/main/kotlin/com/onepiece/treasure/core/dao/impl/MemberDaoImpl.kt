@@ -101,8 +101,9 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .where("client_id", clientId)
                 .asWhere("created_time >= ?", startDate)
                 .asWhere("created_time < ?", endDate)
+                .group("client_id")
                 .execute { rs ->
-                    val clientId = rs.getInt("clientId")
+                    val clientId = rs.getInt("client_id")
                     val count = rs.getInt("count")
                     clientId to count
                 }.toMap()

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @RestController
 @RequestMapping("/report")
@@ -24,14 +24,15 @@ class ReportApiController(
         private val memberDailyReportService: MemberDailyReportService,
         private val clientPlatformDailyReportService: ClientPlatformDailyReportService,
         private val clientDailyReportService: ClientDailyReportService,
-        private val memberService: MemberService
+        private val memberService: MemberService,
+        private val reportService: ReportService
 ) : BasicController(), ReportApi {
 
-    private fun <T> includeToday(endDate: LocalDate, function: () -> T): T? {
-        val isToday = LocalDate.now() == endDate
+    private fun <T> includeToday(endDate: LocalDate, function: () -> List<T>): List<T> {
+        val isToday = LocalDate.now().until(endDate, ChronoUnit.DAYS) >= 0
         return if (isToday) {
             function()
-        } else null
+        } else emptyList()
     }
 
 
@@ -45,71 +46,90 @@ class ReportApiController(
         val memberId = memberService.findByUsername(username)?.id?: return emptyList()
 
         val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
-        val data = memberPlatformDailyReportService.query(query)
+        val history = memberPlatformDailyReportService.query(query)
 
-        //TODO 查询今天的
-        this.includeToday(endDate) {
-
+        //查询今天的
+        val todayData = this.includeToday(endDate) {
+            reportService.startMemberPlatformDailyReport(memberId = memberId, startDate = LocalDate.now())
         }
 
+        val data = history.plus(todayData)
+        if (data.isEmpty()) return emptyList()
 
         val ids = data.map { it.memberId }.toList()
         val members = memberService.findByIds(ids).map { it.id to it }.toMap()
 
         return data.map {
-            val member = members[it.id] ?: error(OnePieceExceptionCode.DATA_FAIL)
+            val member = members[it.memberId] ?: error(OnePieceExceptionCode.DATA_FAIL)
             with(it) {
                 MemberPlatformReportWebVo(day = day, clientId = clientId, memberId = member.id, username = member.username, platform = platform,
                         transferIn = transferIn, transferOut = transferOut)
             }
-        }
+        }.sortedByDescending { it.day }
     }
 
     @GetMapping("/member")
     override fun memberDaily(
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") endDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "username", required = false) username: String?
     ): List<MemberReportWebVo> {
 
         val memberId = memberService.findByUsername(username)?.id
 
         val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
-        val data = memberDailyReportService.query(query)
-        //TODO 查询今天的
+        val history = memberDailyReportService.query(query)
+
+        //查询今天的
+        val todayData = this.includeToday(endDate) {
+            reportService.startMemberReport(memberId = memberId, startDate = LocalDate.now())
+        }
+
+        val data = history.plus(todayData)
+        if (data.isEmpty()) return emptyList()
 
         val ids = data.map { it.memberId }.toList()
         val members = memberService.findByIds(ids).map { it.id to it }.toMap()
 
         return data.map {
-            val member = members[it.id]!!
+            val member = members[it.memberId] ?: error(OnePieceExceptionCode.DATA_FAIL)
             with(it) {
                 MemberReportWebVo(day = day, clientId = clientId, memberId = member.id, username = member.username,
                         transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney,
                         withdrawMoney = withdrawMoney)
             }
-        }
+        }.sortedByDescending { it.day }
 
     }
 
     @GetMapping("/client/platform")
     override fun clientPlatformDaily(
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") endDate: LocalDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
     ): List<ClientPlatformDailyReport> {
         val query = ClientReportQuery(clientId = clientId, startDate = startDate, endDate = endDate)
-        //TODO 查询今天的
-        return clientPlatformDailyReportService.query(query)
+
+        //查询今天的
+        val todayData = this.includeToday(endDate) {
+            reportService.startClientPlatformReport(clientId = clientId, startDate = LocalDate.now())
+        }
+
+        return clientPlatformDailyReportService.query(query).plus(todayData).sortedByDescending { it.day }
     }
 
     @GetMapping("/client")
     override fun clientDaily(
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") endDate: LocalDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
     ): List<ClientDailyReport> {
         val query = ClientReportQuery(clientId = clientId, startDate = startDate, endDate = endDate)
-        //TODO 查询今天的
-        return clientDailyReportService.query(query)
+
+        //查询今天的
+        val todayData = this.includeToday(endDate) {
+            reportService.startClientReport(clientId = clientId, startDate = LocalDate.now())
+        }
+
+        return clientDailyReportService.query(query).plus(todayData).sortedByDescending { it.day }
     }
 
 }

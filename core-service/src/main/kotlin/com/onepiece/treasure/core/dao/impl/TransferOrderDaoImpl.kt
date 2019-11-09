@@ -54,11 +54,11 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
 
     override fun memberPlatformReport(query: TransferReportQuery): List<MemberTransferPlatformReportVo> {
         return query("client_id, member_id, `from`, `to`, sum(money) as money")
-                .asWhere("created >= ?", query.startDate)
-                .asWhere("created < ?", query.endDate)
+                .asWhere("created_time >= ?", query.startDate)
+                .asWhere("created_time < ?", query.endDate)
                 .where("state", TransferState.Successful)
                 .where("member_id", query.memberId)
-                .group("client_id, member_id, `from`, 'to'")
+                .group("client_id, member_id, `from`, `to`")
                 .execute {  rs ->
 
                     val clientId = rs.getInt("client_id")
@@ -73,8 +73,8 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
 
     override fun memberReport(query: TransferReportQuery): List<MemberTransferReportVo> {
         return query("client_id, member_id, sum(money) as money")
-                .asWhere("created >= ?", query.startDate)
-                .asWhere("created < ?", query.endDate)
+                .asWhere("created_time >= ?", query.startDate)
+                .asWhere("created_time < ?", query.endDate)
                 .where("state", TransferState.Successful)
                 .where("from", query.from)
                 .where("to", query.to)
@@ -93,11 +93,11 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
 
     override fun clientPlatformReport(query: TransferReportQuery): List<ClientTransferPlatformReportVo> {
         return query("client_id, `from`, `to`, sum(money) as money")
-                .asWhere("created >= ?", query.startDate)
-                .asWhere("created < ?", query.endDate)
+                .asWhere("created_time >= ?", query.startDate)
+                .asWhere("created_time < ?", query.endDate)
                 .where("state", TransferState.Successful)
                 .where("client_id", query.clientId)
-                .group("client_id, `from`, 'to'")
+                .group("client_id, `from`, `to`")
                 .execute {  rs ->
 
                     val clientId = rs.getInt("client_id")
@@ -113,8 +113,8 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
     override fun clientReport(query: TransferReportQuery): List<ClientTransferReportVo> {
 
         return query("client_id, member_id, sum(money) as money")
-                .asWhere("created >= ?", query.startDate)
-                .asWhere("created < ?", query.endDate)
+                .asWhere("created_time >= ?", query.startDate)
+                .asWhere("created_time < ?", query.endDate)
                 .where("state", TransferState.Successful)
                 .where("from", query.from)
                 .where("to", query.to)
