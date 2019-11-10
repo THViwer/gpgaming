@@ -90,9 +90,14 @@ class OkHttpUtil(
         }
     }
 
-    fun <T> doPostJson(url: String, json: String, clz: Class<T>): T {
+    fun <T> doPostJson(url: String, data: Any, clz: Class<T>): T {
 
-//        val jsonData = objectMapper.writeValueAsString(data)
+        val json = if (data is String) {
+            data
+        } else {
+            objectMapper.writeValueAsString(data)
+        }
+
         val body = json.toRequestBody(JSON)
 
         val request = Request.Builder()

@@ -13,6 +13,7 @@ import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.core.service.WalletService
 import com.onepiece.treasure.games.live.cta666.Cta666Api
+import com.onepiece.treasure.games.live.golddeluxe.GoldDeluxeApi
 import com.onepiece.treasure.games.slot.joker.JokerApi
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Api
 import com.onepiece.treasure.games.sport.sbo.SboApi
@@ -31,6 +32,7 @@ class GameApi(
         private val cta666Api: Cta666Api,
         private val kiss918Api: Kiss918Api,
         private val sboApi: SboApi,
+        private val goldDeluxeApi: GoldDeluxeApi,
 
         private val cta666BetOrderDao: Cta666BetOrderDao,
         private val jokerBetOrderDao: JokerBetOrderDao
@@ -44,9 +46,8 @@ class GameApi(
 
         // 生成用户名
         val generatorUsername = when (platform) {
-            Platform.Joker, Platform.Cta666, Platform.Sbo -> this.generatorUsername(clientId = clientId, memberId = memberId)
             Platform.Kiss918 -> ""
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
+            else -> this.generatorUsername(clientId = clientId, memberId = memberId)
         }
         val generatorPassword = StringUtil.generatePassword()
 
@@ -59,6 +60,7 @@ class GameApi(
             Platform.Cta666 -> cta666Api.signup(token = clientToken as DefaultClientToken, username = generatorUsername, password = generatorPassword)
             Platform.Kiss918 -> kiss918Api.addUser(token = clientToken as Kiss918ClientToken, password = generatorPassword)
             Platform.Sbo -> sboApi.registerPlayer(token = clientToken as DefaultClientToken, username = generatorUsername)
+            Platform.GoldDeluxe -> goldDeluxeApi.createMember(token = clientToken as DefaultClientToken, username = generatorUsername)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 

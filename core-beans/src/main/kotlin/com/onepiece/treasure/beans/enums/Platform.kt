@@ -37,12 +37,26 @@ enum class Platform(
             "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
             listOf(StartPlatform.Ios, StartPlatform.Android)),
 
+    Evolution(
+            PlatformCategory.LiveVideo,
+            "evolution",
+            "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
+            listOf(StartPlatform.Pc, StartPlatform.Wap)
+    ),
+
+    GoldDeluxe(
+            PlatformCategory.LiveVideo,
+            "golddeluxe",
+            "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
+            listOf(StartPlatform.Pc, StartPlatform.Wap)
+    ),
+
     // sport
     Sbo(
             PlatformCategory.Sport,
             "sbo",
             "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
-            listOf(StartPlatform.Pc, StartPlatform.Wap)),
+            listOf(StartPlatform.Pc, StartPlatform.Wap))
 
     ;
 
