@@ -31,9 +31,15 @@ enum class Platform(
             listOf(StartPlatform.Pc, StartPlatform.Wap, StartPlatform.Android)),
 
     // live video
-    Cta666(
+    CT(
             PlatformCategory.LiveVideo,
-            "cta666",
+            "ct",
+            "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
+            listOf(StartPlatform.Ios, StartPlatform.Android)),
+
+    DG(
+            PlatformCategory.LiveVideo,
+            "dg",
             "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
             listOf(StartPlatform.Ios, StartPlatform.Android)),
 

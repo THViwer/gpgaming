@@ -11,8 +11,7 @@ import com.onepiece.treasure.core.order.Cta666BetOrderDao
 import com.onepiece.treasure.core.order.JokerBetOrderDao
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
-import com.onepiece.treasure.core.service.WalletService
-import com.onepiece.treasure.games.live.cta666.Cta666Api
+import com.onepiece.treasure.games.live.ct.CTApi
 import com.onepiece.treasure.games.live.golddeluxe.GoldDeluxeApi
 import com.onepiece.treasure.games.slot.joker.JokerApi
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Api
@@ -29,7 +28,7 @@ class GameApi(
         private val platformMemberService: PlatformMemberService,
 
         private val jokerApi: JokerApi,
-        private val cta666Api: Cta666Api,
+        private val cta666Api: CTApi,
         private val kiss918Api: Kiss918Api,
         private val sboApi: SboApi,
         private val goldDeluxeApi: GoldDeluxeApi,

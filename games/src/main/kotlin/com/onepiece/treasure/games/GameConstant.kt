@@ -7,7 +7,7 @@ object GameConstant  {
     const val JOKER_URL = "http://94.237.64.70:81"
     const val JOKER_GAME_URL = "http://94.237.64.70/iframe.html"
 
-    // cta666
+    // ct
 //    const val CTA666_URL = "http://api.ctapi888.com"
     const val CTA666_URL = "http://94.237.64.70:82"
 

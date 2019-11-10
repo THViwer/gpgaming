@@ -1,10 +1,10 @@
-package com.onepiece.treasure.games.live.cta666
+package com.onepiece.treasure.games.live.ct
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-sealed class Cta666Value  {
+sealed class CTValue  {
 
 
     data class SignupResult(

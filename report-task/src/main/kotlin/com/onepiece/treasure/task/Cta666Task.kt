@@ -3,7 +3,7 @@ package com.onepiece.treasure.task
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.core.service.PlatformBindService
-import com.onepiece.treasure.games.live.cta666.Cta666Api
+import com.onepiece.treasure.games.live.ct.CTApi
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 @Component
 class Cta666Task(
         private val platformBindService: PlatformBindService,
-        private val cta666Api: Cta666Api,
+        private val cta666Api: CTApi,
         private val betCacheUtil: BetCacheUtil
 ) {
     private val log = LoggerFactory.getLogger(Cta666Task::class.java)

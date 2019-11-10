@@ -1,10 +1,10 @@
-package com.onepiece.treasure.games.live.cta666
+package com.onepiece.treasure.games.live.ct
 
 import com.onepiece.treasure.beans.enums.StartPlatform
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import java.math.BigDecimal
 
-interface Cta666Api {
+interface CTApi {
 
     /**
      * 注册用户

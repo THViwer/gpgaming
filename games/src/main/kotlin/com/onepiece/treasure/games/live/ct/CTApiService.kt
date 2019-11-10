@@ -1,4 +1,4 @@
-package com.onepiece.treasure.games.live.cta666
+package com.onepiece.treasure.games.live.ct
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.StartPlatform
@@ -17,11 +17,11 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class Cta666ApiService(
+class CTApiService(
         private val okHttpUtil: OkHttpUtil,
         private val redisService: RedisService,
         private val cta666BetOrderDao: Cta666BetOrderDao
-) : Cta666Api {
+) : CTApi {
 
     // 暂时用马币
     val currency = "MYR"
@@ -38,7 +38,7 @@ class Cta666ApiService(
 
     override fun signup(token: DefaultClientToken, username: String, password: String): String {
 
-        val param = Cta666Build.instance(token, "signup")
+        val param = CTBuild.instance(token, "signup")
 
         val md5Password = DigestUtils.md5Hex(password)
         val data = """
@@ -55,7 +55,7 @@ class Cta666ApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, Cta666Value.SignupResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.SignupResult::class.java)
         checkCode(result.codeId)
 
         return username
@@ -63,7 +63,7 @@ class Cta666ApiService(
 
     override fun login(token: DefaultClientToken, username: String, startPlatform: StartPlatform): String {
 
-        val param = Cta666Build.instance(token, "login")
+        val param = CTBuild.instance(token, "login")
         val data = """
             {
                 "token":"${param.token}",
@@ -75,7 +75,7 @@ class Cta666ApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, Cta666Value.LoginResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.LoginResult::class.java)
         checkCode(result.codeId)
 
         return when (startPlatform) {
@@ -87,7 +87,7 @@ class Cta666ApiService(
     }
 
     override fun loginFree(token: DefaultClientToken, startPlatform: StartPlatform): String {
-        val param = Cta666Build.instance(token, "login")
+        val param = CTBuild.instance(token, "login")
         val data = """
             {
                 "token":"${param.token}",
@@ -97,7 +97,7 @@ class Cta666ApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, Cta666Value.LoginResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.LoginResult::class.java)
         checkCode(result.codeId)
 
         return when (startPlatform) {
@@ -109,7 +109,7 @@ class Cta666ApiService(
 
     override fun getBalance(token: DefaultClientToken, username: String): BigDecimal {
 
-        val param = Cta666Build.instance(token,"getBalance")
+        val param = CTBuild.instance(token,"getBalance")
         val data = """
             {
                 "token":"${param.token}",
@@ -117,12 +117,12 @@ class Cta666ApiService(
                 "member":{"username":"$username"}
             } 
         """.trimIndent()
-        val result = okHttpUtil.doPostJson(param.url, data, Cta666Value.BalanceResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.BalanceResult::class.java)
         return result.member.balance
     }
 
     override fun transfer(token: DefaultClientToken, username: String, orderId: String, amount: BigDecimal): String {
-        val param = Cta666Build.instance(token, "transfer")
+        val param = CTBuild.instance(token, "transfer")
 
         val data = """
             {
@@ -136,13 +136,13 @@ class Cta666ApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, Cta666Value.Transfer::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.Transfer::class.java)
         return result.data
     }
 
     override fun checkTransfer(token: DefaultClientToken, orderId: String): Boolean {
 
-        val param = Cta666Build.instance(token, "transfer")
+        val param = CTBuild.instance(token, "transfer")
 
         val data = """
             {
@@ -152,14 +152,14 @@ class Cta666ApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, Cta666Value.CheckTransferResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.CheckTransferResult::class.java)
         return result.codeId == 0
     }
 
     override fun getReport(token: DefaultClientToken): String {
         val processId = UUID.randomUUID().toString().replace("-", "")
 
-        val param = Cta666Build.instance(token = token, method = "getReport")
+        val param = CTBuild.instance(token = token, method = "getReport")
         val data = """
             {
                 "token":"${param.token}",
@@ -167,7 +167,7 @@ class Cta666ApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, Cta666Value.Report::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.Report::class.java)
         checkCode(result.codeId)
 
         if (result.list == null) return processId
@@ -210,7 +210,7 @@ class Cta666ApiService(
     private fun mark(token: DefaultClientToken, ids: List<Long>) {
 
         val list = ids.joinToString(separator = ",")
-        val param = Cta666Build.instance(token = token, method = "mark")
+        val param = CTBuild.instance(token = token, method = "mark")
         val data = """
             {
                 "token":"${param.token}",
@@ -219,7 +219,7 @@ class Cta666ApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, Cta666Value.Mark::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.Mark::class.java)
         checkCode(result.codeId)
 
     }

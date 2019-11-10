@@ -1,11 +1,11 @@
-package com.onepiece.treasure.games.live.cta666
+package com.onepiece.treasure.games.live.ct
 
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.*
 
-class Cta666Build private constructor(
+class CTBuild private constructor(
         val url: String,
         val random: String,
         val token: String
@@ -26,12 +26,12 @@ class Cta666Build private constructor(
 
         }
 
-        fun instance(token: DefaultClientToken, method: String): Cta666Build {
+        fun instance(token: DefaultClientToken, method: String): CTBuild {
             val random = getRandom()
             val url = getRequestUrl(method, token.appId)
             val requestToken = getToken(random, token.appId, token.key)
 
-            return Cta666Build(url = url, random = random, token = requestToken)
+            return CTBuild(url = url, random = random, token = requestToken)
         }
     }
 
