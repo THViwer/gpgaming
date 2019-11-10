@@ -3,7 +3,7 @@ package com.onepiece.treasure.core.order
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-data class Cta666BetOrder(
+data class CTBetOrder(
 
         // 注单唯一Id
         val id: Long,

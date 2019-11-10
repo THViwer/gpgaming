@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @Component
-class Cta666Task(
+class CTTask(
         private val platformBindService: PlatformBindService,
         private val cta666Api: CTApi,
         private val betCacheUtil: BetCacheUtil
 ) {
-    private val log = LoggerFactory.getLogger(Cta666Task::class.java)
+    private val log = LoggerFactory.getLogger(CTTask::class.java)
 
     var running = false
 
@@ -31,7 +31,7 @@ class Cta666Task(
         log.info("startTime = $startTime, endTime = $endTime")
 
         try {
-            val binds = platformBindService.find(platform = Platform.Cta666)
+            val binds = platformBindService.find(platform = Platform.CT)
             binds.forEach {
                 val cacheId = cta666Api.getReport(it.clientToken as DefaultClientToken)
                 betCacheUtil.handler(cacheId)

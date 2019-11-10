@@ -88,13 +88,13 @@ class ApiController(
         return when (mobilePlatform) {
             "ios" -> {
                 val joker = DownloadAppVo(Platform.Joker, Platform.Joker.icon, "http//:www.baidu.com")
-                val cta666 = DownloadAppVo(Platform.Cta666, Platform.Cta666.icon, "http//:www.baidu.com")
-                listOf(joker, cta666)
+                val ct = DownloadAppVo(Platform.CT, Platform.CT.icon, "http//:www.baidu.com")
+                listOf(joker, ct)
             }
             else -> {
                 val joker = DownloadAppVo(Platform.Joker, Platform.Joker.icon, "http//:www.baidu.com")
-                val cta666 = DownloadAppVo(Platform.Cta666, Platform.Cta666.icon, "http//:www.baidu.com")
-                listOf(joker, cta666)
+                val ct = DownloadAppVo(Platform.CT, Platform.CT.icon, "http//:www.baidu.com")
+                listOf(joker, ct)
             }
         }
     }

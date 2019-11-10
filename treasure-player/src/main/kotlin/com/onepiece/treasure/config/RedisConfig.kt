@@ -36,6 +36,7 @@ open class RedisConfig {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
         return objectMapper
 

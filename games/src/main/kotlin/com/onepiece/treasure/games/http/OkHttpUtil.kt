@@ -98,6 +98,9 @@ class OkHttpUtil(
             objectMapper.writeValueAsString(data)
         }
 
+        log.info("request url : $url")
+        log.info("request param: $json")
+
         val body = json.toRequestBody(JSON)
 
         val request = Request.Builder()

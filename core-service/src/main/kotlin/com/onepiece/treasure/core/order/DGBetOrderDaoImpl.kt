@@ -8,9 +8,9 @@ import java.sql.ResultSet
 import java.time.LocalDate
 
 @Repository
-class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), Cta666BetOrderDao {
+class DGBetOrderDaoImpl : BasicDaoImpl<CTBetOrder>("dg_bet_order"), DGBetOrderDao {
 
-    override val mapper: (rs: ResultSet) -> Cta666BetOrder
+    override val mapper: (rs: ResultSet) -> CTBetOrder
         get() = { rs ->
             val id = rs.getLong("id")
             val clientId = rs.getInt("client_id")
@@ -43,7 +43,7 @@ class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), 
             val pluginId = rs.getInt("plugin_id")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
-            Cta666BetOrder(id = id, clientId = clientId, memberId = memberId, lobbyId = lobbyId, tableId = tableId, shoeId = shoeId,
+            CTBetOrder(id = id, clientId = clientId, memberId = memberId, lobbyId = lobbyId, tableId = tableId, shoeId = shoeId,
                     playId = playId, gameType = gameType, gameId = gameId, platformMemberId = platformMemberId, betTime = betTime,
                     calTime = calTime, winOrLoss = winOrLoss, winOrLossz = winOrLossz, betPoints = betPoints, betPointsz = betPointsz,
                     ip = ip, ext = ext, isRevocation = isRevocation, balanceBefore = balanceBefore, parentBetId = parentBetId,
@@ -51,7 +51,7 @@ class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), 
                     userName = username, result = result, betDetail = betDetail, betDetailz = betDetailz)
         }
 
-    override fun create(orders: List<Cta666BetOrder>) {
+    override fun create(orders: List<CTBetOrder>) {
         val sql = insert()
                 .set("id", "")
                 .set("client_id", "")
@@ -126,7 +126,7 @@ class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), 
 
     }
 
-    override fun query(query: BetOrderValue.Query): List<Cta666BetOrder> {
+    override fun query(query: BetOrderValue.Query): List<CTBetOrder> {
         return query()
                 //TODO 查询条件
                 .where("client_id", query.clientId)
@@ -140,7 +140,7 @@ class Cta666BetOrderDaoImpl : BasicDaoImpl<Cta666BetOrder>("cta666_bet_order"), 
     override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderValue.Report> {
         val sql = """
             select 
-                client_id, member_id, sum(bet_points) as bet, sum(win_or_loss) as win from cta666_bet_order 
+                client_id, member_id, sum(bet_points) as bet, sum(win_or_loss) as win from dg_bet_order 
             where 
                 cal_time >= ? and cal_time < ? 
             group by client_id, member_id

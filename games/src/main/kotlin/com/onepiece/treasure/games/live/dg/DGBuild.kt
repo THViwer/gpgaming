@@ -1,11 +1,12 @@
-package com.onepiece.treasure.games.live.ct
+package com.onepiece.treasure.games.live.dg
 
+import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.*
 
-class CTBuild private constructor(
+class DGBuild private constructor(
         val url: String,
         val random: String,
         val token: String
@@ -14,7 +15,7 @@ class CTBuild private constructor(
     companion object {
 
         private fun getRequestUrl(method: String, agentName: String): String {
-            return "${GameConstant.CT_API_URL}/api/${method}/$agentName/"
+            return "${GameConstant.DG_API_URL}${method}/$agentName/"
         }
 
         private fun getRandom(): String {
@@ -26,12 +27,12 @@ class CTBuild private constructor(
 
         }
 
-        fun instance(token: DefaultClientToken, method: String): CTBuild {
+        fun instance(token: ClientToken, method: String): DGBuild {
             val random = getRandom()
-            val url = getRequestUrl(method, token.appId)
+            val url = getRequestUrl(method, (token as DefaultClientToken).appId)
             val requestToken = getToken(random, token.appId, token.key)
 
-            return CTBuild(url = url, random = random, token = requestToken)
+            return DGBuild(url = url, random = random, token = requestToken)
         }
     }
 

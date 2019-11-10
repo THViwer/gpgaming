@@ -27,7 +27,7 @@ class OrderIdBuilder(
                 "${clientToken.appId}-${UUID.randomUUID().toString().replace("-", "").substring(0, 6)}"
 
             }
-            else -> UUID.randomUUID().toString()
+            else -> UUID.randomUUID().toString().replace("-", "")
         }
 
     }
