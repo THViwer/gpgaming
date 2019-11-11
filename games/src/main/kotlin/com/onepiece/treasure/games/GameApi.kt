@@ -13,14 +13,14 @@ import com.onepiece.treasure.core.order.JokerBetOrderDao
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.live.ct.CTApi
-import com.onepiece.treasure.games.live.dg.DGApi
+import com.onepiece.treasure.games.live.dg.DGApiService
 import com.onepiece.treasure.games.live.golddeluxe.GoldDeluxeApi
 import com.onepiece.treasure.games.slot.joker.JokerApi
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Api
+import com.onepiece.treasure.games.slot.mega.MegaService
 import com.onepiece.treasure.games.sport.sbo.SboApi
 import com.onepiece.treasure.games.value.SlotGame
 import com.onepiece.treasure.utils.StringUtil
-import okhttp3.internal.userAgent
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -32,7 +32,9 @@ class GameApi(
 
         private val jokerApi: JokerApi,
         private val ctApi: CTApi,
-        private val dgPlatformApi: PlatformApi,
+        private val dgPlatformApi: DGApiService,
+        private val megaService: MegaService,
+
         private val kiss918Api: Kiss918Api,
         private val sboApi: SboApi,
         private val goldDeluxeApi: GoldDeluxeApi,
@@ -46,6 +48,7 @@ class GameApi(
     private fun getPlatformApi(platform: Platform): PlatformApi {
         return when (platform) {
             Platform.DG -> dgPlatformApi
+            Platform.Mega -> megaService
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
@@ -74,7 +77,7 @@ class GameApi(
             Platform.Sbo -> sboApi.registerPlayer(token = clientToken as DefaultClientToken, username = generatorUsername)
             Platform.GoldDeluxe -> goldDeluxeApi.createMember(token = clientToken as DefaultClientToken, username = generatorUsername)
             else -> {
-                val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword)
+                val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = generatorUsername)
                 getPlatformApi(platform).register(registerReq)
             }
         }

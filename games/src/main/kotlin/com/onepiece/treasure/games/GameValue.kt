@@ -11,6 +11,8 @@ sealed class GameValue {
     data class RegisterReq(
             val token: ClientToken,
 
+            val name: String,
+
             val username: String,
 
             val password: String

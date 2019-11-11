@@ -7,6 +7,7 @@ import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
+import com.onepiece.treasure.beans.model.token.MegaClientToken
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -52,6 +53,7 @@ data class PlatformBind(
         get() {
             return when (platform) {
                 Platform.Kiss918 -> jacksonObjectMapper().readValue<Kiss918ClientToken>(tokenJson)
+                Platform.Mega -> jacksonObjectMapper().readValue<MegaClientToken>(tokenJson)
                 else -> jacksonObjectMapper().readValue<DefaultClientToken>(tokenJson)
             }
         }

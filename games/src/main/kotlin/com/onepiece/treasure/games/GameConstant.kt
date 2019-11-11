@@ -35,5 +35,9 @@ object GameConstant  {
 //    const val GOLDDELUXE_API_URL = "http://api.coldsstaging.stack4kids.com/release/www/merchantapi.php"
     const val GOLDDELUXE_API_URL = "${demoPath}:87"
 
+    // meaga
+//    const val MEGA_API_URL = "http://mgt3.36ozhushou.com/mega-cloud/api/"
+    const val MEGA_API_URL = "$demoPath:90/mega"
+
 
 }
