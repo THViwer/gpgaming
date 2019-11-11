@@ -78,8 +78,8 @@ class MegaService(
 
         val (url, param) = MegaBuild.instance()
                 .set("loginId", betOrderReq.username)
-                .set("startTime", betOrderReq.startDate.atStartOfDay().format(dateTimeFormat))
-                .set("endTime", betOrderReq.endDate.atStartOfDay().format(dateTimeFormat))
+                .set("startTime", betOrderReq.startTime.format(dateTimeFormat))
+                .set("endTime", betOrderReq.startTime.format(dateTimeFormat))
                 .build(token = betOrderReq.token as MegaClientToken, method = "open.mega.player.game.log.url.get")
 
         val result = okHttpUtil.doPostJson(url = url, data = param, clz = MegaValue.BetQueryResult::class.java)

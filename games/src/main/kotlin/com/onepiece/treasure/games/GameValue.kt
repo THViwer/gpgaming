@@ -3,7 +3,6 @@ package com.onepiece.treasure.games
 import com.onepiece.treasure.beans.enums.StartPlatform
 import com.onepiece.treasure.beans.model.token.ClientToken
 import java.math.BigDecimal
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 sealed class GameValue {
@@ -66,9 +65,9 @@ sealed class GameValue {
 
             val username: String,
 
-            val startDate: LocalDate,
+            val startTime: LocalDateTime,
 
-            val endDate: LocalDate
+            val endTIme: LocalDateTime
     )
 
     data class SyncBetOrderReq(

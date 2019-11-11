@@ -13,14 +13,14 @@ object GameConstant  {
 //    const val CT_API_URL = "http://api.ctapi888.com"
     const val CT_API_URL = "${demoPath}:82"
 
-//    const val DG_API_URL = "http://api.dg99web.com"
+    //    const val DG_API_URL = "http://api.dg99web.com"
     const val DG_API_URL = "${demoPath}:89"
 //    const val DG_API_URL = "${demoPath}:90/dg"
 
     // 918kiss
 //    const val KISS918_API_URL = "http://api.918kiss.com:9991"
     const val KISS918_API_URL = "${demoPath}:83"
-//    const val KISS918_API_ORDER_URL = "http://api.918kiss.com:9919"
+    //    const val KISS918_API_ORDER_URL = "http://api.918kiss.com:9919"
     const val KISS918_API_ORDER_URL = "${demoPath}:84"
 
     // sbo
@@ -38,6 +38,13 @@ object GameConstant  {
     // meaga
 //    const val MEGA_API_URL = "http://mgt3.36ozhushou.com/mega-cloud/api/"
     const val MEGA_API_URL = "$demoPath:90/mega"
+
+    // pussy888
+    //    const val PUSSY888_API_URL = "http://api.pussy888.com"
+    const val PUSSY_API_URL = "${demoPath}:92"
+    //    const val PUSSY888_API_ORDER_URL = "http://api2.pussy888.com"
+    const val PUSSY_API_ORDER_URL = "${demoPath}:93"
+
 
 
 }

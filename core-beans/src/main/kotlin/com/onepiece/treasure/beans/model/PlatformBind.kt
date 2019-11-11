@@ -4,10 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
-import com.onepiece.treasure.beans.model.token.ClientToken
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
-import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
-import com.onepiece.treasure.beans.model.token.MegaClientToken
+import com.onepiece.treasure.beans.model.token.*
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -54,6 +51,7 @@ data class PlatformBind(
             return when (platform) {
                 Platform.Kiss918 -> jacksonObjectMapper().readValue<Kiss918ClientToken>(tokenJson)
                 Platform.Mega -> jacksonObjectMapper().readValue<MegaClientToken>(tokenJson)
+                Platform.Pussy888 -> jacksonObjectMapper().readValue<Pussy888ClientToken>(tokenJson)
                 else -> jacksonObjectMapper().readValue<DefaultClientToken>(tokenJson)
             }
         }

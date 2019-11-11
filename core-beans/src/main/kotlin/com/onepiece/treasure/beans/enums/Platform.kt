@@ -30,6 +30,12 @@ enum class Platform(
             "https://ali88win.com/img/product-logo/joker.png",
             listOf(StartPlatform.Pc, StartPlatform.Wap, StartPlatform.Android)),
 
+    Pussy888(
+            PlatformCategory.Slot,
+            "pussy888",
+            "https://ali88win.com/img/product-logo/joker.png",
+            listOf(StartPlatform.Pc, StartPlatform.Wap, StartPlatform.Android)),
+
     Mega(
             PlatformCategory.Slot,
             "mega",
