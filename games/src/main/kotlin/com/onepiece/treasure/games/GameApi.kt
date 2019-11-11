@@ -6,6 +6,7 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
+import com.onepiece.treasure.beans.model.token.MegaClientToken
 import com.onepiece.treasure.core.order.BetOrderValue
 import com.onepiece.treasure.core.order.CTBetOrderDao
 import com.onepiece.treasure.core.order.DGBetOrderDao
@@ -21,6 +22,7 @@ import com.onepiece.treasure.games.slot.mega.MegaService
 import com.onepiece.treasure.games.sport.sbo.SboApi
 import com.onepiece.treasure.games.value.SlotGame
 import com.onepiece.treasure.utils.StringUtil
+import okhttp3.internal.userAgent
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -191,10 +193,27 @@ class GameApi(
         return when(platform) {
             Platform.Kiss918 -> kiss918Api.accountReport(token = clientToken as Kiss918ClientToken, username = platformUsername, startDate = startDate, endDate = endDate)
             Platform.Sbo -> sboApi.getCustomerReport(token = clientToken as DefaultClientToken, username = platformUsername, startDate = startDate, endDate = endDate)
+
+            Platform.Mega -> {
+                val betOrderReq = GameValue.BetOrderReq(token = clientToken, startDate = startDate, endDate = endDate, username = platformUsername)
+                megaService.queryBetOrder(betOrderReq)
+            }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
-
     }
+
+    /**
+     * 查询下载地址
+     */
+    fun getAppDownload(clientId: Int, platform: Platform): String {
+        val clientToken = getClientToken(clientId = clientId, platform = platform)
+
+        return when(platform) {
+            Platform.Mega -> megaService.downApp(token = clientToken as MegaClientToken)
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+    }
+
 
     // 获得代理token
     private fun getClientToken(clientId: Int, platform: Platform): ClientToken {
