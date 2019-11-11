@@ -29,7 +29,8 @@ object GameConstant  {
     const val SBO_START_URL = "http://sports-567gaming.568win.com/welcome2.aspx"
 
     // evolution
-    const val EVOLUTION_API_URL = "http://staging.evolution.asia-live.com"
+//    const val EVOLUTION_API_URL = "http://staging.evolution.asia-live.com"
+    const val EVOLUTION_API_URL = "${demoPath}:94"
 
     //GoldDeluxe
 //    const val GOLDDELUXE_API_URL = "http://api.coldsstaging.stack4kids.com/release/www/merchantapi.php"

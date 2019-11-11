@@ -19,7 +19,7 @@ class EvolutionBuild private constructor() {
     }
 
     fun set(k: String, v: Any): EvolutionBuild {
-        this.param.put(k, v)
+        this.param[k] = v
         return this
     }
 

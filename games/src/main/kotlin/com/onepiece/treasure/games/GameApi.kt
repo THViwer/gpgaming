@@ -15,6 +15,7 @@ import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.live.ct.CTApi
 import com.onepiece.treasure.games.live.dg.DGApiService
+import com.onepiece.treasure.games.live.evolution.EvolutionService
 import com.onepiece.treasure.games.live.golddeluxe.GoldDeluxeApi
 import com.onepiece.treasure.games.slot.joker.JokerApi
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Api
@@ -23,7 +24,6 @@ import com.onepiece.treasure.games.slot.pussy888.Pussy888Service
 import com.onepiece.treasure.games.sport.sbo.SboApi
 import com.onepiece.treasure.games.value.SlotGame
 import com.onepiece.treasure.utils.StringUtil
-import okhttp3.internal.userAgent
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -38,6 +38,7 @@ class GameApi(
         private val dgPlatformApi: DGApiService,
         private val megaService: MegaService,
         private val pussy888Service: Pussy888Service,
+        private val evolutionService: EvolutionService,
 
         private val kiss918Api: Kiss918Api,
         private val sboApi: SboApi,
@@ -54,6 +55,7 @@ class GameApi(
             Platform.DG -> dgPlatformApi
             Platform.Mega -> megaService
             Platform.Pussy888 -> pussy888Service
+            Platform.Evolution -> evolutionService
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
