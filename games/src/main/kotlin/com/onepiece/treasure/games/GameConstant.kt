@@ -52,6 +52,10 @@ object GameConstant  {
     const val LBC_START_URL = "http://c.gsoft888.net/Deposit_ProcessLogin.aspx?lang=en&OType=1&WebSkinType=3&skincolor=bl001&g="
     const val LBC_START_MOBILE_URL = "http://i.gsoft888.net/Deposit_ProcessLogin.aspx?lang=en&OType=1&skincolor=bl001&ischinaview=True&st="
 
+    // sexy game
+//    const val SEXY_API_URL = "http://test.bikimex.com:10023"
+    const val SEXY_API_URL = "${demoPath}:97"
+
 
 
 }

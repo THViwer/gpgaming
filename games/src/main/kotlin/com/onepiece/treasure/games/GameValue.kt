@@ -67,7 +67,7 @@ sealed class GameValue {
 
             val startTime: LocalDateTime,
 
-            val endTIme: LocalDateTime
+            val endTime: LocalDateTime
     )
 
     data class SyncBetOrderReq(

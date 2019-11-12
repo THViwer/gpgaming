@@ -17,11 +17,11 @@ import com.onepiece.treasure.games.live.ct.CTApi
 import com.onepiece.treasure.games.live.dg.DGApiService
 import com.onepiece.treasure.games.live.evolution.EvolutionService
 import com.onepiece.treasure.games.live.golddeluxe.GoldDeluxeApi
+import com.onepiece.treasure.games.live.sexy.SexyService
 import com.onepiece.treasure.games.slot.joker.JokerApi
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Api
 import com.onepiece.treasure.games.slot.mega.MegaService
 import com.onepiece.treasure.games.slot.pussy888.Pussy888Service
-import com.onepiece.treasure.games.sport.lbc.LbcService
 import com.onepiece.treasure.games.sport.sbo.SboApi
 import com.onepiece.treasure.games.value.SlotGame
 import com.onepiece.treasure.utils.StringUtil
@@ -41,6 +41,7 @@ class GameApi(
         private val pussy888Service: Pussy888Service,
         private val evolutionService: EvolutionService,
         private val lbcService: PlatformApi,
+        private val sexyService: SexyService,
 
         private val kiss918Api: Kiss918Api,
         private val sboApi: SboApi,
@@ -59,6 +60,7 @@ class GameApi(
             Platform.Pussy888 -> pussy888Service
             Platform.Evolution -> evolutionService
             Platform.Lbc -> lbcService
+            Platform.Sexy -> sexyService
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
@@ -202,7 +204,7 @@ class GameApi(
             Platform.Kiss918 -> kiss918Api.accountReport(token = clientToken as Kiss918ClientToken, username = platformUsername, startDate = startDate, endDate = endDate)
             Platform.Sbo -> sboApi.getCustomerReport(token = clientToken as DefaultClientToken, username = platformUsername, startDate = startDate, endDate = endDate)
             else -> {
-                val betOrderReq = GameValue.BetOrderReq(token = clientToken, startTime = startDate.atStartOfDay(), endTIme = endDate.atStartOfDay(), username = platformUsername)
+                val betOrderReq = GameValue.BetOrderReq(token = clientToken, startTime = startDate.atStartOfDay(), endTime = endDate.atStartOfDay(), username = platformUsername)
                 getPlatformApi(platform).queryBetOrder(betOrderReq)
             }
         }

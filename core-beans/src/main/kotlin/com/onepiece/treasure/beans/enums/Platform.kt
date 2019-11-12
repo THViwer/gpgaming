@@ -69,6 +69,13 @@ enum class Platform(
             listOf(StartPlatform.Pc, StartPlatform.Wap)
     ),
 
+    Sexy(
+            PlatformCategory.LiveVideo,
+            "sexy gaming",
+            "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
+            listOf(StartPlatform.Pc, StartPlatform.Wap)
+    ),
+
     // sport
     Sbo(
             PlatformCategory.Sport,

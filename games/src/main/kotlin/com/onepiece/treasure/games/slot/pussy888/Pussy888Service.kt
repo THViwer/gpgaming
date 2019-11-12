@@ -86,7 +86,7 @@ class Pussy888Service(
                 .set("pageSize", "1000")
                 .set("userName", betOrderReq.username)
                 .set("sDate", betOrderReq.startTime.format(dateTimeFormatter))
-                .set("eDate", betOrderReq.endTIme.format(dateTimeFormatter))
+                .set("eDate", betOrderReq.endTime.format(dateTimeFormatter))
                 .build(token = betOrderReq.token as Pussy888ClientToken, username = betOrderReq.username)
 
         val result = okHttpUtil.doGet(url, String::class.java)
