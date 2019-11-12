@@ -1,6 +1,7 @@
 package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.StartPlatform
 import com.onepiece.treasure.controller.value.*
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -21,7 +22,13 @@ interface Api {
     fun slotMenu(@RequestParam("platform") platform: Platform): List<SlotMenu>
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台)")
-    fun start(@RequestHeader("platform") platform: Platform): StartGameResp
+    fun start(
+            @RequestHeader("platform") platform: Platform,
+            @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: StartPlatform): StartGameResp
+
+    @ApiOperation(tags = ["api"], value = "开始游戏(平台试玩)")
+    fun startDemo(@RequestHeader("platform") platform: Platform,
+                  @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: StartPlatform): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始游戏(老虎机)")
     fun startSlotGame(@RequestHeader("platform") platform: Platform,

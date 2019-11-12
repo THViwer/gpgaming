@@ -2,7 +2,9 @@ package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.enums.GameCategory
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.StartPlatform
 import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.service.AdvertService
@@ -60,14 +62,31 @@ class ApiController(
     }
 
     @GetMapping("/start")
-    override fun start(@RequestHeader("platform") platform: Platform): StartGameResp {
+    override fun start(
+            @RequestHeader("platform") platform: Platform,
+            @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: StartPlatform
+    ): StartGameResp {
         val platformMember = getPlatformMember(platform)
 
         val member = current()
-        val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform)
+        val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
+                startPlatform = startPlatform)
         return StartGameResp(path = gameUrl)
     }
 
+    @GetMapping("/demo")
+    override fun startDemo(
+            @RequestHeader("platform") platform: Platform,
+            @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: StartPlatform): StartGameResp {
+
+        val url = when {
+            platform == Platform.Lbc && startPlatform == StartPlatform.Pc-> "http://c.gsoft888.net/vender.aspx?lang=en&OType=1&skincolor=bl001"
+            platform == Platform.Lbc && startPlatform == StartPlatform.Wap-> "https://i.gsoft888.net/vender.aspx?lang=en&OType=1&skincolor=bl001&ischinaview=True&homeUrl=http://localhost/1/&singupUrl=http://localhost/2/&LoginUrl=http://localhost/3/"
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+
+        return StartGameResp(path = url)
+    }
 
     @GetMapping("/start/slot")
     override fun startSlotGame(
@@ -81,7 +100,6 @@ class ApiController(
         return StartGameResp(path = gameUrl)
 
     }
-
 
     @GetMapping("/down/{mobilePlatform}")
     override fun down(@PathVariable("mobilePlatform") mobilePlatform: String): List<DownloadAppVo> {

@@ -21,6 +21,7 @@ import com.onepiece.treasure.games.slot.joker.JokerApi
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Api
 import com.onepiece.treasure.games.slot.mega.MegaService
 import com.onepiece.treasure.games.slot.pussy888.Pussy888Service
+import com.onepiece.treasure.games.sport.lbc.LbcService
 import com.onepiece.treasure.games.sport.sbo.SboApi
 import com.onepiece.treasure.games.value.SlotGame
 import com.onepiece.treasure.utils.StringUtil
@@ -39,6 +40,7 @@ class GameApi(
         private val megaService: MegaService,
         private val pussy888Service: Pussy888Service,
         private val evolutionService: EvolutionService,
+        private val lbcService: PlatformApi,
 
         private val kiss918Api: Kiss918Api,
         private val sboApi: SboApi,
@@ -56,6 +58,7 @@ class GameApi(
             Platform.Mega -> megaService
             Platform.Pussy888 -> pussy888Service
             Platform.Evolution -> evolutionService
+            Platform.Lbc -> lbcService
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
@@ -116,7 +119,7 @@ class GameApi(
         return when (platform) {
             Platform.CT -> ctApi.login(token = clientToken as DefaultClientToken, startPlatform = startPlatform, username = platformUsername)
             Platform.Sbo -> sboApi.login(token = clientToken as DefaultClientToken, username = platformUsername)
-            Platform.DG, Platform.Evolution -> {
+            Platform.DG, Platform.Evolution, Platform.Lbc -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform)
                 this.getPlatformApi(platform).start(startReq)
             }
