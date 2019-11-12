@@ -116,7 +116,7 @@ class GameApi(
         return when (platform) {
             Platform.CT -> ctApi.login(token = clientToken as DefaultClientToken, startPlatform = startPlatform, username = platformUsername)
             Platform.Sbo -> sboApi.login(token = clientToken as DefaultClientToken, username = platformUsername)
-            Platform.DG -> {
+            Platform.DG, Platform.Evolution -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform)
                 this.getPlatformApi(platform).start(startReq)
             }

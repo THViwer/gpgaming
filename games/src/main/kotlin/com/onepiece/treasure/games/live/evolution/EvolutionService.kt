@@ -27,29 +27,31 @@ class EvolutionService(
         return registerReq.username
     }
 
-
-
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
 
         val url = EvolutionBuild.instance(token = balanceReq.token as DefaultClientToken, cCode = "RWA", username = balanceReq.username)
-                .set("output", "1")
+                .set("output", "0")
                 .build(path = "/api/ecashier")
 
-        val result = okHttpUtil.doGet(url, String::class.java)
+        val result = okHttpUtil.doGet(url, EvolutionValue.BalanceResult::class.java)
 
         log.info("getBalance: $result")
-        return BigDecimal.ZERO
+        return result.userbalance.abalance
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
 
-        val url = EvolutionBuild.instance(token = transferReq.token as DefaultClientToken, cCode = "TRI", username = transferReq.username)
+        val cCode = if (transferReq.amount.toDouble() > 0) "ECR" else "EDB"
+
+        val url = EvolutionBuild.instance(token = transferReq.token as DefaultClientToken, cCode = cCode, username = transferReq.username)
+                .set("amount", transferReq.amount)
                 .set("eTransID", transferReq.orderId)
-                .set("output", "1")
+                .set("createuser", "N")
+                .set("output", "0")
                 .build(path = "/api/ecashier")
 
-        val result = okHttpUtil.doGet(url, String::class.java)
-        log.info("transfer info : $url")
+        val result = okHttpUtil.doGet(url, EvolutionValue.TransferResult::class.java)
+        log.info("deposit or withdraw result: $result")
 
         return transferReq.orderId
     }
@@ -58,19 +60,16 @@ class EvolutionService(
         val token = startReq.token as DefaultClientToken
 
         val uuid = UUID.randomUUID().toString()
-        val session = EvolutionValue.Player.Session(id = uuid, ip = "241.13.291.1")
-        val player = EvolutionValue.Player(id = startReq.username, session = session)
-
-        val config = EvolutionValue.Config()
-
-        val registerPlayer = EvolutionValue.RegisterPlayer(uuid = uuid, player = player, config = config)
-
+//        val session = EvolutionValue.Player.Session(id = uuid, ip = "241.13.291.1")
+//        val player = EvolutionValue.Player(id = startReq.username, session = session)
+//        val config = EvolutionValue.Config()
+//        val registerPlayer = EvolutionValue.RegisterPlayer(uuid = uuid, player = player, config = config)
 
         val json = """
             { 
                "uuid":"$uuid",
                "player":{ 
-                  "id":"$uuid",
+                  "id":"${startReq.username}",
                   "update":true,
                   "firstName":"firstName",
                   "lastName":"lastName",
@@ -79,7 +78,7 @@ class EvolutionService(
                   "language":"en",
                   "currency":"MYR",
                   "session":{ 
-                     "id":"${startReq.username}",
+                     "id":"$uuid",
                      "ip":"192.168.0.1"
                   }
                },
@@ -110,11 +109,11 @@ class EvolutionService(
 
         """.trimIndent()
 
-
         val url = "${GameConstant.EVOLUTION_API_URL}/ua/v1/${token.appId}/${token.key}"
         val result= okHttpUtil.doPostJson(url = url, data = json, clz = EvolutionValue.GetUrlOrCreateUser::class.java)
-        log.info("result error message: $result")
 
         return result.entry
     }
+
+
 }

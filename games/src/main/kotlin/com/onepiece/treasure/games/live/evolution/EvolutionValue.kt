@@ -1,5 +1,7 @@
 package com.onepiece.treasure.games.live.evolution
 
+import java.math.BigDecimal
+
 sealed class EvolutionValue {
 
 
@@ -97,4 +99,40 @@ sealed class EvolutionValue {
 
             val entryEmbedded: String
     )
+
+    data class BalanceResult(
+            val userbalance: UserBalance
+
+    ) {
+        data class UserBalance(
+                val result: String,
+
+                val euid: String,
+
+                val uid: String?,
+
+                val tbalance: BigDecimal,
+
+                val abalance: BigDecimal
+        )
+    }
+
+    data class TransferResult(
+            val transfer: Transfer
+
+    ) {
+        data class Transfer(
+                val result: String,
+
+                val balance: BigDecimal,
+
+                val etransid: String,
+
+                val transid: Int,
+
+                val datetime: String,
+
+                val euid: String
+        )
+    }
 }
