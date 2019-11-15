@@ -10,7 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDate
 
-@Api(tags = ["report"], description = " ")
+@Api(tags = ["report"], description = "报表管理")
 interface ReportApi {
 
     @ApiOperation(tags = ["report"], value = "会员平台报表")

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import java.time.LocalDateTime
 
-@Api(tags = ["cash"], description = " ")
+@Api(tags = ["cash"], description = "现金管理")
 interface CashOrderApi {
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 列表")

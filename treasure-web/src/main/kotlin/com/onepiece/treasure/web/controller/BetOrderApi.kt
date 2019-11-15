@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDate
 
-@Api(tags = ["bet"], description = " ")
+@Api(tags = ["bet"], description = "平台订单")
 interface BetOrderApi {
 
     @ApiOperation(tags = ["bet"], value = "下注订单列表")

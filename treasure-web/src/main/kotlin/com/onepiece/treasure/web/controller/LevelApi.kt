@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import java.math.BigDecimal
 
-@Api(tags = ["user"], description = " ")
+@Api(tags = ["user"], description = "用户管理")
 interface LevelApi {
 
     @ApiOperation(tags = ["user"], value = "层级 -> 列表")
