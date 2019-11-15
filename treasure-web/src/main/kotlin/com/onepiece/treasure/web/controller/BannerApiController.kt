@@ -10,7 +10,7 @@ import com.onepiece.treasure.web.controller.basic.BasicController
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/advert")
+@RequestMapping("/banner")
 class BannerApiController(
         private val advertService: BannerService
 ) : BasicController(), BannerApi {
