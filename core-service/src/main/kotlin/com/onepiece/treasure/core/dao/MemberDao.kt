@@ -1,10 +1,10 @@
 package com.onepiece.treasure.core.dao
 
-import com.onepiece.treasure.core.dao.basic.BasicDao
+import com.onepiece.treasure.beans.model.Member
 import com.onepiece.treasure.beans.value.database.MemberCo
 import com.onepiece.treasure.beans.value.database.MemberQuery
 import com.onepiece.treasure.beans.value.database.MemberUo
-import com.onepiece.treasure.beans.model.Member
+import com.onepiece.treasure.core.dao.basic.BasicDao
 import java.time.LocalDate
 
 interface MemberDao: BasicDao<Member> {
@@ -23,5 +23,8 @@ interface MemberDao: BasicDao<Member> {
 
     fun report(clientId: Int?, startDate: LocalDate, endDate: LocalDate): Map<Int, Int>
 
+    fun getLevelCount(clientId: Int): Map<Int, Int>
+
+    fun moveLevel(clientId: Int, levelId: Int, memberIds: List<Int>)
 
 }

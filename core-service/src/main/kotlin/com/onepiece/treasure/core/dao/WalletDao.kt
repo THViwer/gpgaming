@@ -27,6 +27,9 @@ interface WalletDao: BasicDao<Wallet> {
     fun transferOut(walletTransferOutUo: WalletTransferOutUo): Boolean
 
 
+    fun query(walletQuery: WalletQuery): List<Wallet>
+
+
 //    fun bet(walletUo: WalletUo): Boolean
 
 

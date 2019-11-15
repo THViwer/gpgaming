@@ -63,8 +63,6 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
 //                .executeOnlyOne()
 //    }
 
-
-
     override fun deposit(walletDepositUo: WalletDepositUo): Boolean {
         return update().asSet("balance = balance + ${walletDepositUo.money}")
                 .asSet("total_deposit_balance = total_deposit_balance + ${walletDepositUo.money}")
@@ -119,6 +117,25 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
                 .where("process_id", walletTransferOutUo.processId)
                 .asWhere("balance >= ${walletTransferOutUo.money}")
                 .executeOnlyOne()
+    }
+
+    override fun query(walletQuery: WalletQuery): List<Wallet> {
+        return query()
+                .where("client_id", walletQuery.clientId)
+                .where("member_id", walletQuery.memberId)
+                .asWhere("balance >= ?", walletQuery.minBalance)
+                .asWhere("balance < ?", walletQuery.maxBalance)
+                .asWhere("total_deposit_balance >= ?", walletQuery.minTotalDepositBalance)
+                .asWhere("total_deposit_balance < ?", walletQuery.maxTotalDepositBalance)
+                .asWhere("total_withdraw_balance >= ?", walletQuery.minTotalWithdrawBalance)
+                .asWhere("total_withdraw_balance < ?", walletQuery.maxTotalWithdrawBalance)
+                .asWhere("total_deposit_frequency >= ?", walletQuery.minTotalDepositFrequency)
+                .asWhere("total_deposit_frequency < ?", walletQuery.maxTotalDepositFrequency)
+                .asWhere("total_withdraw_frequency >= ?", walletQuery.minTotalWithdrawFrequency)
+                .asWhere("total_withdraw_frequency < ?", walletQuery.maxTotalWithdrawFrequency)
+                .execute(mapper)
+
+
     }
 
     //    override fun bet(walletUo: WalletUo): Boolean {

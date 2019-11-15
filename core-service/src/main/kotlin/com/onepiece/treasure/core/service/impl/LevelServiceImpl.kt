@@ -38,6 +38,7 @@ class LevelServiceImpl(
     override fun update(levelUo: LevelUo) {
 
         val level = levelDao.get(levelUo.id)
+        check(level.name != "default") { OnePieceExceptionCode.DEFAULT_LEVEL_FAIL }
 
         if (levelUo.status == Status.Stop) {
             //TODO 检察层级下是否还有人

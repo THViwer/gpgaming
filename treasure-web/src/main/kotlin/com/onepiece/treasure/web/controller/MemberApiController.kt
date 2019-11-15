@@ -10,10 +10,8 @@ import com.onepiece.treasure.core.service.LevelService
 import com.onepiece.treasure.core.service.MemberService
 import com.onepiece.treasure.core.service.WalletService
 import com.onepiece.treasure.web.controller.basic.BasicController
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
-import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/member")
@@ -25,8 +23,8 @@ class MemberApiController(
 
     @GetMapping
     override fun query(
-           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
-           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime,
+//           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
+//           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime,
             @RequestParam(value = "username", required = false) username: String?,
             @RequestParam(value = "levelId", required = false) levelId: Int?,
             @RequestParam(value = "status", required = false) status: Status?,
@@ -34,7 +32,7 @@ class MemberApiController(
             @RequestParam(defaultValue = "10") size: Int
     ): MemberPage {
 
-        val query = MemberQuery(clientId = clientId, startTime = startTime, endTime = endTime, username = username,
+        val query = MemberQuery(clientId = clientId, startTime = null, endTime = null, username = username,
                 levelId = levelId, status = status)
         val page = memberService.query(query, current, size)
         if (page.total == 0) return MemberPage(total = 0, data = emptyList())

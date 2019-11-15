@@ -13,6 +13,7 @@ object OnePieceExceptionCode {
     const val DB_CHANGE_FAIL = "1001"
     const val DATA_FAIL = "1002" // 数据异常
     const val LANGUAGE_CONFIG_FAIL = "1003" // 语言配置错误
+    const val QUERY_COUNT_TOO_SMALL = "1004" // 请增加查询条件
 
     // 2000 verification error
 
@@ -26,6 +27,9 @@ object OnePieceExceptionCode {
     const val USER_STOP = "4004" // 用户被停用
     const val SAFETY_PASSWORD_FAIL = "4005" // 安全码错误
     const val PLATFORM_MEMBER_REGISTER_FAIL = "4006" // 平台会员注册失败
+    const val DEFAULT_LEVEL_FAIL = "4007" // 默认层级不可修改
+    const val MOVE_LEVEL_COUNT_ISZERO = "4008" // 移动人数为0
+    const val MOVE_LEVEL_COUNT_ISMAX = "4009" // 移动人数为0
 
     // 5000 cash error
     const val ORDER_EXPIRED = "5001" // 订单操作过期

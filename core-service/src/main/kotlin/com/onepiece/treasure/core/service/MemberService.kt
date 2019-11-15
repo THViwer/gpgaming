@@ -11,7 +11,7 @@ interface MemberService {
 
     fun getMember(id: Int): Member
 
-    fun findByIds(ids: List<Int>): List<Member>
+    fun findByIds(ids: List<Int>, levelId: Int? = null): List<Member>
 
     fun findByUsername(username: String?): Member?
 
@@ -24,5 +24,9 @@ interface MemberService {
     fun create(memberCo: MemberCo)
 
     fun update(memberUo: MemberUo)
+
+    fun getLevelCount(clientId: Int): Map<Int, Int>
+
+    fun moveLevel(clientId: Int, levelId: Int, memberIds: List<Int>)
 
 }

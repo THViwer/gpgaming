@@ -28,8 +28,8 @@ class MemberServiceImpl(
         }!!
     }
 
-    override fun findByIds(ids: List<Int>): List<Member> {
-        val query = MemberQuery(ids = ids, clientId = null, startTime = null, endTime = null, status = null, levelId = null, username = null)
+    override fun findByIds(ids: List<Int>, levelId: Int?): List<Member> {
+        val query = MemberQuery(ids = ids, clientId = null, startTime = null, endTime = null, status = null, levelId = levelId, username = null)
         return memberDao.list(query).toList()
     }
 
@@ -95,5 +95,13 @@ class MemberServiceImpl(
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         redisService.delete(OnePieceRedisKeyConstant.member(memberUo.id))
+    }
+
+    override fun getLevelCount(clientId: Int): Map<Int, Int> {
+        return memberDao.getLevelCount(clientId)
+    }
+
+    override fun moveLevel(clientId: Int, levelId: Int, memberIds: List<Int>) {
+        return memberDao.moveLevel(clientId, levelId, memberIds)
     }
 }

@@ -108,4 +108,23 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                     clientId to count
                 }.toMap()
     }
+
+    override fun getLevelCount(clientId: Int): Map<Int, Int> {
+        return query("level_id, count(*) as count")
+                .where("client_id", clientId)
+                .group("level_id")
+                .execute { rs ->
+                    val levelId = rs.getInt("level_id")
+                    val count = rs.getInt("count")
+                    levelId to count
+                }.toMap()
+    }
+
+    override fun moveLevel(clientId: Int, levelId: Int, memberIds: List<Int>) {
+        update()
+                .set("level_id", levelId)
+                .where("client_id", clientId)
+                .asWhere("id in (${memberIds.joinToString(",")})")
+                .execute()
+    }
 }

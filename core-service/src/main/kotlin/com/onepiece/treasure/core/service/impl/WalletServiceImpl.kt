@@ -69,4 +69,8 @@ class WalletServiceImpl(
 
         return wallet.balance.plus(walletUo.money)
     }
+
+    override fun query(walletQuery: WalletQuery): List<Wallet> {
+        return walletDao.query(walletQuery)
+    }
 }

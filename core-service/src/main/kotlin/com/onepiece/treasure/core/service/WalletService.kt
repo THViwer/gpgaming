@@ -1,10 +1,7 @@
 package com.onepiece.treasure.core.service
 
 import com.onepiece.treasure.beans.model.Wallet
-import com.onepiece.treasure.beans.value.database.WalletCo
-import com.onepiece.treasure.beans.value.database.WalletTransferInUo
-import com.onepiece.treasure.beans.value.database.WalletTransferOutUo
-import com.onepiece.treasure.beans.value.database.WalletUo
+import com.onepiece.treasure.beans.value.database.*
 import java.math.BigDecimal
 
 interface WalletService {
@@ -14,5 +11,7 @@ interface WalletService {
     fun create(walletCo: WalletCo)
 
     fun update(walletUo: WalletUo): BigDecimal
+
+    fun query(walletQuery: WalletQuery): List<Wallet>
 
 }
