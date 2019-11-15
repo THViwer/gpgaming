@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/cash")
@@ -28,7 +27,8 @@ open class CashApiController(
         private val orderIdBuilder: OrderIdBuilder,
         private val walletService: WalletService,
         private val memberService: MemberService,
-        private val transferOrderService: TransferOrderService
+        private val transferOrderService: TransferOrderService,
+        private val walletNoteService: WalletNoteService
 ) : BasicController(), CashApi {
 
 
@@ -217,13 +217,15 @@ open class CashApiController(
 //                clientService.updateEarnestBalance(id = clientId, earnestBalance = cashTransferReq.money.negate())
                 platformBindService.updateEarnestBalance(clientId = clientId, platform = cashTransferReq.to, earnestBalance = cashTransferReq.money.negate())
 
+
+                val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = cashTransferReq.to)
+
                 // 中心钱包扣款
                 val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_OUT, money = cashTransferReq.money,
-                        remarks = "transfer center to platform", waiterId = null, eventId = null)
+                        remarks = "Center => ${cashTransferReq.to}", waiterId = null, eventId = transferOrderId)
                 walletService.update(walletUo)
 
                 // 生成转账订单
-                val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = cashTransferReq.to)
                 val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = cashTransferReq.money, giftMoney = giftBalance,
                         from = cashTransferReq.from, to = cashTransferReq.to)
                 transferOrderService.create(transferOrderCo)
@@ -271,7 +273,7 @@ open class CashApiController(
 
                 // 中心钱包加钱
                 val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_IN, money = cashTransferReq.money,
-                        remarks = "transfer platform to center", waiterId = null, eventId = null)
+                        remarks = "${cashTransferReq.from} => Center", waiterId = null, eventId = transferOrderId)
                 walletService.update(walletUo)
 
                 //TODO 调用平台接口取款
@@ -283,6 +285,17 @@ open class CashApiController(
                 transferOrderService.update(transferOrderUo)
             }
         }
+    }
+
+    @GetMapping("/wallet/note")
+    override fun walletNote(): List<WalletNoteVo> {
+
+        val member = this.current()
+
+        return walletNoteService.my(clientId = member.clientId, memberId = member.id).map {
+            WalletNoteVo(id = it.id, memberId = it.memberId, eventId = it.eventId, event = it.event, money = it.money, remarks = it.remarks, createdTime = it.createdTime)
+        }
+
     }
 
     @GetMapping("/balance")

@@ -34,5 +34,5 @@ data class WalletNoteQuery(
         val memberId: Int,
 
         // 事件
-        val event: WalletEvent
+        val event: WalletEvent?
 )

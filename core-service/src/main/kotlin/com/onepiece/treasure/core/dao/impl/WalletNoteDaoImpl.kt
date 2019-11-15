@@ -32,6 +32,7 @@ class WalletNoteDaoImpl : BasicDaoImpl<WalletNote>("wallet_note"), WalletNoteDao
         return query().where("client_id", walletNoteQuery.clientId)
                 .where("member_id", walletNoteQuery.memberId)
                 .where("event", walletNoteQuery.event)
+                .sort("created_time desc")
                 .execute(mapper)
     }
 

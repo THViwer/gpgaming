@@ -65,7 +65,7 @@ abstract class BasicController {
         return when (platform) {
             Platform.Kiss918 -> {
                 val bind = platformBindService.findClientPlatforms(current().clientId).find { it.platform == platform }!!
-                ClientAuthVo.ofKiss918(bind.username!!)
+                ClientAuthVo.ofKiss918(bind.username)
             }
             else -> ClientAuthVo.empty()
         }

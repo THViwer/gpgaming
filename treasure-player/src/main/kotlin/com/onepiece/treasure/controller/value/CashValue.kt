@@ -1,9 +1,7 @@
 package com.onepiece.treasure.controller.value
 
-import com.onepiece.treasure.beans.enums.Bank
-import com.onepiece.treasure.beans.enums.DepositState
-import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.enums.WithdrawState
+import com.onepiece.treasure.beans.enums.*
+import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -177,6 +175,29 @@ data class BalanceVo(
 
         @ApiModelProperty("提示信息(一般参加活动时无法提款才会有)")
         val tips: String?
+)
+
+data class WalletNoteVo(
+
+        val id: Int,
+
+        @ApiModelProperty("会员Id")
+        val memberId: Int,
+
+        @ApiModelProperty("事件Id")
+        val eventId: String?,
+
+        @ApiModelProperty("事件")
+        val event: WalletEvent,
+
+        @ApiModelProperty("操作金额")
+        val money: BigDecimal,
+
+        @ApiModelProperty("备注")
+        val remarks: String,
+
+        @ApiModelProperty("创建时间")
+        val createdTime: LocalDateTime
 )
 
 //enum class TransferAction {
