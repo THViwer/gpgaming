@@ -210,11 +210,10 @@ open class CashApiController(
             // 中心钱包 -> 平台钱包
             Platform.Center -> {
 
-                // 活动赠送金额
+                // TODO 活动赠送金额
                 val giftBalance = BigDecimal.ZERO
 
                 // 检查保证金是否足够
-//                clientService.updateEarnestBalance(id = clientId, earnestBalance = cashTransferReq.money.negate())
                 platformBindService.updateEarnestBalance(clientId = clientId, platform = cashTransferReq.to, earnestBalance = cashTransferReq.money.negate())
 
 
@@ -253,7 +252,7 @@ open class CashApiController(
             // 平台钱包 -> 中心钱包
             else -> {
 
-                // 检查是否满足打码量
+                // TODO 检查是否满足打码量
                 check(platformMember.currentBet >= platformMember.demandBet) { OnePieceExceptionCode.TRANSFER_OUT_BET_FAIL }
                 // 检查余额
                 val wallet = walletService.getMemberWallet(memberId)
