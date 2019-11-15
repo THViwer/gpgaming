@@ -21,6 +21,9 @@ data class PromotionRule(
         // 平台
         val platform: Platform,
 
+        // 优惠活动Id
+        val promotionId: Int,
+
         // 充值送类目
         val category: PromotionRuleCategory,
 
@@ -29,9 +32,6 @@ data class PromotionRule(
 
         // 规则
         val ruleJson: String,
-
-        // 状态
-        val status: Status,
 
         // 创建时间
         val createdTime: LocalDateTime
@@ -48,26 +48,39 @@ sealed class PromotionRules{
 
     data class BetRule(
 
+            // 最小转账金额
+            val minAmount: BigDecimal,
+
+            // 最大转账金额
+            val maxAmount: BigDecimal,
+
             // 打码倍数
             val betMultiple: BigDecimal,
 
-            // 最小金额
-            val minMoney: BigDecimal,
-
             // 赠送比例
-            val giftProportion: BigDecimal
+            val giftProportion: BigDecimal,
+
+            // 最小转出金额和可转入金额
+            val minTransferOutMoney: BigDecimal
     )
 
-    data class TransferRule(
+    data class WithdrawRule(
 
             // 最小转账金额
-            val minTransferAmount: BigDecimal,
+            val minAmount: BigDecimal,
 
             // 最大转账金额
-            val maxTransferAmount: BigDecimal,
+            val maxAmount: BigDecimal,
 
             // 取款倍数
-            val transferMultiplied: BigDecimal
+            val transferMultiplied: BigDecimal,
+
+            // 赠送比例
+            val giftProportion: BigDecimal,
+
+            // 最小转出金额和可转入金额
+            val minTransferOutMoney: BigDecimal
+
 
     )
 

@@ -19,13 +19,13 @@ class PromotionRuleDaoImpl : BasicDaoImpl<PromotionRule>("promotion_rule"), Prom
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
+            val promotionId = rs.getInt("promotion_id")
             val category = rs.getString("category").let { PromotionRuleCategory.valueOf(it) }
             val levelId = rs.getInt("level_id")
             val ruleJson = rs.getString("rule_json")
-            val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             PromotionRule(id = id, clientId = clientId, platform = platform, category = category, levelId = levelId,
-                    ruleJson = ruleJson, status = status, createdTime = createdTime)
+                    ruleJson = ruleJson, createdTime = createdTime, promotionId = promotionId)
 
         }
 
@@ -33,10 +33,10 @@ class PromotionRuleDaoImpl : BasicDaoImpl<PromotionRule>("promotion_rule"), Prom
         return insert()
                 .set("client_id", promotionRuleCo.clientId)
                 .set("platform", promotionRuleCo.platform)
+                .set("promotion_id", promotionRuleCo.promotionId)
                 .set("category", promotionRuleCo.platform)
                 .set("levelId", promotionRuleCo.levelId)
                 .set("rule_json", promotionRuleCo.ruleJson)
-                .set("status", Status.Normal)
                 .executeOnlyOne()
 
     }
@@ -47,8 +47,13 @@ class PromotionRuleDaoImpl : BasicDaoImpl<PromotionRule>("promotion_rule"), Prom
                 .set("category", promotionRuleUo.platform)
                 .set("levelId", promotionRuleUo.levelId)
                 .set("rule_json", promotionRuleUo.ruleJson)
-                .set("status", promotionRuleUo.status)
-                .set("id", promotionRuleUo.id)
+                .where("promotion_id", promotionRuleUo.promotionId)
                 .executeOnlyOne()
+    }
+
+    override fun getByPromotionIds(promotionIds: List<Int>): List<PromotionRule> {
+        return query()
+                .whereIn("promotion_id", promotionIds)
+                .execute(mapper)
     }
 }

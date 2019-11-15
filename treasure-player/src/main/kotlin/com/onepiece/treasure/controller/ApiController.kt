@@ -53,9 +53,10 @@ class ApiController(
 
     @GetMapping("/promotion")
     override fun promotion(
-            @RequestHeader("clientId") clientId: Int,
             @RequestHeader("language", defaultValue = "EN") language: Language
     ): List<PromotionVo> {
+
+        val clientId = 1
 
         val promotions = promotionService.all(clientId)
 

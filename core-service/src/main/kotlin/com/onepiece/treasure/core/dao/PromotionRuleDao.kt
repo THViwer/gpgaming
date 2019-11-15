@@ -11,5 +11,7 @@ interface PromotionRuleDao: BasicDao<PromotionRule> {
 
     fun update(promotionRuleUo: PromotionRuleUo): Boolean
 
+    fun getByPromotionIds(promotionIds: List<Int>): List<PromotionRule>
+
 
 }

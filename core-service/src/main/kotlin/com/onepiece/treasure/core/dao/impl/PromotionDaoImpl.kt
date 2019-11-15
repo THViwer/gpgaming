@@ -20,7 +20,6 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val category = rs.getString("category").let { PromotionCategory.valueOf(it) }
-            val promotionRuleId = rs.getInt("promotion_rule_id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
             val stopTime = rs.getTimestamp("stop_time")?.toLocalDateTime()
             val top = rs.getBoolean("top")
@@ -29,7 +28,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
             Promotion(id = id, category = category, stopTime = stopTime, icon = icon, status = status, createdTime = createdTime,
-                    clientId = clientId, top = top, updatedTime = updatedTime, promotionRuleId = promotionRuleId, platform = platform)
+                    clientId = clientId, top = top, updatedTime = updatedTime, platform = platform)
         }
 
     override fun create(promotionCo: PromotionCo): Int {

@@ -1,8 +1,8 @@
 package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.enums.Language
-import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.LaunchMethod
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.controller.value.*
 import io.swagger.annotations.Api
@@ -20,7 +20,6 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "优惠活动")
     fun promotion(
-            @RequestHeader("clientId") clientId: Int,
             @RequestHeader("language", defaultValue = "EN") language: Language
     ): List<PromotionVo>
 

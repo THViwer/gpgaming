@@ -1,14 +1,14 @@
 package com.onepiece.treasure.core.service
 
 import com.onepiece.treasure.beans.model.Promotion
-import com.onepiece.treasure.beans.value.database.PromotionCo
-import com.onepiece.treasure.beans.value.database.PromotionUo
+import com.onepiece.treasure.beans.value.internet.web.PromotionCoReq
+import com.onepiece.treasure.beans.value.internet.web.PromotionUoReq
 
 interface PromotionService {
 
     fun all(clientId: Int): List<Promotion>
 
-    fun create(promotionCo: PromotionCo)
+    fun create(clientId: Int, promotionCoReq: PromotionCoReq)
 
-    fun update(promotionUo: PromotionUo)
+    fun update(clientId: Int, promotionUoReq: PromotionUoReq)
 }

@@ -22,9 +22,6 @@ data class Promotion (
         // 平台
         val platform: Platform,
 
-        // 优惠活动规则Id
-        val promotionRuleId: Int,
-
         // 结束时间, 如果为null 则无限时间
         val stopTime: LocalDateTime?,
 

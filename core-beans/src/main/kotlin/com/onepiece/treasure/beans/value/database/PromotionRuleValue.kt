@@ -12,6 +12,9 @@ class PromotionRuleCo(
         // 平台
         val platform: Platform,
 
+        // 优惠活动Id
+        val promotionId: Int,
+
         // 充值送类目
         val category: PromotionRuleCategory,
 
@@ -24,8 +27,8 @@ class PromotionRuleCo(
 )
 data class PromotionRuleUo(
 
-        // id
-        val id: Int,
+        // 优惠Id
+        val promotionId: Int,
 
         // 平台
         val platform: Platform? = null,
@@ -37,8 +40,6 @@ data class PromotionRuleUo(
         val levelId: Int? = null,
 
         // 规则
-        val ruleJson: String? = null,
+        val ruleJson: String? = null
 
-        // 状态
-        val status: Status? = null
 )

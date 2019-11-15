@@ -1,8 +1,7 @@
 package com.onepiece.treasure.beans.value.internet.web
 
-import com.onepiece.treasure.beans.enums.Language
-import com.onepiece.treasure.beans.enums.PromotionCategory
-import com.onepiece.treasure.beans.enums.Status
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.onepiece.treasure.beans.enums.*
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
@@ -46,14 +45,32 @@ data class PromotionVo(
         val updatedTime: LocalDateTime,
 
         @ApiModelProperty("国际化内容 ")
-        val i18nContents: List<I18nContentVo>
+        val i18nContents: List<I18nContentVo>,
 
+        @ApiModelProperty("优惠规则")
+        val promotionRuleVo: PromotionRuleVo
+
+)
+
+data class PromotionRuleVo(
+        @ApiModelProperty("充值送类目")
+        val category: PromotionRuleCategory,
+
+        @ApiModelProperty("优惠层级Id 如果为null则是全部")
+        val levelId: Int?,
+
+        @ApiModelProperty("规则")
+        val ruleJson: String
 )
 
 data class PromotionCoReq(
 
+        // 基础设置
         @ApiModelProperty("优惠类型")
         val category: PromotionCategory,
+
+        @ApiModelProperty("平台")
+        val platform: Platform,
 
         @ApiModelProperty("结束时间, 如果为null 则无限时间")
         val stopTime: LocalDateTime?,
@@ -64,6 +81,16 @@ data class PromotionCoReq(
         @ApiModelProperty("图标")
         val icon: String,
 
+        @ApiModelProperty("默认国际化内容配置")
+        val i18nContent: PromotionDefaultContent,
+
+        @JsonProperty("优惠规则")
+        val PromotionRuleVo: PromotionRuleVo
+
+)
+
+data class PromotionDefaultContent(
+        // 国际化设置
         @ApiModelProperty("语言")
         val language: Language,
 
@@ -75,7 +102,6 @@ data class PromotionCoReq(
 
         @ApiModelProperty("内容")
         val content: String
-
 )
 
 data class PromotionUoReq(
@@ -96,5 +122,8 @@ data class PromotionUoReq(
         val icon: String?,
 
         @ApiModelProperty("状态")
-        val status: Status?
+        val status: Status?,
+
+        @ApiModelProperty("优惠规则")
+        val ruleJson: String?
 )
