@@ -42,7 +42,7 @@ interface LevelApi {
             @RequestParam("maxTotalWithdrawFrequency", required = false) maxTotalWithdrawFrequency: Int?
     ): List<LevelMemberVo>
 
-    @ApiOperation(tags = ["user"], value = "层级 -> 移动(未实现)")
+    @ApiOperation(tags = ["user"], value = "层级 -> 移动")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun move(@RequestBody levelMoveDo: LevelMoveDo)
 
