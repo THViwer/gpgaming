@@ -2,6 +2,7 @@ package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.service.BannerService
@@ -75,14 +76,12 @@ class ApiController(
     @GetMapping("/slot/menu")
     override fun slotMenu(
             @RequestHeader("language", defaultValue = "EN") language: Language,
-            @RequestParam("platform") platform: Platform): List<SlotMenu> {
+            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
+            @RequestParam("platform") platform: Platform): List<SlotGame> {
 
         val member = current()
 
-        return gameApi.slotGames(clientId = member.clientId, platform = platform).map {
-            SlotMenu(gameId = it.gameId, gameName = it.gameName, category = GameCategory.ARCADE, icon = it.icon,
-                    hot = true, new = true, status = Status.Normal)
-        }
+        return gameApi.slotGames(clientId = member.clientId, platform = platform, launch = launch)
     }
 
     @GetMapping("/start")
@@ -104,7 +103,7 @@ class ApiController(
             @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod): StartGameResp {
 
         val url = when {
-            platform == Platform.Lbc && startPlatform == LaunchMethod.Pc-> "http://c.gsoft888.net/vender.aspx?lang=en&OType=1&skincolor=bl001"
+            platform == Platform.Lbc && startPlatform == LaunchMethod.Web-> "http://c.gsoft888.net/vender.aspx?lang=en&OType=1&skincolor=bl001"
             platform == Platform.Lbc && startPlatform == LaunchMethod.Wap-> "https://i.gsoft888.net/vender.aspx?lang=en&OType=1&skincolor=bl001&ischinaview=True&homeUrl=http://localhost/1/&singupUrl=http://localhost/2/&LoginUrl=http://localhost/3/"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }

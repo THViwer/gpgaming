@@ -126,7 +126,7 @@ class DGApiService(
         checkCode(result.codeId)
 
         return when (startReq.startPlatform) {
-            LaunchMethod.Pc -> result.list[0]
+            LaunchMethod.Web -> result.list[0]
             LaunchMethod.Wap -> result.list[1]
             else -> result.list[2]
         }.plus(result.token)
@@ -149,7 +149,7 @@ class DGApiService(
         checkCode(result.codeId)
 
         return when (startPlatform) {
-            LaunchMethod.Pc -> result.list[0]
+            LaunchMethod.Web -> result.list[0]
             LaunchMethod.Wap -> result.list[1]
             else -> result.list[2]
         }.plus(result.token)

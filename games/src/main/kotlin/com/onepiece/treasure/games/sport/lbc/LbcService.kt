@@ -94,7 +94,7 @@ class LbcService(
         this.checkCode(result.errorCode)
 
         return when (startReq.startPlatform) {
-            LaunchMethod.Pc -> "${GameConstant.LBC_START_URL}${result.sessionToken}"
+            LaunchMethod.Web -> "${GameConstant.LBC_START_URL}${result.sessionToken}"
             LaunchMethod.Wap -> "${GameConstant.LBC_START_MOBILE_URL}${result.sessionToken}"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }

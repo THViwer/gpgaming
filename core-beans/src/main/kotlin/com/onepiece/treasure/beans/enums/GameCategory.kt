@@ -10,6 +10,10 @@ enum class GameCategory {
 
     SLOT,
 
+    FISHING,
+
+    ECASINO,
+
     TABLE,
 
     ARCADE

@@ -1,12 +1,14 @@
 package com.onepiece.treasure.games
 
-import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.LaunchMethod
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
 import com.onepiece.treasure.beans.model.token.MegaClientToken
+import com.onepiece.treasure.beans.value.internet.web.SlotGame
+import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.order.BetOrderValue
 import com.onepiece.treasure.core.order.CTBetOrderDao
 import com.onepiece.treasure.core.order.DGBetOrderDao
@@ -23,7 +25,7 @@ import com.onepiece.treasure.games.slot.kiss918.Kiss918Api
 import com.onepiece.treasure.games.slot.mega.MegaService
 import com.onepiece.treasure.games.slot.pussy888.Pussy888Service
 import com.onepiece.treasure.games.sport.sbo.SboApi
-import com.onepiece.treasure.games.value.SlotGame
+import com.onepiece.treasure.utils.RedisService
 import com.onepiece.treasure.utils.StringUtil
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
@@ -33,6 +35,7 @@ import java.time.LocalDate
 class GameApi(
         private val platformBindService: PlatformBindService,
         private val platformMemberService: PlatformMemberService,
+        private val redisService: RedisService,
 
         private val jokerApi: JokerApi,
         private val ctApi: CTApi,
@@ -100,21 +103,27 @@ class GameApi(
     /**
      * 老虎机游戏列表
      */
-    fun slotGames(clientId: Int, platform: Platform): List<SlotGame> {
+    fun slotGames(clientId: Int, platform: Platform, launch: LaunchMethod): List<SlotGame> {
 
-        val clientToken = this.getClientToken(clientId = clientId, platform = platform)
+        val redisKey = OnePieceRedisKeyConstant.slotGames(platform = platform, launch = launch)
 
-        return when (platform) {
-            Platform.Joker -> jokerApi.slotGames(token = clientToken as DefaultClientToken)
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        return redisService.getList(key = redisKey, clz = SlotGame::class.java, timeout = 3600) {
+            val clientToken = this.getClientToken(clientId = clientId, platform = platform)
+
+            when (platform) {
+                Platform.Joker -> jokerApi.slotGames(token = clientToken as DefaultClientToken, launch = launch)
+                else -> error(OnePieceExceptionCode.DATA_FAIL)
+            }
         }
+
+
     }
 
 
     /**
      * 开始游戏(平台)
      */
-    fun start(clientId: Int, platformUsername: String, platform: Platform, startPlatform: LaunchMethod = LaunchMethod.Pc): String {
+    fun start(clientId: Int, platformUsername: String, platform: Platform, startPlatform: LaunchMethod = LaunchMethod.Web): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 

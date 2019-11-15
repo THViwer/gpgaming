@@ -34,7 +34,7 @@ enum class Platform(
 
 }
 
-data class PlatformDetail private constructor(
+open class PlatformDetail private constructor(
 
         // 平台类型
         val category: PlatformCategory,
@@ -52,7 +52,7 @@ data class PlatformDetail private constructor(
         val status: Status,
 
         // 启动方式
-        val launchs: List<LaunchMethod> = listOf(LaunchMethod.Pc, LaunchMethod.Wap)
+        val launchs: List<LaunchMethod> = listOf(LaunchMethod.Web, LaunchMethod.Wap)
 ) {
 
     companion object {
@@ -64,8 +64,8 @@ data class PlatformDetail private constructor(
 
         // slot
         fun ofJoker(): PlatformDetail {
-            return return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Pc, LaunchMethod.Wap, LaunchMethod.Android))
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Web, LaunchMethod.Wap, LaunchMethod.Android))
         }
 
         fun ofKiss918(): PlatformDetail {

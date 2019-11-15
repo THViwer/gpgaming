@@ -21,7 +21,7 @@ class EvolutionService(
     override fun register(registerReq: GameValue.RegisterReq): String {
         // EvoConfig.API_URL+"/ua/v1/"+EvoConfig.KEY+"/"+EvoConfig.TOKEN;
 
-        val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, startPlatform = LaunchMethod.Pc)
+        val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, startPlatform = LaunchMethod.Web)
         this.start(startReq)
 
         return registerReq.username

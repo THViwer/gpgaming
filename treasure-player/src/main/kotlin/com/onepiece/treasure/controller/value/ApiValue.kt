@@ -91,11 +91,8 @@ data class HotGameVo(
                         val h10 = HotGameVo(icon = icon, platform = Platform.Kiss918, gameId = StringUtil.generateNonce(5), hot = true, new = false)
 
                         return listOf(h1, h2, h3, h4, h5, h6, h7, h8, h9, h10)
-
                 }
-
         }
-
 }
 
 
@@ -121,30 +118,19 @@ data class PlatformVo(
         val launchs: List<LaunchMethod>
 )
 
-data class SlotMenu(
-
-        @ApiModelProperty("游戏Id")
-        val gameId: String,
-
-        @ApiModelProperty("游戏类目")
-        val category: GameCategory,
-
-        @ApiModelProperty("游戏名称")
-        val gameName: String,
-
-        @ApiModelProperty("游戏图标")
-        val icon: String,
-
-        @ApiModelProperty("热门")
-        val hot: Boolean,
-
-        @ApiModelProperty("新")
-        val new: Boolean,
-
-        @ApiModelProperty("状态")
-        val status: Status
-
-)
+//data class SlotMenuResp(
+//
+//        val hotGames: List<SlotMenu>,
+//
+//        val newGames: List<SlotMenu>,
+//
+//        val slotGames: List<SlotGame>,
+//
+//        val tableGames: List<SlotGame>,
+//
+//        val arcadeGames: List<SlotGame>
+//
+//)
 
 data class StartGameResp(
 

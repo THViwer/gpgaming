@@ -1,14 +1,18 @@
 package com.onepiece.treasure.games.slot.joker
 
+import com.onepiece.treasure.beans.enums.GameCategory
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.order.JokerBetOrder
 import com.onepiece.treasure.core.order.JokerBetOrderDao
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.http.OkHttpUtil
-import com.onepiece.treasure.games.value.SlotGame
 import com.onepiece.treasure.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -30,29 +34,35 @@ class JokerApiService(
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
 
-    override fun slotGames(token: DefaultClientToken): List<SlotGame> {
+    override fun slotGames(token: DefaultClientToken, launch: LaunchMethod): List<SlotGame> {
         val (url, formBody) = JokerBuild.instance("ListGames").build(token)
 
         val data: List<JokerValue.JokerSlotGame> = okHttpUtil.doPostForm(url, formBody, JokerValue.JokerSlotGameResult::class.java).listGames
 
-        return data.map {
-            val platforms = it.supportedPlatForms.split(",").map { platformName ->
-                when (platformName) {
-                    "Desktop" -> SlotGame.GamePlatform.PC
-                    "Mobile" -> SlotGame.GamePlatform.Mobile
-                    else -> SlotGame.GamePlatform.PC
-                }
-            }.toList()
 
-            val specials = it.specials?.split(",")?.map { sp ->
-                when (sp) {
-                    "new" -> SlotGame.Special.New
-                    "hot" -> SlotGame.Special.Hot
-                    else -> SlotGame.Special.Hot
-                }
-            }?: emptyList()
 
-            SlotGame(gameId = it.gameCode, gameName = it.gameName, platforms = platforms, specials = specials, icon = it.image1)
+        return data.filter {
+            when (launch) {
+                LaunchMethod.Web -> it.supportedPlatForms.contains("Desktop")
+                LaunchMethod.Wap -> it.supportedPlatForms.contains("Mobile")
+                else -> error(OnePieceExceptionCode.DATA_FAIL)
+            }
+        }.map {
+
+            val category = when (it.gameType) {
+                "Slot" -> GameCategory.SLOT
+                "Fishing" -> GameCategory.FISHING
+                "ECasino" -> GameCategory.ECASINO
+                else -> {
+                    error(OnePieceExceptionCode.DATA_FAIL)
+                }
+            }
+
+            val hot = it.specials?.contains("hot")?: false
+            val new = it.specials?.contains("new")?: false
+
+            SlotGame(gameId = it.gameCode, category = category, gameName = it.gameName, icon = "http:${it.image1}", touchIcon = "http:${it.image2}",
+                    hot = hot, new = new, status = Status.Normal)
         }
     }
 

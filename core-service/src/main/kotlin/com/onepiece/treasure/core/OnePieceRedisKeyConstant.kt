@@ -1,5 +1,6 @@
 package com.onepiece.treasure.core
 
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 
 object OnePieceRedisKeyConstant {
@@ -29,4 +30,6 @@ object OnePieceRedisKeyConstant {
     fun adverts(clientId: Int) = "advert:$clientId"
 
     fun promotions(clientId: Int) = "promotion:$clientId"
+
+    fun slotGames(platform: Platform, launch: LaunchMethod) = "slot:games:$platform:$launch"
 }
