@@ -5,7 +5,7 @@ import com.onepiece.treasure.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
-data class AdvertVo(
+data class BannerVo(
 
         @ApiModelProperty("id")
         val id: Int,
@@ -23,7 +23,7 @@ data class AdvertVo(
         val touchIcon: String?,
 
         @ApiModelProperty("类型")
-        val position: BannerType,
+        val type: BannerType,
 
         @ApiModelProperty("连接地址")
         val link: String,
@@ -38,7 +38,7 @@ data class AdvertVo(
         val updatedTime: LocalDateTime
 )
 
-data class AdvertCoReq(
+data class BannerCoReq(
 
         @ApiModelProperty("排序")
         val order: Int,
@@ -50,14 +50,14 @@ data class AdvertCoReq(
         val touchIcon: String?,
 
         @ApiModelProperty("类型")
-        val position: BannerType,
+        val type: BannerType,
 
         @ApiModelProperty("连接地址")
         val link: String
 
 )
 
-data class AdvertUoReq(
+data class BannerUoReq(
 
         @ApiModelProperty("id")
         val id: Int,
@@ -72,7 +72,7 @@ data class AdvertUoReq(
         val touchIcon: String?,
 
         @ApiModelProperty("类型")
-        val position: BannerType?,
+        val type: BannerType?,
 
         @ApiModelProperty("连接地址")
         val link: String?,
