@@ -8,7 +8,7 @@ interface MemberBankService {
 
     fun query(memberId: Int): List<MemberBank>
 
-    fun create(memberBankCo: MemberBankCo)
+    fun create(memberBankCo: MemberBankCo): Int
 
     fun update(memberBankUo: MemberBankUo)
 

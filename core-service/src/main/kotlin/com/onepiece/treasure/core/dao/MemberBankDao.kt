@@ -9,7 +9,7 @@ interface MemberBankDao: BasicDao<MemberBank> {
 
     fun query(memberId: Int): List<MemberBank>
 
-    fun create(memberBankCo: MemberBankCo): Boolean
+    fun create(memberBankCo: MemberBankCo): Int
 
     fun update(memberBankUo: MemberBankUo): Boolean
 

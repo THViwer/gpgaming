@@ -15,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @RestController
@@ -32,17 +33,33 @@ open class CashApiController(
 
 
     @GetMapping("/bank")
-    override fun banks(): List<MemberBankVo> {
-        val memberId = this.current().id
-        return memberBankService.query(memberId).map {
-            with(it) {
-                MemberBankVo(id = id, name = name, bank = bank, bankCardNumber = bankCardNumber, status = status,
-                        createdTime = createdTime, clientId = clientId, memberId = memberId)
+    override fun banks(): List<Bank> {
+        return Bank.values().toList()
+    }
+
+    @GetMapping("/bank/my")
+    override fun myBanks(): List<MemberBankVo> {
+        val member = this.current()
+
+        // 我的银行卡列表
+        val myBankMap = memberBankService.query(member.id).map { it.bank to it }.toMap()
+
+        return Bank.values().map {
+            val myBank = myBankMap[it]
+
+            when (myBank != null) {
+                true -> {
+                    MemberBankVo(id = myBank.id, name = myBank.name, bank = myBank.bank, bankCardNumber = myBank.bankCardNumber,
+                            clientId = member.clientId, memberId = member.id)
+                }
+                else -> {
+                    MemberBankVo(id = -1, name = it.cname, bank = it, bankCardNumber = null, clientId = member.clientId, memberId = member.clientId)
+                }
             }
         }
     }
 
-    @PostMapping("/bank")
+    @PostMapping("/bank/my")
     override fun bankCreate(@RequestBody memberBankCoReq: MemberBankCoReq) {
 
         val (clientId, memberId) = this.currentClientIdAndMemberId()
@@ -51,14 +68,14 @@ open class CashApiController(
         memberBankService.create(memberBankCo)
     }
 
-    @PutMapping("/bank")
+    @PutMapping("/bank/my")
     override fun bankUpdate(@RequestBody memberBankUoReq: MemberBankUoReq) {
         val memberBankUo = MemberBankUo(id = memberBankUoReq.id, bank = memberBankUoReq.bank, bankCardNumber = memberBankUoReq.bankCardNumber,
                 status = memberBankUoReq.status)
         memberBankService.update(memberBankUo)
     }
 
-    @GetMapping("/client/banks")
+    @GetMapping("/bank/client")
     override fun clientBanks(): List<ClientBankVo> {
         return clientBankService.findClientBank(current().clientId).filter { it.status == Status.Normal }.map {
             with(it) {
@@ -72,15 +89,15 @@ open class CashApiController(
     override fun deposit(
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: DepositState?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): Page<DepositVo> {
 
         val (clientId, memberId) = this.currentClientIdAndMemberId()
 
-        val depositQuery = DepositQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId,
+        val depositQuery = DepositQuery(clientId = clientId, startTime = startDate.atStartOfDay(), endTime = endDate.atStartOfDay(), orderId = orderId,
                 memberId = memberId, state = state)
 
         val page = depositService.query(depositQuery, current, size)
@@ -118,8 +135,8 @@ open class CashApiController(
     override fun withdraw(
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: WithdrawState?,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("startTime") startTime: LocalDateTime,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("endTime") endTime: LocalDateTime,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): Page<WithdrawVo> {
@@ -127,7 +144,7 @@ open class CashApiController(
 
         val (clientId, memberId) = this.currentClientIdAndMemberId()
 
-        val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId,
+        val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = startDate.atStartOfDay(), endTime = endDate.atStartOfDay(), orderId = orderId,
                 memberId = memberId, state = state)
 
         val page = withdrawService.query(withdrawQuery, current, size)
@@ -149,8 +166,15 @@ open class CashApiController(
 
         val (clientId, memberId) = currentClientIdAndMemberId()
 
+        // 获得用户银行卡Id
+        val memberBankId = if (withdrawCoReq.memberBankId == null) {
+            val memberBankCo = MemberBankCo(clientId = clientId, memberId = memberId, bank = withdrawCoReq.bank, name = withdrawCoReq.name,
+                    bankCardNumber = withdrawCoReq.bankCardNumber)
+            memberBankService.create(memberBankCo)
+        } else withdrawCoReq.memberBankId
+
         // check bank id
-        val memberBank = memberBankService.query(memberId).find { it.id == withdrawCoReq.memberBankId }
+        val memberBank = memberBankService.query(memberId).find { it.id == memberBankId }
         checkNotNull(memberBank) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
         // check safety password

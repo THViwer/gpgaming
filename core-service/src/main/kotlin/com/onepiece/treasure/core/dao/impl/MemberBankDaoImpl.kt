@@ -33,13 +33,14 @@ class MemberBankDaoImpl : BasicDaoImpl<MemberBank>("member_bank"), MemberBankDao
 
     }
 
-    override fun create(memberBankCo: MemberBankCo): Boolean {
+    override fun create(memberBankCo: MemberBankCo): Int {
         return insert().set("client_id", memberBankCo.clientId)
                 .set("member_id", memberBankCo.memberId)
                 .set("bank", memberBankCo.bank)
                 .set("name", memberBankCo.name)
                 .set("bank_card_number", memberBankCo.bankCardNumber)
-                .executeOnlyOne()
+                .set("status", Status.Normal)
+                .executeGeneratedKey()
 
     }
 

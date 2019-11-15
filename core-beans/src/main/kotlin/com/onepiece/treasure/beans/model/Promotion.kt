@@ -1,5 +1,6 @@
 package com.onepiece.treasure.beans.model
 
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.PromotionCategory
 import com.onepiece.treasure.beans.enums.Status
 import java.time.LocalDateTime
@@ -17,6 +18,12 @@ data class Promotion (
 
         // 优惠类型
         val category: PromotionCategory,
+
+        // 平台
+        val platform: Platform,
+
+        // 优惠活动规则Id
+        val promotionRuleId: Int,
 
         // 结束时间, 如果为null 则无限时间
         val stopTime: LocalDateTime?,

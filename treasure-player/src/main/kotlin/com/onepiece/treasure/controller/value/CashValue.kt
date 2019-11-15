@@ -127,7 +127,16 @@ data class CashWithdrawVo(
 data class WithdrawCoReq(
 
         @ApiModelProperty("银行卡号")
-        val memberBankId: Int,
+        val memberBankId: Int?,
+
+        @ApiModelProperty("银行")
+        val bank: Bank,
+
+        @ApiModelProperty("姓名")
+        val name: String,
+
+        @ApiModelProperty("银行卡号")
+        val bankCardNumber: String,
 
         @ApiModelProperty("取款金额")
         val money: BigDecimal,

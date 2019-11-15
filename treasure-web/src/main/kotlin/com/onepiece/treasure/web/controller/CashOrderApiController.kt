@@ -60,13 +60,13 @@ class CashOrderApiController(
         depositService.check(req)
     }
 
-    @PutMapping("/deposit/artificial")
-    override fun artificial(@RequestBody artificialCoReq: ArtificialCoReq) {
-        val orderId = orderIdBuilder.generatorArtificialOrderId()
-        val artificialOrderCo = ArtificialOrderCo(orderId = orderId, clientId = clientId, memberId = artificialCoReq.memberId, money = artificialCoReq.money,
-                remarks = artificialCoReq.remarks, operatorId = waiterId, operatorRole = role)
-        artificialOrderService.create(artificialOrderCo)
-    }
+//    @PutMapping("/deposit/artificial")
+//    override fun artificial(@RequestBody artificialCoReq: ArtificialCoReq) {
+//        val orderId = orderIdBuilder.generatorArtificialOrderId()
+//        val artificialOrderCo = ArtificialOrderCo(orderId = orderId, clientId = clientId, memberId = artificialCoReq.memberId, money = artificialCoReq.money,
+//                remarks = artificialCoReq.remarks, operatorId = waiterId, operatorRole = role)
+//        artificialOrderService.create(artificialOrderCo)
+//    }
 
     @GetMapping("/withdraw")
     override fun withdraw(

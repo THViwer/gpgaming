@@ -81,6 +81,7 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
                 .set("process_id", UUID.randomUUID().toString())
                 .where("id", walletFreezeUo.id)
                 .where("process_id", walletFreezeUo.processId)
+                .asWhere("balance >= ${walletFreezeUo.money}")
                 .executeOnlyOne()
     }
 

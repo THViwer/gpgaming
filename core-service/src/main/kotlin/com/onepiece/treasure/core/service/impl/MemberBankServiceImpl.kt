@@ -17,9 +17,11 @@ class MemberBankServiceImpl(
         return memberBankDao.query(memberId)
     }
 
-    override fun create(memberBankCo: MemberBankCo) {
-        val state = memberBankDao.create(memberBankCo)
-        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+    override fun create(memberBankCo: MemberBankCo): Int {
+        val id = memberBankDao.create(memberBankCo)
+        check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        return id
     }
 
     override fun update(memberBankUo: MemberBankUo) {

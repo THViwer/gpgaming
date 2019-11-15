@@ -38,7 +38,7 @@ data class PromotionRule(
 
 ) {
 
-    fun <T> getTransferGift(mapper: ObjectMapper, clz: Class<T>):  T{
+    fun <T> getPromotioRuleCondition(mapper: ObjectMapper, clz: Class<T>):  T{
         return mapper.readValue(ruleJson, clz)
     }
 

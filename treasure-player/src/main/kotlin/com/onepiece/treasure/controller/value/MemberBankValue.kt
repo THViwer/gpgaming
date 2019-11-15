@@ -19,16 +19,16 @@ data class MemberBankVo(
         val bank: Bank,
 
         @ApiModelProperty("会员姓名")
-        val name: String,
+        val name: String?,
 
         @ApiModelProperty("银行卡号")
-        val bankCardNumber: String,
+        val bankCardNumber: String?
 
-        @ApiModelProperty("状态")
-        val status: Status,
-
-        @ApiModelProperty("创建时间")
-        val createdTime: LocalDateTime
+//        @ApiModelProperty("状态")
+//        val status: Status,
+//
+//        @ApiModelProperty("创建时间")
+//        val createdTime: LocalDateTime
 )
 
 

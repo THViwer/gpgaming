@@ -13,6 +13,7 @@ import com.onepiece.treasure.core.dao.WithdrawDao
 import com.onepiece.treasure.core.service.WalletService
 import com.onepiece.treasure.core.service.WithdrawService
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Service
@@ -37,9 +38,13 @@ class WithdrawServiceImpl(
         return Page.of(total, data)
     }
 
+    @Transactional(rollbackFor = [Exception::class])
     override fun create(withdrawCo: WithdrawCo) {
         val state = withdrawDao.create(withdrawCo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        val wallet = walletService.getMemberWallet(withdrawCo.memberId)
+        check(wallet.balance.toDouble() >= withdrawCo.money.toDouble()) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
 
         val walletUo = WalletUo(clientId = withdrawCo.clientId, waiterId = null, memberId = withdrawCo.memberId, money = withdrawCo.money,
                 eventId = withdrawCo.orderId, event = WalletEvent.FREEZE, remarks = "memberId:${withdrawCo.memberId} freeze")

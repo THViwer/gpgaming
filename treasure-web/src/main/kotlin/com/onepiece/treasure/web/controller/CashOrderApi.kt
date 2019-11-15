@@ -33,9 +33,9 @@ interface CashOrderApi {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun check(@RequestBody depositUoReq: DepositUoReq)
 
-    @ApiOperation(tags = ["cash"], value = "充值 -> 强行添加金额")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun artificial(@RequestBody artificialCoReq: ArtificialCoReq)
+//    @ApiOperation(tags = ["cash"], value = "充值 -> 强行添加金额")
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    fun artificial(@RequestBody artificialCoReq: ArtificialCoReq)
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 列表")
     fun withdraw(
