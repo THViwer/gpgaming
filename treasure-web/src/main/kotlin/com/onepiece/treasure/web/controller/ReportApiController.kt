@@ -40,10 +40,10 @@ class ReportApiController(
     override fun memberPlatformDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
-            @RequestParam(value = "username") username: String
+            @RequestParam(value = "memberId") memberId: Int
     ): List<MemberPlatformReportWebVo> {
 
-        val memberId = memberService.findByUsername(username)?.id?: return emptyList()
+//        val memberId = memberService.findByUsername(username)?.id?: return emptyList()
 
         val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
         val history = memberPlatformDailyReportService.query(query)

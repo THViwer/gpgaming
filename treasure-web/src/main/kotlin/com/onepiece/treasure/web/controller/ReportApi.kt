@@ -17,7 +17,7 @@ interface ReportApi {
     fun memberPlatformDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
-            @RequestParam(value = "username") username: String
+            @RequestParam(value = "memberId") memberId: Int
     ): List<MemberPlatformReportWebVo>
 
     @ApiOperation(tags = ["report"], value = "会员报表")
