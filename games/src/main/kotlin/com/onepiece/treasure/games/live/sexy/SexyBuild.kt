@@ -26,4 +26,7 @@ class SexyBuild private constructor(val method: String){
     }
 
 
+
+    val x  =    "{\"appId\": \"MSN9MY\", \"key\": \"Aaa11111\"}"
+
 }

@@ -1,5 +1,6 @@
 package com.onepiece.treasure.beans.value.internet.web
 
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.PromotionCategory
 import com.onepiece.treasure.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
@@ -42,7 +43,10 @@ data class PromotionVo(
         val createdTime: LocalDateTime,
 
         @ApiModelProperty("更新时间")
-        val updatedTime: LocalDateTime
+        val updatedTime: LocalDateTime,
+
+        @ApiModelProperty("国际化内容 ")
+        val i18nContents: List<I18nContentVo>
 
 )
 
@@ -59,6 +63,9 @@ data class PromotionCoReq(
 
         @ApiModelProperty("图标")
         val icon: String,
+
+        @ApiModelProperty("语言")
+        val language: Language,
 
         @ApiModelProperty("标题")
         val title: String,
@@ -87,15 +94,6 @@ data class PromotionUoReq(
 
         @ApiModelProperty("图标")
         val icon: String?,
-
-        @ApiModelProperty("标题")
-        val title: String?,
-
-        @ApiModelProperty("简介")
-        val synopsis: String?,
-
-        @ApiModelProperty("内容")
-        val content: String?,
 
         @ApiModelProperty("状态")
         val status: Status?

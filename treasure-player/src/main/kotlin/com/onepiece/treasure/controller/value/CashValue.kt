@@ -156,6 +156,20 @@ data class CashTransferReq(
 
 )
 
+data class BalanceVo(
+        @ApiModelProperty("平台名称")
+        val platform: Platform,
+
+        @ApiModelProperty("余额")
+        val balance: BigDecimal,
+
+        @ApiModelProperty("是否可以转账")
+        val transfer: Boolean,
+
+        @ApiModelProperty("提示信息(一般参加活动时无法提款才会有)")
+        val tips: String?
+)
+
 //enum class TransferAction {
 //
 //        // 中心 -> 平台

@@ -12,6 +12,7 @@ object OnePieceExceptionCode {
     const val SYSTEM = "1000"
     const val DB_CHANGE_FAIL = "1001"
     const val DATA_FAIL = "1002" // 数据异常
+    const val LANGUAGE_CONFIG_FAIL = "1003" // 语言配置错误
 
     // 2000 verification error
 

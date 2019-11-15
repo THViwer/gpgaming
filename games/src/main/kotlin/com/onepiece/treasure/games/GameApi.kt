@@ -1,7 +1,7 @@
 package com.onepiece.treasure.games
 
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.enums.StartPlatform
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
@@ -60,7 +60,7 @@ class GameApi(
             Platform.Pussy888 -> pussy888Service
             Platform.Evolution -> evolutionService
             Platform.Lbc -> lbcService
-            Platform.Sexy -> sexyService
+            Platform.SexyGaming -> sexyService
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
@@ -114,7 +114,7 @@ class GameApi(
     /**
      * 开始游戏(平台)
      */
-    fun start(clientId: Int, platformUsername: String, platform: Platform, startPlatform: StartPlatform = StartPlatform.Pc): String {
+    fun start(clientId: Int, platformUsername: String, platform: Platform, startPlatform: LaunchMethod = LaunchMethod.Pc): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 

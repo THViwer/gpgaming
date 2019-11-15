@@ -9,7 +9,6 @@ import com.onepiece.treasure.core.dao.PromotionDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Repository
@@ -23,28 +22,22 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val stopTime = rs.getTimestamp("stop_time")?.toLocalDateTime()
             val top = rs.getBoolean("top")
             val icon = rs.getString("icon")
-            val title = rs.getString("title")
-            val synopsis = rs.getString("synopsis")
-            val content = rs.getString("content")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
-            Promotion(id = id, category = category, stopTime = stopTime, icon = icon, title = title, synopsis = synopsis,
-                    content = content, status = status, createdTime = createdTime, clientId = clientId, top = top, updatedTime = updatedTime)
+            Promotion(id = id, category = category, stopTime = stopTime, icon = icon, status = status, createdTime = createdTime,
+                    clientId = clientId, top = top, updatedTime = updatedTime)
         }
 
-    override fun create(promotionCo: PromotionCo): Boolean {
+    override fun create(promotionCo: PromotionCo): Int {
         return insert()
                 .set("client_id", promotionCo.clientId)
                 .set("category", promotionCo.category)
                 .set("stop_time", promotionCo.stopTime)
                 .set("top", promotionCo.top)
                 .set("icon", promotionCo.icon)
-                .set("title", promotionCo.title)
-                .set("synopsis", promotionCo.synopsis)
-                .set("content", promotionCo.content)
                 .set("status", Status.Normal)
-                .executeOnlyOne()
+                .executeGeneratedKey()
     }
 
     override fun update(promotionUo: PromotionUo): Boolean {
@@ -53,9 +46,6 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("stop_time", promotionUo.stopTime)
                 .set("top", promotionUo.top)
                 .set("icon", promotionUo.icon)
-                .set("title", promotionUo.title)
-                .set("synopsis", promotionUo.synopsis)
-                .set("content", promotionUo.content)
                 .set("status", promotionUo.status)
                 .set("updated_time", LocalDateTime.now())
                 .where("id", promotionUo.id)

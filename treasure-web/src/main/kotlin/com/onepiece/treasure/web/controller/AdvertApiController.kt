@@ -5,14 +5,14 @@ import com.onepiece.treasure.beans.value.database.AdvertUo
 import com.onepiece.treasure.beans.value.internet.web.AdvertCoReq
 import com.onepiece.treasure.beans.value.internet.web.AdvertUoReq
 import com.onepiece.treasure.beans.value.internet.web.AdvertVo
-import com.onepiece.treasure.core.service.AdvertService
+import com.onepiece.treasure.core.service.BannerService
 import com.onepiece.treasure.web.controller.basic.BasicController
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/advert")
 class AdvertApiController(
-        private val advertService: AdvertService
+        private val advertService: BannerService
 ) : BasicController(), AdvertApi {
 
     @GetMapping

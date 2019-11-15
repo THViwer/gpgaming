@@ -1,6 +1,6 @@
 package com.onepiece.treasure.beans.value.internet.web
 
-import com.onepiece.treasure.beans.enums.AdvertType
+import com.onepiece.treasure.beans.enums.BannerType
 import com.onepiece.treasure.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
@@ -23,7 +23,7 @@ data class AdvertVo(
         val touchIcon: String?,
 
         @ApiModelProperty("类型")
-        val position: AdvertType,
+        val position: BannerType,
 
         @ApiModelProperty("连接地址")
         val link: String,
@@ -50,7 +50,7 @@ data class AdvertCoReq(
         val touchIcon: String?,
 
         @ApiModelProperty("类型")
-        val position: AdvertType,
+        val position: BannerType,
 
         @ApiModelProperty("连接地址")
         val link: String
@@ -72,7 +72,7 @@ data class AdvertUoReq(
         val touchIcon: String?,
 
         @ApiModelProperty("类型")
-        val position: AdvertType?,
+        val position: BannerType?,
 
         @ApiModelProperty("连接地址")
         val link: String?,

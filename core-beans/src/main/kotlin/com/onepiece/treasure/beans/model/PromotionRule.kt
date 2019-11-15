@@ -44,14 +44,33 @@ data class PromotionRule(
 
 }
 
-data class TransferGift(
+sealed class PromotionRules{
 
-        // 打码倍数
-        val betMultiple: BigDecimal,
+    data class BetRule(
 
-        // 最小金额
-        val minMoney: BigDecimal,
+            // 打码倍数
+            val betMultiple: BigDecimal,
 
-        // 赠送比例
-        val giftProportion: BigDecimal
-)
+            // 最小金额
+            val minMoney: BigDecimal,
+
+            // 赠送比例
+            val giftProportion: BigDecimal
+    )
+
+    data class TransferRule(
+
+            // 最小转账金额
+            val minTransferAmount: BigDecimal,
+
+            // 最大转账金额
+            val maxTransferAmount: BigDecimal,
+
+            // 取款倍数
+            val transferMultiplied: BigDecimal
+
+    )
+
+}
+
+

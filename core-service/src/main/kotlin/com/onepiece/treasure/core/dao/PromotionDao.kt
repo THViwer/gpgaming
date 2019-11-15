@@ -7,7 +7,7 @@ import com.onepiece.treasure.core.dao.basic.BasicDao
 
 interface PromotionDao: BasicDao<Promotion> {
 
-    fun create(promotionCo: PromotionCo): Boolean
+    fun create(promotionCo: PromotionCo): Int
 
     fun update(promotionUo: PromotionUo): Boolean
 

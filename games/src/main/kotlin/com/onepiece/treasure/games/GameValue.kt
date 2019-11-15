@@ -1,6 +1,6 @@
 package com.onepiece.treasure.games
 
-import com.onepiece.treasure.beans.enums.StartPlatform
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.model.token.ClientToken
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -23,7 +23,7 @@ sealed class GameValue {
 
             val username: String,
 
-            val startPlatform: StartPlatform
+            val startPlatform: LaunchMethod
     )
 
     data class StartSlotReq(

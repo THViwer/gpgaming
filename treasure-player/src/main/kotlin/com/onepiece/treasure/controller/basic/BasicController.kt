@@ -26,6 +26,10 @@ abstract class BasicController {
 
     val ip = "192.68.2.31"
 
+    fun getClientIdByDomain(): Int {
+        return 1
+    }
+
     fun current(): JwtUser {
         try {
             return SecurityContextHolder.getContext().authentication.principal as JwtUser

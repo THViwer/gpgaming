@@ -1,5 +1,6 @@
 package com.onepiece.treasure.beans.value.database
 
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.PromotionCategory
 import com.onepiece.treasure.beans.enums.Status
 import java.time.LocalDateTime
@@ -20,6 +21,9 @@ data class PromotionCo(
 
         // 图标
         val icon: String,
+
+        // 语言
+        val language: Language,
 
         // 标题
         val title: String,

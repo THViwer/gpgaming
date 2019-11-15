@@ -262,14 +262,80 @@ open class CashApiController(
     }
 
     @GetMapping("/balance")
-    override fun balance(@RequestHeader platform: Platform): BigDecimal {
+    override fun balance(@RequestHeader platform: Platform): BalanceVo {
         val member = current()
-        return when (platform) {
+        val balance =  when (platform) {
             Platform.Center -> walletService.getMemberWallet(current().id).balance
             else -> {
                 val platformMemberVo = getPlatformMember(platform)
                 gameApi.balance(clientId = member.clientId, platformUsername = platformMemberVo.platformUsername, platform = platform)
             }
         }
+        return BalanceVo(platform = platform, balance = balance, transfer = false, tips = null)
+    }
+
+    @GetMapping
+    override fun balances(): List<BalanceVo> {
+
+        val member = this.current()
+        val clientId = member.clientId
+        val memberId = member.id
+
+        // 查询主钱包
+        val wallet = walletService.getMemberWallet(memberId = memberId)
+        val walletBalanceVo = BalanceVo(platform = Platform.Center, balance = wallet.balance, transfer = false, tips = null)
+
+        // 查询厅主开通的平台列表
+        val platforms = platformBindService.findClientPlatforms(clientId)
+
+        // 查询用户开通的平台列表
+        val platformMemberMap = platformMemberService.findPlatformMember(memberId = memberId).map { it.platform to it }.toMap()
+
+
+        // 查询余额 //TODO 暂时没用async
+        val balances = platforms.map {
+            val platformMember = platformMemberMap[it.platform]
+
+            when (platformMember == null) {
+                true -> BalanceVo(platform = it.platform, balance = BigDecimal.ZERO, transfer = false, tips = null)
+                else -> {
+                    val balance = gameApi.balance(clientId = clientId, platformUsername = platformMember.username, platform = it.platform)
+
+                    //TODO 暂时不处理是否可以转账和提示信息
+                    BalanceVo(platform = it.platform, balance = balance, transfer = false, tips = null)
+                }
+            }
+        }
+
+        return balances.plus(walletBalanceVo)
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

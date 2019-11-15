@@ -1,102 +1,126 @@
 package com.onepiece.treasure.beans.enums
 
+
 enum class Platform(
-
-        // 平台类型
-        val category: PlatformCategory,
-
-        // 平台名称
-        val cname: String,
-
-        // 图标
-        val icon: String,
-
-        // 启动平台列表
-        val starts: List<StartPlatform>
+        val detail: PlatformDetail
 ) {
 
     // 中心 用于钱包 不用于游戏
-    Center(PlatformCategory.Slot, "center", "", listOf()),
+    Center(PlatformDetail.ofCenter()),
 
     // slot
-    Joker(
-            PlatformCategory.Slot,
-            "joker",
-            "https://ali88win.com/img/product-logo/joker.png",
-            listOf(StartPlatform.Pc, StartPlatform.Wap)),
-    Kiss918(
-            PlatformCategory.Slot,
-            "918kiss",
-            "https://ali88win.com/img/product-logo/joker.png",
-            listOf(StartPlatform.Pc, StartPlatform.Wap, StartPlatform.Android)),
-
-    Pussy888(
-            PlatformCategory.Slot,
-            "pussy888",
-            "https://ali88win.com/img/product-logo/joker.png",
-            listOf(StartPlatform.Pc, StartPlatform.Wap, StartPlatform.Android)),
-
-    Mega(
-            PlatformCategory.Slot,
-            "mega",
-            "https://ali88win.com/img/product-logo/joker.png",
-            listOf(StartPlatform.Ios, StartPlatform.Android)),
+    Joker(PlatformDetail.ofJoker()),
+    Kiss918(PlatformDetail.ofKiss918()),
+    Pussy888(PlatformDetail.ofPussy888()),
+    Mega(PlatformDetail.ofMega()),
 
     // live video
-    CT(
-            PlatformCategory.LiveVideo,
-            "ct",
-            "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
-            listOf(StartPlatform.Ios, StartPlatform.Android)),
-
-    DG(
-            PlatformCategory.LiveVideo,
-            "dg",
-            "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
-            listOf(StartPlatform.Ios, StartPlatform.Android)),
-
-    Evolution(
-            PlatformCategory.LiveVideo,
-            "evolution",
-            "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
-            listOf(StartPlatform.Pc, StartPlatform.Wap)
-    ),
-
-    GoldDeluxe(
-            PlatformCategory.LiveVideo,
-            "golddeluxe",
-            "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
-            listOf(StartPlatform.Pc, StartPlatform.Wap)
-    ),
-
-    Sexy(
-            PlatformCategory.LiveVideo,
-            "sexy gaming",
-            "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
-            listOf(StartPlatform.Pc, StartPlatform.Wap)
-    ),
+    CT(PlatformDetail.ofCT()),
+    DG(PlatformDetail.ofDG()),
+    Evolution(PlatformDetail.ofEvolution()),
+    GoldDeluxe(PlatformDetail.ofGoldDeluxe()),
+    SexyGaming(PlatformDetail.ofSexyGaming()),
 
     // sport
-    Sbo(
-            PlatformCategory.Sport,
-            "sbo",
-            "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
-            listOf(StartPlatform.Pc, StartPlatform.Wap)),
-
-    Lbc(
-            PlatformCategory.Sport,
-            "lbc",
-            "https://www.bk8my.com/public/new_bk8/content/images/firms/firms_mobile_mega_888_of.png",
-            listOf(StartPlatform.Pc, StartPlatform.Wap))
-
-    ;
+    Sbo(PlatformDetail.ofSbo()),
+    Lbc(PlatformDetail.ofLbc());
 
     companion object {
 
         fun all(): List<Platform> {
             return values().filter { it != Center }
         }
-
     }
 
 }
+
+data class PlatformDetail private constructor(
+
+        // 平台类型
+        val category: PlatformCategory,
+
+        // 平台名称
+        val name: String,
+
+        // 图标
+        val icon: String,
+
+        // 平台维护图标
+        val disableIcon: String,
+
+        // 状态
+        val status: Status,
+
+        // 启动方式
+        val launchs: List<LaunchMethod> = listOf(LaunchMethod.Pc, LaunchMethod.Wap)
+) {
+
+    companion object {
+
+        fun ofCenter(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Slot, name = "AMZBET", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = emptyList())
+        }
+
+        // slot
+        fun ofJoker(): PlatformDetail {
+            return return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Pc, LaunchMethod.Wap, LaunchMethod.Android))
+        }
+
+        fun ofKiss918(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Kiss918", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
+        }
+
+        fun ofPussy888(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Pussy888", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
+        }
+
+        fun ofMega(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Mega", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
+        }
+
+        // live game
+        fun ofCT(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "CT", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+        }
+
+        fun ofDG(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "GD", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+        }
+
+        fun ofEvolution(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "Evolution", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+        }
+
+        fun ofGoldDeluxe(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "GoldDeluxe", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+        }
+        fun ofSexyGaming(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sexy gaming", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+        }
+
+        // soprt
+        fun ofSbo(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Sport, name = "sbo", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+        }
+
+        fun ofLbc(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Sport, name = "lbc", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+        }
+
+    }
+
+
+}
+

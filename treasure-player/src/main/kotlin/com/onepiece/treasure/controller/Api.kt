@@ -1,7 +1,8 @@
 package com.onepiece.treasure.controller
 
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.enums.StartPlatform
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.controller.value.*
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -13,22 +14,28 @@ import org.springframework.web.bind.annotation.RequestParam
 interface Api {
 
     @ApiOperation(tags = ["api"], value = "首页配置")
-    fun config(@RequestHeader("clientId") clientId: Int): ConfigVo
+    fun config(
+            @RequestHeader("language", defaultValue = "EN") language: Language): ConfigVo
 
     @ApiOperation(tags = ["api"], value = "优惠活动")
-    fun promotion(@RequestHeader("clientId") clientId: Int): List<PromotionVo>
+    fun promotion(
+            @RequestHeader("clientId") clientId: Int,
+            @RequestHeader("language", defaultValue = "EN") language: Language
+    ): List<PromotionVo>
 
     @ApiOperation(tags = ["api"], value = "老虎机菜单")
-    fun slotMenu(@RequestParam("platform") platform: Platform): List<SlotMenu>
+    fun slotMenu(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestParam("platform") platform: Platform): List<SlotMenu>
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台)")
     fun start(
             @RequestHeader("platform") platform: Platform,
-            @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: StartPlatform): StartGameResp
+            @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台试玩)")
     fun startDemo(@RequestHeader("platform") platform: Platform,
-                  @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: StartPlatform): StartGameResp
+                  @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始游戏(老虎机)")
     fun startSlotGame(@RequestHeader("platform") platform: Platform,

@@ -27,15 +27,6 @@ data class Promotion (
         // 图标
         val icon: String,
 
-        // 标题
-        val title: String,
-
-        // 简介
-        val synopsis: String?,
-
-        // 内容
-        val content: String,
-
         // 活动状态
         val status: Status,
 

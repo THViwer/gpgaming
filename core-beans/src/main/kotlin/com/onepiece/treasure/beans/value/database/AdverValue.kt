@@ -1,9 +1,9 @@
 package com.onepiece.treasure.beans.value.database
 
-import com.onepiece.treasure.beans.enums.AdvertType
+import com.onepiece.treasure.beans.enums.BannerType
 import com.onepiece.treasure.beans.enums.Status
 
-data class AdvertCo(
+data class BannerCo(
 
         // 厅主Id
         val clientId: Int,
@@ -15,16 +15,16 @@ data class AdvertCo(
         val touchIcon: String?,
 
         // 位置
-        val position: AdvertType,
+        val type: BannerType,
 
         // 排序
         val order: Int,
 
         // 连接地址
-        val link: String
+        val link: String?
 )
 
-data class AdvertUo(
+data class BannerUo(
 
         val id: Int,
 
@@ -35,7 +35,7 @@ data class AdvertUo(
         val touchIcon: String?,
 
         // 位置
-        val position: AdvertType?,
+        val type: BannerType?,
 
         // 排序
         val order: Int?,

@@ -1,6 +1,6 @@
 package com.onepiece.treasure.games.live.ct
 
-import com.onepiece.treasure.beans.enums.StartPlatform
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import java.math.BigDecimal
 
@@ -15,13 +15,13 @@ interface CTApi {
     /**
      * 启动游戏
      */
-    fun login(token: DefaultClientToken, username: String, startPlatform: StartPlatform): String
+    fun login(token: DefaultClientToken, username: String, startPlatform: LaunchMethod): String
 
 
     /**
      * 启动试玩
      */
-    fun loginFree(token: DefaultClientToken, startPlatform: StartPlatform): String
+    fun loginFree(token: DefaultClientToken, startPlatform: LaunchMethod): String
 
     /**
      * 获得余额

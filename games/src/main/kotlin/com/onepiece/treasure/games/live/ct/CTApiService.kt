@@ -1,7 +1,7 @@
 package com.onepiece.treasure.games.live.ct
 
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.enums.StartPlatform
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
@@ -61,7 +61,7 @@ class CTApiService(
         return username
     }
 
-    override fun login(token: DefaultClientToken, username: String, startPlatform: StartPlatform): String {
+    override fun login(token: DefaultClientToken, username: String, startPlatform: LaunchMethod): String {
 
         val param = CTBuild.instance(token, "login")
         val data = """
@@ -79,14 +79,14 @@ class CTApiService(
         checkCode(result.codeId)
 
         return when (startPlatform) {
-            StartPlatform.Pc -> result.list[0]
-            StartPlatform.Wap -> result.list[1]
+            LaunchMethod.Pc -> result.list[0]
+            LaunchMethod.Wap -> result.list[1]
             else -> result.list[2]
         }.plus(result.token)
 
     }
 
-    override fun loginFree(token: DefaultClientToken, startPlatform: StartPlatform): String {
+    override fun loginFree(token: DefaultClientToken, startPlatform: LaunchMethod): String {
         val param = CTBuild.instance(token, "free")
         val data = """
             {
@@ -101,8 +101,8 @@ class CTApiService(
         checkCode(result.codeId)
 
         return when (startPlatform) {
-            StartPlatform.Pc -> result.list[0]
-            StartPlatform.Wap -> result.list[1]
+            LaunchMethod.Pc -> result.list[0]
+            LaunchMethod.Wap -> result.list[1]
             else -> result.list[2]
         }.plus(result.token)
     }

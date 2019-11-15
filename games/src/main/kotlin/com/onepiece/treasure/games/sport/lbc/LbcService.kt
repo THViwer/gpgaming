@@ -1,6 +1,6 @@
 package com.onepiece.treasure.games.sport.lbc
 
-import com.onepiece.treasure.beans.enums.StartPlatform
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.games.GameConstant
@@ -94,8 +94,8 @@ class LbcService(
         this.checkCode(result.errorCode)
 
         return when (startReq.startPlatform) {
-            StartPlatform.Pc -> "${GameConstant.LBC_START_URL}${result.sessionToken}"
-            StartPlatform.Wap -> "${GameConstant.LBC_START_MOBILE_URL}${result.sessionToken}"
+            LaunchMethod.Pc -> "${GameConstant.LBC_START_URL}${result.sessionToken}"
+            LaunchMethod.Wap -> "${GameConstant.LBC_START_MOBILE_URL}${result.sessionToken}"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }

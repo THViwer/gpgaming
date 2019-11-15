@@ -24,9 +24,9 @@ class ClientPlatformApiController(): BasicController(), ClientPlatformApi {
             val clientBind = clientBinds[it]
 
             if (clientBind != null) {
-                PlatformVo(id = clientBind.id, category = it.category, name = it.cname, status = clientBind.status, open = true)
+                PlatformVo(id = clientBind.id, category = it.detail.category, name = it.detail.name, status = clientBind.status, open = true)
             } else {
-                PlatformVo(id = -1, category = it.category, name = it.cname, status = Status.Stop, open = false)
+                PlatformVo(id = -1, category = it.detail.category, name = it.detail.name, status = Status.Stop, open = false)
             }
         }
 

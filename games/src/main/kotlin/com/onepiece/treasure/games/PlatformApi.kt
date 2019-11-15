@@ -1,6 +1,6 @@
 package com.onepiece.treasure.games
 
-import com.onepiece.treasure.beans.enums.StartPlatform
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
 import java.math.BigDecimal
@@ -25,7 +25,7 @@ abstract class PlatformApi {
         error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
     }
 
-    open fun startSlotDemo(token: ClientToken, startPlatform: StartPlatform): String {
+    open fun startSlotDemo(token: ClientToken, startPlatform: LaunchMethod): String {
         error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
     }
 

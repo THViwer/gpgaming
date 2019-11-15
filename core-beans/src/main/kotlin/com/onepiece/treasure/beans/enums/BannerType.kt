@@ -1,6 +1,6 @@
 package com.onepiece.treasure.beans.enums
 
-enum class AdvertType {
+enum class BannerType {
 
     Banner,
 

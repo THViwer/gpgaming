@@ -9,6 +9,7 @@ import com.onepiece.treasure.beans.value.internet.web.DepositVo
 import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
 import com.onepiece.treasure.controller.value.*
 import io.swagger.annotations.Api
+import io.swagger.annotations.ApiModelProperty
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
-import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Api(tags = ["cash"], description = " ")
@@ -67,6 +67,9 @@ interface CashApi {
     fun transfer(@RequestBody cashTransferReq: CashTransferReq)
 
     @ApiOperation(tags = ["cash"], value = "查询余额")
-    fun balance(@RequestHeader("platform") platform: Platform):BigDecimal
+    fun balance(@RequestHeader("platform") platform: Platform):BalanceVo
+
+    @ApiOperation(tags = ["cash"], value = "查询所有余额")
+    fun balances(): List<BalanceVo>
 
 }

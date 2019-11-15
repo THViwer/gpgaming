@@ -1,10 +1,9 @@
 package com.onepiece.treasure.games.live.dg
 
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.enums.StartPlatform
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.order.CTBetOrder
@@ -127,15 +126,15 @@ class DGApiService(
         checkCode(result.codeId)
 
         return when (startReq.startPlatform) {
-            StartPlatform.Pc -> result.list[0]
-            StartPlatform.Wap -> result.list[1]
+            LaunchMethod.Pc -> result.list[0]
+            LaunchMethod.Wap -> result.list[1]
             else -> result.list[2]
         }.plus(result.token)
 
     }
 
 
-    override fun startSlotDemo(token: ClientToken, startPlatform: StartPlatform): String {
+    override fun startSlotDemo(token: ClientToken, startPlatform: LaunchMethod): String {
         val param = DGBuild.instance(token, "/user/free")
         val data = """
             {
@@ -150,8 +149,8 @@ class DGApiService(
         checkCode(result.codeId)
 
         return when (startPlatform) {
-            StartPlatform.Pc -> result.list[0]
-            StartPlatform.Wap -> result.list[1]
+            LaunchMethod.Pc -> result.list[0]
+            LaunchMethod.Wap -> result.list[1]
             else -> result.list[2]
         }.plus(result.token)
     }

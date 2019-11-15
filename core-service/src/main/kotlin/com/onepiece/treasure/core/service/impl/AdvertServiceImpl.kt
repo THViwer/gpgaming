@@ -1,40 +1,40 @@
 package com.onepiece.treasure.core.service.impl
 
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.treasure.beans.model.Advert
-import com.onepiece.treasure.beans.value.database.AdvertCo
-import com.onepiece.treasure.beans.value.database.AdvertUo
+import com.onepiece.treasure.beans.model.Banner
+import com.onepiece.treasure.beans.value.database.BannerCo
+import com.onepiece.treasure.beans.value.database.BannerUo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
-import com.onepiece.treasure.core.dao.AdvertDao
-import com.onepiece.treasure.core.service.AdvertService
+import com.onepiece.treasure.core.dao.BannerDao
+import com.onepiece.treasure.core.service.BannerService
 import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
 
 @Service
 class AdvertServiceImpl(
-        private val advertDao: AdvertDao,
+        private val advertDao: BannerDao,
         private val redisService: RedisService
-) : AdvertService {
+) : BannerService {
 
-    override fun all(clientId: Int): List<Advert> {
+    override fun all(clientId: Int): List<Banner> {
         val redisKey = OnePieceRedisKeyConstant.adverts(clientId)
-        return redisService.getList(redisKey, Advert::class.java) {
+        return redisService.getList(redisKey, Banner::class.java) {
             advertDao.all(clientId)
         }
     }
 
-    override fun create(advertCo: AdvertCo) {
-        val state = advertDao.create(advertCo)
+    override fun create(bannerCo: BannerCo) {
+        val state = advertDao.create(bannerCo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
-        redisService.delete(OnePieceRedisKeyConstant.adverts(advertCo.clientId))
+        redisService.delete(OnePieceRedisKeyConstant.adverts(bannerCo.clientId))
     }
 
-    override fun update(advertUo: AdvertUo) {
+    override fun update(bannerUo: BannerUo) {
 
-        val advert = advertDao.get(advertUo.id)
+        val advert = advertDao.get(bannerUo.id)
 
-        val state = advertDao.update(advertUo)
+        val state = advertDao.update(bannerUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
 

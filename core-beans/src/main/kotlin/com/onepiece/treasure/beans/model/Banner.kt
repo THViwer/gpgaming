@@ -1,13 +1,13 @@
 package com.onepiece.treasure.beans.model
 
-import com.onepiece.treasure.beans.enums.AdvertType
+import com.onepiece.treasure.beans.enums.BannerType
 import com.onepiece.treasure.beans.enums.Status
 import java.time.LocalDateTime
 
 /**
  * 首页广告
  */
-data class Advert(
+data class Banner(
 
         // id
         val id: Int,
@@ -25,7 +25,7 @@ data class Advert(
         val touchIcon: String?,
 
         // 位置
-        val position: AdvertType,
+        val type: BannerType,
 
         // 连接地址
         val link: String,

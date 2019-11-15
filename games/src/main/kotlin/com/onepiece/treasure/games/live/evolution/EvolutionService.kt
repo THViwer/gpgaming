@@ -1,6 +1,6 @@
 package com.onepiece.treasure.games.live.evolution
 
-import com.onepiece.treasure.beans.enums.StartPlatform
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
@@ -21,7 +21,7 @@ class EvolutionService(
     override fun register(registerReq: GameValue.RegisterReq): String {
         // EvoConfig.API_URL+"/ua/v1/"+EvoConfig.KEY+"/"+EvoConfig.TOKEN;
 
-        val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, startPlatform = StartPlatform.Pc)
+        val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, startPlatform = LaunchMethod.Pc)
         this.start(startReq)
 
         return registerReq.username
