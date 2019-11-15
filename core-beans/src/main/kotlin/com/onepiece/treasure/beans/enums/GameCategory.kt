@@ -2,20 +2,25 @@ package com.onepiece.treasure.beans.enums
 
 enum class GameCategory {
 
-    All,
+//    All,
 
-    HOT,
+//    HOT,
+//
+//    NEW,
 
-    NEW,
-
+    // 老虎机
     SLOT,
 
+    // 捕鱼
     FISHING,
 
+    // 赌场
     ECASINO,
 
-    TABLE,
+//    TABLE
 
-    ARCADE
+//    ARCADE
+
+    ;
 
 }
