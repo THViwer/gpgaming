@@ -170,7 +170,7 @@ data class CashTransferReq(
         @ApiModelProperty("转入的钱包")
         val to: Platform,
 
-        @ApiModelProperty("转出金额 中心 -> 平台 有效")
+        @ApiModelProperty("金额")
         val amount: BigDecimal,
 
         @ApiModelProperty("参加优惠活动Id")
