@@ -430,10 +430,10 @@ open class CashApiController(
                 val (transfer, tips) = this.checkCanTransferOutAndTips(platformMember = platformMember, platformBalance = platformBalance, language = language)
 
 
-                val transferIn = platformMember.joinPromotionId?.let {
-                    val promotion = promotionService.get(it)
-                    this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
-                }?: true
+//                val transferIn = platformMember.joinPromotionId?.let {
+//                    val promotion = promotionService.get(it)
+//                    this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
+//                }?: true
 
                 BalanceVo(platform = platform, balance = platformBalance, transfer = transfer, tips = tips)
             }
@@ -490,13 +490,14 @@ open class CashApiController(
         if (platformMember.joinPromotionId == null) return true to null
 
         val promotion = promotionService.get(platformMember.joinPromotionId!!)
-        return when (promotion.ruleType) {
-            PromotionRuleType.Bet -> {
+        return when {
+            promotion.rule.ignoreTransferOutAmount.toDouble() >= platformBalance.toDouble() -> true to null
+            promotion.ruleType == PromotionRuleType.Bet -> {
                 val transfer = platformMember.currentBet.toDouble() > platformMember.requirementBet.toDouble()
                 val tips = "转出需要打码量:${platformMember.requirementBet}, 当前打码量:${platformMember.currentBet}"
                 transfer to tips
             }
-            PromotionRuleType.Withdraw -> {
+            promotion.ruleType == PromotionRuleType.Withdraw -> {
                 val transfer = platformMember.requirementTransferOutAmount.toDouble() <= platformBalance.toDouble()
                 val tips = "转出需要最小金额:${platformMember.requirementTransferOutAmount.toDouble()}, 当前平台金额:${platformBalance.toDouble()}"
                 transfer to tips
