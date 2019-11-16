@@ -37,6 +37,9 @@ object OnePieceExceptionCode {
     const val BALANCE_SHORT_FAIL = "5003" // 余额不足
     const val SAFETY_PASSWORD_CHECK_FAIL = "5004" // 取款密码错误
     const val BALANCE_NOT_WORTH = "5005" // 余额不足
+    const val CENTER_TO_PLATFORM_FAIl = "5006" // 中心转平台 不满足优惠活动转入
+    const val PLATFORM_TO_CENTER_FAIL = "5007" // 平台转中心 不满足优惠活动转出
+    const val PLATFORM_HAS_BALANCE_PROMOTION_FAIL = "5008" // 平台钱包有余额 不可参加活动
 
     // 60000 platform method error
     const val PLATFORM_METHOD_FAIL = "6001" // 平台方式错误

@@ -24,16 +24,28 @@ data class PlatformMemberCo(
 data class PlatformMemberTransferUo(
         val id: Int,
 
-        // 金额
-        val money: BigDecimal,
 
-        // 赠送金额
-        val giftBalance: BigDecimal,
+        // 下面属性随时会变 是做记录用
+        // 参加优惠活动Id
+        val joinPromotionId: Int?,
+
+        // 当前打码量
+        val currentBet: BigDecimal,
 
         // 需要打码量
-        val demandBet: BigDecimal
+        val requirementBet: BigDecimal,
 
+        // 优惠金额
+        val promotionAmount: BigDecimal,
 
+        // 转到平台金额
+        val transferAmount: BigDecimal,
+
+        // 转出到中心平台
+        val requirementTransferOutAmount: BigDecimal,
+
+        // 当金额小于时 不需要打码量和转出金额限制
+        val ignoreTransferOutAmount: BigDecimal
 )
 
 data class PlatformMemberBetUo(

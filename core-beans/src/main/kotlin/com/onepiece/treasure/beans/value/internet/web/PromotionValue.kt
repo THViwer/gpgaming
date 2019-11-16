@@ -54,7 +54,7 @@ data class PromotionVo(
 
 data class PromotionRuleVo(
         @ApiModelProperty("充值送类目")
-        val category: PromotionRuleCategory,
+        val ruleType: PromotionRuleType,
 
         @ApiModelProperty("优惠层级Id 如果为null则是全部")
         val levelId: Int?,
@@ -84,8 +84,8 @@ data class PromotionCoReq(
         @ApiModelProperty("默认国际化内容配置")
         val i18nContent: PromotionDefaultContent,
 
-        @JsonProperty("优惠规则")
-        val PromotionRuleVo: PromotionRuleVo
+        @ApiModelProperty("优惠规则")
+        val promotionRuleVo: PromotionRuleVo
 
 )
 
@@ -123,6 +123,9 @@ data class PromotionUoReq(
 
         @ApiModelProperty("状态")
         val status: Status?,
+
+        @ApiModelProperty("层级Id")
+        val levelId: Int?,
 
         @ApiModelProperty("优惠规则")
         val ruleJson: String?

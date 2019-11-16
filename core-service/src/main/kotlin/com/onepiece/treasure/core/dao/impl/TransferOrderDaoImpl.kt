@@ -21,14 +21,15 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
             val money = rs.getBigDecimal("money")
-            val giftMoney = rs.getBigDecimal("gift_money")
+            val promotionAmount = rs.getBigDecimal("promotion_amount")
+            val joinPromotionId = rs.getInt("join_promotion_id")
             val from = rs.getString("from").let { Platform.valueOf(it) }
             val to = rs.getString("to").let { Platform.valueOf(it) }
             val state = rs.getString("state").let { TransferState.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
-            TransferOrder(orderId = orderId, clientId = clientId, memberId = memberId, money = money, giftMoney = giftMoney,
-                    from = from, to = to, state = state, createdTime = createdTime, updatedTime = updatedTime)
+            TransferOrder(orderId = orderId, clientId = clientId, memberId = memberId, money = money, promotionAmount = promotionAmount,
+                    from = from, to = to, state = state, createdTime = createdTime, updatedTime = updatedTime, joinPromotionId = joinPromotionId)
         }
 
     override fun create(transferOrderCo: TransferOrderCo): Boolean {
@@ -37,7 +38,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .set("client_id", transferOrderCo.clientId)
                 .set("member_id", transferOrderCo.memberId)
                 .set("money", transferOrderCo.money)
-                .set("gift_money", transferOrderCo.giftMoney)
+                .set("promotion_amount", transferOrderCo.promotionAmount)
                 .set("`from`", transferOrderCo.from)
                 .set("`to`", transferOrderCo.to)
                 .set("state", TransferState.Process)

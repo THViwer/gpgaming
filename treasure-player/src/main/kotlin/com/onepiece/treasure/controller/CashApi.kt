@@ -1,10 +1,7 @@
 package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.base.Page
-import com.onepiece.treasure.beans.enums.Bank
-import com.onepiece.treasure.beans.enums.DepositState
-import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.enums.WithdrawState
+import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
 import com.onepiece.treasure.beans.value.internet.web.DepositVo
 import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
@@ -74,7 +71,9 @@ interface CashApi {
     fun walletNote(): List<WalletNoteVo>
 
     @ApiOperation(tags = ["cash"], value = "查询余额")
-    fun balance(@RequestHeader("platform") platform: Platform):BalanceVo
+    fun balance(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("platform") platform: Platform): BalanceVo
 
     @ApiOperation(tags = ["cash"], value = "查询所有余额")
     fun balances(): List<BalanceVo>

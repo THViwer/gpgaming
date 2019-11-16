@@ -24,25 +24,39 @@ data class PlatformMember(
         // 密码
         val password: String,
 
-        // 当前打码量
-        val currentBet: BigDecimal,
-
-        // 需要打码量
-        val demandBet: BigDecimal,
-
-        // 优惠金额
-        val giftBalance: BigDecimal,
-
         // 总打码量
         val totalBet: BigDecimal,
 
         // 总充值金额
-        val totalBalance: BigDecimal,
+        val totalAmount: BigDecimal,
 
         // 总优惠金额
-        val totalGiftBalance: BigDecimal,
+        val totalPromotionAmount: BigDecimal,
 
         // 创建时间
-        val createdTime: LocalDateTime
+        val createdTime: LocalDateTime,
+
+
+        // 下面属性随时会变 是做记录用
+        // 参加优惠活动Id
+        val joinPromotionId: Int?,
+
+        // 当前打码量
+        val currentBet: BigDecimal,
+
+        // 需要打码量
+        val requirementBet: BigDecimal,
+
+        // 优惠金额
+        val promotionAmount: BigDecimal,
+
+        // 转到平台金额
+        val transferAmount: BigDecimal,
+
+        // 转出到中心平台
+        val requirementTransferOutAmount: BigDecimal,
+
+        // 当金额小于时 不需要打码量和转出金额限制
+        val ignoreTransferOutAmount: BigDecimal
 
 )

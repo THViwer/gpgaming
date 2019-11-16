@@ -6,6 +6,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 data class TransferOrderCo(
+
         // 订单Id
         val orderId: String,
 
@@ -19,7 +20,10 @@ data class TransferOrderCo(
         val money: BigDecimal,
 
         // 赠送金额
-        val giftMoney: BigDecimal,
+        val promotionAmount: BigDecimal,
+
+        // 参加优惠活动Id
+        val joinPromotionId: Int?,
 
         // 转出平台
         val from: Platform,

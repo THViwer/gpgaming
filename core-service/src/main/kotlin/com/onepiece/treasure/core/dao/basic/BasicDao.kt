@@ -1,5 +1,7 @@
 package com.onepiece.treasure.core.dao.basic
 
+import java.sql.ResultSet
+
 interface BasicDao<T> {
 
     fun get(id: Int): T
@@ -8,4 +10,9 @@ interface BasicDao<T> {
 
     fun all(): List<T>
 
+}
+
+
+fun ResultSet.getIntOrNull(column: String): Int? {
+    return this.getObject(column)?.toString()?.toIntOrNull()
 }

@@ -158,8 +158,11 @@ data class CashTransferReq(
         @ApiModelProperty("转入的钱包")
         val to: Platform,
 
-        @ApiModelProperty("转出金额")
-        val money: BigDecimal
+        @ApiModelProperty("转出金额 中心 -> 平台 有效")
+        val money: BigDecimal,
+
+        @ApiModelProperty("是否参加优惠活动 中心 -> 平台 有效")
+        val joinPromotion: Boolean = true
 
 )
 

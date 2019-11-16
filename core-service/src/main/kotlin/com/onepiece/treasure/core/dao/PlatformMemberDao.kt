@@ -12,9 +12,9 @@ interface PlatformMemberDao: BasicDao<PlatformMember> {
 
     fun create(platformMemberCo: PlatformMemberCo): Int
 
-//    fun bet(platformMemberBetUo: PlatformMemberBetUo): Boolean
-
     fun transferIn(platformMemberTransferUo: PlatformMemberTransferUo): Boolean
+
+    fun cleanTransferIn(id: Int): Boolean
 
     fun batchBet(data: List<BetCacheVo>)
 

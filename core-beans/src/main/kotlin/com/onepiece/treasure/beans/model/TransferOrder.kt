@@ -19,8 +19,11 @@ data class TransferOrder(
         // 转账金额
         val money: BigDecimal,
 
-        // 赠送金额
-        val giftMoney: BigDecimal,
+        // 优惠活动金额
+        val promotionAmount: BigDecimal,
+
+        // 参加活动Id
+        val joinPromotionId: Int?,
 
         // 转出平台
         val from: Platform,

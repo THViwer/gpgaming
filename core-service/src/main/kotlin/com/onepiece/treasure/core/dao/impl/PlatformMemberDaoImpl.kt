@@ -7,6 +7,7 @@ import com.onepiece.treasure.beans.value.database.PlatformMemberTransferUo
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.dao.PlatformMemberDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
+import com.onepiece.treasure.core.dao.basic.getIntOrNull
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 import java.sql.ResultSet
@@ -23,16 +24,24 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
             val memberId = rs.getInt("member_id")
             val username = rs.getString("username")
             val password = rs.getString("password")
-            val currentBet = rs.getBigDecimal("current_bet")
-            val demandBet = rs.getBigDecimal("demand_bet")
-            val giftBalance = rs.getBigDecimal("gift_balance")
             val totalBet = rs.getBigDecimal("total_bet")
-            val totalBalance = rs.getBigDecimal("total_balance")
-            val totalGiftBalance = rs.getBigDecimal("total_gift_balance")
+            val totalAmount = rs.getBigDecimal("total_amount")
+            val totalPromotionAmount = rs.getBigDecimal("total_promotion_amount")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+
+            val joinPromotionId = rs.getIntOrNull("join_promotion_id")
+            val currentBet = rs.getBigDecimal("current_bet")
+            val requirementBet = rs.getBigDecimal("requirement_bet")
+            val promotionAmount = rs.getBigDecimal("promotion_amount")
+            val transferAmount = rs.getBigDecimal("transfer_amount")
+            val requirementTransferOutAmount = rs.getBigDecimal("requirement_transfer_out_amount")
+            val ignoreTransferOutAmount = rs.getBigDecimal("ignore_transfer_out_amount")
+
             PlatformMember(id = id, platform = platform, memberId = memberId, username = username, password = password,
-                    currentBet = currentBet, demandBet = demandBet, giftBalance = giftBalance, totalBet = totalBet,
-                    totalBalance = totalBalance, totalGiftBalance = totalGiftBalance, createdTime = createdTime, clientId = clientId)
+                    currentBet = currentBet,  totalBet = totalBet, totalAmount = totalAmount, totalPromotionAmount = totalPromotionAmount,
+                    createdTime = createdTime, clientId = clientId, joinPromotionId = joinPromotionId, promotionAmount = promotionAmount,
+                    transferAmount = transferAmount, requirementTransferOutAmount = requirementTransferOutAmount, requirementBet = requirementBet,
+                    ignoreTransferOutAmount = ignoreTransferOutAmount)
         }
 
     override fun findPlatformMember(memberId: Int): List<PlatformMember> {
@@ -47,36 +56,38 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                 .set("member_id", platformMemberCo.memberId)
                 .set("username", platformMemberCo.username)
                 .set("password", platformMemberCo.password)
-                .set("current_bet", BigDecimal.ZERO)
-                .set("demand_bet", BigDecimal.ZERO)
-                .set("gift_balance", BigDecimal.ZERO)
-                .set("total_bet", BigDecimal.ZERO)
-                .set("total_balance", BigDecimal.ZERO)
-                .set("total_gift_balance", BigDecimal.ZERO)
                 .executeGeneratedKey()
     }
 
-//    override fun bet(platformMemberBetUo: PlatformMemberBetUo): Boolean {
-//        return update()
-//                .asSet("current_bet = current_bet + ${platformMemberBetUo.bet}")
-//                .asSet("total_bet = total_bet + ${platformMemberBetUo.bet}")
-//                .where("id", platformMemberBetUo.id)
-//                .executeOnlyOne()
-//    }
-
     override fun transferIn(platformMemberTransferUo: PlatformMemberTransferUo): Boolean {
         return update()
-                .set("gift_balance", platformMemberTransferUo.giftBalance)
+                .set("promotion_amount", platformMemberTransferUo.promotionAmount)
+                .set("join_promotion_id", platformMemberTransferUo.joinPromotionId)
+                .set("transfer_amount", platformMemberTransferUo.transferAmount)
+                .set("requirement_transfer_out_amount", platformMemberTransferUo.requirementTransferOutAmount)
+                .set("ignore_transfer_out_amount", platformMemberTransferUo.ignoreTransferOutAmount)
+                .set("requirement_bet", platformMemberTransferUo.requirementBet)
                 .set("current_bet", BigDecimal.ZERO)
-                .set("demand_bet", platformMemberTransferUo.demandBet)
-                .asSet("total_gift_balance = total_gift_balance + ${platformMemberTransferUo.giftBalance}")
-                .asSet("total_balance = total_balance + ${platformMemberTransferUo.money}")
+                .asSet("total_promotion_amount = total_promotion_amount + ${platformMemberTransferUo.promotionAmount}")
+                .asSet("total_amount = total_amount + ${platformMemberTransferUo.transferAmount}")
                 .where("id", platformMemberTransferUo.id)
                 .executeOnlyOne()
     }
 
-    override fun batchBet(data: List<BetCacheVo>) {
+    override fun cleanTransferIn(id: Int): Boolean {
+        return update()
+                .set("current_bet", BigDecimal.ZERO)
+                .set("requirement_bet", BigDecimal.ZERO)
+                .set("promotion_amount", BigDecimal.ZERO)
+                .set("transfer_amount", BigDecimal.ZERO)
+                .set("requirement_transfer_out_amount", BigDecimal.ZERO)
+                .set("ignore_transfer_out_amount", BigDecimal.ZERO)
+                .asSet("join_promotion_id = null")
+                .where("id", id)
+                .executeOnlyOne()
+    }
 
+    override fun batchBet(data: List<BetCacheVo>) {
         val sqls = data.map {
             "update platform_member set current_bet = current_bet + ${it.bet}, total_bet = total_bet + ${it.bet} where member_id = ${it.memberId} and platform = '${it.platform.name}'"
         }
