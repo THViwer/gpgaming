@@ -1,5 +1,6 @@
 package com.onepiece.treasure.core.dao
 
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.PlatformMember
 import com.onepiece.treasure.beans.value.database.PlatformMemberCo
 import com.onepiece.treasure.beans.value.database.PlatformMemberTransferUo
@@ -14,7 +15,7 @@ interface PlatformMemberDao: BasicDao<PlatformMember> {
 
     fun transferIn(platformMemberTransferUo: PlatformMemberTransferUo): Boolean
 
-    fun cleanTransferIn(id: Int): Boolean
+    fun cleanTransferIn(memberId: Int, platform: Platform): Boolean
 
     fun batchBet(data: List<BetCacheVo>)
 

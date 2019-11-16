@@ -68,4 +68,10 @@ class PlatformMemberServiceImpl(
         val state = platformMemberDao.transferIn(platformMemberTransferUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
+
+    override fun cleanTransferIn(memberId: Int, platform: Platform) {
+        val state = platformMemberDao.cleanTransferIn(memberId, platform)
+        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+    }
 }

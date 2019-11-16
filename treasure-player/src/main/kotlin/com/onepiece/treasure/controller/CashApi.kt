@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -62,6 +63,13 @@ interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "取款")
     fun withdraw(@RequestBody withdrawCoReq: WithdrawCoReq): CashWithdrawResp
+
+    @ApiOperation(tags = ["cash"], value = "中心 -> 平台 检查是否有优惠活动并提示")
+    fun checkPromotion(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestParam("platform") platform: Platform,
+            @RequestParam("amount") amount: BigDecimal
+    ): CheckPromotionVo
 
     @ApiOperation(tags = ["cash"], value = "转账")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)

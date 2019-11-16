@@ -1,10 +1,9 @@
 package com.onepiece.treasure.beans.model
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.enums.PromotionCategory
-import com.onepiece.treasure.beans.enums.PromotionRuleType
-import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.enums.*
+import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.value.database.PlatformMemberTransferUo
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -61,6 +60,91 @@ data class Promotion (
         return mapper.readValue(ruleJson, clz)
     }
 
+
+    /**
+     * 获得转账的文字描述
+     */
+    fun getPromotionIntroduction(amount: BigDecimal, platformBalance: BigDecimal, language: Language): String {
+
+        return when (this.ruleType) {
+            PromotionRuleType.Bet -> {
+                val betRule = this.rule as PromotionRules.BetRule
+                val promotionAmount = getPromotionAmount(amount = amount, platformBalance = platformBalance)
+                val requirementBet = (amount.plus(promotionAmount).plus(platformBalance)).multiply(betRule.betMultiple)
+                "转账:$amount, 平台剩余:${platformBalance},优惠:${promotionAmount}, 实际到账:${amount.plus(promotionAmount).plus(platformBalance)}, 打码量达到${requirementBet}可取出"
+            }
+            PromotionRuleType.Withdraw -> {
+                val withdrawRule = this.rule as PromotionRules.WithdrawRule
+                val promotionAmount = getPromotionAmount(amount = amount, platformBalance = platformBalance)
+                val requirementTransferOutAmount = (amount.plus(promotionAmount).plus(platformBalance)).multiply(withdrawRule.transferMultiplied)
+                "转账:$amount, 平台剩余:${platformBalance},优惠:${promotionAmount}, 实际到账:${amount.plus(promotionAmount).plus(platformBalance)}, 游戏金额${requirementTransferOutAmount}可取出"
+            }
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+
+    }
+
+
+    /**
+     * 获得优惠金额
+     */
+    fun getPromotionAmount(amount: BigDecimal, platformBalance: BigDecimal): BigDecimal{
+
+        if (this.rule.minAmount.toDouble() > amount.toDouble()) return BigDecimal.ZERO
+        if (this.rule.maxAmount.toDouble() < amount.toDouble()) return BigDecimal.ZERO
+
+        val promotionAmount = when (this.ruleType) {
+            PromotionRuleType.Bet -> {
+                val betRule = this.rule as PromotionRules.BetRule
+                (amount.plus(platformBalance)).multiply(betRule.promotionProportion)
+            }
+            PromotionRuleType.Withdraw -> {
+                val withdrawRule = this.rule as PromotionRules.WithdrawRule
+                (amount.plus(platformBalance)).multiply(withdrawRule.promotionProportion)
+            }
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+
+        return if (promotionAmount.toDouble() > this.rule.maxPromotionAmount.toDouble()) {
+            this.rule.maxPromotionAmount
+        } else {
+            promotionAmount
+        }.setScale(2, 2)
+    }
+
+    /**
+     * 获得活动的更新对象
+     */
+    fun getPlatformMemberTransferUo(platformMemberId: Int, amount: BigDecimal, platformBalance: BigDecimal, promotionId: Int): PlatformMemberTransferUo {
+
+        val init = PlatformMemberTransferUo(id = platformMemberId, joinPromotionId = promotionId, currentBet = BigDecimal.ZERO, requirementBet = BigDecimal.ZERO,
+                promotionAmount = BigDecimal.ZERO, transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO)
+
+        return when (this.ruleType) {
+            PromotionRuleType.Bet -> {
+                val betRule = this.rule as PromotionRules.BetRule
+
+                val promotionAmount = this.getPromotionAmount(amount, platformBalance)
+                val requirementBet = (amount.plus(promotionAmount).plus(platformBalance)).multiply(betRule.betMultiple)
+
+                init.copy(currentBet = BigDecimal.ZERO, requirementBet = requirementBet, ignoreTransferOutAmount = betRule.ignoreTransferOutAmount,
+                        promotionAmount = promotionAmount)
+
+            }
+            PromotionRuleType.Withdraw -> {
+
+                val withdrawRule = this.rule as PromotionRules.WithdrawRule
+
+                val promotionAmount = this.getPromotionAmount(amount, platformBalance)
+                val requirementTransferOutAmount = (amount.plus(promotionAmount).plus(platformBalance)).multiply(withdrawRule.transferMultiplied)
+
+                init.copy(currentBet = BigDecimal.ZERO, requirementTransferOutAmount = requirementTransferOutAmount, ignoreTransferOutAmount = withdrawRule.ignoreTransferOutAmount,
+                        promotionAmount = promotionAmount)
+
+            }
+        }
+    }
+
 }
 
 sealed class PromotionRules{
@@ -74,12 +158,16 @@ sealed class PromotionRules{
 
         // 最小转出金额和可转入金额
         val ignoreTransferOutAmount: BigDecimal
+
+        // 最大优惠金额
+        val maxPromotionAmount: BigDecimal
     }
 
     data class BetRule(
             override val minAmount: BigDecimal,
             override val maxAmount: BigDecimal,
             override val ignoreTransferOutAmount: BigDecimal,
+            override val maxPromotionAmount: BigDecimal,
 
             // 打码倍数
             val betMultiple: BigDecimal,
@@ -95,6 +183,7 @@ sealed class PromotionRules{
             override val minAmount: BigDecimal,
             override val maxAmount: BigDecimal,
             override val ignoreTransferOutAmount: BigDecimal,
+            override val maxPromotionAmount: BigDecimal,
 
             // 取款倍数
             val transferMultiplied: BigDecimal,

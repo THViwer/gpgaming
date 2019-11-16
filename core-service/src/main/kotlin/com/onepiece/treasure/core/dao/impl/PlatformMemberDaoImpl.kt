@@ -74,7 +74,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                 .executeOnlyOne()
     }
 
-    override fun cleanTransferIn(id: Int): Boolean {
+    override fun cleanTransferIn(memberId: Int, platform: Platform): Boolean {
         return update()
                 .set("current_bet", BigDecimal.ZERO)
                 .set("requirement_bet", BigDecimal.ZERO)
@@ -83,7 +83,8 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                 .set("requirement_transfer_out_amount", BigDecimal.ZERO)
                 .set("ignore_transfer_out_amount", BigDecimal.ZERO)
                 .asSet("join_promotion_id = null")
-                .where("id", id)
+                .where("member_id", memberId)
+                .where("platform", platform)
                 .executeOnlyOne()
     }
 

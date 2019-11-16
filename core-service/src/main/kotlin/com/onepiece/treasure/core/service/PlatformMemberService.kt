@@ -2,7 +2,6 @@ package com.onepiece.treasure.core.service
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.PlatformMember
-import com.onepiece.treasure.beans.value.database.PlatformMemberBetUo
 import com.onepiece.treasure.beans.value.database.PlatformMemberTransferUo
 import com.onepiece.treasure.beans.value.internet.web.PlatformMemberVo
 
@@ -21,5 +20,7 @@ interface PlatformMemberService {
 //    fun bet(platformMemberBetUo: PlatformMemberBetUo)
 
     fun transferIn(platformMemberTransferUo: PlatformMemberTransferUo)
+
+    fun cleanTransferIn(memberId: Int, platform: Platform)
 
 }

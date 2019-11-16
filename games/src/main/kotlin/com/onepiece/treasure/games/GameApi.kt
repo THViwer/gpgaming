@@ -167,7 +167,7 @@ class GameApi(
                 val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername)
                 this.getPlatformApi(platform).balance(balanceReq)
             }
-        }
+        }.setScale(2, 2)
     }
 
 

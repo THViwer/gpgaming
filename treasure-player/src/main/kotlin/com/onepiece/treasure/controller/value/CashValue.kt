@@ -149,6 +149,18 @@ data class CashWithdrawResp(
         val orderId: String
 
 )
+data class CheckPromotionVo(
+
+        @ApiModelProperty("是否有优惠活动")
+        val promotion: Boolean,
+
+        @ApiModelProperty("优惠活动Id")
+        val promotionId: Int?,
+
+        @ApiModelProperty("优惠活动介绍")
+        val promotionIntroduction: String?
+
+)
 
 data class CashTransferReq(
 
@@ -158,11 +170,11 @@ data class CashTransferReq(
         @ApiModelProperty("转入的钱包")
         val to: Platform,
 
-        @ApiModelProperty("转出金额 中心 -> 平台 有效")
-        val money: BigDecimal,
+        @ApiModelProperty("金额")
+        val amount: BigDecimal,
 
-        @ApiModelProperty("是否参加优惠活动 中心 -> 平台 有效")
-        val joinPromotion: Boolean = true
+        @ApiModelProperty("参加优惠活动Id")
+        val promotionId: Int?
 
 )
 
@@ -173,11 +185,15 @@ data class BalanceVo(
         @ApiModelProperty("余额")
         val balance: BigDecimal,
 
-        @ApiModelProperty("是否可以转账")
+        @ApiModelProperty("是否可以转入转出")
         val transfer: Boolean,
 
         @ApiModelProperty("提示信息(一般参加活动时无法提款才会有)")
         val tips: String?
+
+//        @ApiModelProperty("是否可以转入 中心 -> 平台")
+//        val transferIn: Boolean
+
 )
 
 data class WalletNoteVo(

@@ -40,6 +40,7 @@ object OnePieceExceptionCode {
     const val CENTER_TO_PLATFORM_FAIl = "5006" // 中心转平台 不满足优惠活动转入
     const val PLATFORM_TO_CENTER_FAIL = "5007" // 平台转中心 不满足优惠活动转出
     const val PLATFORM_HAS_BALANCE_PROMOTION_FAIL = "5008" // 平台钱包有余额 不可参加活动
+    const val PROMOTION_EXPIRED = "5009" // 优惠活动过期
 
     // 60000 platform method error
     const val PLATFORM_METHOD_FAIL = "6001" // 平台方式错误
