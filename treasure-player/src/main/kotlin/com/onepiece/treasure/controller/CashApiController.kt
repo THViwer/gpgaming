@@ -83,12 +83,17 @@ open class CashApiController(
 
     @GetMapping("/bank/client")
     override fun clientBanks(): List<ClientBankVo> {
-        return clientBankService.findClientBank(current().clientId).filter { it.status == Status.Normal }.map {
-            with(it) {
-                ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
-                        status = status, createdTime = createdTime)
-            }
-        }
+
+        val member = memberService.getMember(current().id)
+
+        return clientBankService.findClientBank(current().clientId)
+                .filter { it.status == Status.Normal && (it.levelId == null || it.levelId == member.levelId) }
+                .map {
+                    with(it) {
+                        ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
+                                status = status, createdTime = createdTime, levelId = null, levelName = null)
+                    }
+                }
     }
 
     @GetMapping("/deposit")
