@@ -1,11 +1,12 @@
 package com.onepiece.treasure.beans.model
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.onepiece.treasure.beans.enums.*
+import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.PromotionCategory
+import com.onepiece.treasure.beans.enums.PromotionRuleType
+import com.onepiece.treasure.beans.enums.Status
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import kotlin.math.min
 
 /**
  * 优惠活动
@@ -64,42 +65,42 @@ data class Promotion (
 
 sealed class PromotionRules{
 
-    interface Rule
+    interface Rule {
+        // 最小转账金额
+        val minAmount: BigDecimal
+
+        // 最大转账金额
+        val maxAmount: BigDecimal
+
+        // 最小转出金额和可转入金额
+        val ignoreTransferOutAmount: BigDecimal
+    }
 
     data class BetRule(
-
-            // 最小转账金额
-            val minAmount: BigDecimal,
-
-            // 最大转账金额
-            val maxAmount: BigDecimal,
+            override val minAmount: BigDecimal,
+            override val maxAmount: BigDecimal,
+            override val ignoreTransferOutAmount: BigDecimal,
 
             // 打码倍数
             val betMultiple: BigDecimal,
 
             // 赠送比例
-            val promotionProportion: BigDecimal,
+            val promotionProportion: BigDecimal
 
-            // 最小转出金额和可转入金额
-            val ignoreTransferOutAmount: BigDecimal
+
     ): Rule
 
     data class WithdrawRule(
 
-            // 最小转账金额
-            val minAmount: BigDecimal,
-
-            // 最大转账金额
-            val maxAmount: BigDecimal,
+            override val minAmount: BigDecimal,
+            override val maxAmount: BigDecimal,
+            override val ignoreTransferOutAmount: BigDecimal,
 
             // 取款倍数
             val transferMultiplied: BigDecimal,
 
             // 赠送比例
-            val promotionProportion: BigDecimal,
-
-            // 最小转出金额和可转入金额
-            val ignoreTransferOutAmount: BigDecimal
+            val promotionProportion: BigDecimal
 
     ): Rule
 

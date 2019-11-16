@@ -76,6 +76,9 @@ interface CashApi {
             @RequestHeader("platform") platform: Platform): BalanceVo
 
     @ApiOperation(tags = ["cash"], value = "查询所有余额")
-    fun balances(): List<BalanceVo>
+    fun balances(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestParam("category", required = false) category: PlatformCategory?
+    ): List<BalanceVo>
 
 }
