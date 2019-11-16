@@ -185,11 +185,15 @@ data class BalanceVo(
         @ApiModelProperty("余额")
         val balance: BigDecimal,
 
-        @ApiModelProperty("是否可以转账")
+        @ApiModelProperty("是否可以转入转出")
         val transfer: Boolean,
 
         @ApiModelProperty("提示信息(一般参加活动时无法提款才会有)")
         val tips: String?
+
+//        @ApiModelProperty("是否可以转入 中心 -> 平台")
+//        val transferIn: Boolean
+
 )
 
 data class WalletNoteVo(

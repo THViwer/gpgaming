@@ -414,7 +414,7 @@ open class CashApiController(
         return when (platform) {
             Platform.Center -> {
                 val walletBalance = walletService.getMemberWallet(current().id).balance
-                BalanceVo(platform = platform, balance = walletBalance, transfer = true, tips = null)
+                BalanceVo(platform = platform, balance = walletBalance, transfer = true, tips= null)
             }
             else -> {
                 // 判断用户是否有参加活动
@@ -422,7 +422,14 @@ open class CashApiController(
                 val platformMember = platformMemberService.get(platformMemberVo.id)
 
                 val platformBalance = gameApi.balance(clientId = member.clientId, platformUsername = platformMemberVo.platformUsername, platform = platform)
-                val (transfer, tips) = this.checkCanTransferAndTips(platformMember = platformMember, platformBalance = platformBalance, language = language)
+                val (transfer, tips) = this.checkCanTransferOutAndTips(platformMember = platformMember, platformBalance = platformBalance, language = language)
+
+
+                val transferIn = platformMember.joinPromotionId?.let {
+                    val promotion = promotionService.get(it)
+                    this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
+                }?: true
+
                 BalanceVo(platform = platform, balance = platformBalance, transfer = transfer, tips = tips)
             }
         }
@@ -454,12 +461,17 @@ open class CashApiController(
             val platformMember = platformMemberMap[it.platform]
 
             when (platformMember == null) {
-                true -> BalanceVo(platform = it.platform, balance = BigDecimal.ZERO, transfer = false, tips = null)
+                true -> BalanceVo(platform = it.platform, balance = BigDecimal.ZERO, transfer = true, tips = null)
                 else -> {
-                    val balance = gameApi.balance(clientId = clientId, platformUsername = platformMember.username, platform = it.platform)
+                    val platformBalance = gameApi.balance(clientId = clientId, platformUsername = platformMember.username, platform = it.platform)
 
-                    val (transfer, tips) = this.checkCanTransferAndTips(platformMember = platformMember, platformBalance = balance, language = language)
-                    BalanceVo(platform = it.platform, balance = balance, transfer = transfer, tips = tips)
+//                    val transferIn = platformMember.joinPromotionId?.let {
+//                        val promotion = promotionService.get(it)
+//                        this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
+//                    }?: true
+
+                    val (transfer, tips) = this.checkCanTransferOutAndTips(platformMember = platformMember, platformBalance = platformBalance, language = language)
+                    BalanceVo(platform = it.platform, balance = platformBalance, transfer = transfer, tips = tips)
                 }
             }
         }
@@ -468,7 +480,7 @@ open class CashApiController(
     }
 
 
-    private fun checkCanTransferAndTips(platformMember: PlatformMember, platformBalance: BigDecimal, language: Language): Pair<Boolean, String?> {
+    private fun checkCanTransferOutAndTips(platformMember: PlatformMember, platformBalance: BigDecimal, language: Language): Pair<Boolean, String?> {
 
         if (platformMember.joinPromotionId == null) return true to null
 
