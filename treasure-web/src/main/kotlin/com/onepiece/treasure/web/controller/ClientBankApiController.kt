@@ -6,21 +6,28 @@ import com.onepiece.treasure.beans.value.internet.web.ClientBankCoReq
 import com.onepiece.treasure.beans.value.internet.web.ClientBankUoReq
 import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
 import com.onepiece.treasure.core.service.ClientBankService
+import com.onepiece.treasure.core.service.LevelService
 import com.onepiece.treasure.web.controller.basic.BasicController
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/clientBank")
 class ClientBankApiController(
-        private val clientBankService: ClientBankService
+        private val clientBankService: ClientBankService,
+        private val levelService: LevelService
 ) : BasicController(), ClientBankApi {
 
     @GetMapping
     override fun all(): List<ClientBankVo> {
+
+        val levelMap = levelService.all(clientId).map { it.id to it.name }.toMap()
+
         return clientBankService.findClientBank(clientId).map {
             with(it) {
+                val levelName = levelMap[it.levelId]
+
                 ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
-                        status = status, createdTime = createdTime)
+                        status = status, createdTime = createdTime, levelId = levelId, levelName = levelName)
             }
         }
     }

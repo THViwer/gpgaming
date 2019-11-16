@@ -40,6 +40,12 @@ data class ClientBankVo(
         @ApiModelProperty("状态")
         val status: Status,
 
+        @ApiModelProperty("层级Id")
+        val levelId: Int?,
+
+        @ApiModelProperty("层级名称")
+        val levelName: String?,
+
         @ApiModelProperty("创建时间")
         val createdTime: LocalDateTime
 
