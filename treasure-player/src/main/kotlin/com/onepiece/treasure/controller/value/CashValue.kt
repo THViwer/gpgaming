@@ -149,6 +149,18 @@ data class CashWithdrawResp(
         val orderId: String
 
 )
+data class CheckPromotionVo(
+
+        @ApiModelProperty("是否有优惠活动")
+        val promotion: Boolean,
+
+        @ApiModelProperty("优惠活动Id")
+        val promotionId: Int?,
+
+        @ApiModelProperty("优惠活动介绍")
+        val promotionIntroduction: String?
+
+)
 
 data class CashTransferReq(
 
@@ -159,10 +171,10 @@ data class CashTransferReq(
         val to: Platform,
 
         @ApiModelProperty("转出金额 中心 -> 平台 有效")
-        val money: BigDecimal,
+        val amount: BigDecimal,
 
-        @ApiModelProperty("是否参加优惠活动 中心 -> 平台 有效")
-        val joinPromotion: Boolean = true
+        @ApiModelProperty("参加优惠活动Id")
+        val promotionId: Int?
 
 )
 

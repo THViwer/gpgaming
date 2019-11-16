@@ -5,7 +5,7 @@ import com.onepiece.treasure.beans.base.Page
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.PlatformMember
-import com.onepiece.treasure.beans.model.PromotionRules
+import com.onepiece.treasure.beans.model.Promotion
 import com.onepiece.treasure.beans.value.database.*
 import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
 import com.onepiece.treasure.beans.value.internet.web.DepositVo
@@ -196,6 +196,26 @@ open class CashApiController(
         return CashWithdrawResp(orderId = orderId)
     }
 
+
+    @GetMapping("/check/promotion")
+    override fun checkPromotion(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestParam("platform") platform: Platform,
+            @RequestParam("amount") amount: BigDecimal
+    ): CheckPromotionVo {
+
+        val member = this.current()
+        val promotions = promotionService.find(clientId = member.clientId, platform = platform)
+
+        val promotion = promotions.firstOrNull {
+            it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble()
+        }
+
+        val platformBalance = gameApi.balance(clientId = member.clientId, platform = platform, platformUsername = getPlatformMember(platform).platformUsername)
+        val promotionIntroduction = promotion?.getPromotionIntroduction(amount = amount, language = language, platformBalance = platformBalance)
+        return CheckPromotionVo(promotion = promotion != null, promotionId = promotion?.id, promotionIntroduction = promotionIntroduction)
+    }
+
     @PutMapping("/transfer")
     @Transactional(rollbackFor = [Exception::class])
     override fun transfer(@RequestBody cashTransferReq: CashTransferReq) {
@@ -203,50 +223,43 @@ open class CashApiController(
 
         val (clientId, memberId) = currentClientIdAndMemberId()
 
+        val platform = if (cashTransferReq.from == Platform.Center) cashTransferReq.to else cashTransferReq.from
+
+
+        val platformMemberVo = this.getPlatformMember(platform)
+        val platformMember = platformMemberService.get(platformMemberVo.id)
+
+        val platformBalance  = gameApi.balance(clientId = clientId, platformUsername = platformMemberVo.platformUsername, platform = platform)
+
         when (cashTransferReq.from) {
             // 中心钱包 -> 平台钱包
             Platform.Center -> {
-                centerToPlatformTransfer(clientId = clientId, memberId = memberId, platform = cashTransferReq.to, amount = cashTransferReq.money, joinPromotion = cashTransferReq.joinPromotion)
+                this.centerToPlatformTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId)
             }
             // 平台钱包 -> 中心钱包
             else -> {
-
-                val platform = cashTransferReq.from
-                val platformMemberVo = this.getPlatformMember(platform)
-
-                // 获得当前钱包余额
-                val balance = gameApi.balance(clientId = clientId, platformUsername = platformMemberVo.platformUsername, platform = platform)
-                platformToCenterTransfer(clientId = clientId, memberId = memberId, platform = platform, amount = balance)
+                this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = cashTransferReq.amount)
             }
         }
     }
 
     // 中心转平台
-    private fun centerToPlatformTransfer(clientId: Int, memberId: Int, platform: Platform, amount: BigDecimal, joinPromotion: Boolean) {
+    private fun centerToPlatformTransfer(platformMember: PlatformMember, platformBalance: BigDecimal,  amount: BigDecimal, promotionId: Int?) {
 
+        val platform = platformMember.platform
         val from = Platform.Center
-        val to = platform
-
-        // 获得平台用户信息
-        val platformMemberVo = getPlatformMember(platform)
-        val platformMember = platformMemberService.get(platformMemberVo.id)
-
-        // 转账订单编号
-        val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform)
-
-        // 检查是否可以转入
-        val state = this.checkPlatformToCenterTransfer(clientId = clientId, amount = amount, platform = platform)
-        check(state) { OnePieceExceptionCode.CENTER_TO_PLATFORM_FAIl }
+        val to = platformMember.platform
+        val clientId = platformMember.clientId
+        val memberId = platformMember.memberId
 
         // 优惠活动赠送金额
-        val init = PlatformMemberTransferUo(id = platformMember.id, joinPromotionId = null, currentBet = BigDecimal.ZERO, requirementBet = BigDecimal.ZERO, promotionAmount = BigDecimal.ZERO,
-                transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO)
-        val platformMemberTransferUo = if (joinPromotion) {
-            this.getJoinPromotion(clientId = clientId, platform = platform, amount = amount, init = init)
-        } else init
+        val platformMemberTransferUo = this.handlerPromotion(platformMember = platformMember, amount = amount, promotionId = promotionId, platformBalance = platformBalance)
 
         // 检查保证金是否足够
         platformBindService.updateEarnestBalance(clientId = clientId, platform = platform, earnestBalance = amount.negate())
+
+        // 转账订单编号
+        val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform)
 
         // 中心钱包扣款
         val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_OUT, money = amount,
@@ -254,18 +267,18 @@ open class CashApiController(
         walletService.update(walletUo)
 
         // 生成转账订单
-        val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = platformMemberTransferUo.promotionAmount,
-                from = from, to = to, joinPromotionId = platformMemberTransferUo.joinPromotionId)
+        val promotionAmount = platformMemberTransferUo?.promotionAmount?: BigDecimal.ZERO
+        val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = promotionAmount,
+                from = from, to = to, joinPromotionId = platformMemberTransferUo?.joinPromotionId)
         transferOrderService.create(transferOrderCo)
 
         // 平台钱包更改信息
-        platformMemberService.transferIn(platformMemberTransferUo)
-
-
-
+        if (platformMemberTransferUo != null) {
+            platformMemberService.transferIn(platformMemberTransferUo)
+        }
 
         //调用平台接口充值
-        gameApi.transfer(clientId = clientId, platformUsername = platformMember.username, orderId = transferOrderId, amount = amount.plus(platformMemberTransferUo.promotionAmount),
+        gameApi.transfer(clientId = clientId, platformUsername = platformMember.username, orderId = transferOrderId, amount = amount.plus(promotionAmount),
                 platform = to)
 
         // 更新转账订单
@@ -274,20 +287,56 @@ open class CashApiController(
     }
 
 
-    private fun checkPlatformToCenterTransfer(clientId: Int, platform: Platform, amount: BigDecimal): Boolean {
-        val platformMemberVo = getPlatformMember(platform)
-        val platformMember = platformMemberService.get(platformMemberVo.id)
+    /**
+     * 处理优惠活动
+     */
+    private fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
 
-        return when {
-            platformMember.joinPromotionId == null -> true
-            platformMember.ignoreTransferOutAmount.toDouble() >= amount.toDouble() -> true
-            else -> {
-                // 如果有优惠活动 那么原来的平台钱包必须没有钱
-                val platformBalance = gameApi.balance(clientId = clientId, platform = platform, platformUsername = getPlatformMember(platform).platformUsername)
-                val promotion = promotionService.get(platformMember.joinPromotionId!!)
-                platformBalance.toDouble() <= promotion.rule.ignoreTransferOutAmount.toDouble()
-            }
+        // 是否有历史优惠活动
+        if (platformMember.joinPromotionId != null) {
+            // 已存在的优惠活动
+            val promotion = promotionService.get(platformMember.joinPromotionId!!)
+
+            // 是否满足清空优惠活动
+            val cleanState = this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
+            check(cleanState) { OnePieceExceptionCode.PLATFORM_HAS_BALANCE_PROMOTION_FAIL }
         }
+
+        if (promotionId == null) return null
+
+
+
+        // 获得新的优惠活动信息
+        val promotion = promotionService.get(promotionId)
+        check(promotion.status == Status.Normal) { OnePieceExceptionCode.PROMOTION_EXPIRED }
+        check(this.checkStopTime(promotion.stopTime)) { OnePieceExceptionCode.PROMOTION_EXPIRED }
+
+        return promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount =  amount, platformBalance = platformBalance, promotionId = promotionId)
+    }
+
+
+    /**
+     * 检查是否清空优惠活动信息
+     */
+    fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal): Boolean {
+
+        val state = when{
+            platformBalance.toDouble() <= promotion.rule.ignoreTransferOutAmount.toDouble() -> true
+            promotion.ruleType == PromotionRuleType.Bet -> {
+                platformMember.currentBet.toDouble() >= platformMember.requirementBet.toDouble()
+            }
+            promotion.ruleType == PromotionRuleType.Withdraw -> {
+                platformBalance.toDouble() >= platformMember.requirementTransferOutAmount.toDouble()
+            }
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+
+
+        if (state) {
+            platformMemberService.cleanTransferIn(memberId = platformMember.memberId, platform = platformMember.platform)
+        }
+
+        return state
     }
 
 
@@ -296,68 +345,23 @@ open class CashApiController(
     }
 
 
-    private fun getJoinPromotion(clientId: Int, platform: Platform, amount: BigDecimal, init: PlatformMemberTransferUo): PlatformMemberTransferUo {
-        val promotions = promotionService.find(clientId = clientId, platform = platform)
-                .filter { it.status == Status.Normal && this.checkStopTime(it.stopTime) }
-
-        // 获得第一个符合优惠活动的
-        val promotion = promotions.firstOrNull {
-            when (it.ruleType) {
-                PromotionRuleType.Bet -> {
-                    val betRule = it.rule as PromotionRules.BetRule
-                    betRule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= betRule.maxAmount.toDouble()
-                }
-                PromotionRuleType.Withdraw -> {
-                    val withdrawRule = it.rule as PromotionRules.WithdrawRule
-                    withdrawRule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= withdrawRule.maxAmount.toDouble()
-                }
-                else -> error(OnePieceExceptionCode.DATA_FAIL)
-            }
-        } ?: return init
-
-
-        // 返回优惠活动Id和优惠金额
-        return when (promotion.ruleType) {
-            PromotionRuleType.Bet -> {
-                val betRule = promotion.rule as PromotionRules.BetRule
-
-                val promotionAmount = amount.multiply(betRule.promotionProportion)
-                val requirementBet = (amount.plus(promotionAmount)).multiply(betRule.betMultiple)
-
-                init.copy(joinPromotionId = promotion.id, currentBet = BigDecimal.ZERO, requirementBet = requirementBet, ignoreTransferOutAmount = betRule.ignoreTransferOutAmount,
-                        promotionAmount = promotionAmount)
-            }
-            PromotionRuleType.Withdraw -> {
-                val withdrawRule = promotion.rule as PromotionRules.WithdrawRule
-
-                val promotionAmount = amount.multiply(withdrawRule.promotionProportion)
-                val requirementTransferOutAmount = (amount.plus(promotionAmount)).multiply(withdrawRule.transferMultiplied)
-
-                init.copy(joinPromotionId = promotion.id, currentBet = BigDecimal.ZERO, requirementTransferOutAmount = requirementTransferOutAmount, ignoreTransferOutAmount = withdrawRule.ignoreTransferOutAmount,
-                        promotionAmount = promotionAmount)
-            }
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
-        }
-
-    }
-
-
-    private fun platformToCenterTransfer(clientId: Int, memberId: Int, platform: Platform, amount: BigDecimal) {
-        val from = platform
+    private fun platformToCenterTransfer(platformMember: PlatformMember, platformBalance: BigDecimal, amount: BigDecimal) {
+        val platform = platformMember.platform
+        val from = platformMember.platform
         val to = Platform.Center
-
-        // 获得平台用户信息
-        val platformMemberVo = getPlatformMember(platform)
-        val platformMember = platformMemberService.get(platformMemberVo.id)
+        val clientId = platformMember.clientId
+        val memberId = platformMember.memberId
 
 
         // 判断是否满足转出条件
-        val state = this.checkTransferPlatformToCenter(amount = amount, platformMember = platformMember)
-        check(state) { OnePieceExceptionCode.PLATFORM_TO_CENTER_FAIL }
-
+        if (platformMember.joinPromotionId != null) {
+            val promotion = promotionService.get(platformMember.joinPromotionId!!)
+            val checkState = this.checkCleanPromotion(promotion = promotion, platformMember = platformMember, platformBalance = platformBalance)
+            check(checkState) { OnePieceExceptionCode.PLATFORM_TO_CENTER_FAIL }
+        }
 
         // 检查余额
-        val wallet = walletService.getMemberWallet(memberId)
+        val wallet = walletService.getMemberWallet(platformMember.memberId)
         check(wallet.balance.toDouble() - amount.toDouble() > 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
 
 
@@ -384,30 +388,10 @@ open class CashApiController(
         // 更新转账订单
         val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = TransferState.Successful)
         transferOrderService.update(transferOrderUo)
+
+        // 清空平台用户优惠信息
+        platformMemberService.cleanTransferIn(memberId = memberId, platform = platform)
     }
-
-
-    private fun checkTransferPlatformToCenter(amount: BigDecimal, platformMember: PlatformMember): Boolean {
-
-        // 1. 判断是否有优惠活动
-        if (platformMember.joinPromotionId == null) return true
-
-        // 2. 判断是否满足最小金额
-        if (platformMember.ignoreTransferOutAmount.toDouble() >= amount.toDouble()) return true
-
-        // 判断规则条件是否满足
-        val promotion = promotionService.get(platformMember.joinPromotionId!!)
-        return when (promotion.ruleType) {
-            PromotionRuleType.Bet -> {
-                platformMember.requirementBet.toDouble() >= platformMember.currentBet.toDouble()
-            }
-            PromotionRuleType.Withdraw -> {
-                amount.toDouble() >= platformMember.requirementTransferOutAmount.toDouble()
-            }
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
-        }
-    }
-
 
 
     @GetMapping("/wallet/note")
@@ -486,7 +470,7 @@ open class CashApiController(
 
     private fun checkCanTransferAndTips(platformMember: PlatformMember, platformBalance: BigDecimal, language: Language): Pair<Boolean, String?> {
 
-        if (platformMember.joinPromotionId == null) return false to null
+        if (platformMember.joinPromotionId == null) return true to null
 
         val promotion = promotionService.get(platformMember.joinPromotionId!!)
         return when (promotion.ruleType) {
