@@ -20,8 +20,6 @@ interface MemberApi {
 
     @ApiOperation(tags = ["user"], value = "会员 -> 列表")
     fun query(
-//            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
-//            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime,
             @RequestParam(value = "username", required = false) username: String?,
             @RequestParam(value = "levelId", required = false) levelId: Int?,
             @RequestParam(value = "status", required = false) status: Status?,

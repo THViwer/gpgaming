@@ -23,8 +23,6 @@ class MemberApiController(
 
     @GetMapping
     override fun query(
-//           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
-//           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime,
             @RequestParam(value = "username", required = false) username: String?,
             @RequestParam(value = "levelId", required = false) levelId: Int?,
             @RequestParam(value = "status", required = false) status: Status?,
@@ -42,7 +40,7 @@ class MemberApiController(
         val data = page.data.map {
             with(it) {
                 MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]!!.name,
-                        name = "name", balance = BigDecimal.ZERO, status = it.status,createdTime = createdTime,
+                        balance = BigDecimal.ZERO, status = it.status,createdTime = createdTime,
                         loginIp = loginIp, loginTime = loginTime)
             }
         }
