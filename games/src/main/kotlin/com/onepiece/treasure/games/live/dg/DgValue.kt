@@ -1,10 +1,10 @@
-package com.onepiece.treasure.games.live.ct
+package com.onepiece.treasure.games.live.dg
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
-sealed class CTValue  {
+sealed class DgValue  {
 
 
     data class SignupResult(
@@ -55,7 +55,9 @@ sealed class CTValue  {
     data class Member(
             val username: String,
 
-            val balance: BigDecimal
+            val userLevel: Int,
+
+            val balance: BigDecimal = BigDecimal.ZERO
 
     )
 

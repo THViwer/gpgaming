@@ -1,5 +1,6 @@
 package com.onepiece.treasure.games
 
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
@@ -133,13 +134,13 @@ class GameApi(
     /**
      * 开始游戏(平台)
      */
-    fun start(clientId: Int, platformUsername: String, platform: Platform, startPlatform: LaunchMethod = LaunchMethod.Web): String {
+    fun start(clientId: Int, platformUsername: String, platform: Platform, startPlatform: LaunchMethod = LaunchMethod.Web, language: Language): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         return when (platform) {
             Platform.CT, Platform.DG, Platform.Evolution, Platform.Lbc, Platform.Sbo -> {
-                val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform)
+                val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform, language = language)
                 this.getPlatformApi(platform).start(startReq)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
@@ -149,12 +150,12 @@ class GameApi(
     /**
      * 开始游戏(老虎机)
      */
-    fun start(clientId: Int, platformUsername: String, platform: Platform, gameId: String): String {
+    fun start(clientId: Int, platformUsername: String, platform: Platform, gameId: String, language: Language): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         //TODO 跳转url
-        val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId)
+        val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId, language = language)
         return when (platform) {
             Platform.Joker -> jokerService.startSlot(startSlotReq)
             else -> error(OnePieceExceptionCode.DATA_FAIL)

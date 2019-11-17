@@ -6,7 +6,7 @@ import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.*
 
-class DGBuild private constructor(
+class DgBuild private constructor(
         val url: String,
         val random: String,
         val token: String
@@ -27,12 +27,12 @@ class DGBuild private constructor(
 
         }
 
-        fun instance(token: ClientToken, method: String): DGBuild {
+        fun instance(token: ClientToken, method: String): DgBuild {
             val random = getRandom()
             val url = getRequestUrl(method, (token as DefaultClientToken).appId)
             val requestToken = getToken(random, token.appId, token.key)
 
-            return DGBuild(url = url, random = random, token = requestToken)
+            return DgBuild(url = url, random = random, token = requestToken)
         }
     }
 

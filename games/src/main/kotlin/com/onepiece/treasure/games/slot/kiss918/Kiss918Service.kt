@@ -13,6 +13,17 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+/**
+ * 说明
+ * 支持用户区域：
+ *  1	马来
+ *  2	泰国
+ *  3	柬埔寨
+ *  4	缅甸
+ *  5	中国
+ *  6	越南
+ *  7	印尼
+ */
 @Service
 class Kiss918Service(
         private val okHttpUtil: OkHttpUtil

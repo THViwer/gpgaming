@@ -12,6 +12,15 @@ enum class Language {
     CN,
 
     // 马来语
-    MY
+    MY,
+
+    // 印尼
+    ID,
+
+    // 泰国
+    TH,
+
+    // 越南
+    VI
 
 }

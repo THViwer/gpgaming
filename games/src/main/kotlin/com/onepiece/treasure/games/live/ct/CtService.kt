@@ -1,5 +1,6 @@
 package com.onepiece.treasure.games.live.ct
 
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
@@ -18,6 +19,33 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 
+/**
+ * 币种支持
+ * 1	CNY	人民币
+2	USD	美元
+3	MYR	马来西亚币
+4	HKD	港币
+5	THB	泰珠
+6	SGD	新加坡元
+7	PHP	菲律宾比索
+8	TWD	台币
+9	VND	越南盾
+10	IDR	印尼(盾)
+11	JPY	日元
+12	KHR	柬埔寨币
+13	KWR	韩元
+16	AUD	澳大利亚元
+19	INR	印度卢比
+20	EUR	欧元
+21	GBP	英镑
+22	CAD	加拿大
+23	KRW2	韩元	已去除3个0，游戏中1块，等同于实际1000块
+24	MMK	缅甸币
+25	MMK2	缅甸币	已去除3个0，游戏中1块，等同于实际1000块
+29	VND2	越南盾	已去除3个0，游戏中1块，等同于实际1000块
+30	IDR2	印尼(盾)	已去除3个0，游戏中1块，等同于实际1000块
+100	TEST	测试币
+ */
 @Service
 class CtService(
         private val okHttpUtil: OkHttpUtil,
@@ -27,7 +55,7 @@ class CtService(
 
     // 暂时用马币
     val currency = "MYR"
-    val lang = "en"
+//    val lang = "en"
 
     fun checkCode(codeId: Int) {
         when (codeId) {
@@ -39,7 +67,7 @@ class CtService(
 
 
     override fun register(registerReq: GameValue.RegisterReq): String {
-        val param = CTBuild.instance(registerReq.token as DefaultClientToken, "signup")
+        val param = CtBuild.instance(registerReq.token as DefaultClientToken, "signup")
 
         val md5Password = DigestUtils.md5Hex(registerReq.password)
         val data = """
@@ -56,14 +84,14 @@ class CtService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.SignupResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CtValue.SignupResult::class.java)
         checkCode(result.codeId)
 
         return registerReq.username
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
-        val param = CTBuild.instance(balanceReq.token as DefaultClientToken,"getBalance")
+        val param = CtBuild.instance(balanceReq.token as DefaultClientToken,"getBalance")
         val data = """
             {
                 "token":"${param.token}",
@@ -71,12 +99,12 @@ class CtService(
                 "member":{"username":"${balanceReq.username}"}
             } 
         """.trimIndent()
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.BalanceResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CtValue.BalanceResult::class.java)
         return result.member.balance
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
-        val param = CTBuild.instance(transferReq.token as DefaultClientToken, "transfer")
+        val param = CtBuild.instance(transferReq.token as DefaultClientToken, "transfer")
 
         val data = """
             {
@@ -90,12 +118,12 @@ class CtService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.Transfer::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CtValue.Transfer::class.java)
         return result.data
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
-        val param = CTBuild.instance(checkTransferReq.token as DefaultClientToken, "transfer")
+        val param = CtBuild.instance(checkTransferReq.token as DefaultClientToken, "transfer")
 
         val data = """
             {
@@ -105,14 +133,14 @@ class CtService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.CheckTransferResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CtValue.CheckTransferResult::class.java)
         return result.codeId == 0
     }
 
     override fun asynBetOrder(syncBetOrderReq: GameValue.SyncBetOrderReq): String {
         val processId = UUID.randomUUID().toString().replace("-", "")
 
-        val param = CTBuild.instance(token = syncBetOrderReq.token as DefaultClientToken, method = "getReport")
+        val param = CtBuild.instance(token = syncBetOrderReq.token as DefaultClientToken, method = "getReport")
         val data = """
             {
                 "token":"${param.token}",
@@ -120,7 +148,7 @@ class CtService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.Report::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CtValue.Report::class.java)
         checkCode(result.codeId)
 
         if (result.list == null) return processId
@@ -163,7 +191,7 @@ class CtService(
     private fun mark(token: DefaultClientToken, ids: List<Long>) {
 
         val list = ids.joinToString(separator = ",")
-        val param = CTBuild.instance(token = token, method = "mark")
+        val param = CtBuild.instance(token = token, method = "mark")
         val data = """
             {
                 "token":"${param.token}",
@@ -172,13 +200,22 @@ class CtService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.Mark::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CtValue.Mark::class.java)
         checkCode(result.codeId)
 
     }
 
     override fun start(startReq: GameValue.StartReq): String {
-        val param = CTBuild.instance(startReq.token as DefaultClientToken, "login")
+
+        val lang = when (startReq.language) {
+            Language.EN -> "en"
+            Language.CN -> "cn"
+            Language.TH -> "th"
+            else -> "en"
+        }
+
+
+        val param = CtBuild.instance(startReq.token as DefaultClientToken, "login")
         val data = """
             {
                 "token":"${param.token}",
@@ -190,7 +227,7 @@ class CtService(
             }
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.LoginResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CtValue.LoginResult::class.java)
         checkCode(result.codeId)
 
         return when (startReq.startPlatform) {
@@ -200,8 +237,16 @@ class CtService(
         }.plus(result.token)
     }
 
-    open fun startDemo(token: DefaultClientToken, startPlatform: LaunchMethod): String {
-        val param = CTBuild.instance(token, "free")
+    open fun startDemo(token: DefaultClientToken, startPlatform: LaunchMethod, language: Language): String {
+
+        val lang = when (language) {
+            Language.EN -> "en"
+            Language.CN -> "cn"
+            Language.TH -> "th"
+            else -> "en"
+        }
+
+        val param = CtBuild.instance(token, "free")
         val data = """
             {
                 "token":"${param.token}",
@@ -211,7 +256,7 @@ class CtService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.LoginResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CtValue.LoginResult::class.java)
         checkCode(result.codeId)
 
         return when (startPlatform) {

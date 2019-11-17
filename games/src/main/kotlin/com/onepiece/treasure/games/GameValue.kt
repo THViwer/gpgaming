@@ -1,5 +1,6 @@
 package com.onepiece.treasure.games
 
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.model.token.ClientToken
 import java.math.BigDecimal
@@ -23,6 +24,8 @@ sealed class GameValue {
 
             val username: String,
 
+            val language: Language,
+
             val startPlatform: LaunchMethod
     )
 
@@ -33,6 +36,8 @@ sealed class GameValue {
             val gameId: String,
 
             val username: String,
+
+            val language: Language,
 
             // 重定向地址
             val redirectUrl: String = "http://www.baidu.com"

@@ -1,5 +1,6 @@
 package com.onepiece.treasure.games.sport.sbo
 
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.games.GameConstant
@@ -92,7 +93,17 @@ class SboService(
         val result = okHttpUtil.doGet(url, SboValue.SboLoginResult::class.java)
         this.checkCode(result.error.id)
 
-        return "${GameConstant.SBO_START_URL}?token=${result.token}"
+        val lang = when(startReq.language) {
+            Language.EN -> "en"
+            Language.CN -> "zh-cn"
+            Language.TH -> "th-th"
+            Language.ID -> "id-id"
+            else -> "en"
+        }
+
+        // oddstyle = HK, MY, EU
+        // theme=”: black, blue, ocean, green, emerald
+        return "${GameConstant.SBO_START_URL}?token=${result.token}&lang=$lang&oddstyle=MY&theme=ocean"
     }
 
 

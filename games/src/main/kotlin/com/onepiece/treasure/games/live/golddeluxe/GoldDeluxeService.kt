@@ -1,5 +1,6 @@
 package com.onepiece.treasure.games.live.golddeluxe
 
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
@@ -231,13 +232,22 @@ class GoldDeluxeService(
     override fun start(startReq: GameValue.StartReq): String {
 
         val token = startReq.token as DefaultClientToken
-        val lang = "en"
         val signParam = "${token.appId}${token.key}${startReq.username}${currencyCode}"
         val sign = ""
 
+        val lang = when (startReq.language) {
+            Language.CN -> "zh-cn"
+            Language.EN -> "en"
+            Language.TH -> "th"
+            Language.ID -> "id"
+            Language.VI -> "vi"
+            else -> "en"
+        }
+
+
         val param = listOf(
                 "OperatorCode=${token.appId}",
-                "lang=${currencyCode}",
+                "lang=${lang}",
                 "playerid=${startReq.username}",
                 "LoginTokenID=$sign",
                 "view=MB",

@@ -1,5 +1,6 @@
 package com.onepiece.treasure.games.live.dg
 
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
@@ -27,8 +28,6 @@ class DgService(
 
     // 暂时用马币
     val currency = "MYR"
-    val lang = "en"
-
 
     fun checkCode(codeId: Int) {
         when (codeId) {
@@ -41,7 +40,7 @@ class DgService(
 
     override fun register(registerReq: GameValue.RegisterReq): String {
 
-        val param = DGBuild.instance(registerReq.token, "/user/signup")
+        val param = DgBuild.instance(registerReq.token, "/user/signup")
 
         val md5Password = DigestUtils.md5Hex(registerReq.password)
         val data = """
@@ -58,7 +57,7 @@ class DgService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.SignupResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DgValue.SignupResult::class.java)
         checkCode(result.codeId)
 
         return registerReq.username
@@ -70,7 +69,7 @@ class DgService(
         val token = balanceReq.token
         val username = balanceReq.username
 
-        val param = DGBuild.instance(token,"/user/getBalance")
+        val param = DgBuild.instance(token,"/user/getBalance")
         val data = """
             {
                 "token":"${param.token}",
@@ -78,7 +77,7 @@ class DgService(
                 "member":{"username":"$username"}
             } 
         """.trimIndent()
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.BalanceResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DgValue.BalanceResult::class.java)
         checkCode(result.codeId)
         return result.member.balance
     }
@@ -87,7 +86,7 @@ class DgService(
 
         val token = transferReq.token
 
-        val param = DGBuild.instance(token, "/account/transfer")
+        val param = DgBuild.instance(token, "/account/transfer")
 
         val data = """
             {
@@ -101,7 +100,7 @@ class DgService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.Transfer::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DgValue.Transfer::class.java)
         checkCode(result.codeId)
         return result.data
 
@@ -110,7 +109,14 @@ class DgService(
 
     override fun start(startReq: GameValue.StartReq): String {
 
-        val param = DGBuild.instance(startReq.token, "/user/login")
+        val lang = when (startReq.language) {
+            Language.EN -> "en"
+            Language.CN -> "cn"
+            Language.TH -> "th"
+            else -> "en"
+        }
+
+        val param = DgBuild.instance(startReq.token, "/user/login")
         val data = """
             {
                 "token":"${param.token}",
@@ -122,7 +128,7 @@ class DgService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.LoginResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DgValue.LoginResult::class.java)
         checkCode(result.codeId)
 
         return when (startReq.startPlatform) {
@@ -133,30 +139,30 @@ class DgService(
 
     }
 
-
-    override fun startSlotDemo(token: ClientToken, startPlatform: LaunchMethod): String {
-        val param = DGBuild.instance(token, "/user/free")
-        val data = """
-            {
-                "token":"${param.token}",
-                "random":"${param.random}",
-                "lang":"$lang",
-                "device": 1
-            } 
-        """.trimIndent()
-
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.LoginResult::class.java)
-        checkCode(result.codeId)
-
-        return when (startPlatform) {
-            LaunchMethod.Web -> result.list[0]
-            LaunchMethod.Wap -> result.list[1]
-            else -> result.list[2]
-        }.plus(result.token)
-    }
+//
+//    override fun startSlotDemo(token: ClientToken, startPlatform: LaunchMethod): String {
+//        val param = DGBuild.instance(token, "/user/free")
+//        val data = """
+//            {
+//                "token":"${param.token}",
+//                "random":"${param.random}",
+//                "lang":"$lang",
+//                "device": 1
+//            }
+//        """.trimIndent()
+//
+//        val result = okHttpUtil.doPostJson(param.url, data, DGValue.LoginResult::class.java)
+//        checkCode(result.codeId)
+//
+//        return when (startPlatform) {
+//            LaunchMethod.Web -> result.list[0]
+//            LaunchMethod.Wap -> result.list[1]
+//            else -> result.list[2]
+//        }.plus(result.token)
+//    }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
-        val param = DGBuild.instance(checkTransferReq.token, "/account/transfer")
+        val param = DgBuild.instance(checkTransferReq.token, "/account/transfer")
 
         val data = """
             {
@@ -166,7 +172,7 @@ class DgService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.CheckTransferResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DgValue.CheckTransferResult::class.java)
         return result.codeId == 0
     }
 
@@ -177,7 +183,7 @@ class DgService(
 
         val processId = UUID.randomUUID().toString().replace("-", "")
 
-        val param = DGBuild.instance(token = token, method = "/game/getReport")
+        val param = DgBuild.instance(token = token, method = "/game/getReport")
         val data = """
             {
                 "token":"${param.token}",
@@ -185,7 +191,7 @@ class DgService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.Report::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DgValue.Report::class.java)
         checkCode(result.codeId)
 
         if (result.list == null) return processId
@@ -230,7 +236,7 @@ class DgService(
     private fun mark(token: ClientToken, ids: List<Long>) {
 
         val list = ids.joinToString(separator = ",")
-        val param = DGBuild.instance(token = token, method = "/game/markReport")
+        val param = DgBuild.instance(token = token, method = "/game/markReport")
         val data = """
             {
                 "token":"${param.token}",
@@ -239,7 +245,7 @@ class DgService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.Mark::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DgValue.Mark::class.java)
         checkCode(result.codeId)
 
     }

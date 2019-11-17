@@ -1,5 +1,6 @@
 package com.onepiece.treasure.games.live.evolution
 
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.games.GameConstant
@@ -21,7 +22,7 @@ class EvolutionService(
     override fun register(registerReq: GameValue.RegisterReq): String {
         // EvoConfig.API_URL+"/ua/v1/"+EvoConfig.KEY+"/"+EvoConfig.TOKEN;
 
-        val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, startPlatform = LaunchMethod.Web)
+        val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, startPlatform = LaunchMethod.Web, language = Language.EN)
         this.start(startReq)
 
         return registerReq.username
@@ -65,6 +66,17 @@ class EvolutionService(
 //        val config = EvolutionValue.Config()
 //        val registerPlayer = EvolutionValue.RegisterPlayer(uuid = uuid, player = player, config = config)
 
+
+        val lang = when (startReq.language) {
+            Language.EN -> "en"
+            Language.TH -> "th"
+            Language.CN -> "zh"
+            Language.ID -> "id"
+            Language.MY -> "ms"
+            else -> "en"
+        }
+
+
         val json = """
             { 
                "uuid":"$uuid",
@@ -75,7 +87,7 @@ class EvolutionService(
                   "lastName":"lastName",
                   "nickname":"nickname",
                   "country":"MY",
-                  "language":"en",
+                  "language":"$lang",
                   "currency":"MYR",
                   "session":{ 
                      "id":"$uuid",

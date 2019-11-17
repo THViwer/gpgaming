@@ -31,16 +31,22 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台)")
     fun start(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+
             @RequestHeader("platform") platform: Platform,
             @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台试玩)")
-    fun startDemo(@RequestHeader("platform") platform: Platform,
-                  @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod): StartGameResp
+    fun startDemo(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("platform") platform: Platform,
+            @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始游戏(老虎机)")
-    fun startSlotGame(@RequestHeader("platform") platform: Platform,
-                      @RequestParam("gameId") gameId: String): StartGameResp
+    fun startSlotGame(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("platform") platform: Platform,
+            @RequestParam("gameId") gameId: String): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "下载客户端(ios或android)")
     fun down(@PathVariable("mobilePlatform") mobilePlatform: String): List<DownloadAppVo>

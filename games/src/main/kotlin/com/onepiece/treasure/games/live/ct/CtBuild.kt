@@ -5,7 +5,7 @@ import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import org.apache.commons.codec.digest.DigestUtils
 import java.util.*
 
-class CTBuild private constructor(
+class CtBuild private constructor(
         val url: String,
         val random: String,
         val token: String
@@ -26,12 +26,12 @@ class CTBuild private constructor(
 
         }
 
-        fun instance(token: DefaultClientToken, method: String): CTBuild {
+        fun instance(token: DefaultClientToken, method: String): CtBuild {
             val random = getRandom()
             val url = getRequestUrl(method, token.appId)
             val requestToken = getToken(random, token.appId, token.key)
 
-            return CTBuild(url = url, random = random, token = requestToken)
+            return CtBuild(url = url, random = random, token = requestToken)
         }
     }
 

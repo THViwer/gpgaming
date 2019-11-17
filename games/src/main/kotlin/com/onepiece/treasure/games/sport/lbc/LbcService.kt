@@ -1,5 +1,6 @@
 package com.onepiece.treasure.games.sport.lbc
 
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
@@ -93,9 +94,18 @@ class LbcService(
         val result = okHttpUtil.doGet(url = url, clz = LbcValue.Login::class.java)
         this.checkCode(result.errorCode)
 
+        val lang = when (startReq.language) {
+            Language.EN -> "en"
+            Language.CN -> "cs"
+            Language.ID -> "id"
+            Language.TH -> "th"
+            Language.VI -> "vn"
+            else -> "en"
+        }
+
         return when (startReq.startPlatform) {
-            LaunchMethod.Web -> "${GameConstant.LBC_START_URL}${result.sessionToken}"
-            LaunchMethod.Wap -> "${GameConstant.LBC_START_MOBILE_URL}${result.sessionToken}"
+            LaunchMethod.Web -> "${GameConstant.LBC_START_URL}${result.sessionToken}&lang=$lang"
+            LaunchMethod.Wap -> "${GameConstant.LBC_START_MOBILE_URL}${result.sessionToken}&lang=$lang"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }

@@ -87,6 +87,7 @@ class ApiController(
 
     @GetMapping("/start")
     override fun start(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("platform") platform: Platform,
             @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod
     ): StartGameResp {
@@ -94,12 +95,13 @@ class ApiController(
 
         val member = current()
         val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
-                startPlatform = startPlatform)
+                startPlatform = startPlatform, language = language)
         return StartGameResp(path = gameUrl)
     }
 
     @GetMapping("/demo")
     override fun startDemo(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("platform") platform: Platform,
             @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod): StartGameResp {
 
@@ -114,13 +116,15 @@ class ApiController(
 
     @GetMapping("/start/slot")
     override fun startSlotGame(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestParam("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp {
 
         val platformMember = getPlatformMember(platform)
         val member = current()
 
-        val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform, gameId = gameId)
+        val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
+                gameId = gameId, language = language)
         return StartGameResp(path = gameUrl)
 
     }

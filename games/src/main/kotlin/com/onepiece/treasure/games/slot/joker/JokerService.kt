@@ -1,9 +1,6 @@
 package com.onepiece.treasure.games.slot.joker
 
-import com.onepiece.treasure.beans.enums.GameCategory
-import com.onepiece.treasure.beans.enums.LaunchMethod
-import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
@@ -24,6 +21,11 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+/**
+ * 启动平台支持语言
+ * en - ENGLISH、id - INDONESIA、ms - BAHASA MALAYSIA、th - THAILAND、zh - CHINESE
+ *
+ */
 @Service
 class JokerService(
         private val okHttpUtil: OkHttpUtil,
@@ -45,7 +47,7 @@ class JokerService(
                 .build(token)
 
         val registerResult = okHttpUtil.doPostForm(url, formBody, JokerValue.JokerRegisterResult:: class.java)
-//        check(registerResult.status == "Created") { OnePieceExceptionCode.PLATFORM_MEMBER_REGISTER_FAIL }
+        check(registerResult.status == "Created") { OnePieceExceptionCode.PLATFORM_MEMBER_REGISTER_FAIL }
 
         // set password
         val (url2, formBody2) = JokerBuild.instance("SP")
@@ -126,8 +128,17 @@ class JokerService(
 
 
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
+        val lang = when (startSlotReq.language) {
+            Language.CN -> "zh"
+            Language.ID -> "id"
+            Language.MY -> "ms"
+            Language.TH -> "th"
+            Language.EN -> "en"
+            else -> "en"
+        }
+
         val userToken = this.requestUserToken(startSlotReq.token as DefaultClientToken, startSlotReq.username)
-        return "${GameConstant.JOKER_GAME_URL}?token=$userToken&game=${startSlotReq.gameId}&redirectUrl=${startSlotReq.redirectUrl}"
+        return "${GameConstant.JOKER_GAME_URL}?token=$userToken&game=${startSlotReq.gameId}&redirectUrl=${startSlotReq.redirectUrl}&lang=${lang}"
     }
 
     override fun asynBetOrder(syncBetOrderReq: GameValue.SyncBetOrderReq): String {
