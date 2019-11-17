@@ -466,7 +466,7 @@ open class CashApiController(
 
 
         // 查询余额 //TODO 暂时没用async
-        val balances = platforms.filter { it.platform == Platform.Joker }.filter { category == null || it.platform.detail.category == category }.map {
+        val balances = platforms.filter { category == null || it.platform.detail.category == category }.map {
             val platformMember = platformMemberMap[it.platform]
 
             when (platformMember == null) {
