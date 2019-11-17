@@ -45,9 +45,10 @@ open class RedisConfig {
 
 
     @Bean
-    @Primary
     open fun xmlMapper(): XmlMapper {
-        return XmlMapper()
+        val xmlMapper = XmlMapper()
+        xmlMapper.registerModule(KotlinModule())
+        return xmlMapper
     }
 
 
