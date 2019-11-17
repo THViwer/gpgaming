@@ -127,17 +127,30 @@ class ApiController(
 
     @GetMapping("/down/{mobilePlatform}")
     override fun down(@PathVariable("mobilePlatform") mobilePlatform: String): List<DownloadAppVo> {
+        //TODO 暂时不解析网站
+
+        // kiss918 -> https://www.918kisse.com/
+
+        // pussy888 -> https://918kiss.care/pussy888/
+
+        // Mega -> http://m.mega585.com/ 可能需要通过接口
+
+
+
         return when (mobilePlatform) {
             "ios" -> {
-                val joker = DownloadAppVo(Platform.Joker, Platform.Joker.detail.icon, "http//:www.baidu.com")
-                val ct = DownloadAppVo(Platform.CT, Platform.CT.detail.icon, "http//:www.baidu.com")
-                listOf(joker, ct)
+                val kiss918 = DownloadAppVo(Platform.Kiss918, Platform.Kiss918.detail.icon, "itms-services://?action=download-manifest&url=https://s3-ap-southeast-1.amazonaws.com/app918kiss/ios/918Kiss.plist")
+                val pussy888 = DownloadAppVo(Platform.Pussy888, Platform.Pussy888.detail.icon, "itms-services://?action=download-manifest&url=https://pussy888.s3.amazonaws.com/pussy888/appsetup/ios/pussy888.plist")
+                val mega = DownloadAppVo(Platform.Mega, Platform.Mega.detail.icon, "itms-services://?action=download-manifest&url=https://aka-dd-mega-appsetup.siderby.com/ios/Mega888.plist")
+                listOf(kiss918, pussy888, mega)
             }
-            else -> {
-                val joker = DownloadAppVo(Platform.Joker, Platform.Joker.detail.icon, "http//:www.baidu.com")
-                val ct = DownloadAppVo(Platform.CT, Platform.CT.detail.icon, "http//:www.baidu.com")
-                listOf(joker, ct)
+            "android" -> {
+                val kiss918 = DownloadAppVo(Platform.Kiss918, Platform.Kiss918.detail.icon, "https://s3-ap-southeast-1.amazonaws.com/app918kiss/apk/918Kiss.apk")
+                val pussy888 = DownloadAppVo(Platform.Pussy888, Platform.Pussy888.detail.icon, "https://s3-ap-southeast-1.amazonaws.com/pussy888/pussy888/appsetup/apk/pussy888.apk")
+                val mega = DownloadAppVo(Platform.Mega, Platform.Mega.detail.icon, "https://aka-dd-mega-appsetup.siderby.com/apk/Mega888_V1.2.apk")
+                listOf(kiss918, pussy888, mega)
             }
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
 

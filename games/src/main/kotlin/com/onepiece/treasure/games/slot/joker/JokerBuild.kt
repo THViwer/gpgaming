@@ -1,7 +1,7 @@
 package com.onepiece.treasure.games.slot.joker
 
-import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.games.GameConstant
 import okhttp3.FormBody
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.HmacUtils
@@ -12,7 +12,7 @@ class JokerBuild private constructor(
         val method: String
 ){
 
-    private val data = hashMapOf<String, String>()
+    private val data = hashMapOf<String, Any>()
     private val timestamp = System.currentTimeMillis() / 1000
 
     companion object {
@@ -24,7 +24,7 @@ class JokerBuild private constructor(
         }
     }
 
-    fun set(k: String, v: String?): JokerBuild {
+    fun set(k: String, v: Any?): JokerBuild {
         if (v != null)
             data[k] = v
         return this
@@ -45,7 +45,7 @@ class JokerBuild private constructor(
 //                .add("Method", method)
 //                .add("Timestamp", "$timestamp")
         data.map {
-            builder.add(it.key, it.value)
+            builder.add(it.key, "${it.value}")
         }
         return builder.build()
     }

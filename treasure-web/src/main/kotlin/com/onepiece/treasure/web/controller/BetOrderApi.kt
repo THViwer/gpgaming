@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Api(tags = ["bet"], description = "平台订单")
 interface BetOrderApi {
@@ -15,8 +15,9 @@ interface BetOrderApi {
     fun bets(
             @RequestHeader("platform") platform: Platform,
             @RequestParam("username") username: String,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate): Any
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
+    ): Any
 
 
 }

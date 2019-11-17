@@ -5,7 +5,6 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
-import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
 import com.onepiece.treasure.beans.model.token.MegaClientToken
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
@@ -15,21 +14,23 @@ import com.onepiece.treasure.core.order.DGBetOrderDao
 import com.onepiece.treasure.core.order.JokerBetOrderDao
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
-import com.onepiece.treasure.games.live.ct.CTApi
-import com.onepiece.treasure.games.live.dg.DGApiService
+import com.onepiece.treasure.games.live.ct.CtService
+import com.onepiece.treasure.games.live.dg.DgService
 import com.onepiece.treasure.games.live.evolution.EvolutionService
-import com.onepiece.treasure.games.live.golddeluxe.GoldDeluxeApi
+import com.onepiece.treasure.games.live.golddeluxe.GoldDeluxeService
 import com.onepiece.treasure.games.live.sexy.SexyService
-import com.onepiece.treasure.games.slot.joker.JokerApi
-import com.onepiece.treasure.games.slot.kiss918.Kiss918Api
+import com.onepiece.treasure.games.slot.joker.JokerService
+import com.onepiece.treasure.games.slot.kiss918.Kiss918Service
 import com.onepiece.treasure.games.slot.mega.MegaService
 import com.onepiece.treasure.games.slot.pussy888.Pussy888Service
-import com.onepiece.treasure.games.sport.sbo.SboApi
+import com.onepiece.treasure.games.sport.lbc.LbcService
+import com.onepiece.treasure.games.sport.sbo.SboService
 import com.onepiece.treasure.utils.RedisService
 import com.onepiece.treasure.utils.StringUtil
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Component
 class GameApi(
@@ -37,18 +38,24 @@ class GameApi(
         private val platformMemberService: PlatformMemberService,
         private val redisService: RedisService,
 
-        private val jokerApi: JokerApi,
-        private val ctApi: CTApi,
-        private val dgPlatformApi: DGApiService,
-        private val megaService: MegaService,
+
+        // slot
+        private val jokerService: JokerService,
+        private val kiss918Service: Kiss918Service,
         private val pussy888Service: Pussy888Service,
+        private val megaService: MegaService,
+
+        // live game
+        private val ctService: CtService,
+        private val dgService: DgService,
+        private val goldDeluxeService: GoldDeluxeService,
         private val evolutionService: EvolutionService,
-        private val lbcService: PlatformApi,
         private val sexyService: SexyService,
 
-        private val kiss918Api: Kiss918Api,
-        private val sboApi: SboApi,
-        private val goldDeluxeApi: GoldDeluxeApi,
+        // sport
+        private val sboService: SboService,
+        private val lbcService: LbcService,
+
 
         private val ctBetOrderDao: CTBetOrderDao,
         private val dgBetOrderDao: DGBetOrderDao,
@@ -58,12 +65,25 @@ class GameApi(
 
     private fun getPlatformApi(platform: Platform): PlatformApi {
         return when (platform) {
-            Platform.DG -> dgPlatformApi
-            Platform.Mega -> megaService
+
+            // slot
+            Platform.Joker -> jokerService
+            Platform.Kiss918 -> kiss918Service
             Platform.Pussy888 -> pussy888Service
-            Platform.Evolution -> evolutionService
+            Platform.Mega -> megaService
+
+            // live game
+            Platform.CT -> ctService
+            Platform.DG -> dgService
+            // 未完成测试
+//            Platform.Evolution -> evolutionService
+//            Platform.GoldDeluxe -> goldDeluxeService
+//            Platform.SexyGaming -> sexyService
+
+            // sport
             Platform.Lbc -> lbcService
-            Platform.SexyGaming -> sexyService
+            Platform.Sbo -> sboService
+
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
@@ -85,17 +105,8 @@ class GameApi(
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         // 注册账号
-        val username = when (platform) {
-            Platform.Joker -> jokerApi.register(token = clientToken as DefaultClientToken, username = generatorUsername, password = generatorPassword)
-            Platform.CT -> ctApi.signup(token = clientToken as DefaultClientToken, username = generatorUsername, password = generatorPassword)
-            Platform.Kiss918 -> kiss918Api.addUser(token = clientToken as Kiss918ClientToken, password = generatorPassword)
-            Platform.Sbo -> sboApi.registerPlayer(token = clientToken as DefaultClientToken, username = generatorUsername)
-            Platform.GoldDeluxe -> goldDeluxeApi.createMember(token = clientToken as DefaultClientToken, username = generatorUsername)
-            else -> {
-                val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = generatorUsername)
-                getPlatformApi(platform).register(registerReq)
-            }
-        }
+        val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = generatorUsername)
+        val username = getPlatformApi(platform).register(registerReq)
 
         platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = username, platformPassword = generatorPassword)
     }
@@ -111,12 +122,10 @@ class GameApi(
             val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
             when (platform) {
-                Platform.Joker -> jokerApi.slotGames(token = clientToken as DefaultClientToken, launch = launch)
+                Platform.Joker -> jokerService.slotGames(token = clientToken as DefaultClientToken, launch = launch)
                 else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
         }
-
-
     }
 
 
@@ -128,9 +137,7 @@ class GameApi(
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         return when (platform) {
-            Platform.CT -> ctApi.login(token = clientToken as DefaultClientToken, startPlatform = startPlatform, username = platformUsername)
-            Platform.Sbo -> sboApi.login(token = clientToken as DefaultClientToken, username = platformUsername)
-            Platform.DG, Platform.Evolution, Platform.Lbc -> {
+            Platform.CT, Platform.DG, Platform.Evolution, Platform.Lbc, Platform.Sbo -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform)
                 this.getPlatformApi(platform).start(startReq)
             }
@@ -145,8 +152,10 @@ class GameApi(
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
+        //TODO 跳转url
+        val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId)
         return when (platform) {
-            Platform.Joker -> jokerApi.start(token = clientToken as DefaultClientToken, gameId = gameId, username = platformUsername)
+            Platform.Joker -> jokerService.startSlot(startSlotReq)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
@@ -158,16 +167,8 @@ class GameApi(
     fun balance(clientId: Int, platformUsername: String, platform: Platform): BigDecimal {
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
-        return when (platform) {
-            Platform.Joker -> jokerApi.getCredit(token = clientToken as DefaultClientToken, username = platformUsername)
-            Platform.CT -> ctApi.getBalance(token = clientToken as DefaultClientToken, username = platformUsername)
-            Platform.Kiss918 -> kiss918Api.userinfo(token = clientToken as Kiss918ClientToken, username = platformUsername)
-            Platform.Sbo -> sboApi.getPlayerBalance(token = clientToken as DefaultClientToken, username = platformUsername)
-            else -> {
-                val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername)
-                this.getPlatformApi(platform).balance(balanceReq)
-            }
-        }.setScale(2, 2)
+        val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername)
+        return this.getPlatformApi(platform).balance(balanceReq).setScale(2, 2)
     }
 
 
@@ -178,16 +179,8 @@ class GameApi(
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
-        when (platform) {
-            Platform.Joker -> jokerApi.transferCredit(token = clientToken as DefaultClientToken, username = platformUsername, orderId = orderId, amount = amount)
-            Platform.CT -> ctApi.transfer(token = clientToken as DefaultClientToken, username = platformUsername, orderId = orderId, amount = amount)
-            Platform.Kiss918 -> kiss918Api.setScore(token = clientToken as Kiss918ClientToken, username = platformUsername, orderId = orderId, amount = amount)
-            Platform.Sbo -> sboApi.depositOrWithdraw(token = clientToken as DefaultClientToken, username = platformUsername, orderId = orderId, amount = amount)
-            else -> {
-                val transferReq = GameValue.TransferReq(token = clientToken, orderId = orderId, username = platformUsername, amount = amount)
-                this.getPlatformApi(platform).transfer(transferReq)
-            }
-        }
+        val transferReq = GameValue.TransferReq(token = clientToken, orderId = orderId, username = platformUsername, amount = amount)
+        this.getPlatformApi(platform).transfer(transferReq)
     }
 
     /**
@@ -207,15 +200,15 @@ class GameApi(
     /**
      * 查询下注订单
      */
-    fun queryBetOrder(clientId: Int, platformUsername: String, platform: Platform, startDate: LocalDate, endDate: LocalDate): Any {
+    fun queryBetOrder(clientId: Int, platformUsername: String, platform: Platform, startTime: LocalDateTime, endTime: LocalDateTime): Any {
         val clientToken = getClientToken(clientId = clientId, platform = platform)
+
         return when(platform) {
-            Platform.Kiss918 -> kiss918Api.accountReport(token = clientToken as Kiss918ClientToken, username = platformUsername, startDate = startDate, endDate = endDate)
-            Platform.Sbo -> sboApi.getCustomerReport(token = clientToken as DefaultClientToken, username = platformUsername, startDate = startDate, endDate = endDate)
-            else -> {
-                val betOrderReq = GameValue.BetOrderReq(token = clientToken, startTime = startDate.atStartOfDay(), endTime = endDate.atStartOfDay(), username = platformUsername)
+            Platform.Kiss918, Platform.Mega, Platform.Pussy888, Platform.SexyGaming-> {
+                val betOrderReq = GameValue.BetOrderReq(token = clientToken, startTime = startTime, endTime = endTime, username = platformUsername)
                 getPlatformApi(platform).queryBetOrder(betOrderReq)
             }
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
 

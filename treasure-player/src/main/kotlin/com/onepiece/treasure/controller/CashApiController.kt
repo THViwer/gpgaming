@@ -280,6 +280,10 @@ open class CashApiController(
         // 平台钱包更改信息
         if (platformMemberTransferUo != null) {
             platformMemberService.transferIn(platformMemberTransferUo)
+        } else {
+            val init = PlatformMemberTransferUo(id = platformMember.id, joinPromotionId = null, currentBet = BigDecimal.ZERO, requirementBet = BigDecimal.ZERO,
+                    promotionAmount = BigDecimal.ZERO, transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO)
+            platformMemberService.transferIn(init)
         }
 
         //调用平台接口充值
@@ -395,7 +399,7 @@ open class CashApiController(
         transferOrderService.update(transferOrderUo)
 
         // 清空平台用户优惠信息
-        platformMemberService.cleanTransferIn(memberId = memberId, platform = platform)
+        platformMemberService.cleanTransferIn(memberId = memberId, platform = platform, transferOutAmount = amount)
     }
 
 

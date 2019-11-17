@@ -9,6 +9,7 @@ import com.onepiece.treasure.web.controller.basic.BasicController
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/bet")
@@ -23,18 +24,21 @@ class BerOrderApiController(
     override fun bets(
             @RequestHeader("platform") platform: Platform,
             @RequestParam("username") username: String,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate): Any {
-
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
+    ): Any {
 
         val member = memberService.findByUsername(username) ?: return emptyList<Any>()
+
+        val startDate = startTime.toLocalDate()
+        val endDate = endTime.toLocalDate()
+
         return when (platform) {
             Platform.Joker, Platform.CT, Platform.DG -> gameApi.queryBetOrder(clientId = clientId, memberId = member.id, platform = platform, startDate = startDate, endDate = endDate)
             Platform.Kiss918, Platform.Sbo, Platform.Mega -> {
                 val platformMember = platformMemberService.find(memberId = member.id, platform = platform) ?: return emptyList<Any>()
-                gameApi.queryBetOrder(clientId = clientId, platformUsername = platformMember.platformUsername, platform = platform, startDate = startDate, endDate = endDate)
+                gameApi.queryBetOrder(clientId = clientId, platformUsername = platformMember.platformUsername, platform = platform, startTime = startTime, endTime = endTime)
             }
-
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 

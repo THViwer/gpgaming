@@ -1,14 +1,16 @@
-package com.onepiece.treasure.games.live.ct
+package com.onepiece.treasure.games.live.dg
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
-import com.onepiece.treasure.games.http.OkHttpUtil
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.core.order.CTBetOrder
-import com.onepiece.treasure.core.order.CTBetOrderDao
+import com.onepiece.treasure.core.order.DGBetOrderDao
+import com.onepiece.treasure.games.GameValue
+import com.onepiece.treasure.games.PlatformApi
+import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.utils.RedisService
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
@@ -17,11 +19,11 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class CTApiService(
+class DgService(
         private val okHttpUtil: OkHttpUtil,
         private val redisService: RedisService,
-        private val ctBetOrderDao: CTBetOrderDao
-) : CTApi {
+        private val dgBetOrderDao: DGBetOrderDao
+) : PlatformApi() {
 
     // 暂时用马币
     val currency = "MYR"
@@ -36,18 +38,19 @@ class CTApiService(
         }
     }
 
-    override fun signup(token: DefaultClientToken, username: String, password: String): String {
 
-        val param = CTBuild.instance(token, "signup")
+    override fun register(registerReq: GameValue.RegisterReq): String {
 
-        val md5Password = DigestUtils.md5Hex(password)
+        val param = DGBuild.instance(registerReq.token, "/user/signup")
+
+        val md5Password = DigestUtils.md5Hex(registerReq.password)
         val data = """
             {
                 "token":"${param.token}",
                 "random":"${param.random}",
                 "data":"G",
                 "member":{
-                    "username":"$username",
+                    "username":"${registerReq.username}",
                     "password":"$md5Password",
                     "currencyName":"$currency",
                     "winLimit":1000
@@ -55,30 +58,74 @@ class CTApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.SignupResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DGValue.SignupResult::class.java)
         checkCode(result.codeId)
 
-        return username
+        return registerReq.username
+
     }
 
-    override fun login(token: DefaultClientToken, username: String, startPlatform: LaunchMethod): String {
+    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
 
-        val param = CTBuild.instance(token, "login")
+        val token = balanceReq.token
+        val username = balanceReq.username
+
+        val param = DGBuild.instance(token,"/user/getBalance")
+        val data = """
+            {
+                "token":"${param.token}",
+                "random":"${param.random}",
+                "member":{"username":"$username"}
+            } 
+        """.trimIndent()
+        val result = okHttpUtil.doPostJson(param.url, data, DGValue.BalanceResult::class.java)
+        checkCode(result.codeId)
+        return result.member.balance
+    }
+
+    override fun transfer(transferReq: GameValue.TransferReq): String {
+
+        val token = transferReq.token
+
+        val param = DGBuild.instance(token, "/account/transfer")
+
+        val data = """
+            {
+                "token":"${param.token}",
+                "random":"${param.random}",
+                "data":"${transferReq.orderId}",
+                "member":{
+                    "username":"${transferReq.username}",
+                    "amount":${transferReq.amount}
+                }
+            } 
+        """.trimIndent()
+
+        val result = okHttpUtil.doPostJson(param.url, data, DGValue.Transfer::class.java)
+        checkCode(result.codeId)
+        return result.data
+
+    }
+
+
+    override fun start(startReq: GameValue.StartReq): String {
+
+        val param = DGBuild.instance(startReq.token, "/user/login")
         val data = """
             {
                 "token":"${param.token}",
                 "random":"${param.random}",
                 "lang":"$lang",
                 "member":{
-                    "username":"$username"
+                    "username":"${startReq.username}"
                 }
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.LoginResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DGValue.LoginResult::class.java)
         checkCode(result.codeId)
 
-        return when (startPlatform) {
+        return when (startReq.startPlatform) {
             LaunchMethod.Web -> result.list[0]
             LaunchMethod.Wap -> result.list[1]
             else -> result.list[2]
@@ -86,8 +133,9 @@ class CTApiService(
 
     }
 
-    override fun loginFree(token: DefaultClientToken, startPlatform: LaunchMethod): String {
-        val param = CTBuild.instance(token, "free")
+
+    override fun startSlotDemo(token: ClientToken, startPlatform: LaunchMethod): String {
+        val param = DGBuild.instance(token, "/user/free")
         val data = """
             {
                 "token":"${param.token}",
@@ -97,7 +145,7 @@ class CTApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.LoginResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DGValue.LoginResult::class.java)
         checkCode(result.codeId)
 
         return when (startPlatform) {
@@ -107,59 +155,29 @@ class CTApiService(
         }.plus(result.token)
     }
 
-    override fun getBalance(token: DefaultClientToken, username: String): BigDecimal {
-
-        val param = CTBuild.instance(token,"getBalance")
-        val data = """
-            {
-                "token":"${param.token}",
-                "random":"${param.random}",
-                "member":{"username":"$username"}
-            } 
-        """.trimIndent()
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.BalanceResult::class.java)
-        return result.member.balance
-    }
-
-    override fun transfer(token: DefaultClientToken, username: String, orderId: String, amount: BigDecimal): String {
-        val param = CTBuild.instance(token, "transfer")
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+        val param = DGBuild.instance(checkTransferReq.token, "/account/transfer")
 
         val data = """
             {
                 "token":"${param.token}",
                 "random":"${param.random}",
-                "data":"$orderId",
-                "member":{
-                    "username":"$username",
-                    "amount":${amount}
-                }
+                "data":"${checkTransferReq.orderId}"
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.Transfer::class.java)
-        return result.data
-    }
-
-    override fun checkTransfer(token: DefaultClientToken, orderId: String): Boolean {
-
-        val param = CTBuild.instance(token, "transfer")
-
-        val data = """
-            {
-                "token":"${param.token}",
-                "random":"${param.random}",
-                "data":"${orderId}"
-            } 
-        """.trimIndent()
-
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.CheckTransferResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DGValue.CheckTransferResult::class.java)
         return result.codeId == 0
     }
 
-    override fun getReport(token: DefaultClientToken): String {
+
+    override fun asynBetOrder(syncBetOrderReq: GameValue.SyncBetOrderReq): String {
+
+        val token = syncBetOrderReq.token
+
         val processId = UUID.randomUUID().toString().replace("-", "")
 
-        val param = CTBuild.instance(token = token, method = "getReport")
+        val param = DGBuild.instance(token = token, method = "/game/getReport")
         val data = """
             {
                 "token":"${param.token}",
@@ -167,7 +185,7 @@ class CTApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.Report::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DGValue.Report::class.java)
         checkCode(result.codeId)
 
         if (result.list == null) return processId
@@ -188,14 +206,14 @@ class CTApiService(
             }
         }
         // 存储订单
-        ctBetOrderDao.create(orders)
+        dgBetOrderDao.create(orders)
 
         // 放到缓存
         val caches = orders.groupBy { it.memberId }.map {
             val memberId = it.key
             val money = it.value.sumByDouble { it.betPoints.toDouble() }.toBigDecimal().setScale(2, 2)
 
-            BetCacheVo(memberId = memberId, bet = money, platform = Platform.CT)
+            BetCacheVo(memberId = memberId, bet = money, platform = Platform.DG)
         }
         val redisKey = OnePieceRedisKeyConstant.betCache(processId)
         redisService.put(redisKey, caches)
@@ -205,12 +223,14 @@ class CTApiService(
         this.mark(token = token, ids = ids)
 
         return processId
+
+
     }
 
-    private fun mark(token: DefaultClientToken, ids: List<Long>) {
+    private fun mark(token: ClientToken, ids: List<Long>) {
 
         val list = ids.joinToString(separator = ",")
-        val param = CTBuild.instance(token = token, method = "mark")
+        val param = DGBuild.instance(token = token, method = "/game/markReport")
         val data = """
             {
                 "token":"${param.token}",
@@ -219,7 +239,7 @@ class CTApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CTValue.Mark::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DGValue.Mark::class.java)
         checkCode(result.codeId)
 
     }

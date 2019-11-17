@@ -30,6 +30,9 @@ data class PlatformMember(
         // 总充值金额
         val totalAmount: BigDecimal,
 
+        // 总出款金额
+        val totalTransferOutAmount: BigDecimal,
+
         // 总优惠金额
         val totalPromotionAmount: BigDecimal,
 

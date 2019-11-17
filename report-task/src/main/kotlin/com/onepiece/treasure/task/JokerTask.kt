@@ -1,11 +1,10 @@
 package com.onepiece.treasure.task
 
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.core.service.PlatformBindService
-import com.onepiece.treasure.games.slot.joker.JokerApi
+import com.onepiece.treasure.games.GameValue
+import com.onepiece.treasure.games.slot.joker.JokerService
 import org.slf4j.LoggerFactory
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
@@ -13,13 +12,13 @@ import java.time.LocalDateTime
 class JokerTask(
         private val betCacheUtil: BetCacheUtil,
         private val platformBindService: PlatformBindService,
-        private val jokerApi: JokerApi
+        private val jokerService: JokerService
 ) {
     private val log = LoggerFactory.getLogger(JokerTask::class.java)
 
     var running = false
 
-    @Scheduled(cron="0/30 * *  * * ? ")
+    //    @Scheduled(cron="0/30 * *  * * ? ")
     fun syncOrder() {
         if (running) return
 
@@ -34,7 +33,8 @@ class JokerTask(
 
             val binds = platformBindService.find(platform = Platform.Joker)
             binds.forEach {
-                val unionId = jokerApi.retrieveTransactions(token = it.clientToken as DefaultClientToken, startTime = startTime, endTime = endTime)
+                val syncBetOrderReq = GameValue.SyncBetOrderReq(token = it.clientToken, startTime = startTime, endTime = endTime)
+                val unionId = jokerService.asynBetOrder(syncBetOrderReq)
                 betCacheUtil.handler(unionId)
             }
         } finally {

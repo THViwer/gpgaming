@@ -12,6 +12,7 @@ import com.onepiece.treasure.core.dao.PlatformMemberDao
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 
 @Service
 class PlatformMemberServiceImpl(
@@ -69,8 +70,8 @@ class PlatformMemberServiceImpl(
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 
-    override fun cleanTransferIn(memberId: Int, platform: Platform) {
-        val state = platformMemberDao.cleanTransferIn(memberId, platform)
+    override fun cleanTransferIn(memberId: Int, platform: Platform, transferOutAmount: BigDecimal) {
+        val state = platformMemberDao.cleanTransferIn(memberId, platform, transferOutAmount)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
     }

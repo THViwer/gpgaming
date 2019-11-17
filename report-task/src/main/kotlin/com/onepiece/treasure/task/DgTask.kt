@@ -1,24 +1,21 @@
 package com.onepiece.treasure.task
 
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.PlatformApi
-import com.onepiece.treasure.games.live.ct.CTApi
-import com.onepiece.treasure.games.live.dg.DGApi
+import com.onepiece.treasure.games.live.dg.DgService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @Component
-class DGTask(
+class DgTask(
         private val platformBindService: PlatformBindService,
-        private val dgPlatformApi: PlatformApi,
+        private val dgService: DgService,
         private val betCacheUtil: BetCacheUtil
 ) {
-    private val log = LoggerFactory.getLogger(DGTask::class.java)
+    private val log = LoggerFactory.getLogger(DgTask::class.java)
 
     var running = false
 
@@ -37,7 +34,7 @@ class DGTask(
             val binds = platformBindService.find(platform = Platform.DG)
             binds.forEach {
                 val syncBetOrderReq = GameValue.SyncBetOrderReq(token = it.clientToken, startTime = startTime, endTime = endTime)
-                val cacheId = dgPlatformApi.asynBetOrder(syncBetOrderReq)
+                val cacheId = dgService.asynBetOrder(syncBetOrderReq)
                 betCacheUtil.handler(cacheId)
             }
         } finally {

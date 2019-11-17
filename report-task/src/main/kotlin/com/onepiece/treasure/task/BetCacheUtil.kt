@@ -3,7 +3,6 @@ package com.onepiece.treasure.task
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.dao.PlatformMemberDao
-import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.utils.RedisService
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component

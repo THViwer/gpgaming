@@ -2,36 +2,38 @@ package com.onepiece.treasure.games.live.golddeluxe
 
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.games.GameConstant
+import com.onepiece.treasure.games.GameValue
+import com.onepiece.treasure.games.PlatformApi
 import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.utils.StringUtil
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Service
-class GoldDeluxeApiService(
+class GoldDeluxeService(
         private val okHttpUtil: OkHttpUtil
-) : GoldDeluxeApi {
+) : PlatformApi() {
 
-    private val log = LoggerFactory.getLogger(GoldDeluxeApiService::class.java)
+    private val log = LoggerFactory.getLogger(GoldDeluxeService::class.java)
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
 
-    override fun createMember(token: DefaultClientToken, username: String): String {
 
-
+    override fun register(registerReq: GameValue.RegisterReq): String {
         val messageId = "M${LocalDateTime.now().format(dateTimeFormat)}${StringUtil.generateNonce(5)}"
         val xml = """
             <?xml version="1.0"?>
             <Request>
               <Header>
                 <Method>cCreateMember</Method>
-                <MerchantID>${token.appId}}</MerchantID>
+                <MerchantID>${(registerReq.token as DefaultClientToken).appId}}</MerchantID>
                 <MessageID>${messageId}</MessageID>
               </Header>
               <Param>
-                <UserID>${username}</UserID>
+                <UserID>${registerReq.username}</UserID>
                 <CurrencyCode>MRY</CurrencyCode>
             <BetGroup>default</BetGroup>
               </Param>
@@ -42,7 +44,14 @@ class GoldDeluxeApiService(
 
         log.info("create member result: $result")
 
-        return username
+        return registerReq.username
+    }
 
+    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun transfer(transferReq: GameValue.TransferReq): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

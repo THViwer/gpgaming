@@ -1,13 +1,13 @@
-package com.onepiece.treasure.games.live.dg
+package com.onepiece.treasure.games.live.ct
 
-import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.LaunchMethod
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.treasure.beans.model.token.ClientToken
+import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.order.CTBetOrder
-import com.onepiece.treasure.core.order.DGBetOrderDao
+import com.onepiece.treasure.core.order.CTBetOrderDao
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
 import com.onepiece.treasure.games.http.OkHttpUtil
@@ -19,16 +19,15 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class DGApiService(
+class CtService(
         private val okHttpUtil: OkHttpUtil,
         private val redisService: RedisService,
-        private val dgBetOrderDao: DGBetOrderDao
+        private val ctBetOrderDao: CTBetOrderDao
 ) : PlatformApi() {
 
     // 暂时用马币
     val currency = "MYR"
     val lang = "en"
-
 
     fun checkCode(codeId: Int) {
         when (codeId) {
@@ -40,8 +39,7 @@ class DGApiService(
 
 
     override fun register(registerReq: GameValue.RegisterReq): String {
-
-        val param = DGBuild.instance(registerReq.token, "/user/signup")
+        val param = CTBuild.instance(registerReq.token as DefaultClientToken, "signup")
 
         val md5Password = DigestUtils.md5Hex(registerReq.password)
         val data = """
@@ -58,36 +56,27 @@ class DGApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.SignupResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.SignupResult::class.java)
         checkCode(result.codeId)
 
         return registerReq.username
-
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
-
-        val token = balanceReq.token
-        val username = balanceReq.username
-
-        val param = DGBuild.instance(token,"/user/getBalance")
+        val param = CTBuild.instance(balanceReq.token as DefaultClientToken,"getBalance")
         val data = """
             {
                 "token":"${param.token}",
                 "random":"${param.random}",
-                "member":{"username":"$username"}
+                "member":{"username":"${balanceReq.username}"}
             } 
         """.trimIndent()
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.BalanceResult::class.java)
-        checkCode(result.codeId)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.BalanceResult::class.java)
         return result.member.balance
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
-
-        val token = transferReq.token
-
-        val param = DGBuild.instance(token, "/account/transfer")
+        val param = CTBuild.instance(transferReq.token as DefaultClientToken, "transfer")
 
         val data = """
             {
@@ -101,62 +90,12 @@ class DGApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.Transfer::class.java)
-        checkCode(result.codeId)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.Transfer::class.java)
         return result.data
-
-    }
-
-
-    override fun start(startReq: GameValue.StartReq): String {
-
-        val param = DGBuild.instance(startReq.token, "/user/login")
-        val data = """
-            {
-                "token":"${param.token}",
-                "random":"${param.random}",
-                "lang":"$lang",
-                "member":{
-                    "username":"${startReq.username}"
-                }
-            } 
-        """.trimIndent()
-
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.LoginResult::class.java)
-        checkCode(result.codeId)
-
-        return when (startReq.startPlatform) {
-            LaunchMethod.Web -> result.list[0]
-            LaunchMethod.Wap -> result.list[1]
-            else -> result.list[2]
-        }.plus(result.token)
-
-    }
-
-
-    override fun startSlotDemo(token: ClientToken, startPlatform: LaunchMethod): String {
-        val param = DGBuild.instance(token, "/user/free")
-        val data = """
-            {
-                "token":"${param.token}",
-                "random":"${param.random}",
-                "lang":"$lang",
-                "device": 1
-            } 
-        """.trimIndent()
-
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.LoginResult::class.java)
-        checkCode(result.codeId)
-
-        return when (startPlatform) {
-            LaunchMethod.Web -> result.list[0]
-            LaunchMethod.Wap -> result.list[1]
-            else -> result.list[2]
-        }.plus(result.token)
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
-        val param = DGBuild.instance(checkTransferReq.token, "/account/transfer")
+        val param = CTBuild.instance(checkTransferReq.token as DefaultClientToken, "transfer")
 
         val data = """
             {
@@ -166,18 +105,14 @@ class DGApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.CheckTransferResult::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.CheckTransferResult::class.java)
         return result.codeId == 0
     }
 
-
     override fun asynBetOrder(syncBetOrderReq: GameValue.SyncBetOrderReq): String {
-
-        val token = syncBetOrderReq.token
-
         val processId = UUID.randomUUID().toString().replace("-", "")
 
-        val param = DGBuild.instance(token = token, method = "/game/getReport")
+        val param = CTBuild.instance(token = syncBetOrderReq.token as DefaultClientToken, method = "getReport")
         val data = """
             {
                 "token":"${param.token}",
@@ -185,7 +120,7 @@ class DGApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.Report::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.Report::class.java)
         checkCode(result.codeId)
 
         if (result.list == null) return processId
@@ -206,31 +141,29 @@ class DGApiService(
             }
         }
         // 存储订单
-        dgBetOrderDao.create(orders)
+        ctBetOrderDao.create(orders)
 
         // 放到缓存
         val caches = orders.groupBy { it.memberId }.map {
             val memberId = it.key
             val money = it.value.sumByDouble { it.betPoints.toDouble() }.toBigDecimal().setScale(2, 2)
 
-            BetCacheVo(memberId = memberId, bet = money, platform = Platform.DG)
+            BetCacheVo(memberId = memberId, bet = money, platform = Platform.CT)
         }
         val redisKey = OnePieceRedisKeyConstant.betCache(processId)
         redisService.put(redisKey, caches)
 
         // 过滤已结算的
         val ids = result.list.filter { it.isRevocation == 1 }.map { it.id }
-        this.mark(token = token, ids = ids)
+        this.mark(token = syncBetOrderReq.token, ids = ids)
 
         return processId
-
-
     }
 
-    private fun mark(token: ClientToken, ids: List<Long>) {
+    private fun mark(token: DefaultClientToken, ids: List<Long>) {
 
         val list = ids.joinToString(separator = ",")
-        val param = DGBuild.instance(token = token, method = "/game/markReport")
+        val param = CTBuild.instance(token = token, method = "mark")
         val data = """
             {
                 "token":"${param.token}",
@@ -239,8 +172,54 @@ class DGApiService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, DGValue.Mark::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.Mark::class.java)
         checkCode(result.codeId)
 
     }
+
+    override fun start(startReq: GameValue.StartReq): String {
+        val param = CTBuild.instance(startReq.token as DefaultClientToken, "login")
+        val data = """
+            {
+                "token":"${param.token}",
+                "random":"${param.random}",
+                "lang":"$lang",
+                "member":{
+                    "username":"${startReq.username}"
+                }
+            }
+        """.trimIndent()
+
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.LoginResult::class.java)
+        checkCode(result.codeId)
+
+        return when (startReq.startPlatform) {
+            LaunchMethod.Web -> result.list[0]
+            LaunchMethod.Wap -> result.list[1]
+            else -> result.list[2]
+        }.plus(result.token)
+    }
+
+    open fun startDemo(token: DefaultClientToken, startPlatform: LaunchMethod): String {
+        val param = CTBuild.instance(token, "free")
+        val data = """
+            {
+                "token":"${param.token}",
+                "random":"${param.random}",
+                "lang":"$lang",
+                "device": 1
+            } 
+        """.trimIndent()
+
+        val result = okHttpUtil.doPostJson(param.url, data, CTValue.LoginResult::class.java)
+        checkCode(result.codeId)
+
+        return when (startPlatform) {
+            LaunchMethod.Web -> result.list[0]
+            LaunchMethod.Wap -> result.list[1]
+            else -> result.list[2]
+        }.plus(result.token)
+    }
+
+
 }

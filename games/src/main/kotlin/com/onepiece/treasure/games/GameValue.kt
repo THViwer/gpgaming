@@ -32,7 +32,10 @@ sealed class GameValue {
 
             val gameId: String,
 
-            val username: String
+            val username: String,
+
+            // 重定向地址
+            val redirectUrl: String = "http://www.baidu.com"
     )
 
     data class BalanceReq(

@@ -26,6 +26,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
             val password = rs.getString("password")
             val totalBet = rs.getBigDecimal("total_bet")
             val totalAmount = rs.getBigDecimal("total_amount")
+            val totalTransferOutAmount = rs.getBigDecimal("total_transfer_out_amount")
             val totalPromotionAmount = rs.getBigDecimal("total_promotion_amount")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
@@ -41,7 +42,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                     currentBet = currentBet,  totalBet = totalBet, totalAmount = totalAmount, totalPromotionAmount = totalPromotionAmount,
                     createdTime = createdTime, clientId = clientId, joinPromotionId = joinPromotionId, promotionAmount = promotionAmount,
                     transferAmount = transferAmount, requirementTransferOutAmount = requirementTransferOutAmount, requirementBet = requirementBet,
-                    ignoreTransferOutAmount = ignoreTransferOutAmount)
+                    ignoreTransferOutAmount = ignoreTransferOutAmount, totalTransferOutAmount = totalTransferOutAmount)
         }
 
     override fun findPlatformMember(memberId: Int): List<PlatformMember> {
@@ -51,11 +52,24 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
     }
 
     override fun create(platformMemberCo: PlatformMemberCo): Int {
-        return insert().set("platform", platformMemberCo.platform)
+        return insert()
+                .set("platform", platformMemberCo.platform)
                 .set("client_id", platformMemberCo.clientId)
                 .set("member_id", platformMemberCo.memberId)
                 .set("username", platformMemberCo.username)
                 .set("password", platformMemberCo.password)
+
+                .set("total_bet", BigDecimal.ZERO)
+                .set("total_amount", BigDecimal.ZERO)
+                .set("total_transfer_out_amount", BigDecimal.ZERO)
+                .set("total_promotion_amount", BigDecimal.ZERO)
+                .set("current_bet", BigDecimal.ZERO)
+                .set("requirement_bet", BigDecimal.ZERO)
+                .set("promotion_amount", BigDecimal.ZERO)
+                .set("transfer_amount", BigDecimal.ZERO)
+                .set("requirement_transfer_out_amount", BigDecimal.ZERO)
+                .set("ignore_transfer_out_amount", BigDecimal.ZERO)
+
                 .executeGeneratedKey()
     }
 
@@ -74,7 +88,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                 .executeOnlyOne()
     }
 
-    override fun cleanTransferIn(memberId: Int, platform: Platform): Boolean {
+    override fun cleanTransferIn(memberId: Int, platform: Platform, transferOutAmount: BigDecimal): Boolean {
         return update()
                 .set("current_bet", BigDecimal.ZERO)
                 .set("requirement_bet", BigDecimal.ZERO)
@@ -82,6 +96,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                 .set("transfer_amount", BigDecimal.ZERO)
                 .set("requirement_transfer_out_amount", BigDecimal.ZERO)
                 .set("ignore_transfer_out_amount", BigDecimal.ZERO)
+                .asSet("total_transfer_out_amount = total_transfer_out_amount + $transferOutAmount")
                 .asSet("join_promotion_id = null")
                 .where("member_id", memberId)
                 .where("platform", platform)

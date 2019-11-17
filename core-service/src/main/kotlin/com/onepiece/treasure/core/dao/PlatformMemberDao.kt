@@ -6,6 +6,7 @@ import com.onepiece.treasure.beans.value.database.PlatformMemberCo
 import com.onepiece.treasure.beans.value.database.PlatformMemberTransferUo
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.dao.basic.BasicDao
+import java.math.BigDecimal
 
 interface PlatformMemberDao: BasicDao<PlatformMember> {
 
@@ -15,7 +16,7 @@ interface PlatformMemberDao: BasicDao<PlatformMember> {
 
     fun transferIn(platformMemberTransferUo: PlatformMemberTransferUo): Boolean
 
-    fun cleanTransferIn(memberId: Int, platform: Platform): Boolean
+    fun cleanTransferIn(memberId: Int, platform: Platform, transferOutAmount: BigDecimal): Boolean
 
     fun batchBet(data: List<BetCacheVo>)
 
