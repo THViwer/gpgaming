@@ -1,11 +1,15 @@
 package com.onepiece.treasure.games.http
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.onepiece.treasure.beans.exceptions.LogicException
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
-import okhttp3.*
+import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
@@ -14,7 +18,8 @@ import java.util.concurrent.TimeUnit
 @Suppress("UNCHECKED_CAST")
 @Component
 class OkHttpUtil(
-        private val objectMapper: ObjectMapper
+        private val objectMapper: ObjectMapper,
+        private val xmlMapper: XmlMapper
 )  {
 
     private val log = LoggerFactory.getLogger(OkHttpUtil::class.java)
@@ -25,6 +30,7 @@ class OkHttpUtil(
             .writeTimeout(5000, TimeUnit.SECONDS) //写超时
             .build()
     private val JSON = "application/json; charset=utf-8".toMediaType()
+    private val XML = "text/html; charset=utf-8".toMediaType()
 
 
     fun <T> doGet(url: String, clz: Class<T>): T {
@@ -116,6 +122,29 @@ class OkHttpUtil(
         val responseData = response.body!!.string()
         log.info("response json data : $responseData")
         return objectMapper.readValue(responseData, clz)
+    }
+
+    fun <T> doPostXml(url: String, data: String, clz: Class<T>): T {
+
+        log.info("request url : $url")
+        log.info("request param: $data")
+
+        val body = data.toRequestBody(XML)
+
+        val request = Request.Builder()
+                .url(url)
+                .post(body)
+                .build()
+        val response = client.newCall(request).execute()
+        if (response.code != 200) {
+            log.error("$response")
+            error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
+        }
+
+        val responseData = response.body!!.string()
+        log.info("response json data : $responseData")
+
+        return xmlMapper.readValue(responseData, clz)
     }
 
 }

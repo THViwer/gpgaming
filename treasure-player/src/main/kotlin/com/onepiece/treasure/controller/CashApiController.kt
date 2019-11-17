@@ -257,6 +257,10 @@ open class CashApiController(
         val clientId = platformMember.clientId
         val memberId = platformMember.memberId
 
+        // 检查余额
+        val wallet = walletService.getMemberWallet(platformMember.memberId)
+        check(wallet.balance.toDouble() - amount.toDouble() >= 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
+
         // 优惠活动赠送金额
         val platformMemberTransferUo = this.handlerPromotion(platformMember = platformMember, amount = amount, promotionId = promotionId, platformBalance = platformBalance)
 
@@ -368,10 +372,6 @@ open class CashApiController(
             val checkState = this.checkCleanPromotion(promotion = promotion, platformMember = platformMember, platformBalance = platformBalance)
             check(checkState) { OnePieceExceptionCode.PLATFORM_TO_CENTER_FAIL }
         }
-
-        // 检查余额
-        val wallet = walletService.getMemberWallet(platformMember.memberId)
-        check(wallet.balance.toDouble() - amount.toDouble() > 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
 
 
         // 检查保证金是否足够

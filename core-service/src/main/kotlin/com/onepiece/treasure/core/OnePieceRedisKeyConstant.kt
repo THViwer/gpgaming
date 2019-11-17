@@ -25,6 +25,8 @@ object OnePieceRedisKeyConstant {
 
     fun jokerNextId() = "joker:nextId"
 
+    fun golDeluxeNextId() = "goldDeluxe:nextId"
+
     fun lastAnnouncement(clientId: Int) = "announcement:last:$clientId"
 
     fun adverts(clientId: Int) = "advert:$clientId"

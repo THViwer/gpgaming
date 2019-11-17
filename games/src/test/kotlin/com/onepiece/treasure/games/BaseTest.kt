@@ -8,6 +8,6 @@ open class BaseTest {
     val username = "fc51"
 
     val mapper = jacksonObjectMapper()
-    val okHttpUtil = OkHttpUtil(mapper)
+//    val okHttpUtil = OkHttpUtil(mapper)
 
 }

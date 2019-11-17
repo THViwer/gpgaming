@@ -44,7 +44,7 @@ class EvolutionService(
         val cCode = if (transferReq.amount.toDouble() > 0) "ECR" else "EDB"
 
         val url = EvolutionBuild.instance(token = transferReq.token as DefaultClientToken, cCode = cCode, username = transferReq.username)
-                .set("amount", transferReq.amount)
+                .set("amount", transferReq.amount.abs())
                 .set("eTransID", transferReq.orderId)
                 .set("createuser", "N")
                 .set("output", "0")

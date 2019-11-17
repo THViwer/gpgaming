@@ -75,14 +75,15 @@ class GameApi(
             // live game
             Platform.CT -> ctService
             Platform.DG -> dgService
-            // 未完成测试
-//            Platform.Evolution -> evolutionService
-//            Platform.GoldDeluxe -> goldDeluxeService
-//            Platform.SexyGaming -> sexyService
 
             // sport
             Platform.Lbc -> lbcService
             Platform.Sbo -> sboService
+
+            // 未完成测试
+            Platform.Evolution -> evolutionService
+            Platform.GoldDeluxe -> goldDeluxeService
+            Platform.SexyGaming -> sexyService
 
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
