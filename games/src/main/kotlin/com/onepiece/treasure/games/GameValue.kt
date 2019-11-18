@@ -79,11 +79,24 @@ sealed class GameValue {
     )
 
     data class SyncBetOrderReq(
+
             val token: ClientToken,
 
             val startTime: LocalDateTime,
 
             val endTime: LocalDateTime
     )
+
+    data class PullBetOrderReq(
+
+            val clientId: Int,
+
+            val token: ClientToken,
+
+            val startTime: LocalDateTime,
+
+            val endTime: LocalDateTime
+    )
+
 
 }

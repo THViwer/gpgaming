@@ -1,13 +1,12 @@
 package com.onepiece.treasure.games.slot.joker
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
-import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
-import com.onepiece.treasure.core.order.JokerBetOrder
-import com.onepiece.treasure.core.order.JokerBetOrderDao
+import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
@@ -16,10 +15,7 @@ import com.onepiece.treasure.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 /**
  * 启动平台支持语言
@@ -30,7 +26,9 @@ import java.util.*
 class JokerService(
         private val okHttpUtil: OkHttpUtil,
         private val redisService: RedisService,
-        private val jokerBetOrderDao: JokerBetOrderDao
+//        private val jokerBetOrderDao: JokerBetOrderDao
+        private val objectMapper: ObjectMapper,
+        private val betOrderService: BetOrderService
 ) : PlatformApi() {
 
     private val log = LoggerFactory.getLogger(JokerService::class.java)
@@ -141,17 +139,14 @@ class JokerService(
         return "${GameConstant.JOKER_GAME_URL}?token=$userToken&game=${startSlotReq.gameId}&redirectUrl=${startSlotReq.redirectUrl}&lang=${lang}"
     }
 
-    override fun asynBetOrder(syncBetOrderReq: GameValue.SyncBetOrderReq): String {
 
-        val nextId = redisService.get(OnePieceRedisKeyConstant.jokerNextId(), String::class.java) {
-            //TODO 从数据库中查询
-            UUID.randomUUID().toString().replace("-", "")
-        }!!
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq) {
 
+        val nextId = redisService.get(OnePieceRedisKeyConstant.jokerNextId(), String::class.java) { "" }!!
 
-        val startTime = syncBetOrderReq.startTime
-        val endTime = syncBetOrderReq.endTime
-        val token = syncBetOrderReq.token as DefaultClientToken
+        val startTime = pullBetOrderReq.startTime
+        val endTime = pullBetOrderReq.endTime
+        val token = pullBetOrderReq.token as DefaultClientToken
 
         val (url, formBody) = JokerBuild.instance("TS")
                 .set("StartDate", startTime.format(dateFormatter))
@@ -161,38 +156,15 @@ class JokerService(
 
         log.info("StartDate=${startTime.format(dateFormatter)}&EndDate=${endTime.format(dateFormatter)}")
 
-        val betResult = okHttpUtil.doPostForm(url, formBody, JokerValue.BetResult::class.java)
+        val betResult = okHttpUtil.doPostForm(url, formBody, JokerBetOrder::class.java)
 
-        val orders = betResult.data["Game"]?.map {
-            val username= it.username
-            val clientId = username.substring(1, 4).toInt()
-            val memberId = username.substring(4, username.length).toInt()
-            val now = LocalDateTime.now()
+        val orders = betResult.getBetOrders(objectMapper = objectMapper)
+        if (orders.isNotEmpty()) {
+            betOrderService.batch(orders)
 
-            JokerBetOrder(oCode = it.oCode, clientId = clientId, memberId = memberId, gameCode = it.gameCode, description = it.description,
-                    type = it.type, amount = it.amount, result = it.result, time = it.time.withZoneSameInstant(ZoneId.of("Asia/Shanghai")).toLocalDateTime(), appId = it.appId, createdTime = now,
-                    username = username, currencyCode = it.currencyCode, details = it.details, freeAmount = it.freeAmount, roundId = it.roundId)
+            val nextKey = OnePieceRedisKeyConstant.pullBetOrderLastKey(clientId = pullBetOrderReq.clientId, platform = Platform.Joker)
+            redisService.put(nextKey, betResult.nextId)
         }
-
-        if (orders != null && orders.isNotEmpty()) {
-
-            jokerBetOrderDao.create(orders)
-
-            // 放到缓存
-            val caches = orders.groupBy { it.memberId }.map {
-                val memberId = it.key
-                val money = it.value.sumByDouble { it.amount.toDouble() }.toBigDecimal().setScale(2, 2)
-
-                BetCacheVo(memberId = memberId, bet = money, platform = Platform.Joker)
-            }
-            val redisKey = OnePieceRedisKeyConstant.betCache(nextId)
-            redisService.put(redisKey, caches)
-
-            // 下一次的值set到redis中
-            redisService.put(OnePieceRedisKeyConstant.jokerNextId(), betResult.nextId)
-        }
-
-        return nextId
 
     }
 

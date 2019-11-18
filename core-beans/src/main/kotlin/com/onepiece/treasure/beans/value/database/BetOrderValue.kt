@@ -13,20 +13,17 @@ sealed class BetOrderValue {
             // 会员Id
             val memberId: Int,
 
-            // 订单Id
-            val orderId: String,
-
             // 平台
             val platform: Platform,
+
+            // 订单Id
+            val orderId: String,
 
             // 下注金额
             val betAmount: BigDecimal,
 
             // 获得金额
             val winAmount: BigDecimal,
-
-            // 标记已处理打码量
-            val mark: Boolean,
 
             // 原始订单数据(json格式)
             val originData: String,

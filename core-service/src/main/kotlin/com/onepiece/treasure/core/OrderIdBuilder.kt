@@ -1,6 +1,7 @@
 package com.onepiece.treasure.core
 
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.utils.StringUtil
@@ -15,8 +16,8 @@ class OrderIdBuilder(
         private val platformBindService: PlatformBindService
 ) {
 
-    private val datetTimeFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
-    private fun getCurrentTime() = LocalDateTime.now().format(datetTimeFormat)
+    private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+    private fun getCurrentTime() = LocalDateTime.now().format(dateTimeFormat)
 
     fun generatorDepositOrderId(): String {
         return "BD${getCurrentTime()}${StringUtil.generateNumNonce(5)}"
@@ -42,6 +43,8 @@ class OrderIdBuilder(
     fun generatorArtificialOrderId(): String {
         return UUID.randomUUID().toString()
     }
+
+
 
 
 }

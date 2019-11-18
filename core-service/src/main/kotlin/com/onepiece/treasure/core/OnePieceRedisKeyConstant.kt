@@ -35,5 +35,7 @@ object OnePieceRedisKeyConstant {
 
     fun slotGames(platform: Platform, launch: LaunchMethod) = "slot:games:$platform:$launch"
 
+    fun pullBetOrderLastKey(clientId: Int, platform: Platform) = "pull:bet:$clientId:$platform"
+
     fun getLastMarkBetId(betRuleTable: String) = "mark:$betRuleTable"
 }

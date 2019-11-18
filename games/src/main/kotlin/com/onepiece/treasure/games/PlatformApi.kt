@@ -44,6 +44,8 @@ abstract class PlatformApi {
         error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
     }
 
-
+    open fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq) {
+        error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
+    }
 
 }

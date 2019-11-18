@@ -10,7 +10,6 @@ import java.time.LocalDateTime
 
 @Component
 class JokerTask(
-        private val betCacheUtil: BetCacheUtil,
         private val platformBindService: PlatformBindService,
         private val jokerService: JokerService
 ) {
@@ -33,9 +32,8 @@ class JokerTask(
 
             val binds = platformBindService.find(platform = Platform.Joker)
             binds.forEach {
-                val syncBetOrderReq = GameValue.SyncBetOrderReq(token = it.clientToken, startTime = startTime, endTime = endTime)
-                val unionId = jokerService.asynBetOrder(syncBetOrderReq)
-                betCacheUtil.handler(unionId)
+                val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = it.clientId, token = it.clientToken, startTime = startTime, endTime = endTime)
+                val unionId = jokerService.pullBetOrders(pullBetOrderReq)
             }
         } finally {
             running = false
