@@ -25,6 +25,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
             val username = rs.getString("username")
             val password = rs.getString("password")
             val totalBet = rs.getBigDecimal("total_bet")
+            val totalWin = rs.getBigDecimal("total_win")
             val totalAmount = rs.getBigDecimal("total_amount")
             val totalTransferOutAmount = rs.getBigDecimal("total_transfer_out_amount")
             val totalPromotionAmount = rs.getBigDecimal("total_promotion_amount")
@@ -42,7 +43,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                     currentBet = currentBet,  totalBet = totalBet, totalAmount = totalAmount, totalPromotionAmount = totalPromotionAmount,
                     createdTime = createdTime, clientId = clientId, joinPromotionId = joinPromotionId, promotionAmount = promotionAmount,
                     transferAmount = transferAmount, requirementTransferOutAmount = requirementTransferOutAmount, requirementBet = requirementBet,
-                    ignoreTransferOutAmount = ignoreTransferOutAmount, totalTransferOutAmount = totalTransferOutAmount)
+                    ignoreTransferOutAmount = ignoreTransferOutAmount, totalTransferOutAmount = totalTransferOutAmount, totalWin = totalWin)
         }
 
     override fun findPlatformMember(memberId: Int): List<PlatformMember> {
@@ -60,6 +61,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                 .set("password", platformMemberCo.password)
 
                 .set("total_bet", BigDecimal.ZERO)
+                .set("total_win", BigDecimal.ZERO)
                 .set("total_amount", BigDecimal.ZERO)
                 .set("total_transfer_out_amount", BigDecimal.ZERO)
                 .set("total_promotion_amount", BigDecimal.ZERO)
@@ -104,10 +106,10 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
     }
 
     override fun batchBet(data: List<BetCacheVo>) {
-        val sqls = data.map {
-            "update platform_member set current_bet = current_bet + ${it.bet}, total_bet = total_bet + ${it.bet} where member_id = ${it.memberId} and platform = '${it.platform.name}'"
+        val sql = data.map {
+            "update platform_member set current_bet = current_bet + ${it.bet}, total_bet = total_bet + ${it.bet}, total_win = total_win + ${it.win} where member_id = ${it.memberId} and platform = '${it.platform.name}'"
         }
-        jdbcTemplate.batchUpdate(*sqls.toTypedArray())
+        jdbcTemplate.batchUpdate(*sql.toTypedArray())
 
     }
 }

@@ -4,6 +4,7 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.PlatformMember
 import com.onepiece.treasure.beans.value.database.PlatformMemberTransferUo
 import com.onepiece.treasure.beans.value.internet.web.PlatformMemberVo
+import com.onepiece.treasure.beans.value.order.BetCacheVo
 import java.math.BigDecimal
 
 interface PlatformMemberService {
@@ -24,4 +25,6 @@ interface PlatformMemberService {
 
     fun cleanTransferIn(memberId: Int, platform: Platform, transferOutAmount: BigDecimal = BigDecimal.ZERO)
 
+
+    fun batchBet(data: List<BetCacheVo>)
 }

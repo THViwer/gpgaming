@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
+import java.util.concurrent.atomic.AtomicBoolean
 
 @Component
 class PullBetTask(
@@ -17,8 +18,13 @@ class PullBetTask(
 
     private val log = LoggerFactory.getLogger(PullBetTask::class.java)
 
+    private val running = AtomicBoolean(false)
+
     @Scheduled(cron="0/30 * *  * * ? ")
     fun start() {
+
+        if (!running.getAndSet(true)) return
+
         val platformBinds = platformBindService.all()
 
         platformBinds.forEach {
@@ -35,6 +41,8 @@ class PullBetTask(
 
             }
         }
+
+        running.set(false)
     }
 
 

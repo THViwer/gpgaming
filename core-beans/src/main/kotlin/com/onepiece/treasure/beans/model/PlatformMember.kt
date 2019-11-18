@@ -27,6 +27,9 @@ data class PlatformMember(
         // 总打码量
         val totalBet: BigDecimal,
 
+        // 总盈利
+        val totalWin: BigDecimal,
+
         // 总充值金额
         val totalAmount: BigDecimal,
 

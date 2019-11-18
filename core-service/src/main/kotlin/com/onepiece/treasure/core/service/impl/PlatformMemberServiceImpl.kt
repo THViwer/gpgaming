@@ -7,6 +7,7 @@ import com.onepiece.treasure.beans.value.database.PlatformMemberBetUo
 import com.onepiece.treasure.beans.value.database.PlatformMemberCo
 import com.onepiece.treasure.beans.value.database.PlatformMemberTransferUo
 import com.onepiece.treasure.beans.value.internet.web.PlatformMemberVo
+import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.dao.PlatformMemberDao
 import com.onepiece.treasure.core.service.PlatformMemberService
@@ -73,6 +74,9 @@ class PlatformMemberServiceImpl(
     override fun cleanTransferIn(memberId: Int, platform: Platform, transferOutAmount: BigDecimal) {
         val state = platformMemberDao.cleanTransferIn(memberId, platform, transferOutAmount)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+    }
 
+    override fun batchBet(data: List<BetCacheVo>) {
+        return platformMemberDao.batchBet(data)
     }
 }

@@ -6,7 +6,8 @@ import java.math.BigDecimal
 data class BetCacheVo(
         val memberId: Int,
         val platform: Platform,
-        val bet: BigDecimal
+        val bet: BigDecimal,
+        val win: BigDecimal
 ) {
 
     companion object {

@@ -1,4 +1,4 @@
-package com.onepiece.treasure.task
+package com.onepiece.treasure.task.bak
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.core.service.PlatformBindService

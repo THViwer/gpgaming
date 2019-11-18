@@ -1,25 +1,24 @@
-package com.onepiece.treasure.task
+package com.onepiece.treasure.task.bak
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.live.dg.DgService
+import com.onepiece.treasure.games.live.ct.CtService
 import org.slf4j.LoggerFactory
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @Component
-class DgTask(
+class CtTask(
         private val platformBindService: PlatformBindService,
-        private val dgService: DgService,
+        private val ctService: CtService,
         private val betCacheUtil: BetCacheUtil
 ) {
-    private val log = LoggerFactory.getLogger(DgTask::class.java)
+    private val log = LoggerFactory.getLogger(CtTask::class.java)
 
     var running = false
 
-    @Scheduled(cron="0/10 * *  * * ? ")
+//    @Scheduled(cron="0/10 * *  * * ? ")
     fun syncOrder() {
 
         if (running) return
@@ -31,10 +30,10 @@ class DgTask(
         log.info("startTime = $startTime, endTime = $endTime")
 
         try {
-            val binds = platformBindService.find(platform = Platform.DG)
+            val binds = platformBindService.find(platform = Platform.CT)
             binds.forEach {
                 val syncBetOrderReq = GameValue.SyncBetOrderReq(token = it.clientToken, startTime = startTime, endTime = endTime)
-                val cacheId = dgService.asynBetOrder(syncBetOrderReq)
+                val cacheId = ctService.asynBetOrder(syncBetOrderReq)
                 betCacheUtil.handler(cacheId)
             }
         } finally {

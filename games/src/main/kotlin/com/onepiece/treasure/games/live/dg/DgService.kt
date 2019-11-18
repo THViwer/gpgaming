@@ -219,7 +219,8 @@ class DgService(
             val memberId = it.key
             val money = it.value.sumByDouble { it.betPoints.toDouble() }.toBigDecimal().setScale(2, 2)
 
-            BetCacheVo(memberId = memberId, bet = money, platform = Platform.DG)
+            //TODO 暂时
+            BetCacheVo(memberId = memberId, bet = money, platform = Platform.DG, win = BigDecimal.ZERO)
         }
         val redisKey = OnePieceRedisKeyConstant.betCache(processId)
         redisService.put(redisKey, caches)
