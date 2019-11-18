@@ -226,7 +226,6 @@ class GameApi(
         }
     }
 
-
     // 获得代理token
     private fun getClientToken(clientId: Int, platform: Platform): ClientToken {
         return platformBindService.find(clientId = clientId, platform = platform).clientToken

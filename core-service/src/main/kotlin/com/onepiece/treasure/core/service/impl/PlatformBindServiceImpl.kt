@@ -18,6 +18,11 @@ class PlatformBindServiceImpl(
         private val redisService: RedisService
 ) : PlatformBindService {
 
+
+    override fun all(): List<PlatformBind> {
+        return platformBindDao.all()
+    }
+
     override fun find(platform: Platform): List<PlatformBind> {
         return platformBindDao.find(platform)
     }

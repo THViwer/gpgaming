@@ -14,6 +14,7 @@ object OnePieceExceptionCode {
     const val DATA_FAIL = "1002" // 数据异常
     const val LANGUAGE_CONFIG_FAIL = "1003" // 语言配置错误
     const val QUERY_COUNT_TOO_SMALL = "1004" // 请增加查询条件
+    const val PROMOTION_JSON_DATA_FAIL = "1005" //优惠活动json格式错误
 
     // 2000 verification error
 

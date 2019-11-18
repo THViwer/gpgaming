@@ -8,6 +8,8 @@ import java.math.BigDecimal
 
 interface PlatformBindService {
 
+    fun all(): List<PlatformBind>
+
     fun find(platform: Platform): List<PlatformBind>
 
     fun find(clientId: Int, platform: Platform): PlatformBind
