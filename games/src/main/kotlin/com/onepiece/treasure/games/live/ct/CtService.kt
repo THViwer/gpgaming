@@ -1,14 +1,17 @@
 package com.onepiece.treasure.games.live.ct
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.order.CTBetOrder
 import com.onepiece.treasure.core.order.CTBetOrderDao
+import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
 import com.onepiece.treasure.games.http.OkHttpUtil
@@ -50,7 +53,9 @@ import java.util.*
 class CtService(
         private val okHttpUtil: OkHttpUtil,
         private val redisService: RedisService,
-        private val ctBetOrderDao: CTBetOrderDao
+        private val ctBetOrderDao: CTBetOrderDao,
+        private val betOrderService: BetOrderService,
+        private val objectMapper: ObjectMapper
 ) : PlatformApi() {
 
     // 暂时用马币
@@ -137,10 +142,9 @@ class CtService(
         return result.codeId == 0
     }
 
-    override fun asynBetOrder(syncBetOrderReq: GameValue.SyncBetOrderReq): String {
-        val processId = UUID.randomUUID().toString().replace("-", "")
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
 
-        val param = CtBuild.instance(token = syncBetOrderReq.token as DefaultClientToken, method = "getReport")
+        val param = CtBuild.instance(token = pullBetOrderReq.token as DefaultClientToken, method = "getReport")
         val data = """
             {
                 "token":"${param.token}",
@@ -148,48 +152,71 @@ class CtService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CtValue.Report::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, CtBetOrder::class.java)
         checkCode(result.codeId)
 
-        if (result.list == null) return processId
-
-
-        val now = LocalDateTime.now()
-        val orders = result.list.map {
-
-            val username = it.userName
-            val clientId = username.substring(1, 4).toInt()
-            val memberId = username.substring(4, username.length).toInt()
-            with(it) {
-                CTBetOrder(id = id, clientId = clientId, memberId = memberId, lobbyId = lobbyId, platformMemberId = it.memberId, shoeId = shoeId,
-                        tableId = tableId, playId = playId, gameId = gameId, gameType = gameType, betTime = betTime, calTime = calTime, winOrLoss = winOrLoss,
-                        winOrLossz = winOrLossz, betPointsz = betPointsz, betPoints = betPoints, betDetailz = betDetailz, betDetail = betDetail,
-                        balanceBefore = balanceBefore, parentBetId = parentBetId, availableBet = availableBet, ip = ip, ext = ext, isRevocation = isRevocation,
-                        currencyId = currencyId, deviceType = deviceType, pluginId = pluginId, result = it.result, userName = userName, createdTime = now)
-            }
-        }
-        // 存储订单
-        ctBetOrderDao.create(orders)
-
-        // 放到缓存
-        val caches = orders.groupBy { it.memberId }.map {
-            val memberId = it.key
-            val money = it.value.sumByDouble { it.betPoints.toDouble() }.toBigDecimal().setScale(2, 2)
-
-            //TODO 暂时
-            BetCacheVo(memberId = memberId, bet = money, platform = Platform.CT, win = BigDecimal.ZERO)
-        }
-        val redisKey = OnePieceRedisKeyConstant.betCache(processId)
-        redisService.put(redisKey, caches)
+        val orders = result.getBetOrders(objectMapper)
 
         // 过滤已结算的
-        val ids = result.list.filter { it.isRevocation == 1 }.map { it.id }
-        this.mark(token = syncBetOrderReq.token, ids = ids)
+        val ids = orders.map { it.orderId }
+        this.mark(token = pullBetOrderReq.token, ids = ids)
 
-        return processId
+        return orders
     }
 
-    private fun mark(token: DefaultClientToken, ids: List<Long>) {
+//    override fun asynBetOrder(syncBetOrderReq: GameValue.SyncBetOrderReq): String {
+//        val processId = UUID.randomUUID().toString().replace("-", "")
+//
+//        val param = CtBuild.instance(token = syncBetOrderReq.token as DefaultClientToken, method = "getReport")
+//        val data = """
+//            {
+//                "token":"${param.token}",
+//                "random":"${param.random}"
+//            }
+//        """.trimIndent()
+//
+//        val result = okHttpUtil.doPostJson(param.url, data, CtValue.Report::class.java)
+//        checkCode(result.codeId)
+//
+//        if (result.list == null) return processId
+//
+//
+//        val now = LocalDateTime.now()
+//        val orders = result.list.map {
+//
+//            val username = it.userName
+//            val clientId = username.substring(1, 4).toInt()
+//            val memberId = username.substring(4, username.length).toInt()
+//            with(it) {
+//                CTBetOrder(id = id, clientId = clientId, memberId = memberId, lobbyId = lobbyId, platformMemberId = it.memberId, shoeId = shoeId,
+//                        tableId = tableId, playId = playId, gameId = gameId, gameType = gameType, betTime = betTime, calTime = calTime, winOrLoss = winOrLoss,
+//                        winOrLossz = winOrLossz, betPointsz = betPointsz, betPoints = betPoints, betDetailz = betDetailz, betDetail = betDetail,
+//                        balanceBefore = balanceBefore, parentBetId = parentBetId, availableBet = availableBet, ip = ip, ext = ext, isRevocation = isRevocation,
+//                        currencyId = currencyId, deviceType = deviceType, pluginId = pluginId, result = it.result, userName = userName, createdTime = now)
+//            }
+//        }
+//        // 存储订单
+//        ctBetOrderDao.create(orders)
+//
+//        // 放到缓存
+//        val caches = orders.groupBy { it.memberId }.map {
+//            val memberId = it.key
+//            val money = it.value.sumByDouble { it.betPoints.toDouble() }.toBigDecimal().setScale(2, 2)
+//
+//            //TODO 暂时
+//            BetCacheVo(memberId = memberId, bet = money, platform = Platform.CT, win = BigDecimal.ZERO)
+//        }
+//        val redisKey = OnePieceRedisKeyConstant.betCache(processId)
+//        redisService.put(redisKey, caches)
+//
+//        // 过滤已结算的
+//        val ids = result.list.filter { it.isRevocation == 1 }.map { it.id }
+//        this.mark(token = syncBetOrderReq.token, ids = ids)
+//
+//        return processId
+//    }
+
+    private fun mark(token: DefaultClientToken, ids: List<String>) {
 
         val list = ids.joinToString(separator = ",")
         val param = CtBuild.instance(token = token, method = "mark")

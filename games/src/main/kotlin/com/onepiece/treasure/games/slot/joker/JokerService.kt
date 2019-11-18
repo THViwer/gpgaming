@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
-import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
@@ -27,8 +27,7 @@ class JokerService(
         private val okHttpUtil: OkHttpUtil,
         private val redisService: RedisService,
 //        private val jokerBetOrderDao: JokerBetOrderDao
-        private val objectMapper: ObjectMapper,
-        private val betOrderService: BetOrderService
+        private val objectMapper: ObjectMapper
 ) : PlatformApi() {
 
     private val log = LoggerFactory.getLogger(JokerService::class.java)
@@ -140,7 +139,7 @@ class JokerService(
     }
 
 
-    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq) {
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
 
         val nextId = redisService.get(OnePieceRedisKeyConstant.jokerNextId(), String::class.java) { "" }!!
 
@@ -155,17 +154,15 @@ class JokerService(
                 .build(token)
 
         log.info("StartDate=${startTime.format(dateFormatter)}&EndDate=${endTime.format(dateFormatter)}")
-
         val betResult = okHttpUtil.doPostForm(url, formBody, JokerBetOrder::class.java)
 
         val orders = betResult.getBetOrders(objectMapper = objectMapper)
-        if (orders.isNotEmpty()) {
-            betOrderService.batch(orders)
+        if (orders.isEmpty()) return emptyList()
 
-            val nextKey = OnePieceRedisKeyConstant.pullBetOrderLastKey(clientId = pullBetOrderReq.clientId, platform = Platform.Joker)
-            redisService.put(nextKey, betResult.nextId)
-        }
+        val nextKey = OnePieceRedisKeyConstant.pullBetOrderLastKey(clientId = pullBetOrderReq.clientId, platform = Platform.Joker)
+        redisService.put(nextKey, betResult.nextId)
 
+        return orders
     }
 
 }

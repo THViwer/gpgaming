@@ -1,8 +1,12 @@
 package com.onepiece.treasure.task
 
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.value.database.BetOrderValue
+import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.GameValue
+import com.onepiece.treasure.games.live.ct.CtService
+import com.onepiece.treasure.games.live.dg.DgService
 import com.onepiece.treasure.games.slot.joker.JokerService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -13,7 +17,10 @@ import java.util.concurrent.atomic.AtomicBoolean
 @Component
 class PullBetTask(
         private val platformBindService: PlatformBindService,
-        private val jokerService: JokerService
+        private val jokerService: JokerService,
+        private val ctService: CtService,
+        private val dgService: DgService,
+        private val betOrderService: BetOrderService
 ) {
 
     private val log = LoggerFactory.getLogger(PullBetTask::class.java)
@@ -27,23 +34,33 @@ class PullBetTask(
 
         val platformBinds = platformBindService.all()
 
-        platformBinds.forEach {
-            when (it.platform) {
-                Platform.Joker -> {
-                    log.info("厅主Id:${it.clientId}, 平台：${it.platform}, 开始执行拉取订单任务")
-                    val endTime = LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0)
-                    val startTime = endTime.minusHours(2)
 
-                    val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = it.clientId, token = it.clientToken, startTime = startTime, endTime = endTime)
+        val defaultEndTime = LocalDateTime.now()
+        val defaultStartTime = defaultEndTime.minusMinutes(15)
+
+        platformBinds.forEach {
+
+            val defaultPullBetOrderReq = GameValue.PullBetOrderReq(clientId = it.clientId, token = it.clientToken, startTime = defaultStartTime, endTime = defaultEndTime)
+
+            log.info("厅主Id:${it.clientId}, 平台：${it.platform}, 开始执行拉取订单任务")
+
+            val orders = when (it.platform) {
+                Platform.Joker -> {
+                    val pullBetOrderReq = defaultPullBetOrderReq.copy(startTime = defaultPullBetOrderReq.startTime.minusHours(1),
+                            endTime = defaultPullBetOrderReq.endTime.plusDays(1))
                     jokerService.pullBetOrders(pullBetOrderReq)
                 }
-                else -> {}
-
+                Platform.CT -> ctService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+                Platform.DG -> jokerService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+                else -> { emptyList()}
             }
+
+            if (orders.isEmpty()) return@forEach
+
+            betOrderService.batch(orders)
         }
 
         running.set(false)
     }
-
 
 }
