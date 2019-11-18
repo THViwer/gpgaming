@@ -6,17 +6,21 @@ import java.time.LocalDateTime
 
 /**
  * 下注订单
+ * 分表规则: platform + clientId + memberId 获得hashCode值 取模8
  */
 data class BetOrder(
 
         // id
         val id: Int,
 
-        // 订单Id
-        val orderId: String,
-
         // 厅主
         val clientId: Int,
+
+        // 会员Id
+        val memberId: Int,
+
+        // 订单Id
+        val orderId: String,
 
         // 平台
         val platform: Platform,
@@ -27,8 +31,8 @@ data class BetOrder(
         // 获得金额
         val winAmount: BigDecimal,
 
-        // 结算金额 对玩家 +(玩家赢钱,厅主输钱) -(玩家数钱，厅主赢钱)
-        val money: BigDecimal,
+        // 标记已处理打码量
+        val mark: Boolean,
 
         // 原始订单数据(json格式)
         val originData: String,
@@ -37,6 +41,9 @@ data class BetOrder(
         val betTime: LocalDateTime,
 
         // 结算时间
-        val settleTime: LocalDateTime
+        val settleTime: LocalDateTime,
+
+        // 创建时间
+        val createdTime: LocalDateTime
 
 )

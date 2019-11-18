@@ -78,6 +78,11 @@ class Insert(
     private val columns = arrayListOf<String>()
     private val param = arrayListOf<Any>()
 
+    fun asSet(column: String): Insert {
+        columns.add(column)
+        return this
+    }
+
     fun set(k: String, v: Any?): Insert {
         if (v == null) return this
 
@@ -127,10 +132,10 @@ class Query(
 ) {
     private val columns = arrayListOf<String>()
     private val param = arrayListOf<Any>()
-    var orderBy: String? = null
-    var groupBy: String? = null
-    var current: Int? = null
-    var size: Int? = null
+    private var orderBy: String? = null
+    private var groupBy: String? = null
+    private var current: Int? = null
+    private var size: Int? = null
 
     fun where(k: String, v: Any?): Query {
         if (v == null) return this

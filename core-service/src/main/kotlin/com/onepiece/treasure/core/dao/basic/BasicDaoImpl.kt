@@ -27,20 +27,20 @@ abstract class BasicDaoImpl<T>(
         return query().execute(mapper)
     }
 
-    fun insert(): Insert {
-        return JdbcBuilder.insert(jdbcTemplate, table)
+    fun insert(defaultTable: String? = null): Insert {
+        return JdbcBuilder.insert(jdbcTemplate, defaultTable?: table)
     }
 
     fun <T> batchInsert(data: List<T>): BatchInsert<T> {
         return JdbcBuilder.batchInsert(jdbcTemplate, table, data)
     }
 
-    fun query(returnColumns: String? = null): Query {
-        return Query(jdbcTemplate, table, returnColumns)
+    fun query(returnColumns: String? = null, defaultTable: String? = null): Query {
+        return Query(jdbcTemplate, defaultTable?: table, returnColumns)
     }
 
-    fun update(): Update {
-        return Update(jdbcTemplate, table)
+    fun update(defaultTable: String? = null): Update {
+        return Update(jdbcTemplate, defaultTable?: table)
     }
 
 

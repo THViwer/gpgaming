@@ -34,4 +34,6 @@ object OnePieceRedisKeyConstant {
     fun promotions(clientId: Int) = "promotion:$clientId"
 
     fun slotGames(platform: Platform, launch: LaunchMethod) = "slot:games:$platform:$launch"
+
+    fun getLastMarkBetId(betRuleTable: String) = "mark:$betRuleTable"
 }
