@@ -99,12 +99,12 @@ open class CashApiController(
     }
 
     @PostMapping("/upload/proof")
-    override fun uploadProof(@RequestParam("file") file: MultipartFile): String {
+    override fun uploadProof(@RequestParam("file") file: MultipartFile): Pair<String, String> {
 
         val temFile = File("/Users/cabbage/Desktop/images/${file.originalFilename}")
         temFile.writeBytes(file.bytes)
 
-        return "http://www.xxxx.com/${file.originalFilename}"
+        return "url" to "http://www.xxxx.com/${file.originalFilename}"
     }
 
     @GetMapping("/deposit")
