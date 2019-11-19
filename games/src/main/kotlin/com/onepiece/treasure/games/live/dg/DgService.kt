@@ -193,7 +193,7 @@ class DgService(
             } 
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(param.url, data, CtBetOrder::class.java)
+        val result = okHttpUtil.doPostJson(param.url, data, DgBetOrder::class.java)
         checkCode(result.codeId)
 
         val orders = result.getBetOrders(objectMapper)

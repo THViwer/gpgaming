@@ -3,10 +3,12 @@ package com.onepiece.treasure.games.sport.sbo
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
 import com.onepiece.treasure.games.http.OkHttpUtil
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -17,6 +19,7 @@ class SboService(
 ) : PlatformApi() {
 
     private val language = "en"
+    private val log = LoggerFactory.getLogger(SboService::class.java)
 
     private fun checkCode(code: Int) = check(code == 0) { OnePieceExceptionCode.PLATFORM_METHOD_FAIL }
 
@@ -105,6 +108,29 @@ class SboService(
         // theme=”: black, blue, ocean, green, emerald
         return "${GameConstant.SBO_START_URL}?token=${result.token}&lang=$lang&oddstyle=MY&theme=ocean"
     }
+
+
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+
+        val token = pullBetOrderReq.token as DefaultClientToken
+
+        //TODO 不知道agentName是什么
+        val agentName = "xx"
+
+        val param = "sportsfundservice/pullcustomerbetlist/${token.appId}/user${agentName}?startDate=${pullBetOrderReq.startTime}&endDate=${pullBetOrderReq.endTime}"
+        val url = SboBuild.instance().buildAppend(token = token, param = param)
+
+        //TODO 还不知道返回什么样的
+        val result = okHttpUtil.doGet(url, String::class.java)
+
+        log.error("sbo 查询订单返回结果：$result")
+
+        error(result)
+
+    }
+
+
+
 
 
     open fun getCustomerReport(token: DefaultClientToken, username: String, startDate: LocalDate, endDate: LocalDate): SboValue.PlayerRevenue {

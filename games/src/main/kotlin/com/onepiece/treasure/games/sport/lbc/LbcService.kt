@@ -1,20 +1,28 @@
 package com.onepiece.treasure.games.sport.lbc
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
+import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
 import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
 @Service
 class LbcService(
-        private val okHttpUtil: OkHttpUtil
+        private val okHttpUtil: OkHttpUtil,
+        private val redisService: RedisService,
+        private val objectMapper: ObjectMapper
 ) : PlatformApi() {
+
 
     fun checkCode(code: Int) {
         check(code == 0) { OnePieceExceptionCode.PLATFORM_METHOD_FAIL }
@@ -110,9 +118,22 @@ class LbcService(
         }
     }
 
-    override fun asynBetOrder(syncBetOrderReq: GameValue.SyncBetOrderReq): String {
-        //TODO LBC 同步订单
-        return super.asynBetOrder(syncBetOrderReq)
-    }
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+        val token = pullBetOrderReq.token as DefaultClientToken
 
+        val redisKey = OnePieceRedisKeyConstant.pullBetOrderLastKey(clientId = pullBetOrderReq.clientId, platform = Platform.Lbc)
+        val lastVersionKey = redisService.get(redisKey, Int::class.java) { 0 }!!
+
+        val url = LbcBuild.instance("/api/GetSportBetLog")
+                .set("OpCode",token.appId)
+                .set("LastVersionKey", lastVersionKey)
+                .build(token = token)
+
+        val lbcBetOrder = okHttpUtil.doGet(url = url, clz = LbcBetOrder::class.java)
+        val orders = lbcBetOrder.getBetOrders(objectMapper)
+
+        redisService.put(redisKey, lbcBetOrder.lastVersionKey)
+
+        return orders
+    }
 }

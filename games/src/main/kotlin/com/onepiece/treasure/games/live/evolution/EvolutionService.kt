@@ -2,7 +2,7 @@ package com.onepiece.treasure.games.live.evolution
 
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.beans.model.token.EvolutionClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
@@ -32,7 +32,7 @@ class EvolutionService(
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
 
-        val url = EvolutionBuild.instance(token = balanceReq.token as DefaultClientToken, cCode = "RWA", username = balanceReq.username)
+        val url = EvolutionBuild.instance(token = balanceReq.token as EvolutionClientToken, cCode = "RWA", username = balanceReq.username)
                 .set("output", "0")
                 .build(path = "/api/ecashier")
 
@@ -46,7 +46,7 @@ class EvolutionService(
 
         val cCode = if (transferReq.amount.toDouble() > 0) "ECR" else "EDB"
 
-        val url = EvolutionBuild.instance(token = transferReq.token as DefaultClientToken, cCode = cCode, username = transferReq.username)
+        val url = EvolutionBuild.instance(token = transferReq.token as EvolutionClientToken, cCode = cCode, username = transferReq.username)
                 .set("amount", transferReq.amount.abs())
                 .set("eTransID", transferReq.orderId)
                 .set("createuser", "N")
@@ -60,7 +60,7 @@ class EvolutionService(
     }
 
     override fun start(startReq: GameValue.StartReq): String {
-        val token = startReq.token as DefaultClientToken
+        val token = startReq.token as EvolutionClientToken
 
         val uuid = UUID.randomUUID().toString()
 //        val session = EvolutionValue.Player.Session(id = uuid, ip = "241.13.291.1")
@@ -130,8 +130,8 @@ class EvolutionService(
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
-        val token = pullBetOrderReq.token as DefaultClientToken
-        val authorization = DigestUtils.md5Hex("${token.appId}:${token.key}")
+        val token = pullBetOrderReq.token as EvolutionClientToken
+        val authorization = DigestUtils.md5Hex("key-${token.key}-${token.username}:${token.password}")
 
         val url = "${GameConstant.EVOLUTION_API_URL}/api/gamehistory/v1/casino/games/stream?startDate=${pullBetOrderReq.startTime}"
 

@@ -1,13 +1,13 @@
 package com.onepiece.treasure.task
 
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.live.ct.CtService
 import com.onepiece.treasure.games.live.dg.DgService
 import com.onepiece.treasure.games.slot.joker.JokerService
+import com.onepiece.treasure.games.sport.lbc.LbcService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -20,6 +20,7 @@ class PullBetTask(
         private val jokerService: JokerService,
         private val ctService: CtService,
         private val dgService: DgService,
+        private val lbcService: LbcService,
         private val betOrderService: BetOrderService
 ) {
 
@@ -51,7 +52,8 @@ class PullBetTask(
                     jokerService.pullBetOrders(pullBetOrderReq)
                 }
                 Platform.CT -> ctService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
-                Platform.DG -> jokerService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+                Platform.DG -> dgService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+                Platform.Lbc -> lbcService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
                 else -> { emptyList()}
             }
 

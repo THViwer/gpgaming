@@ -2,6 +2,7 @@ package com.onepiece.treasure.games.live.sexy
 
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.SexyClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
 import com.onepiece.treasure.games.http.OkHttpUtil
@@ -99,4 +100,16 @@ class SexyService(
         this.checkCode(result.status)
         return result
     }
+
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+
+        val url = SexyBuild.instance("/getSettledTransactionsByRoundStartTime")
+                .set("st", pullBetOrderReq.startTime.toLocalDate())
+                .set("et", pullBetOrderReq.endTime.toLocalDate())
+
+        return emptyList()
+    }
+
+
+
 }

@@ -1,6 +1,6 @@
 package com.onepiece.treasure.games.live.evolution
 
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.beans.model.token.EvolutionClientToken
 import com.onepiece.treasure.games.GameConstant
 
 class EvolutionBuild private constructor() {
@@ -9,7 +9,7 @@ class EvolutionBuild private constructor() {
 
     companion object {
 
-        fun instance(token: DefaultClientToken, cCode: String, username: String): EvolutionBuild {
+        fun instance(token: EvolutionClientToken, cCode: String, username: String): EvolutionBuild {
 
             return EvolutionBuild()
                     .set("cCode", cCode)
