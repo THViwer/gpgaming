@@ -45,21 +45,27 @@ class PullBetTask(
 
             log.info("厅主Id:${it.clientId}, 平台：${it.platform}, 开始执行拉取订单任务")
 
-            val orders = when (it.platform) {
-                Platform.Joker -> {
-                    val pullBetOrderReq = defaultPullBetOrderReq.copy(startTime = defaultPullBetOrderReq.startTime.minusHours(1),
-                            endTime = defaultPullBetOrderReq.endTime.plusDays(1))
-                    jokerService.pullBetOrders(pullBetOrderReq)
+            try {
+                val orders = when (it.platform) {
+                    Platform.Joker -> {
+                        val pullBetOrderReq = defaultPullBetOrderReq.copy(startTime = defaultPullBetOrderReq.startTime.minusHours(1),
+                                endTime = defaultPullBetOrderReq.endTime.plusDays(1))
+                        jokerService.pullBetOrders(pullBetOrderReq)
+                    }
+                    Platform.CT -> ctService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+                    Platform.DG -> dgService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+                    Platform.Lbc -> lbcService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+                    else -> {
+                        emptyList()
+                    }
                 }
-                Platform.CT -> ctService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
-                Platform.DG -> dgService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
-                Platform.Lbc -> lbcService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
-                else -> { emptyList()}
+
+                if (orders.isEmpty()) return@forEach
+
+                betOrderService.batch(orders)
+            } catch (e: Exception) {
+                log.error("", e)
             }
-
-            if (orders.isEmpty()) return@forEach
-
-            betOrderService.batch(orders)
         }
 
         running.set(false)

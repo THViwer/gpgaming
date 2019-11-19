@@ -86,7 +86,7 @@ data class JokerBetOrder(
     }
 
     override fun getBetOrders(objectMapper: ObjectMapper): List<BetOrderValue.BetOrderCo> {
-        return this.data.game.filter { it.map["Username"]  == "A0011 s" } .map {
+        return this.data.game.filter { it.map["Username"]  != "A0011" } .map {
             val map = it.map
 
 
@@ -101,7 +101,7 @@ data class JokerBetOrder(
                 LocalDateTime.parse(it)
             }?: error("无法获得下注时间")
 
-            val originData = objectMapper.writeValueAsString(this)
+            val originData = objectMapper.writeValueAsString(it.map)
 
             BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Joker, orderId = orderId, betAmount = betAmount,
                     winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData)

@@ -8,11 +8,11 @@ object PlatformUsernameUtil  {
     fun generatorPlatformUsername(clientId: Int, memberId: Int, platform: Platform): String {
 
         return when (platform) {
-            Platform.Joker, Platform.CT, Platform.DG, Platform.Evolution, Platform.Lbc -> {
+            Platform.Joker, Platform.CT, Platform.DG, Platform.Evolution, Platform.Lbc, Platform.Sbo, Platform.SexyGaming -> {
                 "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
             }
-            Platform.Kiss918 -> ""
-            Platform.Pussy888, Platform.Mega -> "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
+            Platform.Kiss918, Platform.Pussy888, Platform.Mega  -> ""
+            Platform.GoldDeluxe -> "A${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
