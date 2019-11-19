@@ -11,6 +11,8 @@ object PlatformUsernameUtil  {
             Platform.Joker, Platform.CT, Platform.DG, Platform.Evolution, Platform.Lbc -> {
                 "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
             }
+            Platform.Kiss918 -> ""
+            Platform.Pussy888, Platform.Mega -> "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
@@ -33,7 +35,7 @@ object PlatformUsernameUtil  {
         val completion = size - "$number".length
         if (completion <= 0) return "$number"
 
-        return (0 until completion).joinToString { "0" }.plus(number)
+        return (0 until completion).joinToString(separator = "") { "0" }.plus(number)
     }
 
 }

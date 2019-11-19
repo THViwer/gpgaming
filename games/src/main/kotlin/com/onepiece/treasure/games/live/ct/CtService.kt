@@ -65,8 +65,8 @@ class CtService(
     fun checkCode(codeId: Int) {
         when (codeId) {
             0 -> {}
-            300 -> { OnePieceExceptionCode.PLATFORM_AEGIS}
-            else -> { OnePieceExceptionCode.PLATFORM_REQUEST_ERROR }
+            300 -> { error(OnePieceExceptionCode.PLATFORM_AEGIS)}
+            else -> { error(OnePieceExceptionCode.PLATFORM_REQUEST_ERROR) }
         }
     }
 

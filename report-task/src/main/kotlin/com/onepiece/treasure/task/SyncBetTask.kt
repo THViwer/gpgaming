@@ -3,6 +3,7 @@ package com.onepiece.treasure.task
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.PlatformMemberService
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -14,7 +15,7 @@ class SyncBetTask(
 
     private val running = AtomicBoolean(false)
 
-//    @Scheduled(cron="0/30 * *  * * ? ")
+    @Scheduled(cron="0/30 * *  * * ? ")
     fun start() {
 
         if (!running.getAndSet(true)) return

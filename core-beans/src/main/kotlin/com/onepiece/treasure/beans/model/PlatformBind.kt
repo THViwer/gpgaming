@@ -53,6 +53,7 @@ data class PlatformBind(
                 Platform.Mega -> jacksonObjectMapper().readValue<MegaClientToken>(tokenJson)
                 Platform.Pussy888 -> jacksonObjectMapper().readValue<Pussy888ClientToken>(tokenJson)
                 Platform.SexyGaming -> jacksonObjectMapper().readValue<SexyClientToken>(tokenJson)
+                Platform.Evolution -> jacksonObjectMapper().readValue<EvolutionClientToken>(tokenJson)
                 else -> jacksonObjectMapper().readValue<DefaultClientToken>(tokenJson)
             }
         }

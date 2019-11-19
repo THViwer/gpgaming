@@ -66,10 +66,10 @@ data class JokerBetOrder(
 
     data class Data(
             @JsonProperty("Game")
-            val game: List<Game>,
+            val game: List<Game> = arrayListOf(),
 
             @JsonProperty("Jackpot")
-            val jackpot: List<Jackpot>
+            val jackpot: List<Jackpot> = arrayListOf()
 
     ) {
         data class Game(
@@ -86,7 +86,7 @@ data class JokerBetOrder(
     }
 
     override fun getBetOrders(objectMapper: ObjectMapper): List<BetOrderValue.BetOrderCo> {
-        return this.data.game.map {
+        return this.data.game.filter { it.map["Username"]  == "A0011 s" } .map {
             val map = it.map
 
 

@@ -19,7 +19,7 @@ data class LbcBetOrder(
         val totalRecord: Int,
 
         @JsonProperty("Data")
-        val data: List<Bet>
+        val data: List<Bet> = arrayListOf()
 
 ): CenterBetOrder {
 
@@ -39,7 +39,7 @@ data class LbcBetOrder(
             val bet = it.map["stake"]?.toString()?.toBigDecimal()?: error("无法获得下注金额")
             val winLoseAmount = it.map["WinLoseAmount"]?.toString()?.toBigDecimal() ?: error("无法获得赢钱")
 
-            val originData = objectMapper.writeValueAsString(it)
+            val originData = objectMapper.writeValueAsString(it.map)
 
             BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betTime = betTime, settleTime = settleTime,
                     betAmount = bet, winAmount = winLoseAmount, originData = originData, platform = Platform.Lbc)

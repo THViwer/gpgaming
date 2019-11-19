@@ -14,6 +14,7 @@ interface PromotionApi  {
     fun all(): List<PromotionVo>
 
     @ApiOperation(tags = ["web setting"], value = "优惠活动 -> 创建")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun create(@RequestBody promotionCoReq: PromotionCoReq)
 
     @ApiOperation(tags = ["web setting"], value = "优惠活动 -> 更新")

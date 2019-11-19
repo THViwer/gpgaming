@@ -7,6 +7,7 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.bet.CenterBetOrder
+import com.onepiece.treasure.games.live.ct.dateTimeFormatter
 import java.time.LocalDateTime
 
 data class DgBetOrder(
@@ -17,7 +18,7 @@ data class DgBetOrder(
 
         val random: String,
 
-        val list: List<Data>
+        val list: List<Data> = arrayListOf()
 
 ): CenterBetOrder {
 
@@ -38,8 +39,8 @@ data class DgBetOrder(
             val username = map["userName"]?.toString()?: error("无法获得用户名")
             val orderId = map["id"]?.toString()?: error("无法获得订单Id")
             val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.DG, platformUsername = username)
-            val betTime = map["betTime"]?.toString()?.let { LocalDateTime.parse(it) } ?: error("无法获得下注时间")
-            val calTime = map["calTime"]?.toString()?.let { LocalDateTime.parse(it) }?: error("无法获得结算时间")
+            val betTime = map["betTime"]?.toString()?.let { LocalDateTime.parse(it, dateTimeFormatter) } ?: error("无法获得下注时间")
+            val calTime = map["calTime"]?.toString()?.let { LocalDateTime.parse(it, dateTimeFormatter) }?: error("无法获得结算时间")
             val betPoints = map["betPoints"]?.toString()?.toBigDecimal()?: error("无法获得下注金额")
             val winOrLoss = map["winOrLoss"]?.toString()?.toBigDecimal()?: error("无法获得盈利金额")
 

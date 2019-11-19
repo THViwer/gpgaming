@@ -9,6 +9,7 @@ import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.model.token.MegaClientToken
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
+import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.core.order.BetOrderValue
 import com.onepiece.treasure.core.order.CTBetOrderDao
 import com.onepiece.treasure.core.order.DGBetOrderDao
@@ -97,10 +98,7 @@ class GameApi(
     fun register(clientId: Int, memberId: Int, platform: Platform) {
 
         // 生成用户名
-        val generatorUsername = when (platform) {
-            Platform.Kiss918 -> ""
-            else -> this.generatorUsername(clientId = clientId, memberId = memberId)
-        }
+        val generatorUsername = PlatformUsernameUtil.generatorPlatformUsername(clientId = clientId, memberId = memberId, platform = platform)
         val generatorPassword = StringUtil.generatePassword()
 
         // 获得配置信息
