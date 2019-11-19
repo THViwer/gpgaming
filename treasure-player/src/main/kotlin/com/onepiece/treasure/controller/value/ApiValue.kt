@@ -140,14 +140,17 @@ data class StartGameResp(
 
 data class DownloadAppVo(
 
-        // 平台
+        @ApiModelProperty("平台")
         val platform: Platform,
 
-        // 图标
+        @ApiModelProperty("图标")
         val icon: String,
 
-        // 下载地址
-        val path: String
+        @ApiModelProperty("ios下载地址")
+        val iosPath: String?,
+
+        @ApiModelProperty("android下载地址")
+        val androidPath: String?
 )
 
 data class PlatformMembrerDetail(

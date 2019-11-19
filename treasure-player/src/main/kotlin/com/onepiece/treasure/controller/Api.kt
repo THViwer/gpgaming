@@ -49,7 +49,7 @@ interface Api {
             @RequestParam("gameId") gameId: String): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "下载客户端(ios或android)")
-    fun down(@PathVariable("mobilePlatform") mobilePlatform: String): List<DownloadAppVo>
+    fun down(): List<DownloadAppVo>
 
     @ApiOperation(tags = ["api"], value = "获得游戏平台的账号密码")
     fun platformMemberDetail(@RequestHeader("platform") platform: Platform): PlatformMembrerDetail

@@ -130,7 +130,7 @@ class ApiController(
     }
 
     @GetMapping("/down/{mobilePlatform}")
-    override fun down(@PathVariable("mobilePlatform") mobilePlatform: String): List<DownloadAppVo> {
+    override fun down(): List<DownloadAppVo> {
         //TODO 暂时不解析网站
 
         // kiss918 -> https://www.918kisse.com/
@@ -139,23 +139,19 @@ class ApiController(
 
         // Mega -> http://m.mega585.com/ 可能需要通过接口
 
+        val kiss918 = DownloadAppVo(platform = Platform.Kiss918, icon = Platform.Kiss918.detail.icon,
+                iosPath = "itms-services://?action=download-manifest&url=https://s3-ap-southeast-1.amazonaws.com/app918kiss/ios/918Kiss.plist",
+                androidPath = "https://s3-ap-southeast-1.amazonaws.com/app918kiss/apk/918Kiss.apk")
 
+        val pussy888 = DownloadAppVo(platform = Platform.Pussy888, icon = Platform.Pussy888.detail.icon,
+                iosPath = "itms-services://?action=download-manifest&url=https://pussy888.s3.amazonaws.com/pussy888/appsetup/ios/pussy888.plist",
+                androidPath = "https://s3-ap-southeast-1.amazonaws.com/pussy888/pussy888/appsetup/apk/pussy888.apk")
 
-        return when (mobilePlatform) {
-            "ios" -> {
-                val kiss918 = DownloadAppVo(Platform.Kiss918, Platform.Kiss918.detail.icon, "itms-services://?action=download-manifest&url=https://s3-ap-southeast-1.amazonaws.com/app918kiss/ios/918Kiss.plist")
-                val pussy888 = DownloadAppVo(Platform.Pussy888, Platform.Pussy888.detail.icon, "itms-services://?action=download-manifest&url=https://pussy888.s3.amazonaws.com/pussy888/appsetup/ios/pussy888.plist")
-                val mega = DownloadAppVo(Platform.Mega, Platform.Mega.detail.icon, "itms-services://?action=download-manifest&url=https://aka-dd-mega-appsetup.siderby.com/ios/Mega888.plist")
-                listOf(kiss918, pussy888, mega)
-            }
-            "android" -> {
-                val kiss918 = DownloadAppVo(Platform.Kiss918, Platform.Kiss918.detail.icon, "https://s3-ap-southeast-1.amazonaws.com/app918kiss/apk/918Kiss.apk")
-                val pussy888 = DownloadAppVo(Platform.Pussy888, Platform.Pussy888.detail.icon, "https://s3-ap-southeast-1.amazonaws.com/pussy888/pussy888/appsetup/apk/pussy888.apk")
-                val mega = DownloadAppVo(Platform.Mega, Platform.Mega.detail.icon, "https://aka-dd-mega-appsetup.siderby.com/apk/Mega888_V1.2.apk")
-                listOf(kiss918, pussy888, mega)
-            }
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
-        }
+        val mega = DownloadAppVo(platform = Platform.Mega, icon = Platform.Mega.detail.icon,
+                iosPath = "itms-services://?action=download-manifest&url=https://aka-dd-mega-appsetup.siderby.com/ios/Mega888.plist",
+                androidPath = "https://aka-dd-mega-appsetup.siderby.com/apk/Mega888_V1.2.apk")
+
+        return listOf(kiss918, pussy888, mega)
     }
 
     @GetMapping("/platform/member")
