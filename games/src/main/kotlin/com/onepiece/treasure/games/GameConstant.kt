@@ -59,6 +59,10 @@ object GameConstant  {
     // fgg
     const val FGG_API_URL = ""
 
+    // bcs
+    const val BCS_API_URL = "http://TransferAPI.ballcrown.com"  // 测试地址
+//    const val BCS_API_URL = ""
+
 
 
 }

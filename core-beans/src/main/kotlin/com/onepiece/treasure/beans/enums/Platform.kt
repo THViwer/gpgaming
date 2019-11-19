@@ -24,7 +24,10 @@ enum class Platform(
 
     // sport
     Sbo(PlatformDetail.ofSbo()),
-    Lbc(PlatformDetail.ofLbc());
+    Lbc(PlatformDetail.ofLbc()),
+    Bcs(PlatformDetail.ofBcs())
+
+    ;
 
     companion object {
 
@@ -124,6 +127,11 @@ open class PlatformDetail private constructor(
 
         fun ofLbc(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Sport, name = "lbc", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+        }
+
+        fun ofBcs(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Sport, name = "BCS", icon = "https://ali88win.com/img/product-logo/joker.png",
                     disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
         }
 

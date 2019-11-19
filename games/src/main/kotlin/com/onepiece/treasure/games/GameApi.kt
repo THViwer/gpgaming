@@ -26,6 +26,7 @@ import com.onepiece.treasure.games.slot.joker.JokerService
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Service
 import com.onepiece.treasure.games.slot.mega.MegaService
 import com.onepiece.treasure.games.slot.pussy888.Pussy888Service
+import com.onepiece.treasure.games.sport.bcs.BcsService
 import com.onepiece.treasure.games.sport.lbc.LbcService
 import com.onepiece.treasure.games.sport.sbo.SboService
 import com.onepiece.treasure.utils.RedisService
@@ -59,6 +60,7 @@ class GameApi(
         // sport
         private val sboService: SboService,
         private val lbcService: LbcService,
+        private val bcsService: BcsService,
 
 
         private val ctBetOrderDao: CTBetOrderDao,
@@ -84,6 +86,7 @@ class GameApi(
             // sport
             Platform.Lbc -> lbcService
             Platform.Sbo -> sboService
+            Platform.Bcs -> bcsService
 
             // 未完成测试
             Platform.Evolution -> evolutionService

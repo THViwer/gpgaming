@@ -9,7 +9,7 @@ object PlatformUsernameUtil  {
 
         return when (platform) {
             Platform.Joker, Platform.CT, Platform.DG, Platform.Evolution, Platform.Lbc, Platform.Sbo, Platform.SexyGaming,
-            Platform.Fgg -> {
+            Platform.Fgg, Platform.Bcs -> {
                 "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
             }
             Platform.Kiss918, Platform.Pussy888, Platform.Mega  -> ""

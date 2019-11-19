@@ -53,6 +53,26 @@ class OkHttpUtil(
         return objectMapper.readValue(json, clz)
     }
 
+    fun <T> doGetXml(url: String, clz: Class<T>, authorization: String = ""): T {
+        log.info("request url: $url")
+        val request = Request.Builder()
+                .url(url)
+                .addHeader("Authorization", authorization)
+                .get()
+                .build()
+
+        val response = client.newCall(request).execute()
+        check(response.code == 200) { OnePieceExceptionCode.PLATFORM_METHOD_FAIL }
+
+        val json = response.body!!.string()
+        log.info("response data: $json")
+
+        if (clz == String::class.java)
+            return json as T
+
+        return xmlMapper.readValue(json, clz)
+    }
+
 
     fun doPostForm(url: String, body: FormBody){
         doPostForm(url, body, String::class.java) { code, response ->
