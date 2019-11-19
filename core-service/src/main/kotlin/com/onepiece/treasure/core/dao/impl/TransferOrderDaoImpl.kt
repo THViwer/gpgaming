@@ -67,7 +67,6 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                     val from = rs.getString("from").let { Platform.valueOf(it) }
                     val to = rs.getString("to").let{ Platform.valueOf(it) }
                     val money = rs.getBigDecimal("money")
-
                     MemberTransferPlatformReportVo(clientId = clientId, memberId = memberId, from = from, to = to, money = money)
                 }
     }

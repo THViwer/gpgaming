@@ -98,9 +98,12 @@ data class MemberTransferPlatformReportVo(
         val to: Platform,
 
         val money: BigDecimal
+) {
 
+    val platform: Platform
+        get() = if (from == Platform.Center) to else from
 
-)
+}
 
 data class MemberTransferReportVo(
 
@@ -123,7 +126,12 @@ data class ClientTransferPlatformReportVo(
 
         val money: BigDecimal
 
-)
+) {
+
+    val platform: Platform
+        get() = if (from == Platform.Center) to else from
+
+}
 
 data class ClientTransferReportVo(
         val clientId: Int,

@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
 import com.onepiece.treasure.utils.DefaultRedisService
@@ -39,6 +41,15 @@ open class RedisConfig {
         return objectMapper
 
     }
+
+    @Bean
+    open fun xmlMapper(): XmlMapper {
+        val xmlMapper = XmlMapper()
+        xmlMapper.registerModule(KotlinModule())
+        return xmlMapper
+    }
+
+
     @Primary
     @Bean
     open fun redisTemplate(factory: RedisConnectionFactory): RedisTemplate<String, String> {

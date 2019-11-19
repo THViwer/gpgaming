@@ -28,7 +28,7 @@ class PullBetTask(
 
     private val running = AtomicBoolean(false)
 
-    @Scheduled(cron="0/30 * *  * * ? ")
+//    @Scheduled(cron="0/30 * *  * * ? ")
     fun start() {
 
         if (!running.getAndSet(true)) return

@@ -19,7 +19,7 @@ class DgTask(
 
     var running = false
 
-    @Scheduled(cron="0/10 * *  * * ? ")
+//    @Scheduled(cron="0/10 * *  * * ? ")
     fun syncOrder() {
 
         if (running) return

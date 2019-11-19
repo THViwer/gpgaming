@@ -31,7 +31,7 @@ class ReportServiceImpl(
         val transferReports = transferOrderDao.memberPlatformReport(query = transferQuery)
 
 
-        return transferReports.groupBy { it.memberId }.map { maps ->
+        return transferReports.groupBy { "${it.memberId}:${it.platform}" }.map { maps ->
 
             val transferInReport = maps.value.find { it.from == Platform.Center }
             val transferOutReport = maps.value.find { it.to == Platform.Center }
@@ -105,7 +105,7 @@ class ReportServiceImpl(
         val transferQuery = TransferReportQuery(clientId = clientId, memberId = null, from = null, to = null, startDate = startDate, endDate = endDate)
         val transferReports = transferOrderDao.clientPlatformReport(query = transferQuery)
 
-        return transferReports.groupBy { it.clientId }.map { maps ->
+        return transferReports.groupBy { "${it.clientId}:${it.platform}" }.map { maps ->
 
             val transferInReport = maps.value.find { it.from == Platform.Center }
             val transferOutReport = maps.value.find { it.to == Platform.Center }

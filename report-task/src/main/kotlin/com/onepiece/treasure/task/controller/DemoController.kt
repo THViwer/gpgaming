@@ -13,7 +13,7 @@ class DemoController(
     @GetMapping("/report")
     fun start() {
 
-        val startDate = LocalDate.now()
+        val startDate = LocalDate.now().minusDays(2)
 
         reportTask.startMemberPlatformDailyReport(startDate)
         reportTask.startMemberReport(startDate)
