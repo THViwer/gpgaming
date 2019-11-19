@@ -15,9 +15,7 @@ import java.math.BigDecimal
 import java.util.*
 
 @Service
-class EvolutionService(
-        private val okHttpUtil: OkHttpUtil
-) : PlatformApi() {
+class EvolutionService : PlatformApi() {
 
     private val log = LoggerFactory.getLogger(EvolutionService::class.java)
 

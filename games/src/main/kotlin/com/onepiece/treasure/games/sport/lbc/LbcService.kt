@@ -17,11 +17,7 @@ import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
 @Service
-class LbcService(
-        private val okHttpUtil: OkHttpUtil,
-        private val redisService: RedisService,
-        private val objectMapper: ObjectMapper
-) : PlatformApi() {
+class LbcService : PlatformApi() {
 
 
     fun checkCode(code: Int) {

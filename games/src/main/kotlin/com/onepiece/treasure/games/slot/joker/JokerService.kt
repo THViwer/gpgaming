@@ -23,12 +23,7 @@ import java.time.format.DateTimeFormatter
  *
  */
 @Service
-class JokerService(
-        private val okHttpUtil: OkHttpUtil,
-        private val redisService: RedisService,
-//        private val jokerBetOrderDao: JokerBetOrderDao
-        private val objectMapper: ObjectMapper
-) : PlatformApi() {
+class JokerService : PlatformApi() {
 
     private val log = LoggerFactory.getLogger(JokerService::class.java)
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")

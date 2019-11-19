@@ -12,9 +12,7 @@ import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
 
 @Service
-class Pussy888Service(
-        private val okHttpUtil: OkHttpUtil
-) : PlatformApi() {
+class Pussy888Service: PlatformApi() {
 
     private val log = LoggerFactory.getLogger(Pussy888Service::class.java)
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

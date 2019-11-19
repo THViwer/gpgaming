@@ -56,6 +56,9 @@ object GameConstant  {
 //    const val SEXY_API_URL = "http://test.bikimex.com:10023"
     const val SEXY_API_URL = "${demoPath}:97"
 
+    // fgg
+    const val FGG_API_URL = ""
+
 
 
 }

@@ -18,10 +18,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Service
-class GoldDeluxeService(
-        private val okHttpUtil: OkHttpUtil,
-        private val redisService: RedisService
-) : PlatformApi() {
+class GoldDeluxeService : PlatformApi() {
 
     private val log = LoggerFactory.getLogger(GoldDeluxeService::class.java)
 

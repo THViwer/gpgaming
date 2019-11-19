@@ -31,6 +31,7 @@ object OnePieceExceptionCode {
     const val DEFAULT_LEVEL_FAIL = "4007" // 默认层级不可修改
     const val MOVE_LEVEL_COUNT_ISZERO = "4008" // 移动人数为0
     const val MOVE_LEVEL_COUNT_ISMAX = "4009" // 移动人数为0
+    const val PLATFORM_DATA_FAIL = "4010" // 平台返回数据错误
 
     // 5000 cash error
     const val ORDER_EXPIRED = "5001" // 订单操作过期

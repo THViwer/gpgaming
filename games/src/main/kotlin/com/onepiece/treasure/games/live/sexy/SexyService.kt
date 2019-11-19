@@ -11,9 +11,7 @@ import java.math.BigDecimal
 import java.net.URLEncoder
 
 @Service
-class SexyService(
-        private val okHttpUtil: OkHttpUtil
-) : PlatformApi() {
+class SexyService : PlatformApi() {
 
     fun checkCode(code: Int) {
         check(code == 1) { OnePieceExceptionCode.DATA_FAIL }

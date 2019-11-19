@@ -25,9 +25,7 @@ import java.time.format.DateTimeFormatter
  *  7	印尼
  */
 @Service
-class Kiss918Service(
-        private val okHttpUtil: OkHttpUtil
-) : PlatformApi() {
+class Kiss918Service : PlatformApi() {
 
     private val log = LoggerFactory.getLogger(Kiss918Service::class.java)
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

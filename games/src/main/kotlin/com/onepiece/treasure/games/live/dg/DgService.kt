@@ -25,12 +25,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class DgService(
-        private val okHttpUtil: OkHttpUtil,
-//        private val redisService: RedisService,
-//        private val dgBetOrderDao: DGBetOrderDao,
-        private val objectMapper: ObjectMapper
-) : PlatformApi() {
+class DgService: PlatformApi() {
 
     // 暂时用马币
     val currency = "MYR"

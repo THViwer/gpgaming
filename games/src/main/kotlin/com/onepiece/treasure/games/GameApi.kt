@@ -19,6 +19,7 @@ import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.live.ct.CtService
 import com.onepiece.treasure.games.live.dg.DgService
 import com.onepiece.treasure.games.live.evolution.EvolutionService
+import com.onepiece.treasure.games.live.fgg.FggService
 import com.onepiece.treasure.games.live.golddeluxe.GoldDeluxeService
 import com.onepiece.treasure.games.live.sexy.SexyService
 import com.onepiece.treasure.games.slot.joker.JokerService
@@ -53,6 +54,7 @@ class GameApi(
         private val goldDeluxeService: GoldDeluxeService,
         private val evolutionService: EvolutionService,
         private val sexyService: SexyService,
+        private val fggService: FggService,
 
         // sport
         private val sboService: SboService,
@@ -77,6 +79,7 @@ class GameApi(
             // live game
             Platform.CT -> ctService
             Platform.DG -> dgService
+            Platform.Fgg -> fggService
 
             // sport
             Platform.Lbc -> lbcService

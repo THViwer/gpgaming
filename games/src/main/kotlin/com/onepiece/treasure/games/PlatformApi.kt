@@ -1,14 +1,26 @@
 package com.onepiece.treasure.games
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
+import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.utils.RedisService
+import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
 
 abstract class PlatformApi {
+
+    @Autowired
+    lateinit var okHttpUtil: OkHttpUtil
+
+    @Autowired
+    lateinit var objectMapper: ObjectMapper
+
+    lateinit var redisService: RedisService
 
     abstract fun register(registerReq: GameValue.RegisterReq): String
 

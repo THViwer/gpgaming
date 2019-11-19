@@ -20,6 +20,7 @@ enum class Platform(
     Evolution(PlatformDetail.ofEvolution()),
     GoldDeluxe(PlatformDetail.ofGoldDeluxe()),
     SexyGaming(PlatformDetail.ofSexyGaming()),
+    Fgg(PlatformDetail.ofFgg()),
 
     // sport
     Sbo(PlatformDetail.ofSbo()),
@@ -106,6 +107,13 @@ open class PlatformDetail private constructor(
         fun ofSexyGaming(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sexy gaming", icon = "https://ali88win.com/img/product-logo/joker.png",
                     disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+        }
+
+        fun ofFgg(): PlatformDetail {
+
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "fgg", icon = "https://ali88win.com/img/product-logo/joker.png",
+                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+
         }
 
         // soprt

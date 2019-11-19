@@ -50,13 +50,7 @@ import java.util.*
 100	TEST	测试币
  */
 @Service
-class CtService(
-        private val okHttpUtil: OkHttpUtil,
-        private val redisService: RedisService,
-        private val ctBetOrderDao: CTBetOrderDao,
-        private val betOrderService: BetOrderService,
-        private val objectMapper: ObjectMapper
-) : PlatformApi() {
+class CtService : PlatformApi() {
 
     // 暂时用马币
     val currency = "MYR"

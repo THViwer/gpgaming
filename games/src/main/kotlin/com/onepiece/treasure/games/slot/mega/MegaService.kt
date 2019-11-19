@@ -11,9 +11,7 @@ import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
 
 @Service
-class MegaService(
-        private val okHttpUtil: OkHttpUtil
-) : PlatformApi() {
+class MegaService: PlatformApi() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
