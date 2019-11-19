@@ -8,7 +8,7 @@ object PlatformUsernameUtil  {
     fun generatorPlatformUsername(clientId: Int, memberId: Int, platform: Platform): String {
 
         return when (platform) {
-            Platform.Joker, Platform.CT, Platform.DG -> {
+            Platform.Joker, Platform.CT, Platform.DG, Platform.Evolution -> {
                 "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
@@ -18,7 +18,7 @@ object PlatformUsernameUtil  {
     fun prefixPlatformUsername(platform: Platform, platformUsername: String): Pair<Int, Int> {
 
         return when (platform) {
-            Platform.Joker, Platform.CT, Platform.DG -> {
+            Platform.Joker, Platform.CT, Platform.DG, Platform.Evolution -> {
                 val clientId = platformUsername.substring(0, 2).toInt()
                 val memberId = platformUsername.substring(2, platformUsername.length).toInt()
 

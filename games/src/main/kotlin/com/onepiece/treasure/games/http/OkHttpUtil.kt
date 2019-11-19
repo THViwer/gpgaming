@@ -33,10 +33,11 @@ class OkHttpUtil(
     private val XML = "text/html; charset=utf-8".toMediaType()
 
 
-    fun <T> doGet(url: String, clz: Class<T>): T {
+    fun <T> doGet(url: String, clz: Class<T>, authorization: String = ""): T {
         log.info("request url: $url")
         val request = Request.Builder()
                 .url(url)
+                .addHeader("Authorization", authorization)
                 .get()
                 .build()
 

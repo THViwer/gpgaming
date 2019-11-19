@@ -3,10 +3,12 @@ package com.onepiece.treasure.games.live.evolution
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
 import com.onepiece.treasure.games.http.OkHttpUtil
+import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -125,6 +127,20 @@ class EvolutionService(
         val result= okHttpUtil.doPostJson(url = url, data = json, clz = EvolutionValue.GetUrlOrCreateUser::class.java)
 
         return result.entry
+    }
+
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+        val token = pullBetOrderReq.token as DefaultClientToken
+        val authorization = DigestUtils.md5Hex("${token.appId}:${token.key}")
+
+        val url = "${GameConstant.EVOLUTION_API_URL}/api/gamehistory/v1/casino/games/stream?startDate=${pullBetOrderReq.startTime}"
+
+        //TODO 还未调试完成
+        okHttpUtil.doGet(url, String::class.java, "Basic $authorization")
+
+
+        return emptyList()
+
     }
 
 
