@@ -18,6 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.io.File
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -97,9 +98,13 @@ open class CashApiController(
                 }
     }
 
-    @PostMapping
-    override fun uploadProof(file: MultipartFile): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    @PostMapping("/upload/proof")
+    override fun uploadProof(@RequestParam("file") file: MultipartFile): String {
+
+        val temFile = File("/Users/cabbage/Desktop/images/${file.originalFilename}")
+        temFile.writeBytes(file.bytes)
+
+        return "http://www.xxxx.com/${file.originalFilename}"
     }
 
     @GetMapping("/deposit")

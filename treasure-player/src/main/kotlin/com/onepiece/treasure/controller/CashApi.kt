@@ -51,7 +51,7 @@ interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "上传图片")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun uploadProof(file: MultipartFile): String
+    fun uploadProof(@RequestParam("file") file: MultipartFile): String
 
     @ApiOperation(tags = ["cash"], value = "充值")
     fun deposit(@RequestBody depositCoReq: DepositCoReq): CashDepositResp
