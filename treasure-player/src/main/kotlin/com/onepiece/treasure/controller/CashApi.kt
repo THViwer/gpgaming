@@ -49,6 +49,7 @@ interface CashApi {
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): Page<DepositVo>
 
+    @ApiOperation(tags = ["cash"], value = "上传图片")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun uploadProof(file: MultipartFile): String
 

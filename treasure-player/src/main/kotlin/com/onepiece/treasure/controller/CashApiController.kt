@@ -17,6 +17,7 @@ import com.onepiece.treasure.core.service.*
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -94,6 +95,11 @@ open class CashApiController(
                                 status = status, createdTime = createdTime, levelId = null, levelName = null)
                     }
                 }
+    }
+
+    @PostMapping
+    override fun uploadProof(file: MultipartFile): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     @GetMapping("/deposit")
