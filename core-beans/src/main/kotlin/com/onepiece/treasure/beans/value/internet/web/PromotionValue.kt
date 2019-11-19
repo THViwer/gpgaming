@@ -1,5 +1,6 @@
 package com.onepiece.treasure.beans.value.internet.web
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.onepiece.treasure.beans.enums.*
 import io.swagger.annotations.ApiModelProperty
@@ -73,6 +74,7 @@ data class PromotionCoReq(
         val platform: Platform,
 
         @ApiModelProperty("结束时间, 如果为null 则无限时间")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         val stopTime: LocalDateTime?,
 
         @ApiModelProperty("是否置顶")
@@ -113,6 +115,7 @@ data class PromotionUoReq(
         val category: PromotionCategory?,
 
         @ApiModelProperty("结束时间, 如果为null 则无限时间")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         val stopTime: LocalDateTime?,
 
         @ApiModelProperty("是否置顶")

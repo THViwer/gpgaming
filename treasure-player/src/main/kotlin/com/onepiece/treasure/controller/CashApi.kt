@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -47,6 +48,9 @@ interface CashApi {
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): Page<DepositVo>
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun uploadProof(file: MultipartFile): String
 
     @ApiOperation(tags = ["cash"], value = "充值")
     fun deposit(@RequestBody depositCoReq: DepositCoReq): CashDepositResp
