@@ -15,8 +15,8 @@ enum class Platform(
     Mega(PlatformDetail.ofMega()),
 
     // live video
-//    CT(PlatformDetail.ofCT()),
-//    DG(PlatformDetail.ofDG()),
+    CT(PlatformDetail.ofCT()),
+    DG(PlatformDetail.ofDG()),
     Evolution(PlatformDetail.ofEvolution()),
     GoldDeluxe(PlatformDetail.ofGoldDeluxe()),
     SexyGaming(PlatformDetail.ofSexyGaming()),

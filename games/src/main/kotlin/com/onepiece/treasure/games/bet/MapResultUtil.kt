@@ -16,7 +16,7 @@ object MapResultUtil {
         return map[key]?.toString()?.toInt()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
     }
 
-    fun toBigDecimal(map: Map<String, Any>, key: String): BigDecimal {
+    fun asBigDecimal(map: Map<String, Any>, key: String): BigDecimal {
         return map[key]?.toString()?.toBigDecimal()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
     }
 
@@ -26,6 +26,11 @@ object MapResultUtil {
 
     fun asLocalDateTime(map: Map<String, Any>, key: String, dateTimeFormatter: DateTimeFormatter = DEFAULT_DATETIMEFORMATTER): LocalDateTime {
         return map[key]?.let { LocalDateTime.parse(it.toString(), dateTimeFormatter) }?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+    }
+
+    fun asLocalDateTime(map: Map<String, Any>, key: String): LocalDateTime {
+
+        return map[key]?.toString()?.substring(0, 19)?.let { LocalDateTime.parse(it) } ?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
     }
 
     fun asList(map: Map<String, Any>, key: String): List<Map<String, Any>> {

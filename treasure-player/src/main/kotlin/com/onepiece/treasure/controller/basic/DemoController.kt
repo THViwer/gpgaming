@@ -1,7 +1,6 @@
 package com.onepiece.treasure.controller.basic
 
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.GameApi
@@ -26,14 +25,12 @@ class DemoController(
         val endTime = LocalDateTime.now()
 
         return when (platform) {
-            Platform.Joker -> {
-                betOrderService.getBets(clientId = 1, memberId = 1, platform = platform)
-            }
             Platform.Kiss918, Platform.Pussy888, Platform.Sbo, Platform.Mega -> {
                 val platformMember = platformMemberService.find(memberId = 1, platform = platform) ?: return emptyList<Any>()
                 gameApi.queryBetOrder(clientId = 1, platformUsername = platformMember.platformUsername, platform = platform, startTime = startTime, endTime = endTime)
             }
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
+            else -> betOrderService.getBets(clientId = 1, memberId = 1, platform = platform)
+
         }
     }
 

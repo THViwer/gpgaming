@@ -24,7 +24,7 @@ class GoldDeluxeService : PlatformApi() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyMMddHHmmss")
     private val betDateTimeFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")
-    private val currencyCode = "MRY"
+    private val currencyCode = "MYR"
 
     private val url = "${GameConstant.GOLDDELUXE_API_URL}/release/www/merchantapi.php"
 

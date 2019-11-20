@@ -1,6 +1,7 @@
 package com.onepiece.treasure.task
 
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.GameValue
@@ -8,6 +9,7 @@ import com.onepiece.treasure.games.live.EvolutionService
 import com.onepiece.treasure.games.slot.joker.JokerService
 import com.onepiece.treasure.games.sport.lbc.LbcService
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -26,7 +28,28 @@ class PullBetTask(
 
     private val running = AtomicBoolean(false)
 
-    @Scheduled(cron="0/10 * *  * * ? ")
+    @Scheduled(cron="0 0/1 *  * * ? ")
+    fun evolutionTask() {
+        val platformBins = platformBindService.find(Platform.Evolution)
+
+        val startTime = LocalDateTime.now().minusMinutes(10)
+        val endTime = startTime.plusMinutes(5)
+        platformBins.forEach {
+            val defaultPullBetOrderReq = GameValue.PullBetOrderReq(clientId = it.clientId, token = it.clientToken, startTime = startTime, endTime = endTime)
+            val orders = evolutionService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+            asyncBatch(orders)
+        }
+    }
+
+
+    fun asyncBatch(orders: List<BetOrderValue.BetOrderCo>) {
+        if (orders.isEmpty()) return
+
+        betOrderService.batch(orders)
+    }
+
+
+//    @Scheduled(cron="0/10 * *  * * ? ")
     fun start() {
 
         if (!running.getAndSet(true)) return

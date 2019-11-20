@@ -1,15 +1,17 @@
 package com.onepiece.treasure.games.live
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.token.EvolutionClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
+import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
 import com.onepiece.treasure.games.bet.MapResultUtil
-import org.apache.commons.codec.digest.DigestUtils
+import org.apache.commons.codec.binary.Base64
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -20,16 +22,15 @@ class EvolutionService : PlatformApi() {
 
     private val log = LoggerFactory.getLogger(EvolutionService::class.java)
 
-
     override fun getRequestUrl(path: String, data: Map<String, Any>): String {
         val params = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
         return "${GameConstant.EVOLUTION_API_URL}${path}?$params"
     }
 
-    fun doGetResult(url: String): EvolutionValue.Result {
+    fun doGetResult(url: String, pojo: String): Map<String, Any> {
         val result = okHttpUtil.doGet(url = url, clz = EvolutionValue.Result::class.java)
         //TODO check
-        return result
+        return MapResultUtil.asMap(result.data, pojo)
     }
 
 
@@ -42,7 +43,7 @@ class EvolutionService : PlatformApi() {
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
 
-        val token = balanceReq.token as DefaultClientToken
+        val token = balanceReq.token as EvolutionClientToken
 
         val data = hashMapOf(
                 "cCode" to "RWA",
@@ -51,13 +52,13 @@ class EvolutionService : PlatformApi() {
                 "output" to 0
         )
         val url = this.getRequestUrl(path = "/api/ecashier", data = data)
-        val result = this.doGetResult(url)
-        return MapResultUtil.toBigDecimal(result.data, "abalance")
+        val result = this.doGetResult(url, "userbalance")
+        return MapResultUtil.asBigDecimal(result, "abalance")
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
 
-        val token = transferReq.token as DefaultClientToken
+        val token = transferReq.token as EvolutionClientToken
         val cCode = if (transferReq.amount.toDouble() > 0) "ECR" else "EDB"
 
         val data = hashMapOf(
@@ -71,12 +72,12 @@ class EvolutionService : PlatformApi() {
         )
 
         val url = this.getRequestUrl(path = "/api/ecashier", data = data)
-        val result = doGetResult(url)
-        return MapResultUtil.asString(result.data, "etransid")
+        val result = doGetResult(url, "transfer")
+        return MapResultUtil.asString(result, "etransid")
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
-        val token = checkTransferReq.token as DefaultClientToken
+        val token = checkTransferReq.token as EvolutionClientToken
 
         val data = hashMapOf(
                 "cCode" to "TRI",
@@ -86,8 +87,8 @@ class EvolutionService : PlatformApi() {
                 "TransID" to checkTransferReq.orderId
         )
         val url = this.getRequestUrl(path = "/api/ecashier", data = data)
-        val result = this.doGetResult(url)
-        return MapResultUtil.asString(result.data, "result") == "Y"
+        val result = this.doGetResult(url, "checktransfer")
+        return MapResultUtil.asString(result, "result") == "Y"
     }
 
     override fun start(startReq: GameValue.StartReq): String {
@@ -155,13 +156,45 @@ class EvolutionService : PlatformApi() {
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
         val token = pullBetOrderReq.token as EvolutionClientToken
-        val authorization = DigestUtils.md5Hex("key-${token.key}:${token.key}")
+        val authorization = Base64.encodeBase64String("${token.appId}:${token.key}".toByteArray())
 
-        val url = "${GameConstant.EVOLUTION_API_URL}/api/gamehistory/v1/casino/games/stream?startDate=${pullBetOrderReq.startTime}"
-        val data = okHttpUtil.doGet(url, String::class.java, "Basic $authorization")
+        val utcStartTime = pullBetOrderReq.startTime.minusHours(8) // 设置UTC时间 所以要减8小时
+        val utcEndTime = pullBetOrderReq.endTime.minusHours(8) // 设置UTC时间 所以要减8小时
+        val url = "${GameConstant.EVOLUTION_API_URL}/api/gamehistory/v1/casino/games?startDate=${utcStartTime}&endDate=${utcEndTime}"
+        val jsonValue = okHttpUtil.doGet(url, String::class.java, "Basic $authorization")
 
-        return emptyList()
+        if (jsonValue.contains("Data could not be found.")) return emptyList()
 
+        val result = objectMapper.readValue<EvolutionValue.BetResult>(jsonValue)
+        if (result.data.isEmpty()) return emptyList()
+
+        return result.data.first().games.filter { MapResultUtil.asString(it.data, "status") == "Resolved" }.map {
+
+            val games = it.data
+            val settleTime = MapResultUtil.asLocalDateTime(games, "settledAt")
+            val betTime = MapResultUtil.asLocalDateTime(games, "startedAt")
+            val bets = MapResultUtil.asList(games, "participants")
+
+            bets.map { bet ->
+
+                val username = MapResultUtil.asString(bet, "playerId")
+                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Evolution, platformUsername = username)
+
+                val playerBets = MapResultUtil.asList(bet, "bets")
+                playerBets.map { playerBet ->
+                    val orderId = MapResultUtil.asString(playerBet, "transactionId")
+                    val betAmount = MapResultUtil.asBigDecimal(playerBet, "stake")
+                    val winAmount = MapResultUtil.asBigDecimal(playerBet, "payout")
+
+                    val originData = objectMapper.writeValueAsString(bet)
+                    BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Evolution, orderId = orderId, betTime = betTime,
+                            settleTime = settleTime, betAmount = betAmount, winAmount = winAmount, originData = originData)
+                }
+
+            }.reduce { acc, list -> acc.plus(list) }
+        }.reduce { acc, list ->
+            acc.plus(list)
+        }
     }
 
 
