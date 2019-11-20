@@ -35,7 +35,7 @@ class BerOrderApiController(
         val endDate = endTime.toLocalDate()
 
         return when (platform) {
-            Platform.Joker, Platform.CT, Platform.DG, Platform.Fgg-> {
+            Platform.Joker, Platform.Fgg-> {
                 betOrderService.getBets(clientId = clientId, memberId = member.id, platform = platform)
             }
 

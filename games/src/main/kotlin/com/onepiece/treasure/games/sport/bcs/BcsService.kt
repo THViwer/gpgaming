@@ -10,7 +10,7 @@ import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
-import com.onepiece.treasure.games.live.ct.dateTimeFormatter
+import com.onepiece.treasure.games.bet.DEFAULT_DATETIMEFORMATTER
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -41,10 +41,9 @@ import java.time.LocalDateTime
 @Service
 class BcsService : PlatformApi() {
 
-    private fun getRequestUrl(path: String, param: Map<String, Any>): String {
 
-        val urlParam = param.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-
+    override fun getRequestUrl(path: String, data: Map<String, Any>): String {
+        val urlParam = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
         return "${GameConstant.BCS_API_URL}${path}?$urlParam"
     }
 
@@ -76,7 +75,7 @@ class BcsService : PlatformApi() {
                 "MemberAccount" to balanceReq.username
         )
 
-        val url = this.getRequestUrl("/ThirdApi.asmx/ThirdApi.asmx/GetBalance", param)
+        val url = this.getRequestUrl(path = "/ThirdApi.asmx/ThirdApi.asmx/GetBalance", data = param)
         val result = okHttpUtil.doGetXml(url = url, clz = BcsResult::class.java)
         //TODO check
 
@@ -177,7 +176,7 @@ class BcsService : PlatformApi() {
                 "ReportDate" to "${betOrderReq.startTime.toLocalDate()}"
         )
 
-        val url = getRequestUrl(path = "/GetBetSheetByReport", param = param)
+        val url = getRequestUrl(path = "/GetBetSheetByReport", data = param)
         val result = okHttpUtil.doGetXml(url = url, clz = BcsResult::class.java)
 
         val data = (result.data["result"] as Map<*, *>)["betlist"] as List<*>
@@ -197,7 +196,7 @@ class BcsService : PlatformApi() {
                     "Rows" to 1000
             )
 
-            val url = getRequestUrl(path = "/GetBetSheetByAgent", param = param)
+            val url = getRequestUrl(path = "/GetBetSheetByAgent", data = param)
 
             val result = okHttpUtil.doGetXml(url = url, clz = BcsResult::class.java)
 
@@ -213,8 +212,8 @@ class BcsService : PlatformApi() {
                     val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Bcs, platformUsername = username)
                     val betAmount = bet["BetAmount"]?.toString()?.toBigDecimal()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
                     val winAmount = bet["Win"]?.toString()?.toBigDecimal()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-                    val betTime = bet["BetDate"]?.toString()?.let { LocalDateTime.parse(it, dateTimeFormatter) }?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-                    val settleTime = bet["UpdateTime"]?.toString()?.let { LocalDateTime.parse(it, dateTimeFormatter) }?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+                    val betTime = bet["BetDate"]?.toString()?.let { LocalDateTime.parse(it, DEFAULT_DATETIMEFORMATTER) }?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+                    val settleTime = bet["UpdateTime"]?.toString()?.let { LocalDateTime.parse(it, DEFAULT_DATETIMEFORMATTER) }?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
 
                     val sortNo = bet["SortNo"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
                     if (sortNo > nextId) nextId = sortNo

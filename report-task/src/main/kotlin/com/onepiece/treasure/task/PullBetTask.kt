@@ -4,8 +4,7 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.live.ct.CtService
-import com.onepiece.treasure.games.live.dg.DgService
+import com.onepiece.treasure.games.live.EvolutionService
 import com.onepiece.treasure.games.slot.joker.JokerService
 import com.onepiece.treasure.games.sport.lbc.LbcService
 import org.slf4j.LoggerFactory
@@ -18,8 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class PullBetTask(
         private val platformBindService: PlatformBindService,
         private val jokerService: JokerService,
-        private val ctService: CtService,
-        private val dgService: DgService,
+        private val evolutionService: EvolutionService,
         private val lbcService: LbcService,
         private val betOrderService: BetOrderService
 ) {
@@ -47,14 +45,13 @@ class PullBetTask(
 
             try {
                 val orders = when (it.platform) {
-                    Platform.Joker -> {
-                        val pullBetOrderReq = defaultPullBetOrderReq.copy(startTime = defaultPullBetOrderReq.startTime.minusHours(1),
-                                endTime = defaultPullBetOrderReq.endTime.plusDays(1))
-                        jokerService.pullBetOrders(pullBetOrderReq)
-                    }
-                    Platform.CT -> ctService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
-                    Platform.DG -> dgService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
-                    Platform.Lbc -> lbcService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+//                    Platform.Joker -> {
+//                        val pullBetOrderReq = defaultPullBetOrderReq.copy(startTime = defaultPullBetOrderReq.startTime.minusHours(1),
+//                                endTime = defaultPullBetOrderReq.endTime.plusDays(1))
+//                        jokerService.pullBetOrders(pullBetOrderReq)
+//                    }
+//                    Platform.Lbc -> lbcService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+                    Platform.Evolution -> evolutionService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
                     else -> {
                         emptyList()
                     }

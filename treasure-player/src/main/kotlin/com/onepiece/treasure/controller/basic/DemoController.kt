@@ -26,7 +26,7 @@ class DemoController(
         val endTime = LocalDateTime.now()
 
         return when (platform) {
-            Platform.Joker, Platform.CT, Platform.DG -> {
+            Platform.Joker -> {
                 betOrderService.getBets(clientId = 1, memberId = 1, platform = platform)
             }
             Platform.Kiss918, Platform.Pussy888, Platform.Sbo, Platform.Mega -> {
