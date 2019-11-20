@@ -8,20 +8,20 @@ object PlatformUsernameUtil  {
     fun generatorPlatformUsername(clientId: Int, memberId: Int, platform: Platform): String {
 
         return when (platform) {
-            Platform.Joker, Platform.Evolution, Platform.Lbc, Platform.Sbo, Platform.SexyGaming,
-            Platform.Fgg, Platform.Bcs -> {
-                "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
-            }
+//            Platform.Joker, Platform.Evolution, Platform.Lbc, Platform.Sbo, Platform.SexyGaming,
+//            Platform.Fgg, Platform.Bcs, Plat -> {
+//                "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
+//            }
             Platform.Kiss918, Platform.Pussy888, Platform.Mega  -> ""
             Platform.GoldDeluxe -> "A${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
+            else -> "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
         }
     }
 
     fun prefixPlatformUsername(platform: Platform, platformUsername: String): Pair<Int, Int> {
 
         return when (platform) {
-            Platform.Joker, Platform.Evolution, Platform.Lbc -> {
+            Platform.Joker, Platform.Evolution, Platform.Lbc, Platform.Fgg -> {
                 val clientId = platformUsername.substring(0, 2).toInt()
                 val memberId = platformUsername.substring(2, platformUsername.length).toInt()
 

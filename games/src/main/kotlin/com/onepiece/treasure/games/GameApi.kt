@@ -16,7 +16,7 @@ import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.live.EvolutionService
 import com.onepiece.treasure.games.live.GoldDeluxeService
-import com.onepiece.treasure.games.live.fgg.FggService
+import com.onepiece.treasure.games.live.FggService
 import com.onepiece.treasure.games.live.sexy.SexyService
 import com.onepiece.treasure.games.slot.joker.JokerService
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Service
@@ -54,9 +54,8 @@ class GameApi(
         // sport
         private val sboService: SboService,
         private val lbcService: LbcService,
-        private val bcsService: BcsService,
+        private val bcsService: BcsService
 
-        private val jokerBetOrderDao: JokerBetOrderDao
 
 ) {
 
@@ -132,7 +131,7 @@ class GameApi(
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         return when (platform) {
-            Platform.Evolution, Platform.Lbc, Platform.Sbo, Platform.GoldDeluxe -> {
+            Platform.Evolution, Platform.Lbc, Platform.Sbo, Platform.GoldDeluxe, Platform.Fgg -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform, language = language)
                 this.getPlatformApi(platform).start(startReq)
             }
@@ -178,17 +177,17 @@ class GameApi(
         this.getPlatformApi(platform).transfer(transferReq)
     }
 
-    /**
-     * 查询下注订单
-     */
-    fun queryBetOrder(clientId: Int, memberId: Int, platform: Platform, startDate: LocalDate, endDate: LocalDate): Any {
-        val query = BetOrderValue.Query(clientId = clientId, memberId = memberId, startTime = startDate.atStartOfDay(), endTime = endDate.atStartOfDay())
-
-        return when (platform) {
-            Platform.Joker -> jokerBetOrderDao.query(query)
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
-        }
-    }
+//    /**
+//     * 查询下注订单
+//     */
+//    fun queryBetOrder(clientId: Int, memberId: Int, platform: Platform, startDate: LocalDate, endDate: LocalDate): Any {
+//        val query = BetOrderValue.Query(clientId = clientId, memberId = memberId, startTime = startDate.atStartOfDay(), endTime = endDate.atStartOfDay())
+//
+//        return when (platform) {
+//            Platform.Joker -> jokerBetOrderDao.query(query)
+//            else -> error(OnePieceExceptionCode.DATA_FAIL)
+//        }
+//    }
 
     /**
      * 查询下注订单

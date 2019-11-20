@@ -6,6 +6,7 @@ import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.live.EvolutionService
+import com.onepiece.treasure.games.live.FggService
 import com.onepiece.treasure.games.slot.joker.JokerService
 import com.onepiece.treasure.games.sport.lbc.LbcService
 import org.slf4j.LoggerFactory
@@ -21,6 +22,7 @@ class PullBetTask(
         private val jokerService: JokerService,
         private val evolutionService: EvolutionService,
         private val lbcService: LbcService,
+        private val fggService: FggService,
         private val betOrderService: BetOrderService
 ) {
 
@@ -28,7 +30,7 @@ class PullBetTask(
 
     private val running = AtomicBoolean(false)
 
-    @Scheduled(cron="0 0/1 *  * * ? ")
+//    @Scheduled(cron="0 0/1 *  * * ? ")
     fun evolutionTask() {
         val platformBins = platformBindService.find(Platform.Evolution)
 
@@ -49,7 +51,7 @@ class PullBetTask(
     }
 
 
-//    @Scheduled(cron="0/10 * *  * * ? ")
+    @Scheduled(cron="0/10 * *  * * ? ")
     fun start() {
 
         if (!running.getAndSet(true)) return
@@ -74,7 +76,11 @@ class PullBetTask(
 //                        jokerService.pullBetOrders(pullBetOrderReq)
 //                    }
 //                    Platform.Lbc -> lbcService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
-                    Platform.Evolution -> evolutionService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+
+
+                    // 测试
+//                    Platform.Evolution -> evolutionService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+                    Platform.Fgg -> fggService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
                     else -> {
                         emptyList()
                     }

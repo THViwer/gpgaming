@@ -22,6 +22,7 @@ abstract class PlatformApi {
     @Autowired
     lateinit var objectMapper: ObjectMapper
 
+    @Autowired
     lateinit var redisService: RedisService
 
     open fun getRequestUrl(path: String, data: Map<String, Any>): String {

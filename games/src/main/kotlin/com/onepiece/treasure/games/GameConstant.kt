@@ -3,6 +3,7 @@ package com.onepiece.treasure.games
 object GameConstant  {
 
     const val demoPath = "http://94.237.64.70"
+    const val proxy = "http://94.237.64.70:90"
 
     // joker
 //    const val JOKER_URL = "http://api688.net:81"
@@ -57,7 +58,8 @@ object GameConstant  {
     const val SEXY_API_URL = "${demoPath}:97"
 
     // fgg
-    const val FGG_API_URL = ""
+//    const val FGG_API_URL = "https://d-tapi.fgg365.com"
+    const val FGG_API_URL = "$proxy/fgg/Game"
 
     // bcs
     const val BCS_API_URL = "http://TransferAPI.ballcrown.com"  // 测试地址

@@ -1,4 +1,4 @@
-package com.onepiece.treasure.games.live.fgg
+package com.onepiece.treasure.games.live
 
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
@@ -51,13 +51,13 @@ class FggService: PlatformApi() {
         val token = balanceReq.token as DefaultClientToken
         val param = """
             {
-                "Key", "${token.appId}",
+                "Key": "${token.appId}",
                 "Secret": "${token.key}",
                 "Account": "${balanceReq.username}"
             }
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/GetBalance", data = param, clz = FggResult::class.java)
+        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/GetBalance", data = param, clz = FggValue.Result::class.java)
         result.checkErrorCode()
 
         return result.data["Balance"]?.toString()?.toBigDecimal()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
@@ -67,13 +67,15 @@ class FggService: PlatformApi() {
 
         val token = transferReq.token as DefaultClientToken
         val param = """
-            "Key": "${token.appId}",
-            "Secret": "${token.key},
-            "Account": "${transferReq.username}",
-            "Amount": ${transferReq.amount},
-            "SerialNumber": "${transferReq.orderId}"
+            {
+                "Key": "${token.appId}",
+                "Secret": "${token.key}",
+                "Account": "${transferReq.username}",
+                "Amount": ${transferReq.amount},
+                "SerialNumber": "${transferReq.orderId}"
+            }
         """.trimIndent()
-        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/Transfer", data = param, clz = FggResult::class.java)
+        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/Transfer", data = param, clz = FggValue.Result::class.java)
         result.checkErrorCode()
 
         return transferReq.orderId
@@ -83,11 +85,13 @@ class FggService: PlatformApi() {
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
         val token = checkTransferReq.token as DefaultClientToken
         val param = """
-            "Key": "${token.appId}",
-            "Secret": "${token.key},
-            "SerialNumber": "${checkTransferReq.orderId}"
+            {
+                "Key": "${token.appId}",
+                "Secret": "${token.key}",
+                "SerialNumber": "${checkTransferReq.orderId}"
+            }
         """.trimIndent()
-        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/GetTransferInfo", data = param, clz = FggResult::class.java)
+        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/GetTransferInfo", data = param, clz = FggValue.Result::class.java)
         result.checkErrorCode()
 
         return result.data["Exist"] == true
@@ -117,14 +121,14 @@ class FggService: PlatformApi() {
                 "Currency": "MYR",
                 "LimitID": "3",
                 "ClientType": "$clientType",
-                "Lang": "${lang}",
+                "Lang": "$lang  ",
                 "GameID": "0",
                 
            } 
             
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/GetGameUrl", data = param, clz = FggResult::class.java)
+        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/GetGameUrl", data = param, clz = FggValue.Result::class.java)
         result.checkErrorCode()
 
         return result.data["Url"]?.toString() ?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
@@ -138,21 +142,23 @@ class FggService: PlatformApi() {
 
         val token = pullBetOrderReq.token as DefaultClientToken
         val param = """
-            "Key": "${token.appId}",
-            "Secret": "${token.key},
-            "SortNo": "$sortNo
+            {
+                "Key": "${token.appId}",
+                "Secret": "${token.key}",
+                "SortNo": "$sortNo",
+                "Rows": 1000
+            }
         """.trimIndent()
-        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/GetBets", data = param, clz = FggResult::class.java)
+        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/GetBets", data = param, clz = FggValue.Result::class.java)
         result.checkErrorCode()
 
 
         val nextSortNo = result.data["SortNo"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-        val bets = result.data["Bets"] as List<Map<String, Any>>
+        val bets = result.data["Bets"]?.let { it as List<Map<String, Any>> } ?: emptyList()
         if (bets.isEmpty()) return emptyList()
 
-
         val orders = bets.map {  bet ->
-            val orderId = bet["betID"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+            val orderId = bet["BetID"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
             val username = bet["Account"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
             val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Fgg, platformUsername = username)
             val betAmount = bet["Turnover"]?.toString()?.toBigDecimal()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
