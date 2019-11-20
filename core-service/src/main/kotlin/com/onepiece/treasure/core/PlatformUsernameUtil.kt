@@ -8,7 +8,7 @@ object PlatformUsernameUtil  {
     fun generatorPlatformUsername(clientId: Int, memberId: Int, platform: Platform): String {
 
         return when (platform) {
-            Platform.Joker, Platform.CT, Platform.DG, Platform.Evolution, Platform.Lbc, Platform.Sbo, Platform.SexyGaming,
+            Platform.Joker, Platform.Evolution, Platform.Lbc, Platform.Sbo, Platform.SexyGaming,
             Platform.Fgg, Platform.Bcs -> {
                 "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
             }
@@ -21,7 +21,7 @@ object PlatformUsernameUtil  {
     fun prefixPlatformUsername(platform: Platform, platformUsername: String): Pair<Int, Int> {
 
         return when (platform) {
-            Platform.Joker, Platform.CT, Platform.DG, Platform.Evolution, Platform.Lbc -> {
+            Platform.Joker, Platform.Evolution, Platform.Lbc -> {
                 val clientId = platformUsername.substring(0, 2).toInt()
                 val memberId = platformUsername.substring(2, platformUsername.length).toInt()
 

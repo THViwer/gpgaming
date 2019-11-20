@@ -48,7 +48,7 @@ object GameConstant  {
 
     // lbc
 //    const val LBC_API_URL = "http://api.prod.ib.gsoft88.net"
-    const val LBC_API_URL = "${demoPath}:95"
+    const val LBC_API_URL = "http://45.124.64.29:88" // hk server
     const val LBC_START_URL = "http://c.gsoft888.net/Deposit_ProcessLogin.aspx?lang=en&OType=1&WebSkinType=3&skincolor=bl001&g="
     const val LBC_START_MOBILE_URL = "http://i.gsoft888.net/Deposit_ProcessLogin.aspx?lang=en&OType=1&skincolor=bl001&ischinaview=True&st="
 

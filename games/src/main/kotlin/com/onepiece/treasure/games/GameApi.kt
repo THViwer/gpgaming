@@ -16,8 +16,6 @@ import com.onepiece.treasure.core.order.DGBetOrderDao
 import com.onepiece.treasure.core.order.JokerBetOrderDao
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
-import com.onepiece.treasure.games.live.ct.CtService
-import com.onepiece.treasure.games.live.dg.DgService
 import com.onepiece.treasure.games.live.evolution.EvolutionService
 import com.onepiece.treasure.games.live.fgg.FggService
 import com.onepiece.treasure.games.live.golddeluxe.GoldDeluxeService
@@ -50,8 +48,6 @@ class GameApi(
         private val megaService: MegaService,
 
         // live game
-        private val ctService: CtService,
-        private val dgService: DgService,
         private val goldDeluxeService: GoldDeluxeService,
         private val evolutionService: EvolutionService,
         private val sexyService: SexyService,
@@ -62,9 +58,6 @@ class GameApi(
         private val lbcService: LbcService,
         private val bcsService: BcsService,
 
-
-        private val ctBetOrderDao: CTBetOrderDao,
-        private val dgBetOrderDao: DGBetOrderDao,
         private val jokerBetOrderDao: JokerBetOrderDao
 
 ) {
@@ -79,8 +72,6 @@ class GameApi(
             Platform.Mega -> megaService
 
             // live game
-            Platform.CT -> ctService
-            Platform.DG -> dgService
             Platform.Fgg -> fggService
 
             // sport
@@ -143,7 +134,7 @@ class GameApi(
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         return when (platform) {
-            Platform.CT, Platform.DG, Platform.Evolution, Platform.Lbc, Platform.Sbo -> {
+            Platform.Evolution, Platform.Lbc, Platform.Sbo -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform, language = language)
                 this.getPlatformApi(platform).start(startReq)
             }
@@ -196,8 +187,6 @@ class GameApi(
         val query = BetOrderValue.Query(clientId = clientId, memberId = memberId, startTime = startDate.atStartOfDay(), endTime = endDate.atStartOfDay())
 
         return when (platform) {
-            Platform.CT -> ctBetOrderDao.query(query)
-            Platform.DG -> dgBetOrderDao.query(query)
             Platform.Joker -> jokerBetOrderDao.query(query)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
