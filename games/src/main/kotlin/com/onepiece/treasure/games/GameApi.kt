@@ -15,8 +15,8 @@ import com.onepiece.treasure.core.order.JokerBetOrderDao
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.live.EvolutionService
+import com.onepiece.treasure.games.live.GoldDeluxeService
 import com.onepiece.treasure.games.live.fgg.FggService
-import com.onepiece.treasure.games.live.golddeluxe.GoldDeluxeService
 import com.onepiece.treasure.games.live.sexy.SexyService
 import com.onepiece.treasure.games.slot.joker.JokerService
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Service
@@ -132,7 +132,7 @@ class GameApi(
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         return when (platform) {
-            Platform.Evolution, Platform.Lbc, Platform.Sbo -> {
+            Platform.Evolution, Platform.Lbc, Platform.Sbo, Platform.GoldDeluxe -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform, language = language)
                 this.getPlatformApi(platform).start(startReq)
             }
