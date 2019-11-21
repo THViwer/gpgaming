@@ -25,7 +25,7 @@ class DemoController(
         val endTime = LocalDateTime.now()
 
         return when (platform) {
-            Platform.Kiss918, Platform.Pussy888, Platform.Sbo, Platform.Mega -> {
+            Platform.Kiss918, Platform.Pussy888, Platform.Sbo, Platform.Mega, Platform.Bcs -> {
                 val platformMember = platformMemberService.find(memberId = 1, platform = platform) ?: return emptyList<Any>()
                 gameApi.queryBetOrder(clientId = 1, platformUsername = platformMember.platformUsername, platform = platform, startTime = startTime, endTime = endTime)
             }

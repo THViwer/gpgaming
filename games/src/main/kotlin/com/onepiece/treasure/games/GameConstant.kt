@@ -62,8 +62,8 @@ object GameConstant  {
     const val FGG_API_URL = "$proxy/fgg/Game"
 
     // bcs
-    const val BCS_API_URL = "http://TransferAPI.ballcrown.com"  // 测试地址
-//    const val BCS_API_URL = ""
+//    const val BCS_API_URL = "https://transferapi.ballcrown.com"  // 测试地址
+    const val BCS_API_URL = "${proxy}/bcs"
 
 
 

@@ -160,8 +160,8 @@ class GoldDeluxeService: PlatformApi() {
         val token = startReq.token as DefaultClientToken
 
         val loginTokenId = StringUtil.generateNonce(10)
-//        val signParam = "${token.appId}user1234${startReq.username}${currencyCode}"
-//        val key = String(DigestUtils.getSha256Digest().digest(signParam.toByteArray()))
+        val signParam = "${token.appId}user1234${startReq.username}${currencyCode}"
+        val key = DigestUtils.sha256Hex(signParam)
 
         val lang = when (startReq.language) {
             Language.CN -> "zh-cn"
@@ -177,7 +177,7 @@ class GoldDeluxeService: PlatformApi() {
                 "lang=${lang}",
                 "playerid=${startReq.username}",
                 "LoginTokenID=$loginTokenId",
-//                "Key=$key",
+                "Key=$key",
                 "view=MB",
                 "mobile=0",
                 "PlayerGroup=default",
@@ -187,9 +187,7 @@ class GoldDeluxeService: PlatformApi() {
 
 
         val url = "${GameConstant.EVOLUTION_API_URL}/main.php?$urlParam"
-
         val tmp = okHttpUtil.doGet(url, String::class.java)
-
         return "${GameConstant.EVOLUTION_API_URL}?$urlParam"
     }
 }

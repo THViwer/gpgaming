@@ -10,8 +10,6 @@ import com.onepiece.treasure.beans.model.token.MegaClientToken
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.PlatformUsernameUtil
-import com.onepiece.treasure.core.order.BetOrderValue
-import com.onepiece.treasure.core.order.JokerBetOrderDao
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.live.EvolutionService
@@ -22,14 +20,13 @@ import com.onepiece.treasure.games.slot.joker.JokerService
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Service
 import com.onepiece.treasure.games.slot.mega.MegaService
 import com.onepiece.treasure.games.slot.pussy888.Pussy888Service
-import com.onepiece.treasure.games.sport.bcs.BcsService
+import com.onepiece.treasure.games.sport.BcsService
 import com.onepiece.treasure.games.sport.lbc.LbcService
 import com.onepiece.treasure.games.sport.sbo.SboService
 import com.onepiece.treasure.utils.RedisService
 import com.onepiece.treasure.utils.StringUtil
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Component
@@ -131,7 +128,12 @@ class GameApi(
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         return when (platform) {
-            Platform.Evolution, Platform.Lbc, Platform.Sbo, Platform.GoldDeluxe, Platform.Fgg -> {
+            Platform.Evolution,
+            Platform.Lbc,
+            Platform.Sbo,
+            Platform.GoldDeluxe,
+            Platform.Fgg,
+            Platform.Bcs -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform, language = language)
                 this.getPlatformApi(platform).start(startReq)
             }
@@ -196,7 +198,7 @@ class GameApi(
         val clientToken = getClientToken(clientId = clientId, platform = platform)
 
         return when(platform) {
-            Platform.Kiss918, Platform.Mega, Platform.Pussy888, Platform.SexyGaming-> {
+            Platform.Kiss918, Platform.Mega, Platform.Pussy888, Platform.SexyGaming, Platform.Bcs -> {
                 val betOrderReq = GameValue.BetOrderReq(token = clientToken, startTime = startTime, endTime = endTime, username = platformUsername)
                 getPlatformApi(platform).queryBetOrder(betOrderReq)
             }

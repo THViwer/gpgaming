@@ -8,6 +8,7 @@ import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.live.EvolutionService
 import com.onepiece.treasure.games.live.FggService
 import com.onepiece.treasure.games.slot.joker.JokerService
+import com.onepiece.treasure.games.sport.BcsService
 import com.onepiece.treasure.games.sport.lbc.LbcService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Async
@@ -23,6 +24,7 @@ class PullBetTask(
         private val evolutionService: EvolutionService,
         private val lbcService: LbcService,
         private val fggService: FggService,
+        private val bcsService: BcsService,
         private val betOrderService: BetOrderService
 ) {
 
@@ -78,9 +80,12 @@ class PullBetTask(
 //                    Platform.Lbc -> lbcService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
 
 
-                    // 测试
+                    // 测试通过
 //                    Platform.Evolution -> evolutionService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
-                    Platform.Fgg -> fggService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+//                    Platform.Fgg -> fggService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+
+                    // 测试
+                    Platform.Bcs -> bcsService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
                     else -> {
                         emptyList()
                     }

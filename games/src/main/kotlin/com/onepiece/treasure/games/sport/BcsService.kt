@@ -1,4 +1,4 @@
-package com.onepiece.treasure.games.sport.bcs
+package com.onepiece.treasure.games.sport
 
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
@@ -11,10 +11,10 @@ import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
 import com.onepiece.treasure.games.bet.DEFAULT_DATETIMEFORMATTER
+import com.onepiece.treasure.games.bet.MapUtil
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
-import java.time.LocalDateTime
 
 /**
  * 货币：
@@ -47,6 +47,14 @@ class BcsService : PlatformApi() {
         return "${GameConstant.BCS_API_URL}${path}?$urlParam"
     }
 
+    fun startDoGetXml(url: String): MapUtil {
+        val result = okHttpUtil.doGetXml(url = url, clz = BcsValue.Result::class.java)
+        check(result.errorCode == "000000") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+
+        return MapUtil.instance(result.data)
+
+    }
+
     override fun register(registerReq: GameValue.RegisterReq): String {
 
         val token = registerReq.token as DefaultClientToken
@@ -54,16 +62,13 @@ class BcsService : PlatformApi() {
                 "APIPassword" to token.key,
                 "MemberAccount" to registerReq.username,
                 "NickName" to registerReq.name,
-                "Currency" to "MRY"
+                "Currency" to "MYR"
         )
 
 
-        val url = this.getRequestUrl("/ThirdApi.asmx/ThirdApi.asmx/Register", param)
+        val url = this.getRequestUrl("/ThirdApi.asmx/Register", param)
 
-        val result = okHttpUtil.doGetXml(url = url, clz = BcsResult::class.java)
-        //TODO check
-
-
+        this.startDoGetXml(url = url)
         return registerReq.username
     }
 
@@ -75,12 +80,9 @@ class BcsService : PlatformApi() {
                 "MemberAccount" to balanceReq.username
         )
 
-        val url = this.getRequestUrl(path = "/ThirdApi.asmx/ThirdApi.asmx/GetBalance", data = param)
-        val result = okHttpUtil.doGetXml(url = url, clz = BcsResult::class.java)
-        //TODO check
-
-        val map = result.data["result"] as Map<String, Any>
-        return map["Balance"]?.toString()?.toBigDecimal()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+        val url = this.getRequestUrl(path = "/ThirdApi.asmx/GetBalance", data = param)
+        val mapUtil = this.startDoGetXml(url = url)
+        return mapUtil.asMap("result").asBigDecimal("Balance")
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
@@ -88,9 +90,8 @@ class BcsService : PlatformApi() {
         val token = transferReq.token as DefaultClientToken
         val transferType = if (transferReq.amount.toDouble() > 0) 0 else 1
 
-        // MD5(APIPassword+MemberAccount+Amount)取
-
-        val sign = DigestUtils.md5Hex("${token.key}${transferReq.username}${transferReq.amount.setScale(2,4)}")
+        // :MD5(APIPassword+MemberAccount+Amount)
+        val sign = DigestUtils.md5Hex("${token.key}${transferReq.username}${transferReq.amount.abs().setScale(4,2)}")
         val signLast6 = sign.substring(sign.length - 6, sign.length)
 
         val param = mapOf(
@@ -102,13 +103,9 @@ class BcsService : PlatformApi() {
                 "Key" to signLast6
         )
 
-        val url = this.getRequestUrl("/ThirdApi.asmx/ThirdApi.asmx/Transfer", param)
-
-        val result = okHttpUtil.doGet(url = url, clz = BcsResult::class.java)
-        //TODO check
-
-        val map = result.data["result"] as Map<String, Any>
-        return map["SerialNumber"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+        val url = this.getRequestUrl("/ThirdApi.asmx/Transfer", param)
+        val mapUtil = this.startDoGetXml(url)
+        return mapUtil.asMap("result").asString("SerialNumber")
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
@@ -120,16 +117,13 @@ class BcsService : PlatformApi() {
                 "SerialNumber" to checkTransferReq.orderId
         )
 
-        val url = this.getRequestUrl("/ThirdApi.asmx/ThirdApi.asmx/CheckTransfer", param)
-
-        val result = okHttpUtil.doGetXml(url = url, clz = BcsResult::class.java)
-        //TODO check
-
-        val state = result.data["result"]
-
-
-        error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-
+        val url = this.getRequestUrl("/ThirdApi.asmx/CheckTransfer", param)
+        return try {
+            this.startDoGetXml(url)
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override fun start(startReq: GameValue.StartReq): String {
@@ -153,16 +147,16 @@ class BcsService : PlatformApi() {
                 "APIPassword" to token.key,
                 "MemberAccount" to startReq.username,
                 "WebType" to webType,
-                "Language" to lang
+                "Language" to lang,
+                "LoginIP" to "127.0.0.1",
+                "GameID" to "1", // 1:体育 2:Keno
+                "PageStyle" to "SP3" // SP1:TBS SP2:SBO SP3:LBC SP4:HG
 
         )
+        val url = this.getRequestUrl("/ThirdApi.asmx/Login", param)
+        val mapUtil = this.startDoGetXml(url)
 
-        val url = this.getRequestUrl("/ThirdApi.asmx/ThirdApi.asmx/Login", param)
-
-        val result = okHttpUtil.doGetXml(url = url, clz = BcsResult::class.java)
-        //TODO check
-
-        return result.data["result"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+        return mapUtil.asString("result")
     }
 
     override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
@@ -176,11 +170,12 @@ class BcsService : PlatformApi() {
                 "ReportDate" to "${betOrderReq.startTime.toLocalDate()}"
         )
 
-        val url = getRequestUrl(path = "/GetBetSheetByReport", data = param)
-        val result = okHttpUtil.doGetXml(url = url, clz = BcsResult::class.java)
+        val url = getRequestUrl(path = "/ThirdApi.asmx/GetBetSheetByReport", data = param)
 
-        val data = (result.data["result"] as Map<*, *>)["betlist"] as List<*>
-        return objectMapper.writeValueAsString(data)
+        val betResult = okHttpUtil.doGetXml(url = url, clz = BcsValue.BetResult::class.java)
+        check(betResult.errorCode == "000000") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+
+        return betResult.result.betlist
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
@@ -191,34 +186,31 @@ class BcsService : PlatformApi() {
 
             val param = mapOf(
                     "APIPassword" to token.key,
-                    "AgentID" to token.appId,
                     "SortNo" to nowId,
                     "Rows" to 1000
             )
 
-            val url = getRequestUrl(path = "/GetBetSheetByAgent", data = param)
+            val url = getRequestUrl(path = "/ThirdApi.asmx/GetBetSheetBySort", data = param)
+            val result = okHttpUtil.doGetXml(url = url, clz = BcsValue.PullBetResult::class.java)
 
-            val result = okHttpUtil.doGetXml(url = url, clz = BcsResult::class.java)
-
-            val list = result.data["result"] as List<Map<String, Any>>
-
-            if (list.isEmpty()) {
+            if (result.result.isEmpty()) {
                 nowId to emptyList()
             } else {
                 var nextId = ""
-                val orders = list.map { bet ->
-                    val orderId = bet["BetID"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-                    val username = bet["Account"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+                val orders = result.result.map { bet1 ->
+                    val bet = bet1.getMapUtil()
+                    val orderId = bet.asString("BetID")
+                    val username = bet.asString("Account")
                     val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Bcs, platformUsername = username)
-                    val betAmount = bet["BetAmount"]?.toString()?.toBigDecimal()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-                    val winAmount = bet["Win"]?.toString()?.toBigDecimal()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-                    val betTime = bet["BetDate"]?.toString()?.let { LocalDateTime.parse(it, DEFAULT_DATETIMEFORMATTER) }?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-                    val settleTime = bet["UpdateTime"]?.toString()?.let { LocalDateTime.parse(it, DEFAULT_DATETIMEFORMATTER) }?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+                    val betAmount = bet.asBigDecimal("BetAmount")
+                    val winAmount = bet.asBigDecimal("Win")
+                    val betTime = bet.asLocalDateTime("BetDate", DEFAULT_DATETIMEFORMATTER)
+                    val settleTime = bet.asLocalDateTime("UpdateTime", DEFAULT_DATETIMEFORMATTER)
 
-                    val sortNo = bet["SortNo"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+                    val sortNo = bet.asString("SortNo")
                     if (sortNo > nextId) nextId = sortNo
 
-                    val originData = objectMapper.writeValueAsString(bet)
+                    val originData = objectMapper.writeValueAsString(bet.data)
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Bcs, orderId = orderId, betAmount = betAmount,
                             winAmount = winAmount, betTime = betTime, settleTime = settleTime, originData = originData)
                 }

@@ -1,7 +1,7 @@
 package com.onepiece.treasure.core
 
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.utils.StringUtil
 
 object PlatformUsernameUtil  {
 
@@ -14,20 +14,26 @@ object PlatformUsernameUtil  {
 //            }
             Platform.Kiss918, Platform.Pussy888, Platform.Mega  -> ""
             Platform.GoldDeluxe -> "A${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
-            else -> "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
+            else -> "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}${StringUtil.generateNonce(2)}"
         }
     }
 
     fun prefixPlatformUsername(platform: Platform, platformUsername: String): Pair<Int, Int> {
 
         return when (platform) {
-            Platform.Joker, Platform.Evolution, Platform.Lbc, Platform.Fgg -> {
-                val clientId = platformUsername.substring(0, 2).toInt()
-                val memberId = platformUsername.substring(2, platformUsername.length).toInt()
+
+            Platform.GoldDeluxe -> {
+                val clientId = platformUsername.substring(1, 3).toInt()
+                val memberId = platformUsername.substring(3, platformUsername.length-2).toInt()
 
                 clientId to memberId
             }
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
+            else -> {
+                val clientId = platformUsername.substring(0, 2).toInt()
+                val memberId = platformUsername.substring(2, platformUsername.length-2).toInt()
+
+                clientId to memberId
+            }
         }
 
     }

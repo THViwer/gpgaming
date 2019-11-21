@@ -34,6 +34,6 @@ object MapResultUtil {
     }
 
     fun asList(map: Map<String, Any>, key: String): List<Map<String, Any>> {
-        return map[key]?.let { it as List<Map<String, Any>> }?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+        return map[key]?.let { it as List<Map<String, Any>> }?: emptyList()
     }
 }
