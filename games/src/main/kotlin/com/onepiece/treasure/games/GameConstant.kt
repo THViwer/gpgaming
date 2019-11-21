@@ -65,6 +65,10 @@ object GameConstant  {
 //    const val BCS_API_URL = "https://transferapi.ballcrown.com"  // 测试地址
     const val BCS_API_URL = "${proxy}/bcs"
 
+    //allbet
+//    const val ALLBET_API_URL = "https://api3.apidemo.net:8443/"
+    const val ALLBET_API_URL = "${proxy}/allbet"
+
 
 
 }

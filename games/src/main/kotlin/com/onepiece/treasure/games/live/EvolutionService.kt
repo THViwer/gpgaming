@@ -34,11 +34,11 @@ class EvolutionService : PlatformApi() {
     }
 
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): Pair<String, String> {
         val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, startPlatform = LaunchMethod.Web, language = Language.EN)
         this.start(startReq)
 
-        return registerReq.username
+        return registerReq.username to "-"
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

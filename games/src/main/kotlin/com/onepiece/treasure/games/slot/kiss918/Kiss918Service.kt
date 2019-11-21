@@ -30,7 +30,7 @@ class Kiss918Service : PlatformApi() {
     private val log = LoggerFactory.getLogger(Kiss918Service::class.java)
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): Pair<String, String> {
         val agentName = (registerReq.token as Kiss918ClientToken).appId
 
         val url = Kiss918Build.instance(path = "/ashx/account/account.ashx")
@@ -61,7 +61,7 @@ class Kiss918Service : PlatformApi() {
         val addPlayerResult = okHttpUtil.doGet(addPlayerUrl, String::class.java)
         log.info("add player result : $addPlayerResult")
 
-        return generatorUsername
+        return generatorUsername to registerReq.password
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

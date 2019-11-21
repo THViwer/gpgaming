@@ -12,6 +12,7 @@ import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
+import com.onepiece.treasure.games.live.AllBetService
 import com.onepiece.treasure.games.live.EvolutionService
 import com.onepiece.treasure.games.live.GoldDeluxeService
 import com.onepiece.treasure.games.live.FggService
@@ -47,6 +48,7 @@ class GameApi(
         private val evolutionService: EvolutionService,
         private val sexyService: SexyService,
         private val fggService: FggService,
+        private val allBetService: AllBetService,
 
         // sport
         private val sboService: SboService,
@@ -67,14 +69,17 @@ class GameApi(
 
             // live game
             Platform.Fgg -> fggService
+            Platform.Evolution -> evolutionService
 
             // sport
             Platform.Lbc -> lbcService
             Platform.Sbo -> sboService
             Platform.Bcs -> bcsService
 
+            // 测试中
+            Platform.AllBet -> allBetService
+
             // 未完成测试
-            Platform.Evolution -> evolutionService
             Platform.GoldDeluxe -> goldDeluxeService
             Platform.SexyGaming -> sexyService
 
@@ -97,9 +102,9 @@ class GameApi(
 
         // 注册账号
         val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = generatorUsername)
-        val username = getPlatformApi(platform).register(registerReq)
+        val (platformUsername, platformPassword) = getPlatformApi(platform).register(registerReq)
 
-        platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = username, platformPassword = generatorPassword)
+        platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = platformPassword)
     }
 
     /**

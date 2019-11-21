@@ -55,7 +55,7 @@ class BcsService : PlatformApi() {
 
     }
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): Pair<String, String> {
 
         val token = registerReq.token as DefaultClientToken
         val param = mapOf(
@@ -69,7 +69,7 @@ class BcsService : PlatformApi() {
         val url = this.getRequestUrl("/ThirdApi.asmx/Register", param)
 
         this.startDoGetXml(url = url)
-        return registerReq.username
+        return registerReq.username to "-"
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

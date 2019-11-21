@@ -46,7 +46,7 @@ class GoldDeluxeService: PlatformApi() {
     }
 
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): Pair<String, String> {
 
         val token = registerReq.token as DefaultClientToken
 
@@ -68,7 +68,7 @@ class GoldDeluxeService: PlatformApi() {
         """.trimIndent()
 
         this.startDoPostXml(data = data)
-        return registerReq.username
+        return registerReq.username to "-"
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

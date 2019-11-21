@@ -1,6 +1,5 @@
 package com.onepiece.treasure.games.sport.lbc
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
@@ -11,8 +10,6 @@ import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
-import com.onepiece.treasure.games.http.OkHttpUtil
-import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
@@ -24,7 +21,7 @@ class LbcService : PlatformApi() {
         check(code == 0) { OnePieceExceptionCode.PLATFORM_METHOD_FAIL }
     }
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): Pair<String, String> {
         val url = LbcBuild.instance("/api/CreateMember")
                 .set("OpCode", (registerReq.token as DefaultClientToken).appId)
                 .set("PlayerName", registerReq.username)
@@ -37,7 +34,7 @@ class LbcService : PlatformApi() {
 
         val result = okHttpUtil.doGet(url = url, clz = LbcValue.RegisterResult::class.java)
         this.checkCode(result.errorCode)
-        return registerReq.username
+        return registerReq.username to "-"
 
     }
 

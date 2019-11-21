@@ -15,7 +15,7 @@ class MegaService: PlatformApi() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): Pair<String, String> {
 
         val (url, param) = MegaBuild.instance()
                 .set("nickname", registerReq.name)
@@ -23,7 +23,7 @@ class MegaService: PlatformApi() {
                 .build(registerReq.token, "open.mega.user.create")
 
         val result = okHttpUtil.doPostJson(url = url, data = param, clz = RegisterResult::class.java)
-        return result.result!!.loginId
+        return result.result!!.loginId to registerReq.password
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

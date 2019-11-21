@@ -17,7 +17,7 @@ class Pussy888Service: PlatformApi() {
     private val log = LoggerFactory.getLogger(Pussy888Service::class.java)
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): Pair<String, String> {
         val token = registerReq.token as Pussy888ClientToken
 
         val agentName = token.appId
@@ -50,7 +50,7 @@ class Pussy888Service: PlatformApi() {
         val addPlayerResult = okHttpUtil.doGet(addPlayerUrl, String::class.java)
         log.info("add player result : $addPlayerResult")
 
-        return generatorUsername
+        return generatorUsername to registerReq.password
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

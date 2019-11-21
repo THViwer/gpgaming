@@ -32,7 +32,7 @@ abstract class PlatformApi {
     /**
      * 注册
      */
-    abstract fun register(registerReq: GameValue.RegisterReq): String
+    abstract fun register(registerReq: GameValue.RegisterReq): Pair<String, String>
 
     /**
      * 查询余额

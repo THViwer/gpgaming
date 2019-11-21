@@ -28,7 +28,7 @@ class JokerService : PlatformApi() {
     private val log = LoggerFactory.getLogger(JokerService::class.java)
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): Pair<String, String> {
 
         val username = registerReq.username
         val token = registerReq.token as DefaultClientToken
@@ -49,7 +49,7 @@ class JokerService : PlatformApi() {
         okHttpUtil.doPostForm(url2, formBody2)
 
 
-        return registerReq.username
+        return registerReq.username to registerReq.password
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
