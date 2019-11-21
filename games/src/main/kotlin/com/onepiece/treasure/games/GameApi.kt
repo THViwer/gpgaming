@@ -14,8 +14,8 @@ import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.live.AllBetService
 import com.onepiece.treasure.games.live.EvolutionService
-import com.onepiece.treasure.games.live.GoldDeluxeService
 import com.onepiece.treasure.games.live.FggService
+import com.onepiece.treasure.games.live.GoldDeluxeService
 import com.onepiece.treasure.games.live.sexy.SexyService
 import com.onepiece.treasure.games.slot.joker.JokerService
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Service
@@ -128,7 +128,7 @@ class GameApi(
     /**
      * 开始游戏(平台)
      */
-    fun start(clientId: Int, platformUsername: String, platform: Platform, startPlatform: LaunchMethod = LaunchMethod.Web, language: Language): String {
+    fun start(clientId: Int, platformUsername: String, platformPassword: String, platform: Platform, startPlatform: LaunchMethod = LaunchMethod.Web, language: Language): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
@@ -138,8 +138,9 @@ class GameApi(
             Platform.Sbo,
             Platform.GoldDeluxe,
             Platform.Fgg,
+            Platform.AllBet,
             Platform.Bcs -> {
-                val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform, language = language)
+                val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform, language = language, password = platformPassword)
                 this.getPlatformApi(platform).start(startReq)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
@@ -165,10 +166,10 @@ class GameApi(
     /**
      * 查询会员余额
      */
-    fun balance(clientId: Int, platformUsername: String, platform: Platform): BigDecimal {
+    fun balance(clientId: Int, platformUsername: String, platformPassword: String, platform: Platform): BigDecimal {
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
-        val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername)
+        val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername, password = platformPassword)
         return this.getPlatformApi(platform).balance(balanceReq).setScale(2, 2)
     }
 
@@ -203,7 +204,7 @@ class GameApi(
         val clientToken = getClientToken(clientId = clientId, platform = platform)
 
         return when(platform) {
-            Platform.Kiss918, Platform.Mega, Platform.Pussy888, Platform.SexyGaming, Platform.Bcs -> {
+            Platform.Kiss918, Platform.Mega, Platform.Pussy888, Platform.SexyGaming, Platform.Bcs, Platform.AllBet -> {
                 val betOrderReq = GameValue.BetOrderReq(token = clientToken, startTime = startTime, endTime = endTime, username = platformUsername)
                 getPlatformApi(platform).queryBetOrder(betOrderReq)
             }

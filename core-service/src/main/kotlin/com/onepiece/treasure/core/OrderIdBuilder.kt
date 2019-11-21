@@ -17,7 +17,8 @@ class OrderIdBuilder(
 ) {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
-    private fun getCurrentTime() = LocalDateTime.now().format(dateTimeFormat)
+    private val dateTimeForma2 = DateTimeFormatter.ofPattern("HHmmss")
+    private fun getCurrentTime(format: DateTimeFormatter = dateTimeFormat) = LocalDateTime.now().format(format)
 
     fun generatorDepositOrderId(): String {
         return "BD${getCurrentTime()}${StringUtil.generateNumNonce(5)}"
@@ -33,8 +34,8 @@ class OrderIdBuilder(
             Platform.Sbo -> {
                 val clientToken = platformBindService.find(clientId = clientId, platform = platform).clientToken as DefaultClientToken
                 "${clientToken.appId}-${UUID.randomUUID().toString().replace("-", "").substring(0, 6)}"
-
             }
+            Platform.AllBet -> "T${platform.name.substring(0, 1)}${getCurrentTime(dateTimeForma2)}${StringUtil.generateNumNonce(5)}"
             else -> "T${platform.name.substring(0, 1)}${getCurrentTime()}${StringUtil.generateNumNonce(5)}"
         }
 

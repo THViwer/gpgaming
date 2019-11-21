@@ -91,11 +91,11 @@ class ApiController(
             @RequestHeader("platform") platform: Platform,
             @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod
     ): StartGameResp {
+        val member = current()
         val platformMember = getPlatformMember(platform)
 
-        val member = current()
         val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
-                startPlatform = startPlatform, language = language)
+                startPlatform = startPlatform, language = language, platformPassword = platformMember.platformPassword)
         return StartGameResp(path = gameUrl)
     }
 

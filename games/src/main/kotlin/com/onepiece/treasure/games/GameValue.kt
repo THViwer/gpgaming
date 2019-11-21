@@ -24,6 +24,8 @@ sealed class GameValue {
 
             val username: String,
 
+            val password: String,
+
             val language: Language,
 
             val startPlatform: LaunchMethod
@@ -46,7 +48,9 @@ sealed class GameValue {
     data class BalanceReq(
             val token: ClientToken,
 
-            val username: String
+            val username: String,
+
+            val password: String
     )
 
     data class TransferReq(
@@ -65,7 +69,9 @@ sealed class GameValue {
 
             val username: String,
 
-            val orderId: String
+            val orderId: String,
+
+            val platformOrderId: String
     )
 
     data class BetOrderReq(

@@ -227,7 +227,9 @@ open class CashApiController(
             it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble()
         }
 
-        val platformBalance = gameApi.balance(clientId = member.clientId, platform = platform, platformUsername = getPlatformMember(platform).platformUsername)
+        val platformMemberVo = getPlatformMember(platform)
+        val platformBalance = gameApi.balance(clientId = member.clientId, platform = platform, platformUsername = platformMemberVo.platformUsername,
+                platformPassword =  platformMemberVo.platformPassword)
         val promotionIntroduction = promotion?.getPromotionIntroduction(amount = amount, language = language, platformBalance = platformBalance)
         return CheckPromotionVo(promotion = promotion != null, promotionId = promotion?.id, promotionIntroduction = promotionIntroduction)
     }
@@ -245,7 +247,7 @@ open class CashApiController(
         val platformMemberVo = this.getPlatformMember(platform)
         val platformMember = platformMemberService.get(platformMemberVo.id)
 
-        val platformBalance  = gameApi.balance(clientId = clientId, platformUsername = platformMemberVo.platformUsername, platform = platform)
+        val platformBalance  = gameApi.balance(clientId = clientId, platformUsername = platformMemberVo.platformUsername, platform = platform, platformPassword = platformMember.password)
 
         when (cashTransferReq.from) {
             // 中心钱包 -> 平台钱包
@@ -441,7 +443,8 @@ open class CashApiController(
                 val platformMemberVo = getPlatformMember(platform)
                 val platformMember = platformMemberService.get(platformMemberVo.id)
 
-                val platformBalance = gameApi.balance(clientId = member.clientId, platformUsername = platformMemberVo.platformUsername, platform = platform)
+                val platformBalance = gameApi.balance(clientId = member.clientId, platformUsername = platformMemberVo.platformUsername, platform = platform,
+                        platformPassword = platformMember.password)
                 val (transfer, tips) = this.checkCanTransferOutAndTips(platformMember = platformMember, platformBalance = platformBalance, language = language)
 
 
@@ -483,7 +486,8 @@ open class CashApiController(
             when (platformMember == null) {
                 true -> BalanceVo(platform = it.platform, balance = BigDecimal.ZERO, transfer = true, tips = null)
                 else -> {
-                    val platformBalance = gameApi.balance(clientId = clientId, platformUsername = platformMember.username, platform = it.platform)
+                    val platformBalance = gameApi.balance(clientId = clientId, platformUsername = platformMember.username, platform = it.platform,
+                            platformPassword = platformMember.password)
 
 //                    val transferIn = platformMember.joinPromotionId?.let {
 //                        val promotion = promotionService.get(it)

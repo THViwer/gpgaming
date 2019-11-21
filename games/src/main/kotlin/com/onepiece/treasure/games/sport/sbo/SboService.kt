@@ -57,8 +57,7 @@ class SboService : PlatformApi() {
             }
             else -> {
                 // 检查取款金额是否足够
-
-                val balanceReq = GameValue.BalanceReq(token = transferReq.token, username = transferReq.username)
+                val balanceReq = GameValue.BalanceReq(token = transferReq.token, username = transferReq.username, password = "")
                 val balance = this.balance(balanceReq)
                 check(balance.toDouble() >= transferReq.amount.negate().toDouble()) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
 

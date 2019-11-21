@@ -7,6 +7,7 @@ import com.onepiece.treasure.core.dao.BetOrderDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import org.springframework.jdbc.core.BatchPreparedStatementSetter
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Timestamp
@@ -66,7 +67,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 ps.setString(++x, order.platform.name)
                 ps.setString(++x, order.orderId)
                 ps.setBigDecimal(++x, order.betAmount)
-                ps.setBigDecimal(++x, order.winAmount)
+                ps.setBigDecimal(++x, if (order.winAmount.toDouble() > 0) order.winAmount else BigDecimal.ZERO)
                 ps.setBoolean(++x, false)
                 ps.setString(++x, order.originData)
                 ps.setTimestamp(++x, Timestamp.valueOf(order.betTime))

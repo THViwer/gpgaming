@@ -35,7 +35,7 @@ class EvolutionService : PlatformApi() {
 
 
     override fun register(registerReq: GameValue.RegisterReq): String {
-        val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, startPlatform = LaunchMethod.Web, language = Language.EN)
+        val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, startPlatform = LaunchMethod.Web, language = Language.EN, password = registerReq.password)
         this.start(startReq)
 
         return registerReq.username

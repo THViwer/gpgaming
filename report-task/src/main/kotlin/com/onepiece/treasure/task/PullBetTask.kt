@@ -5,6 +5,7 @@ import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.GameValue
+import com.onepiece.treasure.games.live.AllBetService
 import com.onepiece.treasure.games.live.EvolutionService
 import com.onepiece.treasure.games.live.FggService
 import com.onepiece.treasure.games.slot.joker.JokerService
@@ -22,6 +23,7 @@ class PullBetTask(
         private val platformBindService: PlatformBindService,
         private val jokerService: JokerService,
         private val evolutionService: EvolutionService,
+        private val allBetService: AllBetService,
         private val lbcService: LbcService,
         private val fggService: FggService,
         private val bcsService: BcsService,
@@ -45,6 +47,21 @@ class PullBetTask(
         }
     }
 
+    // * 调用次数限制: 25次/10分钟 (以每个propertyId计算)
+    @Scheduled(cron="0/10 * *  * * ? ")
+    fun allBetTask() {
+        val platformBins = platformBindService.find(Platform.AllBet)
+
+        val startTime = LocalDateTime.now().minusMinutes(30)
+        val endTime = LocalDateTime.now()
+        platformBins.forEach {
+            val defaultPullBetOrderReq = GameValue.PullBetOrderReq(clientId = it.clientId, token = it.clientToken, startTime = startTime, endTime = endTime)
+            val orders = allBetService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+            asyncBatch(orders)
+        }
+    }
+
+
 
     fun asyncBatch(orders: List<BetOrderValue.BetOrderCo>) {
         if (orders.isEmpty()) return
@@ -53,7 +70,7 @@ class PullBetTask(
     }
 
 
-    @Scheduled(cron="0/10 * *  * * ? ")
+//    @Scheduled(cron="0/10 * *  * * ? ")
     fun start() {
 
         if (!running.getAndSet(true)) return
