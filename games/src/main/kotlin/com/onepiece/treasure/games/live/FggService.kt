@@ -39,11 +39,11 @@ import java.time.ZoneId
 @Service
 class FggService: PlatformApi() {
 
-    override fun register(registerReq: GameValue.RegisterReq): Pair<String, String> {
+    override fun register(registerReq: GameValue.RegisterReq): String {
         val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, startPlatform = LaunchMethod.Web, language = Language.EN)
         this.start(startReq)
 
-        return registerReq.username to "_"
+        return registerReq.username
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

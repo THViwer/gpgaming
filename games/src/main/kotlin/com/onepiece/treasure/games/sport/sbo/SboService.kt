@@ -21,7 +21,7 @@ class SboService : PlatformApi() {
     private fun checkCode(code: Int) = check(code == 0) { OnePieceExceptionCode.PLATFORM_METHOD_FAIL }
 
 
-    override fun register(registerReq: GameValue.RegisterReq): Pair<String, String> {
+    override fun register(registerReq: GameValue.RegisterReq): String {
         val platformUsername = "${(registerReq.token as DefaultClientToken).appId}${registerReq.username}"
 
         val param = "registerplayer/${registerReq.token.appId}/player/${platformUsername}/agent/${registerReq.token.appId}/lang/${language}"
@@ -30,7 +30,7 @@ class SboService : PlatformApi() {
         val result = okHttpUtil.doGet(url, SboValue.SboDefaultResult::class.java)
         this.checkCode(result.error.id)
 
-        return platformUsername to "-"
+        return platformUsername
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

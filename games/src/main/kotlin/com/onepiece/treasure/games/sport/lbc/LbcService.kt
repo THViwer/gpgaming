@@ -21,7 +21,7 @@ class LbcService : PlatformApi() {
         check(code == 0) { OnePieceExceptionCode.PLATFORM_METHOD_FAIL }
     }
 
-    override fun register(registerReq: GameValue.RegisterReq): Pair<String, String> {
+    override fun register(registerReq: GameValue.RegisterReq): String {
         val url = LbcBuild.instance("/api/CreateMember")
                 .set("OpCode", (registerReq.token as DefaultClientToken).appId)
                 .set("PlayerName", registerReq.username)
@@ -34,7 +34,7 @@ class LbcService : PlatformApi() {
 
         val result = okHttpUtil.doGet(url = url, clz = LbcValue.RegisterResult::class.java)
         this.checkCode(result.errorCode)
-        return registerReq.username to "-"
+        return registerReq.username
 
     }
 

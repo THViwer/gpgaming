@@ -1,6 +1,5 @@
 package com.onepiece.treasure.games.slot.joker
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
@@ -10,8 +9,6 @@ import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformApi
-import com.onepiece.treasure.games.http.OkHttpUtil
-import com.onepiece.treasure.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -28,7 +25,7 @@ class JokerService : PlatformApi() {
     private val log = LoggerFactory.getLogger(JokerService::class.java)
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
-    override fun register(registerReq: GameValue.RegisterReq): Pair<String, String> {
+    override fun register(registerReq: GameValue.RegisterReq): String {
 
         val username = registerReq.username
         val token = registerReq.token as DefaultClientToken
@@ -49,7 +46,7 @@ class JokerService : PlatformApi() {
         okHttpUtil.doPostForm(url2, formBody2)
 
 
-        return registerReq.username to registerReq.password
+        return registerReq.username
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

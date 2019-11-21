@@ -102,9 +102,9 @@ class GameApi(
 
         // 注册账号
         val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = generatorUsername)
-        val (platformUsername, platformPassword) = getPlatformApi(platform).register(registerReq)
+        val platformUsername = getPlatformApi(platform).register(registerReq)
 
-        platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = platformPassword)
+        platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
     }
 
     /**
