@@ -48,11 +48,11 @@ class PullBetTask(
     }
 
     // * 调用次数限制: 25次/10分钟 (以每个propertyId计算)
-    @Scheduled(cron="0/10 * *  * * ? ")
+//    @Scheduled(cron="0/50 * *  * * ? ")
     fun allBetTask() {
         val platformBins = platformBindService.find(Platform.AllBet)
 
-        val startTime = LocalDateTime.now().minusMinutes(30)
+        val startTime = LocalDateTime.now().minusMinutes(20)
         val endTime = LocalDateTime.now()
         platformBins.forEach {
             val defaultPullBetOrderReq = GameValue.PullBetOrderReq(clientId = it.clientId, token = it.clientToken, startTime = startTime, endTime = endTime)

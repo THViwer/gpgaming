@@ -189,28 +189,29 @@ class AllBetService : PlatformApi() {
         val allBetClientToken = pullBetOrderReq.token as AllBetClientToken
         val data = listOf(
                 "client=${allBetClientToken.agentName}",
-                "egameType=af",
+//                "egameType=af",
                 "startTime=${pullBetOrderReq.startTime.format(dateTimeFormat)}",
                 "endTime=${pullBetOrderReq.endTime.format(dateTimeFormat)}",
-                "pageIndex=1",
-                "pageSize=1000",
+//                "pageIndex=1",
+//                "pageSize=1000",
                 "random=${UUID.randomUUID()}"
         )
         val urlParam = data.joinToString(separator = "&")
-        val mapUtil = this.startDoGet(method = "/egame_betlog_histories", urlParam = urlParam, allBetClientToken = allBetClientToken)
+        val mapUtil = this.startDoGet(method = "/betlog_pieceof_histories_in30days", urlParam = urlParam, allBetClientToken = allBetClientToken)
 
-        val page = mapUtil.asMap("page").asList("datas")
+        val page = mapUtil.asList("histories")
         return page.map { bet ->
-            val orderId = bet.asString("gameround")
-            val username = bet.asString("username")
+            val orderId = bet.asString("betNum")
+            val username = bet.asString("client")
             val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.AllBet, platformUsername = username)
             val betAmount = bet.asBigDecimal("betAmount")
             val winAmount = bet.asBigDecimal("winOrLoss")
-            val betTime = bet.asLocalDateTime("betTime", dateTimeFormat)
+            val betTime = bet.asLocalDateTime("gameRoundStartTime", dateTimeFormat)
+            val settleTime = bet.asLocalDateTime("gameRoundEndTime", dateTimeFormat)
 
             val originData = objectMapper.writeValueAsString(bet)
             BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, betTime = betTime,
-                    settleTime = betTime, platform = Platform.AllBet, originData = originData)
+                    settleTime = settleTime, platform = Platform.AllBet, originData = originData)
         }
     }
 
