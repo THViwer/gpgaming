@@ -79,10 +79,7 @@ class ApiController(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
             @RequestParam("platform") platform: Platform): List<SlotGame> {
-
-        val member = current()
-
-        return gameApi.slotGames(clientId = member.clientId, platform = platform, launch = launch)
+        return gameApi.slotGames(clientId = getClientIdByDomain(), platform = platform, launch = launch)
     }
 
     @GetMapping("/start")
