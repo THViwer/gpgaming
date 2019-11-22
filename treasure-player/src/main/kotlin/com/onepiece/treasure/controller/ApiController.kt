@@ -30,7 +30,7 @@ class ApiController(
         val platformBinds = platformBindService.findClientPlatforms(clientId)
         val platforms = platformBinds.map {
             PlatformVo(id = it.id, name = it.platform.detail.name, category = it.platform.detail.category, status = it.status, icon = it.platform.detail.icon,
-                    launchs = it.platform.detail.launchs)
+                    launchs = it.platform.detail.launchs, platform = it.platform)
         }
 
         // 公告

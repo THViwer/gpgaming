@@ -74,7 +74,7 @@ open class PlatformDetail private constructor(
         }
 
         fun ofKiss918(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "Kiss918", icon = "https://ali88win.com/img/product-logo/joker.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "918kiss", icon = "https://ali88win.com/img/product-logo/joker.png",
                     disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
         }
 

@@ -102,6 +102,9 @@ data class PlatformVo(
         @ApiModelProperty("平台Id")
         val id: Int,
 
+        @ApiModelProperty("平台")
+        val platform: Platform,
+
         @ApiModelProperty("名称")
         val name: String,
 
