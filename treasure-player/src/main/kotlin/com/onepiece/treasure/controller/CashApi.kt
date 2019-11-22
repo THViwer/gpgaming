@@ -50,7 +50,7 @@ interface CashApi {
     ): Page<DepositVo>
 
     @ApiOperation(tags = ["cash"], value = "上传图片")
-    fun uploadProof(@RequestParam("file") file: MultipartFile): Pair<String, String>
+    fun uploadProof(@RequestParam("file") file: MultipartFile): Map<String, String>
 
     @ApiOperation(tags = ["cash"], value = "充值")
     fun deposit(@RequestBody depositCoReq: DepositCoReq): CashDepositResp

@@ -11,6 +11,7 @@ import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
 import com.onepiece.treasure.beans.value.internet.web.DepositVo
 import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
 import com.onepiece.treasure.controller.basic.BasicController
+import com.onepiece.treasure.controller.s3.AwsS3Util
 import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.OrderIdBuilder
 import com.onepiece.treasure.core.service.*
@@ -99,12 +100,11 @@ open class CashApiController(
     }
 
     @PostMapping("/upload/proof")
-    override fun uploadProof(@RequestParam("file") file: MultipartFile): Pair<String, String> {
-
-        val temFile = File("/Users/cabbage/Desktop/images/${file.originalFilename}")
-        temFile.writeBytes(file.bytes)
-
-        return "url" to "http://www.xxxx.com/${file.originalFilename}"
+    override fun uploadProof(@RequestParam("file") file: MultipartFile): Map<String, String> {
+        val url = AwsS3Util.upload(file)
+        return mapOf(
+                "path" to url
+        )
     }
 
     @GetMapping("/deposit")
