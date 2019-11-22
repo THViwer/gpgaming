@@ -55,6 +55,8 @@ data class PlatformBind(
                 Platform.SexyGaming -> jacksonObjectMapper().readValue<SexyClientToken>(tokenJson)
                 Platform.Evolution -> jacksonObjectMapper().readValue<EvolutionClientToken>(tokenJson)
                 Platform.AllBet -> jacksonObjectMapper().readValue<AllBetClientToken>(tokenJson)
+                Platform.GGFishing -> jacksonObjectMapper().readValue<GGFishingClientToken>(tokenJson)
+                Platform.DreamGaming -> jacksonObjectMapper().readValue<DreamGamingClientToken>(tokenJson)
                 else -> jacksonObjectMapper().readValue<DefaultClientToken>(tokenJson)
             }
         }

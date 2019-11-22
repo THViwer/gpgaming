@@ -5,6 +5,7 @@ import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.GameValue
+import com.onepiece.treasure.games.fishing.GGFishingService
 import com.onepiece.treasure.games.live.AllBetService
 import com.onepiece.treasure.games.live.EvolutionService
 import com.onepiece.treasure.games.live.FggService
@@ -27,6 +28,7 @@ class PullBetTask(
         private val lbcService: LbcService,
         private val fggService: FggService,
         private val bcsService: BcsService,
+        private val ggFishingService: GGFishingService,
         private val betOrderService: BetOrderService
 ) {
 
@@ -70,7 +72,7 @@ class PullBetTask(
     }
 
 
-//    @Scheduled(cron="0/10 * *  * * ? ")
+    @Scheduled(cron="0/10 * *  * * ? ")
     fun start() {
 
         if (!running.getAndSet(true)) return
@@ -100,9 +102,8 @@ class PullBetTask(
                     // 测试通过
 //                    Platform.Evolution -> evolutionService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
 //                    Platform.Fgg -> fggService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
-
-                    // 测试
-                    Platform.Bcs -> bcsService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+//                    Platform.Bcs -> bcsService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
+                    Platform.GGFishing -> ggFishingService.pullBetOrders(pullBetOrderReq = defaultPullBetOrderReq)
                     else -> {
                         emptyList()
                     }

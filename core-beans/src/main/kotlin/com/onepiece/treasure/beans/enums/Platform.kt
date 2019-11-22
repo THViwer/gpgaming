@@ -16,7 +16,7 @@ enum class Platform(
 
     // live video
     CT(PlatformDetail.ofCT()),
-    DG(PlatformDetail.ofDG()),
+    DreamGaming(PlatformDetail.ofDreamGaming()),
     Evolution(PlatformDetail.ofEvolution()),
     GoldDeluxe(PlatformDetail.ofGoldDeluxe()),
     SexyGaming(PlatformDetail.ofSexyGaming()),
@@ -29,7 +29,7 @@ enum class Platform(
     Bcs(PlatformDetail.ofBcs()),
 
     // fishing
-    GGFinish(PlatformDetail.ofGGFishng())
+    GGFishing(PlatformDetail.ofGGFishng())
 
     ;
 
@@ -99,8 +99,8 @@ open class PlatformDetail private constructor(
                     disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
-        fun ofDG(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "GD", icon = defaultLogoPath,
+        fun ofDreamGaming(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "DreamGaming", icon = defaultLogoPath,
                     disableIcon = defaultLogoPath, status = Status.Normal)
         }
 

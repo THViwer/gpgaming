@@ -28,7 +28,9 @@ sealed class GameValue {
 
             val language: Language,
 
-            val startPlatform: LaunchMethod
+            val startPlatform: LaunchMethod,
+
+            val redirectUrl: String = "http://www.baidu.com"
     )
 
     data class StartSlotReq(

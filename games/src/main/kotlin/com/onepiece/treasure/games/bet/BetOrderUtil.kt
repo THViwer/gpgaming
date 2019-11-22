@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter
 
 
 class BetOrderUtil private constructor(
-        private val data: Map<String, Any>,
+        private val mapUtil: MapUtil,
         private val platform: Platform
 ) {
 
@@ -23,37 +23,74 @@ class BetOrderUtil private constructor(
     var betTime: LocalDateTime = LocalDateTime.now()
     var settleTime: LocalDateTime = LocalDateTime.now()
 
+
+    private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
     companion object {
-        fun instance(platform: Platform, data: Map<String, Any>): BetOrderUtil {
-            return BetOrderUtil(platform = platform, data = data)
+        fun instance(platform: Platform, mapUtil: MapUtil): BetOrderUtil {
+            return BetOrderUtil(platform = platform, mapUtil = mapUtil)
         }
     }
 
-    fun set(name: String, key: String, dateTimeFormatter: DateTimeFormatter? = null): BetOrderUtil {
+    fun setUsername(key: String): BetOrderUtil {
+        val username  = mapUtil.asString(key)
+        val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = platform, platformUsername = username)
+        this.clientId = clientId
+        this.memberId = memberId
+        return this
+    }
 
-        val d = data[key]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+    fun setOrderId(key: String): BetOrderUtil {
+        orderId = mapUtil.asString(key)
+        return this
+    }
+
+    fun setBetAmount(key: String): BetOrderUtil {
+        betAmount = mapUtil.asBigDecimal(key)
+        return this
+    }
+
+    fun setWinAmount(key: String): BetOrderUtil {
+        winAmount = mapUtil.asBigDecimal(key)
+        return this
+    }
+
+    fun setBetTime(key: String, dateTimeFormatter: DateTimeFormatter = dateTimeFormat): BetOrderUtil {
+        betTime = mapUtil.asLocalDateTime(key, dateTimeFormatter)
+        return this
+    }
+
+    fun setSettleTime(key: String, dateTimeFormatter: DateTimeFormatter = dateTimeFormat): BetOrderUtil {
+        settleTime = mapUtil.asLocalDateTime(key, dateTimeFormatter)
+        return this
+    }
+
+    fun set(name: String, key: String, dateTimeFormatter: DateTimeFormatter = dateTimeFormat): BetOrderUtil {
         when (name) {
             "username" -> {
-                val pair = PlatformUsernameUtil.prefixPlatformUsername(platform = platform, platformUsername = d)
+                val username = mapUtil.asString(key)
+                val pair = PlatformUsernameUtil.prefixPlatformUsername(platform = platform, platformUsername = username)
                 clientId = pair.first
                 memberId = pair.second
             }
             "orderId" -> {
-                orderId = d
+                orderId = mapUtil.asString(key)
             }
             "betAmount" -> {
-                betAmount = d.toBigDecimal()
+                betAmount = mapUtil.asBigDecimal(key)
             }
-            "winAmount" -> winAmount = d.toBigDecimal()
-            "betTime" -> betTime = LocalDateTime.parse(d, dateTimeFormatter)
-            "settleTime" -> settleTime = LocalDateTime.parse(d, dateTimeFormatter)
+            "winAmount" -> winAmount = mapUtil.asBigDecimal(key)
+            "betTime" -> betTime = mapUtil.asLocalDateTime(key, dateTimeFormatter)
+            "settleTime" -> settleTime = mapUtil.asLocalDateTime(key, dateTimeFormatter)
         }
 
         return this
     }
 
     fun build(objectMapper: ObjectMapper): BetOrderValue.BetOrderCo {
-        val originData = objectMapper.writeValueAsString(data)
+        check(clientId > 0 && memberId > 0 && betAmount != BigDecimal.ZERO &&orderId != "") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+
+        val originData = objectMapper.writeValueAsString(mapUtil)
         return BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform,  orderId = orderId, betAmount = betAmount,
                 winAmount = winAmount, betTime = betTime, settleTime = settleTime, originData = originData)
     }

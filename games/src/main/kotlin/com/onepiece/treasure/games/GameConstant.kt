@@ -1,5 +1,8 @@
 package com.onepiece.treasure.games
 
+import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+
 object GameConstant  {
 
     const val demoPath = "http://94.237.64.70"
@@ -15,7 +18,7 @@ object GameConstant  {
     const val CT_API_URL = "${demoPath}:82"
 
     //    const val DG_API_URL = "http://api.dg99web.com"
-    const val DG_API_URL = "${demoPath}:89"
+//    const val DG_API_URL = "${demoPath}:89"
 //    const val DG_API_URL = "${demoPath}:90/dg"
 
     // 918kiss
@@ -68,6 +71,29 @@ object GameConstant  {
     //allbet
 //    const val ALLBET_API_URL = "https://api3.apidemo.net:8443/"
     const val ALLBET_API_URL = "${proxy}/allbet"
+
+    // ggFishing
+    const val GGFISHING_API_URL = "https://optest.365gaming.cc:10029"
+
+    fun getDomain(platform: Platform): String {
+        when (platform) {
+            Platform.GGFishing -> "https://optest.365gaming.cc:10029"
+            Platform.DreamGaming -> "http://api.dg99web.com"
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+
+        //TODO 目前是测试
+        return this.getDevDomain(platform)
+    }
+
+    fun getDevDomain(platform: Platform): String {
+        return  when (platform) {
+            Platform.GGFishing -> "${proxy}/gg"
+            Platform.DreamGaming -> "${proxy}/dreamGaming"
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+
+    }
 
 
 

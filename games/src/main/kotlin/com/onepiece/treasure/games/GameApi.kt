@@ -12,10 +12,8 @@ import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
-import com.onepiece.treasure.games.live.AllBetService
-import com.onepiece.treasure.games.live.EvolutionService
-import com.onepiece.treasure.games.live.FggService
-import com.onepiece.treasure.games.live.GoldDeluxeService
+import com.onepiece.treasure.games.fishing.GGFishingService
+import com.onepiece.treasure.games.live.*
 import com.onepiece.treasure.games.live.sexy.SexyService
 import com.onepiece.treasure.games.slot.joker.JokerService
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Service
@@ -49,11 +47,15 @@ class GameApi(
         private val sexyService: SexyService,
         private val fggService: FggService,
         private val allBetService: AllBetService,
+        private val dreamGamingService: DreamGamingService,
 
         // sport
         private val sboService: SboService,
         private val lbcService: LbcService,
-        private val bcsService: BcsService
+        private val bcsService: BcsService,
+
+        // fishing
+        private val ggFishingService: GGFishingService
 
 
 ) {
@@ -70,14 +72,16 @@ class GameApi(
             // live game
             Platform.Fgg -> fggService
             Platform.Evolution -> evolutionService
+            Platform.AllBet -> allBetService
+            Platform.DreamGaming -> dreamGamingService
 
             // sport
             Platform.Lbc -> lbcService
             Platform.Sbo -> sboService
             Platform.Bcs -> bcsService
 
-            // 测试中
-            Platform.AllBet -> allBetService
+            // fishing
+            Platform.GGFishing -> ggFishingService
 
             // 未完成测试
             Platform.GoldDeluxe -> goldDeluxeService
@@ -139,6 +143,7 @@ class GameApi(
             Platform.GoldDeluxe,
             Platform.Fgg,
             Platform.AllBet,
+            Platform.GGFishing,
             Platform.Bcs -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform, language = language, password = platformPassword)
                 this.getPlatformApi(platform).start(startReq)
