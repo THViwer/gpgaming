@@ -9,7 +9,7 @@ import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.PlatformApi
+import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.DEFAULT_DATETIMEFORMATTER
 import com.onepiece.treasure.games.bet.MapUtil
 import org.apache.commons.codec.digest.DigestUtils
@@ -39,7 +39,7 @@ import java.math.BigDecimal
  * VN 越南文
  */
 @Service
-class BcsService : PlatformApi() {
+class BcsService : PlatformService() {
 
 
     override fun getRequestUrl(path: String, data: Map<String, Any>): String {

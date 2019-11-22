@@ -58,7 +58,7 @@ class GameApi(
 
 ) {
 
-    private fun getPlatformApi(platform: Platform): PlatformApi {
+    private fun getPlatformApi(platform: Platform): PlatformService {
         return when (platform) {
 
             // slot

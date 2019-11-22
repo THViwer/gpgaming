@@ -26,7 +26,10 @@ enum class Platform(
     // sport
     Sbo(PlatformDetail.ofSbo()),
     Lbc(PlatformDetail.ofLbc()),
-    Bcs(PlatformDetail.ofBcs())
+    Bcs(PlatformDetail.ofBcs()),
+
+    // fishing
+    GGFinish(PlatformDetail.ofGGFishng())
 
     ;
 
@@ -36,6 +39,7 @@ enum class Platform(
             return values().filter { it != Center }
         }
     }
+
 }
 
 open class PlatformDetail private constructor(
@@ -137,6 +141,12 @@ open class PlatformDetail private constructor(
 
         fun ofBcs(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Sport, name = "BCS", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
+        }
+
+        // Fishing
+        fun ofGGFishng(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Fishing, name = "GGFishing", icon = defaultLogoPath,
                     disableIcon = defaultLogoPath, status = Status.Normal)
         }
 

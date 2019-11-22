@@ -8,7 +8,7 @@ import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.PlatformApi
+import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.DesUtil
 import com.onepiece.treasure.games.bet.MapUtil
 import org.apache.commons.codec.binary.Base64
@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Service
-class AllBetService : PlatformApi() {
+class AllBetService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(AllBetService::class.java)
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

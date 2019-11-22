@@ -4,15 +4,14 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.Pussy888ClientToken
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.PlatformApi
-import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.games.PlatformService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
 
 @Service
-class Pussy888Service: PlatformApi() {
+class Pussy888Service: PlatformService() {
 
     private val log = LoggerFactory.getLogger(Pussy888Service::class.java)
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

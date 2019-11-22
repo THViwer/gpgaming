@@ -3,10 +3,9 @@ package com.onepiece.treasure.games.live
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
-import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.PlatformApi
+import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapResultUtil
 import com.onepiece.treasure.utils.StringUtil
 import org.apache.commons.codec.digest.DigestUtils
@@ -26,7 +25,7 @@ import java.time.format.DateTimeFormatter
  * vi	Vietnamese 越南語
  */
 @Service
-class GoldDeluxeService: PlatformApi() {
+class GoldDeluxeService: PlatformService() {
 
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyMMddHHmmss")

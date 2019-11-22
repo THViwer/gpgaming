@@ -6,14 +6,14 @@ import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.PlatformApi
+import com.onepiece.treasure.games.PlatformService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDate
 
 @Service
-class SboService : PlatformApi() {
+class SboService : PlatformService() {
 
     private val language = "en"
     private val log = LoggerFactory.getLogger(SboService::class.java)

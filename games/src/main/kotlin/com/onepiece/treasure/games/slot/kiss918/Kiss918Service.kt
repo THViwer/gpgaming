@@ -4,8 +4,7 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.PlatformApi
-import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.value.ReportVo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -25,7 +24,7 @@ import java.time.format.DateTimeFormatter
  *  7	印尼
  */
 @Service
-class Kiss918Service : PlatformApi() {
+class Kiss918Service : PlatformService() {
 
     private val log = LoggerFactory.getLogger(Kiss918Service::class.java)
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

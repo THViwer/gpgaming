@@ -2,16 +2,14 @@ package com.onepiece.treasure.games.slot.mega
 
 import com.onepiece.treasure.beans.model.token.MegaClientToken
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.PlatformApi
-import com.onepiece.treasure.games.http.OkHttpUtil
-import com.onepiece.treasure.games.slot.joker.JokerValue
+import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.slot.mega.MegaValue.RegisterResult
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
 
 @Service
-class MegaService: PlatformApi() {
+class MegaService: PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 

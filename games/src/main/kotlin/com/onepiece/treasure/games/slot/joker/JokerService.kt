@@ -8,7 +8,7 @@ import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.PlatformApi
+import com.onepiece.treasure.games.PlatformService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter
  *
  */
 @Service
-class JokerService : PlatformApi() {
+class JokerService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(JokerService::class.java)
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")

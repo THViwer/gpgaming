@@ -4,14 +4,13 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.SexyClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.PlatformApi
-import com.onepiece.treasure.games.http.OkHttpUtil
+import com.onepiece.treasure.games.PlatformService
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.net.URLEncoder
 
 @Service
-class SexyService : PlatformApi() {
+class SexyService : PlatformService() {
 
     fun checkCode(code: Int) {
         check(code == 1) { OnePieceExceptionCode.DATA_FAIL }

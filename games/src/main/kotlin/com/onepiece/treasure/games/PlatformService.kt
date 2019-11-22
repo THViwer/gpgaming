@@ -14,7 +14,7 @@ import com.onepiece.treasure.utils.RedisService
 import org.springframework.beans.factory.annotation.Autowired
 import java.math.BigDecimal
 
-abstract class PlatformApi {
+abstract class PlatformService {
 
     @Autowired
     lateinit var okHttpUtil: OkHttpUtil

@@ -9,12 +9,12 @@ import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.PlatformApi
+import com.onepiece.treasure.games.PlatformService
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
 @Service
-class LbcService : PlatformApi() {
+class LbcService : PlatformService() {
 
 
     fun checkCode(code: Int) {

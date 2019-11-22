@@ -10,7 +10,7 @@ import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
-import com.onepiece.treasure.games.PlatformApi
+import com.onepiece.treasure.games.PlatformService
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.Instant
@@ -37,7 +37,7 @@ import java.time.ZoneId
  */
 
 @Service
-class FggService: PlatformApi() {
+class FggService: PlatformService() {
 
     override fun register(registerReq: GameValue.RegisterReq): String {
         val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, startPlatform = LaunchMethod.Web, language = Language.EN, password = registerReq.password)
