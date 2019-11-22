@@ -11,33 +11,33 @@ import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
 
 @Service
-class AdvertServiceImpl(
-        private val advertDao: BannerDao,
+class BannerServiceImpl(
+        private val bannerDao: BannerDao,
         private val redisService: RedisService
 ) : BannerService {
 
     override fun all(clientId: Int): List<Banner> {
-        val redisKey = OnePieceRedisKeyConstant.adverts(clientId)
+        val redisKey = OnePieceRedisKeyConstant.banners(clientId)
         return redisService.getList(redisKey, Banner::class.java) {
-            advertDao.all(clientId)
+            bannerDao.all(clientId)
         }
     }
 
     override fun create(bannerCo: BannerCo) {
-        val state = advertDao.create(bannerCo)
+        val state = bannerDao.create(bannerCo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
-        redisService.delete(OnePieceRedisKeyConstant.adverts(bannerCo.clientId))
+        redisService.delete(OnePieceRedisKeyConstant.banners(bannerCo.clientId))
     }
 
     override fun update(bannerUo: BannerUo) {
 
-        val advert = advertDao.get(bannerUo.id)
+        val advert = bannerDao.get(bannerUo.id)
 
-        val state = advertDao.update(bannerUo)
+        val state = bannerDao.update(bannerUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
 
-        redisService.delete(OnePieceRedisKeyConstant.adverts(advert.clientId))
+        redisService.delete(OnePieceRedisKeyConstant.banners(advert.clientId))
     }
 }

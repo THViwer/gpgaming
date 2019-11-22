@@ -60,4 +60,24 @@ object AwsS3Util {
         return "$basePath/$randomFileName"
     }
 
+    fun uploadLocalFile(file: File, name: String): String {
+
+        val putObjectRequest = PutObjectRequest(bucktName, name, file)
+        putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead
+
+        s3Client.putObject(putObjectRequest)
+        return "$basePath/$name"
+
+    }
 }
+
+//// 上传本地文件
+//fun main() {
+//
+//    val local = "/Users/cabbage/Desktop/images"
+//    val file = File("$local/banner_2.jpg")
+//    val name = "banner/banner_2.jpg"
+//
+//    val url = AwsS3Util.uploadLocalFile(file, name)
+//    println(url)
+//}

@@ -29,7 +29,7 @@ object OnePieceRedisKeyConstant {
 
     fun lastAnnouncement(clientId: Int) = "announcement:last:$clientId"
 
-    fun adverts(clientId: Int) = "advert:$clientId"
+    fun banners(clientId: Int) = "banner:$clientId"
 
     fun promotions(clientId: Int) = "promotion:$clientId"
 

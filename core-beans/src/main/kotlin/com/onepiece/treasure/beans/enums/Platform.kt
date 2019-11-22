@@ -36,7 +36,6 @@ enum class Platform(
             return values().filter { it != Center }
         }
     }
-
 }
 
 open class PlatformDetail private constructor(
@@ -62,81 +61,83 @@ open class PlatformDetail private constructor(
 
     companion object {
 
+        private const val defaultLogoPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/logo/joker.png"
+
         fun ofCenter(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "AMZBET", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = emptyList())
+            return PlatformDetail(category = PlatformCategory.Slot, name = "AMZBET", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal, launchs = emptyList())
         }
 
         // slot
         fun ofJoker(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Web, LaunchMethod.Wap, LaunchMethod.Android))
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal, launchs = listOf(LaunchMethod.Web, LaunchMethod.Wap, LaunchMethod.Android))
         }
 
         fun ofKiss918(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "918kiss", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
+            return PlatformDetail(category = PlatformCategory.Slot, name = "918kiss", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
         }
 
         fun ofPussy888(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "Pussy888", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Pussy888", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
         }
 
         fun ofMega(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "Mega", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Mega", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
         }
 
         // live game
         fun ofCT(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "CT", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "CT", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
         fun ofDG(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "GD", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "GD", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
         fun ofEvolution(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "Evolution", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "Evolution", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
         fun ofGoldDeluxe(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "GoldDeluxe", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "GoldDeluxe", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
         fun ofSexyGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sexy gaming", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sexy gaming", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
         fun ofFgg(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "fgg", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "fgg", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
         fun ofAllBet(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "allbet", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "allbet", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
         // soprt
         fun ofSbo(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Sport, name = "sbo", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+            return PlatformDetail(category = PlatformCategory.Sport, name = "sbo", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
         fun ofLbc(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Sport, name = "lbc", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+            return PlatformDetail(category = PlatformCategory.Sport, name = "lbc", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
         fun ofBcs(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Sport, name = "BCS", icon = "https://ali88win.com/img/product-logo/joker.png",
-                    disableIcon = "https://ali88win.com/img/product-logo/joker.png", status = Status.Normal)
+            return PlatformDetail(category = PlatformCategory.Sport, name = "BCS", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
     }
