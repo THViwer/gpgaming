@@ -1,9 +1,12 @@
 package com.onepiece.treasure.beans.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.database.PlatformMemberTransferUo
+import com.onepiece.treasure.utils.JacksonUtil
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -33,8 +36,6 @@ data class Promotion (
         // 优惠层级Id 如果为null则是全部
         val levelId: Int?,
 
-        // 优惠规则
-        val rule: PromotionRules.Rule,
 
         // 规则
         val ruleJson: String,
@@ -59,6 +60,17 @@ data class Promotion (
     fun <T> getPromotioRuleCondition(mapper: ObjectMapper, clz: Class<T>):  T{
         return mapper.readValue(ruleJson, clz)
     }
+
+    // 优惠规则
+    val rule: PromotionRules.Rule
+        @JsonIgnore
+        get() {
+            return when (ruleType) {
+                PromotionRuleType.Bet -> JacksonUtil.objectMapper.readValue<PromotionRules.BetRule>(ruleJson)
+                PromotionRuleType.Withdraw -> JacksonUtil.objectMapper.readValue<PromotionRules.WithdrawRule>(ruleJson)
+                else -> error(OnePieceExceptionCode.DATA_FAIL)
+            }
+        }
 
 
     /**

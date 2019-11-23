@@ -37,15 +37,9 @@ class PromotionDaoImpl(
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
 
-            val rule = when (ruleType) {
-                PromotionRuleType.Bet -> objectMapper.readValue<PromotionRules.BetRule>(ruleJson)
-                PromotionRuleType.Withdraw -> objectMapper.readValue<PromotionRules.WithdrawRule>(ruleJson)
-                else -> error(OnePieceExceptionCode.DATA_FAIL)
-            }
-
             Promotion(id = id, category = category, stopTime = stopTime, icon = icon, status = status, createdTime = createdTime,
                     clientId = clientId, top = top, updatedTime = updatedTime, platform = platform, levelId = levelId,
-                    rule = rule, ruleJson = ruleJson, ruleType = ruleType)
+                    ruleJson = ruleJson, ruleType = ruleType)
         }
 
     override fun create(promotionCo: PromotionCo): Int {

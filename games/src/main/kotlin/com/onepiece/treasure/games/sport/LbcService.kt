@@ -12,6 +12,8 @@ class LbcService : PlatformService() {
     private val LBC_START_URL = "http://c.gsoft888.net/Deposit_ProcessLogin.aspx?lang=en&OType=1&WebSkinType=3&skincolor=bl001&g="
     private val LBC_START_MOBILE_URL = "http://i.gsoft888.net/Deposit_ProcessLogin.aspx?lang=en&OType=1&skincolor=bl001&ischinaview=True&st="
 
+
+
     override fun register(registerReq: GameValue.RegisterReq): String {
         val clientToken = registerReq.token as LbcClientToken
 
@@ -24,9 +26,12 @@ class LbcService : PlatformService() {
                 "OddsType=1",
                 "MaxTransfer=100000",
                 "MinTransfer=1"
-        )
+        ).joinToString("&")
 
+        val path = "/api/CreateMember"
         // SecurityToken
+
+
 
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
