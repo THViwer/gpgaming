@@ -4,10 +4,12 @@ enum class BannerType {
 
     Banner,
 
-    Recommended,
-
     Live,
 
-    HotGames
+    Slot,
+
+    Fish,
+
+    Sport
 
 }
