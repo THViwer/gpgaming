@@ -137,10 +137,10 @@ data class WithdrawCoReq(
         val bankCardNumber: String,
 
         @ApiModelProperty("取款金额")
-        val money: BigDecimal,
+        val money: BigDecimal
 
-        @ApiModelProperty("取款密码")
-        val safetyPassword: String
+//        @ApiModelProperty("取款密码")
+//        val safetyPassword: String
 )
 
 data class CashWithdrawResp(

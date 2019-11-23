@@ -48,17 +48,23 @@ data class PlatformBind(
     // token信息
     val clientToken: ClientToken
         get() {
-            return when (platform) {
-                Platform.Kiss918 -> jacksonObjectMapper().readValue<Kiss918ClientToken>(tokenJson)
-                Platform.Mega -> jacksonObjectMapper().readValue<MegaClientToken>(tokenJson)
-                Platform.Pussy888 -> jacksonObjectMapper().readValue<Pussy888ClientToken>(tokenJson)
-                Platform.SexyGaming -> jacksonObjectMapper().readValue<SexyClientToken>(tokenJson)
-                Platform.Evolution -> jacksonObjectMapper().readValue<EvolutionClientToken>(tokenJson)
-                Platform.AllBet -> jacksonObjectMapper().readValue<AllBetClientToken>(tokenJson)
-                Platform.GGFishing -> jacksonObjectMapper().readValue<GGFishingClientToken>(tokenJson)
-                Platform.DreamGaming -> jacksonObjectMapper().readValue<DreamGamingClientToken>(tokenJson)
-                else -> jacksonObjectMapper().readValue<DefaultClientToken>(tokenJson)
+
+            val objectMapper = jacksonObjectMapper()
+
+            val clz =  when (platform) {
+                Platform.Kiss918 -> Kiss918ClientToken::class.java
+                Platform.Mega -> MegaClientToken::class.java
+                Platform.Pussy888 -> Pussy888ClientToken::class.java
+                Platform.SexyGaming -> SexyClientToken::class.java
+                Platform.Evolution -> EvolutionClientToken::class.java
+                Platform.AllBet -> AllBetClientToken::class.java
+                Platform.GGFishing -> GGFishingClientToken::class.java
+                Platform.DreamGaming -> DreamGamingClientToken::class.java
+                Platform.Lbc -> LbcClientToken::class.java
+                else -> DefaultClientToken::class.java
             }
+
+            return objectMapper.readValue(tokenJson, clz)
         }
 
 }

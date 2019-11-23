@@ -200,7 +200,7 @@ open class CashApiController(
         checkNotNull(memberBank) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
         // check safety password
-        memberService.checkSafetyPassword(id = memberId, safetyPassword = withdrawCoReq.safetyPassword)
+//        memberService.checkSafetyPassword(id = memberId, safetyPassword = withdrawCoReq.safetyPassword)
 
         // create order
         val orderId = orderIdBuilder.generatorWithdrawOrderId()

@@ -53,8 +53,6 @@ object GameConstant  {
     // lbc
 //    const val LBC_API_URL = "http://api.prod.ib.gsoft88.net"
     const val LBC_API_URL = "http://45.124.64.29:88" // hk server
-    const val LBC_START_URL = "http://c.gsoft888.net/Deposit_ProcessLogin.aspx?lang=en&OType=1&WebSkinType=3&skincolor=bl001&g="
-    const val LBC_START_MOBILE_URL = "http://i.gsoft888.net/Deposit_ProcessLogin.aspx?lang=en&OType=1&skincolor=bl001&ischinaview=True&st="
 
     // sexy game
 //    const val SEXY_API_URL = "http://test.bikimex.com:10023"
@@ -79,6 +77,7 @@ object GameConstant  {
         when (platform) {
             Platform.GGFishing -> "https://optest.365gaming.cc:10029"
             Platform.DreamGaming -> "http://api.dg99web.com"
+            Platform.Lbc -> "http://api.prod.ib.gsoft88.net"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
@@ -90,6 +89,7 @@ object GameConstant  {
         return  when (platform) {
             Platform.GGFishing -> "${proxy}/gg"
             Platform.DreamGaming -> "${proxy}/dreamGaming"
+            Platform.Lbc -> "http://45.124.64.29:88"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 

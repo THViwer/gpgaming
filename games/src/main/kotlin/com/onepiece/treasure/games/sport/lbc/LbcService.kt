@@ -16,6 +16,8 @@ import java.math.BigDecimal
 @Service
 class LbcService : PlatformService() {
 
+    private val LBC_START_URL = "http://c.gsoft888.net/Deposit_ProcessLogin.aspx?lang=en&OType=1&WebSkinType=3&skincolor=bl001&g="
+    private val LBC_START_MOBILE_URL = "http://i.gsoft888.net/Deposit_ProcessLogin.aspx?lang=en&OType=1&skincolor=bl001&ischinaview=True&st="
 
     fun checkCode(code: Int) {
         check(code == 0) { OnePieceExceptionCode.PLATFORM_METHOD_FAIL }
@@ -105,8 +107,8 @@ class LbcService : PlatformService() {
         }
 
         return when (startReq.startPlatform) {
-            LaunchMethod.Web -> "${GameConstant.LBC_START_URL}${result.sessionToken}&lang=$lang"
-            LaunchMethod.Wap -> "${GameConstant.LBC_START_MOBILE_URL}${result.sessionToken}&lang=$lang"
+            LaunchMethod.Web -> "${LBC_START_URL}${result.sessionToken}&lang=$lang"
+            LaunchMethod.Wap -> "${LBC_START_MOBILE_URL}${result.sessionToken}&lang=$lang"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
