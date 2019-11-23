@@ -53,6 +53,9 @@ data class WithdrawVo(
         @ApiModelProperty("取款人姓名")
         val memberName: String,
 
+        @ApiModelProperty("锁定人员客服Id")
+        val lockWaiterId: Int?,
+
         @ApiModelProperty("状态")
         val state: WithdrawState,
 

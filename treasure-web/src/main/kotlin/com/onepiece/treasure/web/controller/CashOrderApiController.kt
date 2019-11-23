@@ -40,7 +40,7 @@ class CashOrderApiController(
                 DepositVo(orderId = it.orderId, money = money, memberName = memberName, memberBankCardNumber= memberBankCardNumber,
                         memberBank=  memberBank, imgPath = imgPath, createdTime = createdTime, remark = remarks, endTime = it.endTime,
                         clientBankId = clientBankId, clientBankCardNumber = clientBankCardNumber, clientBankName = clientBankName,
-                        bankOrderId = null, memberId = memberId, state = it.state)
+                        bankOrderId = null, memberId = memberId, state = it.state, lockWaiterId = it.lockWaiterId)
             }
         }
     }
@@ -82,7 +82,7 @@ class CashOrderApiController(
 
             with(it) {
                 WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberId = memberId,
-                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime)
+                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime, lockWaiterId = it.lockWaiterId)
             }
         }
     }
