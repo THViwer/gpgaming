@@ -159,7 +159,7 @@ class GoldDeluxeService: PlatformService() {
         val token = startReq.token as DefaultClientToken
 
         val loginTokenId = StringUtil.generateNonce(10)
-        val signParam = "${token.appId}user1234${startReq.username}${currencyCode}"
+        val signParam = "${token.appId}${loginTokenId}${startReq.username}${currencyCode}"
         val key = DigestUtils.sha256Hex(signParam)
 
         val lang = when (startReq.language) {
@@ -185,8 +185,8 @@ class GoldDeluxeService: PlatformService() {
         val urlParam = param.joinToString(separator = "&")
 
 
-        val url = "${GameConstant.EVOLUTION_API_URL}/main.php?$urlParam"
-        val tmp = okHttpUtil.doGet(url, String::class.java)
-        return "${GameConstant.EVOLUTION_API_URL}?$urlParam"
+        val baseUrl = "http://coldsstaging.japaneast.cloudapp.azure.com/COLDS/FlashClient/release/FlashClient_red_gold_GOLD/main.php"
+
+        return "$baseUrl?$urlParam"
     }
 }
