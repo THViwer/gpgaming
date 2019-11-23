@@ -2,6 +2,7 @@ package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.value.internet.web.SlotCategory
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
@@ -78,8 +79,12 @@ class ApiController(
     override fun slotMenu(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
-            @RequestParam("platform") platform: Platform): List<SlotGame> {
+            @RequestParam("platform") platform: Platform): List<SlotCategory> {
         return gameApi.slotGames(clientId = getClientIdByDomain(), platform = platform, launch = launch)
+                .groupBy { it.category }
+                .map {
+                    SlotCategory(gameCategory = it.key, games = it.value)
+                }
     }
 
     @GetMapping("/start")

@@ -3,6 +3,7 @@ package com.onepiece.treasure.controller
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.value.internet.web.SlotCategory
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.controller.value.*
 import io.swagger.annotations.Api
@@ -27,7 +28,7 @@ interface Api {
     fun slotMenu(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
-            @RequestParam("platform") platform: Platform): List<SlotGame>
+            @RequestParam("platform") platform: Platform): List<SlotCategory>
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台)")
     fun start(
