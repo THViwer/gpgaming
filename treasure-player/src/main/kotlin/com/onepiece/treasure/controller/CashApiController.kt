@@ -130,7 +130,7 @@ open class CashApiController(
                 DepositVo(orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
                         imgPath = imgPath, memberId = memberId, bankOrderId = null, clientBankCardNumber = clientBankCardNumber,
-                        clientBankName = clientBankName, clientBankId = clientBankId)
+                        clientBankName = clientBankName, clientBankId = clientBankId, lockWaiterId = it.lockWaiterId)
             }
         }
 
@@ -176,7 +176,7 @@ open class CashApiController(
             with(it) {
                 WithdrawVo(orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
-                        memberId = it.memberId, memberBankId = it.memberBankId)
+                        memberId = it.memberId, memberBankId = it.memberBankId, lockWaiterId = it.lockWaiterId)
             }
         }
 
