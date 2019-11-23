@@ -131,7 +131,7 @@ class ApiController(
 
     }
 
-    @GetMapping("/down/{mobilePlatform}")
+    @GetMapping("/down")
     override fun down(): List<DownloadAppVo> {
         //TODO 暂时不解析网站
 
