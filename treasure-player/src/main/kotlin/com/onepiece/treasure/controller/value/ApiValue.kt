@@ -1,6 +1,8 @@
 package com.onepiece.treasure.controller.value
 
 import com.onepiece.treasure.beans.enums.*
+import com.onepiece.treasure.beans.value.internet.web.SlotCategory
+import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.utils.StringUtil
 import io.swagger.annotations.ApiModelProperty
 
@@ -121,20 +123,6 @@ data class PlatformVo(
         val launchs: List<LaunchMethod>
 )
 
-//data class SlotMenuResp(
-//
-//        val hotGames: List<SlotMenu>,
-//
-//        val newGames: List<SlotMenu>,
-//
-//        val slotGames: List<SlotGame>,
-//
-//        val tableGames: List<SlotGame>,
-//
-//        val arcadeGames: List<SlotGame>
-//
-//)
-
 data class StartGameResp(
 
         @ApiModelProperty("平台地址")
@@ -160,4 +148,17 @@ data class PlatformMembrerDetail(
         val username: String,
 
         val password: String
+)
+
+data class PlatformCategoryDetail(
+
+        @ApiModelProperty("平台列表")
+        val platforms: List<PlatformVo>,
+
+        @ApiModelProperty("banners")
+        val banners: List<BannerVo>,
+
+        @ApiModelProperty("游戏列表(只有在slot下才有)")
+        val games: List<SlotCategory>? = null
+
 )

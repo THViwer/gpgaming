@@ -1,5 +1,6 @@
 package com.onepiece.treasure.core.service.impl
 
+import com.onepiece.treasure.beans.enums.BannerType
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Banner
 import com.onepiece.treasure.beans.value.database.BannerCo
@@ -21,6 +22,10 @@ class BannerServiceImpl(
         return redisService.getList(redisKey, Banner::class.java) {
             bannerDao.all(clientId)
         }
+    }
+
+    override fun findByType(clientId: Int, type: BannerType): List<Banner> {
+        return this.all(clientId).filter { it.type == type }
     }
 
     override fun create(bannerCo: BannerCo) {

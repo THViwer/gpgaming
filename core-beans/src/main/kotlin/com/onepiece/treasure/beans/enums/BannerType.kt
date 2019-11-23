@@ -10,6 +10,9 @@ enum class BannerType {
 
     Fish,
 
-    Sport
+    Sport,
+
+    // 已删除
+    Recommended
 
 }

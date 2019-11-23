@@ -11,6 +11,7 @@ import com.onepiece.treasure.beans.value.database.ClientWithdrawReportVo
 import com.onepiece.treasure.beans.value.database.WithdrawReportVo
 import com.onepiece.treasure.core.dao.WithdrawDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
+import com.onepiece.treasure.core.dao.basic.getIntOrNull
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.time.LocalDate
@@ -34,7 +35,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
             val money = rs.getBigDecimal("money")
             val state = rs.getString("state").let { WithdrawState.valueOf(it) }
             val remarks = rs.getString("remarks")
-            val lockWaiterId = rs.getInt("lock_waiter_id")
+            val lockWaiterId = rs.getIntOrNull("lock_waiter_id")
             val lockWaiterName = rs.getString("lock_waiter_name")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val endTime = rs.getTimestamp("end_time")?.toLocalDateTime()

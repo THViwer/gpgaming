@@ -3,7 +3,6 @@ package com.onepiece.treasure.controller
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.internet.web.SlotCategory
-import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.service.BannerService
@@ -17,7 +16,8 @@ class ApiController(
         private val promotionService: PromotionService,
         private val advertService: BannerService,
 //        private val announcementService: AnnouncementService,
-        private val i18nContentService: I18nContentService
+        private val i18nContentService: I18nContentService,
+        private val bannerService: BannerService
 ) : BasicController(), Api {
 
     @GetMapping
@@ -161,6 +161,47 @@ class ApiController(
         return getPlatformMember(platform).let {
             PlatformMembrerDetail(username = it.platformUsername, password = it.platformPassword)
         }
+    }
+
+    @GetMapping("/{category}")
+    override fun categorys(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @PathVariable("category") category: PlatformCategory
+    ): PlatformCategoryDetail {
+
+        val clientId = this.getClientIdByDomain()
+
+        val platforms = platformBindService.findClientPlatforms(clientId = getClientIdByDomain())
+                .filter { it.platform.detail.category == category }
+                .map {
+                    PlatformVo(id = it.id, platform = it.platform, name = it.platform.detail.name, category = it.platform.detail.category,
+                            status = it.platform.detail.status, icon = it.platform.detail.icon, launchs = it.platform.detail.launchs)
+                }
+
+        val type = when (category) {
+            PlatformCategory.Fishing -> BannerType.Fish
+            PlatformCategory.Slot -> BannerType.Slot
+            PlatformCategory.LiveVideo -> BannerType.Live
+            PlatformCategory.Sport -> BannerType.Sport
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+
+        val banners = bannerService.findByType(clientId = clientId, type = type).map {
+            BannerVo(id = it.id, order = it.order, icon = it.icon, link = it.link, touchIcon = it.touchIcon, type = it.type)
+        }
+
+        val games = if (category == PlatformCategory.Slot) {
+            gameApi.slotGames(clientId = getClientIdByDomain(), platform = Platform.Joker, launch = LaunchMethod.Web)
+                    .groupBy { it.category }
+                    .map {
+                        SlotCategory(gameCategory = it.key, games = it.value)
+                    }
+        } else null
+
+
+        return PlatformCategoryDetail(platforms = platforms, banners = banners, games = games)
+
+
 
     }
 }

@@ -12,6 +12,7 @@ import com.onepiece.treasure.beans.value.database.ClientDepositReportVo
 import com.onepiece.treasure.beans.value.database.DepositReportVo
 import com.onepiece.treasure.core.dao.DepositDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
+import com.onepiece.treasure.core.dao.basic.getIntOrNull
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.time.LocalDate
@@ -38,7 +39,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
             val imgPath = rs.getString("img_path")
             val state = rs.getString("state").let { DepositState.valueOf(it) }
             val remarks = rs.getString("remarks")
-            val lockWaiterId = rs.getInt("lock_waiter_id")
+            val lockWaiterId = rs.getIntOrNull("lock_waiter_id")
             val lockWaiterName = rs.getString("lock_waiter_name")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val endTime = rs.getTimestamp("end_time")?.toLocalDateTime()

@@ -3,6 +3,7 @@ package com.onepiece.treasure.controller
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.PlatformCategory
 import com.onepiece.treasure.beans.value.internet.web.SlotCategory
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.controller.value.*
@@ -18,6 +19,7 @@ interface Api {
     @ApiOperation(tags = ["api"], value = "首页配置")
     fun config(
             @RequestHeader("language", defaultValue = "EN") language: Language): ConfigVo
+
 
     @ApiOperation(tags = ["api"], value = "优惠活动")
     fun promotion(
@@ -54,6 +56,12 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "获得游戏平台的账号密码")
     fun platformMemberDetail(@RequestHeader("platform") platform: Platform): PlatformMembrerDetail
+
+    @ApiOperation(tags = ["api"], value = "获得平台类目页信息")
+    fun categorys(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @PathVariable("category") category: PlatformCategory
+    ): PlatformCategoryDetail
 
 
 }
