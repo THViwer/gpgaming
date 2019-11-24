@@ -13,6 +13,8 @@ enum class Platform(
     Kiss918(PlatformDetail.ofKiss918()),
     Pussy888(PlatformDetail.ofPussy888()),
     Mega(PlatformDetail.ofMega()),
+    Pragmatic(PlatformDetail.ofPragmatic()),
+    SpadeGaming(PlatformDetail.ofSpadeGaming()),
 
     // live video
     CT(PlatformDetail.ofCT()),
@@ -22,10 +24,6 @@ enum class Platform(
     SexyGaming(PlatformDetail.ofSexyGaming()),
     Fgg(PlatformDetail.ofFgg()),
     AllBet(PlatformDetail.ofAllBet()),
-
-    // 暂时
-    Pragmatic(PlatformDetail.ofPragmatic()),
-    SpadeGaming(PlatformDetail.ofSpadeGaming()),
 
     // sport
     Sbo(PlatformDetail.ofSbo()),

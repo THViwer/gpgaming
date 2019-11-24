@@ -127,7 +127,7 @@ class GameApi(
             val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
             when (platform) {
-                Platform.Joker, Platform.Pragmatic -> jokerService.slotGames(token = clientToken, launch = launch)
+                Platform.Joker, Platform.Pragmatic -> getPlatformApi(platform).slotGames(token = clientToken, launch = launch)
                 else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
         }
@@ -167,7 +167,7 @@ class GameApi(
         //TODO 跳转url
         val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId, language = language, launchMethod = launchMethod)
         return when (platform) {
-            Platform.Joker -> jokerService.startSlot(startSlotReq)
+            Platform.Joker, Platform.Pragmatic -> getPlatformApi(platform).startSlot(startSlotReq)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
@@ -234,7 +234,8 @@ class GameApi(
             Platform.Bcs,
             Platform.Fgg,
             Platform.AllBet,
-            Platform.GGFishing -> {
+            Platform.GGFishing,
+            Platform.Pragmatic -> {
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken)
                 getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)
             }

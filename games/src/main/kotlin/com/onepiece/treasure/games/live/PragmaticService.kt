@@ -1,8 +1,6 @@
 package com.onepiece.treasure.games.live
 
-import com.onepiece.treasure.beans.enums.Language
-import com.onepiece.treasure.beans.enums.LaunchMethod
-import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.PragmaticClientToken
@@ -12,6 +10,7 @@ import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
+import com.onepiece.treasure.games.bet.BetOrderUtil
 import com.onepiece.treasure.games.bet.MapUtil
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
@@ -98,8 +97,51 @@ class PragmaticService: PlatformService() {
                 "secureLogin" to clientToken.secureLogin
         )
         val mapUtil = this.startDoPostForm(method = "/getCasinoGames", clientToken = clientToken, data = data)
-        log.info("slot games :$mapUtil")
-        return emptyList()
+
+        return mapUtil.asList("gameList").filter {
+            // MOBILE,DOWNLOAD,WEB
+            when (launch) {
+                LaunchMethod.Wap -> it.asString("platform").contains("MOBILE")
+                else -> it.asString("platform").contains("WEB")
+            }
+        }.map { bet ->
+
+            val gameId = bet.asString("gameID")
+            val gameName = bet.asString("gameName")
+
+            val typeDescription = bet.asString("typeDescription")
+            val gameCategory = when (typeDescription) {
+                "Video Slots" -> GameCategory.SlotVideo
+                "Classic Slots" -> GameCategory.SLOT
+                "Blackjack" -> GameCategory.Blackjack
+                "Scratch card" -> GameCategory.ScratchCard
+                "Baccarat New" -> GameCategory.BaccaratNew
+                "Baccarat" -> GameCategory.Baccarat
+                "Keno" -> GameCategory.Keno
+                "Roulette" -> GameCategory.Roulette
+                "Video Poker" -> GameCategory.VideoPoker
+                else -> GameCategory.Default
+            }
+
+            // 启动方式
+            val technology = "html5"
+
+            /**
+             * 矩形，大小 325x234：
+             * http(s)://{game server domain}/game_pic/rec/325/{gameID}.png
+             * 矩形，大小 188x83：
+             * http(s)://{game server domain}/game_pic/rec/188/{gameID}.png
+             * 矩形，大小 160x115：
+             * http(s)://{game server domain}/game_pic/rec/160/{gameID}.png
+             * 方形，大小 200x200：
+             * http(s)://{game server domain}/game_pic/square/200/{gameID}.png
+             * 方形，大小 138x138：
+             * http(s)://{game server domain}/game_pic/square/138/{gameID}.jpg
+             */
+            val icon = "${GameConstant.getDomain(Platform.Pragmatic)}/game_pic/rec/325/${gameId}.png"
+
+            SlotGame(gameId = gameId, gameName = gameName, category = gameCategory, icon = icon, touchIcon = null, hot = false, new = false, status = Status.Normal)
+        }
     }
 
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
@@ -131,7 +173,7 @@ class PragmaticService: PlatformService() {
         )
 
         val mapUtil = this.startDoPostForm(method = "/game/start", data = data, clientToken = clientToken)
-        return mapUtil.asString("GameURL")
+        return mapUtil.asString("gameURL")
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
@@ -160,6 +202,8 @@ class PragmaticService: PlatformService() {
                 0 -> timepoint = s.split("=")[1]
                 1 -> {}
                 else -> {
+
+                    if (s.isBlank()) return@forEachIndexed
 
                     val data = s.split(",")
 

@@ -1,4 +1,4 @@
-package com.onepiece.treasure.controller.s3
+package com.onepiece.treasure.utils
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicAWSCredentials
@@ -7,7 +7,6 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
-import com.onepiece.treasure.utils.StringUtil
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
 import java.time.LocalDateTime
@@ -19,7 +18,7 @@ object AwsS3Util {
     private const val accessKey = "AKIAIZ5L767H2KC5WYPA"
     private const val secretKey = "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"
     private const val bucktName = "awspg1"
-    private const val basePath = "https://s3.ap-southeast-1.amazonaws.com/${bucktName}"
+    private const val basePath = "https://s3.ap-southeast-1.amazonaws.com/$bucktName"
 
     private val awsCreds = BasicAWSCredentials(accessKey, secretKey)
     private val s3Client = AmazonS3ClientBuilder.standard()
@@ -39,7 +38,7 @@ object AwsS3Util {
 
         val originFileName = file.name
         val scheme = originFileName.substring(originFileName.lastIndexOf("."))
-        val randomFileName = this.generatorFileName(scheme)
+        val randomFileName = generatorFileName(scheme)
 
         val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file)
         putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead
@@ -51,7 +50,7 @@ object AwsS3Util {
     fun upload(file: MultipartFile): String {
         val originFileName = file.originalFilename!!
         val scheme = originFileName.substring(originFileName.lastIndexOf("."))
-        val randomFileName = this.generatorFileName(scheme)
+        val randomFileName = generatorFileName(scheme)
 
         val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file.inputStream, ObjectMetadata())
         putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead

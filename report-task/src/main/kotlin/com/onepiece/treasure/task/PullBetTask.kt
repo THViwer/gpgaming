@@ -73,11 +73,12 @@ class PullBetTask(
         val starTime = endTime.minusMinutes(15)
 
         val platforms = listOf(
-                Platform.Joker,
-                Platform.Lbc,
-                Platform.Fgg,
-                Platform.Bcs,
-                Platform.GGFishing
+//                Platform.Joker,
+//                Platform.Lbc,
+//                Platform.Fgg,
+//                Platform.Bcs,
+//                Platform.GGFishing,
+                Platform.Pragmatic
         )
 
         platforms.forEach { platform ->

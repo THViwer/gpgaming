@@ -23,7 +23,7 @@ import java.util.*
 class SpadeGamingService : PlatformService() {
 
     private val currency = "MYR"
-    private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMddTHHmmss")
+    private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
 
     private fun startPostJson(method: String, data: String): MapUtil {
 

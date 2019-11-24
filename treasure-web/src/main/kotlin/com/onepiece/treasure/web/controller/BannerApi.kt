@@ -7,7 +7,9 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.multipart.MultipartFile
 
 @Api(tags = ["web setting"], description = "网站设置")
 interface BannerApi  {
@@ -21,6 +23,9 @@ interface BannerApi  {
     @ApiOperation(tags = ["web setting"], value = "首页设置 -> 更新")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody bannerUoReq: BannerUoReq)
+
+    @ApiOperation(tags = ["web setting"], value = "上传图片")
+    fun uploadProof(@RequestParam("file") file: MultipartFile): Map<String, String>
 
 
 }

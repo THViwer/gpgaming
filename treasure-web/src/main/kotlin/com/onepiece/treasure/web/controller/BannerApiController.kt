@@ -6,8 +6,10 @@ import com.onepiece.treasure.beans.value.internet.web.BannerCoReq
 import com.onepiece.treasure.beans.value.internet.web.BannerUoReq
 import com.onepiece.treasure.beans.value.internet.web.BannerVo
 import com.onepiece.treasure.core.service.BannerService
+import com.onepiece.treasure.utils.AwsS3Util
 import com.onepiece.treasure.web.controller.basic.BasicController
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/banner")
@@ -38,5 +40,13 @@ class BannerApiController(
         val bannerUo = BannerUo(id = bannerUoReq.id, icon = bannerUoReq.icon, touchIcon = bannerUoReq.touchIcon, type = bannerUoReq.type,
                 order = bannerUoReq.order, link = bannerUoReq.link, status = bannerUoReq.status)
         advertService.update(bannerUo)
+    }
+
+    @PostMapping("/upload/proof")
+    override fun uploadProof(@RequestParam("file") file: MultipartFile): Map<String, String> {
+        val url = AwsS3Util.upload(file)
+        return mapOf(
+                "path" to url
+        )
     }
 }
