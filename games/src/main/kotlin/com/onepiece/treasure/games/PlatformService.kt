@@ -5,7 +5,6 @@ import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
@@ -54,7 +53,7 @@ abstract class PlatformService {
     /**
      * 老虎机菜单
      */
-    open fun slotGames(token: DefaultClientToken, launch: LaunchMethod): List<SlotGame> {
+    open fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {
         error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
     }
 

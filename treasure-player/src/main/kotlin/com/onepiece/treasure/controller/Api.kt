@@ -48,6 +48,7 @@ interface Api {
     @ApiOperation(tags = ["api"], value = "开始游戏(老虎机)")
     fun startSlotGame(
             @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestParam("launchMethod", defaultValue = "Web") launchMethod: LaunchMethod = LaunchMethod.Web,
             @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp
 

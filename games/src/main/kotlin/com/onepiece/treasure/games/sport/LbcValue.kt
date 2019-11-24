@@ -7,10 +7,10 @@ sealed class LbcValue {
     data class Result(
 
             @JsonProperty("error_code")
-            val errorCode: String,
+            val errorCode: Int,
 
 
-            val messgage: String
+            val message: String
     )
 
 }

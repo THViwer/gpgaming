@@ -23,6 +23,10 @@ enum class Platform(
     Fgg(PlatformDetail.ofFgg()),
     AllBet(PlatformDetail.ofAllBet()),
 
+    // 暂时
+    Pragmatic(PlatformDetail.ofPragmatic()),
+    SpadeGaming(PlatformDetail.ofSpadeGaming()),
+
     // sport
     Sbo(PlatformDetail.ofSbo()),
     Lbc(PlatformDetail.ofLbc()),
@@ -77,20 +81,25 @@ open class PlatformDetail private constructor(
             return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = defaultLogoPath,
                     disableIcon = defaultLogoPath, status = Status.Normal, launchs = listOf(LaunchMethod.Web, LaunchMethod.Wap, LaunchMethod.Android))
         }
-
         fun ofKiss918(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "918kiss", icon = defaultLogoPath,
                     disableIcon = defaultLogoPath, status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
         }
-
         fun ofPussy888(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "Pussy888", icon = defaultLogoPath,
                     disableIcon = defaultLogoPath, status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
         }
-
         fun ofMega(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "Mega", icon = defaultLogoPath,
                     disableIcon = defaultLogoPath, status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
+        }
+        fun ofPragmatic(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Slot, name = "pragmatic", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
+        }
+        fun ofSpadeGaming(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Slot, name = "spade gaming", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
         // live game

@@ -8,6 +8,9 @@ enum class GameCategory {
 //
 //    NEW,
 
+    // 未分类
+    Default,
+
     // 老虎机
     SLOT,
 

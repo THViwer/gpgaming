@@ -4,9 +4,10 @@ import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.PlatformBind
 import com.onepiece.treasure.beans.model.token.ClientToken
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.model.token.MegaClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.PlatformUsernameUtil
@@ -20,7 +21,7 @@ import com.onepiece.treasure.games.slot.kiss918.Kiss918Service
 import com.onepiece.treasure.games.slot.mega.MegaService
 import com.onepiece.treasure.games.slot.pussy888.Pussy888Service
 import com.onepiece.treasure.games.sport.BcsService
-import com.onepiece.treasure.games.sport.lbc.LbcService
+import com.onepiece.treasure.games.sport.LbcService
 import com.onepiece.treasure.games.sport.sbo.SboService
 import com.onepiece.treasure.utils.RedisService
 import com.onepiece.treasure.utils.StringUtil
@@ -40,6 +41,8 @@ class GameApi(
         private val kiss918Service: Kiss918Service,
         private val pussy888Service: Pussy888Service,
         private val megaService: MegaService,
+        private val pragmaticService: PragmaticService,
+        private val spadeGamingService: SpadeGamingService,
 
         // live game
         private val goldDeluxeService: GoldDeluxeService,
@@ -68,6 +71,8 @@ class GameApi(
             Platform.Kiss918 -> kiss918Service
             Platform.Pussy888 -> pussy888Service
             Platform.Mega -> megaService
+            Platform.Pragmatic -> pragmaticService
+            Platform.SpadeGaming -> spadeGamingService
 
             // live game
             Platform.Fgg -> fggService
@@ -122,7 +127,7 @@ class GameApi(
             val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
             when (platform) {
-                Platform.Joker -> jokerService.slotGames(token = clientToken as DefaultClientToken, launch = launch)
+                Platform.Joker, Platform.Pragmatic -> jokerService.slotGames(token = clientToken, launch = launch)
                 else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
         }
@@ -155,12 +160,12 @@ class GameApi(
     /**
      * 开始游戏(老虎机)
      */
-    fun start(clientId: Int, platformUsername: String, platform: Platform, gameId: String, language: Language): String {
+    fun start(clientId: Int, platformUsername: String, platform: Platform, gameId: String, language: Language, launchMethod: LaunchMethod): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         //TODO 跳转url
-        val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId, language = language)
+        val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId, language = language, launchMethod = launchMethod)
         return when (platform) {
             Platform.Joker -> jokerService.startSlot(startSlotReq)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
@@ -215,6 +220,28 @@ class GameApi(
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
+    }
+
+    /**
+     * 同步订单
+     */
+    fun pullBets(platformBind: PlatformBind, startTime: LocalDateTime, endTime: LocalDateTime): List<BetOrderValue.BetOrderCo> {
+
+        return when (platformBind.platform) {
+            Platform.SpadeGaming,
+            Platform.Joker,
+            Platform.Lbc,
+            Platform.Bcs,
+            Platform.Fgg,
+            Platform.AllBet,
+            Platform.GGFishing -> {
+                val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken)
+                getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)
+            }
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+
+
     }
 
     /**

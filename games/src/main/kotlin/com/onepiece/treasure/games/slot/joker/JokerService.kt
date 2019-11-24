@@ -2,6 +2,7 @@ package com.onepiece.treasure.games.slot.joker
 
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
@@ -83,7 +84,9 @@ class JokerService : PlatformService() {
     }
 
 
-    override fun slotGames(token: DefaultClientToken, launch: LaunchMethod): List<SlotGame> {
+    override fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {
+        val clientToken = token as DefaultClientToken
+
         val (url, formBody) = JokerBuild.instance("ListGames").build(token)
 
         val data: List<JokerValue.JokerSlotGame> = okHttpUtil.doPostForm(url, formBody, JokerValue.JokerSlotGameResult::class.java).listGames

@@ -16,6 +16,14 @@ object MapResultUtil {
         return map[key]?.toString()?.toInt()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
     }
 
+    fun asBoolean(map: Map<String, Any>, key: String): Boolean {
+        return map[key]?.toString()?.toBoolean()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+    }
+
+    fun asLong(map: Map<String, Any>, key: String): Long {
+        return map[key]?.toString()?.toLong()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+    }
+
     fun asBigDecimal(map: Map<String, Any>, key: String): BigDecimal {
         return map[key]?.toString()?.toBigDecimal()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
     }

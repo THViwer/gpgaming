@@ -4,12 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.onepiece.treasure.beans.exceptions.LogicException
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
-import okhttp3.FormBody
+import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
@@ -118,6 +115,10 @@ class OkHttpUtil(
     }
 
     fun <T> doPostJson(url: String, data: Any, clz: Class<T>): T {
+        return this.doPostJson(url, data, emptyMap(), clz)
+    }
+
+    fun <T> doPostJson(url: String, data: Any, headers: Map<String, String>, clz: Class<T>): T {
 
         val json = if (data is String) {
             data
@@ -130,10 +131,15 @@ class OkHttpUtil(
 
         val body = json.toRequestBody(JSON)
 
-        val request = Request.Builder()
+        val builder = Request.Builder()
                 .url(url)
                 .post(body)
-                .build()
+
+        headers.forEach {
+            builder.addHeader(it.key, it.value)
+        }
+
+        val request = builder.build()
         val response = client.newCall(request).execute()
         if (response.code != 200) {
             log.error("$response")

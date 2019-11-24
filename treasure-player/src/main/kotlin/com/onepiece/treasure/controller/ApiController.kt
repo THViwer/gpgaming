@@ -119,6 +119,7 @@ class ApiController(
     @GetMapping("/start/slot")
     override fun startSlotGame(
             @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestParam("launchMethod", defaultValue = "Web") launchMethod: LaunchMethod,
             @RequestParam("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp {
 
@@ -126,7 +127,7 @@ class ApiController(
         val member = current()
 
         val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
-                gameId = gameId, language = language)
+                gameId = gameId, language = language, launchMethod = launchMethod)
         return StartGameResp(path = gameUrl)
 
     }

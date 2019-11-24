@@ -43,6 +43,8 @@ sealed class GameValue {
 
             val language: Language,
 
+            val launchMethod: LaunchMethod,
+
             // 重定向地址
             val redirectUrl: String = "http://www.baidu.com"
     )

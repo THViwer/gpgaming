@@ -24,6 +24,14 @@ class MapUtil private constructor(
         return MapResultUtil.asInt(map = data, key = key)
     }
 
+    fun asBoolean(key: String): Boolean {
+        return MapResultUtil.asBoolean(map = data, key = key)
+    }
+
+    fun asLong(key: String): Long {
+        return MapResultUtil.asLong(map = data, key = key)
+    }
+
     fun asBigDecimal(key: String): BigDecimal {
         return MapResultUtil.asBigDecimal(map = data, key = key)
     }

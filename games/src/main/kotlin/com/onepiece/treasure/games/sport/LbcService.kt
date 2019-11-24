@@ -1,18 +1,19 @@
 package com.onepiece.treasure.games.sport
 
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.token.LbcClientToken
+import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
+import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
-//@Service
+@Service
 class LbcService : PlatformService() {
 
     private val LBC_START_URL = "http://c.gsoft888.net/Deposit_ProcessLogin.aspx?lang=en&OType=1&WebSkinType=3&skincolor=bl001&g="
     private val LBC_START_MOBILE_URL = "http://i.gsoft888.net/Deposit_ProcessLogin.aspx?lang=en&OType=1&skincolor=bl001&ischinaview=True&st="
-
-
 
     override fun register(registerReq: GameValue.RegisterReq): String {
         val clientToken = registerReq.token as LbcClientToken
@@ -28,12 +29,14 @@ class LbcService : PlatformService() {
                 "MinTransfer=1"
         ).joinToString("&")
 
-        val path = "/api/CreateMember"
-        // SecurityToken
+        val path = "/api/CreateMember?$urlParam"
+        val securityToken = DigestUtils.md5Hex(path).toUpperCase()
 
+        val url = "${GameConstant.getDomain(Platform.Lbc)}$path&securityToken=${securityToken}"
+        val result = okHttpUtil.doGet(url = url, clz = LbcValue.Result::class.java)
 
-
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        check(result.errorCode == 0)
+        return registerReq.username
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

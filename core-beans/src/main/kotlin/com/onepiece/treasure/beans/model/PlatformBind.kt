@@ -61,6 +61,8 @@ data class PlatformBind(
                 Platform.GGFishing -> GGFishingClientToken::class.java
                 Platform.DreamGaming -> DreamGamingClientToken::class.java
                 Platform.Lbc -> LbcClientToken::class.java
+                Platform.Pragmatic -> PragmaticClientToken::class.java
+                Platform.SpadeGaming -> SpadeGamingClientToken::class.java
                 else -> DefaultClientToken::class.java
             }
 

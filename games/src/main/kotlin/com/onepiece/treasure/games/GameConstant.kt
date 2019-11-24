@@ -78,6 +78,8 @@ object GameConstant  {
             Platform.GGFishing -> "https://optest.365gaming.cc:10029"
             Platform.DreamGaming -> "http://api.dg99web.com"
             Platform.Lbc -> "http://api.prod.ib.gsoft88.net"
+            Platform.Pragmatic -> " https://api.prerelease-env.biz"
+            Platform.SpadeGaming -> "http://bo-egame-staging.sgplay.net"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
@@ -90,6 +92,9 @@ object GameConstant  {
             Platform.GGFishing -> "${proxy}/gg"
             Platform.DreamGaming -> "${proxy}/dreamGaming"
             Platform.Lbc -> "http://45.124.64.29:88"
+//            Platform.Pragmatic -> "$proxy/pramatic"
+            Platform.Pragmatic -> "https://api.prerelease-env.biz"
+            Platform.SpadeGaming -> "${proxy}/spadeGaming"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
