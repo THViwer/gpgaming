@@ -24,8 +24,5 @@ interface BannerApi  {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody bannerUoReq: BannerUoReq)
 
-    @ApiOperation(tags = ["web setting"], value = "上传图片")
-    fun uploadProof(@RequestParam("file") file: MultipartFile): Map<String, String>
-
 
 }

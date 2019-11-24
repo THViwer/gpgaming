@@ -100,7 +100,7 @@ open class CashApiController(
 
     @PostMapping("/upload/proof")
     override fun uploadProof(@RequestParam("file") file: MultipartFile): Map<String, String> {
-        val url = AwsS3Util.upload(file)
+        val url = AwsS3Util.upload(file = file, clientId = current().clientId, category = "bank_proof")
         return mapOf(
                 "path" to url
         )

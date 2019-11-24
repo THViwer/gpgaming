@@ -41,12 +41,4 @@ class BannerApiController(
                 order = bannerUoReq.order, link = bannerUoReq.link, status = bannerUoReq.status)
         advertService.update(bannerUo)
     }
-
-    @PostMapping("/upload/proof")
-    override fun uploadProof(@RequestParam("file") file: MultipartFile): Map<String, String> {
-        val url = AwsS3Util.upload(file)
-        return mapOf(
-                "path" to url
-        )
-    }
 }

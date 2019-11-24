@@ -27,11 +27,11 @@ object AwsS3Util {
             .build()
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
-    private fun generatorFileName(scheme: String = ""): String {
+    private fun generatorFileName(category: String, scheme: String = ""): String {
         val now = LocalDateTime.now()
         val current = now.format(dateTimeFormat)
         val random = StringUtil.generateNumNonce(5)
-        return "bank_proof/$current$random${scheme}"
+        return "$category/$current$random${scheme}"
     }
 
     fun upload(file: File): String {
@@ -47,10 +47,10 @@ object AwsS3Util {
         return "$basePath/$randomFileName"
     }
 
-    fun upload(file: MultipartFile): String {
+    fun upload(file: MultipartFile, clientId: Int, category: String): String {
         val originFileName = file.originalFilename!!
         val scheme = originFileName.substring(originFileName.lastIndexOf("."))
-        val randomFileName = generatorFileName(scheme)
+        val randomFileName = generatorFileName("$category/$clientId", scheme)
 
         val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file.inputStream, ObjectMetadata())
         putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead
