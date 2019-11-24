@@ -4,6 +4,7 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.BetOrder
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.dao.basic.BasicDao
+import kotlin.math.absoluteValue
 
 interface BetOrderDao: BasicDao<BetOrder> {
 
@@ -17,7 +18,7 @@ interface BetOrderDao: BasicDao<BetOrder> {
     }
 
     fun getRuleTable(tableRule: String): String {
-        val index = tableRule.hashCode() % 8
+        val index = tableRule.hashCode().absoluteValue % 8
         return "bet_order_$index"
     }
 

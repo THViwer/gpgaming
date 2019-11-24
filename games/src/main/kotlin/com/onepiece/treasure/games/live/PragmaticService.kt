@@ -179,6 +179,7 @@ class PragmaticService: PlatformService() {
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
         val clientToken = pullBetOrderReq.token as PragmaticClientToken
 
+        val timepoint = System.currentTimeMillis()
         return this.pullByNextId(clientId = pullBetOrderReq.clientId, platform = Platform.Pragmatic) { startId: String ->
             val urlParam = listOf(
                     "login=${clientToken.secureLogin}",
@@ -188,62 +189,71 @@ class PragmaticService: PlatformService() {
 
             val url = "${GameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/DataFeeds/transactions?$urlParam"
             val csv = okHttpUtil.doGet(url = url, clz = String::class.java)
-            parseCsv(csv = csv)
+            val orders = parseCsv(csv = csv)
+            "$timepoint" to orders
         }
 
     }
 
-    private fun parseCsv(csv: String): Pair<String, List<BetOrderValue.BetOrderCo>> {
-        var timepoint = "0"
-        val orders = arrayListOf<BetOrderValue.BetOrderCo>()
+    private fun parseCsv(csv: String): List<BetOrderValue.BetOrderCo> {
+        val list = arrayListOf<MapUtil>()
         csv.lines().forEachIndexed { index, s ->
-
             when (index) {
-                0 -> timepoint = s.split("=")[1]
-                1 -> {}
+                0, 1 -> {}
                 else -> {
-
                     if (s.isBlank()) return@forEachIndexed
-
                     val data = s.split(",")
 
-                    val map = mapOf(
+                    // playerID,extPlayerID,gameID,playSessionID,timestamp,referenceID,type,amount,currency
+                    val map = hashMapOf(
                             "playerID" to data[0],
                             "extPlayerID" to data[1],
                             "gameID" to data[2],
                             "playSessionID" to data[3],
-                            "parentSessionID" to data[4],
-                            "startDate" to data[5],
-                            "endDate" to data[6],
-                            "status" to data[7],
-                            "type" to data[8],
-                            "bet" to data[9],
-                            "win" to data[10],
-                            "currency" to data[11],
-                            "jackpot" to data[12]
+                            "timestamp" to data[4],
+                            "referenceID" to data[5],
+                            "type" to data[6],
+                            "amount" to data[7],
+                            "currency" to data[8]
                     )
 
-                    val mapUtil = MapUtil.instance(data = map)
+                    if (map["type"] == "B") {
+                        map["betAmount"] = map["amount"]!!
+                        map["winAmount"] = "0"
+                    } else {
+                        map["betAmount"] = "0"
+                        map["winAmount"] = map["amount"]!!
+                    }
 
-                    val username = mapUtil.asString("extPlayerID")
-                    val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(Platform.Pragmatic, username)
-                    val orderId = mapUtil.asString("parentSessionID")
-                    val betTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(mapUtil.asLong("startDate")), ZoneId.of("Asia/Shanghai"))
-                    val settleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(mapUtil.asLong("endDate")), ZoneId.of("Asia/Shanghai"))
-                    val status = mapUtil.asString("status")
-                    if (status == "I") return@forEachIndexed
-                    val betAmount = mapUtil.asBigDecimal("bet")
-                    val winAmount = mapUtil.asBigDecimal("win")
-
-
-                    val order = BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, platform = Platform.Pragmatic,
-                            betTime = betTime, settleTime = settleTime, orderId = orderId, originData = "")
-                    orders.add(order)
+                    val mapUtil = MapUtil.instance(map)
+                    list.add(mapUtil)
                 }
             }
         }
 
-        return timepoint to orders
+        //
+        return list.groupBy { it.asString("playSessionID") }.map {
+            val mapUtil = it.value.reduce { acc, mapUtil ->
+                val betAmount = acc.asBigDecimal("betAmount").plus(mapUtil.asBigDecimal("betAmount"))
+                val winAmount = acc.asBigDecimal("winAmount").plus(mapUtil.asBigDecimal("winAmount"))
+                val data = acc.data as HashMap<String, Any>
+                data["betAmount"] = betAmount
+                data["winAmount"] = winAmount
+                MapUtil.instance(data = data)
+            }
+
+            val username = mapUtil.asString("extPlayerID")
+            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(Platform.Pragmatic, username)
+            val orderId = mapUtil.asString("playSessionID")
+            val betTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(mapUtil.asLong("timestamp")), ZoneId.of("Asia/Shanghai"))
+            val betAmount = mapUtil.asBigDecimal("betAmount")
+            val winAmount = mapUtil.asBigDecimal("winAmount")
+
+
+            val originData = objectMapper.writeValueAsString(mapUtil.data)
+            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, platform = Platform.Pragmatic,
+                    betTime = betTime, settleTime = betTime, orderId = orderId, originData = originData)
+        }
     }
 
 }
