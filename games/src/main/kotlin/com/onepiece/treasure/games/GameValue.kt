@@ -9,6 +9,11 @@ import java.time.LocalDateTime
 sealed class GameValue {
 
     data class RegisterReq(
+
+            val clientId: Int,
+
+            val memberId: Int,
+
             val token: ClientToken,
 
             val name: String,

@@ -1,6 +1,7 @@
 package com.onepiece.treasure.games
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
@@ -62,6 +63,13 @@ abstract class PlatformService {
      * 启动老虎机
      */
     open fun start(startReq: GameValue.StartReq): String {
+        error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
+    }
+
+    /**
+     * 启动试玩平台
+     */
+    open fun startDemo(token: ClientToken, language: Language): String {
         error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
     }
 

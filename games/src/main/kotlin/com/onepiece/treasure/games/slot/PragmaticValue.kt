@@ -1,4 +1,4 @@
-package com.onepiece.treasure.games.live
+package com.onepiece.treasure.games.slot
 
 import com.onepiece.treasure.games.bet.JacksonMapUtil
 

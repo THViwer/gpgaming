@@ -52,7 +52,7 @@ object GameConstant  {
 
     // lbc
 //    const val LBC_API_URL = "http://api.prod.ib.gsoft88.net"
-    const val LBC_API_URL = "http://45.124.64.29:88" // hk server
+//    const val LBC_API_URL = "http://45.124.64.29:88" // hk server
 
     // sexy game
 //    const val SEXY_API_URL = "http://test.bikimex.com:10023"
@@ -77,9 +77,10 @@ object GameConstant  {
         when (platform) {
             Platform.GGFishing -> "https://optest.365gaming.cc:10029"
             Platform.DreamGaming -> "http://api.dg99web.com"
-            Platform.Lbc -> "http://api.prod.ib.gsoft88.net"
+            Platform.Lbc -> "http://tsa.gpgaming88.com/api"
             Platform.Pragmatic -> " https://api.prerelease-env.biz"
-            Platform.SpadeGaming -> "http://bo-egame-staging.sgplay.net"
+            Platform.SpadeGaming -> "http://api-egame-staging.sgplay.net"
+
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
@@ -87,7 +88,7 @@ object GameConstant  {
         return this.getDevDomain(platform)
     }
 
-    fun getDevDomain(platform: Platform): String {
+    private fun getDevDomain(platform: Platform): String {
         return  when (platform) {
             Platform.GGFishing -> "${proxy}/gg"
             Platform.DreamGaming -> "${proxy}/dreamGaming"

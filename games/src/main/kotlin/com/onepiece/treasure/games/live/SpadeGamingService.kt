@@ -27,7 +27,7 @@ class SpadeGamingService : PlatformService() {
 
     private fun startPostJson(method: String, data: String): MapUtil {
 
-        val url = GameConstant.getDomain(Platform.SpadeGaming)
+        val url = "${GameConstant.getDomain(Platform.SpadeGaming)}/api"
         val headers = mapOf(
                 "API" to method,
                 "DataType" to "JSON"
@@ -45,7 +45,7 @@ class SpadeGamingService : PlatformService() {
             {
                 "acctId": "${registerReq.username}",
                 "userName": "${registerReq.name}",
-                "currency": "${currency}",
+                "currency": "$currency",
                 "siteId": "${clientToken.siteId}",
                 "merchantCode": "${clientToken.memberCode}",
                 "serialNo": "${UUID.randomUUID()}"

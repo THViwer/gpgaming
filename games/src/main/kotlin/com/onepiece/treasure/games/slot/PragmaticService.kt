@@ -1,4 +1,4 @@
-package com.onepiece.treasure.games.live
+package com.onepiece.treasure.games.slot
 
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
@@ -10,7 +10,6 @@ import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
-import com.onepiece.treasure.games.bet.BetOrderUtil
 import com.onepiece.treasure.games.bet.MapUtil
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory

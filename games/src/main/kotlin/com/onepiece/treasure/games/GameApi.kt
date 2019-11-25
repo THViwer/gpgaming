@@ -16,6 +16,7 @@ import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.fishing.GGFishingService
 import com.onepiece.treasure.games.live.*
 import com.onepiece.treasure.games.live.sexy.SexyService
+import com.onepiece.treasure.games.slot.PragmaticService
 import com.onepiece.treasure.games.slot.joker.JokerService
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Service
 import com.onepiece.treasure.games.slot.mega.MegaService
