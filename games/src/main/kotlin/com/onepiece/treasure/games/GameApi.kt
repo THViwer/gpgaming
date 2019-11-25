@@ -15,7 +15,6 @@ import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.fishing.GGFishingService
 import com.onepiece.treasure.games.live.*
-import com.onepiece.treasure.games.live.sexy.SexyService
 import com.onepiece.treasure.games.slot.PragmaticService
 import com.onepiece.treasure.games.slot.joker.JokerService
 import com.onepiece.treasure.games.slot.kiss918.Kiss918Service
@@ -48,7 +47,7 @@ class GameApi(
         // live game
         private val goldDeluxeService: GoldDeluxeService,
         private val evolutionService: EvolutionService,
-        private val sexyService: SexyService,
+        private val sexyGamingService: SexyGamingService,
         private val fggService: FggService,
         private val allBetService: AllBetService,
         private val dreamGamingService: DreamGamingService,
@@ -91,7 +90,7 @@ class GameApi(
 
             // 未完成测试
             Platform.GoldDeluxe -> goldDeluxeService
-            Platform.SexyGaming -> sexyService
+            Platform.SexyGaming -> sexyGamingService
 
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
@@ -111,7 +110,8 @@ class GameApi(
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         // 注册账号
-        val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = generatorUsername)
+        val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = generatorUsername,
+                clientId = clientId, memberId = memberId)
         val platformUsername = getPlatformApi(platform).register(registerReq)
 
         platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
@@ -196,17 +196,6 @@ class GameApi(
         this.getPlatformApi(platform).transfer(transferReq)
     }
 
-//    /**
-//     * 查询下注订单
-//     */
-//    fun queryBetOrder(clientId: Int, memberId: Int, platform: Platform, startDate: LocalDate, endDate: LocalDate): Any {
-//        val query = BetOrderValue.Query(clientId = clientId, memberId = memberId, startTime = startDate.atStartOfDay(), endTime = endDate.atStartOfDay())
-//
-//        return when (platform) {
-//            Platform.Joker -> jokerBetOrderDao.query(query)
-//            else -> error(OnePieceExceptionCode.DATA_FAIL)
-//        }
-//    }
 
     /**
      * 查询下注订单

@@ -30,7 +30,7 @@ class PullBetTask(
         }
     }
 
-    fun asyncBatch(orders: List<BetOrderValue.BetOrderCo>) {
+    private fun asyncBatch(orders: List<BetOrderValue.BetOrderCo>) {
         if (orders.isEmpty()) return
         betOrderService.batch(orders)
     }
@@ -57,6 +57,15 @@ class PullBetTask(
         val endTime = LocalDateTime.now()
 
         this.startTask(platform = Platform.AllBet, startTime = startTime, endTime = endTime)
+    }
+
+    // if apply platform the api allowed frequency is 20 seconds.
+    // if not apply platform the api allowed frequency is 60 seconds.
+    // @Scheduled(cron="0/30 * *  * * ? ")
+    fun sexyGamingTask() {
+        val startTime = LocalDateTime.now().minusMinutes(5)
+        val endTime = LocalDateTime.now()
+        this.startTask(platform = Platform.SexyGaming, startTime = startTime, endTime = endTime)
     }
 
     // @Scheduled(cron="0 0/1 *  * * ? ")

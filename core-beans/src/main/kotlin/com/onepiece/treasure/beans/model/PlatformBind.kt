@@ -1,7 +1,6 @@
 package com.onepiece.treasure.beans.model
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.model.token.*
@@ -55,7 +54,7 @@ data class PlatformBind(
                 Platform.Kiss918 -> Kiss918ClientToken::class.java
                 Platform.Mega -> MegaClientToken::class.java
                 Platform.Pussy888 -> Pussy888ClientToken::class.java
-                Platform.SexyGaming -> SexyClientToken::class.java
+                Platform.SexyGaming -> SexyGamingClientToken::class.java
                 Platform.Evolution -> EvolutionClientToken::class.java
                 Platform.AllBet -> AllBetClientToken::class.java
                 Platform.GGFishing -> GGFishingClientToken::class.java
