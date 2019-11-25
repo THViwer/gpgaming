@@ -80,6 +80,7 @@ object GameConstant  {
             Platform.Lbc -> "http://tsa.gpgaming88.com"
             Platform.Pragmatic -> " https://api.prerelease-env.biz"
             Platform.SpadeGaming -> "http://api-egame-staging.sgplay.net"
+            Platform.SexyGaming -> ""
 
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -92,11 +93,12 @@ object GameConstant  {
         return  when (platform) {
             Platform.GGFishing -> "${proxy}/gg"
             Platform.DreamGaming -> "${proxy}/dreamGaming"
-//            Platform.Lbc -> "http://45.124.64.29:88"
-            Platform.Lbc -> "http://UAT2.edge2cast.com"
-//            Platform.Pragmatic -> "$proxy/pramatic"
+            Platform.Lbc -> "http://45.124.64.29:88"
+//            Platform.Lbc -> "http://tsa.gpgaming88.com"
             Platform.Pragmatic -> "https://api.prerelease-env.biz"
             Platform.SpadeGaming -> "${proxy}/spadeGaming"
+            Platform.SexyGaming -> ""
+
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
