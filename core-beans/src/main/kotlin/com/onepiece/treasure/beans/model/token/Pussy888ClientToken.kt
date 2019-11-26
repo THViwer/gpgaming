@@ -1,7 +1,7 @@
 package com.onepiece.treasure.beans.model.token
 
 class Pussy888ClientToken(
-        val appId: String,
+        val agentName: String,
 
         val key: String,
 

@@ -1,6 +1,7 @@
 package com.onepiece.treasure.beans.value.internet.web
 
 import com.onepiece.treasure.beans.enums.GameCategory
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 
@@ -15,6 +16,9 @@ data class SlotGame(
 
         @ApiModelProperty("游戏名称")
         val gameName: String,
+
+        @ApiModelProperty("游戏中文名称")
+        val chineseGameName: String,
 
         @ApiModelProperty("游戏图标")
         val icon: String,

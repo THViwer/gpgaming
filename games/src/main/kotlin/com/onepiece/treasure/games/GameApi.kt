@@ -39,6 +39,7 @@ class GameApi(
         private val megaService: MegaService,
         private val pragmaticService: PragmaticService,
         private val spadeGamingService: SpadeGamingService,
+        private val ttgService: TTGService,
 
         // live game
         private val goldDeluxeService: GoldDeluxeService,
@@ -69,6 +70,7 @@ class GameApi(
             Platform.Mega -> megaService
             Platform.Pragmatic -> pragmaticService
             Platform.SpadeGaming -> spadeGamingService
+            Platform.TTG -> ttgService
 
             // live game
             Platform.Fgg -> fggService
@@ -119,14 +121,14 @@ class GameApi(
 
         val redisKey = OnePieceRedisKeyConstant.slotGames(platform = platform, launch = launch)
 
-        return redisService.getList(key = redisKey, clz = SlotGame::class.java, timeout = 3600) {
+//        return redisService.getList(key = redisKey, clz = SlotGame::class.java, timeout = 3600) {
             val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
-            when (platform) {
-                Platform.Joker, Platform.Pragmatic -> getPlatformApi(platform).slotGames(token = clientToken, launch = launch)
+            return when (platform) {
+                Platform.Joker, Platform.Pragmatic, Platform.TTG -> getPlatformApi(platform).slotGames(token = clientToken, launch = launch)
                 else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
-        }
+//        }
     }
 
 
@@ -155,21 +157,20 @@ class GameApi(
     /**
      * 开始游戏(老虎机)
      */
-    fun start(clientId: Int, platformUsername: String, platform: Platform, gameId: String, language: Language, launchMethod: LaunchMethod): String {
+    fun start(clientId: Int, platformUsername: String, platform: Platform, gameId: String, language: Language,
+              launchMethod: LaunchMethod): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         //TODO 跳转url
-        val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId, language = language, launchMethod = launchMethod)
+        val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId, language = language,
+                launchMethod = launchMethod)
         return when (platform) {
-            Platform.Joker, Platform.Pragmatic -> getPlatformApi(platform).startSlot(startSlotReq)
+            Platform.Joker, Platform.Pragmatic, Platform.TTG -> getPlatformApi(platform).startSlot(startSlotReq)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
 
-
-    @Autowired
-    lateinit var activeConfig: ActiveConfig
 
     /**
      * 查询会员余额

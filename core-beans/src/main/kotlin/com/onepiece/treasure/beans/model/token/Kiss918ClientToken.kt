@@ -4,8 +4,6 @@ class Kiss918ClientToken(
 
         val agentName: String,
 
-        val appId: String,
-
         val key: String,
 
         val autoCode: String

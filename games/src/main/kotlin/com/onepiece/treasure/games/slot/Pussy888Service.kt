@@ -2,7 +2,7 @@ package com.onepiece.treasure.games.slot
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
+import com.onepiece.treasure.beans.model.token.Pussy888ClientToken
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapUtil
@@ -29,13 +29,13 @@ class Pussy888Service : PlatformService() {
     private val log = LoggerFactory.getLogger(Pussy888Service::class.java)
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    private fun sign(beforeParam: String?, username: String, time: Long, token: Kiss918ClientToken): String {
+    private fun sign(beforeParam: String?, username: String, time: Long, token: Pussy888ClientToken): String {
         val signStr = "${beforeParam?: ""}${token.autoCode}${username}${time}${token.key}".toLowerCase()
         return DigestUtils.md5Hex(signStr)
     }
 
 
-    private fun startGetJson(method: String, beforeParam: String = "", username: String, data: List<String>, clientToken: Kiss918ClientToken): MapUtil {
+    private fun startGetJson(method: String, beforeParam: String = "", username: String, data: List<String>, clientToken: Pussy888ClientToken): MapUtil {
         val time = System.currentTimeMillis()
         val sign = this.sign(beforeParam = beforeParam, username = username, time = time, token = clientToken)
 
@@ -48,7 +48,7 @@ class Pussy888Service : PlatformService() {
     }
 
     private fun generatorUsername(registerReq: GameValue.RegisterReq): String {
-        val clientToken = registerReq.token as Kiss918ClientToken
+        val clientToken = registerReq.token as Pussy888ClientToken
         val agentName = clientToken.agentName
         val data = listOf(
                 "loginUser=${agentName}",
@@ -64,7 +64,7 @@ class Pussy888Service : PlatformService() {
 
 
     override fun register(registerReq: GameValue.RegisterReq): String {
-        val clientToken = registerReq.token as Kiss918ClientToken
+        val clientToken = registerReq.token as Pussy888ClientToken
 
         val agentName = clientToken.agentName
         val username = this.generatorUsername(registerReq)
@@ -86,7 +86,7 @@ class Pussy888Service : PlatformService() {
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
-        val clientToken = balanceReq.token as Kiss918ClientToken
+        val clientToken = balanceReq.token as Pussy888ClientToken
 
         val data = listOf(
                 "action=getUserInfo",
@@ -98,7 +98,7 @@ class Pussy888Service : PlatformService() {
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
-        val clientToken = transferReq.token as Kiss918ClientToken
+        val clientToken = transferReq.token as Pussy888ClientToken
         val data = listOf(
                 "action=setServerScore",
                 "orderid=${transferReq.orderId}",
@@ -118,7 +118,7 @@ class Pussy888Service : PlatformService() {
     }
 
     override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
-        val clientToken = betOrderReq.token as Kiss918ClientToken
+        val clientToken = betOrderReq.token as Pussy888ClientToken
         val data = listOf(
                 "pageIndex=1",
                 "pageSize=1000",

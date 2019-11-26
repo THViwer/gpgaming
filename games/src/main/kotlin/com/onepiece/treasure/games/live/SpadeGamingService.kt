@@ -143,7 +143,7 @@ class SpadeGamingService : PlatformService() {
             val icon = game.asString("thumbnail")
 
             SlotGame(gameId = gameId, gameName = gameName, category = GameCategory.Default, icon = icon, touchIcon = null, hot = false,
-                    new = false, status = Status.Normal)
+                    new = false, status = Status.Normal, chineseGameName = gameName)
         }
     }
 

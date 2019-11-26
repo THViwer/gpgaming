@@ -62,6 +62,7 @@ data class PlatformBind(
                 Platform.Lbc -> LbcClientToken::class.java
                 Platform.Pragmatic -> PragmaticClientToken::class.java
                 Platform.SpadeGaming -> SpadeGamingClientToken::class.java
+                Platform.TTG -> TTGClientToken::class.java
                 else -> DefaultClientToken::class.java
             }
 

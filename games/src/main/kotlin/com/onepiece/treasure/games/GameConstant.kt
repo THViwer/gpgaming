@@ -26,17 +26,18 @@ class GameConstant(
             Platform.Pragmatic -> " https://api.prerelease-env.biz"
             Platform.SpadeGaming -> "http://api-egame-staging.sgplay.net"
             Platform.SexyGaming -> ""
-            Platform.AllBet -> "https://api3.apidemo.net:8443/"
+            Platform.AllBet -> "https://api3.apidemo.net:8443"
             Platform.Bcs -> "https://transferapi.ballcrown.com"
             Platform.Fgg -> "https://d-tapi.fgg365.com"
             Platform.Pussy888 -> "http://api.pussy888.com"
-            Platform.Mega -> "http://mgt3.36ozhushou.com/mega-cloud/api/"
+            Platform.Mega -> "http://mgt3.36ozhushou.com/mega-cloud"
             Platform.GoldDeluxe -> "http://api.coldsstaging.stack4kids.com"
             Platform.Evolution -> "http://staging.evolution.asia-live.com"
 //            Platform.Sbo -> "http://sboapi.gsoft168.com"
             Platform.Kiss918 -> "http://api.918kiss.com:9991"
             Platform.CT -> "http://api.ctapi888.com"
             Platform.Joker -> "http://api688.net:81"
+            Platform.TTG -> "https://ams-api.stg.ttms.co:8443"
 
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -61,6 +62,8 @@ class GameConstant(
             Platform.Kiss918 -> "${proxy}/kiss918"
             Platform.CT -> "${proxy}/ct"
             Platform.Joker -> "${proxy}/joker"
+//            Platform.TTG -> "${proxy}/ttg"
+            Platform.TTG -> "http://94.237.64.70:106"
 
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }

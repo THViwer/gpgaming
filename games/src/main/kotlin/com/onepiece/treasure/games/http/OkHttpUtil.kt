@@ -27,7 +27,7 @@ class OkHttpUtil(
             .writeTimeout(5000, TimeUnit.SECONDS) //写超时
             .build()
     private val JSON = "application/json; charset=utf-8".toMediaType()
-    private val XML = "text/html; charset=utf-8".toMediaType()
+    private val XML = "application/xml; charset=utf-8".toMediaType()
 
 
     fun <T> doGet(url: String, clz: Class<T>, authorization: String = ""): T {
@@ -163,7 +163,7 @@ class OkHttpUtil(
                 .post(body)
                 .build()
         val response = client.newCall(request).execute()
-        if (response.code != 200) {
+        if (response.code != 200 && response.code != 201) {
             log.error("$response")
             error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
@@ -171,7 +171,11 @@ class OkHttpUtil(
         val responseData = response.body!!.string()
         log.info("response json data : $responseData")
 
-        return xmlMapper.readValue(responseData, clz)
+        return if (clz != String::class.java) {
+            xmlMapper.readValue(responseData, clz)
+        } else {
+            responseData as T
+        }
     }
 
 }

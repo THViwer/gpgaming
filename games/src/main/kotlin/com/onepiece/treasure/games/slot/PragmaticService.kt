@@ -139,7 +139,8 @@ class PragmaticService: PlatformService() {
              */
             val icon = "${gameConstant.getDomain(Platform.Pragmatic)}/game_pic/rec/325/${gameId}.png"
 
-            SlotGame(gameId = gameId, gameName = gameName, category = gameCategory, icon = icon, touchIcon = null, hot = false, new = false, status = Status.Normal)
+            SlotGame(gameId = gameId, gameName = gameName, category = gameCategory, icon = icon, touchIcon = null, hot = false, new = false,
+                    status = Status.Normal, chineseGameName = gameName)
         }
     }
 

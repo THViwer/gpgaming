@@ -52,6 +52,7 @@ sealed class GameValue {
 
             // 重定向地址
             val redirectUrl: String = "http://www.baidu.com"
+
     )
 
     data class BalanceReq(
