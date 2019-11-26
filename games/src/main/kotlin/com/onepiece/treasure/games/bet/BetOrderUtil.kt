@@ -6,7 +6,9 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import java.math.BigDecimal
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 
@@ -60,8 +62,20 @@ class BetOrderUtil private constructor(
         return this
     }
 
+    fun setBetTimeByLong(key: String): BetOrderUtil {
+        val time = mapUtil.asLong(key)
+        betTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.of("Asia/Shanghai"))
+        return this
+    }
+
     fun setSettleTime(key: String, dateTimeFormatter: DateTimeFormatter = dateTimeFormat): BetOrderUtil {
         settleTime = mapUtil.asLocalDateTime(key, dateTimeFormatter)
+        return this
+    }
+
+    fun setSettleTimeByLong(key: String): BetOrderUtil {
+        val time = mapUtil.asLong(key)
+        settleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.of("Asia/Shanghai"))
         return this
     }
 

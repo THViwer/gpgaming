@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
-@RequestMapping("/mega")
-class MegaApiController(
+@RequestMapping
+class PlatformAuthApiController(
         private val gameApi: GameApi
-): MegaApi {
+): PlatformAuthApi {
 
-    private val log = LoggerFactory.getLogger(MegaApiController::class.java)
+    private val log = LoggerFactory.getLogger(PlatformAuthApiController::class.java)
 
-    @PostMapping
+    @PostMapping("/mega")
     override fun login(
             @RequestParam("d") d: Int,
             @RequestBody loginReq: LoginReq): LoginResult {
@@ -24,7 +24,7 @@ class MegaApiController(
         return LoginResult(success = "1", sessionId = UUID.randomUUID().toString(), msg = "login success")
     }
 
-    @GetMapping
+    @GetMapping("/mega")
     override fun download(@RequestHeader("clientId", defaultValue = "1") clientId: Int): String {
         return gameApi.getAppDownload(clientId = clientId, platform = Platform.Mega)
     }
@@ -51,4 +51,22 @@ class MegaApiController(
             val msg: String
     )
 
+    @GetMapping("/cmd")
+    override fun cmdLogin(
+            @RequestParam("token") token: String,
+            @RequestParam("secret_key") secret_key: String
+    ): String {
+
+        //TODO 检查token 和 secret_key
+
+        return """
+            <?xml version="1.0" encoding="UTF-8"?> 
+                <authenticate> 
+                <member_id>TestUser001</member_id> 
+                <status_code>0</status_code> 
+                <message>Success</ message > 
+            </authenticate>
+        """.trimIndent()
+
+    }
 }

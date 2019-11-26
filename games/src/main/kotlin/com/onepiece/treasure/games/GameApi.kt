@@ -17,6 +17,7 @@ import com.onepiece.treasure.games.fishing.GGFishingService
 import com.onepiece.treasure.games.live.*
 import com.onepiece.treasure.games.slot.*
 import com.onepiece.treasure.games.sport.BcsService
+import com.onepiece.treasure.games.sport.CMDService
 import com.onepiece.treasure.games.sport.LbcService
 import com.onepiece.treasure.utils.RedisService
 import com.onepiece.treasure.utils.StringUtil
@@ -53,6 +54,7 @@ class GameApi(
 //        private val sboService: SboService,
         private val lbcService: LbcService,
         private val bcsService: BcsService,
+        private val cmdService: CMDService,
 
         // fishing
         private val ggFishingService: GGFishingService
@@ -81,6 +83,7 @@ class GameApi(
             // sport
             Platform.Lbc -> lbcService
             Platform.Bcs -> bcsService
+            Platform.CMD -> cmdService
 
             // fishing
             Platform.GGFishing -> ggFishingService
@@ -224,7 +227,8 @@ class GameApi(
             Platform.AllBet,
             Platform.GGFishing,
             Platform.Pragmatic,
-            Platform.TTG -> {
+            Platform.TTG,
+            Platform.CMD -> {
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken)
                 getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)
             }

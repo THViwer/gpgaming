@@ -30,6 +30,7 @@ enum class Platform(
 //    Sbo(PlatformDetail.ofSbo()),
     Lbc(PlatformDetail.ofLbc()),
     Bcs(PlatformDetail.ofBcs()),
+    CMD(PlatformDetail.ofCMD()),
 
     // fishing
     GGFishing(PlatformDetail.ofGGFishng())
@@ -155,7 +156,10 @@ open class PlatformDetail private constructor(
             return PlatformDetail(category = PlatformCategory.Sport, name = "BCS", icon = defaultLogoPath,
                     disableIcon = defaultLogoPath, status = Status.Normal)
         }
-
+        fun ofCMD(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Sport, name = "CMD", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
+        }
         // Fishing
         fun ofGGFishng(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Fishing, name = "GGFishing", icon = defaultLogoPath,
