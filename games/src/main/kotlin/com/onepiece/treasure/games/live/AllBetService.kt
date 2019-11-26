@@ -33,7 +33,7 @@ class AllBetService : PlatformService() {
         val md5Data = Base64.encodeBase64String(DigestUtils.md5("$desData${allBetClientToken.md5Key}"))
         val param = "propertyId=${allBetClientToken.propertyId}&data=${URLEncoder.encode(desData, "UTF-8")}&sign=${URLEncoder.encode(md5Data, "UTF-8")}&${urlParam}"
 
-        val result = okHttpUtil.doGet(url = "${GameConstant.ALLBET_API_URL}${method}?$param", clz = AllBetValue.Result::class.java)
+        val result = okHttpUtil.doGet(url = "${gameConstant.getDomain(Platform.AllBet)}${method}?$param", clz = AllBetValue.Result::class.java)
         check(result.errorCode == "OK") { OnePieceExceptionCode.PLATFORM_DATA_FAIL}
         return result.mapUtil
     }

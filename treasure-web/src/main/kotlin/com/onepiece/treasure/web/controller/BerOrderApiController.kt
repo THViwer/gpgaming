@@ -31,15 +31,12 @@ class BerOrderApiController(
 
         val member = memberService.findByUsername(username) ?: return emptyList<Any>()
 
-        val startDate = startTime.toLocalDate()
-        val endDate = endTime.toLocalDate()
-
         return when (platform) {
             Platform.Joker, Platform.Fgg-> {
                 betOrderService.getBets(clientId = clientId, memberId = member.id, platform = platform)
             }
 
-            Platform.Kiss918, Platform.Sbo, Platform.Mega, Platform.Bcs -> {
+            Platform.Kiss918, Platform.Mega, Platform.Bcs -> {
                 val platformMember = platformMemberService.find(memberId = member.id, platform = platform) ?: return emptyList<Any>()
                 gameApi.queryBetOrder(clientId = clientId, platformUsername = platformMember.platformUsername, platform = platform, startTime = startTime, endTime = endTime)
             }

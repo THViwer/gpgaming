@@ -7,7 +7,6 @@ import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.LbcClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.PlatformUsernameUtil
-import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapUtil
@@ -25,7 +24,7 @@ class LbcService : PlatformService() {
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
 
     fun startGetJson(method: String, formBody: FormBody): MapUtil {
-        val url = "${GameConstant.getDomain(Platform.Lbc)}/api/${method}"
+        val url = "${gameConstant.getDomain(Platform.Lbc)}/api/${method}"
         val result = okHttpUtil.doPostForm(url = url, body = formBody, clz = LbcValue.Result::class.java)
 
         check(result.errorCode == 0) {

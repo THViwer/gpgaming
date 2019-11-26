@@ -15,16 +15,12 @@ import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.fishing.GGFishingService
 import com.onepiece.treasure.games.live.*
-import com.onepiece.treasure.games.slot.PragmaticService
-import com.onepiece.treasure.games.slot.joker.JokerService
-import com.onepiece.treasure.games.slot.kiss918.Kiss918Service
-import com.onepiece.treasure.games.slot.mega.MegaService
-import com.onepiece.treasure.games.slot.pussy888.Pussy888Service
+import com.onepiece.treasure.games.slot.*
 import com.onepiece.treasure.games.sport.BcsService
 import com.onepiece.treasure.games.sport.LbcService
-import com.onepiece.treasure.games.sport.sbo.SboService
 import com.onepiece.treasure.utils.RedisService
 import com.onepiece.treasure.utils.StringUtil
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -53,7 +49,7 @@ class GameApi(
         private val dreamGamingService: DreamGamingService,
 
         // sport
-        private val sboService: SboService,
+//        private val sboService: SboService,
         private val lbcService: LbcService,
         private val bcsService: BcsService,
 
@@ -82,7 +78,6 @@ class GameApi(
 
             // sport
             Platform.Lbc -> lbcService
-            Platform.Sbo -> sboService
             Platform.Bcs -> bcsService
 
             // fishing
@@ -145,7 +140,6 @@ class GameApi(
         return when (platform) {
             Platform.Evolution,
             Platform.Lbc,
-            Platform.Sbo,
             Platform.GoldDeluxe,
             Platform.Fgg,
             Platform.AllBet,
@@ -173,6 +167,9 @@ class GameApi(
         }
     }
 
+
+    @Autowired
+    lateinit var activeConfig: ActiveConfig
 
     /**
      * 查询会员余额
@@ -242,7 +239,7 @@ class GameApi(
         val clientToken = getClientToken(clientId = clientId, platform = platform)
 
         return when(platform) {
-            Platform.Mega -> megaService.downApp(token = clientToken as MegaClientToken)
+            Platform.Mega -> megaService.downApp(clientToken = clientToken as MegaClientToken)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }

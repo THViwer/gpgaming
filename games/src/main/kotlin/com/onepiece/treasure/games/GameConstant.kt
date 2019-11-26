@@ -2,91 +2,44 @@ package com.onepiece.treasure.games
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import org.springframework.stereotype.Component
 
-object GameConstant  {
+@Component
+class GameConstant(
+        private val activeConfig: ActiveConfig
+) {
 
-    const val demoPath = "http://94.237.64.70"
-    const val proxy = "http://94.237.64.70:90"
-
-    // joker
-//    const val JOKER_URL = "http://api688.net:81"
-    const val JOKER_URL = "${demoPath}:81"
-    const val JOKER_GAME_URL = "${demoPath}/iframe.html"
-
-    // ct
-//    const val CT_API_URL = "http://api.ctapi888.com"
-    const val CT_API_URL = "${demoPath}:82"
-
-    //    const val DG_API_URL = "http://api.dg99web.com"
-//    const val DG_API_URL = "${demoPath}:89"
-//    const val DG_API_URL = "${demoPath}:90/dg"
-
-    // 918kiss
-//    const val KISS918_API_URL = "http://api.918kiss.com:9991"
-    const val KISS918_API_URL = "${demoPath}:83"
-    //    const val KISS918_API_ORDER_URL = "http://api.918kiss.com:9919"
-    const val KISS918_API_ORDER_URL = "${demoPath}:84"
-
+    private val proxy = "http://94.237.64.70:90"
     // sbo
-//    const val SBO_API_URL = "sboapi.gsoft168.com"
-    const val SBO_API_URL = "${demoPath}:85"
-    const val SBO_START_URL = "http://sports-567gaming.568win.com/welcome2.aspx"
-
-    // evolution
-//    const val EVOLUTION_API_URL = "http://staging.evolution.asia-live.com"
-    const val EVOLUTION_API_URL = "${demoPath}:94"
-
-    //GoldDeluxe
-//    const val GOLDDELUXE_API_URL = "http://api.coldsstaging.stack4kids.com/release/www/merchantapi.php"
-    const val GOLDDELUXE_API_URL = "${demoPath}:87"
-
-    // meaga
-//    const val MEGA_API_URL = "http://mgt3.36ozhushou.com/mega-cloud/api/"
-    const val MEGA_API_URL = "$demoPath:90/mega"
-
-    // pussy888
-    //    const val PUSSY888_API_URL = "http://api.pussy888.com"
-    const val PUSSY_API_URL = "${demoPath}:92"
-    //    const val PUSSY888_API_ORDER_URL = "http://api2.pussy888.com"
-    const val PUSSY_API_ORDER_URL = "${demoPath}:93"
-
-    // lbc
-//    const val LBC_API_URL = "http://api.prod.ib.gsoft88.net"
-//    const val LBC_API_URL = "http://45.124.64.29:88" // hk server
-
-    // sexy game
-//    const val SEXY_API_URL = "http://test.bikimex.com:10023"
-    const val SEXY_API_URL = "${demoPath}:97"
-
-    // fgg
-//    const val FGG_API_URL = "https://d-tapi.fgg365.com"
-    const val FGG_API_URL = "$proxy/fgg/Game"
-
-    // bcs
-//    const val BCS_API_URL = "https://transferapi.ballcrown.com"  // 测试地址
-    const val BCS_API_URL = "${proxy}/bcs"
-
-    //allbet
-//    const val ALLBET_API_URL = "https://api3.apidemo.net:8443/"
-    const val ALLBET_API_URL = "${proxy}/allbet"
-
-    // ggFishing
-    const val GGFISHING_API_URL = "https://optest.365gaming.cc:10029"
+    // const val SBO_START_URL = "http://sports-567gaming.568win.com/welcome2.aspx"
 
     fun getDomain(platform: Platform): String {
-        when (platform) {
+
+        if (activeConfig.profile== "dev") {
+            return this.getDevDomain(platform)
+        }
+
+        return when (platform) {
             Platform.GGFishing -> "https://optest.365gaming.cc:10029"
             Platform.DreamGaming -> "http://api.dg99web.com"
             Platform.Lbc -> "http://tsa.gpgaming88.com"
             Platform.Pragmatic -> " https://api.prerelease-env.biz"
             Platform.SpadeGaming -> "http://api-egame-staging.sgplay.net"
             Platform.SexyGaming -> ""
+            Platform.AllBet -> "https://api3.apidemo.net:8443/"
+            Platform.Bcs -> "https://transferapi.ballcrown.com"
+            Platform.Fgg -> "https://d-tapi.fgg365.com"
+            Platform.Pussy888 -> "http://api.pussy888.com"
+            Platform.Mega -> "http://mgt3.36ozhushou.com/mega-cloud/api/"
+            Platform.GoldDeluxe -> "http://api.coldsstaging.stack4kids.com"
+            Platform.Evolution -> "http://staging.evolution.asia-live.com"
+//            Platform.Sbo -> "http://sboapi.gsoft168.com"
+            Platform.Kiss918 -> "http://api.918kiss.com:9991"
+            Platform.CT -> "http://api.ctapi888.com"
+            Platform.Joker -> "http://api688.net:81"
 
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
-
-        //TODO 目前是测试
-        return this.getDevDomain(platform)
     }
 
     private fun getDevDomain(platform: Platform): String {
@@ -94,16 +47,33 @@ object GameConstant  {
             Platform.GGFishing -> "${proxy}/gg"
             Platform.DreamGaming -> "${proxy}/dreamGaming"
             Platform.Lbc -> "http://45.124.64.29:88"
-//            Platform.Lbc -> "http://tsa.gpgaming88.com"
             Platform.Pragmatic -> "https://api.prerelease-env.biz"
             Platform.SpadeGaming -> "${proxy}/spadeGaming"
             Platform.SexyGaming -> ""
+            Platform.AllBet -> "${proxy}/allbet"
+            Platform.Bcs -> "${proxy}/bcs"
+            Platform.Fgg -> "${proxy}/fgg/Game"
+            Platform.Pussy888 -> "${proxy}/pussy"
+            Platform.Mega -> "${proxy}/mega"
+            Platform.GoldDeluxe -> "$proxy/goldDeluxe"
+            Platform.Evolution -> "${proxy}/evolution"
+//            Platform.Sbo -> "${proxy}/sbo"
+            Platform.Kiss918 -> "${proxy}/kiss918"
+            Platform.CT -> "${proxy}/ct"
+            Platform.Joker -> "${proxy}/joker"
 
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
-
     }
 
-
+    fun getOrderApiUrl(platform: Platform): String {
+        return when {
+            platform == Platform.Pussy888 && activeConfig.profile == "dev" -> "$proxy/pussyOrder"
+            platform == Platform.Pussy888 -> "http://api2.pussy888.com"
+            platform == Platform.Kiss918 && activeConfig.profile == "dev" -> "$proxy/kiss918Order"
+            platform == Platform.Kiss918 -> "http://api.918kiss.com:9919"
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+    }
 
 }

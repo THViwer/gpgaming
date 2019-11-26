@@ -22,7 +22,7 @@ class GGFishingService : PlatformService() {
 
     fun startDoGet(clientToken: GGFishingClientToken, path: String, data: Map<String, Any>): MapUtil {
 
-        val url = "${GameConstant.getDomain(Platform.GGFishing)}/api/${clientToken.webSite}/${path}"
+        val url = "${gameConstant.getDomain(Platform.GGFishing)}/api/${clientToken.webSite}/${path}"
 
         val param = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
         val result = okHttpUtil.doGet(url = "$url?${param}", clz = GGFishingValue.Result::class.java)
@@ -148,7 +148,7 @@ class GGFishingService : PlatformService() {
         )
 
         val param = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-        return "${GameConstant.getDomain(Platform.GGFishing)}/api/${clientToken.webSite}/loginV2?$param"
+        return "${gameConstant.getDomain(Platform.GGFishing)}/api/${clientToken.webSite}/loginV2?$param"
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {

@@ -23,7 +23,7 @@ class DreamGamingService : PlatformService() {
 
     fun doStartPostJson(method: String, data: String): MapUtil {
 
-        val url = "${GameConstant.getDomain(Platform.DreamGaming)}$method"
+        val url = "${gameConstant.getDomain(Platform.DreamGaming)}$method"
         val result = okHttpUtil.doPostJson(url = url, data = data, clz = DreamGamingValue.Result::class.java)
 
         check(result.codeId == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
@@ -109,7 +109,8 @@ class DreamGamingService : PlatformService() {
             } 
         """.trimIndent()
 
-        val url = "${GameConstant.getDomain(Platform.DreamGaming)}/account/checkTransfer/${clientToken.agentName}"
+
+        val url = "${gameConstant.getDomain(Platform.DreamGaming)}/account/checkTransfer/${clientToken.agentName}"
         val result = okHttpUtil.doPostJson(url = url, data = data, clz = DreamGamingValue.Result::class.java)
         return result.codeId == 0
     }

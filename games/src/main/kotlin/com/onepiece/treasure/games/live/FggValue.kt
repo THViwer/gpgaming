@@ -1,9 +1,7 @@
 package com.onepiece.treasure.games.live
 
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.games.bet.JacksonMapUtil
 
 sealed class FggValue {
 
@@ -13,18 +11,7 @@ sealed class FggValue {
             val errorCode: String = "",
 
             @JsonProperty("ErrorDesc")
-            val errorDesc: String = "",
+            val errorDesc: String = ""
 
-            @JsonIgnore
-            @JsonAnySetter
-            val data: Map<String, Any> = hashMapOf()
-    ) {
-
-        @JsonIgnore
-        fun checkErrorCode() {
-            check(this.errorCode.isBlank()) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
-        }
-
-
-    }
+    ): JacksonMapUtil()
 }

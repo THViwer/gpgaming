@@ -31,7 +31,7 @@ class PragmaticService: PlatformService() {
         val sign = DigestUtils.md5Hex(signParam)
 
         val urlParam = "$param&hash=$sign"
-        val url = "${GameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/http/CasinoGameAPI${method}"
+        val url = "${gameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/http/CasinoGameAPI${method}"
 
         val result = okHttpUtil.doGet(url = "$url?$urlParam", clz = PragmaticValue.Result::class.java)
         check(result.error == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
@@ -137,7 +137,7 @@ class PragmaticService: PlatformService() {
              * 方形，大小 138x138：
              * http(s)://{game server domain}/game_pic/square/138/{gameID}.jpg
              */
-            val icon = "${GameConstant.getDomain(Platform.Pragmatic)}/game_pic/rec/325/${gameId}.png"
+            val icon = "${gameConstant.getDomain(Platform.Pragmatic)}/game_pic/rec/325/${gameId}.png"
 
             SlotGame(gameId = gameId, gameName = gameName, category = gameCategory, icon = icon, touchIcon = null, hot = false, new = false, status = Status.Normal)
         }
@@ -186,7 +186,7 @@ class PragmaticService: PlatformService() {
                     "timepoint=$startId"
             ).joinToString(separator = "&")
 
-            val url = "${GameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/DataFeeds/transactions?$urlParam"
+            val url = "${gameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/DataFeeds/transactions?$urlParam"
             val csv = okHttpUtil.doGet(url = url, clz = String::class.java)
             val orders = parseCsv(csv = csv)
             "$timepoint" to orders

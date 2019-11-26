@@ -6,11 +6,10 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
-import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.PlatformUsernameUtil
-import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
+import com.onepiece.treasure.games.bet.MapUtil
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.Instant
@@ -39,6 +38,18 @@ import java.time.ZoneId
 @Service
 class FggService: PlatformService() {
 
+    fun startPostJson(method: String, data: String): MapUtil {
+
+        val url = "${gameConstant.getDomain(platform = Platform.Fgg)}/$method"
+        val result = okHttpUtil.doPostJson(url = url, data = data, clz = FggValue.Result::class.java)
+        check(result.errorCode.isBlank()) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+
+        return result.mapUtil
+
+
+    }
+
+
     override fun register(registerReq: GameValue.RegisterReq): String {
         val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, startPlatform = LaunchMethod.Web, language = Language.EN, password = registerReq.password)
         this.start(startReq)
@@ -47,7 +58,6 @@ class FggService: PlatformService() {
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
-
         val token = balanceReq.token as DefaultClientToken
         val param = """
             {
@@ -57,10 +67,8 @@ class FggService: PlatformService() {
             }
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/GetBalance", data = param, clz = FggValue.Result::class.java)
-        result.checkErrorCode()
-
-        return result.data["Balance"]?.toString()?.toBigDecimal()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+        val mapUtil = this.startPostJson(method = "GetBalance", data = param)
+        return mapUtil.asBigDecimal("Balance")
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
@@ -75,9 +83,7 @@ class FggService: PlatformService() {
                 "SerialNumber": "${transferReq.orderId}"
             }
         """.trimIndent()
-        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/Transfer", data = param, clz = FggValue.Result::class.java)
-        result.checkErrorCode()
-
+        this.startPostJson(method = "Transfer", data = param)
         return transferReq.orderId
     }
 
@@ -91,10 +97,8 @@ class FggService: PlatformService() {
                 "SerialNumber": "${checkTransferReq.orderId}"
             }
         """.trimIndent()
-        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/GetTransferInfo", data = param, clz = FggValue.Result::class.java)
-        result.checkErrorCode()
-
-        return result.data["Exist"] == true
+        val mapUtil = this.startPostJson(method = "GetTransferInfo", data = param)
+        return mapUtil.asBoolean("Exist")
     }
 
     override fun start(startReq: GameValue.StartReq): String {
@@ -128,56 +132,46 @@ class FggService: PlatformService() {
             
         """.trimIndent()
 
-        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/GetGameUrl", data = param, clz = FggValue.Result::class.java)
-        result.checkErrorCode()
-
-        return result.data["Url"]?.toString() ?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+        val mapUtil = this.startPostJson(method = "GetGameUrl", data = param)
+        return mapUtil.asString("Url")
     }
 
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
-
-        val redisKey = OnePieceRedisKeyConstant.pullBetOrderLastKey(clientId = pullBetOrderReq.clientId, platform = Platform.Fgg)
-        val sortNo = redisService.get(redisKey, Int::class.java) { 0 }!!
-
         val token = pullBetOrderReq.token as DefaultClientToken
-        val param = """
+
+        return this.pullByNextId(clientId = pullBetOrderReq.clientId, platform = Platform.Fgg) { startId ->
+            val param = """
             {
                 "Key": "${token.appId}",
                 "Secret": "${token.key}",
-                "SortNo": "$sortNo",
+                "SortNo": "$startId",
                 "Rows": 1000
             }
         """.trimIndent()
-        val result = okHttpUtil.doPostJson(url = "${GameConstant.FGG_API_URL}/GetBets", data = param, clz = FggValue.Result::class.java)
-        result.checkErrorCode()
+
+            val mapUtil = this.startPostJson(method = "GetBets", data = param)
 
 
-        val nextSortNo = result.data["SortNo"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-        val bets = result.data["Bets"]?.let { it as List<Map<String, Any>> } ?: emptyList()
-        if (bets.isEmpty()) return emptyList()
+            val nextSortNo =  mapUtil.asString("SortNo")
+            val bets = mapUtil.asList("Bets")
 
-        val orders = bets.map {  bet ->
-            val orderId = bet["BetID"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-            val username = bet["Account"]?.toString()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Fgg, platformUsername = username)
-            val betAmount = bet["Turnover"]?.toString()?.toBigDecimal()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-            val winAmount = bet["TotalPay"]?.toString()?.toBigDecimal()?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+            val orders = bets.map {  bet ->
+                val orderId = bet.asString("BetID")
+                val username = bet.asString("Account")
+                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Fgg, platformUsername = username)
+                val betAmount = bet.asBigDecimal("Turnover")
+                val winAmount = bet.asBigDecimal("TotalPay")
 
-            val betTime = bet["BetTime"]?.toString()
-                    ?.toLong()
-                    ?.let { LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.of("Asia/Shanghai")) }
-                    ?: error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+                val betTime = bet.asLong("BetTime").let { LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.of("Asia/Shanghai"))  }
 
-            val originData = objectMapper.writeValueAsString(bet)
-            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, betAmount = betAmount, winAmount = winAmount,
-                    betTime = betTime, settleTime = betTime, platform = Platform.Fgg, originData = originData)
+                val originData = objectMapper.writeValueAsString(bet.data)
+                BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, betAmount = betAmount, winAmount = winAmount,
+                        betTime = betTime, settleTime = betTime, platform = Platform.Fgg, originData = originData)
+            }
+
+            "nextSortNo" to orders
         }
-
-        redisService.put(redisKey, nextSortNo)
-
-
-        return orders
     }
 
 }

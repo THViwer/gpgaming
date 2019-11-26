@@ -7,7 +7,6 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.PlatformUsernameUtil
-import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.DEFAULT_DATETIMEFORMATTER
@@ -44,7 +43,7 @@ class BcsService : PlatformService() {
 
     override fun getRequestUrl(path: String, data: Map<String, Any>): String {
         val urlParam = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-        return "${GameConstant.BCS_API_URL}${path}?$urlParam"
+        return "${gameConstant.getDomain(Platform.Bcs)}${path}?$urlParam"
     }
 
     fun startDoGetXml(url: String): MapUtil {

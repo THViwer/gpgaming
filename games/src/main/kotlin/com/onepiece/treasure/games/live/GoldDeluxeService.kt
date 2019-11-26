@@ -1,6 +1,7 @@
 package com.onepiece.treasure.games.live
 
 import com.onepiece.treasure.beans.enums.Language
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.games.GameConstant
@@ -31,7 +32,6 @@ class GoldDeluxeService: PlatformService() {
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyMMddHHmmss")
     private val betDateTimeFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")
     private val currencyCode = "MYR"
-    private val url = "${GameConstant.GOLDDELUXE_API_URL}/release/www/merchantapi.php"
 
 
     private fun generatorMessageId(first: String): String {
@@ -39,7 +39,8 @@ class GoldDeluxeService: PlatformService() {
     }
 
     private fun startDoPostXml(data: String): Map<String, Any> {
-        val result = okHttpUtil.doPostXml(url, data, GoldDeluxeValue.Result::class.java)
+        val url = "${gameConstant.getDomain(Platform.GoldDeluxe)}/release/www/merchantapi.php"
+        val result = okHttpUtil.doPostXml(url = url, data = data, clz = GoldDeluxeValue.Result::class.java)
         check(result.header.errorCode == "0") {OnePieceExceptionCode.PLATFORM_METHOD_FAIL}
         return result.param.data
     }

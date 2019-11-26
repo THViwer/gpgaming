@@ -26,7 +26,7 @@ enum class Platform(
     AllBet(PlatformDetail.ofAllBet()),
 
     // sport
-    Sbo(PlatformDetail.ofSbo()),
+//    Sbo(PlatformDetail.ofSbo()),
     Lbc(PlatformDetail.ofLbc()),
     Bcs(PlatformDetail.ofBcs()),
 

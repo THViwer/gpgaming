@@ -31,10 +31,11 @@ class OrderIdBuilder(
     fun generatorTransferOrderId(clientId: Int, platform: Platform): String {
 
         return when (platform) {
-            Platform.Sbo -> {
-                val clientToken = platformBindService.find(clientId = clientId, platform = platform).clientToken as DefaultClientToken
-                "${clientToken.appId}-${UUID.randomUUID().toString().replace("-", "").substring(0, 6)}"
-            }
+            //TODO SBO 订单生成
+//            Platform.Sbo -> {
+//                val clientToken = platformBindService.find(clientId = clientId, platform = platform).clientToken as DefaultClientToken
+//                "${clientToken.appId}-${UUID.randomUUID().toString().replace("-", "").substring(0, 6)}"
+//            }
             Platform.AllBet -> "T${platform.name.substring(0, 1)}${getCurrentTime(dateTimeForma2)}${StringUtil.generateNumNonce(5)}"
             else -> "T${platform.name.substring(0, 1)}${getCurrentTime()}${StringUtil.generateNumNonce(5)}"
         }

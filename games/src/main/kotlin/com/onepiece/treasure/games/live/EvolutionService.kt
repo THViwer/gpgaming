@@ -24,7 +24,7 @@ class EvolutionService : PlatformService() {
 
     override fun getRequestUrl(path: String, data: Map<String, Any>): String {
         val params = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-        return "${GameConstant.EVOLUTION_API_URL}${path}?$params"
+        return "${gameConstant.getDomain(Platform.Evolution)}${path}?$params"
     }
 
     fun doGetResult(url: String, pojo: String): Map<String, Any> {
@@ -149,7 +149,7 @@ class EvolutionService : PlatformService() {
 
         """.trimIndent()
 
-        val url = "${GameConstant.EVOLUTION_API_URL}/ua/v1/${token.appId}/${token.key}"
+        val url = "${gameConstant.getDomain(Platform.Evolution)}/ua/v1/${token.appId}/${token.key}"
         val result= okHttpUtil.doPostJson(url = url, data = json, clz = EvolutionValue.Result::class.java)
         return MapResultUtil.asString(result.data, "entry")
     }
@@ -160,7 +160,7 @@ class EvolutionService : PlatformService() {
 
         val utcStartTime = pullBetOrderReq.startTime.minusHours(8) // 设置UTC时间 所以要减8小时
         val utcEndTime = pullBetOrderReq.endTime.minusHours(8) // 设置UTC时间 所以要减8小时
-        val url = "${GameConstant.EVOLUTION_API_URL}/api/gamehistory/v1/casino/games?startDate=${utcStartTime}&endDate=${utcEndTime}"
+        val url = "${gameConstant.getDomain(Platform.Evolution)}/api/gamehistory/v1/casino/games?startDate=${utcStartTime}&endDate=${utcEndTime}"
         val jsonValue = okHttpUtil.doGet(url, String::class.java, "Basic $authorization")
 
         if (jsonValue.contains("Data could not be found.")) return emptyList()

@@ -7,10 +7,8 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.SexyGamingClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.PlatformUsernameUtil
-import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
-import com.onepiece.treasure.games.bet.BetOrderUtil
 import com.onepiece.treasure.games.bet.MapUtil
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -24,7 +22,7 @@ class SexyGamingService: PlatformService() {
     fun startGetJson(method: String, data: List<String>): MapUtil {
 
         val urlParam = data.joinToString(separator = "&")
-        val url = "${GameConstant.getDomain(Platform.SexyGaming)}$method?$urlParam"
+        val url = "${gameConstant.getDomain(Platform.SexyGaming)}$method?$urlParam"
 
         val result = okHttpUtil.doGet(url = url, clz = SexyGamingValue.Result::class.java)
         check(result.status == "0000") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }

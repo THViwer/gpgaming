@@ -25,6 +25,9 @@ abstract class PlatformService {
     @Autowired
     lateinit var redisService: RedisService
 
+    @Autowired
+    lateinit var gameConstant: GameConstant
+
     open fun getRequestUrl(path: String, data: Map<String, Any>): String {
         return ""
     }

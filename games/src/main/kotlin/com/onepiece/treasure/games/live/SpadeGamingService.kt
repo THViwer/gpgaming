@@ -8,7 +8,6 @@ import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.SpadeGamingClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
-import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.BetOrderUtil
@@ -27,7 +26,7 @@ class SpadeGamingService : PlatformService() {
 
     private fun startPostJson(method: String, data: String): MapUtil {
 
-        val url = "${GameConstant.getDomain(Platform.SpadeGaming)}/api"
+        val url = "${gameConstant.getDomain(Platform.SpadeGaming)}/api"
         val headers = mapOf(
                 "API" to method,
                 "DataType" to "JSON"
