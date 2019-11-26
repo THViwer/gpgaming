@@ -51,7 +51,7 @@ class PullBetTask(
     }
 
     // * 调用次数限制: 25次/10分钟 (以每个propertyId计算)
-    // @Scheduled(cron="0/50 * *  * * ? ")
+    // @Scheduled(cron="0/5 * *  * * ? ")
     fun allBetTask() {
         val startTime = LocalDateTime.now().minusMinutes(20)
         val endTime = LocalDateTime.now()
@@ -73,10 +73,17 @@ class PullBetTask(
         val startTime = LocalDateTime.now().minusMinutes(4)
         val endTime = LocalDateTime.now()
         this.startTask(platform = Platform.SpadeGaming, startTime = startTime, endTime = endTime)
-
     }
 
-    @Scheduled(cron="0/10 * *  * * ? ")
+    // 5分钟一次
+    @Scheduled(cron="0 0/1 *  * * ? ")
+    fun ttgTask() {
+        val startTime = LocalDateTime.now().minusMinutes(5)
+        val endTime = LocalDateTime.now()
+        this.startTask(platform = Platform.TTG, startTime = startTime, endTime = endTime)
+    }
+
+//    @Scheduled(cron="0/10 * *  * * ? ")
     fun start() {
         val endTime = LocalDateTime.now()
         val starTime = endTime.minusMinutes(15)

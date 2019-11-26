@@ -202,7 +202,7 @@ class GameApi(
         val clientToken = getClientToken(clientId = clientId, platform = platform)
 
         return when(platform) {
-            Platform.Kiss918, Platform.Mega, Platform.Pussy888, Platform.SexyGaming, Platform.Bcs, Platform.AllBet -> {
+            Platform.Kiss918, Platform.Mega, Platform.Pussy888, Platform.SexyGaming, Platform.Bcs, Platform.AllBet, Platform.TTG -> {
                 val betOrderReq = GameValue.BetOrderReq(token = clientToken, startTime = startTime, endTime = endTime, username = platformUsername)
                 getPlatformApi(platform).queryBetOrder(betOrderReq)
             }
@@ -223,7 +223,8 @@ class GameApi(
             Platform.Fgg,
             Platform.AllBet,
             Platform.GGFishing,
-            Platform.Pragmatic -> {
+            Platform.Pragmatic,
+            Platform.TTG -> {
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken)
                 getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)
             }

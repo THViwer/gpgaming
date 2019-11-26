@@ -75,6 +75,8 @@ class GameConstant(
             platform == Platform.Pussy888 -> "http://api2.pussy888.com"
             platform == Platform.Kiss918 && activeConfig.profile == "dev" -> "$proxy/kiss918Order"
             platform == Platform.Kiss918 -> "http://api.918kiss.com:9919"
+            platform == Platform.TTG && activeConfig.profile == "dev" -> "http://94.237.64.70:107"
+            platform == Platform.TTG -> "https://ams-df.stg.ttms.co:7443"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }

@@ -21,13 +21,17 @@ class OkHttpUtil(
 
     private val log = LoggerFactory.getLogger(OkHttpUtil::class.java)
 
+    companion object {
+        val JSON = "application/json; charset=utf-8".toMediaType()
+        val XML = "application/xml; charset=utf-8".toMediaType()
+        val TEXT = "text/html; charset=utf-8".toMediaType()
+    }
+
     private val client = OkHttpClient.Builder()
             .connectTimeout(5000, TimeUnit.SECONDS) //连接超时
             .readTimeout(5000, TimeUnit.SECONDS) //读取超时
             .writeTimeout(5000, TimeUnit.SECONDS) //写超时
             .build()
-    private val JSON = "application/json; charset=utf-8".toMediaType()
-    private val XML = "application/xml; charset=utf-8".toMediaType()
 
 
     fun <T> doGet(url: String, clz: Class<T>, authorization: String = ""): T {
@@ -151,18 +155,24 @@ class OkHttpUtil(
         return objectMapper.readValue(responseData, clz)
     }
 
-    fun <T> doPostXml(url: String, data: String, clz: Class<T>): T {
+    fun <T> doPostXml(url: String, data: String, clz: Class<T>, mediaType: MediaType = XML, headers: Map<String, String> = emptyMap()): T {
 
         log.info("request url : $url")
         log.info("request param: $data")
 
-        val body = data.toRequestBody(XML)
+        val body = data.toRequestBody(mediaType)
 
         val request = Request.Builder()
                 .url(url)
                 .post(body)
-                .build()
-        val response = client.newCall(request).execute()
+
+        if (headers.isNotEmpty()) {
+            headers.forEach {
+                request.addHeader(it.key, it.value)
+            }
+        }
+
+        val response = client.newCall(request.build()).execute()
         if (response.code != 200 && response.code != 201) {
             log.error("$response")
             error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
