@@ -35,7 +35,7 @@ class JokerService : PlatformService() {
         val url = "${gameConstant.getDomain(Platform.Joker)}?$urlParam"
 
         val body = FormBody.Builder()
-        data.forEach { body.add(it.key, "$it.value") }
+        data.forEach { body.add(it.key, "${it.value}") }
 
         val result = okHttpUtil.doPostForm(url = url, body = body.build(), clz = JokerValue.Result::class.java)
         // check status
@@ -124,7 +124,7 @@ class JokerService : PlatformService() {
 
         val sign = this.generatorSign(clientToken = clientToken, data = data)
         val body = FormBody.Builder()
-        data.forEach { body.add(it.key, "$it.value") }
+        data.forEach { body.add(it.key, "${it.value}") }
 
         val urlParam = "AppID=${clientToken.appId}&Signature=${sign}"
         val url = "${gameConstant.getDomain(Platform.Joker)}?$urlParam"

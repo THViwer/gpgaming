@@ -126,7 +126,7 @@ class OkHttpUtil(
                 }
             }
         } else {
-            throw LogicException(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
+            error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
     }
 
