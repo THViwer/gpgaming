@@ -90,7 +90,7 @@ class PullBetTask(
         this.startTask(platform = Platform.MicroGaming, startTime = startTime, endTime = endTime)
     }
 
-//    @Scheduled(cron="0/10 * *  * * ? ")
+    @Scheduled(cron="0/10 * *  * * ? ")
     fun start() {
         val endTime = LocalDateTime.now()
         val starTime = endTime.minusMinutes(15)
@@ -101,8 +101,8 @@ class PullBetTask(
 //                Platform.Fgg,
 //                Platform.Bcs,
 //                Platform.GGFishing,
-//                Platform.Pragmatic,
-                Platform.CMD
+                Platform.Pragmatic
+//                Platform.CMD
         )
 
         platforms.forEach { platform ->

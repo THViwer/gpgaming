@@ -81,18 +81,14 @@ class ApiController(
             @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
             @RequestParam("platform") platform: Platform): Map<String, String> {
 
-        val url = when {
-            platform == Platform.MicroGaming -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/micro_gaming.json"
+        val url = when(platform) {
+            Platform.MicroGaming -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/micro_gaming.json"
+            Platform.Pragmatic -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/pragmatic_${launch.name.toLowerCase()}.json"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
         return mapOf(
                 "url" to url
         )
-//        return gameApi.slotGames(clientId = getClientIdByDomain(), platform = platform, launch = launch)
-//                .groupBy { it.category }
-//                .map {
-//                    SlotCategory(gameCategory = it.key, games = it.value)
-//                }
     }
 
     @GetMapping("/start")

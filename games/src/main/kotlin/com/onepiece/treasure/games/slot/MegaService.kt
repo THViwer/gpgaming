@@ -25,27 +25,12 @@ class MegaService : PlatformService() {
 
 
     fun startPostJson(method: String, data: Map<String, Any>, clientToken: MegaClientToken): MapUtil {
-
-
-        /**
-         *         map["id"] = random
-        map["sn"] = token.appId
-        map["params"] = param
-        map["method"] = method
-        map["jsonrpc"] = "2.0"
-         */
-
-        //
-        //        param["random"] = random
-        //        param["sn"] = token.appId
-        //        param["digest"] = sign
-        //
-
         val param = hashMapOf(
                 "id" to "${UUID.randomUUID()}",
                 "sn" to clientToken.appId,
                 "method" to method,
-                "jsonrpc" to "2.0"
+                "jsonrpc" to "2.0",
+                "params" to data
         )
 
         val url = "${gameConstant.getDomain(Platform.Mega)}/mega-cloud/api/"

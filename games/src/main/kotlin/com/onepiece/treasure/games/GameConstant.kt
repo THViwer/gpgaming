@@ -26,7 +26,7 @@ class GameConstant(
             Platform.Kiss918 -> "http://api.918kiss.com:9991"
             Platform.Pussy888 -> "http://api.pussy888.com"
             Platform.Mega -> "http://mgt3.36ozhushou.com/mega-cloud"
-            Platform.Pragmatic -> " https://api.prerelease-env.biz"
+            Platform.Pragmatic -> "https://api.prerelease-env.biz"
             Platform.SpadeGaming -> "http://api-egame-staging.sgplay.net"
             Platform.TTG -> "https://ams-api.stg.ttms.co:8443"
             Platform.MicroGaming -> "https://api.adminserv88.com"
@@ -59,13 +59,12 @@ class GameConstant(
         return  when (platform) {
             Platform.Lbc -> "http://45.124.64.29:88"
             Platform.Joker -> "http://45.124.64.29:89"
-//            Platform.Pragmatic -> "https://api.prerelease-env.biz"
+            Platform.Pragmatic -> "https://api.prerelease-env.biz"
 
             // slot
             Platform.Kiss918 -> "$domain:1002"
             Platform.Pussy888 -> "$domain:1003"
             Platform.Mega -> "$domain:1004"
-            Platform.Pragmatic -> "$domain:1005"
             Platform.SpadeGaming -> "$domain:1006"
             Platform.TTG -> "$domain:1007"
             Platform.MicroGaming -> "$domain:1008"
