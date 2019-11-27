@@ -16,6 +16,7 @@ enum class Platform(
     Pragmatic(PlatformDetail.ofPragmatic()),
     SpadeGaming(PlatformDetail.ofSpadeGaming()),
     TTG(PlatformDetail.ofTTG()),
+    MicroGaming(PlatformDetail.ofTTG()),
 
     // live video
     CT(PlatformDetail.ofCT()),
@@ -103,6 +104,10 @@ open class PlatformDetail private constructor(
         }
         fun ofTTG(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "top trend gamimg", icon = defaultLogoPath,
+                    disableIcon = defaultLogoPath, status = Status.Normal)
+        }
+        fun ofMicroGaming(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Micro Gaming", icon = defaultLogoPath,
                     disableIcon = defaultLogoPath, status = Status.Normal)
         }
 

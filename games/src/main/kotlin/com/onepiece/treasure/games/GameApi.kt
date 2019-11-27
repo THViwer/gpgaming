@@ -41,6 +41,7 @@ class GameApi(
         private val pragmaticService: PragmaticService,
         private val spadeGamingService: SpadeGamingService,
         private val ttgService: TTGService,
+        private val microGameService: MicroGamingService,
 
         // live game
         private val goldDeluxeService: GoldDeluxeService,
@@ -73,6 +74,7 @@ class GameApi(
             Platform.Pragmatic -> pragmaticService
             Platform.SpadeGaming -> spadeGamingService
             Platform.TTG -> ttgService
+            Platform.MicroGaming -> microGameService
 
             // live game
             Platform.Fgg -> fggService
@@ -169,7 +171,7 @@ class GameApi(
         val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId, language = language,
                 launchMethod = launchMethod)
         return when (platform) {
-            Platform.Joker, Platform.Pragmatic, Platform.TTG -> getPlatformApi(platform).startSlot(startSlotReq)
+            Platform.Joker, Platform.Pragmatic, Platform.TTG, Platform.MicroGaming -> getPlatformApi(platform).startSlot(startSlotReq)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
@@ -228,7 +230,8 @@ class GameApi(
             Platform.GGFishing,
             Platform.Pragmatic,
             Platform.TTG,
-            Platform.CMD -> {
+            Platform.CMD,
+            Platform.MicroGaming -> {
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken)
                 getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)
             }

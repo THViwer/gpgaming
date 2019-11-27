@@ -83,7 +83,14 @@ class PullBetTask(
         this.startTask(platform = Platform.TTG, startTime = startTime, endTime = endTime)
     }
 
-    @Scheduled(cron="0/10 * *  * * ? ")
+     @Scheduled(cron="0 0/3 *  * * ? ")
+    fun microGamingTask() {
+        val startTime = LocalDateTime.now().minusMinutes(5)
+        val endTime = LocalDateTime.now()
+        this.startTask(platform = Platform.MicroGaming, startTime = startTime, endTime = endTime)
+    }
+
+//    @Scheduled(cron="0/10 * *  * * ? ")
     fun start() {
         val endTime = LocalDateTime.now()
         val starTime = endTime.minusMinutes(15)

@@ -29,6 +29,7 @@ class GameConstant(
             Platform.Pragmatic -> " https://api.prerelease-env.biz"
             Platform.SpadeGaming -> "http://api-egame-staging.sgplay.net"
             Platform.TTG -> "https://ams-api.stg.ttms.co:8443"
+            Platform.MicroGaming -> "https://api.adminserv88.com"
 
             // live
             Platform.CT -> "http://api.ctapi888.com"
@@ -67,6 +68,7 @@ class GameConstant(
             Platform.Pragmatic -> "$domain:1005"
             Platform.SpadeGaming -> "$domain:1006"
             Platform.TTG -> "$domain:1007"
+            Platform.MicroGaming -> "$domain:1008"
 
             // live
             Platform.CT -> "$domain:2001"

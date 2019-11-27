@@ -161,7 +161,8 @@ class EvolutionService : PlatformService() {
         val utcStartTime = pullBetOrderReq.startTime.minusHours(8) // 设置UTC时间 所以要减8小时
         val utcEndTime = pullBetOrderReq.endTime.minusHours(8) // 设置UTC时间 所以要减8小时
         val url = "${gameConstant.getDomain(Platform.Evolution)}/api/gamehistory/v1/casino/games?startDate=${utcStartTime}&endDate=${utcEndTime}"
-        val jsonValue = okHttpUtil.doGet(url, String::class.java, "Basic $authorization")
+        val headers = mapOf( "Authorization" to  "Basic $authorization")
+        val jsonValue = okHttpUtil.doGet(url, String::class.java, headers)
 
         if (jsonValue.contains("Data could not be found.")) return emptyList()
 

@@ -34,16 +34,23 @@ class OkHttpUtil(
             .build()
 
 
-    fun <T> doGet(url: String, clz: Class<T>, authorization: String = ""): T {
+    fun <T> doGet(url: String, clz: Class<T>,  headers: Map<String, String> = emptyMap()): T {
         log.info("request url: $url")
         val request = Request.Builder()
                 .url(url)
-                .addHeader("Authorization", authorization)
                 .get()
-                .build()
+        if (headers.isNotEmpty()) {
+            headers.forEach {
+                request.addHeader(it.key, it.value)
+            }
+        }
 
-        val response = client.newCall(request).execute()
-        check(response.code == 200) { OnePieceExceptionCode.PLATFORM_METHOD_FAIL }
+        val response = client.newCall(request.build()).execute()
+        check(response.code == 200) {
+            val message = response.body?.string()
+            log.error("post error: ", message)
+            OnePieceExceptionCode.PLATFORM_METHOD_FAIL
+        }
 
         val json = response.body!!.string()
         log.info("response data: $json")
@@ -75,26 +82,31 @@ class OkHttpUtil(
     }
 
 
-    fun doPostForm(url: String, body: FormBody){
-        doPostForm(url, body, String::class.java) { code, response ->
+    fun doPostForm(url: String, body: FormBody, headers: Map<String, String> = emptyMap()){
+        doPostForm(url, body, String::class.java, headers) { code, response ->
             OnePieceExceptionCode.PLATFORM_METHOD_FAIL
         }
     }
 
-    fun <T> doPostForm(url: String, body: FormBody, clz: Class<T>): T {
-        return doPostForm(url, body, clz) { code, response ->
+    fun <T> doPostForm(url: String, body: FormBody, clz: Class<T>, headers: Map<String, String> = emptyMap()): T {
+        return doPostForm(url = url, body = body, clz = clz, headers = headers) { code, response ->
             throw LogicException(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
     }
 
-    fun <T> doPostForm(url: String, body: FormBody, clz: Class<T>? = null, function: (code: Int, response: Response) -> T): T {
+    fun <T> doPostForm(url: String, body: FormBody, clz: Class<T>? = null, headers: Map<String, String> = emptyMap(), function: (code: Int, response: Response) -> T): T {
 
         val request = Request.Builder()
                 .url(url)
                 .post(body)
-                .build()
 
-        val response = client.newCall(request).execute()
+        if (headers.isNotEmpty()) {
+            headers.forEach {
+                request.addHeader(it.key, it.value)
+            }
+        }
+
+        val response = client.newCall(request.build()).execute()
 
         //TODO code
         val code = response.code
@@ -146,7 +158,8 @@ class OkHttpUtil(
         val request = builder.build()
         val response = client.newCall(request).execute()
         if (response.code != 200) {
-            log.error("$response")
+            val message = response.body?.string()
+            log.error("post error: ", message)
             error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
