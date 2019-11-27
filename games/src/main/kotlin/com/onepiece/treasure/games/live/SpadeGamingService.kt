@@ -77,16 +77,16 @@ class SpadeGamingService : PlatformService() {
         val data = """
                     {
                         "acctId": "${transferReq.username}",
-                        "amount": ${transferReq.amount},
+                        "amount": ${transferReq.amount.abs()},
                         "currency": "$currency",
                         "merchantCode": "${clientToken.memberCode}",
-                        "serialNo": "${UUID.randomUUID()}"
+                        "serialNo": "${transferReq.orderId}"
                     }
                 """.trimIndent()
 
         val method = if (transferReq.amount.toDouble() > 0) "deposit" else "withdraw"
-        val result = this.startPostJson(method = method, data = data)
-        return result.asString("serialNo")
+        val mapUtil = this.startPostJson(method = method, data = data)
+        return mapUtil.asString("serialNo")
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
@@ -111,7 +111,6 @@ class SpadeGamingService : PlatformService() {
         return mapUtil.asInt("resultCount") == 1
     }
 
-    //TODO 需要把游戏保存到db中 图片上传到aws s3上 因为公网请求不了图片
     override fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {
 
         val clientToken = token as SpadeGamingClientToken
@@ -142,10 +141,44 @@ class SpadeGamingService : PlatformService() {
             val gameName = game.asString("gameName")
             val icon = game.asString("thumbnail")
 
-            SlotGame(gameId = gameId, gameName = gameName, category = GameCategory.Default, icon = icon, touchIcon = null, hot = false,
+            SlotGame(gameId = gameId, gameName = gameName, category = GameCategory.SLOT, icon = icon, touchIcon = null, hot = false,
                     new = false, status = Status.Normal, chineseGameName = gameName)
         }
     }
+
+    private fun getToken(startSlotReq: GameValue.StartSlotReq): String {
+        val clientToken = startSlotReq.token as SpadeGamingClientToken
+        val data = """
+            {
+                "acctId":"${startSlotReq.username}",
+                "merchantCode":"${clientToken.memberCode}",
+                "action":"ticketLog",
+                "serialNo": "${UUID.randomUUID()}"
+            }
+        """.trimIndent()
+
+        val mapUtil = this.startPostJson(method = "createToken", data = data)
+        return mapUtil.asString("token")
+    }
+
+    override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
+        val clientToken = startSlotReq.token as SpadeGamingClientToken
+        val token = this.getToken(startSlotReq)
+
+        val mobile = startSlotReq.launchMethod == LaunchMethod.Wap
+        val urlParam = listOf(
+                "acctId=${startSlotReq.username}",
+                "language=en",
+                "token=$token",
+                "game=${startSlotReq.gameId}",
+                "mobile=$mobile",
+                "menumode=on"
+        ).joinToString(separator = "&")
+//        return "http://portal.e-games.com/auth/?$urlParam"
+
+        return "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth/?$urlParam"
+    }
+
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
         var index = 1
@@ -174,7 +207,7 @@ class SpadeGamingService : PlatformService() {
             }
         """.trimIndent()
 
-        val mapUtil = this.startPostJson(method = "", data = data)
+        val mapUtil = this.startPostJson(method = "getBetHistory", data = data)
         val orders = mapUtil.asList("list").filter { it.asBoolean("completed") }.map { bet ->
 
             BetOrderUtil.instance(platform = Platform.SpadeGaming, mapUtil = bet)

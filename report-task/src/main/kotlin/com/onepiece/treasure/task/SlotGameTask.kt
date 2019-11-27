@@ -1,26 +1,33 @@
 package com.onepiece.treasure.task
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.onepiece.treasure.beans.enums.GameCategory
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.value.internet.web.SlotCategory
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.games.GameApi
+import com.onepiece.treasure.games.GameConstant
+import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.utils.AwsS3Util
+import okhttp3.Request
+import okhttp3.ResponseBody
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.io.File
 import java.util.*
 
+
 @Service
 class SlotGameTask(
         private val objectMapper: ObjectMapper,
-        private val gameApi: GameApi
+        private val gameApi: GameApi,
+        private val gameConstant: GameConstant,
+        private val okHttpUtil: OkHttpUtil
 )  {
 
-//     @Scheduled(cron="0/10 * *  * * ? ")
+    //     @Scheduled(cron="0/10 * *  * * ? ")
     fun jokerGameTask() {
 
         val webGames = gameApi.slotGames(clientId = 1, platform = Platform.Joker, launch = LaunchMethod.Web)
@@ -44,11 +51,55 @@ class SlotGameTask(
             }
             this.upload(games = games, path = "slot/pragmatic_${it.name.toLowerCase()}.json")
         }
-
-
     }
 
+    @Scheduled(cron="0 0 0/1 * * ? ")
+//    @Scheduled(cron="0/10 * *  * * ? ")
+    fun spadeGameTask() {
+        val webGames = gameApi.slotGames(clientId = 1, platform = Platform.SpadeGaming, launch = LaunchMethod.Web)
 
+        val awsGameJsonUrl = "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/spade_game.json"
+
+        val awsGames = okHttpUtil.doGet(url = awsGameJsonUrl, clz = String::class.java)
+                .let { objectMapper.readValue<List<SlotCategory>>(it) }
+                .map { it.games }
+                .reduce { acc, list ->
+                    val all = arrayListOf<SlotGame>()
+                    all.addAll(acc)
+                    all.addAll(list)
+                    all
+                }.map { it.gameId }.toSet()
+
+        // 是否有变化
+        val change = webGames.any { !awsGames.contains(it.gameId) }
+        if (!change) return
+
+        // 保存图片
+        val games = webGames.map {
+            val url = "${gameConstant.getDomain(Platform.SpadeGaming)}/${it.icon}"
+
+            val filePath = "${System.getProperties().getProperty("user.home")}/${UUID.randomUUID()}.jpg"
+            val file = File(filePath)
+
+            val request: Request = Request.Builder().url(url).build()
+            val body = okHttpUtil.client.newCall(request).execute().body
+
+            val stream = body!!.byteStream()
+            file.writeBytes(stream.readBytes())
+
+            val path = "slot/spade_game/${it.icon.split("/").last()}"
+            val imageUrl = AwsS3Util.uploadLocalFile(file = file, name = path)
+            println(imageUrl)
+
+            file.delete()
+
+
+            it.copy(icon = imageUrl)
+        }
+
+        this.upload(games = games, path = "slot/spade_game.json")
+        println(games)
+    }
 
     private fun upload(games: List<SlotGame>, path: String) {
         if (games.isEmpty()) return

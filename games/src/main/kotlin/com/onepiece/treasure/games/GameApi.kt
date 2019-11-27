@@ -130,7 +130,10 @@ class GameApi(
             val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
             return when (platform) {
-                Platform.Joker, Platform.Pragmatic, Platform.TTG -> getPlatformApi(platform).slotGames(token = clientToken, launch = launch)
+                Platform.Joker,
+                Platform.Pragmatic,
+                Platform.TTG,
+                Platform.SpadeGaming -> getPlatformApi(platform).slotGames(token = clientToken, launch = launch)
                 else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
 //        }
@@ -171,7 +174,11 @@ class GameApi(
         val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId, language = language,
                 launchMethod = launchMethod)
         return when (platform) {
-            Platform.Joker, Platform.Pragmatic, Platform.TTG, Platform.MicroGaming -> getPlatformApi(platform).startSlot(startSlotReq)
+            Platform.Joker,
+            Platform.Pragmatic,
+            Platform.TTG,
+            Platform.MicroGaming,
+            Platform.SpadeGaming -> getPlatformApi(platform).startSlot(startSlotReq)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }

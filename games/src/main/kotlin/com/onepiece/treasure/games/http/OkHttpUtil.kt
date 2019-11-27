@@ -27,7 +27,7 @@ class OkHttpUtil(
         val TEXT = "text/html; charset=utf-8".toMediaType()
     }
 
-    private val client = OkHttpClient.Builder()
+    val client = OkHttpClient.Builder()
             .connectTimeout(5000, TimeUnit.SECONDS) //连接超时
             .readTimeout(5000, TimeUnit.SECONDS) //读取超时
             .writeTimeout(5000, TimeUnit.SECONDS) //写超时

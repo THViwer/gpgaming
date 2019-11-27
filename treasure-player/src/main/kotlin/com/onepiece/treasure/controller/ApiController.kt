@@ -84,6 +84,7 @@ class ApiController(
         val url = when(platform) {
             Platform.MicroGaming -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/micro_gaming.json"
             Platform.Pragmatic -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/pragmatic_${launch.name.toLowerCase()}.json"
+            Platform.SpadeGaming -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/spade_game.json"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
         return mapOf(

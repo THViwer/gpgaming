@@ -68,7 +68,7 @@ class PullBetTask(
         this.startTask(platform = Platform.SexyGaming, startTime = startTime, endTime = endTime)
     }
 
-    // @Scheduled(cron="0 0/1 *  * * ? ")
+     @Scheduled(cron="0 0/1 *  * * ? ")
     fun spadeGamingTask() {
         val startTime = LocalDateTime.now().minusMinutes(4)
         val endTime = LocalDateTime.now()
@@ -112,8 +112,6 @@ class PullBetTask(
                 log.error("", e)
             }
         }
-
-
     }
 
 }
