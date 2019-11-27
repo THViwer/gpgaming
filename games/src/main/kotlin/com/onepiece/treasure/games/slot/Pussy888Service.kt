@@ -31,18 +31,18 @@ class Pussy888Service : PlatformService() {
 
     private fun sign(beforeParam: String?, username: String, time: Long, token: Pussy888ClientToken): String {
         val signStr = "${beforeParam?: ""}${token.autoCode}${username}${time}${token.key}".toLowerCase()
-        return DigestUtils.md5Hex(signStr)
+        return DigestUtils.md5Hex(signStr).toUpperCase()
     }
 
 
-    private fun startGetJson(method: String, beforeParam: String = "", username: String, data: List<String>, clientToken: Pussy888ClientToken): MapUtil {
+    private fun startGetJson(url: String, beforeParam: String = "", username: String, data: List<String>, clientToken: Pussy888ClientToken): MapUtil {
         val time = System.currentTimeMillis()
         val sign = this.sign(beforeParam = beforeParam, username = username, time = time, token = clientToken)
 
         val param = data.joinToString(separator = "&")
-        val url = "${gameConstant.getDomain(Platform.Pussy888)}?$param&sign=${sign}&authcode=${clientToken.autoCode}"
+        val requestUrl = "$url?$param&sign=${sign}&time=$time&authcode=${clientToken.autoCode}"
 
-        val result = okHttpUtil.doGet(url = url, clz = Kiss918Value.Result::class.java)
+        val result = okHttpUtil.doGet(url = requestUrl, clz = Kiss918Value.Result::class.java)
         check(result.success) {  OnePieceExceptionCode.PLATFORM_DATA_FAIL }
         return result.mapUtil
     }
@@ -58,7 +58,8 @@ class Pussy888Service : PlatformService() {
 
         )
 
-        val mapUtil = this.startGetJson(method = "/ashx/account/account.ashx", beforeParam = agentName, username = agentName, clientToken = clientToken, data = data)
+        val url = "${gameConstant.getDomain(Platform.Pussy888)}/ashx/account/account.ashx"
+        val mapUtil = this.startGetJson(url = url, beforeParam = agentName, username = agentName, clientToken = clientToken, data = data)
         return mapUtil.asString("account")
     }
 
@@ -81,7 +82,8 @@ class Pussy888Service : PlatformService() {
                 "UserAreaId=1",
                 "pwdtype=1"
         )
-        this.startGetJson(method = "/ashx/account/account.ashx", username = username, clientToken = clientToken, data = data)
+        val url = "${gameConstant.getDomain(Platform.Pussy888)}/ashx/account/account.ashx"
+        this.startGetJson(url = url, username = username, clientToken = clientToken, data = data)
         return username
     }
 
@@ -93,7 +95,8 @@ class Pussy888Service : PlatformService() {
                 "userName=${balanceReq.username}"
         )
 
-        val mapUtil = this.startGetJson(method = "/ashx/account/account.ashx", username = balanceReq.username, clientToken = clientToken, data = data)
+        val url = "${gameConstant.getDomain(Platform.Pussy888)}/ashx/account/account.ashx"
+        val mapUtil = this.startGetJson(url = url , username = balanceReq.username, clientToken = clientToken, data = data)
         return mapUtil.asBigDecimal("MoneyNum")
     }
 
@@ -108,7 +111,8 @@ class Pussy888Service : PlatformService() {
                 "ActionIp=12.213.1.24"
         )
 
-        this.startGetJson(method = "/ashx/account/setScore.ashx", username = transferReq.username, clientToken = clientToken, data = data)
+        val url = "${gameConstant.getDomain(Platform.Pussy888)}/ashx/account/setScore.ashx"
+        this.startGetJson(url = url, username = transferReq.username, clientToken = clientToken, data = data)
         return transferReq.orderId
     }
 
@@ -127,7 +131,8 @@ class Pussy888Service : PlatformService() {
                 "eDate=${betOrderReq.endTime.format(dateTimeFormatter)}"
         )
 
-        val mapUtils = this.startGetJson(method = "/ashx/GameLog.ashx", username = betOrderReq.username, clientToken = clientToken, data = data)
+        val url = "${gameConstant.getOrderApiUrl(Platform.Pussy888)}/ashx/GameLog.ashx"
+        val mapUtils = this.startGetJson(url = url, username = betOrderReq.username, clientToken = clientToken, data = data)
         return mapUtils.data
     }
 }

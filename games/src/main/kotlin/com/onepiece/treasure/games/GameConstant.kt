@@ -22,7 +22,7 @@ class GameConstant(
         return when (platform) {
 
             // slot
-            Platform.Joker -> "http://api688.net:81"
+            Platform.Joker -> "http://gwc688.net"
             Platform.Kiss918 -> "http://api.918kiss.com:9991"
             Platform.Pussy888 -> "http://api.pussy888.com"
             Platform.Mega -> "http://mgt3.36ozhushou.com/mega-cloud"
@@ -58,10 +58,10 @@ class GameConstant(
         val domain = "http://94.237.64.70"
         return  when (platform) {
             Platform.Lbc -> "http://45.124.64.29:88"
+            Platform.Joker -> "http://45.124.64.29:89"
 //            Platform.Pragmatic -> "https://api.prerelease-env.biz"
 
             // slot
-            Platform.Joker -> "$domain:1001"
             Platform.Kiss918 -> "$domain:1002"
             Platform.Pussy888 -> "$domain:1003"
             Platform.Mega -> "$domain:1004"
