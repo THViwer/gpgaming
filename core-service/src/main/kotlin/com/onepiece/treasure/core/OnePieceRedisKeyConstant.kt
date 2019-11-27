@@ -38,4 +38,6 @@ object OnePieceRedisKeyConstant {
     fun pullBetOrderLastKey(clientId: Int, platform: Platform) = "pull:bet:$clientId:$platform"
 
     fun getLastMarkBetId(betRuleTable: String) = "mark:$betRuleTable"
+
+    fun getMicroGameToken(username: String) = "mg:token:$username"
 }

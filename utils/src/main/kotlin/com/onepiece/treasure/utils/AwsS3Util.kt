@@ -69,14 +69,3 @@ object AwsS3Util {
 
     }
 }
-
-//// 上传本地文件
-//fun main() {
-//
-//    val local = "/Users/cabbage/Desktop/images"
-//    val file = File("$local/banner_2.jpg")
-//    val name = "banner/banner_2.jpg"
-//
-//    val url = AwsS3Util.uploadLocalFile(file, name)
-//    println(url)
-//}

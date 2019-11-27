@@ -7,7 +7,7 @@ import com.onepiece.treasure.games.bet.MapUtil
 
 object TTGGames {
 
-    private final val cvs = """
+    private val cvs = """
         1,Golden  Genie,黄金精灵,1108,GoldenGenie,0,GoldenGenie,95.39%,HTML5,Mobile/Web,1024 Ways Slot,19th November 2019,Yes,Slot,Medium,7600,
         2,Jawz,大白鲨,1143,Jawz,0,Jawz,94.88%,HTML5,Mobile/Web,6 Grab Zones,12th November 2019,NO,Slot,High,1800,
         3,Wild Wild Witch,超疯狂女巫,1105,WildWildWitch,0,WildWildWitch,95.01%,HTML5,Mobile/Web,40 Lines,16th October 2019,Yes,Slot,High,536220,

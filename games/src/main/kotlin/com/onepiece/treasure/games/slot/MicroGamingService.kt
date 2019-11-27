@@ -1,8 +1,13 @@
 package com.onepiece.treasure.games.slot
 
+import com.onepiece.treasure.beans.enums.Language
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.MicroGamingClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
+import com.onepiece.treasure.beans.value.internet.web.SlotGame
+import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
@@ -20,25 +25,31 @@ class MicroGamingService : PlatformService() {
     private val betDateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
 
     private fun getOauthToken(clientToken: MicroGamingClientToken): String {
-        val authorization = Base64.encodeBase64String("${clientToken.authUsername}:${clientToken.authPassword}".toByteArray())
 
-        val headers = mapOf(
-                "Authorization" to "Basic $authorization",
-                "X-DAS-TZ" to "UTC+8",
-                "X-DAS-CURRENCY" to "MYR",
-                "X-DAS-TX-ID" to "TEXT-TX-ID",
-                "X-DAS-LANG" to "en"
-        )
+        val redisKey = OnePieceRedisKeyConstant.getMicroGameToken(clientToken.username)
 
-        val body = FormBody.Builder()
-                .add("grant_type", "password")
-                .add("username", clientToken.username)
-                .add("password", clientToken.password)
-                .build()
+        return redisService.get(key = redisKey, clz = String::class.java, timeout = 3000) {
 
-        val url = "${gameConstant.getDomain(Platform.MicroGaming)}/oauth/token"
-        val oauthToken = okHttpUtil.doPostForm(url = url, body = body, headers = headers, clz = MicroGamingValue.OauthToken::class.java)
-        return oauthToken.access_token
+            val authorization = Base64.encodeBase64String("${clientToken.authUsername}:${clientToken.authPassword}".toByteArray())
+
+            val headers = mapOf(
+                    "Authorization" to "Basic $authorization",
+                    "X-DAS-TZ" to "UTC+8",
+                    "X-DAS-CURRENCY" to "MYR",
+                    "X-DAS-TX-ID" to "TEXT-TX-ID",
+                    "X-DAS-LANG" to "en"
+            )
+
+            val body = FormBody.Builder()
+                    .add("grant_type", "password")
+                    .add("username", clientToken.username)
+                    .add("password", clientToken.password)
+                    .build()
+
+            val url = "${gameConstant.getDomain(Platform.MicroGaming)}/oauth/token"
+            val oauthToken = okHttpUtil.doPostForm(url = url, body = body, headers = headers, clz = MicroGamingValue.OauthToken::class.java)
+            oauthToken.access_token
+        }!!
     }
 
     fun startPostJson(clientToken: MicroGamingClientToken, method: String, data: String): MapUtil {
@@ -121,16 +132,67 @@ class MicroGamingService : PlatformService() {
         return mapUtil.asList("data").firstOrNull() != null
     }
 
+    override fun startDemo(token: ClientToken, language: Language): String {
+        val clientToken = token as MicroGamingClientToken
+
+        val lang = when (language) {
+            Language.EN -> "en_US"
+            Language.VI -> "vi_VN"
+            Language.ID -> "in_ID"
+            Language.TH -> "th_TH"
+            Language.CN -> "zh_CN"
+            Language.MY -> "ms_MY"
+            else -> "en_US"
+        }
+
+        val data = """
+            {
+                "item_id": 1389,
+                "app_id": 1002,
+                "demo": false,
+                "login_context": {
+                    "lang": "$lang"
+                }
+            }
+        """.trimIndent()
+        val mapUtil = this.startPostJson(clientToken = clientToken, method = "/v1/launcher/item", data = data)
+        return mapUtil.asString("data")
+    }
+
+    override fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {
+        return emptyList()
+    }
+
 
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
         val clientToken = startSlotReq.token as MicroGamingClientToken
 
+        val (itemId, appId) = startSlotReq.gameId.split("_")
+
+        val lang = when (startSlotReq.language) {
+            Language.EN -> "en_US"
+            Language.VI -> "vi_VN"
+            Language.ID -> "in_ID"
+            Language.TH -> "th_TH"
+            Language.CN -> "zh_CN"
+            Language.MY -> "ms_MY"
+            else -> "en_US"
+        }
         val data = """
             {
                 "ext_ref": "${startSlotReq.username}",
-                "item_id": 1389,
-                "app_id": 1002,
-                "demo": false
+                "item_id": ${itemId},
+                "app_id": ${appId},
+                "demo": false,
+                "login_context": {
+                    "lang": "$lang"
+                },
+                "conf_params": {
+                    "lobby_url": "${startSlotReq.redirectUrl}",
+                    "banking_url": "${startSlotReq.redirectUrl}",
+                    "logout_url": "${startSlotReq.redirectUrl}",
+                    "failed_url": "${startSlotReq.redirectUrl}"
+                }
             }
         """.trimIndent()
         val mapUtil = this.startPostJson(clientToken = clientToken, method = "/v1/launcher/item", data = data)

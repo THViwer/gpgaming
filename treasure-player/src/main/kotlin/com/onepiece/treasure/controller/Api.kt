@@ -30,7 +30,7 @@ interface Api {
     fun slotMenu(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
-            @RequestParam("platform") platform: Platform): List<SlotCategory>
+            @RequestParam("platform") platform: Platform): Map<String, String>
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台)")
     fun start(
