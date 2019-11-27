@@ -2,7 +2,6 @@ package com.onepiece.treasure.task
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.onepiece.treasure.beans.enums.GameCategory
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.value.internet.web.SlotCategory
@@ -12,7 +11,6 @@ import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.utils.AwsS3Util
 import okhttp3.Request
-import okhttp3.ResponseBody
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.io.File
@@ -33,7 +31,7 @@ class SlotGameTask(
         val webGames = gameApi.slotGames(clientId = 1, platform = Platform.Joker, launch = LaunchMethod.Web)
         this.upload(games = webGames, path = "slot/joker_web.json")
 
-        val wapGames = gameApi.slotGames(clientId = 1, platform = Platform.Joker, launch = LaunchMethod.Web)
+        val wapGames = gameApi.slotGames(clientId = 1, platform = Platform.Joker, launch = LaunchMethod.Wap)
         this.upload(games = wapGames, path = "slot/joker_web.json")
     }
 
@@ -100,6 +98,18 @@ class SlotGameTask(
         this.upload(games = games, path = "slot/spade_game.json")
         println(games)
     }
+
+    //TODO 因为是死的 所以不需要更新
+//    @Scheduled(cron="0/10 * *  * * ? ")
+    fun ttgGameTask() {
+
+        val webGames = gameApi.slotGames(clientId = 1, platform = Platform.TTG, launch = LaunchMethod.Web)
+        this.upload(games = webGames, path = "slot/ttg_web.json")
+
+        val wapGames = gameApi.slotGames(clientId = 1, platform = Platform.TTG, launch = LaunchMethod.Wap)
+        this.upload(games = wapGames, path = "slot/ttg_wap.json")
+    }
+
 
     private fun upload(games: List<SlotGame>, path: String) {
         if (games.isEmpty()) return

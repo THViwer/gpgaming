@@ -76,7 +76,7 @@ class PullBetTask(
     }
 
     // 5分钟一次
-    // @Scheduled(cron="0 0/1 *  * * ? ")
+     @Scheduled(cron="0 0/3 *  * * ? ")
     fun ttgTask() {
         val startTime = LocalDateTime.now().minusMinutes(5)
         val endTime = LocalDateTime.now()

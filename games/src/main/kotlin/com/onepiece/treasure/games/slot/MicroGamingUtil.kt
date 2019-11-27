@@ -55,7 +55,7 @@ object MicroGamingUtil {
 
         val imageName = imageList.split("/").first().split(".").first()
 
-        val icon = "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/mg/${imageName}.png"
+        val icon = "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/micro_game/${imageName}.png"
         return SlotGame(gameId = gameId, gameName = gameName, chineseGameName = chineseGameName, category = gameCategory, icon = icon, touchIcon = null,
                 hot = false, new = false, status = Status.Normal)
     }

@@ -114,12 +114,12 @@ class TTGService: PlatformService() {
             else -> "en"
         }
 
-        val (gameName, gameType) = TTGGames.getNameAndType(startSlotReq.gameId)
+        val (gameId, gameName, gameType) = startSlotReq.gameId.split(":")
 
         val data = listOf(
                 "playerHandle=$token",
                 "account=MYR",
-                "gameId=${startSlotReq.gameId}",
+                "gameId=${gameId}",
                 "gameName=$gameName",
                 "gameType=$gameType",
                 "gameSuite=Flash",

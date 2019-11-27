@@ -173,7 +173,7 @@ object TTGGames {
 
     val mobileGames: List<SlotGame>
     val pcGames: List<SlotGame>
-    val gameMapUtils: Map<String, MapUtil>
+//    val gameMapUtils: Map<String, MapUtil>
 
     init {
         val list = cvs.lines().map {
@@ -188,7 +188,7 @@ object TTGGames {
             val category = list[13]
 
             val map = mapOf(
-                    "gameId" to gameId,
+                    "gameId" to "$gameId:$gameName:$gameType",
                     "gameName" to gameName,
                     "englishName" to englishGameName,
                     "chineseName" to chineseGameName,
@@ -216,12 +216,12 @@ object TTGGames {
                     status = Status.Normal, touchIcon = "http://ams-games.stg.ttms.co/player/assets/images/games/${gameId}.png")
         }
 
-        gameMapUtils = list.map { it.asString("gameId") to it }.toMap()
+//        gameMapUtils = list.map { it.asString("gameId") to it }.toMap()
     }
 
-    fun getNameAndType(gameId: String): Pair<String, String> {
-        val mapUtil = gameMapUtils[gameId]!!
-        return mapUtil.asString("gameName") to mapUtil.asString("gameType")
-    }
+//    fun getNameAndType(gameId: String): Pair<String, String> {
+//        val mapUtil = gameMapUtils[gameId]!!
+//        return mapUtil.asString("gameName") to mapUtil.asString("gameType")
+//    }
 
 }

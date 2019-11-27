@@ -85,6 +85,7 @@ class ApiController(
             Platform.MicroGaming -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/micro_gaming.json"
             Platform.Pragmatic -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/pragmatic_${launch.name.toLowerCase()}.json"
             Platform.SpadeGaming -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/spade_game.json"
+            Platform.TTG -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/ttg_${launch.name.toLowerCase()}.json"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
         return mapOf(

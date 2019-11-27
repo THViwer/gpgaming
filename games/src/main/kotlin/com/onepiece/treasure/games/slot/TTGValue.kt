@@ -8,13 +8,13 @@ sealed class TTGValue {
 
     data class BetResult(
 
-            val details: List<Map<String, Any>> = emptyList()
+            val details: List<Map<String, Any>>?
 
     ): JacksonMapUtil() {
 
         val orders: List<MapUtil>
             @JsonIgnore
-            get() = details.map { MapUtil.instance(it) }
+            get() = details?.map { MapUtil.instance(it) }?: emptyList()
 
     }
 

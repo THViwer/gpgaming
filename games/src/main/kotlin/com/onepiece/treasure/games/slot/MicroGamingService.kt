@@ -116,7 +116,7 @@ class MicroGamingService : PlatformService() {
                 "account_ext_ref": "${transferReq.username}",
                 "category": "ADJUSTMENT",
                 "type": "$type",
-                "amount": ${transferReq.amount},
+                "amount": ${transferReq.amount.abs()},
                 "external_ref": "${transferReq.orderId}"
             }]
         """.trimIndent()
