@@ -32,7 +32,7 @@ sealed class PlatformAuthValue {
 
     ) {
         data class AcctInfo(
-                val accId: String,
+                val acctId: String,
 
                 val balance: BigDecimal = BigDecimal.ZERO,
 
