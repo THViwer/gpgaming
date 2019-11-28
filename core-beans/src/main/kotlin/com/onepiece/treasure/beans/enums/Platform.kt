@@ -16,7 +16,7 @@ enum class Platform(
     Pragmatic(PlatformDetail.ofPragmatic()),
     SpadeGaming(PlatformDetail.ofSpadeGaming()),
     TTG(PlatformDetail.ofTTG()),
-    MicroGaming(PlatformDetail.ofTTG()),
+    MicroGaming(PlatformDetail.ofMicroGaming()),
 
     // live video
     CT(PlatformDetail.ofCT()),
