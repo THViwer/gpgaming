@@ -1,6 +1,7 @@
 package com.onepiece.treasure.games.sport
 
 import com.onepiece.treasure.beans.enums.Language
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
@@ -121,7 +122,7 @@ class LbcService : PlatformService() {
         return "http://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&token=${token}&skincolor=bl001"
     }
 
-    override fun startDemo(token: ClientToken, language: Language): String {
+    override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {
         val lang = when (language) {
             Language.CN -> "cs"
             Language.TH -> "th"
@@ -130,7 +131,12 @@ class LbcService : PlatformService() {
             Language.EN -> "en"
             else -> "en"
         }
-        return "http://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&skincolor=bl001"
+
+        return when (launch) {
+            LaunchMethod.Wap -> "http://c.gsoft888.net/vender.aspx?lang=${lang}&OType=1&skincolor=bl00"
+            else -> "http://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&skincolor=bl001"
+        }
+
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {

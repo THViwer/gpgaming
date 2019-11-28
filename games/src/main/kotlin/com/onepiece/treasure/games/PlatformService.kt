@@ -72,7 +72,7 @@ abstract class PlatformService {
     /**
      * 启动试玩平台
      */
-    open fun startDemo(token: ClientToken, language: Language): String {
+    open fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {
         error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
     }
 

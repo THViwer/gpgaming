@@ -164,6 +164,20 @@ class GameApi(
     }
 
     /**
+     * 开始平台试玩
+     */
+    fun startDemo(clientId: Int, platform: Platform,  language: Language, launchMethod: LaunchMethod): String {
+        val clientToken = this.getClientToken(clientId = clientId, platform = platform)
+
+        return when (platform) {
+            Platform.Lbc,
+            Platform.Bcs,
+            Platform.CMD -> this.getPlatformApi(platform).startDemo(token = clientToken, language = language, launch = launchMethod)
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+    }
+
+    /**
      * 开始游戏(老虎机)
      */
     fun start(clientId: Int, platformUsername: String, platform: Platform, gameId: String, language: Language,

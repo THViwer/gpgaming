@@ -5,6 +5,7 @@ import com.onepiece.treasure.beans.model.token.SpadeGamingClientToken
 import com.onepiece.treasure.controller.value.PlatformAuthValue
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.GameApi
+import io.swagger.annotations.ResponseHeader
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
@@ -56,7 +57,7 @@ class PlatformAuthApiController(
             val msg: String
     )
 
-    @GetMapping("/cmd")
+    @GetMapping("/cmd", produces = ["application/xml;charset=utf-8"])
     override fun cmdLogin(
             @RequestParam("token") token: String,
             @RequestParam("secret_key") secret_key: String

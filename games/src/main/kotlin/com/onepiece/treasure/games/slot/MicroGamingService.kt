@@ -132,7 +132,7 @@ class MicroGamingService : PlatformService() {
         return mapUtil.asList("data").firstOrNull() != null
     }
 
-    override fun startDemo(token: ClientToken, language: Language): String {
+    override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {
         val clientToken = token as MicroGamingClientToken
 
         val lang = when (language) {

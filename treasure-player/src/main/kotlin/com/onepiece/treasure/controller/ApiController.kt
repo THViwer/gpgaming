@@ -113,12 +113,7 @@ class ApiController(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("platform") platform: Platform,
             @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod): StartGameResp {
-
-        val url = when {
-            platform == Platform.Lbc && startPlatform == LaunchMethod.Web-> "http://c.gsoft888.net/vender.aspx?lang=en&OType=1&skincolor=bl001"
-            platform == Platform.Lbc && startPlatform == LaunchMethod.Wap-> "https://i.gsoft888.net/vender.aspx?lang=en&OType=1&skincolor=bl001&ischinaview=True&homeUrl=http://localhost/1/&singupUrl=http://localhost/2/&LoginUrl=http://localhost/3/"
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
-        }
+        val url = gameApi.startDemo(clientId = getClientIdByDomain(), platform = platform, language = language, launchMethod = startPlatform)
 
         return StartGameResp(path = url)
     }

@@ -1,6 +1,7 @@
 package com.onepiece.treasure.games.sport
 
 import com.onepiece.treasure.beans.enums.Language
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.CMDClientToken
@@ -88,7 +89,7 @@ class CMDService : PlatformService() {
         return mapUtil.asMap("Data").data["Status"] == "1"
     }
 
-    override fun startDemo(token: ClientToken, language: Language): String {
+    override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {
 
         val lang = when (language) {
             Language.CN -> "zh-CN"
@@ -100,7 +101,7 @@ class CMDService : PlatformService() {
         }
 
         // 模板：aliceblue、blue、bluegray、darker、gray、green
-        return "http://gp8.1win888.net/auth.aspx?lang=$lang&templatename=aliceblue"
+        return "http://gp8mobile.1win888.net?lang=$lang&templatename=aliceblue"
     }
 
     override fun start(startReq: GameValue.StartReq): String {
