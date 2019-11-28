@@ -104,7 +104,11 @@ class CMDService : PlatformService() {
         }
 
         // 模板：aliceblue、blue、bluegray、darker、gray、green
-        return "http://gp8mobile.1win888.net?lang=$lang&templatename=aliceblue"
+
+        return when (launch) {
+            LaunchMethod.Wap -> "http://gp8mobile.1win888.net/?lang=$lang&templatename=aliceblue"
+            else -> "http://gp8.1win888.net/?lang=$lang&templatename=aliceblue"
+        }
     }
 
     override fun start(startReq: GameValue.StartReq): String {
@@ -120,8 +124,12 @@ class CMDService : PlatformService() {
 
         val token = DigestUtils.md5Hex("${startReq.username}:$CMD_HASH")
 
+        val domain = when (startReq.startPlatform) {
+            LaunchMethod.Wap -> "http://gp8mobile.1win888.net"
+            else -> "http://gp8.1win888.net"
+        }
         // view: v1 = 传统风格 v2 = 亚洲风格 v3 = 电子竞技风格
-        return "http://gp8.1win888.net/auth.aspx?lang=$lang&user=${startReq.username}&token=$token&currency=MYR&templatename=aliceblue&view=v2"
+        return "$domain/auth.aspx?lang=$lang&user=${startReq.username}&token=$token&currency=MYR&templatename=aliceblue&view=v2"
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {

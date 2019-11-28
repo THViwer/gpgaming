@@ -4,6 +4,7 @@ import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.PlatformUsernameUtil
@@ -156,6 +157,25 @@ class BcsService : PlatformService() {
         val mapUtil = this.startDoGetXml(url)
 
         return mapUtil.asString("result")
+    }
+
+    override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {
+        val webType = when (launch) {
+            LaunchMethod.Web -> "PC"
+            LaunchMethod.Wap -> "Wap"
+            else -> "Smart"
+        }
+
+        val lang = when (language) {
+            Language.EN -> "EN"
+            Language.CN -> "CH"
+            Language.VI -> "VN"
+            Language.TH -> "TH"
+            else -> "EN"
+        }
+
+        return "http://www.baidu.com"
+
     }
 
     override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
