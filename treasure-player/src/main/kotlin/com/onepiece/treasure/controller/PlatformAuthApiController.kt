@@ -62,7 +62,7 @@ class PlatformAuthApiController(
             @RequestParam("secret_key") secret_key: String
     ): String {
 
-        //TODO 检查token 和 secret_key
+        log.info("cmd 请求：token=$token, secret_key = $secret_key")
 
         return """
             <?xml version="1.0" encoding="UTF-8"?> 
