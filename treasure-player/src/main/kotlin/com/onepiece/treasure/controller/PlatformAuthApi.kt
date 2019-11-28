@@ -1,5 +1,6 @@
 package com.onepiece.treasure.controller
 
+import com.onepiece.treasure.controller.value.PlatformAuthValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.RequestBody
@@ -26,5 +27,7 @@ interface PlatformAuthApi {
             @RequestParam("secret_key") secret_key: String
     ): String
 
+    @ApiOperation(tags = ["platform auth"], value = "spadeGaming 登陆")
+    fun spadeGamingLogin(@RequestBody request: PlatformAuthValue.SpadeGamingRequest): PlatformAuthValue.SpadeGamingResponse
 
 }

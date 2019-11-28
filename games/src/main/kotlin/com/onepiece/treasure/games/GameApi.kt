@@ -21,7 +21,6 @@ import com.onepiece.treasure.games.sport.CMDService
 import com.onepiece.treasure.games.sport.LbcService
 import com.onepiece.treasure.utils.RedisService
 import com.onepiece.treasure.utils.StringUtil
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -127,15 +126,15 @@ class GameApi(
         val redisKey = OnePieceRedisKeyConstant.slotGames(platform = platform, launch = launch)
 
 //        return redisService.getList(key = redisKey, clz = SlotGame::class.java, timeout = 3600) {
-            val clientToken = this.getClientToken(clientId = clientId, platform = platform)
+        val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
-            return when (platform) {
-                Platform.Joker,
-                Platform.Pragmatic,
-                Platform.TTG,
-                Platform.SpadeGaming -> getPlatformApi(platform).slotGames(token = clientToken, launch = launch)
-                else -> error(OnePieceExceptionCode.DATA_FAIL)
-            }
+        return when (platform) {
+            Platform.Joker,
+            Platform.Pragmatic,
+            Platform.TTG,
+            Platform.SpadeGaming -> getPlatformApi(platform).slotGames(token = clientToken, launch = launch)
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
 //        }
     }
 
@@ -238,6 +237,7 @@ class GameApi(
             Platform.Pragmatic,
             Platform.TTG,
             Platform.CMD,
+            Platform.Evolution,
             Platform.MicroGaming -> {
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken)
                 getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)

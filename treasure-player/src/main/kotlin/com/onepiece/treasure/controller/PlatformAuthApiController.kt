@@ -1,15 +1,20 @@
 package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.model.token.SpadeGamingClientToken
+import com.onepiece.treasure.controller.value.PlatformAuthValue
+import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.GameApi
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
 import java.util.*
 
 @RestController
 @RequestMapping
 class PlatformAuthApiController(
-        private val gameApi: GameApi
+        private val gameApi: GameApi,
+        private val platformBindService: PlatformBindService
 ): PlatformAuthApi {
 
     private val log = LoggerFactory.getLogger(PlatformAuthApiController::class.java)
@@ -68,5 +73,19 @@ class PlatformAuthApiController(
             </authenticate>
         """.trimIndent()
 
+    }
+
+    @PostMapping("/spadeGaming")
+    override fun spadeGamingLogin(@RequestBody request: PlatformAuthValue.SpadeGamingRequest): PlatformAuthValue.SpadeGamingResponse {
+        log.info("请求参数：${request}")
+        val binds = platformBindService.find(Platform.SpadeGaming)
+        val bind = binds.first { (it.clientToken as SpadeGamingClientToken).memberCode == request.merchantCode }
+        log.info("绑定平台信息:$bind")
+
+        val clientToken = bind.clientToken as SpadeGamingClientToken
+        val acctInfo = PlatformAuthValue.SpadeGamingResponse.AcctInfo(accId = request.accId, balance = BigDecimal.ZERO, userName = "hello", currency = "MYR", siteId = clientToken.siteId)
+        val response = PlatformAuthValue.SpadeGamingResponse(merchantCode = request.merchantCode, msg = "", acctInfo =  acctInfo)
+        log.info("返回信息:$response")
+        return response
     }
 }
