@@ -5,7 +5,6 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.GGFishingClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
-import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.BetOrderUtil
@@ -13,6 +12,7 @@ import com.onepiece.treasure.games.bet.MapUtil
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.net.URLEncoder
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 @Service
@@ -144,7 +144,7 @@ class GGFishingService : PlatformService() {
                 "fullscreen" to 1,
                 "language" to language,
                 "returnURL" to startReq.redirectUrl,
-                "gameId" to 2
+                "gameId" to 10 // 2	水果机 3:单挑王 4:金鲨银鲨 5:幸运五张 6:大鱼吃小鱼 7:	射龙门 8:钻石迷城 9:森林舞会 10	:捕鱼2 301:世界杯 302:奔驰宝马
         )
 
         val param = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
@@ -154,7 +154,6 @@ class GGFishingService : PlatformService() {
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
 
         val clientToken = pullBetOrderReq.token as GGFishingClientToken
-        val now = System.currentTimeMillis()
 
         return this.pullByNextId(clientId = pullBetOrderReq.clientId, platform = Platform.GGFishing) { lastupdatedate ->
             val data = mapOf(
@@ -170,13 +169,15 @@ class GGFishingService : PlatformService() {
                 BetOrderUtil.instance(platform = Platform.GGFishing, mapUtil = bet)
                         .setOrderId("id")
                         .setUsername("userId")
-                        .setBetAmount("betAmount")
-                        .setWinAmount("payAmount")
+                        .setBetAmount("realBetAmount")
+                        .setWinAmount("realPayAmount")
                         .setBetTime("betTransTime", dateTimeFormat)
                         .setSettleTime("updateTime", dateTimeFormat)
                         .build(objectMapper)
             }
-            "$now" to orders
+            val nextId = orders.lastOrNull()?.let { "${it.betTime.toInstant(ZoneOffset.of("+8")).toEpochMilli()}" } ?: lastupdatedate
+
+            nextId to orders
         }
 
     }

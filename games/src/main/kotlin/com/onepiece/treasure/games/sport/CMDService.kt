@@ -7,13 +7,16 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.CMDClientToken
 import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
+import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
-import com.onepiece.treasure.games.bet.BetOrderUtil
 import com.onepiece.treasure.games.bet.MapUtil
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 @Service
 class CMDService : PlatformService() {
@@ -133,18 +136,25 @@ class CMDService : PlatformService() {
             )
             val mapUtil = this.startGetJson(data)
 
+            var nextId: String = startId
             val orders = mapUtil.asList("Data").filter { it.asString("WinLoseStatus") != "P" }.map { bet ->
-                BetOrderUtil.instance(platform = Platform.CMD, mapUtil = bet)
-                        .setOrderId("Id")
-                        .setUsername("SourceName")
-                        .setBetAmount("BetAmount")
-                        .setWinAmount("WinAmount")
-                        .setBetTimeByCmdLong("StateUpdateTs")
-                        .setSettleTime("StateUpdateTs")
-                        .build(objectMapper)
+
+                val orderId = bet.asString("Id")
+                val username = bet.asString("SourceName")
+                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.CMD, platformUsername = username)
+                val betAmount = bet.asBigDecimal("BetAmount")
+                val winAmount = bet.asBigDecimal("WinAmount")
+                val betTime = LocalDateTime.ofInstant(Instant.ofEpochMilli((bet.asLong("TransDate")-621355968000000000)/10000), ZoneId.of("Asia/Shanghai")).minusHours(8)
+                val settleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli((bet.asLong("StateUpdateTs")-621355968000000000)/10000), ZoneId.of("Asia/Shanghai")).minusHours(8)
+
+                val originData = objectMapper.writeValueAsString(bet.data)
+                if (nextId < orderId) nextId = orderId
+
+                BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, platform = Platform.CMD, betAmount = betAmount, winAmount = winAmount,
+                        betTime = betTime, settleTime = settleTime, originData = originData)
             }
 
-            "${orders.lastOrNull()?.orderId?: 0}" to orders
+            nextId to orders
         }
 
     }
