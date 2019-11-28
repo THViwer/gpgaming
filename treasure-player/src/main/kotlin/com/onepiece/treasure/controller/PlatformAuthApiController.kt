@@ -70,7 +70,7 @@ class PlatformAuthApiController(
                 <authenticate> 
                 <member_id>TestUser001</member_id> 
                 <status_code>0</status_code> 
-                <message>Success</ message > 
+                <message>Success</message> 
             </authenticate>
         """.trimIndent()
 
