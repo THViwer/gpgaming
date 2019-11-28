@@ -47,9 +47,14 @@ class JokerService : PlatformService() {
     override fun register(registerReq: GameValue.RegisterReq): String {
         val clientToken = registerReq.token as DefaultClientToken
 
+//        val data = mapOf(
+//                "Method" to "CU",
+//                "Timestamp" to (System.currentTimeMillis()/1000),
+//                "Username" to registerReq.username
+//        )
         val data = mapOf(
                 "Method" to "CU",
-                "Timestamp" to System.currentTimeMillis(),
+                "Timestamp" to System.currentTimeMillis() / 1000,
                 "Username" to registerReq.username
         )
         this.startPostForm(clientToken = clientToken, data = data)
@@ -63,7 +68,7 @@ class JokerService : PlatformService() {
 
         val data = mapOf(
                 "Method" to "SP",
-                "Timestamp" to System.currentTimeMillis(),
+                "Timestamp" to System.currentTimeMillis() / 1000,
                 "Username" to registerReq.username,
                 "Password" to registerReq.password
         )
@@ -74,7 +79,7 @@ class JokerService : PlatformService() {
         val clientToken = balanceReq.token as DefaultClientToken
         val data = mapOf(
                 "Method" to "GC",
-                "Timestamp" to System.currentTimeMillis(),
+                "Timestamp" to System.currentTimeMillis() / 1000,
                 "Username" to balanceReq.username
         )
         val mapUtil = this.startPostForm(clientToken = clientToken, data = data)
@@ -87,7 +92,7 @@ class JokerService : PlatformService() {
 
         val data = mapOf(
                 "Method" to "TC",
-                "Timestamp" to System.currentTimeMillis(),
+                "Timestamp" to System.currentTimeMillis() / 1000,
                 "Amount" to transferReq.amount,
                 "RequestID" to transferReq.orderId,
                 "Username" to transferReq.username
@@ -101,7 +106,7 @@ class JokerService : PlatformService() {
 
         val data = mapOf(
                 "Method" to "TCH",
-                "Timestamp" to System.currentTimeMillis(),
+                "Timestamp" to System.currentTimeMillis() / 1000,
                 "RequestID" to checkTransferReq.orderId
         )
         return try {
@@ -119,7 +124,7 @@ class JokerService : PlatformService() {
 
         val data = mapOf(
                 "Method" to "ListGames",
-                "Timestamp" to System.currentTimeMillis()
+                "Timestamp" to System.currentTimeMillis() / 1000
         )
 
         val sign = this.generatorSign(clientToken = clientToken, data = data)
@@ -146,8 +151,9 @@ class JokerService : PlatformService() {
                 }
             }
 
-            val hot = game.asString("specials").contains("hot")
-            val new = game.asString("specials").contains("new")
+            val specials = game.data["specials"]?.toString()?: ""
+            val hot = specials.contains("hot")
+            val new = specials.contains("new")
 
             val gameCode = game.asString("GameCode")
             val gameName = game.asString("GameName")
@@ -163,7 +169,7 @@ class JokerService : PlatformService() {
 
         val data = mapOf(
                 "Method" to "RT",
-                "Timestamp" to System.currentTimeMillis(),
+                "Timestamp" to System.currentTimeMillis() / 1000,
                 "Username" to startSlotReq.username
         )
         val mapUtil = this.startPostForm(clientToken = clientToken, data = data)

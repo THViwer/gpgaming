@@ -40,7 +40,7 @@ class FggService: PlatformService() {
 
     fun startPostJson(method: String, data: String): MapUtil {
 
-        val url = "${gameConstant.getDomain(platform = Platform.Fgg)}/$method"
+        val url = "${gameConstant.getDomain(platform = Platform.Fgg)}/Game/$method"
         val result = okHttpUtil.doPostJson(url = url, data = data, clz = FggValue.Result::class.java)
         check(result.errorCode.isBlank()) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
 
@@ -125,7 +125,7 @@ class FggService: PlatformService() {
                 "Currency": "MYR",
                 "LimitID": "3",
                 "ClientType": "$clientType",
-                "Lang": "$lang  ",
+                "Lang": "$lang",
                 "GameID": "0",
                 
            } 

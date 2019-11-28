@@ -1,10 +1,11 @@
 package com.onepiece.treasure.games.live
 
+import com.onepiece.treasure.beans.enums.Language
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.DreamGamingClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
-import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.BetOrderUtil
@@ -116,6 +117,61 @@ class DreamGamingService : PlatformService() {
     }
 
 
+    override fun start(startReq: GameValue.StartReq): String {
+        val clientToken = startReq.token as DreamGamingClientToken
+
+        val lang = when (startReq.language) {
+            Language.EN -> "en"
+            Language.CN -> "cn"
+            Language.TH -> "th"
+            else -> "en"
+        }
+
+        val (random, sign) = this.getToken(clientToken)
+        val data = """
+            {
+                "token":"$sign",
+                "random":"$random",
+                "lang":"$lang",
+                "member":{
+                    "username":"${startReq.username}"
+                }
+            }
+        """.trimIndent()
+        val mapUtil = this.doStartPostJson(method = "/user/login/${clientToken.agentName}", data = data)
+        val list = mapUtil.data["list"] as List<String>
+
+        val token = mapUtil.asString("token")
+        return when (startReq.startPlatform) {
+            LaunchMethod.Web -> list[0]
+            LaunchMethod.Wap -> list[1]
+            else -> list[2]
+        }.plus(token)
+    }
+
+//
+//    override fun startSlotDemo(token: ClientToken, startPlatform: LaunchMethod): String {
+//        val param = DGBuild.instance(token, "/user/free")
+//        val data = """
+//            {
+//                "token":"${param.token}",
+//                "random":"${param.random}",
+//                "lang":"$lang",
+//                "device": 1
+//            }
+//        """.trimIndent()
+//
+//        val result = okHttpUtil.doPostJson(param.url, data, DGValue.LoginResult::class.java)
+//        checkCode(result.codeId)
+//
+//        return when (startPlatform) {
+//            LaunchMethod.Web -> result.list[0]
+//            LaunchMethod.Wap -> result.list[1]
+//            else -> result.list[2]
+//        }.plus(result.token)
+//    }
+
+
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
         val clientToken = pullBetOrderReq.token as DreamGamingClientToken
         val (random, sign) = this.getToken(clientToken)
@@ -146,6 +202,8 @@ class DreamGamingService : PlatformService() {
     }
 
     private fun mark(clientToken: DreamGamingClientToken, ids: List<Long>) {
+        if (ids.isEmpty()) return
+
         val (random, sign) = this.getToken(clientToken)
 
         val data = """
@@ -156,7 +214,7 @@ class DreamGamingService : PlatformService() {
             } 
         """.trimIndent()
 
-        this.doStartPostJson(method = "/game/markReport", data = data)
+        this.doStartPostJson(method = "/game/markReport/${clientToken.agentName}", data = data)
     }
 
 }

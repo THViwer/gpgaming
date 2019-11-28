@@ -13,6 +13,7 @@ sealed class JokerValue {
     ): JacksonMapUtil()
 
     data class GameResult(
+            @JsonProperty("ListGames")
             val list: List<Map<String, Any>>
     ) {
 

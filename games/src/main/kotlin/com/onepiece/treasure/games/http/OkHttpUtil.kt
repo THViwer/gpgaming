@@ -108,26 +108,26 @@ class OkHttpUtil(
 
         val response = client.newCall(request.build()).execute()
 
-        //TODO code
         val code = response.code
-
-        return if (code == 200 || code == 201) {
-
-            when (clz) {
-                null -> function(code, response)
-                String::class.java -> {
-                    String(response.body!!.bytes()) as T
-                }
-                else -> {
-                    val json = response.body!!.bytes()
-                    log.info("request url : $url")
-                    log.info("result json : ${String(json)}")
-                    objectMapper.readValue(json, clz)
-                }
-            }
-        } else {
+        if (code != 200 && code != 201) {
+            log.error("请求错误：${response.body?.string()}")
             error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
+
         }
+
+        return when (clz) {
+            null -> function(code, response)
+            String::class.java -> {
+                String(response.body!!.bytes()) as T
+            }
+            else -> {
+                val json = response.body!!.bytes()
+                log.info("request url : $url")
+                log.info("result json : ${String(json)}")
+                objectMapper.readValue(json, clz)
+            }
+        }
+
     }
 
     fun <T> doPostJson(url: String, data: Any, clz: Class<T>): T {

@@ -25,7 +25,7 @@ class SlotGameTask(
         private val okHttpUtil: OkHttpUtil
 )  {
 
-    //     @Scheduled(cron="0/10 * *  * * ? ")
+    @Scheduled(cron="0 0 0/1 * * ? ")
     fun jokerGameTask() {
 
         val webGames = gameApi.slotGames(clientId = 1, platform = Platform.Joker, launch = LaunchMethod.Web)

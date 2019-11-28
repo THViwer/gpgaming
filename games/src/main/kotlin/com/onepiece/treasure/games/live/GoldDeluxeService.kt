@@ -3,8 +3,7 @@ package com.onepiece.treasure.games.live
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
-import com.onepiece.treasure.games.GameConstant
+import com.onepiece.treasure.beans.model.token.GoldDeluxeClientToken
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapResultUtil
@@ -48,7 +47,7 @@ class GoldDeluxeService: PlatformService() {
 
     override fun register(registerReq: GameValue.RegisterReq): String {
 
-        val token = registerReq.token as DefaultClientToken
+        val token = registerReq.token as GoldDeluxeClientToken
 
         val messageId = this.generatorMessageId("M")
         val data = """
@@ -56,7 +55,7 @@ class GoldDeluxeService: PlatformService() {
             <Request>
               <Header>
                 <Method>cCreateMember</Method>
-                <MerchantID>${token.appId}</MerchantID>
+                <MerchantID>${token.merchantCode}</MerchantID>
                 <MessageID>${messageId}</MessageID>
               </Header>
               <Param>
@@ -73,7 +72,7 @@ class GoldDeluxeService: PlatformService() {
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
 
-        val token = balanceReq.token as DefaultClientToken
+        val token = balanceReq.token as GoldDeluxeClientToken
         val messageId = this.generatorMessageId("C")
 
         val data = """
@@ -81,7 +80,7 @@ class GoldDeluxeService: PlatformService() {
             <Request>
               <Header>
                 <Method>cCheckClient</Method>
-                <MerchantID>${token.appId}</MerchantID>
+                <MerchantID>${token.merchantCode}</MerchantID>
                 <MessageID>${messageId}</MessageID>
               </Header>
               <Param>
@@ -98,7 +97,7 @@ class GoldDeluxeService: PlatformService() {
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
 
-        val token = transferReq.token as DefaultClientToken
+        val token = transferReq.token as GoldDeluxeClientToken
 
         val (messageId, method) = when (transferReq.amount.toDouble() > 0) {
             true -> {
@@ -116,7 +115,7 @@ class GoldDeluxeService: PlatformService() {
                     <Request>
                       <Header>
                         <Method>${method}</Method>
-                        <MerchantID>${token.appId}</MerchantID>
+                        <MerchantID>${token.merchantCode}</MerchantID>
                         <MessageID>${messageId}</MessageID>
                       </Header>
                       <Param>
@@ -134,14 +133,14 @@ class GoldDeluxeService: PlatformService() {
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
-        val token = checkTransferReq.token as DefaultClientToken
+        val token = checkTransferReq.token as GoldDeluxeClientToken
         val messageId = this.generatorMessageId("S")
         val data = """
             <?xml version=”1.0”?>
             <Request>
               <Header>
                 <Method>cCheckTransactionStatus</Method>
-                <MerchantID>${token.appId}</MerchantID>
+                <MerchantID>${token.merchantCode}</MerchantID>
                 <MessageID>${messageId}</MessageID>
               </Header>
               <Param>
@@ -157,10 +156,10 @@ class GoldDeluxeService: PlatformService() {
     }
 
     override fun start(startReq: GameValue.StartReq): String {
-        val token = startReq.token as DefaultClientToken
+        val token = startReq.token as GoldDeluxeClientToken
 
         val loginTokenId = StringUtil.generateNonce(10)
-        val signParam = "${token.appId}${loginTokenId}${startReq.username}${currencyCode}"
+        val signParam = "${token.merchantCode}${loginTokenId}${startReq.username}${currencyCode}"
         val key = DigestUtils.sha256Hex(signParam)
 
         val lang = when (startReq.language) {
@@ -173,7 +172,7 @@ class GoldDeluxeService: PlatformService() {
         }
 
         val param = listOf(
-                "OperatorCode=${token.appId}",
+                "OperatorCode=${token.merchantCode}",
                 "lang=${lang}",
                 "playerid=${startReq.username}",
                 "LoginTokenID=$loginTokenId",

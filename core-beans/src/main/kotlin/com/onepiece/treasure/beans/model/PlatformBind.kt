@@ -65,6 +65,7 @@ data class PlatformBind(
                 Platform.TTG -> TTGClientToken::class.java
                 Platform.CMD -> CMDClientToken::class.java
                 Platform.MicroGaming -> MicroGamingClientToken::class.java
+                Platform.GoldDeluxe -> GoldDeluxeClientToken::class.java
                 else -> DefaultClientToken::class.java
             }
 

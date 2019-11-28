@@ -22,7 +22,7 @@ class GameConstant(
         return when (platform) {
 
             // slot
-            Platform.Joker -> "http://gwc688.net"
+            Platform.Joker -> "http://api688.net"
             Platform.Kiss918 -> "http://api.918kiss.com:9991"
             Platform.Pussy888 -> "http://api.pussy888.com"
             Platform.Mega -> "http://mgt3.36ozhushou.com/mega-cloud"
@@ -60,6 +60,7 @@ class GameConstant(
             Platform.Lbc -> "http://45.124.64.29:88"
             Platform.Joker -> "http://45.124.64.29:89"
             Platform.Pragmatic -> "https://api.prerelease-env.biz"
+            Platform.Fgg -> "https://d-tapi.fgg365.com"
 
             // slot
             Platform.Kiss918 -> "$domain:1002"
@@ -75,7 +76,6 @@ class GameConstant(
             Platform.Evolution -> "$domain:2003"
             Platform.GoldDeluxe -> "$domain:2004"
             Platform.SexyGaming -> "$domain:2005"
-            Platform.Fgg -> "$domain:2006"
             Platform.AllBet -> "$domain:2007"
 
             // sport

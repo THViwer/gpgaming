@@ -8,6 +8,7 @@ import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.SpadeGamingClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
+import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.BetOrderUtil
@@ -171,12 +172,17 @@ class SpadeGamingService : PlatformService() {
                 "language=en",
                 "token=$token",
                 "game=${startSlotReq.gameId}",
+//                "fun=false",
+//                "minigame=false",
                 "mobile=$mobile",
                 "menumode=on"
         ).joinToString(separator = "&")
 //        return "http://portal.e-games.com/auth/?$urlParam"
+//        return "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth/?$urlParam"
 
-        return "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth/?$urlParam"
+        // http://portal.e-games.com/auth/?acctId=TESTPLAYER1&language=en_US&token=fe1a85adc54545d2963b661a22d09c9e&game=S-DG02&fun=true&minigame=false&mobile=true&menumode=on
+
+        return "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth?$urlParam"
     }
 
 
@@ -210,14 +216,18 @@ class SpadeGamingService : PlatformService() {
         val mapUtil = this.startPostJson(method = "getBetHistory", data = data)
         val orders = mapUtil.asList("list").filter { it.asBoolean("completed") }.map { bet ->
 
-            BetOrderUtil.instance(platform = Platform.SpadeGaming, mapUtil = bet)
-                    .setOrderId("ticketId")
-                    .setUsername("acctId")
-                    .setBetAmount("betAmount")
-                    .setWinAmount("winLoss")
-                    .setBetTime("ticketTime", dateTimeFormat)
-                    .setSettleTime("ticketTime", dateTimeFormat)
-                    .build(objectMapper)
+            val orderId = bet.asString("ticketId")
+            val username = bet.asString("acctId")
+            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.SpadeGaming, platformUsername = username)
+            val betAmount = bet.asBigDecimal("betAmount")
+            val winLoss = bet.asBigDecimal("winLoss")
+            val winAmount = betAmount.plus(winLoss)
+
+            val betTime = bet.asLocalDateTime("ticketTime", dateTimeFormat)
+
+            val originData = objectMapper.writeValueAsString(bet.data)
+            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, platform = Platform.SpadeGaming, betTime = betTime,
+                    settleTime = betTime, betAmount = betAmount, winAmount = winAmount, originData = originData)
         }
         val pageCount =  mapUtil.asInt("pageCount")
         return pageCount to orders
