@@ -8,11 +8,17 @@ data class I18nContentCoReq(
         // 标题
         val title: String,
 
+        // banner
+        val banner: String?,
+
         // 内容
         val content: String,
 
         // 简介
         val synopsis: String?,
+
+        // 注意事项
+        val precautions: String?,
 
         // 语言
         val language: Language,

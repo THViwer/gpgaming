@@ -1,6 +1,8 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.beans.value.internet.web.*
+import com.onepiece.treasure.beans.value.internet.web.PromotionCoReq
+import com.onepiece.treasure.beans.value.internet.web.PromotionUoReq
+import com.onepiece.treasure.beans.value.internet.web.PromotionVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus

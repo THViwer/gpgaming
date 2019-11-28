@@ -24,9 +24,11 @@ class I18nContentDaoImpl : BasicDaoImpl<I18nContent>("i18n_content"), I18nConten
             val configId = rs.getInt("config_id")
             val configType = rs.getString("config_type").let { I18nConfig.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val banner = rs.getString("banner")
+            val precautions = rs.getString("precautions")
 
             I18nContent(id = id, clientId = clientId, title = title, content = content, synopsis = synopsis, language = language, configId = configId,
-                    configType = configType, createdTime = createdTime)
+                    configType = configType, createdTime = createdTime, banner = banner, precautions = precautions)
         }
 
 
@@ -34,8 +36,10 @@ class I18nContentDaoImpl : BasicDaoImpl<I18nContent>("i18n_content"), I18nConten
 
         return insert().set("client_id", i18nContentCo.clientId)
                 .set("title", i18nContentCo.title)
+                .set("banner", i18nContentCo.banner)
                 .set("content", i18nContentCo.content)
                 .set("synopsis", i18nContentCo.synopsis)
+                .set("precautions", i18nContentCo.precautions)
                 .set("language", i18nContentCo.language)
                 .set("config_id", i18nContentCo.configId)
                 .set("config_type", i18nContentCo.configType)
@@ -44,8 +48,10 @@ class I18nContentDaoImpl : BasicDaoImpl<I18nContent>("i18n_content"), I18nConten
 
     override fun update(i18nContentUo: I18nContentUo): Boolean {
         return update().set("title", i18nContentUo.title)
+                .set("banner", i18nContentUo.banner)
                 .set("content", i18nContentUo.content)
                 .set("synopsis", i18nContentUo.synopsis)
+                .set("precautions", i18nContentUo.precautions)
                 .set("language", i18nContentUo.language)
                 .where("id", i18nContentUo.id)
                 .executeOnlyOne()

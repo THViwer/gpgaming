@@ -16,6 +16,9 @@ data class I18nContent (
         // 厅主Id
         val clientId: Int,
 
+        // banner
+        val banner: String?,
+
         // 标题
         val title: String,
 
@@ -24,6 +27,9 @@ data class I18nContent (
 
         // 简介
         val synopsis: String?,
+
+        // 注意事项
+        val precautions: String?,
 
         // 语言
         val language: Language,

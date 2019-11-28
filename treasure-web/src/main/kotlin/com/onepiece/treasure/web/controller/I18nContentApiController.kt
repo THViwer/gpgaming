@@ -30,7 +30,8 @@ class I18nContentApiController(
     override fun create(@RequestBody i18nContentCoReq: I18nContentCoReq) {
 
         val i18nContentCo = I18nContentCo(clientId = clientId, title = i18nContentCoReq.title, synopsis = i18nContentCoReq.synopsis, content = i18nContentCoReq.content,
-                language = i18nContentCoReq.language, configId = i18nContentCoReq.configId, configType = i18nContentCoReq.configType)
+                language = i18nContentCoReq.language, configId = i18nContentCoReq.configId, configType = i18nContentCoReq.configType, banner = i18nContentCoReq.banner,
+                precautions = i18nContentCoReq.precautions)
 
         i18nContentService.create(i18nContentCo)
 
@@ -40,7 +41,7 @@ class I18nContentApiController(
     @PutMapping
     override fun update(@RequestBody i18nContentVo: I18nContentVo) {
         val i18nContentUo = I18nContentUo(id = i18nContentVo.id, title = i18nContentVo.title, synopsis = i18nContentVo.synopsis, content = i18nContentVo.content,
-                language = i18nContentVo.language)
+                language = i18nContentVo.language, banner = i18nContentVo.banner, precautions = i18nContentVo.precautions)
         i18nContentService.update(i18nContentUo)
 
     }

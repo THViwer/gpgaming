@@ -46,7 +46,8 @@ class PromotionServiceImpl(
         // 创建国际化
         val i18nContent = promotionCoReq.i18nContent
         val i18nContentCo = I18nContentCo(clientId = promotionCo.clientId, title = i18nContent.title, synopsis = i18nContent.synopsis,
-                content = i18nContent.content, configId = promotionId, configType = I18nConfig.Promotion, language = i18nContent.language)
+                content = i18nContent.content, configId = promotionId, configType = I18nConfig.Promotion, language = i18nContent.language,
+                banner = i18nContent.banner, precautions = i18nContent.precautions)
         val i18nContentId = i18nContentService.create(i18nContentCo)
         check(i18nContentId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 

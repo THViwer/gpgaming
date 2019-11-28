@@ -99,8 +99,14 @@ data class PromotionDefaultContent(
         @ApiModelProperty("标题")
         val title: String,
 
+        @ApiModelProperty("banner")
+        val banner: String?,
+
         @ApiModelProperty("简介")
         val synopsis: String?,
+
+        @ApiModelProperty("注意事项")
+        val precautions: String?,
 
         @ApiModelProperty("内容")
         val content: String

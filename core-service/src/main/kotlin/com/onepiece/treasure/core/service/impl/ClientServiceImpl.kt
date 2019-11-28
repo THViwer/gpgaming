@@ -70,7 +70,7 @@ class ClientServiceImpl(
 
         // 配置语言(english)
         val i18nContentCo = I18nContentCo(clientId = clientId, title = "hi", content = "hi, this is a demo", language = Language.EN, synopsis = null, configId = null,
-                configType = I18nConfig.Announcement)
+                configType = I18nConfig.Announcement, banner = null, precautions = null)
         i18nContentService.create(i18nContentCo)
 
         // 配置语言(中文)

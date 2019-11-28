@@ -43,7 +43,7 @@ class I18nContentServiceImpl(
     override fun getConfigType(clientId: Int, configType: I18nConfig): List<I18nContentVo> {
         return i18nContentDao.getConfigType(clientId = clientId, configType = configType).map {
             I18nContentVo(id = it.id, title = it.title, synopsis = it.synopsis, content = it.content, language = it.language,
-                    configId = it.configId, configType = it.configType)
+                    configId = it.configId, configType = it.configType, banner = it.banner, precautions = it.precautions)
         }
     }
 }
