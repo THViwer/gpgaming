@@ -170,7 +170,7 @@ class FggService: PlatformService() {
                         betTime = betTime, settleTime = betTime, platform = Platform.Fgg, originData = originData)
             }
 
-            "nextSortNo" to orders
+            nextSortNo to orders
         }
     }
 

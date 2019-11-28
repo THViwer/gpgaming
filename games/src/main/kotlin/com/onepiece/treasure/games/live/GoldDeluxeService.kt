@@ -4,6 +4,7 @@ import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.GoldDeluxeClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapResultUtil
@@ -38,7 +39,7 @@ class GoldDeluxeService: PlatformService() {
     }
 
     private fun startDoPostXml(data: String): Map<String, Any> {
-        val url = "${gameConstant.getDomain(Platform.GoldDeluxe)}/release/www/merchantapi.php"
+        val url = "${gameConstant.getDomain(Platform.GoldDeluxe)}/MerchantAPI/ewallet.php"
         val result = okHttpUtil.doPostXml(url = url, data = data, clz = GoldDeluxeValue.Result::class.java)
         check(result.header.errorCode == "0") {OnePieceExceptionCode.PLATFORM_METHOD_FAIL}
         return result.param.data
@@ -183,10 +184,38 @@ class GoldDeluxeService: PlatformService() {
                 "theme=deafult"
         )
         val urlParam = param.joinToString(separator = "&")
-
-
         val baseUrl = "http://coldsstaging.japaneast.cloudapp.azure.com/COLDS/FlashClient/release/FlashClient_red_gold_GOLD/main.php"
-
         return "$baseUrl?$urlParam"
+    }
+
+
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+        val clientToken = pullBetOrderReq.token as GoldDeluxeClientToken
+        val messageId = this.generatorMessageId("H")
+
+        val data = """
+            <?xml version="1.0"?>
+            <Request>
+              <Header>
+                <Method>cGetBetHistory</Method>
+                <MerchantID>${clientToken.merchantCode}</MerchantID>
+                <MessageID>${messageId}</MessageID>
+              </Header>
+              <Param>
+                <FromTime>${pullBetOrderReq.startTime.format(betDateTimeFormat)}</FromTime>
+                <ToTime>${pullBetOrderReq.endTime.format(betDateTimeFormat)}</ToTime>
+                <Index>0</Index>
+                <ShowBalance>0</ShowBalance>
+                <SearchByBalanceTime>1</SearchByBalanceTime>
+                <ShowRefID>1</ShowRefID>
+                <ShowOdds>1</ShowOdds>
+              </Param>
+            </Request>
+        """.trimIndent()
+
+        val result = this.startDoPostXml(data = data)
+        println(result)
+
+        return emptyList()
     }
 }

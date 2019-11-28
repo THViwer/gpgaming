@@ -49,8 +49,8 @@ class AllBetService : PlatformService() {
         handicaps.forEach {
 
             when (it.asInt("handicapType")) {
-                0 -> vipHandicapNames = it.asString("name")
-                1 -> orHandicapNames = it.asString("name")
+                0 -> orHandicapNames = it.asString("name")
+                1 -> vipHandicapNames = it.asString("name")
             }
         }
         return orHandicapNames to vipHandicapNames
@@ -205,11 +205,12 @@ class AllBetService : PlatformService() {
             val username = bet.asString("client")
             val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.AllBet, platformUsername = username)
             val betAmount = bet.asBigDecimal("betAmount")
-            val winAmount = bet.asBigDecimal("winOrLoss")
+            val winOrLoss = bet.asBigDecimal("winOrLoss")
+            val winAmount = betAmount.plus(winOrLoss)
             val betTime = bet.asLocalDateTime("gameRoundStartTime", dateTimeFormat)
             val settleTime = bet.asLocalDateTime("gameRoundEndTime", dateTimeFormat)
 
-            val originData = objectMapper.writeValueAsString(bet)
+            val originData = objectMapper.writeValueAsString(bet.data)
             BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, betTime = betTime,
                     settleTime = settleTime, platform = Platform.AllBet, originData = originData)
         }

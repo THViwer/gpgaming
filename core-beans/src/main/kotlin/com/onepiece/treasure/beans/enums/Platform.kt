@@ -129,11 +129,11 @@ open class PlatformDetail private constructor(
 
         fun ofGoldDeluxe(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.LiveVideo, name = "GoldDeluxe", icon = defaultLogoPath,
-                    disableIcon = defaultLogoPath, status = Status.Normal)
+                    disableIcon = defaultLogoPath, status = Status.Stop)
         }
         fun ofSexyGaming(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sexy gaming", icon = defaultLogoPath,
-                    disableIcon = defaultLogoPath, status = Status.Normal)
+                    disableIcon = defaultLogoPath, status = Status.Stop)
         }
 
         fun ofFgg(): PlatformDetail {

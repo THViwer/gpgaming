@@ -4,7 +4,9 @@ import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.DefaultClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
+import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapUtil
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.net.URLEncoder
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Service
@@ -22,6 +25,8 @@ class JokerService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(JokerService::class.java)
     private val gameUrl = "http://94.237.64.70/iframe.html"
+    private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+
 
     private fun generatorSign(clientToken: DefaultClientToken, data: Map<String, Any>): String {
         val urlParam = data.map { "${it.key}=${it.value}" }.sorted().joinToString(separator = "&")
@@ -38,8 +43,6 @@ class JokerService : PlatformService() {
         data.forEach { body.add(it.key, "${it.value}") }
 
         val result = okHttpUtil.doPostForm(url = url, body = body.build(), clz = JokerValue.Result::class.java)
-        // check status
-//        check(result.status == "OK") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
 
         return result.mapUtil
     }
@@ -186,5 +189,44 @@ class JokerService : PlatformService() {
         return "${gameUrl}?token=$token&game=${startSlotReq.gameId}&redirectUrl=${startSlotReq.redirectUrl}&lang=${lang}"
     }
 
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+
+        val clientToken = pullBetOrderReq.token as DefaultClientToken
+        return this.pullByNextId(clientId = pullBetOrderReq.clientId, platform = Platform.Joker) { startId ->
+
+            val data = mapOf(
+                    "Method" to "TS",
+                    "Timestamp" to System.currentTimeMillis() / 1000,
+                    "StartDate" to pullBetOrderReq.startTime.format(dateTimeFormat),
+                    "EndDate" to pullBetOrderReq.endTime.format(dateTimeFormat),
+                    "NextId" to startId
+            )
+
+            val sign = this.generatorSign(clientToken = clientToken, data = data)
+            val urlParam = "AppID=${clientToken.appId}&Signature=${sign}"
+            val url = "${gameConstant.getDomain(Platform.Joker)}?$urlParam"
+
+            val body = FormBody.Builder()
+            data.forEach { body.add(it.key, "${it.value}") }
+            val result = okHttpUtil.doPostForm(url = url, body = body.build(), clz = JokerValue.BetResult::class.java)
+            val list = result.mapUtil.asList("Game")
+
+
+            val orders = list.map { bet ->
+                val orderId = bet.asString("OCode")
+                val username = bet.asString("Username")
+                val (clientId, member) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Joker, platformUsername = username)
+                val betAmount = bet.asBigDecimal("Amount")
+                val winAmount = bet.asBigDecimal("Result")
+                val betTime = bet.asString("Time").substring(0, 19).let { LocalDateTime.parse(it) }
+
+                val originData = objectMapper.writeValueAsString(betTime)
+                BetOrderValue.BetOrderCo(clientId = clientId, memberId = member, orderId = orderId, platform = Platform.Joker, betAmount = betAmount,
+                        winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData)
+            }
+
+            result.nextId to orders
+        }
+    }
 
 }

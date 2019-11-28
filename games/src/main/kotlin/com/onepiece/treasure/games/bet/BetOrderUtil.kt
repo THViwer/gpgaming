@@ -104,7 +104,7 @@ class BetOrderUtil private constructor(
     fun build(objectMapper: ObjectMapper): BetOrderValue.BetOrderCo {
         check(clientId > 0 && memberId > 0 && betAmount != BigDecimal.ZERO &&orderId != "") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
 
-        val originData = objectMapper.writeValueAsString(mapUtil)
+        val originData = objectMapper.writeValueAsString(mapUtil.data)
         return BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform,  orderId = orderId, betAmount = betAmount,
                 winAmount = winAmount, betTime = betTime, settleTime = settleTime, originData = originData)
     }

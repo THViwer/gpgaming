@@ -35,7 +35,7 @@ class GameConstant(
             Platform.CT -> "http://api.ctapi888.com"
             Platform.DreamGaming -> "http://api.dg99web.com"
             Platform.Evolution -> "http://staging.evolution.asia-live.com"
-            Platform.GoldDeluxe -> "http://api.coldsstaging.stack4kids.com"
+            Platform.GoldDeluxe -> "http://wsgd.gdsecure88.com"
             Platform.SexyGaming -> "https://testapi.onlinegames22.com"
             Platform.Fgg -> "https://d-tapi.fgg365.com"
             Platform.AllBet -> "https://api3.apidemo.net:8443"

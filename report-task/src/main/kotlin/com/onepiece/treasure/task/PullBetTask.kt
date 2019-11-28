@@ -1,34 +1,39 @@
 package com.onepiece.treasure.task
 
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.model.PlatformBind
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.GameApi
+import com.onepiece.treasure.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.time.Duration
 import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicBoolean
+
 
 @Component
 class PullBetTask(
         private val platformBindService: PlatformBindService,
         private val gameApi: GameApi,
-        private val betOrderService: BetOrderService
+        private val betOrderService: BetOrderService,
+        private val redisService: RedisService
 ) {
 
     private val log = LoggerFactory.getLogger(PullBetTask::class.java)
     private val running = AtomicBoolean(false)
 
-    private fun startTask(platform: Platform, startTime: LocalDateTime, endTime: LocalDateTime) {
-        val binds = platformBindService.find(platform)
-        binds.forEach { bind ->
-            log.info("厅主Id:${bind.clientId}, 平台：${bind.platform}, 开始执行拉取订单任务")
-            val orders = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
-            asyncBatch(orders)
-        }
-    }
+//    private fun startTask(platform: Platform, startTime: LocalDateTime, endTime: LocalDateTime) {
+//        val binds = platformBindService.find(platform)
+//        binds.forEach { bind ->
+//            log.info("厅主Id:${bind.clientId}, 平台：${bind.platform}, 开始执行拉取订单任务")
+//            val orders = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
+//            asyncBatch(orders)
+//        }
+//    }
 
     private fun asyncBatch(orders: List<BetOrderValue.BetOrderCo>) {
         if (orders.isEmpty()) return
@@ -36,26 +41,121 @@ class PullBetTask(
     }
 
 
-    // * 调用次数限制: 25次/10分钟 (以每个propertyId计算)
-    // @Scheduled(cron="0/5 * *  * * ? ")
-    fun allBetTask() {
-        val startTime = LocalDateTime.now().minusMinutes(20)
-        val endTime = LocalDateTime.now()
+    @Scheduled(cron="0/10 * *  * * ? ")
+    fun execute() {
+        if (running.get()) return
+        running.set(true)
 
-        this.startTask(platform = Platform.AllBet, startTime = startTime, endTime = endTime)
+        val binds = platformBindService.all()
+
+        binds.parallelStream().forEach  { bind ->
+            this.executePlatform(bind)
+        }
+
+        running.set(false)
     }
 
-    // if apply platform the api allowed frequency is 20 seconds.
-    // if not apply platform the api allowed frequency is 60 seconds.
-    // @Scheduled(cron="0/30 * *  * * ? ")
-    fun sexyGamingTask() {
-        val startTime = LocalDateTime.now().minusMinutes(5)
-        val endTime = LocalDateTime.now()
-        this.startTask(platform = Platform.SexyGaming, startTime = startTime, endTime = endTime)
+    private fun executePlatform(bind: PlatformBind) {
+
+        try {
+            this.handler(bind = bind) { startTime, endTime ->
+                gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
+            }
+        } catch (e: Exception) {
+            log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 执行任务失败", e)
+        }
+
     }
 
+    private fun handler(
+            bind: PlatformBind,
+            pull: (startTime: LocalDateTime, endTime: LocalDateTime) -> List<BetOrderValue.BetOrderCo>
+    ) {
 
-//    @Scheduled(cron="0 0/3 *  * * ? ")
+        val redisKey = "pull:task:${bind.clientId}:${bind.platform}"
+
+        val startTime = redisService.get(key = redisKey, clz = String::class.java) {
+            "${LocalDateTime.now().minusMinutes(30)}"
+        }!!.let { LocalDateTime.parse(it) }
+
+        if (!this.canExecutePlatform(startTime = startTime, platform = bind.platform)) return
+
+        val endTime = startTime.plusMinutes(5)
+
+        log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 开始时间任务：${LocalDateTime.now()}, 查询开始时间：$startTime, 查询结束时间${endTime}")
+        val orders = pull(startTime, endTime)
+        this.asyncBatch(orders)
+
+        redisService.put(key = redisKey, value = startTime.plusMinutes(3))
+    }
+
+    private fun canExecutePlatform(startTime: LocalDateTime, platform: Platform): Boolean {
+        return when (platform) {
+            Platform.Evolution,
+            Platform.Joker,
+            Platform.TTG,
+            Platform.AllBet,
+            Platform.DreamGaming,
+            Platform.MicroGaming -> {
+                val duration = Duration.between(startTime, LocalDateTime.now())
+                val minutes: Long = duration.toMinutes() //相差的分钟数
+                minutes > 3
+            }
+            // 不需要判断时间
+            Platform.Pragmatic,
+            Platform.GGFishing,
+//            Platform.Bcs,
+            Platform.CMD,
+//            Platform.Lbc,
+            Platform.Fgg  -> true
+
+            // 未测试
+            Platform.SexyGaming,
+            Platform.SpadeGaming,
+            Platform.GoldDeluxe -> { false }
+
+            else -> {
+                log.warn("该平台不支持同步订单:${platform}")
+                false
+            }
+        }
+    }
+
+//
+//    // * 调用次数限制: 25次/10分钟 (以每个propertyId计算)
+//    // @Scheduled(cron="0/5 * *  * * ? ")
+//    fun allBetTask() {
+//        val startTime = LocalDateTime.now().minusMinutes(20)
+//        val endTime = LocalDateTime.now()
+//
+//        this.startTask(platform = Platform.AllBet, startTime = startTime, endTime = endTime)
+//    }
+//
+//    // if apply platform the api allowed frequency is 20 seconds.
+//    // if not apply platform the api allowed frequency is 60 seconds.
+//    // @Scheduled(cron="0/30 * *  * * ? ")
+//    fun sexyGamingTask() {
+//        val startTime = LocalDateTime.now().minusMinutes(5)
+//        val endTime = LocalDateTime.now()
+//        this.startTask(platform = Platform.SexyGaming, startTime = startTime, endTime = endTime)
+//    }
+//
+//
+//
+//    @Scheduled(cron="0 0/1 *  * * ? ")
+//    fun spadeGamingTask() {
+//        val startTime = LocalDateTime.now().minusMinutes(5)
+//        val endTime = LocalDateTime.now()
+//        this.startTask(platform = Platform.SpadeGaming, startTime = startTime, endTime = endTime)
+//    }
+//
+//
+//
+
+
+
+
+    //    @Scheduled(cron="0 0/3 *  * * ? ")
 //    fun evolutionTask() {
 //        val startTime = LocalDateTime.now().minusMinutes(5)
 //        val endTime = LocalDateTime.now()
@@ -63,28 +163,6 @@ class PullBetTask(
 //        this.startTask(platform = Platform.Evolution, startTime = startTime, endTime = endTime)
 //    }
 //
-     @Scheduled(cron="0 0/1 *  * * ? ")
-    fun spadeGamingTask() {
-        val startTime = LocalDateTime.now().minusMinutes(5)
-        val endTime = LocalDateTime.now()
-        this.startTask(platform = Platform.SpadeGaming, startTime = startTime, endTime = endTime)
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //    @Scheduled(cron="0/10 * *  * * ? ")
 //    fun jokerTask() {
 //        val startTime = LocalDateTime.now().minusHours(1)
@@ -107,32 +185,32 @@ class PullBetTask(
 //        this.startTask(platform = Platform.MicroGaming, startTime = startTime, endTime = endTime)
 //    }
 //
-    @Scheduled(cron="0/10 * *  * * ? ")
-    fun start() {
-        val endTime = LocalDateTime.now()
-        val starTime = endTime.minusMinutes(5)
-
-        val platforms = listOf(
-//                Platform.Lbc,
-//                Platform.Bcs,
-//                Platform.GGFishing,
-//                Platform.CMD
-
-
-
-
-                Platform.DreamGaming
-//                Platform.Fgg,
-//                Platform.Pragmatic
-        )
-
-        platforms.forEach { platform ->
-            try {
-                this.startTask(platform = platform, startTime = starTime, endTime = endTime)
-            } catch (e: Exception) {
-                log.error("", e)
-            }
-        }
-    }
+//    @Scheduled(cron="0/10 * *  * * ? ")
+//    fun start() {
+//        val endTime = LocalDateTime.now()
+//        val starTime = endTime.minusMinutes(5)
+//
+//        val platforms = listOf(
+////                Platform.Lbc,
+////                Platform.Bcs,
+////                Platform.GGFishing,
+////                Platform.CMD
+//
+//
+//
+//
+//                Platform.DreamGaming
+////                Platform.Fgg,
+////                Platform.Pragmatic
+//        )
+//
+//        platforms.forEach { platform ->
+//            try {
+//                this.startTask(platform = platform, startTime = starTime, endTime = endTime)
+//            } catch (e: Exception) {
+//                log.error("", e)
+//            }
+//        }
+//    }
 
 }
