@@ -7,7 +7,7 @@ sealed class PlatformAuthValue {
 
     data class SpadeGamingRequest(
 
-            val accId: String,
+            val acctId: String,
 
             val language: String,
 

@@ -83,7 +83,7 @@ class PlatformAuthApiController(
         log.info("绑定平台信息:$bind")
 
         val clientToken = bind.clientToken as SpadeGamingClientToken
-        val acctInfo = PlatformAuthValue.SpadeGamingResponse.AcctInfo(accId = request.accId, balance = BigDecimal.ZERO, userName = "hello", currency = "MYR", siteId = clientToken.siteId)
+        val acctInfo = PlatformAuthValue.SpadeGamingResponse.AcctInfo(acctId = request.acctId, balance = BigDecimal.ZERO, userName = "hello", currency = "MYR", siteId = clientToken.siteId)
         val response = PlatformAuthValue.SpadeGamingResponse(merchantCode = request.merchantCode, msg = "", acctInfo =  acctInfo)
         log.info("返回信息:$response")
         return response
