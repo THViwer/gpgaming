@@ -139,8 +139,8 @@ class CMDService : PlatformService() {
                         .setUsername("SourceName")
                         .setBetAmount("BetAmount")
                         .setWinAmount("WinAmount")
-                        .setBetTimeByLong("StateUpdateTs")
-                        .setSettleTimeByLong("StateUpdateTs")
+                        .setBetTimeByCmdLong("StateUpdateTs")
+                        .setSettleTime("StateUpdateTs")
                         .build(objectMapper)
             }
 

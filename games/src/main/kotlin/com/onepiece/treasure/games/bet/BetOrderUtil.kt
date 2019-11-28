@@ -62,9 +62,9 @@ class BetOrderUtil private constructor(
         return this
     }
 
-    fun setBetTimeByLong(key: String): BetOrderUtil {
+    fun setBetTimeByCmdLong(key: String): BetOrderUtil {
         val time = mapUtil.asLong(key)
-        betTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.of("Asia/Shanghai"))
+        betTime = LocalDateTime.ofInstant(Instant.ofEpochMilli((time-621355968000000000)/10000), ZoneId.of("Asia/Shanghai")).minusHours(8)
         return this
     }
 
@@ -73,9 +73,9 @@ class BetOrderUtil private constructor(
         return this
     }
 
-    fun setSettleTimeByLong(key: String): BetOrderUtil {
+    fun setSettleTimeByCmdLong(key: String): BetOrderUtil {
         val time = mapUtil.asLong(key)
-        settleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.of("Asia/Shanghai"))
+        settleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli((time-621355968000000000)/10000), ZoneId.of("Asia/Shanghai")).minusHours(8)
         return this
     }
 
