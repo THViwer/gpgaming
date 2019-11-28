@@ -61,6 +61,7 @@ class GameConstant(
             Platform.Joker -> "http://45.124.64.29:89"
             Platform.Pragmatic -> "https://api.prerelease-env.biz"
             Platform.Fgg -> "https://d-tapi.fgg365.com"
+            Platform.Bcs -> "https://transferapi.ballcrown.com"
 
             // slot
             Platform.Kiss918 -> "$domain:1002"
@@ -79,7 +80,6 @@ class GameConstant(
             Platform.AllBet -> "$domain:2007"
 
             // sport
-            Platform.Bcs -> "$domain:3001"
             Platform.CMD -> "$domain:3002"
 
             // fishing

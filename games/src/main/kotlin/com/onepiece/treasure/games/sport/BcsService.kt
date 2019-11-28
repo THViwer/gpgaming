@@ -192,11 +192,11 @@ class BcsService : PlatformService() {
             val url = getRequestUrl(path = "/ThirdApi.asmx/GetBetSheetBySort", data = param)
             val result = okHttpUtil.doGetXml(url = url, clz = BcsValue.PullBetResult::class.java)
 
-            if (result.result.isEmpty()) {
+            if (result.result.isNullOrEmpty()) {
                 nowId to emptyList()
             } else {
-                var nextId = ""
-                val orders = result.result.map { bet1 ->
+                var nextId = "0"
+                val orders = result.result.filter { it.data["Status"] == "2" }.map { bet1 ->
                     val bet = bet1.getMapUtil()
                     val orderId = bet.asString("BetID")
                     val username = bet.asString("Account")

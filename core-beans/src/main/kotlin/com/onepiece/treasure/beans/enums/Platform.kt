@@ -154,7 +154,7 @@ open class PlatformDetail private constructor(
 
         fun ofLbc(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Sport, name = "lbc", icon = defaultLogoPath,
-                    disableIcon = defaultLogoPath, status = Status.Normal)
+                    disableIcon = defaultLogoPath, status = Status.Stop)
         }
 
         fun ofBcs(): PlatformDetail {

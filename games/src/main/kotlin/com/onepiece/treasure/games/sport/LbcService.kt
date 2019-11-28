@@ -43,8 +43,8 @@ class LbcService : PlatformService() {
          */
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
-                .add("Vendor_Member_ID", "${registerReq.clientId}")
-                .add("OperatorId", "${registerReq.memberId}")
+                .add("Vendor_Member_ID", "${registerReq.clientId}_test")
+                .add("OperatorId", "${clientToken.memberCode}${registerReq.memberId}")
                 .add("UserName", registerReq.username)
                 .add("Currency", "20") //TODO 测试环境只能先用20(UUS) 以后替换成2(MYR)
                 .add("OddsType", "1")
@@ -52,7 +52,7 @@ class LbcService : PlatformService() {
                 .add("MinTransfer", "1")
                 .build()
         this.startGetJson(method = "CreateMember", formBody = body)
-        return registerReq.username
+        return "${registerReq.username}_test"
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

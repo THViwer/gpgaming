@@ -104,7 +104,7 @@ class PullBetTask(
             // 不需要判断时间
             Platform.Pragmatic,
             Platform.GGFishing,
-//            Platform.Bcs,
+            Platform.Bcs,
             Platform.CMD,
 //            Platform.Lbc,
             Platform.Fgg  -> true

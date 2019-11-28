@@ -70,7 +70,11 @@ class OkHttpUtil(
                 .build()
 
         val response = client.newCall(request).execute()
-        check(response.code == 200) { OnePieceExceptionCode.PLATFORM_METHOD_FAIL }
+        check(response.code == 200) {
+            val message = response.body?.string()
+            log.error("请求失败：$message")
+            OnePieceExceptionCode.PLATFORM_METHOD_FAIL
+        }
 
         val json = response.body!!.string()
         log.info("response data: $json")

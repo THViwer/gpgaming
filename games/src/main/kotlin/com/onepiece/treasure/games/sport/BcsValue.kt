@@ -67,7 +67,7 @@ sealed class BcsValue {
             val errtext: String?,
 
             @JacksonXmlProperty(localName = "result")
-            val result: List<BetResult.Bet>
+            val result: List<BetResult.Bet>?
 
 
     )

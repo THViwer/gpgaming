@@ -154,6 +154,7 @@ class GameApi(
             Platform.AllBet,
             Platform.GGFishing,
             Platform.DreamGaming,
+            Platform.CMD,
             Platform.Bcs -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform, language = language, password = platformPassword)
                 this.getPlatformApi(platform).start(startReq)
