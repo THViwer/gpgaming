@@ -1,7 +1,6 @@
 package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.MemberService
 import com.onepiece.treasure.core.service.PlatformMemberService
@@ -33,7 +32,12 @@ class BerOrderApiController(
 
         val clientId = getClientId()
         return when (platform) {
-            Platform.Kiss918, Platform.Mega, Platform.Bcs -> {
+            Platform.Kiss918,
+            Platform.Mega,
+            Platform.Pussy888,
+            Platform.AllBet,
+            Platform.Bcs,
+            Platform.TTG  -> {
                 val platformMember = platformMemberService.find(memberId = member.id, platform = platform) ?: return emptyList<Any>()
                 gameApi.queryBetOrder(clientId = clientId, platformUsername = platformMember.platformUsername, platform = platform, startTime = startTime, endTime = endTime)
             }
