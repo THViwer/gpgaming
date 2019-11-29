@@ -82,7 +82,7 @@ class ApiController(
             @RequestParam("platform") platform: Platform): Map<String, String> {
 
         val url = when(platform) {
-            Platform.Joker -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/joker_$${launch.name.toLowerCase()}.json"
+            Platform.Joker -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/joker_${launch.name.toLowerCase()}.json"
             Platform.MicroGaming -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/micro_gaming.json"
             Platform.Pragmatic -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/pragmatic_${launch.name.toLowerCase()}.json"
             Platform.SpadeGaming -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/spade_game.json"

@@ -106,7 +106,7 @@ class PullBetTask(
             Platform.GGFishing,
             Platform.Bcs,
             Platform.CMD,
-//            Platform.Lbc,
+            Platform.Lbc,
             Platform.Fgg  -> true
 
             // 未测试

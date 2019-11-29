@@ -23,7 +23,7 @@ import java.time.LocalDateTime
 interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "可支持银行卡列表")
-    fun banks(): List<Bank>
+    fun banks(): List<BankVo>
 
     @ApiOperation(tags = ["cash"], value = "我的银行卡")
     fun myBanks(): List<MemberBankVo>

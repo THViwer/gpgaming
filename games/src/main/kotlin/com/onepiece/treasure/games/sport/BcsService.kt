@@ -174,7 +174,7 @@ class BcsService : PlatformService() {
             else -> "EN"
         }
 
-        return "http://www.baidu.com"
+        return "https://sport.ballcrown.com/?WebType=$webType&Language=$lang"
 
     }
 

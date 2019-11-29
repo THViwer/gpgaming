@@ -45,131 +45,122 @@ class SexyGamingService: PlatformService() {
                 "userId" to registerReq.username,
                 "currency" to currency,
 //                "betLimit" to "{\"SEXYBCRT\":{\"LIVE\":{\"limitId\":[280101,280102,280103,280104,280105,280106,280107]}}}"
-                "betLimit" to "{\"SEXYBCRT\":{\"LIVE\":{\"limitId\":[280101]}}}"
+                "betLimit" to "{\"SEXYBCRT\":{\"LIVE\":{\"limitId\":[280101,280102]}},\"SV388\":{\"LIVE\":{\"maxbet\":10000,\"minbet\":5,\"mindraw\":1,\"matchlimit\":1000,\"maxdraw\":10000}},\"VENUS\":{\"LIVE\":{\"limitId\":[280101,280102]}}}"
         )
 
         this.startGetJson(method = "/wallet/createMember", data = data)
         return registerReq.username
     }
 
+
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val clientToken = balanceReq.token as SexyGamingClientToken
+
+        val data = mapOf(
+                "cert" to clientToken.cert,
+                "agentId" to clientToken.agentId,
+                "userIds" to balanceReq.username
+        )
+        val mapUtil = this.startGetJson(method = "/wallet/getBalance", data = data)
+
+        //TODO 查看返回参数
+        return mapUtil.asMap("results").asBigDecimal("clairepl")
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val clientToken = transferReq.token as SexyGamingClientToken
+
+        val mapUtil = when (transferReq.amount.toDouble() > 0) {
+            true -> {
+
+                val data = mapOf(
+                        "cert" to clientToken.cert,
+                        "agentId" to clientToken.agentId,
+                        "userId" to transferReq.username,
+                        "amount" to "$transferReq.amount",
+                        "txCode" to transferReq.orderId
+                )
+                this.startGetJson(method = "/wallet/deposit", data = data)
+            }
+            else -> {
+                val data = mapOf(
+                        "cert" to clientToken.cert,
+                        "userId" to transferReq.username,
+                        "agentId" to clientToken.agentId,
+                        "txCode" to transferReq.orderId,
+                        "transferAmt" to "${transferReq.amount}"
+                )
+                this.startGetJson(method = "/wallet/withdraw", data = data)
+            }
+        }
+        return mapUtil.asString("txCode")
     }
 
-    //    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
-//        val clientToken = balanceReq.token as SexyGamingClientToken
-//
-//        val data = listOf(
-//                "cert=${clientToken.cert}",
-//                "agentId=${clientToken.agentId}",
-//                "userIds=${balanceReq.username}",
-//                ""
-//        )
-//        val mapUtil = this.startGetJson(method = "/wallet/getBalance", data = data)
-//
-//        //TODO 查看返回参数
-//        return mapUtil.asMap("results").asBigDecimal("clairepl")
-//    }
-//
-//    override fun transfer(transferReq: GameValue.TransferReq): String {
-//        val clientToken = transferReq.token as SexyGamingClientToken
-//
-//        val mapUtil = when (transferReq.amount.toDouble() > 0) {
-//            true -> {
-//
-//                val data = listOf(
-//                        "cert=${clientToken.cert}",
-//                        "agentId=${clientToken.agentId}",
-//                        "userId=${transferReq.username}",
-//                        "amount=${transferReq.amount}",
-//                        "txCode=${transferReq.orderId}"
-//                )
-//                this.startGetJson(method = "/wallet/deposit", data = data)
-//            }
-//            else -> {
-//                val data = listOf(
-//                        "cert=${clientToken.cert}",
-//                        "userId=${transferReq.username}",
-//                        "agentId=${clientToken.agentId}",
-//                        "txCode=${transferReq.orderId}",
-//                        "transferAmt=${transferReq.amount}"
-//                )
-//                this.startGetJson(method = "/wallet/withdraw", data = data)
-//            }
-//        }
-//        return mapUtil.asString("txCode")
-//    }
-//
-//    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
-//        val clientToken = checkTransferReq.token as SexyGamingClientToken
-//
-//        val data = listOf(
-//                "cert=${clientToken.cert}",
-//                "agentId=${clientToken.agentId}",
-//                "txCode=${checkTransferReq.orderId}"
-//        )
-//        val mapUtil = this.startGetJson(method = "/wallet/checkTransferOperation", data = data)
-//        return mapUtil.data["transferAmt"] != null
-//    }
-//
-//    override fun start(startReq: GameValue.StartReq): String {
-//        val clientToken = startReq.token as SexyGamingClientToken
-//
-//        val isMobileLogin = startReq.startPlatform == LaunchMethod.Wap
-//        val data = listOf(
-//                "cert=${clientToken.cert}",
-//                "agentId=${clientToken.agentId}",
-//                "userId=${startReq.username}",
-//                "isMobileLogin=$isMobileLogin",
-//                "externalURL=${startReq.redirectUrl}",
-//                ""
-//        )
-//        val mapUtil = this.startGetJson(method = "/wallet/login", data = data)
-//
-//        val lang = when (startReq.language) {
-//            Language.EN -> "en"
-//            Language.CN -> "cn"
-//            Language.TH -> "th"
-//            else -> "en"
-//        }
-//
-//        //TODO 判断语言设置启动
-//        val url = mapUtil.asString("url")
-//        return url
-//    }
-//
-//    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
-//        val clientToken = pullBetOrderReq.token as SexyGamingClientToken
-//
-//        val data = listOf(
-//                "cert=${clientToken.cert}",
-//                "agentId=${clientToken.agentId}",
-//                "timeFrom=${pullBetOrderReq.startTime}+08:00",
-//                "status=1" //已结算
-//        )
-//
-//        val mapUtil = this.startGetJson(method = "/wallet/getTransactionByUpdateDate", data = data)
-//
-//        return mapUtil.asList("transactions").map { bet ->
-//
-//            val orderId = bet.asString("roundId")
-//            val username = bet.asString("userId")
-//            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.SexyGaming, platformUsername = username)
-//            val betAmount = bet.asBigDecimal("betAmt")
-//            val winAmount = bet.asBigDecimal("winAmt")
-//            val betTime = bet.asString("createTime").substring(0, 19).let { LocalDateTime.parse(it) }
-//            val settleTime = bet.asString("updateTime").substring(0, 19).let { LocalDateTime.parse(it) }
-//
-//            val originData = objectMapper.writeValueAsString(bet.data)
-//
-//            BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, betTime = betTime,
-//                    settleTime = settleTime, originData = originData, platform = Platform.SexyGaming)
-//        }
-//
-//    }
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+        val clientToken = checkTransferReq.token as SexyGamingClientToken
+
+        val data = mapOf(
+                "cert" to clientToken.cert,
+                "agentId" to clientToken.agentId,
+                "txCode" to checkTransferReq.orderId
+        )
+        val mapUtil = this.startGetJson(method = "/wallet/checkTransferOperation", data = data)
+        return mapUtil.data["transferAmt"] != null
+    }
+
+    override fun start(startReq: GameValue.StartReq): String {
+        val clientToken = startReq.token as SexyGamingClientToken
+
+        val isMobileLogin = startReq.startPlatform == LaunchMethod.Wap
+        val data = mapOf(
+                "cert" to clientToken.cert,
+                "agentId" to clientToken.agentId,
+                "userId" to startReq.username,
+                "isMobileLogin" to "$isMobileLogin",
+                "externalURL" to startReq.redirectUrl
+        )
+        val mapUtil = this.startGetJson(method = "/wallet/login", data = data)
+
+        val lang = when (startReq.language) {
+            Language.EN -> "en"
+            Language.CN -> "cn"
+            Language.TH -> "th"
+            else -> "en"
+        }
+
+        //TODO 判断语言设置启动
+        val url = mapUtil.asString("url")
+        return url
+    }
+
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+        val clientToken = pullBetOrderReq.token as SexyGamingClientToken
+
+        val data = mapOf(
+                "cert" to clientToken.cert,
+                "agentId" to clientToken.agentId,
+                "timeFrom" to "${pullBetOrderReq.startTime}+08:00",
+                "status" to "1" //已结算
+        )
+
+        val mapUtil = this.startGetJson(method = "/wallet/getTransactionByUpdateDate", data = data)
+
+        return mapUtil.asList("transactions").map { bet ->
+
+            val orderId = bet.asString("roundId")
+            val username = bet.asString("userId")
+            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.SexyGaming, platformUsername = username)
+            val betAmount = bet.asBigDecimal("betAmt")
+            val winAmount = bet.asBigDecimal("winAmt")
+            val betTime = bet.asString("createTime").substring(0, 19).let { LocalDateTime.parse(it) }
+            val settleTime = bet.asString("updateTime").substring(0, 19).let { LocalDateTime.parse(it) }
+
+            val originData = objectMapper.writeValueAsString(bet.data)
+
+            BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, betTime = betTime,
+                    settleTime = settleTime, originData = originData, platform = Platform.SexyGaming)
+        }
+
+    }
 
 }

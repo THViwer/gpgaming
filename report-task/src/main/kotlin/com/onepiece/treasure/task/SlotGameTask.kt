@@ -26,13 +26,14 @@ class SlotGameTask(
 )  {
 
     @Scheduled(cron="0 0 0/1 * * ? ")
+//         @Scheduled(cron="0/10 * *  * * ? ")
     fun jokerGameTask() {
 
         val webGames = gameApi.slotGames(clientId = 1, platform = Platform.Joker, launch = LaunchMethod.Web)
         this.upload(games = webGames, path = "slot/joker_web.json")
 
         val wapGames = gameApi.slotGames(clientId = 1, platform = Platform.Joker, launch = LaunchMethod.Wap)
-        this.upload(games = wapGames, path = "slot/joker_web.json")
+        this.upload(games = wapGames, path = "slot/joker_wap.json")
     }
 
 

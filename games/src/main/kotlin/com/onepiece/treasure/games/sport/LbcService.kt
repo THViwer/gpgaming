@@ -44,8 +44,8 @@ class LbcService : PlatformService() {
          */
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
-                .add("Vendor_Member_ID", "${registerReq.clientId}_test")
-                .add("OperatorId", "${clientToken.memberCode}${registerReq.memberId}")
+                .add("Vendor_Member_ID", registerReq.username)
+                .add("OperatorId", clientToken.memberCode)
                 .add("UserName", registerReq.username)
                 .add("Currency", "20") //TODO 测试环境只能先用20(UUS) 以后替换成2(MYR)
                 .add("OddsType", "1")
@@ -53,7 +53,7 @@ class LbcService : PlatformService() {
                 .add("MinTransfer", "1")
                 .build()
         this.startGetJson(method = "CreateMember", formBody = body)
-        return "${registerReq.username}_test"
+        return registerReq.username
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
@@ -61,12 +61,12 @@ class LbcService : PlatformService() {
 
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
-                .add("vendor_member_ids", "${balanceReq.username}")
+                .add("vendor_member_ids", balanceReq.username)
                 .add("wallet_id", "1") // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
                 .build()
 
         val mapUtil = this.startGetJson(method = "CheckUserBalance", formBody = body)
-        return mapUtil.asMap("data").asBigDecimal("balance")
+        return mapUtil.asList("Data").first().data["balance"]?.toString()?.toBigDecimal() ?: BigDecimal.ZERO
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
@@ -76,15 +76,15 @@ class LbcService : PlatformService() {
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
                 .add("vendor_member_id", transferReq.username)
-                .add("vendor_trans_id", transferReq.username)
-                .add("amount", "${transferReq.amount}")
+                .add("vendor_trans_id", transferReq.orderId)
+                .add("amount", "${transferReq.amount.abs()}")
                 .add("currency", "20") // 固定
                 .add("direction", "$direction")
                 .add("wallet_id", "1") // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
                 .build()
 
         val mapUtil = this.startGetJson(method = "FundTransfer", formBody = body)
-        return mapUtil.asMap("data").asString("trans_id")
+        return mapUtil.asMap("Data").asString("trans_id")
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
@@ -107,7 +107,7 @@ class LbcService : PlatformService() {
                 .add("vendor_member_id", startReq.username)
                 .build()
         val mapUtil = this.startGetJson(method = "Login", formBody = body)
-        val token = mapUtil.asMap("data").asString("data")
+        val token = mapUtil.asString("Data")
 
         val lang = when (startReq.language) {
             Language.CN -> "cs"

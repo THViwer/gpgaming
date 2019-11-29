@@ -11,10 +11,10 @@ import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
 import com.onepiece.treasure.beans.value.internet.web.DepositVo
 import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
 import com.onepiece.treasure.controller.basic.BasicController
-import com.onepiece.treasure.utils.AwsS3Util
 import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.OrderIdBuilder
 import com.onepiece.treasure.core.service.*
+import com.onepiece.treasure.utils.AwsS3Util
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
@@ -41,8 +41,8 @@ open class CashApiController(
 
 
     @GetMapping("/bank")
-    override fun banks(): List<Bank> {
-        return Bank.values().toList()
+    override fun banks(): List<BankVo> {
+        return Bank.values().map { BankVo(logo = it.logo, name = it.cname) }
     }
 
     @GetMapping("/bank/my")
@@ -58,10 +58,11 @@ open class CashApiController(
             when (myBank != null) {
                 true -> {
                     MemberBankVo(id = myBank.id, name = myBank.name, bank = myBank.bank, bankCardNumber = myBank.bankCardNumber,
-                            clientId = member.clientId, memberId = member.id)
+                            clientId = member.clientId, memberId = member.id, logo = myBank.bank.logo)
                 }
                 else -> {
-                    MemberBankVo(id = -1, name = it.cname, bank = it, bankCardNumber = null, clientId = member.clientId, memberId = member.clientId)
+                    MemberBankVo(id = -1, name = it.cname, bank = it, bankCardNumber = null, clientId = member.clientId,
+                            memberId = member.clientId, logo = it.logo)
                 }
             }
         }

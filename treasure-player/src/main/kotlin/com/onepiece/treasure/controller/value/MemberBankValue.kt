@@ -5,6 +5,13 @@ import com.onepiece.treasure.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
+
+data class BankVo(
+        val logo: String,
+
+        val name: String
+)
+
 data class MemberBankVo(
 
         val id: Int,
@@ -14,6 +21,9 @@ data class MemberBankVo(
 
         @ApiModelProperty("会员Id")
         val memberId: Int,
+
+        @ApiModelProperty("银行logo")
+        val logo: String,
 
         @ApiModelProperty("银行")
         val bank: Bank,
