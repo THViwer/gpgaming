@@ -257,6 +257,7 @@ class GameApi(
             Platform.Evolution,
             Platform.DreamGaming,
             Platform.MicroGaming,
+            Platform.SexyGaming,
             Platform.GoldDeluxe -> {
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken)
                 getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)

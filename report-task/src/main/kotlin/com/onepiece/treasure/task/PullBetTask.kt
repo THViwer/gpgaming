@@ -41,7 +41,7 @@ class PullBetTask(
     }
 
 
-    @Scheduled(cron="0/10 * *  * * ? ")
+    @Scheduled(cron="0/20 * *  * * ? ")
     fun execute() {
         if (running.get()) return
         running.set(true)
@@ -75,7 +75,8 @@ class PullBetTask(
         val redisKey = "pull:task:${bind.clientId}:${bind.platform}"
 
         val startTime = redisService.get(key = redisKey, clz = String::class.java) {
-            "${LocalDateTime.now().minusMinutes(30)}"
+//            "${LocalDateTime.now().minusMinutes(30)}"
+            "${LocalDateTime.now().minusMinutes(10)}"
         }!!.let { LocalDateTime.parse(it) }
 
         if (!this.canExecutePlatform(startTime = startTime, platform = bind.platform)) return
@@ -96,6 +97,8 @@ class PullBetTask(
             Platform.TTG,
             Platform.AllBet,
             Platform.DreamGaming,
+            Platform.SpadeGaming,
+            Platform.SexyGaming,
             Platform.MicroGaming -> {
                 val duration = Duration.between(startTime, LocalDateTime.now())
                 val minutes: Long = duration.toMinutes() //相差的分钟数
@@ -110,8 +113,6 @@ class PullBetTask(
             Platform.Fgg  -> true
 
             // 未测试
-            Platform.SexyGaming,
-            Platform.SpadeGaming,
             Platform.GoldDeluxe -> { false }
 
             else -> {

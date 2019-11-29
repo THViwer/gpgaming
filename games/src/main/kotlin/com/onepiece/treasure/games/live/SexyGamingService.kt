@@ -30,7 +30,7 @@ class SexyGamingService: PlatformService() {
         }
 
         val result = okHttpUtil.doPostForm(url = url, body = body.build(), clz = SexyGamingValue.Result::class.java)
-        check(result.status == "0000") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.status == "0000" || result.status == "1" ) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
 
         return result.mapUtil
     }
@@ -63,8 +63,8 @@ class SexyGamingService: PlatformService() {
         )
         val mapUtil = this.startGetJson(method = "/wallet/getBalance", data = data)
 
-        //TODO 查看返回参数
-        return mapUtil.asMap("results").asBigDecimal("clairepl")
+
+        return mapUtil.asMap("results").data.entries.first().value.toString().toBigDecimal()
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
@@ -77,7 +77,7 @@ class SexyGamingService: PlatformService() {
                         "cert" to clientToken.cert,
                         "agentId" to clientToken.agentId,
                         "userId" to transferReq.username,
-                        "amount" to "$transferReq.amount",
+                        "amount" to "${transferReq.amount}",
                         "txCode" to transferReq.orderId
                 )
                 this.startGetJson(method = "/wallet/deposit", data = data)
@@ -88,7 +88,7 @@ class SexyGamingService: PlatformService() {
                         "userId" to transferReq.username,
                         "agentId" to clientToken.agentId,
                         "txCode" to transferReq.orderId,
-                        "transferAmt" to "${transferReq.amount}"
+                        "transferAmt" to "${transferReq.amount.abs()}"
                 )
                 this.startGetJson(method = "/wallet/withdraw", data = data)
             }
@@ -112,14 +112,6 @@ class SexyGamingService: PlatformService() {
         val clientToken = startReq.token as SexyGamingClientToken
 
         val isMobileLogin = startReq.startPlatform == LaunchMethod.Wap
-        val data = mapOf(
-                "cert" to clientToken.cert,
-                "agentId" to clientToken.agentId,
-                "userId" to startReq.username,
-                "isMobileLogin" to "$isMobileLogin",
-                "externalURL" to startReq.redirectUrl
-        )
-        val mapUtil = this.startGetJson(method = "/wallet/login", data = data)
 
         val lang = when (startReq.language) {
             Language.EN -> "en"
@@ -128,9 +120,19 @@ class SexyGamingService: PlatformService() {
             else -> "en"
         }
 
+        val data = mapOf(
+                "cert" to clientToken.cert,
+                "agentId" to clientToken.agentId,
+                "userId" to startReq.username,
+                "isMobileLogin" to "$isMobileLogin",
+                "externalURL" to startReq.redirectUrl,
+                "language" to lang,
+                "gameType" to "LIVE", // 启动真人
+                "platform" to "SEXYBCRT"
+        )
+        val mapUtil = this.startGetJson(method = "/wallet/doLoginAndLaunchGame", data = data)
         //TODO 判断语言设置启动
-        val url = mapUtil.asString("url")
-        return url
+        return mapUtil.asString("url")
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
@@ -139,7 +141,7 @@ class SexyGamingService: PlatformService() {
         val data = mapOf(
                 "cert" to clientToken.cert,
                 "agentId" to clientToken.agentId,
-                "timeFrom" to "${pullBetOrderReq.startTime}+08:00",
+                "timeFrom" to "${pullBetOrderReq.startTime.toString().substring(0, 19)}+08:00",
                 "status" to "1" //已结算
         )
 

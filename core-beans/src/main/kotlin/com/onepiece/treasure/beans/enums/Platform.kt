@@ -133,7 +133,7 @@ open class PlatformDetail private constructor(
         }
         fun ofSexyGaming(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sexy gaming", icon = defaultLogoPath,
-                    disableIcon = defaultLogoPath, status = Status.Stop)
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
         fun ofFgg(): PlatformDetail {
