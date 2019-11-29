@@ -33,15 +33,11 @@ class BerOrderApiController(
 
         val clientId = getClientId()
         return when (platform) {
-            Platform.Joker, Platform.Fgg-> {
-                betOrderService.getBets(clientId = clientId, memberId = member.id, platform = platform)
-            }
-
             Platform.Kiss918, Platform.Mega, Platform.Bcs -> {
                 val platformMember = platformMemberService.find(memberId = member.id, platform = platform) ?: return emptyList<Any>()
                 gameApi.queryBetOrder(clientId = clientId, platformUsername = platformMember.platformUsername, platform = platform, startTime = startTime, endTime = endTime)
             }
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
+            else -> betOrderService.getBets(clientId = clientId, memberId = member.id, platform = platform)
         }
 
     }
