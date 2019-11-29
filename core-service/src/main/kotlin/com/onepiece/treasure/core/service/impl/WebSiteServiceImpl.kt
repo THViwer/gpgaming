@@ -28,17 +28,17 @@ class WebSiteServiceImpl(
         val state = webSiteDao.create(webSiteCo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
-        redisService.delete(OnePieceRedisKeyConstant.webSite(webSiteCo.clientId))
+        redisService.delete(OnePieceRedisKeyConstant.getAllWebSite())
     }
 
     override fun update(webSiteUo: WebSiteUo) {
 
-        val hasWebSite = webSiteDao.get(webSiteUo.id)
+//        val hasWebSite = webSiteDao.get(webSiteUo.id)
 
         val state = webSiteDao.update(webSiteUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
-        redisService.delete(OnePieceRedisKeyConstant.webSite(hasWebSite.clientId))
+        redisService.delete(OnePieceRedisKeyConstant.getAllWebSite())
     }
 
     override fun match(url: String): Int {
