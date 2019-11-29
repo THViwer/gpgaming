@@ -94,7 +94,7 @@ open class CashApiController(
                 .map {
                     with(it) {
                         ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
-                                status = status, createdTime = createdTime, levelId = null, levelName = null)
+                                status = status, createdTime = createdTime, levelId = null, levelName = null, logo = bank.logo)
                     }
                 }
     }
