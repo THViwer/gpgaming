@@ -4,6 +4,7 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
+import com.onepiece.treasure.core.service.WebSiteService
 import com.onepiece.treasure.games.GameApi
 import com.onepiece.treasure.games.value.ClientAuthVo
 import com.onepiece.treasure.jwt.JwtUser
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
 import javax.servlet.http.HttpServletRequest
+
 
 abstract class BasicController {
 
@@ -24,17 +26,50 @@ abstract class BasicController {
     @Autowired
     lateinit var gameApi: GameApi
 
-    val ip = "192.68.2.31"
+    @Autowired
+    lateinit var webSiteService: WebSiteService
+
+    /**
+     * 获得请求ip
+     */
+    fun getIpAddress(): String {
+        val request = this.getRequest()
+
+        var ip = request.getHeader("x-forwarded-for")
+        if (ip.isNullOrBlank() || "unknown" == ip?.toLowerCase()) {
+            ip = request.getHeader("Proxy-Client-IP")
+        }
+
+        if (ip.isNullOrBlank() || "unknown" == ip?.toLowerCase()) {
+            ip = request.getHeader("WL-Proxy-Client-IP")
+        }
+
+        if (ip.isNullOrBlank() || "unknown" == ip?.toLowerCase()) {
+            ip = request.getHeader("HTTP_CLIENT_IP")
+        }
+
+        if (ip.isNullOrBlank() || "unknown" == ip?.toLowerCase()) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR")
+        }
+
+        if (ip.isNullOrBlank() || "unknown" == ip?.toLowerCase()) {
+            ip = request.remoteAddr;
+        }
+
+        return ip
+    }
 
     fun getClientIdByDomain(): Int {
-        return 1
+        val request = this.getRequest()
+        val url = request.requestURL.toString()
+        return webSiteService.match(url)
     }
 
     fun current(): JwtUser {
         try {
             return SecurityContextHolder.getContext().authentication.principal as JwtUser
         } catch (e: Exception) {
-            throw IllegalArgumentException("无法活的当前用户")
+            throw IllegalArgumentException("无法获得当前用户")
         }
     }
 

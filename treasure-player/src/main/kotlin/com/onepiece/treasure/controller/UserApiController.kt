@@ -27,7 +27,7 @@ class UserApiController(
     override fun login(@RequestBody loginReq: LoginReq): LoginResp {
         //TODO 判断域名来选择厅主
 
-        val loginValue = LoginValue(username = loginReq.username, password = loginReq.password, ip = ip)
+        val loginValue = LoginValue(username = loginReq.username, password = loginReq.password, ip = getIpAddress())
         val member = memberService.login(loginValue)
 
         val token = authService.login(loginReq.username)

@@ -11,6 +11,8 @@ object OnePieceRedisKeyConstant {
 
     fun webSite(clientId: Int) = "webSite:$clientId"
 
+    fun getAllWebSite() = "webSite:all"
+
     fun slotGames(platform: Platform) = "slotGames:$platform"
 
     fun clientBanks(clientId: Int) = "clientBank:$clientId"

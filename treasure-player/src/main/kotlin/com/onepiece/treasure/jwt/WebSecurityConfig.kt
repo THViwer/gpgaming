@@ -100,13 +100,23 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
 
                 // 允许对于网站静态资源的无授权访问
                 .antMatchers(
-                        "/**",
-                        "/system/startup",
-                        "/statistics/today",
-                        "/statistics",
-                        "/user/share",
-                        "/version/last",
-                        "/user"
+                        "/",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/swagger-resources",
+                        "/swagger-resources/**",
+                        "/v2/api-docs/**",
+
+                        "/api",
+                        "/api/**",
+                        "/user",
+
+                        "/cash/bank",
+                        "/cash/upload/proof",
+
+                        "/meaga",
+                        "/cmd",
+                        "/spadeGaming"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, "/order").permitAll()
                 // 对于获取token的rest api要允许匿名访问

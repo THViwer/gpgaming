@@ -6,10 +6,12 @@ import com.onepiece.treasure.beans.value.database.WebSiteUo
 
 interface WebSiteService {
 
-    fun all(clientId: Int): List<WebSite>
+    fun all(): List<WebSite>
 
     fun create(webSiteCo: WebSiteCo)
 
     fun update(webSiteUo: WebSiteUo)
+
+    fun match(url: String): Int
 
 }

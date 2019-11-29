@@ -16,10 +16,10 @@ class WebSiteServiceImpl(
         private val redisService: RedisService
 ): WebSiteService {
 
-    override fun all(clientId: Int): List<WebSite> {
-        val redisKey = OnePieceRedisKeyConstant.webSite(clientId)
+    override fun all(): List<WebSite> {
+        val redisKey = OnePieceRedisKeyConstant.getAllWebSite()
         return redisService.getList(redisKey, WebSite::class.java) {
-            webSiteDao.all(clientId)
+            webSiteDao.all()
         }
     }
 
@@ -39,5 +39,9 @@ class WebSiteServiceImpl(
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         redisService.delete(OnePieceRedisKeyConstant.webSite(hasWebSite.clientId))
+    }
+
+    override fun match(url: String): Int {
+        return this.all().first { url.contains(it.domain) }.clientId
     }
 }
