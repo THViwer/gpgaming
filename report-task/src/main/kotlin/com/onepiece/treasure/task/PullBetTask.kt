@@ -75,7 +75,7 @@ class PullBetTask(
         val redisKey = "pull:task:${bind.clientId}:${bind.platform}"
 
         val startTime = redisService.get(key = redisKey, clz = String::class.java) {
-//            "${LocalDateTime.now().minusMinutes(30)}"
+            //TODO 暂时10分钟 线上用30分钟
             "${LocalDateTime.now().minusMinutes(10)}"
         }!!.let { LocalDateTime.parse(it) }
 
@@ -119,97 +119,5 @@ class PullBetTask(
             }
         }
     }
-
-//
-//    // * 调用次数限制: 25次/10分钟 (以每个propertyId计算)
-//    // @Scheduled(cron="0/5 * *  * * ? ")
-//    fun allBetTask() {
-//        val startTime = LocalDateTime.now().minusMinutes(20)
-//        val endTime = LocalDateTime.now()
-//
-//        this.startTask(platform = Platform.AllBet, startTime = startTime, endTime = endTime)
-//    }
-//
-//    // if apply platform the api allowed frequency is 20 seconds.
-//    // if not apply platform the api allowed frequency is 60 seconds.
-//    // @Scheduled(cron="0/30 * *  * * ? ")
-//    fun sexyGamingTask() {
-//        val startTime = LocalDateTime.now().minusMinutes(5)
-//        val endTime = LocalDateTime.now()
-//        this.startTask(platform = Platform.SexyGaming, startTime = startTime, endTime = endTime)
-//    }
-//
-//
-//
-//    @Scheduled(cron="0 0/1 *  * * ? ")
-//    fun spadeGamingTask() {
-//        val startTime = LocalDateTime.now().minusMinutes(5)
-//        val endTime = LocalDateTime.now()
-//        this.startTask(platform = Platform.SpadeGaming, startTime = startTime, endTime = endTime)
-//    }
-//
-//
-//
-
-
-
-
-    //    @Scheduled(cron="0 0/3 *  * * ? ")
-//    fun evolutionTask() {
-//        val startTime = LocalDateTime.now().minusMinutes(5)
-//        val endTime = LocalDateTime.now()
-//
-//        this.startTask(platform = Platform.Evolution, startTime = startTime, endTime = endTime)
-//    }
-//
-//    @Scheduled(cron="0/10 * *  * * ? ")
-//    fun jokerTask() {
-//        val startTime = LocalDateTime.now().minusHours(1)
-//        val endTime = LocalDateTime.now().plusHours(1)
-//        this.startTask(platform = Platform.Joker, startTime = startTime, endTime = endTime)
-//    }
-//
-//    // 5分钟一次
-//     @Scheduled(cron="0 0/3 *  * * ? ")
-//    fun ttgTask() {
-//        val startTime = LocalDateTime.now().minusMinutes(5)
-//        val endTime = LocalDateTime.now()
-//        this.startTask(platform = Platform.TTG, startTime = startTime, endTime = endTime)
-//    }
-//
-//     @Scheduled(cron="0 0/3 *  * * ? ")
-//    fun microGamingTask() {
-//        val startTime = LocalDateTime.now().minusMinutes(5)
-//        val endTime = LocalDateTime.now()
-//        this.startTask(platform = Platform.MicroGaming, startTime = startTime, endTime = endTime)
-//    }
-//
-//    @Scheduled(cron="0/10 * *  * * ? ")
-//    fun start() {
-//        val endTime = LocalDateTime.now()
-//        val starTime = endTime.minusMinutes(5)
-//
-//        val platforms = listOf(
-////                Platform.Lbc,
-////                Platform.Bcs,
-////                Platform.GGFishing,
-////                Platform.CMD
-//
-//
-//
-//
-//                Platform.DreamGaming
-////                Platform.Fgg,
-////                Platform.Pragmatic
-//        )
-//
-//        platforms.forEach { platform ->
-//            try {
-//                this.startTask(platform = platform, startTime = starTime, endTime = endTime)
-//            } catch (e: Exception) {
-//                log.error("", e)
-//            }
-//        }
-//    }
 
 }
