@@ -22,7 +22,7 @@ class LbcService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(LbcService::class.java)
 
-    private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+    private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SS")
 
     fun startGetJson(method: String, formBody: FormBody): MapUtil {
         val url = "${gameConstant.getDomain(Platform.Lbc)}/api/${method}"
@@ -148,7 +148,7 @@ class LbcService : PlatformService() {
                     .add("version_key", startId)
                     .build()
             val mapUtil = startGetJson(method = "GetBetDetail", formBody = body)
-            val d = mapUtil.asMap("data")
+            val d = mapUtil.asMap("Data")
             val lastVersionKey = d.asString("last_version_key")
             val orders = d.asList("BetDetails").filter {
                 val ticketStatus = it.asString("ticket_status")
@@ -165,10 +165,26 @@ class LbcService : PlatformService() {
                 val originData = objectMapper.writeValueAsString(bet.data)
                 BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount,
                         platform = Platform.Lbc, betTime = betTime, settleTime = settleTime, originData = originData)
-
             }
 
-            lastVersionKey to orders
+            val virtualSportDetails = d.asList("BetVirtualSportDetails").filter {
+                val ticketStatus = it.asString("ticket_status")
+                ticketStatus == "half won" || ticketStatus == "half lose" || ticketStatus == "won"
+            }.map { bet ->
+                val orderId = bet.asString("trans_id")
+                val username = bet.asString("vendor_member_id")
+                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Lbc, platformUsername = username)
+                val betAmount = bet.asBigDecimal("stake")
+                val winAmount = bet.asBigDecimal("winlost_amount")
+                val betTime = bet.asLocalDateTime("transaction_time", dateTimeFormat)
+                val settleTime = bet.asLocalDateTime("settlement_time", dateTimeFormat)
+
+                val originData = objectMapper.writeValueAsString(bet.data)
+                BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount,
+                        platform = Platform.Lbc, betTime = betTime, settleTime = settleTime, originData = originData)
+            }
+
+            lastVersionKey to orders.plus(virtualSportDetails)
         }
 
     }

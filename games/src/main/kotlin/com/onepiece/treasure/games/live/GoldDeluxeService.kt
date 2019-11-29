@@ -216,6 +216,6 @@ class GoldDeluxeService: PlatformService() {
         val result = this.startDoPostXml(data = data)
         println(result)
 
-        return emptyList()
+        error("错误")
     }
 }

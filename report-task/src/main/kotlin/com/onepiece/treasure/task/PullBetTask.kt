@@ -99,6 +99,7 @@ class PullBetTask(
             Platform.DreamGaming,
             Platform.SpadeGaming,
             Platform.SexyGaming,
+            Platform.GoldDeluxe,
             Platform.MicroGaming -> {
                 val duration = Duration.between(startTime, LocalDateTime.now())
                 val minutes: Long = duration.toMinutes() //相差的分钟数
@@ -111,9 +112,6 @@ class PullBetTask(
             Platform.CMD,
             Platform.Lbc,
             Platform.Fgg  -> true
-
-            // 未测试
-            Platform.GoldDeluxe -> { false }
 
             else -> {
                 log.warn("该平台不支持同步订单:${platform}")
