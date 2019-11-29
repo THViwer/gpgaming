@@ -5,11 +5,13 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.GoldDeluxeClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
+import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapResultUtil
 import com.onepiece.treasure.utils.StringUtil
 import org.apache.commons.codec.digest.DigestUtils
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -28,9 +30,11 @@ import java.time.format.DateTimeFormatter
 @Service
 class GoldDeluxeService: PlatformService() {
 
+    private val log = LoggerFactory.getLogger(GoldDeluxeService::class.java)
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyMMddHHmmss")
     private val betDateTimeFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")
+
     private val currencyCode = "MYR"
 
 
@@ -160,7 +164,7 @@ class GoldDeluxeService: PlatformService() {
         val token = startReq.token as GoldDeluxeClientToken
 
         val loginTokenId = StringUtil.generateNonce(10)
-        val signParam = "${token.merchantCode}${loginTokenId}${startReq.username}${currencyCode}"
+        val signParam = "${token.merchantCode}${loginTokenId}${token.key}${startReq.username}${currencyCode}"
         val key = DigestUtils.sha256Hex(signParam)
 
         val lang = when (startReq.language) {
@@ -175,6 +179,7 @@ class GoldDeluxeService: PlatformService() {
         val param = listOf(
                 "OperatorCode=${token.merchantCode}",
                 "lang=${lang}",
+                "Currency=MYR",
                 "playerid=${startReq.username}",
                 "LoginTokenID=$loginTokenId",
                 "Key=$key",
@@ -184,7 +189,7 @@ class GoldDeluxeService: PlatformService() {
                 "theme=deafult"
         )
         val urlParam = param.joinToString(separator = "&")
-        val baseUrl = "http://coldsstaging.japaneast.cloudapp.azure.com/COLDS/FlashClient/release/FlashClient_red_gold_GOLD/main.php"
+        val baseUrl = "http://gd.gpgaming88.com/main.php"
         return "$baseUrl?$urlParam"
     }
 
@@ -213,9 +218,28 @@ class GoldDeluxeService: PlatformService() {
             </Request>
         """.trimIndent()
 
-        val result = this.startDoPostXml(data = data)
-        println(result)
 
-        error("错误")
+        val url = "${gameConstant.getOrderApiUrl(Platform.GoldDeluxe)}/MerchantAPI/report.php"
+        val result = okHttpUtil.doPostXml(url = url, data = data, clz = GoldDeluxeValue.BetResult::class.java)
+
+        if (result.param.totalRecord == 0) return emptyList()
+
+        return result.param.betInfoList.map { betInfo ->
+            val bet = betInfo.mapUtil
+            val username = bet.asString("UserID")
+            val orderId = bet.asString("BetID")
+            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.GoldDeluxe, platformUsername = username)
+            val betTime = bet.asLocalDateTime("BetTime", betDateTimeFormat)
+            val settleTime = bet.asLocalDateTime("BalanceTime", betDateTimeFormat)
+            val betAmount = bet.asBigDecimal("BetAmount")
+            val winAmount = bet.asBigDecimal("WinLoss")
+
+            val originData = objectMapper.writeValueAsString(bet.data)
+
+            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.GoldDeluxe, orderId = orderId, betAmount = betAmount,
+                    winAmount = winAmount, originData = originData, betTime = betTime, settleTime = settleTime)
+
+        }
     }
 }
+

@@ -2,7 +2,9 @@ package com.onepiece.treasure.games.live
 
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import com.onepiece.treasure.games.bet.JacksonMapUtil
 
 sealed class GoldDeluxeValue {
 
@@ -39,6 +41,34 @@ sealed class GoldDeluxeValue {
                 @JsonAnySetter
                 val data: Map<String, Any> = hashMapOf()
         )
+
+    }
+
+    data class BetResult(
+            @JacksonXmlProperty(localName = "Header")
+            val header: Result.Header,
+
+            @JacksonXmlProperty(localName = "Param")
+            val param: Param
+    ) {
+            data class Param(
+
+                    @JacksonXmlProperty(localName = "TotalRecord")
+                    val totalRecord: Int = 0,
+
+                    @JacksonXmlProperty(localName = "ErrorDesc")
+                    val errorDesc: String?,
+
+                    @JacksonXmlProperty(localName = "BetInfo")
+                    @JacksonXmlElementWrapper(useWrapping = false)
+                    val betInfoList: List<BetInfo> = emptyList()
+
+
+            ) {
+
+                class BetInfo: JacksonMapUtil()
+
+            }
 
     }
 

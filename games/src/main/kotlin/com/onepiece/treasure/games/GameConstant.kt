@@ -98,6 +98,8 @@ class GameConstant(
             platform == Platform.Kiss918 -> "http://api.918kiss.com:9919"
             platform == Platform.TTG && activeConfig.profile == "dev" -> "$domain:7003"
             platform == Platform.TTG -> "https://ams-df.stg.ttms.co:7443"
+            platform == Platform.GoldDeluxe && activeConfig.profile == "dev" -> "$domain:7004"
+            platform == Platform.GoldDeluxe -> "http://wsgdreport.gdsecure88.com"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }

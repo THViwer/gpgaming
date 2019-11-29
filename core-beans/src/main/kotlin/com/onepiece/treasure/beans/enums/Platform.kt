@@ -80,7 +80,7 @@ open class PlatformDetail private constructor(
         // slot
         fun ofJoker(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = defaultLogoPath,
-                    disableIcon = defaultLogoPath, status = Status.Stop, launchs = listOf(LaunchMethod.Web, LaunchMethod.Wap, LaunchMethod.Android))
+                    disableIcon = defaultLogoPath, status = Status.Normal, launchs = listOf(LaunchMethod.Web, LaunchMethod.Wap, LaunchMethod.Android))
         }
         fun ofKiss918(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "918kiss", icon = defaultLogoPath,
@@ -129,7 +129,7 @@ open class PlatformDetail private constructor(
 
         fun ofGoldDeluxe(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.LiveVideo, name = "GoldDeluxe", icon = defaultLogoPath,
-                    disableIcon = defaultLogoPath, status = Status.Stop)
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
         fun ofSexyGaming(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sexy gaming", icon = defaultLogoPath,
@@ -154,7 +154,7 @@ open class PlatformDetail private constructor(
 
         fun ofLbc(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Sport, name = "lbc", icon = defaultLogoPath,
-                    disableIcon = defaultLogoPath, status = Status.Stop)
+                    disableIcon = defaultLogoPath, status = Status.Normal)
         }
 
         fun ofBcs(): PlatformDetail {

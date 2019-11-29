@@ -15,6 +15,7 @@ import okhttp3.FormBody
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Service
@@ -22,7 +23,7 @@ class LbcService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(LbcService::class.java)
 
-    private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SS")
+    private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 
     fun startGetJson(method: String, formBody: FormBody): MapUtil {
         val url = "${gameConstant.getDomain(Platform.Lbc)}/api/${method}"
@@ -160,7 +161,7 @@ class LbcService : PlatformService() {
                 val betAmount = bet.asBigDecimal("stake")
                 val winAmount = bet.asBigDecimal("winlost_amount")
                 val betTime = bet.asLocalDateTime("transaction_time", dateTimeFormat)
-                val settleTime = bet.asLocalDateTime("settlement_time", dateTimeFormat)
+                val settleTime = bet.asLocalDateTime("winlost_datetime", dateTimeFormat)
 
                 val originData = objectMapper.writeValueAsString(bet.data)
                 BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount,
@@ -176,8 +177,8 @@ class LbcService : PlatformService() {
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Lbc, platformUsername = username)
                 val betAmount = bet.asBigDecimal("stake")
                 val winAmount = bet.asBigDecimal("winlost_amount")
-                val betTime = bet.asLocalDateTime("transaction_time", dateTimeFormat)
-                val settleTime = bet.asLocalDateTime("settlement_time", dateTimeFormat)
+                val betTime = bet.asString("transaction_time").substring(0, 19).let { LocalDateTime.parse(it) }
+                val settleTime = bet.asString("winlost_datetime").substring(0, 19).let { LocalDateTime.parse(it) }
 
                 val originData = objectMapper.writeValueAsString(bet.data)
                 BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount,

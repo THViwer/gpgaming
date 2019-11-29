@@ -24,7 +24,7 @@ object PlatformUsernameUtil  {
 
             Platform.GoldDeluxe -> {
                 val clientId = platformUsername.substring(1, 3).toInt()
-                val memberId = platformUsername.substring(3, platformUsername.length-2).toInt()
+                val memberId = platformUsername.substring(3, platformUsername.length).toInt()
 
                 clientId to memberId
             }
