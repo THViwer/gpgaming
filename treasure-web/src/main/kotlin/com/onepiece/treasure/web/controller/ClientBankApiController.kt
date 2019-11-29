@@ -27,7 +27,7 @@ class ClientBankApiController(
                 val levelName = levelMap[it.levelId]
 
                 ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
-                        status = status, createdTime = createdTime, levelId = levelId, levelName = levelName)
+                        status = status, createdTime = createdTime, levelId = levelId, levelName = levelName, logo = bank.logo)
             }
         }
     }
