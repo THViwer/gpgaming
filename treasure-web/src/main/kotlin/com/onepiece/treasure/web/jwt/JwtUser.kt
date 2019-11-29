@@ -1,6 +1,7 @@
 package com.onepiece.treasure.web.jwt
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.onepiece.treasure.beans.enums.Role
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDate
@@ -10,10 +11,15 @@ import java.util.*
 
 data class JwtUser(
         val id: Int,
-//        val level: String,
-//        val memberEndTime: LocalDateTime?,
+
+        val clientId: Int,
+
+        val role: Role,
+
         val musername: String,
+
         val mpassword: String,
+
         val lastPasswordResetDate: Date
 ) : UserDetails {
 

@@ -14,6 +14,7 @@ class ClientPlatformApiController: BasicController(), ClientPlatformApi {
 
     @GetMapping
     override fun all(): List<PlatformVo> {
+        val clientId = getClientId()
         val clientBinds = platformBindService.findClientPlatforms(clientId)
                 .map { it.platform to it }
                 .toMap()

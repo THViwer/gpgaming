@@ -3,11 +3,13 @@ package com.onepiece.treasure.web.controller
 import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.treasure.beans.value.database.ArtificialOrderCo
 import com.onepiece.treasure.beans.value.database.DepositLockUo
 import com.onepiece.treasure.beans.value.database.DepositQuery
 import com.onepiece.treasure.beans.value.database.WithdrawQuery
-import com.onepiece.treasure.beans.value.internet.web.*
+import com.onepiece.treasure.beans.value.internet.web.DepositUoReq
+import com.onepiece.treasure.beans.value.internet.web.DepositVo
+import com.onepiece.treasure.beans.value.internet.web.WithdrawUoReq
+import com.onepiece.treasure.beans.value.internet.web.WithdrawVo
 import com.onepiece.treasure.core.OrderIdBuilder
 import com.onepiece.treasure.core.service.ArtificialOrderService
 import com.onepiece.treasure.core.service.DepositService
@@ -34,6 +36,7 @@ class CashOrderApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
     ): List<DepositVo> {
+        val clientId = getClientId()
         val depositQuery = DepositQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state)
         return depositService.query(depositQuery).map {
             with(it) {
@@ -47,16 +50,19 @@ class CashOrderApiController(
 
     @PutMapping("/deposit/lock")
     override fun tryLock(@RequestParam("orderId") orderId: String) {
-        val order = depositService.findDeposit(clientId, orderId)
+        val current = current()
+        val order = depositService.findDeposit(current.clientId, orderId)
         check(order.state ==  DepositState.Close || order.state == DepositState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
 
-        val depositLockUo = DepositLockUo(clientId = clientId, orderId = orderId, processId = order.processId, lockWaiterId = id, lockWaiterName = name)
+        val depositLockUo = DepositLockUo(clientId = current.clientId, orderId = orderId, processId = order.processId, lockWaiterId = current.id,
+                lockWaiterName = current.username)
         depositService.lock(depositLockUo)
     }
 
     @PutMapping("/deposit")
     override fun check(@RequestBody depositUoReq: DepositUoReq) {
-        val req = depositUoReq.copy(clientId = clientId, waiterId = id)
+        val current = this.current()
+        val req = depositUoReq.copy(clientId = current.clientId, waiterId = current.id)
         depositService.check(req)
     }
 
@@ -77,6 +83,7 @@ class CashOrderApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
     ): List<WithdrawVo> {
 
+        val clientId = getClientId()
         val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state)
         return withdrawService.query(withdrawQuery).map {
 
@@ -89,17 +96,19 @@ class CashOrderApiController(
 
     @PutMapping("/withdraw/lock")
     override fun withdrawLock(@RequestParam("orderId") orderId: String) {
-        val order = withdrawService.findWithdraw(clientId, orderId)
+        val current = this.current()
+        val order = withdrawService.findWithdraw(current.clientId, orderId)
         check( order.state == WithdrawState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
 
-        val depositLockUo = DepositLockUo(clientId = clientId, orderId = orderId, processId = order.processId, lockWaiterId = id, lockWaiterName = name)
+        val depositLockUo = DepositLockUo(clientId = current.clientId, orderId = orderId, processId = order.processId, lockWaiterId = current.id,
+                lockWaiterName = current.musername)
         withdrawService.lock(depositLockUo)
     }
 
     @PutMapping("/withdraw")
     override fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawUoReq) {
-
-        val req = withdrawUoReq.copy(clientId = clientId, waiterId = waiterId)
+        val current = this.current()
+        val req = withdrawUoReq.copy(clientId = current.clientId, waiterId = current.id)
         withdrawService.check(req)
 
     }

@@ -23,11 +23,13 @@ class I18nContentApiController(
 
     @GetMapping("/announcement")
     override fun all(): List<I18nContentVo> {
+        val clientId = getClientId()
         return i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Announcement)
     }
 
     @PostMapping
     override fun create(@RequestBody i18nContentCoReq: I18nContentCoReq) {
+        val clientId = getClientId()
 
         val i18nContentCo = I18nContentCo(clientId = clientId, title = i18nContentCoReq.title, synopsis = i18nContentCoReq.synopsis, content = i18nContentCoReq.content,
                 language = i18nContentCoReq.language, configId = i18nContentCoReq.configId, configType = i18nContentCoReq.configType, banner = i18nContentCoReq.banner,

@@ -24,6 +24,10 @@ class ClientServiceImpl(
 
 ) : ClientService {
 
+    override fun get(id: Int): Client {
+        return clientDao.get(id)
+    }
+
     override fun all(): List<Client> {
         return clientDao.all()
     }

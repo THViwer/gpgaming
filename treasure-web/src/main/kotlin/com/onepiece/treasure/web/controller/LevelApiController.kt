@@ -23,6 +23,7 @@ class LevelApiController(
 
     @GetMapping
     override fun all(): List<LevelVo> {
+        val clientId = getClientId()
 
         val levelCountMap = memberService.getLevelCount(clientId)
 
@@ -39,6 +40,7 @@ class LevelApiController(
 
     @PostMapping
     override fun create(@RequestBody levelCoReq: LevelCoReq) {
+        val clientId = getClientId()
         val levelCo = LevelCo(clientId = clientId, name = levelCoReq.name)
         levelService.create(levelCo)
     }
@@ -64,6 +66,7 @@ class LevelApiController(
             @RequestParam("minTotalWithdrawFrequency", required = false) minTotalWithdrawFrequency: Int?,
             @RequestParam("maxTotalWithdrawFrequency", required = false) maxTotalWithdrawFrequency: Int?
     ): List<LevelMemberVo> {
+        val clientId = getClientId()
 
         check(
                 username == null
@@ -110,6 +113,7 @@ class LevelApiController(
 
     @PutMapping("/move")
     override fun move(@RequestBody levelMoveDo: LevelMoveDo) {
+        val clientId = getClientId()
 
         //TODO 人数多的时候进行分组移动
         check(levelMoveDo.memberIds.isNotEmpty()) { OnePieceExceptionCode.MOVE_LEVEL_COUNT_ISZERO }

@@ -43,6 +43,7 @@ class ReportApiController(
             @RequestParam(value = "memberId") memberId: Int
     ): List<MemberPlatformReportWebVo> {
 
+        val clientId = getClientId()
 //        val memberId = memberService.findByUsername(username)?.id?: return emptyList()
 
         val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
@@ -74,6 +75,7 @@ class ReportApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "username", required = false) username: String?
     ): List<MemberReportWebVo> {
+        val clientId = getClientId()
 
         val memberId = memberService.findByUsername(username)?.id
 
@@ -107,6 +109,8 @@ class ReportApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
     ): List<ClientPlatformDailyReport> {
+        val clientId = getClientId()
+
         val query = ClientReportQuery(clientId = clientId, startDate = startDate, endDate = endDate)
 
         //查询今天的
@@ -122,6 +126,8 @@ class ReportApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
     ): List<ClientDailyReport> {
+        val clientId = getClientId()
+
         val query = ClientReportQuery(clientId = clientId, startDate = startDate, endDate = endDate)
 
         //查询今天的

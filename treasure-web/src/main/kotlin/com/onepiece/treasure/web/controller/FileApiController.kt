@@ -18,6 +18,7 @@ class FileApiController : BasicController(), FileApi {
             @RequestParam("category") category: String,
             @RequestParam("file") file: MultipartFile
     ): Map<String, String> {
+        val clientId = getClientId()
 
         val categoryName = when (category) {
             "banner" -> "banner"

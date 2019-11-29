@@ -20,6 +20,7 @@ class ClientBankApiController(
     @GetMapping
     override fun all(): List<ClientBankVo> {
 
+        val clientId = getClientId()
         val levelMap = levelService.all(clientId).map { it.id to it.name }.toMap()
 
         return clientBankService.findClientBank(clientId).map {
@@ -34,6 +35,7 @@ class ClientBankApiController(
 
     @PostMapping
     override fun create(@RequestBody clientBankCoReq: ClientBankCoReq) {
+        val clientId = getClientId()
         val clientBankCo = ClientBankCo(clientId = clientId, bank = clientBankCoReq.bank, bankCardNumber = clientBankCoReq.bankCardNumber,
                 name = clientBankCoReq.name, levelId = clientBankCoReq.levelId)
         clientBankService.create(clientBankCo)

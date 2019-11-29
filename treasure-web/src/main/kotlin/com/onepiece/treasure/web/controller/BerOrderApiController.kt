@@ -31,6 +31,7 @@ class BerOrderApiController(
 
         val member = memberService.findByUsername(username) ?: return emptyList<Any>()
 
+        val clientId = getClientId()
         return when (platform) {
             Platform.Joker, Platform.Fgg-> {
                 betOrderService.getBets(clientId = clientId, memberId = member.id, platform = platform)

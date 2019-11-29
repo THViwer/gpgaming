@@ -100,12 +100,13 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
 
                 // 允许对于网站静态资源的无授权访问
                 .antMatchers(
-                        "/**",
-                        "/system/startup",
-                        "/statistics/today",
-                        "/statistics",
-                        "/user/share",
-                        "/version/last",
+                        "/",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/swagger-resources",
+                        "/swagger-resources/**",
+                        "/v2/api-docs/**",
+
                         "/user"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, "/order").permitAll()

@@ -29,6 +29,7 @@ class PromotionApiController(
 
     @GetMapping
     override fun all(): List<PromotionVo> {
+        val clientId = getClientId()
 
         val promotions = promotionService.all(clientId = clientId)
         if (promotions.isEmpty()) return emptyList()
@@ -52,6 +53,9 @@ class PromotionApiController(
 
     @PostMapping
     override fun create(@RequestBody promotionCoReq: PromotionCoReq) {
+
+        val clientId = getClientId()
+
         // 校验数据的准确性
         val ruleJson = promotionCoReq.promotionRuleVo.ruleJson
 
@@ -76,6 +80,8 @@ class PromotionApiController(
 
     @PutMapping
     override fun update(@RequestBody promotionUoReq: PromotionUoReq) {
+        val clientId = getClientId()
+
         promotionService.update(clientId = clientId, promotionUoReq = promotionUoReq)
     }
 }

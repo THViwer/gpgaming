@@ -1,5 +1,6 @@
 package com.onepiece.treasure.web.jwt
 
+import com.onepiece.treasure.beans.enums.Role
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -13,10 +14,11 @@ class JwtUserDetailsServiceImpl(
 
     override fun loadUserByUsername(username: String): UserDetails {
 
+        val (clientId, currentUserId, mUsername, role) = username.split(":")
 //        val user = userDao.getByUsername(username)!!
 
-        return JwtUser(id = 1, musername = username, mpassword = passwordEncoder.encode(username),
-                lastPasswordResetDate = Date()
+        return JwtUser(id = currentUserId.toInt(), musername = mUsername, mpassword = passwordEncoder.encode(mUsername),
+                lastPasswordResetDate = Date(), clientId = clientId.toInt(), role = Role.valueOf(role)
         )
     }
 }

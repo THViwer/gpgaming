@@ -11,45 +11,50 @@ import com.onepiece.treasure.beans.value.internet.web.LoginResp
 import com.onepiece.treasure.core.service.ClientService
 import com.onepiece.treasure.core.service.WaiterService
 import com.onepiece.treasure.web.controller.basic.BasicController
+import com.onepiece.treasure.web.jwt.AuthService
 import org.springframework.web.bind.annotation.*
-import java.lang.Exception
 import java.util.*
-import kotlin.math.log
 
 @RestController
 @RequestMapping("/user")
 class UserApiController(
         private val clientService: ClientService,
-        private val waiterService: WaiterService
+        private val waiterService: WaiterService,
+        private val authService: AuthService
 ) : BasicController(), UserApi {
 
     @PostMapping
     override fun login(@RequestBody loginReq: LoginReq): LoginResp {
-        val loginValue = LoginValue(username = loginReq.username, password = loginReq.password, ip = currentIp)
+        val loginValue = LoginValue(username = loginReq.username, password = loginReq.password, ip = getIpAddress())
 
         return try {
             val client = clientService.login(loginValue)
 
-            LoginResp(id = client.id, clientId = client.id, username = client.username, role = Role.Client, token = UUID.randomUUID().toString())
+
+            val authUser = authService.login(id = client.id, role = Role.Client, username = client.username)
+            LoginResp(id = client.id, clientId = client.id, username = client.username, role = Role.Client, token = authUser.token)
 
         } catch (e: Exception) {
             e.printStackTrace()
             val waiter = waiterService.login(loginValue)
 
-            LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = Role.Client, token = UUID.randomUUID().toString())
+            val authUser = authService.login(id = waiter.id, role = Role.Client, username = waiter.username)
+            LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = Role.Client, token = authUser.token)
         }
     }
 
     @PutMapping("/password")
     override fun changePassword(@RequestBody changePwdReq: ChangePwdReq) {
 
-        when (role) {
+        val current = this.current()
+
+        when (current.role) {
             Role.Client -> {
-                val clientUo = ClientUo(id = id, oldPassword = changePwdReq.oldPassword, password = changePwdReq.password, name = null)
+                val clientUo = ClientUo(id = current.id, oldPassword = changePwdReq.oldPassword, password = changePwdReq.password, name = null)
                 clientService.update(clientUo)
             }
             Role.Waiter -> {
-                val waiterUo = WaiterUo(id = id, oldPassword = changePwdReq.oldPassword, password = changePwdReq.password)
+                val waiterUo = WaiterUo(id = current.id, oldPassword = changePwdReq.oldPassword, password = changePwdReq.password)
                 waiterService.update(waiterUo)
             }
             else -> check(false) { OnePieceExceptionCode.AUTHORITY_FAIL }

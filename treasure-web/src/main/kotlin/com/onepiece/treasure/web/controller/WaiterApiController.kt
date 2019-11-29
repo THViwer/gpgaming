@@ -21,6 +21,8 @@ class WaiterApiController(
 
     @GetMapping
     override fun query(): List<WaiterVo> {
+        val clientId = getClientId()
+
         return waiterService.findClientWaiters(clientId).map {
             with(it) {
                 WaiterVo(id = id, username = username, name = name, status = status, createdTime = createdTime,
@@ -31,6 +33,8 @@ class WaiterApiController(
 
     @PostMapping
     override fun create(@RequestBody waiterCoReq: WaiterCoReq) {
+        val clientId = getClientId()
+
         val waiterCo = WaiterCo(clientId = clientId, username = waiterCoReq.username, name = waiterCoReq.name,
                 password = waiterCoReq.password)
         waiterService.create(waiterCo)
@@ -38,6 +42,7 @@ class WaiterApiController(
 
     @PutMapping
     override fun update(@RequestBody waiterUoReq: WaiterUoReq) {
+        val clientId = getClientId()
 
         val hasWaiter = waiterService.get(waiterUoReq.id)
         check(hasWaiter.clientId == clientId) { OnePieceExceptionCode.AUTHORITY_FAIL }

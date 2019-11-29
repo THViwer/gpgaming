@@ -29,6 +29,7 @@ class MemberApiController(
             @RequestParam(defaultValue = "0") current: Int,
             @RequestParam(defaultValue = "10") size: Int
     ): MemberPage {
+        val clientId = getClientId()
 
         val query = MemberQuery(clientId = clientId, startTime = null, endTime = null, username = username,
                 levelId = levelId, status = status)
@@ -50,6 +51,7 @@ class MemberApiController(
 
     @PutMapping
     override fun update(@RequestBody memberUoReq: MemberUoReq) {
+        val clientId = getClientId()
 
         val member = memberService.getMember(memberUoReq.id)
         check(member.clientId == clientId) { OnePieceExceptionCode.AUTHORITY_FAIL }
@@ -61,6 +63,8 @@ class MemberApiController(
 
     @PostMapping
     override fun create(@RequestBody memberCoReq: MemberCoReq) {
+        val clientId = getClientId()
+
         val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password,
                 safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId)
         memberService.create(memberCo)

@@ -6,10 +6,8 @@ import com.onepiece.treasure.beans.value.internet.web.BannerCoReq
 import com.onepiece.treasure.beans.value.internet.web.BannerUoReq
 import com.onepiece.treasure.beans.value.internet.web.BannerVo
 import com.onepiece.treasure.core.service.BannerService
-import com.onepiece.treasure.utils.AwsS3Util
 import com.onepiece.treasure.web.controller.basic.BasicController
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/banner")
@@ -19,7 +17,7 @@ class BannerApiController(
 
     @GetMapping
     override fun all(): List<BannerVo> {
-        return advertService.all(clientId).map {
+        return advertService.all(getClientId()).map {
             BannerVo(id = it.id, clientId = it.clientId, icon = it.icon, touchIcon = it.touchIcon, order = it.order,
                     type = it.type, link = it.link, status = it.status, createdTime = it.createdTime,
                     updatedTime = it.updatedTime)
@@ -29,7 +27,7 @@ class BannerApiController(
     @PostMapping
     override fun create(@RequestBody bannerCoReq: BannerCoReq) {
 
-        val advertCo = BannerCo(clientId = clientId, icon = bannerCoReq.icon, touchIcon = bannerCoReq.touchIcon, type = bannerCoReq.type,
+        val advertCo = BannerCo(clientId = getClientId(), icon = bannerCoReq.icon, touchIcon = bannerCoReq.touchIcon, type = bannerCoReq.type,
                 order = bannerCoReq.order, link = bannerCoReq.link)
         advertService.create(advertCo)
     }
