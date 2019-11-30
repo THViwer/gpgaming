@@ -26,6 +26,9 @@ data class PlatformVo(
         @ApiModelProperty("平台类型")
         val category: PlatformCategory,
 
+        @ApiModelProperty("平台logo")
+        val logo: String,
+
         @ApiModelProperty("平台名称")
         val name: String,
 
