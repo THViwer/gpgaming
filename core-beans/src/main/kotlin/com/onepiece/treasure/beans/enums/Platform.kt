@@ -139,8 +139,8 @@ open class PlatformDetail private constructor(
         }
 
         fun ofFgg(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "fgg", icon = defaultLogoPath,
-                    disableIcon = defaultLogoPath, status = Status.Normal)
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "fgg", icon = "${SystemConstant.AWS_LOGO_URL}/fgg.png",
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/fgg.png", status = Status.Normal)
         }
 
         fun ofAllBet(): PlatformDetail {
@@ -160,8 +160,8 @@ open class PlatformDetail private constructor(
         }
 
         fun ofBcs(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Sport, name = "BCS", icon = defaultLogoPath,
-                    disableIcon = defaultLogoPath, status = Status.Normal)
+            return PlatformDetail(category = PlatformCategory.Sport, name = "BCS", icon = "${SystemConstant.AWS_LOGO_URL}/bcs.png",
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/bcs.png", status = Status.Normal)
         }
         fun ofCMD(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Sport, name = "CMD", icon = "${SystemConstant.AWS_LOGO_URL}/cmd.jpeg",
