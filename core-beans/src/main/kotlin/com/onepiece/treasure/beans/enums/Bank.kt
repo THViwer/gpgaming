@@ -7,17 +7,17 @@ enum class Bank(
         val logo: String
 ) {
 
-    BSN("BSN", "${SystemConstant.AWS_BANK_LOGO_URL}/logo/BSN.jpeg"),
+    BSN("BSN", "${SystemConstant.AWS_BANK_LOGO_URL}/BSN.jpeg"),
 
-    CIMB("CIMB Bank", "${SystemConstant.AWS_BANK_LOGO_URL}/logo/CIMB.png"),
+    CIMB("CIMB Bank", "${SystemConstant.AWS_BANK_LOGO_URL}/CIMB.png"),
 
-    HongLeong("HongLeong Bank", "${SystemConstant.AWS_BANK_LOGO_URL}/logo/HongLeong.png"),
+    HongLeong("HongLeong Bank", "${SystemConstant.AWS_BANK_LOGO_URL}/HongLeong.png"),
 
-    May("MayBank", "${SystemConstant.AWS_BANK_LOGO_URL}/logo/May.png"),
+    May("MayBank", "${SystemConstant.AWS_BANK_LOGO_URL}/May.png"),
 
-    PUBLIC("PUBLIC BANK", "${SystemConstant.AWS_BANK_LOGO_URL}/logo/PUBLIC.png"),
+    PUBLIC("PUBLIC BANK", "${SystemConstant.AWS_BANK_LOGO_URL}/PUBLIC.png"),
 
-    RHB("RHB BANK", "${SystemConstant.AWS_BANK_LOGO_URL}/logo/RHB.png")
+    RHB("RHB BANK", "${SystemConstant.AWS_BANK_LOGO_URL}/RHB.png")
 
 
 }
