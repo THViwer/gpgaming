@@ -58,6 +58,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
                 .where("order_id", query.orderId)
                 .where("member_id", query.memberId)
                 .where("state", query.state)
+                .sort("id desc")
                 .limit(current, size)
                 .execute(mapper)
     }

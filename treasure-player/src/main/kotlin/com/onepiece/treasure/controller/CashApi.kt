@@ -43,8 +43,6 @@ interface CashApi {
     fun deposit(
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: DepositState?,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): Page<DepositVo>
@@ -59,8 +57,6 @@ interface CashApi {
     fun withdraw(
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: WithdrawState?,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): Page<WithdrawVo>

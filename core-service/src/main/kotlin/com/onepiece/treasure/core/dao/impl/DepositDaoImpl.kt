@@ -63,6 +63,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                 .where("member_id", query.memberId)
                 .where("order_id", query.orderId)
                 .where("state", query.state)
+                .sort("id desc")
                 .limit(current, size)
                 .execute(mapper)
     }

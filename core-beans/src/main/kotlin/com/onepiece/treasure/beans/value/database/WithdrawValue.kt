@@ -10,9 +10,9 @@ data class WithdrawQuery(
 
         val clientId: Int,
 
-        val startTime: LocalDateTime,
+        val startTime: LocalDateTime?,
 
-        val endTime: LocalDateTime,
+        val endTime: LocalDateTime?,
 
         val orderId: String?,
 
