@@ -179,6 +179,10 @@ data class CashTransferReq(
 )
 
 data class BalanceVo(
+
+        @ApiModelProperty("中心钱包余额")
+        val centerBalance: BigDecimal,
+
         @ApiModelProperty("平台名称")
         val platform: Platform,
 

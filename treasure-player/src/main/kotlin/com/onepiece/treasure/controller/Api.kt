@@ -36,7 +36,6 @@ interface Api {
     @ApiOperation(tags = ["api"], value = "开始游戏(平台)")
     fun start(
             @RequestHeader("language", defaultValue = "EN") language: Language,
-
             @RequestHeader("platform") platform: Platform,
             @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
     ): StartGameResp
@@ -63,7 +62,9 @@ interface Api {
             @RequestParam("gameId") gameId: String): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "下载客户端(ios或android)")
-    fun down(): List<DownloadAppVo>
+    fun down(
+            @RequestHeader("platform", required = false) platform: Platform?
+    ): List<DownloadAppVo>
 
     @ApiOperation(tags = ["api"], value = "获得游戏平台的账号密码")
     fun platformMemberDetail(@RequestHeader("platform") platform: Platform): PlatformMembrerDetail

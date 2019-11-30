@@ -427,10 +427,12 @@ open class CashApiController(
             @RequestHeader("platform") platform: Platform
     ): BalanceVo {
         val member = current()
+
+        val walletBalance = walletService.getMemberWallet(current().id).balance
+
         return when (platform) {
             Platform.Center -> {
-                val walletBalance = walletService.getMemberWallet(current().id).balance
-                BalanceVo(platform = platform, balance = walletBalance, transfer = true, tips= null)
+                BalanceVo(platform = platform, balance = walletBalance, transfer = true, tips= null, centerBalance = walletBalance)
             }
             else -> {
                 // 判断用户是否有参加活动
@@ -447,7 +449,7 @@ open class CashApiController(
 //                    this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
 //                }?: true
 
-                BalanceVo(platform = platform, balance = platformBalance, transfer = transfer, tips = tips)
+                BalanceVo(platform = platform, balance = platformBalance, transfer = transfer, tips = tips, centerBalance = walletBalance)
             }
         }
     }
@@ -464,7 +466,7 @@ open class CashApiController(
 
         // 查询主钱包
         val wallet = walletService.getMemberWallet(memberId = memberId)
-        val walletBalanceVo = BalanceVo(platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null)
+        val walletBalanceVo = BalanceVo(platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, centerBalance = wallet.balance)
 
         // 查询厅主开通的平台列表
         val platforms = platformBindService.findClientPlatforms(clientId)
@@ -478,7 +480,7 @@ open class CashApiController(
             val platformMember = platformMemberMap[it.platform]
 
             when (platformMember == null) {
-                true -> BalanceVo(platform = it.platform, balance = BigDecimal.ZERO, transfer = true, tips = null)
+                true -> BalanceVo(platform = it.platform, balance = BigDecimal.ZERO, transfer = true, tips = null, centerBalance = wallet.balance)
                 else -> {
                     val platformBalance = gameApi.balance(clientId = clientId, platformUsername = platformMember.username, platform = it.platform,
                             platformPassword = platformMember.password)
@@ -489,7 +491,7 @@ open class CashApiController(
 //                    }?: true
 
                     val (transfer, tips) = this.checkCanTransferOutAndTips(platformMember = platformMember, platformBalance = platformBalance, language = language)
-                    BalanceVo(platform = it.platform, balance = platformBalance, transfer = transfer, tips = tips)
+                    BalanceVo(platform = it.platform, balance = platformBalance, transfer = transfer, tips = tips, centerBalance = wallet.balance)
                 }
             }
         }

@@ -64,8 +64,7 @@ class ApiController(
             @RequestHeader("language", defaultValue = "EN") language: Language
     ): List<PromotionVo> {
 
-        val clientId = 1
-
+        val clientId = getClientIdByDomain()
         val promotions = promotionService.all(clientId)
 
         val i18nContentMap = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Promotion)
@@ -155,7 +154,7 @@ class ApiController(
     }
 
     @GetMapping("/down")
-    override fun down(): List<DownloadAppVo> {
+    override fun down(@RequestHeader("platform", required = false) platform: Platform?): List<DownloadAppVo> {
         //TODO 暂时不解析网站
 
         // kiss918 -> https://www.918kisse.com/
@@ -176,7 +175,9 @@ class ApiController(
                 iosPath = "itms-services://?action=download-manifest&url=https://aka-dd-mega-appsetup.siderby.com/ios/Mega888.plist",
                 androidPath = "https://aka-dd-mega-appsetup.siderby.com/apk/Mega888_V1.2.apk")
 
-        return listOf(kiss918, pussy888, mega)
+        val list = listOf(kiss918, pussy888, mega)
+        return list.filter { platform == null || platform == it.platform }
+
     }
 
     @GetMapping("/platform/member")
