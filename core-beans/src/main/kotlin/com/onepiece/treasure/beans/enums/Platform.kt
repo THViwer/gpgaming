@@ -81,7 +81,7 @@ open class PlatformDetail private constructor(
 
         // slot
         fun ofJoker(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = "${SystemConstant.AWS_LOGO_URL}joker.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = "${SystemConstant.AWS_LOGO_URL}/joker.png",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Web, LaunchMethod.Wap, LaunchMethod.Android))
         }
         fun ofKiss918(): PlatformDetail {
