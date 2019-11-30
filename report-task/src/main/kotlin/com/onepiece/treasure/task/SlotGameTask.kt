@@ -2,6 +2,7 @@ package com.onepiece.treasure.task
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.onepiece.treasure.beans.SystemConstant
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.value.internet.web.SlotCategory
@@ -106,7 +107,7 @@ class SlotGameTask(
     fun spadeGameTask() {
         val webGames = gameApi.slotGames(clientId = 1, platform = Platform.SpadeGaming, launch = LaunchMethod.Web)
 
-        val awsGameJsonUrl = "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/spade_game.json"
+        val awsGameJsonUrl = "${SystemConstant.AWS_SLOT}/spade_game.json"
 
         val awsGames = okHttpUtil.doGet(url = awsGameJsonUrl, clz = String::class.java)
                 .let { objectMapper.readValue<List<SlotCategory>>(it) }

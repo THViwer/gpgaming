@@ -1,5 +1,6 @@
 package com.onepiece.treasure.controller
 
+import com.onepiece.treasure.beans.SystemConstant
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.internet.web.SlotCategory
@@ -51,8 +52,8 @@ class ApiController(
 
         // hot games
         val hotGameUrl = when (launch) {
-            LaunchMethod.Web -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/hot_sort_10_wap.json"
-            else -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/hot_sort_20_web.json"
+            LaunchMethod.Web -> "${SystemConstant.AWS_SLOT}/hot_sort_10_wap.json"
+            else -> "${SystemConstant.AWS_SLOT}/hot_sort_20_web.json"
         }
 
         return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGameUrl = hotGameUrl)
@@ -88,11 +89,11 @@ class ApiController(
             @RequestParam("platform") platform: Platform): Map<String, String> {
 
         val url = when(platform) {
-            Platform.Joker -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/joker_${launch.name.toLowerCase()}.json"
-            Platform.MicroGaming -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/micro_gaming.json"
-            Platform.Pragmatic -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/pragmatic_${launch.name.toLowerCase()}.json"
-            Platform.SpadeGaming -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/spade_game.json"
-            Platform.TTG -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/ttg_${launch.name.toLowerCase()}.json"
+            Platform.Joker -> "${SystemConstant.AWS_SLOT}/joker_${launch.name.toLowerCase()}.json"
+            Platform.MicroGaming -> "${SystemConstant.AWS_SLOT}/micro_gaming.json"
+            Platform.Pragmatic -> "${SystemConstant.AWS_SLOT}/pragmatic_${launch.name.toLowerCase()}.json"
+            Platform.SpadeGaming -> "${SystemConstant.AWS_SLOT}/spade_game.json"
+            Platform.TTG -> "${SystemConstant.AWS_SLOT}/ttg_${launch.name.toLowerCase()}.json"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
         return mapOf(
