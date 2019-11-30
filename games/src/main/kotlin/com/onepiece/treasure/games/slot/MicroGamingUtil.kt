@@ -93,7 +93,7 @@ object MicroGamingUtil {
         val root = File(local)
         root.listFiles().forEach {
             val name = it.name
-            val url = AwsS3Util.uploadLocalFile(it, "slot/mg/$name")
+            val url = AwsS3Util.uploadLocalFile(it, "slot/micro_game/$name")
             println(url)
         }
     }
