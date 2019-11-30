@@ -163,7 +163,7 @@ class JokerService : PlatformService() {
             val icon = "http://${game.asString("Image1")}"
             val touchIcon = "http://${game.asString("Image2")}"
             SlotGame(gameId = gameCode, category = category, gameName = gameName, icon = icon, touchIcon = touchIcon,
-                    hot = hot, new = new, status = Status.Normal, chineseGameName = gameName)
+                    hot = hot, new = new, status = Status.Normal, chineseGameName = gameName, platform = Platform.Joker)
         }
     }
 

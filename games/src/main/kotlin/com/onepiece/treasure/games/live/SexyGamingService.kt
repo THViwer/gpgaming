@@ -111,7 +111,7 @@ class SexyGamingService: PlatformService() {
     override fun start(startReq: GameValue.StartReq): String {
         val clientToken = startReq.token as SexyGamingClientToken
 
-        val isMobileLogin = startReq.startPlatform == LaunchMethod.Wap
+        val isMobileLogin = startReq.launch == LaunchMethod.Wap
 
         val lang = when (startReq.language) {
             Language.EN -> "en"

@@ -124,7 +124,7 @@ class CMDService : PlatformService() {
 
         val token = DigestUtils.md5Hex("${startReq.username}:$CMD_HASH")
 
-        val domain = when (startReq.startPlatform) {
+        val domain = when (startReq.launch) {
             LaunchMethod.Wap -> "http://gp8mobile.1win888.net"
             else -> "http://gp8.1win888.net"
         }

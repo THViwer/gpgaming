@@ -18,6 +18,7 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "首页配置")
     fun config(
+            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
             @RequestHeader("language", defaultValue = "EN") language: Language): ConfigVo
 
 
@@ -37,18 +38,27 @@ interface Api {
             @RequestHeader("language", defaultValue = "EN") language: Language,
 
             @RequestHeader("platform") platform: Platform,
-            @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod): StartGameResp
+            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
+    ): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台试玩)")
     fun startDemo(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("platform") platform: Platform,
-            @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod): StartGameResp
+            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
+    ): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始游戏(老虎机)")
     fun startSlotGame(
             @RequestHeader("language", defaultValue = "EN") language: Language,
-            @RequestParam("launchMethod", defaultValue = "Web") launchMethod: LaunchMethod = LaunchMethod.Web,
+            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
+            @RequestHeader("platform") platform: Platform,
+            @RequestParam("gameId") gameId: String): StartGameResp
+
+    @ApiOperation(tags = ["api"], value = "开始试玩(老虎机)")
+    fun startSlotDemoGame(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
             @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp
 

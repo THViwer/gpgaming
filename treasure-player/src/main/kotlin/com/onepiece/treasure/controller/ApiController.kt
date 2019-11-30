@@ -3,6 +3,7 @@ package com.onepiece.treasure.controller
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.internet.web.SlotCategory
+import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.service.BannerService
@@ -22,6 +23,7 @@ class ApiController(
 
     @GetMapping
     override fun config(
+            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
             @RequestHeader("language", defaultValue = "EN") language: Language
     ): ConfigVo {
 
@@ -46,10 +48,14 @@ class ApiController(
 
         // banners
         val banners = bannerMap[BannerType.Banner]?: emptyList()
-        // hot games
-        val hotGames = HotGameVo.of()
 
-        return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGames = hotGames)
+        // hot games
+        val hotGameUrl = when (launch) {
+            LaunchMethod.Web -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/hot_sort_10_wap.json"
+            else -> "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/hot_sort_20_web.json"
+        }
+
+        return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGameUrl = hotGameUrl)
     }
 
     @GetMapping("/promotion")
@@ -98,13 +104,13 @@ class ApiController(
     override fun start(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("platform") platform: Platform,
-            @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod
+            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
     ): StartGameResp {
         val member = current()
         val platformMember = getPlatformMember(platform)
 
         val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
-                startPlatform = startPlatform, language = language, platformPassword = platformMember.platformPassword)
+                launch = launch, language = language, platformPassword = platformMember.platformPassword)
         return StartGameResp(path = gameUrl)
     }
 
@@ -112,8 +118,9 @@ class ApiController(
     override fun startDemo(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("platform") platform: Platform,
-            @RequestParam(value = "startPlatform", defaultValue = "Pc") startPlatform: LaunchMethod): StartGameResp {
-        val url = gameApi.startDemo(clientId = getClientIdByDomain(), platform = platform, language = language, launchMethod = startPlatform)
+            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
+    ): StartGameResp {
+        val url = gameApi.startDemo(clientId = getClientIdByDomain(), platform = platform, language = language, launch = launch)
 
         return StartGameResp(path = url)
     }
@@ -121,7 +128,7 @@ class ApiController(
     @GetMapping("/start/slot")
     override fun startSlotGame(
             @RequestHeader("language", defaultValue = "EN") language: Language,
-            @RequestParam("launchMethod", defaultValue = "Web") launchMethod: LaunchMethod,
+            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
             @RequestParam("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp {
 
@@ -129,9 +136,21 @@ class ApiController(
         val member = current()
 
         val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
-                gameId = gameId, language = language, launchMethod = launchMethod)
+                gameId = gameId, language = language, launchMethod = launch)
         return StartGameResp(path = gameUrl)
 
+    }
+
+    @GetMapping("/start/slot/demo")
+    override fun startSlotDemoGame(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
+            @RequestParam("platform") platform: Platform,
+            @RequestParam("gameId") gameId: String): StartGameResp {
+
+        val gameUrl = gameApi.startSlotDemo(clientId = getClientIdByDomain(), platform = platform, gameId = gameId, language = language,
+                launchMethod = launch)
+        return StartGameResp(path = gameUrl)
     }
 
     @GetMapping("/down")

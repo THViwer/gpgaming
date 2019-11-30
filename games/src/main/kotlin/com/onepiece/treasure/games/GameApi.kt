@@ -142,7 +142,7 @@ class GameApi(
     /**
      * 开始游戏(平台)
      */
-    fun start(clientId: Int, platformUsername: String, platformPassword: String, platform: Platform, startPlatform: LaunchMethod = LaunchMethod.Web, language: Language): String {
+    fun start(clientId: Int, platformUsername: String, platformPassword: String, platform: Platform, launch: LaunchMethod = LaunchMethod.Web, language: Language): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
@@ -157,7 +157,7 @@ class GameApi(
             Platform.CMD,
             Platform.SexyGaming,
             Platform.Bcs -> {
-                val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, startPlatform = startPlatform, language = language, password = platformPassword)
+                val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, launch = launch, language = language, password = platformPassword)
                 this.getPlatformApi(platform).start(startReq)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
@@ -167,13 +167,13 @@ class GameApi(
     /**
      * 开始平台试玩
      */
-    fun startDemo(clientId: Int, platform: Platform,  language: Language, launchMethod: LaunchMethod): String {
+    fun startDemo(clientId: Int, platform: Platform,  language: Language, launch: LaunchMethod): String {
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         return when (platform) {
             Platform.Lbc,
             Platform.Bcs,
-            Platform.CMD -> this.getPlatformApi(platform).startDemo(token = clientToken, language = language, launch = launchMethod)
+            Platform.CMD -> this.getPlatformApi(platform).startDemo(token = clientToken, language = language, launch = launch)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
@@ -197,6 +197,24 @@ class GameApi(
             Platform.SpadeGaming -> getPlatformApi(platform).startSlot(startSlotReq)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
+    }
+
+
+    /**
+     * 开始老虎机试玩
+     */
+    fun startSlotDemo(clientId: Int, platform: Platform, gameId: String, language: Language,
+                  launchMethod: LaunchMethod): String {
+
+        val clientToken = this.getClientToken(clientId = clientId, platform = platform)
+        val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = "", gameId = gameId, language = language,
+                launchMethod = launchMethod)
+
+        return when (platform) {
+            Platform.Pragmatic -> getPlatformApi(platform).startSlotDemo(startSlotReq)
+            else  -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+
     }
 
 

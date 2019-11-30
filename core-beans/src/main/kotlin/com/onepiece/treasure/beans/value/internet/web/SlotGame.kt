@@ -1,12 +1,15 @@
 package com.onepiece.treasure.beans.value.internet.web
 
 import com.onepiece.treasure.beans.enums.GameCategory
-import com.onepiece.treasure.beans.enums.LaunchMethod
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 
 
 data class SlotGame(
+
+        @ApiModelProperty("游戏平台")
+        val platform: Platform,
 
         @ApiModelProperty("游戏Id")
         val gameId: String,

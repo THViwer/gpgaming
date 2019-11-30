@@ -1,4 +1,4 @@
-package com.onepiece.treasure.games.live
+package com.onepiece.treasure.games.slot
 
 import com.onepiece.treasure.beans.enums.GameCategory
 import com.onepiece.treasure.beans.enums.LaunchMethod
@@ -11,7 +11,6 @@ import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
-import com.onepiece.treasure.games.bet.BetOrderUtil
 import com.onepiece.treasure.games.bet.MapUtil
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -143,7 +142,7 @@ class SpadeGamingService : PlatformService() {
             val icon = game.asString("thumbnail")
 
             SlotGame(gameId = gameId, gameName = gameName, category = GameCategory.SLOT, icon = icon, touchIcon = null, hot = false,
-                    new = false, status = Status.Normal, chineseGameName = gameName)
+                    new = false, status = Status.Normal, chineseGameName = gameName, platform = Platform.SpadeGaming)
         }
     }
 

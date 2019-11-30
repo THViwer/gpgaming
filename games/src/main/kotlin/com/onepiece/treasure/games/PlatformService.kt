@@ -86,7 +86,7 @@ abstract class PlatformService {
     /**
      * 开始老虎机试玩
      */
-    open fun startSlotDemo(token: ClientToken, startPlatform: LaunchMethod): String {
+    open fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
         error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
     }
 

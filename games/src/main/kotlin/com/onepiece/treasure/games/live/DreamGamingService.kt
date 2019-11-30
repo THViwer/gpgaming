@@ -142,7 +142,7 @@ class DreamGamingService : PlatformService() {
         val list = mapUtil.data["list"] as List<String>
 
         val token = mapUtil.asString("token")
-        return when (startReq.startPlatform) {
+        return when (startReq.launch) {
             LaunchMethod.Web -> list[0]
             LaunchMethod.Wap -> list[1]
             else -> list[2]

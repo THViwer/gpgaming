@@ -7,7 +7,6 @@ import com.onepiece.treasure.beans.model.token.PragmaticClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.core.PlatformUsernameUtil
-import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapUtil
@@ -140,9 +139,26 @@ class PragmaticService: PlatformService() {
             val icon = "${gameConstant.getDomain(Platform.Pragmatic)}/game_pic/rec/325/${gameId}.png"
 
             SlotGame(gameId = gameId, gameName = gameName, category = gameCategory, icon = icon, touchIcon = null, hot = false, new = false,
-                    status = Status.Normal, chineseGameName = gameName)
+                    status = Status.Normal, chineseGameName = gameName, platform = Platform.Pragmatic)
         }
     }
+
+
+    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
+        val lang = when (startSlotReq.language) {
+            // de, en, es, fr, it, ja, ru, th, tr, vi, zh
+            Language.CN -> "zh"
+            Language.VI -> "vi"
+            Language.TH -> "th"
+            Language.EN -> "en"
+            Language.MY -> "ms"
+            else -> "en"
+        }
+
+        return "http://demogamesfree.pragmaticplay.net/gs2c/openGame.do?gameSymbol=${startSlotReq.gameId}&lang=$lang&cur=MYR&lobbyUrl=${startSlotReq.redirectUrl}"
+    }
+
+
 
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
 

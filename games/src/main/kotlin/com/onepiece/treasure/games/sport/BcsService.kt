@@ -128,7 +128,7 @@ class BcsService : PlatformService() {
 
     override fun start(startReq: GameValue.StartReq): String {
 
-        val webType = when (startReq.startPlatform) {
+        val webType = when (startReq.launch) {
             LaunchMethod.Web -> "PC"
             LaunchMethod.Wap -> "Wap"
             else -> "Smart"

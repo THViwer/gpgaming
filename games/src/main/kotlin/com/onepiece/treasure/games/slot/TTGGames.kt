@@ -1,6 +1,7 @@
 package com.onepiece.treasure.games.slot
 
 import com.onepiece.treasure.beans.enums.GameCategory
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.games.bet.MapUtil
@@ -206,14 +207,14 @@ object TTGGames {
             val gameId = it.asString("gameId")
             SlotGame(gameId = gameId, gameName = it.asString("englishName"), chineseGameName = it.asString("chineseName"),
                     category = GameCategory.SLOT, hot = false, new = false, icon = "http://ams-games.stg.ttms.co/player/assets/images/games/${gameId}.png",
-                    status = Status.Normal, touchIcon = "http://ams-games.stg.ttms.co/player/assets/images/games/${gameId}.png")
+                    status = Status.Normal, touchIcon = "http://ams-games.stg.ttms.co/player/assets/images/games/${gameId}.png", platform = Platform.TTG)
         }
 
         pcGames = list.filter { it.asString("platforms").contains("Web") }.map {
             val gameId = it.asString("gameId")
             SlotGame(gameId = gameId, gameName = it.asString("gameName"), chineseGameName = it.asString("chineseName"),
                     category = GameCategory.SLOT, hot = false, new = false, icon = "http://ams-games.stg.ttms.co/player/assets/images/games/${gameId}.png",
-                    status = Status.Normal, touchIcon = "http://ams-games.stg.ttms.co/player/assets/images/games/${gameId}.png")
+                    status = Status.Normal, touchIcon = "http://ams-games.stg.ttms.co/player/assets/images/games/${gameId}.png", platform = Platform.TTG)
         }
 
 //        gameMapUtils = list.map { it.asString("gameId") to it }.toMap()
