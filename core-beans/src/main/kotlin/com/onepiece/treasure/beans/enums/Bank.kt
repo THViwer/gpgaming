@@ -9,15 +9,15 @@ enum class Bank(
 
     BSN("BSN", "${SystemConstant.AWS_BANK_LOGO_URL}/BSN.jpeg"),
 
-    CIMB("CIMB Bank", "${SystemConstant.AWS_BANK_LOGO_URL}/CIMB.png"),
+    CIMB("CIMB Bank", "${SystemConstant.AWS_BANK_LOGO_URL}/CIMB.jpeg"),
 
-    HongLeong("HongLeong Bank", "${SystemConstant.AWS_BANK_LOGO_URL}/HongLeong.png"),
+    HongLeong("HongLeong Bank", "${SystemConstant.AWS_BANK_LOGO_URL}/HongLeong.jpeg"),
 
-    May("MayBank", "${SystemConstant.AWS_BANK_LOGO_URL}/May.png"),
+    May("MayBank", "${SystemConstant.AWS_BANK_LOGO_URL}/May.jpeg"),
 
-    PUBLIC("PUBLIC BANK", "${SystemConstant.AWS_BANK_LOGO_URL}/PUBLIC.png"),
+    PUBLIC("PUBLIC BANK", "${SystemConstant.AWS_BANK_LOGO_URL}/PUBLIC.jpeg"),
 
-    RHB("RHB BANK", "${SystemConstant.AWS_BANK_LOGO_URL}/RHB.png")
+    RHB("RHB BANK", "${SystemConstant.AWS_BANK_LOGO_URL}/RHB.jpeg")
 
 
 }
