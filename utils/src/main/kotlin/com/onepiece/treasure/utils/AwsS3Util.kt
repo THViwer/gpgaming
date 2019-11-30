@@ -71,7 +71,7 @@ object AwsS3Util {
 }
 
 fun main() {
-    val fileList = File("/Users/cabbage/Desktop/对接文档/logo")
+    val fileList = File("/Users/cabbage/Desktop/logo/logo")
 
     fileList.listFiles().map {  file ->
         AwsS3Util.uploadLocalFile(file, "logo/${file.name}")

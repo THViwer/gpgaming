@@ -85,7 +85,7 @@ open class PlatformDetail private constructor(
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Web, LaunchMethod.Wap, LaunchMethod.Android))
         }
         fun ofKiss918(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "918kiss", icon = "${SystemConstant.AWS_LOGO_URL}/918kiss.jpeg",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "918kiss", icon = "${SystemConstant.AWS_LOGO_URL}/918kiss.png",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/918kiss.jpeg", status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
         }
         fun ofPussy888(): PlatformDetail {
@@ -93,7 +93,7 @@ open class PlatformDetail private constructor(
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/pussy.jpeg", status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
         }
         fun ofMega(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "Mega", icon = "${SystemConstant.AWS_LOGO_URL}/mega.jpeg",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Mega", icon = "${SystemConstant.AWS_LOGO_URL}/mega.png",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/mega.jpeg", status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
         }
         fun ofPragmatic(): PlatformDetail {
@@ -120,7 +120,7 @@ open class PlatformDetail private constructor(
         }
 
         fun ofDreamGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "DreamGaming", icon = "${SystemConstant.AWS_LOGO_URL}/dreamGaming.jpeg",
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "DreamGaming", icon = "${SystemConstant.AWS_LOGO_URL}/dreamGaming.png",
                     disableIcon = "{SystemConstant.AWS_LOGO_URL}/dreamGaming.jpeg", status = Status.Normal)
         }
 
@@ -144,7 +144,7 @@ open class PlatformDetail private constructor(
         }
 
         fun ofAllBet(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "allbet", icon = "${SystemConstant.AWS_LOGO_URL}/allBet.jpeg",
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "allbet", icon = "${SystemConstant.AWS_LOGO_URL}/allBet.png",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/allBet.jpeg", status = Status.Normal)
         }
 
