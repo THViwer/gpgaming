@@ -132,10 +132,11 @@ class MicroGamingService : PlatformService() {
         return mapUtil.asList("data").firstOrNull() != null
     }
 
-    override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {
-        val clientToken = token as MicroGamingClientToken
+    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
 
-        val lang = when (language) {
+        val clientToken = startSlotReq.token as MicroGamingClientToken
+
+        val lang = when (startSlotReq.language) {
             Language.EN -> "en_US"
             Language.VI -> "vi_VN"
             Language.ID -> "in_ID"
@@ -145,11 +146,12 @@ class MicroGamingService : PlatformService() {
             else -> "en_US"
         }
 
+        val (itemId, appId) = startSlotReq.gameId.split("_")
         val data = """
             {
-                "item_id": 1389,
-                "app_id": 1002,
-                "demo": false,
+                "item_id": ${itemId},
+                "app_id": ${appId},
+                "demo": true,
                 "login_context": {
                     "lang": "$lang"
                 }
@@ -158,6 +160,7 @@ class MicroGamingService : PlatformService() {
         val mapUtil = this.startPostJson(clientToken = clientToken, method = "/v1/launcher/item", data = data)
         return mapUtil.asString("data")
     }
+
 
     override fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {
         return emptyList()

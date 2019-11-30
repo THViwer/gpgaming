@@ -34,7 +34,7 @@ class ApiController(
         val platformBinds = platformBindService.findClientPlatforms(clientId)
         val platforms = platformBinds.map {
             PlatformVo(id = it.id, name = it.platform.detail.name, category = it.platform.detail.category, status = it.status, icon = it.platform.detail.icon,
-                    launchs = it.platform.detail.launchs, platform = it.platform)
+                    launchs = it.platform.detail.launchs, platform = it.platform, demo = it.platform.detail.demo)
         }
 
         // 公告
@@ -199,7 +199,8 @@ class ApiController(
                 .filter { it.platform.detail.category == category }
                 .map {
                     PlatformVo(id = it.id, platform = it.platform, name = it.platform.detail.name, category = it.platform.detail.category,
-                            status = it.platform.detail.status, icon = it.platform.detail.icon, launchs = it.platform.detail.launchs)
+                            status = it.platform.detail.status, icon = it.platform.detail.icon, launchs = it.platform.detail.launchs,
+                            demo = it.platform.detail.demo)
                 }
 
         val type = when (category) {

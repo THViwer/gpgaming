@@ -121,6 +121,9 @@ data class PlatformVo(
         @ApiModelProperty("类目")
         val category: PlatformCategory,
 
+        @ApiModelProperty("是否有试玩")
+        val demo: Boolean,
+
         @ApiModelProperty("平台状态")
         val status: Status,
 

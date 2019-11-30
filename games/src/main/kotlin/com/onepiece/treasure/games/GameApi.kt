@@ -204,13 +204,16 @@ class GameApi(
      * 开始老虎机试玩
      */
     fun startSlotDemo(clientId: Int, platform: Platform, gameId: String, language: Language,
-                  launchMethod: LaunchMethod): String {
+                      launchMethod: LaunchMethod): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
         val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = "", gameId = gameId, language = language,
                 launchMethod = launchMethod)
 
         return when (platform) {
+            Platform.SpadeGaming,
+            Platform.MicroGaming,
+            Platform.TTG,
             Platform.Pragmatic -> getPlatformApi(platform).startSlotDemo(startSlotReq)
             else  -> error(OnePieceExceptionCode.DATA_FAIL)
         }

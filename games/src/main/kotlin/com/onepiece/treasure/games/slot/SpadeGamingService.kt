@@ -12,6 +12,7 @@ import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapUtil
+import com.onepiece.treasure.utils.StringUtil
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -159,6 +160,27 @@ class SpadeGamingService : PlatformService() {
 
         val mapUtil = this.startPostJson(method = "createToken", data = data)
         return mapUtil.asString("token")
+    }
+
+
+    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
+
+        val clientToken = startSlotReq.token as SpadeGamingClientToken
+        val token = this.getToken(startSlotReq)
+
+        val mobile = startSlotReq.launchMethod == LaunchMethod.Wap
+        val urlParam = listOf(
+                "acctId=${StringUtil.generateNonce(6)}",
+                "language=en",
+                "token=$token",
+                "game=${startSlotReq.gameId}",
+                "fun=true",
+//                "minigame=false",
+                "mobile=$mobile",
+                "menumode=on"
+        ).joinToString(separator = "&")
+
+        return "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth?$urlParam"
     }
 
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {

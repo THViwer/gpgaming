@@ -92,6 +92,40 @@ class TTGService: PlatformService() {
         }
     }
 
+    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
+        val tokenClient = startSlotReq.token as TTGClientToken
+        /**
+         * Language = Simplified Chinese (zh-cn)
+         * Language = Traditional Chinese (zh-tw)
+         * Language = Vietnamese (vi)
+         * Language = Korean (ko)
+         * Language = Japanese (ja)
+         * Language = Thai (th)
+         * Language = English (en)
+         */
+        val lang = when (startSlotReq.language) {
+            Language.CN -> "zh-cn"
+            Language.VI -> "vi"
+            Language.TH -> "th"
+            Language.EN -> "en"
+            else -> "en"
+        }
+
+        val (gameId, gameName, gameType) = startSlotReq.gameId.split(":")
+
+        val data = listOf(
+                "playerHandle=999999",
+                "account=FunAcct",
+                "gameId=${gameId}",
+                "gameName=$gameName",
+                "gameType=$gameType",
+                "gameSuite=Flash", // 只能是flash
+                "lang=$lang"
+        ).joinToString(separator = "&")
+
+        return "http://ams-games.stg.ttms.co/casino/default/game/game.html?$data"
+    }
+
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
         val tokenClient = startSlotReq.token as TTGClientToken
         val mapUtil = this.login(username = startSlotReq.username, tokenClient = tokenClient)
@@ -122,7 +156,7 @@ class TTGService: PlatformService() {
                 "gameId=${gameId}",
                 "gameName=$gameName",
                 "gameType=$gameType",
-                "gameSuite=Flash",
+                "gameSuite=Flash", // 只能是flash
                 "lang=$lang"
         ).joinToString(separator = "&")
 

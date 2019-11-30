@@ -63,6 +63,9 @@ open class PlatformDetail private constructor(
         // 平台维护图标
         val disableIcon: String,
 
+        // 是否有试玩
+        val demo: Boolean = false,
+
         // 状态
         val status: Status,
 
@@ -82,7 +85,8 @@ open class PlatformDetail private constructor(
         // slot
         fun ofJoker(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = "${SystemConstant.AWS_LOGO_URL}/joker.png",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Web, LaunchMethod.Wap, LaunchMethod.Android))
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}joker.png", status = Status.Normal, launchs = listOf(LaunchMethod.Web, LaunchMethod.Wap, LaunchMethod.Android),
+                    demo = false)
         }
         fun ofKiss918(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "918kiss", icon = "${SystemConstant.AWS_LOGO_URL}/918kiss.png",
@@ -98,19 +102,19 @@ open class PlatformDetail private constructor(
         }
         fun ofPragmatic(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "pragmatic", icon = "${SystemConstant.AWS_LOGO_URL}/pragmatic.jpeg",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/pragmatic.jpeg", status = Status.Normal)
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/pragmatic.jpeg", status = Status.Normal, demo = true)
         }
         fun ofSpadeGaming(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "spade gaming", icon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.jpeg",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.jpeg", status = Status.Normal)
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.jpeg", status = Status.Normal, demo = false)
         }
         fun ofTTG(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "top trend gamimg", icon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.jpeg",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.jpeg", status = Status.Normal)
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.jpeg", status = Status.Normal, demo = true)
         }
         fun ofMicroGaming(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "Micro Gaming", icon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg", status = Status.Normal)
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg", status = Status.Normal, demo = true)
         }
 
         // live game
