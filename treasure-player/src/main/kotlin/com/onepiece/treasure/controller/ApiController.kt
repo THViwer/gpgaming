@@ -4,13 +4,14 @@ import com.onepiece.treasure.beans.SystemConstant
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.internet.web.SlotCategory
-import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.service.BannerService
+import com.onepiece.treasure.core.service.ContactService
 import com.onepiece.treasure.core.service.I18nContentService
 import com.onepiece.treasure.core.service.PromotionService
 import org.springframework.web.bind.annotation.*
+import kotlin.random.Random
 
 @RestController
 @RequestMapping("/api")
@@ -19,7 +20,8 @@ class ApiController(
         private val advertService: BannerService,
 //        private val announcementService: AnnouncementService,
         private val i18nContentService: I18nContentService,
-        private val bannerService: BannerService
+        private val bannerService: BannerService,
+        private val contactService: ContactService
 ) : BasicController(), Api {
 
     @GetMapping
@@ -225,8 +227,19 @@ class ApiController(
 
 
         return PlatformCategoryDetail(platforms = platforms, banners = banners, games = games)
-
-
-
     }
+
+    @GetMapping("/contactUs")
+    override fun contactUs(): Contacts {
+        val contacts = contactService.list(clientId = getClientIdByDomain()).groupBy { it.type }
+        val wechatContact = contacts[ContactType.Wechat]?.let { getRandom(it) }
+        val whatContact = contacts[ContactType.Whatsapp]?.let { getRandom(it) }
+        return Contacts(wechatContact = wechatContact, whatsappContact = whatContact)
+    }
+
+
+    fun <T> getRandom(list: List<T>?) : T? {
+        return list?.let { list[Random.nextInt(list.size)] }
+    }
+
 }

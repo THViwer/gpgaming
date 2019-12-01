@@ -1,11 +1,6 @@
 package com.onepiece.treasure.controller
 
-import com.onepiece.treasure.beans.enums.Language
-import com.onepiece.treasure.beans.enums.LaunchMethod
-import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.enums.PlatformCategory
-import com.onepiece.treasure.beans.value.internet.web.SlotCategory
-import com.onepiece.treasure.beans.value.internet.web.SlotGame
+import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.controller.value.*
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -74,6 +69,9 @@ interface Api {
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @PathVariable("category") category: PlatformCategory
     ): PlatformCategoryDetail
+
+    @ApiOperation(tags = ["api"], value = "联系我们")
+    fun contactUs(): Contacts
 
 
 }
