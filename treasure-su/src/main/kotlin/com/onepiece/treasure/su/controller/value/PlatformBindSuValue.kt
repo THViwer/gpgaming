@@ -10,6 +10,9 @@ sealed class PlatformBindSuValue {
 
     data class PlatformBindVo(
 
+            @ApiModelProperty("id")
+            val id: Int,
+
             @ApiModelProperty("平台")
             val platform: Platform,
 
