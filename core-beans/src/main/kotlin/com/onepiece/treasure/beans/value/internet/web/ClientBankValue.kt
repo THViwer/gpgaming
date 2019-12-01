@@ -22,6 +22,8 @@ object ClientBankValueFactory {
 
 data class BankVo(
 
+        val bank: Bank,
+
         val name: String,
 
         val logo: String
