@@ -1,5 +1,6 @@
 package com.onepiece.treasure.controller.value
 
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.PromotionCategory
 import com.onepiece.treasure.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
@@ -12,6 +13,9 @@ data class PromotionVo(
 
         @ApiModelProperty("厅主Id")
         val clientId: Int,
+
+        @ApiModelProperty("平台")
+        val platform: Platform?,
 
         @ApiModelProperty("优惠类型")
         val category: PromotionCategory,
