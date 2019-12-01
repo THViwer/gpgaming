@@ -3,6 +3,7 @@ package com.onepiece.treasure.web.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.I18nConfig
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.PromotionRuleType
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.PromotionRules
@@ -74,6 +75,8 @@ class PromotionApiController(
             log.error("优惠活动规则校验失败,类型：${promotionCoReq.promotionRuleVo.ruleType}, json: ${promotionCoReq.promotionRuleVo.ruleJson}")
             error(OnePieceExceptionCode.PROMOTION_JSON_DATA_FAIL)
         }
+
+        check(promotionCoReq.i18nContent.language == Language.EN) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         promotionService.create(clientId = clientId, promotionCoReq = promotionCoReq)
     }
