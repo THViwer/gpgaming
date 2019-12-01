@@ -76,7 +76,7 @@ class PromotionApiController(
             error(OnePieceExceptionCode.PROMOTION_JSON_DATA_FAIL)
         }
 
-        check(promotionCoReq.i18nContent.language == Language.EN) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+        check(promotionCoReq.i18nContent.language == Language.EN) { OnePieceExceptionCode.DATA_FAIL }
 
         promotionService.create(clientId = clientId, promotionCoReq = promotionCoReq)
     }
