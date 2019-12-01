@@ -38,6 +38,9 @@ data class PromotionVo(
         @ApiModelProperty("内容")
         val content: String,
 
+        @ApiModelProperty("注意事项")
+        val precautions: String?,
+
         @ApiModelProperty("活动状态")
         val status: Status,
 
