@@ -39,6 +39,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                 .set("deposit_count")
                 .set("withdraw_money")
                 .set("withdraw_count")
+                .set("new_member_count")
                 .execute { ps, entity ->
                     var x = 0
                     ps.setDate(++x, Date.valueOf(entity.day))
@@ -49,6 +50,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     ps.setInt(++x, entity.depositCount)
                     ps.setBigDecimal(++x, entity.withdrawMoney)
                     ps.setInt(++x, entity.withdrawCount)
+                    ps.setInt(++x, entity.newMemberCount)
                 }
     }
 
