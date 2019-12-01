@@ -1,5 +1,6 @@
 package com.onepiece.treasure.web.controller
 
+import com.onepiece.treasure.beans.value.internet.web.BankVo
 import com.onepiece.treasure.beans.value.internet.web.ClientBankCoReq
 import com.onepiece.treasure.beans.value.internet.web.ClientBankUoReq
 import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.ResponseStatus
 
 @Api(tags = ["cash"], description = " ")
 interface ClientBankApi {
+
+    @ApiOperation(tags = ["cash"], value = "银行列表")
+    fun banks(): List<BankVo>
 
     @ApiOperation(tags = ["cash"], value = "厅主银行卡 -> 列表")
     fun all(): List<ClientBankVo>

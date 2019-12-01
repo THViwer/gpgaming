@@ -1,7 +1,9 @@
 package com.onepiece.treasure.web.controller
 
+import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.value.database.ClientBankCo
 import com.onepiece.treasure.beans.value.database.ClientBankUo
+import com.onepiece.treasure.beans.value.internet.web.BankVo
 import com.onepiece.treasure.beans.value.internet.web.ClientBankCoReq
 import com.onepiece.treasure.beans.value.internet.web.ClientBankUoReq
 import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
@@ -16,6 +18,13 @@ class ClientBankApiController(
         private val clientBankService: ClientBankService,
         private val levelService: LevelService
 ) : BasicController(), ClientBankApi {
+
+    @GetMapping("/default/bank")
+    override fun banks(): List<BankVo> {
+        return Bank.values().map {
+            BankVo(name = it.cname, logo = it.logo)
+        }
+    }
 
     @GetMapping
     override fun all(): List<ClientBankVo> {

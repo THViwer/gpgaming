@@ -20,6 +20,14 @@ object ClientBankValueFactory {
 
 }
 
+data class BankVo(
+
+        val name: String,
+
+        val logo: String
+
+)
+
 data class ClientBankVo(
 
         @ApiModelProperty("id")
