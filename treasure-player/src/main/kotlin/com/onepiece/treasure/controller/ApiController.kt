@@ -117,7 +117,7 @@ class ApiController(
         return StartGameResp(path = gameUrl)
     }
 
-    @GetMapping("/demo")
+    @GetMapping("/start/demo")
     override fun startDemo(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("platform") platform: Platform,
