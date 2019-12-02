@@ -41,7 +41,7 @@ class Pussy888Service : PlatformService() {
         val sign = this.sign(beforeParam = beforeParam, username = username, time = time, token = clientToken)
 
         val param = data.joinToString(separator = "&")
-        val requestUrl = "$url?$param&sign=${sign}&time=$time&authcode=${clientToken.autoCode}"
+        val requestUrl = "$url?sign=${sign}&time=$time&authcode=${clientToken.autoCode}&$param"
 
         val result = okHttpUtil.doGet(url = requestUrl, clz = Kiss918Value.Result::class.java)
         check(result.success) {  OnePieceExceptionCode.PLATFORM_DATA_FAIL }
@@ -105,7 +105,8 @@ class Pussy888Service : PlatformService() {
                 "UserAreaId=1",
                 "pwdtype=1"
         )
-        val url = "${gameConstant.getDomain(Platform.Kiss918)}/ashx/account/account.ashx"
+
+        val url = "${gameConstant.getDomain(Platform.Pussy888)}/ashx/account/account.ashx"
         this.startGetJson(url = url, username = updatePasswordReq.username, clientToken = clientToken, data = data)
     }
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
