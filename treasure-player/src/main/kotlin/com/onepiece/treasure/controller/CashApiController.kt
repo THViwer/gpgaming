@@ -211,14 +211,16 @@ open class CashApiController(
     override fun checkPromotion(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestParam("platform") platform: Platform,
-            @RequestParam("amount") amount: BigDecimal
+            @RequestParam("amount") amount: BigDecimal,
+            @RequestParam("promotionId", required = false) promotionId: Int?
     ): CheckPromotionVo {
 
         val member = this.current()
         val promotions = promotionService.find(clientId = member.clientId, platform = platform)
 
         val promotion = promotions.firstOrNull {
-            it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble()
+            (promotionId != null && it.id == promotionId) ||
+                    (it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble())
         }
 
         val platformMemberVo = getPlatformMember(platform)

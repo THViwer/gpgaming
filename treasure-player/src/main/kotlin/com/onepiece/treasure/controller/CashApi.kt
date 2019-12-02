@@ -68,7 +68,8 @@ interface CashApi {
     fun checkPromotion(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestParam("platform") platform: Platform,
-            @RequestParam("amount") amount: BigDecimal
+            @RequestParam("amount") amount: BigDecimal,
+            @RequestParam("promotionId", required = false) promotionId: Int?
     ): CheckPromotionVo
 
     @ApiOperation(tags = ["cash"], value = "转账")
