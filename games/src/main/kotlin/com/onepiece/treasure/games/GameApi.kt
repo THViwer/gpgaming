@@ -261,23 +261,26 @@ class GameApi(
      */
     fun transfer(clientId: Int, platformUsername: String, platform: Platform, orderId: String, amount: BigDecimal, index: Int = 0): Boolean {
 
-        // 重试两次
-        if (index > 2) return false
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
         val transferReq = GameValue.TransferReq(token = clientToken, orderId = orderId, username = platformUsername, amount = amount)
 
-        val platformOrderId: String
-        try {
-            platformOrderId = this.getPlatformApi(platform).transfer(transferReq)
-        } catch (e: Exception) {
-            log.error("转账失败第${index}次，请求参数：$transferReq ", e)
-            return this.transfer(clientId, platformUsername, platform, orderId, amount, index + 1)
+
+        // 重试两次
+        if (index > 2) {
+            // 检查转账是否成功
+            val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = orderId)
+            return this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
         }
 
-        // 检查转账是否成功
-        val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = platformOrderId)
-        return this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
+        return try {
+            this.getPlatformApi(platform).transfer(transferReq)
+            true
+        } catch (e: Exception) {
+            log.error("转账失败第${index}次，请求参数：$transferReq ", e)
+            this.transfer(clientId, platformUsername, platform, orderId, amount, index + 1)
+        }
+
     }
 
     private fun checkTransfer(platform: Platform, checkTransferReq: GameValue.CheckTransferReq, index: Int = 0): Boolean {
