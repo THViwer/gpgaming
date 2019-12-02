@@ -113,7 +113,16 @@ class GGFishingService : PlatformService() {
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
-        return super.checkTransfer(checkTransferReq)
+        val clientToken = checkTransferReq.token as GGFishingClientToken
+        val data = mapOf(
+                "cert" to clientToken.cert,
+                "user" to checkTransferReq.username,
+                "ts_code" to checkTransferReq.orderId
+        )
+
+        val mapUtil = this.startDoGet(clientToken = clientToken, path = "getBalanceOperationLog", data = data)
+
+        return mapUtil.asList("result").isNotEmpty()
     }
 
     override fun start(startReq: GameValue.StartReq): String {

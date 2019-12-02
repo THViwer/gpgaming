@@ -1,9 +1,6 @@
 package com.onepiece.treasure.games.slot
 
-import com.onepiece.treasure.beans.enums.GameCategory
-import com.onepiece.treasure.beans.enums.LaunchMethod
-import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.SpadeGamingClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
@@ -165,32 +162,62 @@ class SpadeGamingService : PlatformService() {
 
     override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
 
-        val clientToken = startSlotReq.token as SpadeGamingClientToken
-        val token = this.getToken(startSlotReq)
+//        val clientToken = startSlotReq.token as SpadeGamingClientToken
+//        val token = this.getToken(startSlotReq)
+//
+//        val mobile = startSlotReq.launchMethod == LaunchMethod.Wap
+//        val urlParam = listOf(
+//                "acctId=${StringUtil.generateNonce(6)}",
+//                "language=en",
+//                "token=$token",
+//                "game=${startSlotReq.gameId}",
+//                "fun=true",
+////                "minigame=false",
+//                "mobile=$mobile",
+//                "menumode=on"
+//        ).joinToString(separator = "&")
+//
+//        return "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth?$urlParam"
 
-        val mobile = startSlotReq.launchMethod == LaunchMethod.Wap
-        val urlParam = listOf(
-                "acctId=${StringUtil.generateNonce(6)}",
-                "language=en",
-                "token=$token",
-                "game=${startSlotReq.gameId}",
-                "fun=true",
-//                "minigame=false",
-                "mobile=$mobile",
-                "menumode=on"
-        ).joinToString(separator = "&")
+        val lang = when (startSlotReq.language) {
+            Language.EN -> "en-US"
+            Language.TH -> "th_TH"
+            Language.ID -> "id_ID"
+            Language.VI -> "vi_VN"
+            Language.CN -> "zh_CN"
+            else -> "en-US"
+        }
+        val type = if (startSlotReq.launchMethod == LaunchMethod.Web) "web"  else "mobile"
 
-        return "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth?$urlParam"
+        return "http://lobby.sgplayfun.com/index.jsp?game=${startSlotReq.gameId}&language=${lang}&type=$type"
     }
 
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
         val clientToken = startSlotReq.token as SpadeGamingClientToken
         val token = this.getToken(startSlotReq)
 
+        /**
+         * en_US 英文
+        zh_CN 简体中文
+        th_TH 泰文
+        id_ID 印尼文
+        vi_VN 越南文
+        ko_KR 韩文 ja_JP 日文
+         */
+
+        val lang = when (startSlotReq.language) {
+            Language.EN -> "en-US"
+            Language.TH -> "th_TH"
+            Language.ID -> "id_ID"
+            Language.VI -> "vi_VN"
+            Language.CN -> "zh_CN"
+            else -> "en-US"
+        }
+
         val mobile = startSlotReq.launchMethod == LaunchMethod.Wap
         val urlParam = listOf(
                 "acctId=${startSlotReq.username}",
-                "language=en",
+                "language=${lang}",
                 "token=$token",
                 "game=${startSlotReq.gameId}",
 //                "fun=false",

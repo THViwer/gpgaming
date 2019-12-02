@@ -50,9 +50,7 @@ abstract class PlatformService {
     /**
      * 检查转账状态
      */
-    open fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
-        error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
-    }
+    abstract fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean
 
     /**
      * 更新密码
