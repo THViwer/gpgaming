@@ -68,9 +68,6 @@ data class DepositCoReq(
         @ApiModelProperty("充值银行")
         val memberBank: Bank,
 
-        @ApiModelProperty("会员姓名")
-        val memberName: String,
-
         @ApiModelProperty("充值金额")
         val money: BigDecimal,
 
@@ -129,9 +126,6 @@ data class WithdrawCoReq(
 
         @ApiModelProperty("银行")
         val bank: Bank,
-
-        @ApiModelProperty("姓名")
-        val name: String,
 
         @ApiModelProperty("银行卡号")
         val bankCardNumber: String,

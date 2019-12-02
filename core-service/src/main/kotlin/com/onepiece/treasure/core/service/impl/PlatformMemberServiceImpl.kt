@@ -41,6 +41,17 @@ class PlatformMemberServiceImpl(
                 platform = platform, id = id)
     }
 
+    override fun updatePassword(id: Int, password: String) {
+
+        val platformMember = this.get(id)
+
+        val state = platformMemberDao.updatePassword(id = id, password = password)
+        check(state) { OnePieceExceptionCode.DATA_FAIL }
+
+
+        redisService.delete(OnePieceRedisKeyConstant.myPlatformMembers(platformMember.memberId))
+    }
+
     override fun myPlatforms(memberId: Int): List<PlatformMemberVo> {
 
         val redisKey = OnePieceRedisKeyConstant.myPlatformMembers(memberId)
@@ -50,7 +61,6 @@ class PlatformMemberServiceImpl(
                         id = it.id)
             }
         }
-
     }
 
     override fun find(memberId: Int, platform: Platform): PlatformMemberVo? {

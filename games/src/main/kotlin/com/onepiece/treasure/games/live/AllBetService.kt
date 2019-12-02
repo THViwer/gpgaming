@@ -81,6 +81,21 @@ class AllBetService : PlatformService() {
         return mapUtil.asString("client")
     }
 
+    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq) {
+
+        val allBetClientToken = updatePasswordReq.token as AllBetClientToken
+
+        val data = listOf(
+                "client=${updatePasswordReq.username}",
+                "newPassword=${updatePasswordReq.password}",
+                "random=${UUID.randomUUID()}"
+        )
+        val urlParam = data.joinToString(separator = "&")
+
+        this.startDoGet(method = "/setup_client_password", urlParam = urlParam, allBetClientToken = allBetClientToken )
+
+    }
+
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
         val allBetClientToken = balanceReq.token as AllBetClientToken
 

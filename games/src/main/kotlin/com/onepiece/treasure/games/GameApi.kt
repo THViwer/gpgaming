@@ -20,7 +20,6 @@ import com.onepiece.treasure.games.sport.BcsService
 import com.onepiece.treasure.games.sport.CMDService
 import com.onepiece.treasure.games.sport.LbcService
 import com.onepiece.treasure.utils.RedisService
-import com.onepiece.treasure.utils.StringUtil
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -104,8 +103,7 @@ class GameApi(
     fun register(clientId: Int, memberId: Int, platform: Platform) {
 
         // 生成用户名
-        val generatorUsername = PlatformUsernameUtil.generatorPlatformUsername(clientId = clientId, memberId = memberId, platform = platform)
-        val generatorPassword = StringUtil.generatePassword()
+        val (generatorUsername, generatorPassword) = PlatformUsernameUtil.generatorPlatformUsername(clientId = clientId, memberId = memberId, platform = platform)
 
         // 获得配置信息
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
@@ -116,6 +114,29 @@ class GameApi(
         val platformUsername = getPlatformApi(platform).register(registerReq)
 
         platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
+    }
+
+    /**
+     * 修改密码
+     */
+    fun updatePassword(clientId: Int, platform: Platform, username: String, password: String) {
+
+        when (platform) {
+            Platform.Joker,
+            Platform.Kiss918,
+            Platform.Pussy888,
+            Platform.AllBet,
+            Platform.DreamGaming -> {
+                // 获得配置信息
+                val clientToken = this.getClientToken(clientId = clientId, platform = platform)
+
+                // 修改平台密码
+                val updatePasswordReq = GameValue.UpdatePasswordReq(token = clientToken, username = username, password = password)
+                getPlatformApi(platform).updatePassword(updatePasswordReq)
+
+            }
+            else -> error( OnePieceExceptionCode.DATA_FAIL )
+        }
     }
 
     /**

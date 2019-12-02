@@ -13,6 +13,8 @@ interface PlatformMemberService {
 
     fun create(clientId: Int, memberId: Int, platform: Platform, platformUsername: String, platformPassword: String): PlatformMemberVo
 
+    fun updatePassword(id: Int, password: String)
+
     fun myPlatforms(memberId: Int): List<PlatformMemberVo>
 
     fun findPlatformMember(memberId: Int): List<PlatformMember>
@@ -24,7 +26,6 @@ interface PlatformMemberService {
     fun transferIn(platformMemberTransferUo: PlatformMemberTransferUo)
 
     fun cleanTransferIn(memberId: Int, platform: Platform, transferOutAmount: BigDecimal = BigDecimal.ZERO)
-
 
     fun batchBet(data: List<BetCacheVo>)
 }

@@ -84,6 +84,14 @@ sealed class GameValue {
             val platformOrderId: String
     )
 
+    data class UpdatePasswordReq(
+            val token: ClientToken,
+
+            val username: String,
+
+            val password: String
+    )
+
     data class BetOrderReq(
             val token: ClientToken,
 

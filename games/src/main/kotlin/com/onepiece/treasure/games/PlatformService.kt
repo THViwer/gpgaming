@@ -55,6 +55,13 @@ abstract class PlatformService {
     }
 
     /**
+     * 更新密码
+     */
+    open fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq) {
+        error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
+    }
+
+    /**
      * 老虎机菜单
      */
     open fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {

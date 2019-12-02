@@ -1,16 +1,15 @@
 package com.onepiece.treasure.controller
 
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Role
 import com.onepiece.treasure.beans.value.database.LoginValue
 import com.onepiece.treasure.beans.value.database.MemberCo
 import com.onepiece.treasure.beans.value.database.MemberUo
 import com.onepiece.treasure.controller.basic.BasicController
-import com.onepiece.treasure.controller.value.ChangePwdReq
-import com.onepiece.treasure.controller.value.LoginReq
-import com.onepiece.treasure.controller.value.LoginResp
-import com.onepiece.treasure.controller.value.RegisterReq
+import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.service.LevelService
 import com.onepiece.treasure.core.service.MemberService
+import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.jwt.AuthService
 import com.onepiece.treasure.jwt.JwtUser
 import org.springframework.web.bind.annotation.*
@@ -59,5 +58,36 @@ class UserApiController(
         val memberId = current().id
         val memberUo = MemberUo(id = memberId, oldPassword = changePwdReq.oldPassword, password = changePwdReq.password)
         memberService.update(memberUo)
+    }
+
+    @GetMapping("/platform")
+    override fun platformUsers(): List<PlatformMemberVo> {
+        val current = this.currentUser()
+        val platformMembers = platformMemberService.findPlatformMember(memberId =  current.id)
+        return platformMembers.map {
+
+            val sort = when (it.platform) {
+                Platform.Joker -> 1
+                Platform.Kiss918 -> 2
+                Platform.Pussy888 -> 3
+                Platform.AllBet -> 4
+                Platform.DreamGaming -> 5
+                else -> 100
+            }
+
+            PlatformMemberVo(id = it.id, platform = it.platform, username = it.username, password = it.password, sort = sort)
+        }.sortedBy { it.sort }
+    }
+
+    @PutMapping("/platform")
+    override fun platformUser(@RequestBody platformMemberUo: PlatformMemberUo) {
+
+        val current = this.currentUser()
+        val platformMemberVo = getPlatformMember(platformMemberUo.platform)
+
+        gameApi.updatePassword(clientId = current.clientId, platform = platformMemberUo.platform, username = platformMemberVo.platformUsername,
+                password = platformMemberUo.password)
+
+        platformMemberService.updatePassword(id = platformMemberVo.id, password = platformMemberUo.password)
     }
 }

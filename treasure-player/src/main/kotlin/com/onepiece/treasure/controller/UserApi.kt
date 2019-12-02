@@ -1,12 +1,13 @@
 package com.onepiece.treasure.controller
 
-import com.onepiece.treasure.controller.value.ChangePwdReq
-import com.onepiece.treasure.controller.value.LoginReq
-import com.onepiece.treasure.controller.value.LoginResp
-import com.onepiece.treasure.controller.value.RegisterReq
+import com.onepiece.treasure.controller.value.*
 import io.swagger.annotations.Api
+import io.swagger.annotations.ApiModelProperty
 import io.swagger.annotations.ApiOperation
+import io.swagger.annotations.ApiParam
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.ResponseStatus
 
 @Api(tags = ["user"], description = " ")
 interface UserApi {
@@ -19,5 +20,12 @@ interface UserApi {
 
     @ApiOperation(tags = ["user"], value = "修改资料")
     fun changePassword(@RequestBody changePwdReq: ChangePwdReq)
+
+    @ApiOperation(tags = ["user"], value = "平台用户列表")
+    fun platformUsers(): List<PlatformMemberVo>
+
+    @ApiOperation(tags = ["user"], value = "平台用户 -> 修改")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    fun platformUser(@RequestBody platformMemberUo: PlatformMemberUo)
 
 }

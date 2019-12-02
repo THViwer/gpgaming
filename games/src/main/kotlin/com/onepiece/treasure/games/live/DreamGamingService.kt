@@ -52,13 +52,34 @@ class DreamGamingService : PlatformService() {
                     "username":"${registerReq.username}",
                     "password":"$md5Password",
                     "currencyName":"$currency",
-                    "winLimit":1000
+                    "winLimit":0
                 }
             }
         """.trimIndent()
 
         this.doStartPostJson(method = "/user/signup/${clientToken.agentName}", data = data)
         return registerReq.username
+    }
+
+    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq) {
+        val clientToken = updatePasswordReq.token as DreamGamingClientToken
+
+        val md5Password = DigestUtils.md5Hex(updatePasswordReq.password)
+        val (random, sign) = this.getToken(clientToken)
+        val data = """
+            {
+                "token":"$sign",
+                "random":"$random",
+                "member":{
+                    "username":"${updatePasswordReq.username}",
+                    "password":"$md5Password",
+                    "status": 1,
+                    "winLimit":0
+                }
+            }
+        """.trimIndent()
+
+        this.doStartPostJson(method = "/user/update/${clientToken.agentName}", data = data)
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

@@ -100,6 +100,18 @@ class MicroGamingService : PlatformService() {
         return registerReq.username
     }
 
+    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq) {
+        val clientToken = updatePasswordReq.token as MicroGamingClientToken
+
+        val data = """
+            {
+                "ext_ref": "${updatePasswordReq.username}",
+                "password": "${updatePasswordReq.password}"
+            }
+        """.trimIndent()
+        this.startPostJson(method = "/v1/account/member/password", clientToken = clientToken, data = data)
+    }
+
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
         val clientToken = balanceReq.token as MicroGamingClientToken
 

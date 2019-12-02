@@ -2,6 +2,7 @@ package com.onepiece.treasure.games.slot
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
 import com.onepiece.treasure.beans.model.token.Pussy888ClientToken
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
@@ -87,6 +88,26 @@ class Pussy888Service : PlatformService() {
         return username
     }
 
+
+    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq) {
+        val clientToken = updatePasswordReq.token as Pussy888ClientToken
+        val agentName = clientToken.agentName
+
+        val data = listOf(
+                "action=editUser2",
+                "agent=${agentName}",
+                "PassWd=${updatePasswordReq.password}",
+                "userName=${updatePasswordReq.username}",
+                "Name=${updatePasswordReq.username}",
+                "tel=1234124141241",
+                "Memo=-",
+                "UserType=1",
+                "UserAreaId=1",
+                "pwdtype=1"
+        )
+        val url = "${gameConstant.getDomain(Platform.Kiss918)}/ashx/account/account.ashx"
+        this.startGetJson(url = url, username = updatePasswordReq.username, clientToken = clientToken, data = data)
+    }
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
         val clientToken = balanceReq.token as Pussy888ClientToken
 

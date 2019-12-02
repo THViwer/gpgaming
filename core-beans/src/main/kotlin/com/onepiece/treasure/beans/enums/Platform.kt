@@ -22,8 +22,7 @@ enum class Platform(
 
     // live video
     CT(PlatformDetail.ofCT()),
-    DreamGaming(PlatformDetail.ofDreamGaming()),
-    Evolution(PlatformDetail.ofEvolution()),
+    DreamGaming(PlatformDetail.ofDreamGaming()), Evolution(PlatformDetail.ofEvolution()),
     GoldDeluxe(PlatformDetail.ofGoldDeluxe()),
     SexyGaming(PlatformDetail.ofSexyGaming()),
     Fgg(PlatformDetail.ofFgg()),

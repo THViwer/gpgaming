@@ -69,7 +69,7 @@ abstract class BasicController {
         try {
             return SecurityContextHolder.getContext().authentication.principal as JwtUser
         } catch (e: Exception) {
-            throw IllegalArgumentException("无法获得当前用户")
+            error("无法获得当前用户")
         }
     }
 

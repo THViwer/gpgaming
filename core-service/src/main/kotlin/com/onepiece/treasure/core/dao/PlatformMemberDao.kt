@@ -20,4 +20,6 @@ interface PlatformMemberDao: BasicDao<PlatformMember> {
 
     fun batchBet(data: List<BetCacheVo>)
 
+    fun updatePassword(id: Int, password: String): Boolean
+
 }

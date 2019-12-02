@@ -62,18 +62,19 @@ class JokerService : PlatformService() {
         )
         this.startPostForm(clientToken = clientToken, data = data)
 
-        this.setPassword(registerReq)
+        val updatePasswordReq = GameValue.UpdatePasswordReq(token = clientToken, username = registerReq.username, password = registerReq.password)
+        this.updatePassword(updatePasswordReq)
         return registerReq.username
     }
 
-    private fun setPassword(registerReq: GameValue.RegisterReq) {
-        val clientToken = registerReq.token as DefaultClientToken
+    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq) {
+        val clientToken = updatePasswordReq.token as DefaultClientToken
 
         val data = mapOf(
                 "Method" to "SP",
                 "Timestamp" to System.currentTimeMillis() / 1000,
-                "Username" to registerReq.username,
-                "Password" to registerReq.password
+                "Username" to updatePasswordReq.username,
+                "Password" to updatePasswordReq.password
         )
         this.startPostForm(clientToken = clientToken, data = data)
     }

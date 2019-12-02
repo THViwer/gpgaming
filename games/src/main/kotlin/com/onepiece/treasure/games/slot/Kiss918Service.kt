@@ -40,9 +40,9 @@ class Kiss918Service : PlatformService() {
         val sign = this.sign(beforeParam = beforeParam, username = username, time = time, token = clientToken)
 
         val param = data.joinToString(separator = "&")
-        val url = "$url?$param&sign=${sign}&time=$time&authcode=${clientToken.autoCode}"
+        val requestUrl = "$url?$param&sign=${sign}&time=$time&authcode=${clientToken.autoCode}"
 
-        val result = okHttpUtil.doGet(url = url, clz = Kiss918Value.Result::class.java)
+        val result = okHttpUtil.doGet(url = requestUrl, clz = Kiss918Value.Result::class.java)
         check(result.success) {  OnePieceExceptionCode.PLATFORM_DATA_FAIL }
         return result.mapUtil
     }
@@ -84,6 +84,26 @@ class Kiss918Service : PlatformService() {
         val url = "${gameConstant.getDomain(Platform.Kiss918)}/ashx/account/account.ashx"
         this.startGetJson(url = url, username = username, clientToken = clientToken, data = data)
         return username
+    }
+
+    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq) {
+        val clientToken = updatePasswordReq.token as Kiss918ClientToken
+        val agentName = clientToken.agentName
+
+        val data = listOf(
+                "action=editUser2",
+                "agent=${agentName}",
+                "PassWd=${updatePasswordReq.password}",
+                "userName=${updatePasswordReq.username}",
+                "Name=${updatePasswordReq.username}",
+                "tel=1234124141241",
+                "Memo=-",
+                "UserType=1",
+                "UserAreaId=1",
+                "pwdtype=1"
+        )
+        val url = "${gameConstant.getDomain(Platform.Kiss918)}/ashx/account/account.ashx"
+        this.startGetJson(url = url, username = updatePasswordReq.username, clientToken = clientToken, data = data)
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

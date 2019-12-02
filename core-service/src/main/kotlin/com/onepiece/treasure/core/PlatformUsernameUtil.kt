@@ -5,9 +5,9 @@ import com.onepiece.treasure.utils.StringUtil
 
 object PlatformUsernameUtil  {
 
-    fun generatorPlatformUsername(clientId: Int, memberId: Int, platform: Platform): String {
+    fun generatorPlatformUsername(clientId: Int, memberId: Int, platform: Platform): Pair<String, String> {
 
-        return when (platform) {
+        val username =  when (platform) {
 //            Platform.Joker, Platform.Evolution, Platform.Lbc, Platform.Sbo, Platform.SexyGaming,
 //            Platform.Fgg, Platform.Bcs, Plat -> {
 //                "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
@@ -16,6 +16,21 @@ object PlatformUsernameUtil  {
             Platform.GoldDeluxe -> "A${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}"
             else -> "${autoCompletion(clientId, 2)}${autoCompletion(memberId, 6)}${StringUtil.generateNonce(2)}"
         }
+
+        val password = when (platform) {
+            // slot
+            Platform.Joker,
+            Platform.Kiss918,
+            Platform.MicroGaming,
+            Platform.Pussy888,
+
+            // live
+            Platform.AllBet,
+            Platform.DreamGaming -> StringUtil.generatePassword()
+            else -> "-"
+        }
+
+        return username to password
     }
 
     fun prefixPlatformUsername(platform: Platform, platformUsername: String): Pair<Int, Int> {

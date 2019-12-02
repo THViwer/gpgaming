@@ -1,5 +1,6 @@
 package com.onepiece.treasure.controller.value
 
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Role
 import io.swagger.annotations.ApiModelProperty
 import java.util.*
@@ -54,3 +55,30 @@ data class ChangePwdReq(
         val password: String
 
 )
+
+data class PlatformMemberVo(
+        @ApiModelProperty("id")
+        val id: Int,
+
+        @ApiModelProperty("平台")
+        val platform: Platform,
+
+        @ApiModelProperty("用户名")
+        val username: String,
+
+        @ApiModelProperty("密码")
+        val password: String,
+
+        @ApiModelProperty("排序")
+        val sort: Int
+)
+
+data class PlatformMemberUo(
+
+        @ApiModelProperty("平台")
+        val platform: Platform,
+
+        @ApiModelProperty("密码")
+        val password: String
+)
+

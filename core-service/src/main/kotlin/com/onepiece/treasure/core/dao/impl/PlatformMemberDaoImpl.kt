@@ -75,6 +75,13 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                 .executeGeneratedKey()
     }
 
+    override fun updatePassword(id: Int, password: String): Boolean {
+        return update()
+                .set("password", password)
+                .where("id", id)
+                .executeOnlyOne()
+    }
+
     override fun transferIn(platformMemberTransferUo: PlatformMemberTransferUo): Boolean {
         return update()
                 .set("promotion_amount", platformMemberTransferUo.promotionAmount)

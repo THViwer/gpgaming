@@ -140,9 +140,10 @@ open class CashApiController(
         val clientBank = clientBankService.get(depositCoReq.clientBankId)
         val orderId = orderIdBuilder.generatorDepositOrderId()
 
-        val (clientId, memberId) = this.currentClientIdAndMemberId()
-        val depositCo = DepositCo(orderId = orderId, memberId = memberId, memberName = depositCoReq.memberName, memberBankCardNumber = depositCoReq.memberBankCardNumber,
-                memberBank = depositCoReq.memberBank, clientId = clientId, clientBankId = clientBank.id, clientBankName = clientBank.name,
+        val current = this.current()
+
+        val depositCo = DepositCo(orderId = orderId, memberId = current.id, memberName = current.name, memberBankCardNumber = depositCoReq.memberBankCardNumber,
+                memberBank = depositCoReq.memberBank, clientId = current.clientId, clientBankId = clientBank.id, clientBankName = clientBank.name,
                 clientBankCardNumber = clientBank.bankCardNumber, money = depositCoReq.money, imgPath = depositCoReq.imgPath)
         depositService.create(depositCo)
 
