@@ -2,7 +2,9 @@ package com.onepiece.treasure.controller.value
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.PromotionCategory
+import com.onepiece.treasure.beans.enums.PromotionRuleType
 import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.model.PromotionRules
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
@@ -45,6 +47,12 @@ data class PromotionVo(
         val status: Status,
 
         @ApiModelProperty("创建时间")
-        val createdTime: LocalDateTime
+        val createdTime: LocalDateTime,
+
+        @ApiModelProperty("优惠规则类型")
+        val ruleType: PromotionRuleType,
+
+        @ApiModelProperty("规则条件")
+        val rule: PromotionRules.Rule
 
 )
