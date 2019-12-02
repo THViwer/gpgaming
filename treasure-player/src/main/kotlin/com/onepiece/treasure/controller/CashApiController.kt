@@ -89,7 +89,9 @@ open class CashApiController(
         val member = memberService.getMember(current().id)
 
         return clientBankService.findClientBank(current().clientId)
-                .filter { it.status == Status.Normal && (it.levelId == null || it.levelId == member.levelId) }
+                .filter {
+                    it.status == Status.Normal &&
+                            (it.levelId == null || it.levelId == 0 || it.levelId == member.levelId) }
                 .map {
                     with(it) {
                         ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
