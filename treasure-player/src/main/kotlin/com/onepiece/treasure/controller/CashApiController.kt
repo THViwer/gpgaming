@@ -18,9 +18,9 @@ import com.onepiece.treasure.utils.AwsS3Util
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import reactor.core.publisher.toMono
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.util.stream.Collectors
 
 @RestController
 @RequestMapping("/cash")
@@ -497,8 +497,8 @@ open class CashApiController(
         val platformMemberMap = platformMemberService.findPlatformMember(memberId = memberId).map { it.platform to it }.toMap()
 
 
-        // 查询余额 //TODO 暂时没用async
-        val balances = platforms.filter { category == null || it.platform.detail.category == category }.map {
+        // 查询余额 //TODO 暂时用简单的异步去处理
+        val balances = platforms.filter { category == null || it.platform.detail.category == category }.parallelStream().map {
             val platformMember = platformMemberMap[it.platform]
 
             when (platformMember == null) {
@@ -516,7 +516,7 @@ open class CashApiController(
                     BalanceVo(platform = it.platform, balance = platformBalance, transfer = transfer, tips = tips, centerBalance = wallet.balance)
                 }
             }
-        }
+        }.collect(Collectors.toList())
 
         return balances.plus(walletBalanceVo)
     }
