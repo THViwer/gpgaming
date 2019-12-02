@@ -21,6 +21,9 @@ data class MemberVo(
         @ApiModelProperty("用户名")
         val username: String,
 
+        @ApiModelProperty("姓名")
+        val name: String,
+
         @ApiModelProperty("层级Id")
         val levelId: Int,
 
@@ -52,6 +55,9 @@ data class MemberUoReq(
         @ApiModelProperty("id")
         val id: Int,
 
+        @ApiModelProperty("姓名")
+        val name: String?,
+
         @ApiModelProperty("层级Id")
         val levelId: Int?,
 
@@ -66,6 +72,9 @@ data class MemberCoReq(
 
         @ApiModelProperty("用户名")
         val username: String,
+
+        @ApiModelProperty("姓名")
+        val name: String,
 
         @ApiModelProperty("密码")
         val password: String,

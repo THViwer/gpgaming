@@ -46,7 +46,7 @@ class AuthServiceImpl(
 //        val username = user.name
 //        val password = user.name
 
-        val jwtUser = JwtUser(id = 1, clientId = 1, musername = "", mpassword = "", lastPasswordResetDate = Date())
-        tokenStore.refresh(jwtUser)
+//        val jwtUser = JwtUser(id = 1, clientId = 1, musername = "", mpassword = "", lastPasswordResetDate = Date())
+//        tokenStore.refresh(jwtUser)
     }
 }

@@ -27,6 +27,9 @@ data class MemberCo(
         // 用户名
         val username: String,
 
+        // 姓名
+        val name: String,
+
         // 密码
         val password: String,
 
@@ -40,6 +43,9 @@ data class MemberCo(
 data class MemberUo(
 
         val id: Int,
+
+        // 姓名
+        val name: String? = null,
 
         // 旧密码
         val oldPassword: String? = null,

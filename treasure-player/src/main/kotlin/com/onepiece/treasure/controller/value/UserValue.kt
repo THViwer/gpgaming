@@ -4,18 +4,13 @@ import com.onepiece.treasure.beans.enums.Role
 import io.swagger.annotations.ApiModelProperty
 import java.util.*
 
-object UserValueFactory {
-
-    fun generatorLoginResp(): LoginResp {
-        return LoginResp(id = 1, username = "zhangsan", role = Role.Client, token = UUID.randomUUID().toString())
-    }
-
-}
-
 data class LoginResp(
 
         @ApiModelProperty("id")
         val id: Int,
+
+        @ApiModelProperty("真实姓名")
+        val name: String,
 
         @ApiModelProperty("用户名")
         val username: String,
@@ -36,14 +31,18 @@ data class LoginReq(
         val password: String
 )
 data class RegisterReq(
+
         @ApiModelProperty("用户名")
         val username: String,
 
         @ApiModelProperty("密码")
         val password: String,
 
+        @ApiModelProperty("用户真实姓名")
+        val name: String = "张三",
+
         @ApiModelProperty("安全密码")
-        val safetyPassword: String
+        val safetyPassword: String = "1234"
 )
 
 data class ChangePwdReq(

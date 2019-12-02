@@ -15,9 +15,6 @@ data class MemberBankCo(
         // 银行
         val bank: Bank,
 
-        // 会员姓名
-        val name: String,
-
         // 银行卡号
         val bankCardNumber: String
 
@@ -29,9 +26,6 @@ data class MemberBankUo(
 
         // 银行
         val bank: Bank? = null,
-
-        // 会员姓名
-        val name: String? = null,
 
         // 银行卡号
         val bankCardNumber: String? = null,

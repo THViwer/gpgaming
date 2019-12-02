@@ -47,9 +47,6 @@ data class MemberBankCoReq(
         @ApiModelProperty("银行")
         val bank: Bank,
 
-        @ApiModelProperty("会员姓名")
-        val name: String,
-
         @ApiModelProperty("银行卡号")
         val bankCardNumber: String
 

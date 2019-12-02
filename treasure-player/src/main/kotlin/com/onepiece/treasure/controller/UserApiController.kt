@@ -31,17 +31,18 @@ class UserApiController(
         val member = memberService.login(loginValue)
 
         val token = authService.login(loginReq.username)
-        return LoginResp(id = member.id, role = Role.Member, username = member.username, token = token)
+        return LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name)
 
     }
 
     @PutMapping
     override fun register(@RequestBody registerReq: RegisterReq): LoginResp {
 
-        val defaultLevel = levelService.getDefaultLevel(clientId = 1)
+        val clientId = getClientIdByDomain()
+        val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
 
-        val memberCo = MemberCo(clientId = 1, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
-                levelId = defaultLevel.id)
+        val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
+                levelId = defaultLevel.id, name = registerReq.name)
         memberService.create(memberCo)
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)

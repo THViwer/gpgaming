@@ -19,6 +19,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val username = rs.getString("username")
+            val name = rs.getString("name")
             val password = rs.getString("password")
             val safetyPassword = rs.getString("safety_password")
             val levelId = rs.getInt("level_id")
@@ -29,13 +30,14 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
 
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
-                    safetyPassword = safetyPassword)
+                    safetyPassword = safetyPassword, name = name)
         }
 
     override fun create(memberCo: MemberCo): Int {
         return insert()
                 .set("client_id", memberCo.clientId)
                 .set("username", memberCo.username)
+                .set("name", memberCo.name)
                 .set("password", memberCo.password)
                 .set("safety_password", memberCo.safetyPassword)
                 .set("level_id", memberCo.levelId)
@@ -45,6 +47,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
 
     override fun update(memberUo: MemberUo): Boolean {
         return update()
+                .set("name", memberUo.name)
                 .set("password", memberUo.password)
                 .set("safety_password", memberUo.safetyPassword)
                 .set("status", memberUo.status)

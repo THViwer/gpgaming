@@ -55,7 +55,7 @@ open class CashApiController(
 
             when (myBank != null) {
                 true -> {
-                    MemberBankVo(id = myBank.id, name = myBank.name, bank = myBank.bank, bankCardNumber = myBank.bankCardNumber,
+                    MemberBankVo(id = myBank.id, name = member.name, bank = myBank.bank, bankCardNumber = myBank.bankCardNumber,
                             clientId = member.clientId, memberId = member.id, logo = myBank.bank.logo)
                 }
                 else -> {
@@ -70,7 +70,7 @@ open class CashApiController(
     override fun bankCreate(@RequestBody memberBankCoReq: MemberBankCoReq) {
 
         val (clientId, memberId) = this.currentClientIdAndMemberId()
-        val memberBankCo = MemberBankCo(clientId = clientId, memberId = memberId, bank = memberBankCoReq.bank, name = memberBankCoReq.name,
+        val memberBankCo = MemberBankCo(clientId = clientId, memberId = memberId, bank = memberBankCoReq.bank,
                 bankCardNumber = memberBankCoReq.bankCardNumber)
         memberBankService.create(memberBankCo)
     }
@@ -184,7 +184,7 @@ open class CashApiController(
 
         // 获得用户银行卡Id
         val memberBankId = if (withdrawCoReq.memberBankId == null) {
-            val memberBankCo = MemberBankCo(clientId = clientId, memberId = memberId, bank = withdrawCoReq.bank, name = withdrawCoReq.name,
+            val memberBankCo = MemberBankCo(clientId = clientId, memberId = memberId, bank = withdrawCoReq.bank,
                     bankCardNumber = withdrawCoReq.bankCardNumber)
             memberBankService.create(memberBankCo)
         } else withdrawCoReq.memberBankId
@@ -198,7 +198,7 @@ open class CashApiController(
 
         // create order
         val orderId = orderIdBuilder.generatorWithdrawOrderId()
-        val withdrawCo = WithdrawCo(orderId = orderId, clientId = clientId, memberId = memberId, memberName = memberBank.name,
+        val withdrawCo = WithdrawCo(orderId = orderId, clientId = clientId, memberId = memberId,
                 memberBank = memberBank.bank, memberBankCardNumber = memberBank.bankCardNumber, memberBankId = memberBank.id,
                 money = withdrawCoReq.money, remarks = null)
         withdrawService.create(withdrawCo)

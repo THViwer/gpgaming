@@ -12,6 +12,8 @@ data class JwtUser(
         val clientId: Int,
 
         val id: Int,
+
+        val name: String,
 //        val level: String,
 //        val memberEndTime: LocalDateTime?,
         val musername: String,

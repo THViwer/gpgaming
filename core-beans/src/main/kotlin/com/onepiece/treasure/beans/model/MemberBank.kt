@@ -21,9 +21,6 @@ data class MemberBank(
         // 银行
         val bank: Bank,
 
-        // 会员姓名
-        val name: String,
-
         // 银行卡号
         val bankCardNumber: String,
 

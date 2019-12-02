@@ -42,7 +42,7 @@ class MemberApiController(
             with(it) {
                 MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]!!.name,
                         balance = BigDecimal.ZERO, status = it.status,createdTime = createdTime,
-                        loginIp = loginIp, loginTime = loginTime)
+                        loginIp = loginIp, loginTime = loginTime, name = it.name)
             }
         }
 
@@ -57,7 +57,7 @@ class MemberApiController(
         check(member.clientId == clientId) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
         val memberUo = MemberUo(id = memberUoReq.id, levelId = memberUoReq.levelId, password = memberUoReq.password,
-                status = memberUoReq.status)
+                status = memberUoReq.status, name = memberUoReq.name)
         memberService.update(memberUo)
     }
 
@@ -66,7 +66,7 @@ class MemberApiController(
         val clientId = getClientId()
 
         val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password,
-                safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId)
+                safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId, name = memberCoReq.name)
         memberService.create(memberCo)
     }
 
