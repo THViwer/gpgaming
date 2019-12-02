@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 @Service
 class ReportServiceImpl(
         private val transferOrderDao: TransferOrderDao,
-        private val DepositDao: DepositDao,
+        private val depositDao: DepositDao,
         private val withdrawDao: WithdrawDao,
         private val memberDao: MemberDao
 ) : ReportService {
@@ -61,7 +61,7 @@ class ReportServiceImpl(
 
 
         // 充值报表
-        val depositReports = DepositDao.report(startDate = startDate, endDate = endDate)
+        val depositReports = depositDao.report(startDate = startDate, endDate = endDate)
         val depositReportMap = depositReports.map { it.memberId to it }.toMap()
 
         // 取款报表
@@ -127,32 +127,32 @@ class ReportServiceImpl(
         // 查询转入订单
         val transferInQuery = TransferReportQuery(clientId = clientId, memberId = null, from = Platform.Center, to = null, startDate = startDate, endDate = endDate)
         val transferInReports = transferOrderDao.memberReport(transferInQuery)
-        val transferInMap = transferInReports.map { it.memberId to it }.toMap()
+        val transferInMap = transferInReports.map { it.clientId to it }.toMap()
 
         // 查询转出订单
         val transferOutQuery = TransferReportQuery(clientId = clientId, memberId = null, from = null, to = Platform.Center, startDate = startDate, endDate = endDate)
         val transferOutReports = transferOrderDao.memberReport(transferOutQuery)
-        val transferOutMap = transferOutReports.map { it.memberId to it }.toMap()
+        val transferOutMap = transferOutReports.map { it.clientId to it }.toMap()
 
 
         // 充值报表
-        val depositReports = DepositDao.report(startDate = startDate, endDate = endDate)
-        val depositReportMap = depositReports.map { it.memberId to it }.toMap()
+        val depositReports = depositDao.report(startDate = startDate, endDate = endDate)
+        val depositReportMap = depositReports.map { it.clientId to it }.toMap()
 
         // 取款报表
         val withdrawReports = withdrawDao.report(startDate = startDate, endDate = endDate)
-        val withdrawReportMap = withdrawReports.map { it.memberId to it }.toMap()
+        val withdrawReportMap = withdrawReports.map { it.clientId to it }.toMap()
 
         // 会员报表
         val memberReportMap = memberDao.report(clientId = clientId, startDate = startDate, endDate = endDate)
 
-        val memberIdSet = transferInReports.asSequence().map { it.memberId }
-                .plus(transferOutReports.map { it.memberId })
-                .plus(depositReports.map { it.memberId })
-                .plus(withdrawReports.map { it.memberId })
+        val clientIds = transferInReports.asSequence().map { it.clientId }
+                .plus(transferOutReports.map { it.clientId })
+                .plus(depositReports.map { it.clientId })
+                .plus(withdrawReports.map { it.clientId })
                 .toSet()
 
-        return memberIdSet.map {
+        return clientIds.map {
 
             val transferInReport = transferInMap[it]
             val transferOutReport = transferOutMap[it]
