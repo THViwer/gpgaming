@@ -20,6 +20,7 @@ import com.onepiece.treasure.games.sport.BcsService
 import com.onepiece.treasure.games.sport.CMDService
 import com.onepiece.treasure.games.sport.LbcService
 import com.onepiece.treasure.utils.RedisService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -60,6 +61,8 @@ class GameApi(
 
 
 ) {
+
+    private val log = LoggerFactory.getLogger(GameApi::class.java)
 
     private fun getPlatformApi(platform: Platform): PlatformService {
         return when (platform) {
@@ -256,12 +259,39 @@ class GameApi(
     /**
      * 转账
      */
-    fun transfer(clientId: Int, platformUsername: String, platform: Platform, orderId: String, amount: BigDecimal) {
+    fun transfer(clientId: Int, platformUsername: String, platform: Platform, orderId: String, amount: BigDecimal, index: Int = 0): Boolean {
+
+        // 重试两次
+        if (index > 2) return false
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
-
         val transferReq = GameValue.TransferReq(token = clientToken, orderId = orderId, username = platformUsername, amount = amount)
-        this.getPlatformApi(platform).transfer(transferReq)
+
+        val platformOrderId: String
+        try {
+            platformOrderId = this.getPlatformApi(platform).transfer(transferReq)
+        } catch (e: Exception) {
+            log.error("转账失败第${index}次，请求参数：$transferReq ", e)
+            return this.transfer(clientId, platformUsername, platform, orderId, amount, index + 1)
+        }
+
+        // 检查转账是否成功
+        val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = platformOrderId)
+        return this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
+    }
+
+    private fun checkTransfer(platform: Platform, checkTransferReq: GameValue.CheckTransferReq, index: Int = 0): Boolean {
+
+        if (platform == Platform.Kiss918 || platform == Platform.Pussy888) return true
+
+        try {
+            if (index > 2) return false
+
+            return this.getPlatformApi(platform).checkTransfer(checkTransferReq)
+        } catch (e: Exception) {
+            log.error("查询转账失败第${index}次，请求参数：$checkTransferReq ", e)
+            return this.checkTransfer(platform, checkTransferReq, index + 1)
+        }
     }
 
 

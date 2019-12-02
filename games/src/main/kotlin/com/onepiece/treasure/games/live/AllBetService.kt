@@ -138,7 +138,7 @@ class AllBetService : PlatformService() {
                 "random=${UUID.randomUUID()}"
         )
         val urlParam = data.joinToString(separator = "&")
-        val mapUtil = this.startDoGet(method = "query_transfer_state", urlParam = urlParam, allBetClientToken = allBetClientToken)
+        val mapUtil = this.startDoGet(method = "/query_transfer_state", urlParam = urlParam, allBetClientToken = allBetClientToken)
 
         // 0 创建状态 1 成功 2 失败
         return mapUtil.asInt("transferState") == 1

@@ -1,5 +1,7 @@
 package com.onepiece.treasure.games.slot
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
@@ -20,7 +22,9 @@ import java.util.*
 
 @Suppress("UNCHECKED_CAST")
 @Service
-class TTGService: PlatformService() {
+class TTGService(
+        private val xmlMapper: XmlMapper
+): PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss")
 
@@ -65,8 +69,8 @@ class TTGService: PlatformService() {
         val tokenClient = checkTransferReq.token as TTGClientToken
         val url = "${gameConstant.getDomain(Platform.TTG)}/cip/transaction/${tokenClient.agentName}/${checkTransferReq.orderId}"
         val xml = okHttpUtil.doGetXml(url = url, clz = String::class.java)
-        val mapUtil = MapUtil.instance(xml as Map<String, Any>)
-        return mapUtil.data["uid"] != null
+        val map = xmlMapper.readValue<Map<String, Any>>(xml)
+        return map["amount"] != null
     }
 
     private fun login(username: String, tokenClient: TTGClientToken): MapUtil {

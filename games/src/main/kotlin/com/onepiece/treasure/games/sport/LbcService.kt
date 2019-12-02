@@ -97,7 +97,7 @@ class LbcService : PlatformService() {
                 .add("wallet_id", "1") // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
                 .build()
         val mapUtil = this.startGetJson(method = "CheckFundTransfer", formBody = body)
-        return mapUtil.asMap("data").data["trans_id"] != null
+        return mapUtil.asMap("Data").data["status"] == 0
     }
 
     override fun start(startReq: GameValue.StartReq): String {

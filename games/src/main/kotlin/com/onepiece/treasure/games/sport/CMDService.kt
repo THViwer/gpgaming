@@ -86,10 +86,11 @@ class CMDService : PlatformService() {
         val data = listOf(
                 "Method=checkfundtransferstatus",
                 "PartnerKey=${cmdClientToken.partnerKey}",
-                "serName=${checkTransferReq.orderId}"
+                "UserName=${checkTransferReq.username}",
+                "TicketNo=${checkTransferReq.orderId}"
         )
         val mapUtil = this.startGetJson(data)
-        return mapUtil.asMap("Data").data["Status"] == "1"
+        return mapUtil.asList("Data").size == 1
     }
 
     override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {

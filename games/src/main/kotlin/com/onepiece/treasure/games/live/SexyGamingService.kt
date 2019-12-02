@@ -45,7 +45,7 @@ class SexyGamingService: PlatformService() {
                 "userId" to registerReq.username,
                 "currency" to currency,
 //                "betLimit" to "{\"SEXYBCRT\":{\"LIVE\":{\"limitId\":[280101,280102,280103,280104,280105,280106,280107]}}}"
-                "betLimit" to "{\"SEXYBCRT\":{\"LIVE\":{\"limitId\":[280101,280102]}},\"SV388\":{\"LIVE\":{\"maxbet\":10000,\"minbet\":5,\"mindraw\":1,\"matchlimit\":1000,\"maxdraw\":10000}},\"VENUS\":{\"LIVE\":{\"limitId\":[280101,280102]}}}"
+                "betLimit" to "{\"SEXYBCRT\":{\"LIVE\":{\"limitId\":[280101,280102]}},\"SV388\":{\"LIVE\":{\"maxbet\":1000,\"minbet\":100,\"mindraw\":100,\"matchlimit\":1000,\"maxdraw\":100}},\"VENUS\":{\"LIVE\":{\"limitId\":[280101,280102]}}}"
         )
 
         this.startGetJson(method = "/wallet/createMember", data = data)

@@ -104,16 +104,18 @@ class GoldDeluxeService: PlatformService() {
 
         val token = transferReq.token as GoldDeluxeClientToken
 
-        val (messageId, method) = when (transferReq.amount.toDouble() > 0) {
-            true -> {
-                val messageId = this.generatorMessageId("D")
-                messageId to "cDeposit"
-            }
-            false -> {
-                val messageId = this.generatorMessageId("W")
-                messageId to "cWithdrawal"
-            }
-        }
+        val method = if (transferReq.amount.toDouble() > 0) "cDeposit" else "cWithdrawal"
+
+//        val (messageId, method) = when (transferReq.amount.toDouble() > 0) {
+//            true -> {
+//                val messageId = this.generatorMessageId("D")
+//                messageId to "cDeposit"
+//            }
+//            false -> {
+//                val messageId = this.generatorMessageId("W")
+//                messageId to "cWithdrawal"
+//            }
+//        }
 
         val data = """
                     <?xml version="1.0"?>
@@ -121,7 +123,7 @@ class GoldDeluxeService: PlatformService() {
                       <Header>
                         <Method>${method}</Method>
                         <MerchantID>${token.merchantCode}</MerchantID>
-                        <MessageID>${messageId}</MessageID>
+                        <MessageID>${transferReq.orderId}</MessageID>
                       </Header>
                       <Param>
                         <UserID>${transferReq.username}</UserID>
@@ -141,7 +143,6 @@ class GoldDeluxeService: PlatformService() {
         val token = checkTransferReq.token as GoldDeluxeClientToken
         val messageId = this.generatorMessageId("S")
         val data = """
-            <?xml version=”1.0”?>
             <Request>
               <Header>
                 <Method>cCheckTransactionStatus</Method>

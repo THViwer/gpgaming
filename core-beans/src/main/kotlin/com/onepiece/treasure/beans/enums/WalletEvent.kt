@@ -17,8 +17,14 @@ enum class WalletEvent {
     // 转账
     TRANSFER_IN,
 
+    // 转张回滚
+    TRANSFER_IN_ROLLBACK,
+
     // 转出
     TRANSFER_OUT,
+
+    // 转出回滚
+    TRANSFER_OUT_ROLLBACK,
 
     // 人工出入款
     Artificial

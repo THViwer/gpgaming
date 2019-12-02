@@ -98,10 +98,10 @@ class SpadeGamingService : PlatformService() {
                 "endDate":"${endTime.format(dateTimeFormat)}",
                 "acctId":"${checkTransferReq.username}",
                 "currency":"$currency",
-                "lastSerialNo":”${checkTransferReq.orderId}”
-                "serialNo":"${UUID.randomUUID()}"
-                "pageIndex":0,
-                "merchantCode":"${clientToken.memberCode}",
+                "lastSerialNo":"${checkTransferReq.orderId}",
+                "serialNo":"${UUID.randomUUID()}",
+                "pageIndex":1,
+                "merchantCode":"${clientToken.memberCode}"
             }
         """.trimIndent()
 

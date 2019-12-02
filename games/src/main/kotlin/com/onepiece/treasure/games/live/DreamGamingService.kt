@@ -127,7 +127,7 @@ class DreamGamingService : PlatformService() {
             {
                 "token":"$sign",
                 "random":"$random",
-                "data":"${checkTransferReq.username}"
+                "data":"${checkTransferReq.orderId}"
             } 
         """.trimIndent()
 

@@ -18,6 +18,7 @@ import com.onepiece.treasure.utils.AwsS3Util
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import reactor.core.publisher.toMono
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -278,7 +279,7 @@ open class CashApiController(
         platformBindService.updateEarnestBalance(clientId = clientId, platform = platform, earnestBalance = amount.negate())
 
         // 转账订单编号
-        val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform)
+        val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "out")
 
         // 中心钱包扣款
         val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_OUT, money = amount,
@@ -301,14 +302,28 @@ open class CashApiController(
         }
 
         //调用平台接口充值
-        gameApi.transfer(clientId = clientId, platformUsername = platformMember.username, orderId = transferOrderId, amount = amount.plus(promotionAmount),
+        val transferFlag = gameApi.transfer(clientId = clientId, platformUsername = platformMember.username, orderId = transferOrderId, amount = amount.plus(promotionAmount),
                 platform = to)
 
+        // 转账失败 进行回滚
+        if (!transferFlag) {
+            this.transferRollBack(clientId = clientId, memberId = memberId, money = amount, from = from, to = to, transferOrderId = transferOrderId)
+        }
+
         // 更新转账订单
-        val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = TransferState.Successful)
+        val state = if (transferFlag) TransferState.Successful else TransferState.Fail
+        val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = state)
         transferOrderService.update(transferOrderUo)
     }
 
+    private fun transferRollBack(clientId: Int, memberId: Int, money: BigDecimal, from: Platform, to: Platform, transferOrderId: String) {
+
+        val event = if (from == Platform.Center) WalletEvent.TRANSFER_OUT_ROLLBACK else WalletEvent.TRANSFER_IN_ROLLBACK
+        val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = event, money = money,
+                remarks = "$from => $to", waiterId = null, eventId = transferOrderId)
+        walletService.update(walletUo)
+
+    }
 
     /**
      * 处理优惠活动
@@ -326,8 +341,6 @@ open class CashApiController(
         }
 
         if (promotionId == null) return null
-
-
 
         // 获得新的优惠活动信息
         val promotion = promotionService.get(promotionId)
@@ -389,7 +402,7 @@ open class CashApiController(
 
 
         // 生成转账订单
-        val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform)
+        val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "in")
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = BigDecimal.ZERO,
                 from = from, to = to, joinPromotionId = null)
         transferOrderService.create(transferOrderCo)
@@ -401,15 +414,21 @@ open class CashApiController(
 
 
         //调用平台接口取款
-        gameApi.transfer(clientId = clientId, platformUsername = platformMember.username, orderId = transferOrderId, amount = amount.negate(),
+        val transferFlag = gameApi.transfer(clientId = clientId, platformUsername = platformMember.username, orderId = transferOrderId, amount = amount.negate(),
                 platform = platform)
 
+        if (!transferFlag) {
+            this.transferRollBack(clientId = clientId, memberId = memberId, money = amount, from = from, to = to, transferOrderId = transferOrderId)
+        }
+
         // 更新转账订单
-        val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = TransferState.Successful)
+        val transferState = if (transferFlag) TransferState.Successful else TransferState.Fail
+        val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = transferState)
         transferOrderService.update(transferOrderUo)
 
         // 清空平台用户优惠信息
-        platformMemberService.cleanTransferIn(memberId = memberId, platform = platform, transferOutAmount = amount)
+        if (transferFlag)
+            platformMemberService.cleanTransferIn(memberId = memberId, platform = platform, transferOutAmount = amount)
     }
 
 

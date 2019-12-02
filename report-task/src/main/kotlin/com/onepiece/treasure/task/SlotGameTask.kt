@@ -27,8 +27,8 @@ class SlotGameTask(
 )  {
 
 
-//    @Scheduled(cron="0 0 0/1 * * ? ")
-         @Scheduled(cron="0/10 * *  * * ? ")
+    @Scheduled(cron="0 0 0/1 * * ? ")
+//         @Scheduled(cron="0/10 * *  * * ? ")
     fun execute() {
         this.jokerGameTask()
 
