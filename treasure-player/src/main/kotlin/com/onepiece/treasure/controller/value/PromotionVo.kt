@@ -19,6 +19,9 @@ data class PromotionVo(
         @ApiModelProperty("平台")
         val platform: Platform?,
 
+        @ApiModelProperty("平台名称")
+        val platformName: String?,
+
         @ApiModelProperty("优惠类型")
         val category: PromotionCategory,
 
