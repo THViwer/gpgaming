@@ -79,7 +79,7 @@ class ApiController(
 
             PromotionVo(id = it.id, clientId = it.clientId, category = it.category, stopTime = it.stopTime, top = it.top, icon = it.icon, platform = it.platform,
                     title = i18nContent.title, synopsis = i18nContent.synopsis, content = i18nContent.content, status = it.status, createdTime = it.createdTime,
-                    precautions = i18nContent.precautions)
+                    precautions = i18nContent.precautions, ruleType = it.ruleType, rule = it.rule)
         }
 
     }
