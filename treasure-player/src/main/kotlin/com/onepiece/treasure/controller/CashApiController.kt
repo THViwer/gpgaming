@@ -239,26 +239,41 @@ open class CashApiController(
     override fun transfer(@RequestBody cashTransferReq: CashTransferReq) {
         check(cashTransferReq.from != cashTransferReq.to) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
-        val (clientId, memberId) = currentClientIdAndMemberId()
+        val current = this.current()
 
-        val platform = if (cashTransferReq.from == Platform.Center) cashTransferReq.to else cashTransferReq.from
+        if (cashTransferReq.from != Platform.Center) {
+            this.singleTransfer(clientId = current.clientId, platform = cashTransferReq.from, cashTransferReq = cashTransferReq, type = "in")
+        }
 
+        if (cashTransferReq.to != Platform.Center) {
+            this.singleTransfer(clientId = current.clientId, platform = cashTransferReq.to, cashTransferReq = cashTransferReq, type = "out")
+        }
+    }
+
+
+    private fun singleTransfer(clientId: Int, platform: Platform, cashTransferReq: CashTransferReq, type: String) {
 
         val platformMemberVo = this.getPlatformMember(platform)
         val platformMember = platformMemberService.get(platformMemberVo.id)
 
         val platformBalance  = gameApi.balance(clientId = clientId, platformUsername = platformMemberVo.platformUsername, platform = platform, platformPassword = platformMember.password)
 
-        when (cashTransferReq.from) {
-            // 中心钱包 -> 平台钱包
-            Platform.Center -> {
-                this.centerToPlatformTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId)
-            }
-            // 平台钱包 -> 中心钱包
-            else -> {
-                this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = cashTransferReq.amount)
-            }
+        if (type == "out") { // 中心钱包 -> 平台钱包
+            this.centerToPlatformTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId)
+        } else if (type == "in") { // 平台钱包 -> 中心钱包
+            this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = cashTransferReq.amount)
         }
+
+//        when (cashTransferReq.from) {
+//            /
+//            Platform.Center -> {
+//                this.centerToPlatformTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId)
+//            }
+//
+//            else -> {
+//                this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = cashTransferReq.amount)
+//            }
+//        }
     }
 
     // 中心转平台
