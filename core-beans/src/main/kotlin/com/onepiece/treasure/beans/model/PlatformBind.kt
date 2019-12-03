@@ -44,13 +44,10 @@ data class PlatformBind(
 
 ) {
 
-    // token信息
-    val clientToken: ClientToken
-        get() {
+    companion object {
 
-            val objectMapper = jacksonObjectMapper()
-
-            val clz =  when (platform) {
+        fun getClientTokenClass(platform: Platform): Class<out ClientToken> {
+            return when (platform) {
                 Platform.Kiss918 -> Kiss918ClientToken::class.java
                 Platform.Mega -> MegaClientToken::class.java
                 Platform.Pussy888 -> Pussy888ClientToken::class.java
@@ -69,7 +66,14 @@ data class PlatformBind(
                 Platform.Bcs -> BcsClientToken::class.java
                 else -> DefaultClientToken::class.java
             }
+        }
+    }
 
+    // token信息
+    val clientToken: ClientToken
+        get() {
+            val objectMapper = jacksonObjectMapper()
+            val clz =  getClientTokenClass(platform)
             return objectMapper.readValue(tokenJson, clz)
         }
 

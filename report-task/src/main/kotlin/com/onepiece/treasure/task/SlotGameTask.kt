@@ -1,6 +1,8 @@
 package com.onepiece.treasure.task
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.SystemConstant
 import com.onepiece.treasure.beans.enums.LaunchMethod
@@ -11,6 +13,7 @@ import com.onepiece.treasure.games.GameApi
 import com.onepiece.treasure.games.GameConstant
 import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.utils.AwsS3Util
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
@@ -184,10 +187,52 @@ class SlotGameTask(
         file.delete()
     }
 
-
-
-
 }
+
+//fun main() {
+//
+//    val names = listOf(
+//            "joker_wap",
+//            "joker_wap",
+//            "micro_gaming",
+//            "pragmatic_wap",
+//            "pragmatic_web",
+//            "spade_game",
+//            "ttg_wap",
+//            "ttg_web"
+//    )
+//
+//    names.forEach { generatorFile(it) }
+//
+//}
+//
+//fun generatorFile(name: String) {
+//    val objectMapper = jacksonObjectMapper()
+//    val xmlMapper = XmlMapper()
+//
+//    val okHttpUtil = OkHttpUtil(objectMapper = objectMapper, xmlMapper = xmlMapper)
+//
+//    val url = "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/${name}.json"
+//
+//    val json = okHttpUtil.doGet(url = url, clz = String::class.java)
+//    val categories = objectMapper.readValue<List<SlotCategory>>(json)
+//
+//    val file = File("/Users/cabbage/Desktop/games/${name}.csv")
+//
+//    val text = arrayListOf<String>()
+//    text.add("GameId,GameName,ChineseGameName,icon,category\r\n")
+//    categories.map { it.games }.forEach { games ->
+//
+//        games.forEach {
+//            val t = "${it.gameId},${it.gameName},${it.chineseGameName},${it.icon},${it.category}\r\n"
+//            text.add(t)
+//        }
+//    }
+//    file.writeText(text.joinToString(separator = ""))
+//}
+
+
+
 
 //fun main() {
 ////    val file = File("/Users/cabbage/Desktop/prag.csv")

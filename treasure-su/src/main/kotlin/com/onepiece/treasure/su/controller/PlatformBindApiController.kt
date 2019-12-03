@@ -3,6 +3,7 @@ package com.onepiece.treasure.su.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.model.PlatformBind
 import com.onepiece.treasure.beans.value.database.PlatformBindCo
 import com.onepiece.treasure.beans.value.database.PlatformBindUo
 import com.onepiece.treasure.core.service.PlatformBindService
@@ -20,6 +21,9 @@ class PlatformBindApiController(
 
     @PostMapping
     override fun create(@RequestBody platformBindCoReq: PlatformBindSuValue.PlatformBindCoReq) {
+
+        this.checkClientToken(platform = platformBindCoReq.platform, tokenJson = platformBindCoReq.tokenJson)
+
         val platformBindCo = PlatformBindCo(clientId = platformBindCoReq.clientId, username = platformBindCoReq.username,
                 password = platformBindCoReq.password, earnestBalance = platformBindCoReq.earnestBalance, platform = platformBindCoReq.platform, tokenJson = platformBindCoReq.tokenJson)
         platformBindService.create(platformBindCo)
@@ -30,7 +34,11 @@ class PlatformBindApiController(
         val platformBindUo = PlatformBindUo(id = platformBindUoReq.id, username = platformBindUoReq.username, password = platformBindUoReq.password,
                 earnestBalance = platformBindUoReq.earnestBalance, status = platformBindUoReq.status, tokenJson = platformBindUoReq.tokenJson)
         platformBindService.update(platformBindUo)
+    }
 
+    private fun checkClientToken(platform: Platform, tokenJson: String) {
+        val clz = PlatformBind.getClientTokenClass(platform)
+        objectMapper.readValue(tokenJson, clz)
     }
 
     @GetMapping("/{clientId}")
