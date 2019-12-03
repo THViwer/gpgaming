@@ -67,7 +67,9 @@ class PlatformBindServiceImpl(
         val bind = this.findClientPlatforms(clientId).find { it.platform == platform }
         checkNotNull(bind) { OnePieceExceptionCode.DATA_FAIL }
 
-        platformBindDao.updateEarnestBalance(bind.id, earnestBalance, bind.processId)
+        val flag = platformBindDao.updateEarnestBalance(bind.id, earnestBalance, bind.processId)
+        check(flag) { OnePieceExceptionCode.EARNESTBALANCE_OVER }
+
 
     }
 }
