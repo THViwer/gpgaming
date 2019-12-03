@@ -18,6 +18,9 @@ data class PromotionVo(
         @ApiModelProperty("优惠类型")
         val category: PromotionCategory,
 
+        @ApiModelProperty("平台")
+        val platform: Platform,
+
         @ApiModelProperty("结束时间, 如果为null 则无限时间")
         val stopTime: LocalDateTime?,
 

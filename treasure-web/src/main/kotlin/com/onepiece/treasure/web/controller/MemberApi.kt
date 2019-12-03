@@ -35,8 +35,6 @@ interface MemberApi {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun create(@RequestBody memberCoReq: MemberCoReq)
 
-
-
     @ApiOperation(tags = ["user"], value = "会员 -> 金额详情")
     fun balance(
             @PathVariable(value = "memberId") memberId: Int
