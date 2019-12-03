@@ -41,7 +41,7 @@ class GameConstant(
             Platform.AllBet -> "https://api3.apidemo.net:8443"
 
             // sport
-            Platform.Lbc -> "http://tsa.gpgaming88.com"
+//            Platform.Lbc -> "http://tsa.gpgaming88.com"
             Platform.Bcs -> "https://transferapi.ballcrown.com"
             Platform.CMD -> "http://api.1win88.net:8080"
 //            Platform.Sbo -> "http://sboapi.gsoft168.com"
@@ -60,7 +60,7 @@ class GameConstant(
             Platform.Joker -> "http://45.124.64.29:89"
             Platform.Pragmatic -> "https://api.prerelease-env.biz"
             Platform.Fgg -> "https://d-tapi.fgg365.com"
-            Platform.Lbc -> "http://45.124.64.29:88"
+//            Platform.Lbc -> "http://45.124.64.29:88"
             Platform.Bcs -> "https://transferapi.ballcrown.com"
 
             // slot

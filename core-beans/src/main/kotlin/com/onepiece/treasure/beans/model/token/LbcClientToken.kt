@@ -4,6 +4,10 @@ class LbcClientToken(
 
         val memberCode: String,
 
-        val vendorId: String
+        val vendorId: String,
+
+        val currency: String,
+
+        val apiDomain: String
 
 ) : ClientToken

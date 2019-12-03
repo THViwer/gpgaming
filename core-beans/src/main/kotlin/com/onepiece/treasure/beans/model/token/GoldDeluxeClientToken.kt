@@ -4,5 +4,7 @@ class GoldDeluxeClientToken(
 
         val merchantCode: String,
 
-        val key: String
+        val key: String,
+
+        val currency: String
 ) : ClientToken

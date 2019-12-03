@@ -4,6 +4,8 @@ class SpadeGamingClientToken(
 
         val siteId: String,
 
-        val memberCode: String
+        val memberCode: String,
+
+        val currency: String
 
 ) : ClientToken

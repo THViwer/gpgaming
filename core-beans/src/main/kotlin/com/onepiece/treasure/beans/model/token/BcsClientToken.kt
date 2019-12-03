@@ -1,10 +1,10 @@
 package com.onepiece.treasure.beans.model.token
 
-data class DreamGamingClientToken(
+class BcsClientToken (
 
-        val agentName: String,
 
         val key: String,
 
         val currency: String
+
 ): ClientToken

@@ -35,9 +35,6 @@ class GoldDeluxeService: PlatformService() {
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyMMddHHmmss")
     private val betDateTimeFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")
 
-    private val currencyCode = "MYR"
-
-
     private fun generatorMessageId(first: String): String {
         return "$first${LocalDateTime.now().format(dateTimeFormat)}${StringUtil.generateNonce(5)}"
     }
@@ -65,7 +62,7 @@ class GoldDeluxeService: PlatformService() {
               </Header>
               <Param>
                 <UserID>${registerReq.username}</UserID>
-                <CurrencyCode>${currencyCode}</CurrencyCode>
+                <CurrencyCode>${token.currency}</CurrencyCode>
                 <BetGroup>default</BetGroup>
               </Param>
             </Request>
@@ -90,7 +87,7 @@ class GoldDeluxeService: PlatformService() {
               </Header>
               <Param>
                 <UserID>${balanceReq.username}</UserID>
-                <CurrencyCode>${currencyCode}</CurrencyCode>
+                <CurrencyCode>${token.currency}</CurrencyCode>
                 <RequestBetLimit>1</RequestBetLimit>
               </Param>
             </Request>
@@ -127,7 +124,7 @@ class GoldDeluxeService: PlatformService() {
                       </Header>
                       <Param>
                         <UserID>${transferReq.username}</UserID>
-                        <CurrencyCode>${currencyCode}</CurrencyCode>
+                        <CurrencyCode>${token.currency}</CurrencyCode>
                         <Amount>${transferReq.amount.abs()}</Amount>
                         <EnableInGameTransfer>1</EnableInGameTransfer>
                         <GetEndBalance>1</GetEndBalance>
@@ -152,7 +149,7 @@ class GoldDeluxeService: PlatformService() {
               <Param>
                 <MessageID>${checkTransferReq.orderId}</MessageID>
                 <UserID>${checkTransferReq.username}</UserID>
-                <CurrencyCode>$currencyCode</CurrencyCode>
+                <CurrencyCode>${token.currency}</CurrencyCode>
                 </Param>
               </Request>
         """.trimIndent()
@@ -165,7 +162,7 @@ class GoldDeluxeService: PlatformService() {
         val token = startReq.token as GoldDeluxeClientToken
 
         val loginTokenId = StringUtil.generateNonce(10)
-        val signParam = "${token.merchantCode}${loginTokenId}${token.key}${startReq.username}${currencyCode}"
+        val signParam = "${token.merchantCode}${loginTokenId}${token.key}${startReq.username}${token.currency}"
         val key = DigestUtils.sha256Hex(signParam)
 
         val lang = when (startReq.language) {

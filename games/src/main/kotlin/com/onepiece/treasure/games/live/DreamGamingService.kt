@@ -19,7 +19,6 @@ import java.util.*
 @Service
 class DreamGamingService : PlatformService() {
 
-    private val currency = "MYR"
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     fun doStartPostJson(method: String, data: String): MapUtil {
@@ -51,7 +50,7 @@ class DreamGamingService : PlatformService() {
                 "member":{
                     "username":"${registerReq.username}",
                     "password":"$md5Password",
-                    "currencyName":"$currency",
+                    "currencyName":"${clientToken.currency}",
                     "winLimit":0
                 }
             }

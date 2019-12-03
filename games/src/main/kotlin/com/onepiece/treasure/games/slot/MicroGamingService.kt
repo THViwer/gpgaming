@@ -35,7 +35,7 @@ class MicroGamingService : PlatformService() {
             val headers = mapOf(
                     "Authorization" to "Basic $authorization",
                     "X-DAS-TZ" to "UTC+8",
-                    "X-DAS-CURRENCY" to "MYR",
+                    "X-DAS-CURRENCY" to clientToken.currency,
                     "X-DAS-TX-ID" to "TEXT-TX-ID",
                     "X-DAS-LANG" to "en"
             )
@@ -58,7 +58,7 @@ class MicroGamingService : PlatformService() {
         val header = mapOf(
                 "Authorization" to "Bearer $accessToken",
                 "X-DAS-TZ" to "UTC+8",
-                "X-DAS-CURRENCY" to "MYR",
+                "X-DAS-CURRENCY" to clientToken.currency,
                 "X-DAS-TX-ID" to "TEXT-TX-ID",
                 "X-DAS-LANG" to "en"
         )
@@ -74,7 +74,7 @@ class MicroGamingService : PlatformService() {
         val header = mapOf(
                 "Authorization" to "Bearer $accessToken",
                 "X-DAS-TZ" to "UTC+8",
-                "X-DAS-CURRENCY" to "MYR",
+                "X-DAS-CURRENCY" to clientToken.currency,
                 "X-DAS-TX-ID" to "TEXT-TX-ID",
                 "X-DAS-LANG" to "en"
         )

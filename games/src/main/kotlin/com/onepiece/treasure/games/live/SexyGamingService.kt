@@ -18,8 +18,6 @@ import java.time.LocalDateTime
 @Service
 class SexyGamingService: PlatformService() {
 
-//    private val currency = "MYR"
-
     fun startGetJson(method: String, data: Map<String, String>): MapUtil {
 
         val url = "${gameConstant.getDomain(Platform.SexyGaming)}$method"

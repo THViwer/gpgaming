@@ -19,7 +19,6 @@ import java.util.*
 @Service
 class SpadeGamingService : PlatformService() {
 
-    private val currency = "MYR"
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
 
     private fun startPostJson(method: String, data: String): MapUtil {
@@ -42,7 +41,7 @@ class SpadeGamingService : PlatformService() {
             {
                 "acctId": "${registerReq.username}",
                 "userName": "${registerReq.name}",
-                "currency": "$currency",
+                "currency": "${clientToken.currency}",
                 "siteId": "${clientToken.siteId}",
                 "merchantCode": "${clientToken.memberCode}",
                 "serialNo": "${UUID.randomUUID()}"
@@ -71,12 +70,11 @@ class SpadeGamingService : PlatformService() {
     override fun transfer(transferReq: GameValue.TransferReq): String {
         val clientToken = transferReq.token as SpadeGamingClientToken
 
-
         val data = """
                     {
                         "acctId": "${transferReq.username}",
                         "amount": ${transferReq.amount.abs()},
-                        "currency": "$currency",
+                        "currency": "${clientToken.currency}",
                         "merchantCode": "${clientToken.memberCode}",
                         "serialNo": "${transferReq.orderId}"
                     }
@@ -97,7 +95,7 @@ class SpadeGamingService : PlatformService() {
                 "beginDate":"${startTime.format(dateTimeFormat)}",
                 "endDate":"${endTime.format(dateTimeFormat)}",
                 "acctId":"${checkTransferReq.username}",
-                "currency":"$currency",
+                "currency":"${clientToken.currency}",
                 "lastSerialNo":"${checkTransferReq.orderId}",
                 "serialNo":"${UUID.randomUUID()}",
                 "pageIndex":1,

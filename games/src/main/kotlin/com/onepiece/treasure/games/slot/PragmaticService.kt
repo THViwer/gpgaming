@@ -44,7 +44,7 @@ class PragmaticService: PlatformService() {
         val data = hashMapOf(
                 "secureLogin" to clientToken.secureLogin,
                 "externalPlayerId" to registerReq.username,
-                "currency" to "MYR"
+                "currency" to clientToken.currency
         )
 
         this.startDoPostForm(method = "/player/account/create", clientToken = clientToken, data = data)

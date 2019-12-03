@@ -6,5 +6,7 @@ class GGFishingClientToken(
 
         val cert: String,
 
-        val agentName: String
+        val agentName: String,
+
+        val currency: String
 ) : ClientToken

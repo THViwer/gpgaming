@@ -4,8 +4,8 @@ import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.token.BcsClientToken
 import com.onepiece.treasure.beans.model.token.ClientToken
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameValue
@@ -57,12 +57,12 @@ class BcsService : PlatformService() {
 
     override fun register(registerReq: GameValue.RegisterReq): String {
 
-        val token = registerReq.token as DefaultClientToken
+        val token = registerReq.token as BcsClientToken
         val param = mapOf(
                 "APIPassword" to token.key,
                 "MemberAccount" to registerReq.username,
                 "NickName" to registerReq.name,
-                "Currency" to "MYR"
+                "Currency" to "${token.currency}"
         )
 
 
@@ -74,7 +74,7 @@ class BcsService : PlatformService() {
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
 
-        val token = balanceReq.token as DefaultClientToken
+        val token = balanceReq.token as BcsClientToken
         val param = mapOf(
                 "APIPassword" to token.key,
                 "MemberAccount" to balanceReq.username
@@ -87,7 +87,7 @@ class BcsService : PlatformService() {
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
 
-        val token = transferReq.token as DefaultClientToken
+        val token = transferReq.token as BcsClientToken
         val transferType = if (transferReq.amount.toDouble() > 0) 0 else 1
 
         // :MD5(APIPassword+MemberAccount+Amount)
@@ -110,7 +110,7 @@ class BcsService : PlatformService() {
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
 
-        val token = checkTransferReq.token as DefaultClientToken
+        val token = checkTransferReq.token as BcsClientToken
 
         val param = mapOf(
                 "APIPassword" to token.key,
@@ -142,7 +142,7 @@ class BcsService : PlatformService() {
             else -> "EN"
         }
 
-        val token = startReq.token as DefaultClientToken
+        val token = startReq.token as BcsClientToken
         val param = mapOf(
                 "APIPassword" to token.key,
                 "MemberAccount" to startReq.username,
@@ -180,7 +180,7 @@ class BcsService : PlatformService() {
 
     override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
 
-        val token = betOrderReq.token as DefaultClientToken
+        val token = betOrderReq.token as BcsClientToken
 
         val param = mapOf(
                 "APIPassword" to token.key,
@@ -199,7 +199,7 @@ class BcsService : PlatformService() {
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
 
-        val token = pullBetOrderReq.token as DefaultClientToken
+        val token = pullBetOrderReq.token as BcsClientToken
 
         return pullByNextId(clientId = pullBetOrderReq.clientId, platform = Platform.Bcs) { nowId ->
 

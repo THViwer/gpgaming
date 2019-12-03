@@ -8,6 +8,8 @@ class EvolutionClientToken(
 
         val username: String,
 
-        val password: String
+        val password: String,
+
+        val currency: String
 
 ) : ClientToken

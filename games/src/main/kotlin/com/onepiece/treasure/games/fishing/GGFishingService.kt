@@ -63,7 +63,7 @@ class GGFishingService : PlatformService() {
                 "user" to registerReq.username,
                 "userName" to registerReq.name,
                 "extension1" to clientToken.agentName,
-                "currency" to 1
+                "currency" to clientToken.currency
         )
         val getKeyDataMap = this.startDoGet(clientToken = clientToken, path = "getKey", data = getKeyData)
         getKeyDataMap.asString("key")
@@ -134,7 +134,7 @@ class GGFishingService : PlatformService() {
                 "user" to startReq.username,
                 "userName" to startReq.username,
                 "extension1" to clientToken.agentName,
-                "currency" to 1
+                "currency" to clientToken.currency
         )
         val getKeyDataMap = this.startDoGet(clientToken = clientToken, path = "/getKey", data = getKeyData)
         val key = getKeyDataMap.asString("key")

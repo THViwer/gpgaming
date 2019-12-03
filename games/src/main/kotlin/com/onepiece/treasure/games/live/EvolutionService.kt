@@ -116,7 +116,7 @@ class EvolutionService : PlatformService() {
                   "nickname":"nickname",
                   "country":"MY",
                   "language":"$lang",
-                  "currency":"MYR",
+                  "currency":"${token.currency}",
                   "session":{
                      "id":"$uuid",
                      "ip":"192.168.0.1"

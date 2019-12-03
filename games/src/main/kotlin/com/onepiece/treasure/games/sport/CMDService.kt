@@ -43,7 +43,7 @@ class CMDService : PlatformService() {
                 "Method=createmember",
                 "PartnerKey=${cmdClientToken.partnerKey}",
                 "UserName=${registerReq.username}",
-                "Currency=MYR"
+                "Currency=${cmdClientToken.currency}"
         )
 
         this.startGetJson(data)
@@ -114,6 +114,8 @@ class CMDService : PlatformService() {
 
     override fun start(startReq: GameValue.StartReq): String {
 
+        val clientToken = startReq.token as CMDClientToken
+
         val lang = when (startReq.language) {
             Language.CN -> "zh-CN"
             Language.TH -> "th-TH"
@@ -130,7 +132,7 @@ class CMDService : PlatformService() {
             else -> "http://gp8.1win888.net"
         }
         // view: v1 = 传统风格 v2 = 亚洲风格 v3 = 电子竞技风格
-        return "$domain/auth.aspx?lang=$lang&user=${startReq.username}&token=$token&currency=MYR&templatename=aliceblue&view=v2"
+        return "$domain/auth.aspx?lang=$lang&user=${startReq.username}&token=$token&currency=${clientToken.currency}&templatename=aliceblue&view=v2"
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {

@@ -9,5 +9,7 @@ class MicroGamingClientToken(
 
         val password: String,
 
-        val parentId: Int
+        val parentId: Int,
+
+        val currency: String
 ) : ClientToken
