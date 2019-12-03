@@ -105,7 +105,7 @@ open class PlatformDetail private constructor(
         }
         fun ofSpadeGaming(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "spade gaming", icon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.jpeg",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.jpeg", status = Status.Normal, demo = false)
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.jpeg", status = Status.Normal, demo = true)
         }
         fun ofTTG(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "top trend gamimg", icon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.jpeg",
@@ -159,16 +159,16 @@ open class PlatformDetail private constructor(
 
         fun ofLbc(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Sport, name = "lbc", icon = "${SystemConstant.AWS_LOGO_URL}/lbc.jpeg",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/lbc.jpeg", status = Status.Normal)
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/lbc.jpeg", status = Status.Normal, demo = true)
         }
 
         fun ofBcs(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Sport, name = "BCS", icon = "${SystemConstant.AWS_LOGO_URL}/bcs.png",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/bcs.png", status = Status.Normal)
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/bcs.png", status = Status.Normal, demo = true)
         }
         fun ofCMD(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Sport, name = "CMD", icon = "${SystemConstant.AWS_LOGO_URL}/cmd.jpeg",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/cmd.jpeg", status = Status.Normal)
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/cmd.jpeg", status = Status.Normal, demo = true)
         }
         // Fishing
         fun ofGGFishng(): PlatformDetail {
