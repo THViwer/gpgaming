@@ -2,10 +2,9 @@ package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.controller.value.*
 import io.swagger.annotations.Api
-import io.swagger.annotations.ApiModelProperty
 import io.swagger.annotations.ApiOperation
-import io.swagger.annotations.ApiParam
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 
@@ -17,6 +16,9 @@ interface UserApi {
 
     @ApiOperation(tags = ["user"], value = "注册")
     fun register(@RequestBody registerReq: RegisterReq): LoginResp
+
+    @ApiOperation(tags = ["user"], value = "检查用户名是否存在")
+    fun checkUsername(@PathVariable("username") username: String): CheckUsernameResp
 
     @ApiOperation(tags = ["user"], value = "修改资料")
     fun changePassword(@RequestBody changePwdReq: ChangePwdReq)

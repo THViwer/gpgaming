@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.stream.Collectors
 
 @RestController
@@ -129,7 +130,8 @@ open class CashApiController(
                 DepositVo(orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
                         imgPath = imgPath, memberId = memberId, bankOrderId = null, clientBankCardNumber = clientBankCardNumber,
-                        clientBankName = clientBankName, clientBankId = clientBankId, lockWaiterId = it.lockWaiterId)
+                        clientBankName = clientBankName, clientBankId = clientBankId, lockWaiterId = it.lockWaiterId, depositTime = it.depositTime,
+                        channel = it.channel)
             }
         }
 
@@ -140,6 +142,7 @@ open class CashApiController(
     @PostMapping("/deposit")
     override fun deposit(@RequestBody depositCoReq: DepositCoReq): CashDepositResp {
 
+
         val clientBank = clientBankService.get(depositCoReq.clientBankId)
         val orderId = orderIdBuilder.generatorDepositOrderId()
 
@@ -147,7 +150,8 @@ open class CashApiController(
 
         val depositCo = DepositCo(orderId = orderId, memberId = current.id, memberName = current.name, memberBankCardNumber = depositCoReq.memberBankCardNumber,
                 memberBank = depositCoReq.memberBank, clientId = current.clientId, clientBankId = clientBank.id, clientBankName = clientBank.name,
-                clientBankCardNumber = clientBank.bankCardNumber, money = depositCoReq.money, imgPath = depositCoReq.imgPath)
+                clientBankCardNumber = clientBank.bankCardNumber, money = depositCoReq.money, imgPath = depositCoReq.imgPath, depositTime = depositCoReq.depositTime,
+                channel = depositCoReq.channel)
         depositService.create(depositCo)
 
         return CashDepositResp(orderId = orderId)

@@ -76,6 +76,9 @@ data class MemberCoReq(
         @ApiModelProperty("姓名")
         val name: String,
 
+        @ApiModelProperty("phone")
+        val phone: String,
+
         @ApiModelProperty("密码")
         val password: String,
 

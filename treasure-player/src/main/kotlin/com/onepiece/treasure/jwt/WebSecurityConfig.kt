@@ -111,6 +111,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/api",
                         "/api/**",
                         "/user",
+                        "/user/check/**",
 
                         "/cash/bank",
                         "/cash/upload/proof",

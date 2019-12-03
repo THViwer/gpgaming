@@ -1,6 +1,7 @@
 package com.onepiece.treasure.beans.value.database
 
 import com.onepiece.treasure.beans.enums.Bank
+import com.onepiece.treasure.beans.enums.DepositChannel
 import com.onepiece.treasure.beans.enums.OrderState
 import com.onepiece.treasure.beans.enums.DepositState
 import java.math.BigDecimal
@@ -49,6 +50,12 @@ data class DepositCo(
 
         // 厅主银行卡号
         val clientBankCardNumber: String,
+
+        // 转账时间
+        val depositTime: LocalDateTime,
+
+        // 转账通道
+        val channel: DepositChannel,
 
         // 充值金额
         val money: BigDecimal,

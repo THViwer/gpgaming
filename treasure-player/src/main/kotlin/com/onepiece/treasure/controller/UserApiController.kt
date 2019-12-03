@@ -41,11 +41,17 @@ class UserApiController(
         val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
 
         val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
-                levelId = defaultLevel.id, name = registerReq.name)
+                levelId = defaultLevel.id, name = registerReq.name, phone = registerReq.phone)
         memberService.create(memberCo)
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)
         return this.login(loginReq)
+    }
+
+    @GetMapping("/check/{username}")
+    override fun checkUsername(@PathVariable("username") username: String): CheckUsernameResp {
+        val exist = memberService.findByUsername(username) != null
+        return CheckUsernameResp(exist)
     }
 
     @GetMapping("/current")

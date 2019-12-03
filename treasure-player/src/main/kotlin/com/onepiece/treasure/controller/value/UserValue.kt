@@ -23,6 +23,11 @@ data class LoginResp(
         val token: String
 )
 
+data class CheckUsernameResp(
+        @ApiModelProperty("是否存在")
+        val exist: Boolean
+)
+
 data class LoginReq(
 
         @ApiModelProperty("用户名")
@@ -41,6 +46,9 @@ data class RegisterReq(
 
         @ApiModelProperty("用户真实姓名")
         val name: String = "张三",
+
+        @ApiModelProperty("手机号")
+        val phone: String,
 
         @ApiModelProperty("安全密码")
         val safetyPassword: String = "1234"

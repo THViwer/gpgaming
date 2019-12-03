@@ -1,6 +1,7 @@
 package com.onepiece.treasure.beans.model
 
 import com.onepiece.treasure.beans.enums.Bank
+import com.onepiece.treasure.beans.enums.DepositChannel
 import com.onepiece.treasure.beans.enums.DepositState
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -45,6 +46,12 @@ data class Deposit(
 
         // 充值金额
         val money: BigDecimal,
+
+        // 转账时间
+        val depositTime: LocalDateTime,
+
+        // 转账通道
+        val channel: DepositChannel,
 
         // 上传图片地址
         val imgPath: String,

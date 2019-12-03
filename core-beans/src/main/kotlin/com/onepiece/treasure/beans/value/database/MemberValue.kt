@@ -30,6 +30,9 @@ data class MemberCo(
         // 姓名
         val name: String,
 
+        // 手机号
+        val phone: String,
+
         // 密码
         val password: String,
 
@@ -46,6 +49,9 @@ data class MemberUo(
 
         // 姓名
         val name: String? = null,
+
+        // 手机号
+        val phone: String? = null,
 
         // 旧密码
         val oldPassword: String? = null,

@@ -1,10 +1,12 @@
 package com.onepiece.treasure.beans.value.internet.web
 
 import com.onepiece.treasure.beans.enums.Bank
+import com.onepiece.treasure.beans.enums.DepositChannel
 import com.onepiece.treasure.beans.enums.DepositState
 import io.swagger.annotations.ApiModelProperty
 import springfox.documentation.annotations.ApiIgnore
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -39,6 +41,12 @@ data class DepositVo(
         @ApiModelProperty("操作金额")
         val money: BigDecimal,
 
+        @ApiModelProperty("存款时间")
+        val depositTime: LocalDateTime,
+
+        @ApiModelProperty("存款渠道")
+        val channel: DepositChannel,
+
         @ApiModelProperty("银行")
         val memberBank: Bank,
 
@@ -62,7 +70,6 @@ data class DepositVo(
 
         @ApiModelProperty("会员Id")
         val memberId: Int,
-
 
         @ApiModelProperty("锁定人员客服Id")
         val lockWaiterId: Int?,

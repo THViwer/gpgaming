@@ -18,6 +18,9 @@ data class Member(
         // 姓名
         val name: String,
 
+        // 手机号
+        val phone: String,
+
         // 密码
         val password: String,
 

@@ -18,7 +18,7 @@ import java.time.LocalDateTime
 @Service
 class SexyGamingService: PlatformService() {
 
-    private val currency = "MYR"
+//    private val currency = "MYR"
 
     fun startGetJson(method: String, data: Map<String, String>): MapUtil {
 
@@ -43,9 +43,11 @@ class SexyGamingService: PlatformService() {
                 "cert" to clientToken.cert,
                 "agentId" to clientToken.agentId,
                 "userId" to registerReq.username,
-                "currency" to currency,
+                "currency" to clientToken.currency,
 //                "betLimit" to "{\"SEXYBCRT\":{\"LIVE\":{\"limitId\":[280101,280102,280103,280104,280105,280106,280107]}}}"
-                "betLimit" to "{\"SEXYBCRT\":{\"LIVE\":{\"limitId\":[280101,280102]}},\"SV388\":{\"LIVE\":{\"maxbet\":1000,\"minbet\":100,\"mindraw\":100,\"matchlimit\":1000,\"maxdraw\":100}},\"VENUS\":{\"LIVE\":{\"limitId\":[280101,280102]}}}"
+//                "betLimit" to "{\"SEXYBCRT\":{\"LIVE\":{\"limitId\":[280101,280102]}},\"SV388\":{\"LIVE\":{\"maxbet\":1000,\"minbet\":100,\"mindraw\":100,\"matchlimit\":1000,\"maxdraw\":100}},\"VENUS\":{\"LIVE\":{\"limitId\":[280101,280102]}}}"
+                "betLimit" to clientToken.betLimit
+
         )
 
         this.startGetJson(method = "/wallet/createMember", data = data)

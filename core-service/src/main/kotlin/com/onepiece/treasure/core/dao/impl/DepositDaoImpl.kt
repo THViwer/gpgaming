@@ -1,6 +1,7 @@
 package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.beans.enums.Bank
+import com.onepiece.treasure.beans.enums.DepositChannel
 import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.model.Deposit
@@ -36,6 +37,8 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
             val clientBankCardNumber = rs.getString("client_bank_card_number")
             val clientBankName = rs.getString("client_bank_name")
             val money = rs.getBigDecimal("money")
+            val depositTime = rs.getTimestamp("deposit_time").toLocalDateTime()
+            val channel = rs.getString("channel").let { DepositChannel.valueOf(it) }
             val imgPath = rs.getString("img_path")
             val state = rs.getString("state").let { DepositState.valueOf(it) }
             val remarks = rs.getString("remarks")
@@ -47,7 +50,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                     imgPath = imgPath, state = state, remarks = remarks, createdTime = createdTime, endTime = endTime,
                     memberBankCardNumber = memberBankCardNumber, processId = processId, memberName = memberName, clientBankId = clientBankId,
                     clientBankName = clientBankName, clientBankCardNumber = clientBankCardNumber, lockWaiterId = lockWaiterId,
-                    lockWaiterName = lockWaiterName)
+                    lockWaiterName = lockWaiterName, depositTime = depositTime, channel = channel)
         }
 
     override fun findDeposit(clientId: Int, orderId: String): Deposit {
@@ -102,6 +105,8 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                 .set("client_bank_name", depositCo.clientBankName)
                 .set("client_bank_card_number", depositCo.clientBankCardNumber)
                 .set("money", depositCo.money)
+                .set("deposit_time", depositCo.depositTime)
+                .set("channel", depositCo.channel)
                 .set("img_path", depositCo.imgPath)
                 .set("state", DepositState.Process)
                 .executeOnlyOne()

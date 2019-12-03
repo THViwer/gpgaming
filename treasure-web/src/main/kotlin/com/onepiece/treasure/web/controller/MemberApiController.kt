@@ -66,7 +66,7 @@ class MemberApiController(
         val clientId = getClientId()
 
         val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password,
-                safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId, name = memberCoReq.name)
+                safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId, name = memberCoReq.name, phone = memberCoReq.phone)
         memberService.create(memberCo)
     }
 
