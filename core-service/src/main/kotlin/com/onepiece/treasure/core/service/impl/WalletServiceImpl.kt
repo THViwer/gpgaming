@@ -58,7 +58,7 @@ class WalletServiceImpl(
             WalletEvent.TRANSFER_OUT -> {
                 check(wallet.balance >= walletUo.money) { OnePieceExceptionCode.BALANCE_NOT_WORTH}
 
-                val transferOutUo = WalletTransferOutUo(id = wallet.id, processId = wallet.processId, money = walletUo.money, giftMoney = walletUo.giftBalance)
+                val transferOutUo = WalletTransferOutUo(id = wallet.id, processId = wallet.processId, money = walletUo.money, giftMoney = walletUo.giftBalance?: BigDecimal.ZERO)
                 walletDao.transferOut(transferOutUo)
             }
             WalletEvent.TRANSFER_OUT_ROLLBACK -> {
@@ -71,7 +71,7 @@ class WalletServiceImpl(
 
         // TODO async insert wallet note
         val walletNoteCo = WalletNoteCo(clientId = walletUo.clientId, memberId = wallet.memberId, event = walletUo.event, remarks = walletUo.remarks,
-                waiterId = walletUo.waiterId, eventId = walletUo.eventId, money = walletUo.money)
+                waiterId = walletUo.waiterId, eventId = walletUo.eventId, money = walletUo.money, promotionMoney = walletUo.giftBalance)
         val wnState = walletNoteDao.create(walletNoteCo)
         check(wnState) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 

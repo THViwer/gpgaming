@@ -304,7 +304,7 @@ open class CashApiController(
 
         // 中心钱包扣款
         val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_OUT, money = amount,
-                remarks = "Center => $platform", waiterId = null, eventId = transferOrderId)
+                remarks = "Center => $platform", waiterId = null, eventId = transferOrderId, giftBalance = platformMemberTransferUo?.promotionAmount)
         walletService.update(walletUo)
 
         // 生成转账订单
@@ -459,7 +459,8 @@ open class CashApiController(
         val member = this.current()
 
         return walletNoteService.my(clientId = member.clientId, memberId = member.id).map {
-            WalletNoteVo(id = it.id, memberId = it.memberId, eventId = it.eventId, event = it.event, money = it.money, remarks = it.remarks, createdTime = it.createdTime)
+            WalletNoteVo(id = it.id, memberId = it.memberId, eventId = it.eventId, event = it.event, money = it.money, remarks = it.remarks, createdTime = it.createdTime,
+                    promotionMoney = it.promotionMoney)
         }
 
     }

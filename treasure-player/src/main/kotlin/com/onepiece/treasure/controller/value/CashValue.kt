@@ -218,6 +218,9 @@ data class WalletNoteVo(
         @ApiModelProperty("操作金额")
         val money: BigDecimal,
 
+        @ApiModelProperty("优惠金额")
+        val promotionMoney: BigDecimal?,
+
         @ApiModelProperty("备注")
         val remarks: String,
 

@@ -21,6 +21,9 @@ data class WalletNoteCo(
         // 操作金额
         val money: BigDecimal,
 
+        // 优惠金额
+        val promotionMoney: BigDecimal?,
+
         // 备注
         val remarks: String
 )

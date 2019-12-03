@@ -66,13 +66,17 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
 
     override fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal, processId: String): Boolean {
         val builder = update()
-                .asSet("earnest_balance = earnest_balance + $earnestBalance")
-                .set("process_id", UUID.randomUUID().toString())
+        if (earnestBalance.toDouble() > 0) {
+            builder.asSet("earnest_balance = earnest_balance + $earnestBalance")
+        } else {
+            builder.asSet("earnest_balance = earnest_balance - ${earnestBalance.abs()}")
+        }
+//        builder.set("process_id", UUID.randomUUID().toString())
                 .where("id", id)
-                .where("process_id", processId)
+//                .where("process_id", processId)
 
         if (earnestBalance.toDouble() < 0) {
-            builder.asWhere("earnest_balance >= ?", earnestBalance)
+            builder.asWhere("earnest_balance >= ?", earnestBalance.abs())
         }
         return builder.executeOnlyOne()
     }

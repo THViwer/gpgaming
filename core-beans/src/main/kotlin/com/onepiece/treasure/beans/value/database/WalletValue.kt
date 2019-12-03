@@ -64,7 +64,7 @@ data class WalletUo(
         val money: BigDecimal,
 
         // 赠送金额
-        val giftBalance: BigDecimal = BigDecimal.ZERO,
+        val giftBalance: BigDecimal? = null,
 
         // 事件Id
         val eventId: String?,
@@ -115,8 +115,6 @@ data class WalletTransferOutUo(
         val processId: String,
 
         val money: BigDecimal,
-
-
 
         val giftMoney: BigDecimal
 )
