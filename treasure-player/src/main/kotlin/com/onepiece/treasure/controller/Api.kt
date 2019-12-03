@@ -16,13 +16,17 @@ interface Api {
             @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
             @RequestHeader("language", defaultValue = "EN") language: Language): ConfigVo
 
+    @ApiOperation(tags = ["api"], value = "平台类别页面详细资料")
+    fun categories(
+            @PathVariable("category") category: PlatformCategory
+    ): PlatformCategoryPage
 
     @ApiOperation(tags = ["api"], value = "优惠活动")
     fun promotion(
             @RequestHeader("language", defaultValue = "EN") language: Language
     ): List<PromotionVo>
 
-    @ApiOperation(tags = ["api"], value = "老虎机菜单")
+        @ApiOperation(tags = ["api"], value = "老虎机菜单")
     fun slotMenu(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,

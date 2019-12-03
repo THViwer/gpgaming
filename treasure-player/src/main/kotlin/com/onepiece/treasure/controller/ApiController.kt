@@ -17,7 +17,6 @@ import kotlin.random.Random
 @RequestMapping("/api")
 class ApiController(
         private val promotionService: PromotionService,
-        private val advertService: BannerService,
 //        private val announcementService: AnnouncementService,
         private val i18nContentService: I18nContentService,
         private val bannerService: BannerService,
@@ -45,13 +44,10 @@ class ApiController(
         val announcementVo = AnnouncementVo(title = announcement.title, content = announcement.content, synopsis = announcement.synopsis)
 
         // 获得首页配置
-        val bannerMap = advertService.all(clientId).map {
-            BannerVo(id = it.id, order = it.order, icon = it.icon, touchIcon = it.touchIcon, type = it.type, link = it.link)
-        }.groupBy { it.type }
-
         // banners
-        val banners = bannerMap[BannerType.Banner]?: emptyList()
-
+        val banners = bannerService.findByType(clientId = getClientIdByDomain(), type = BannerType.Banner).map {
+            BannerVo(id = it.id, order = it.order, icon = it.icon, touchIcon = it.touchIcon, type = it.type, link = it.link)
+        }
         // hot games
         val hotGameUrl = when (launch) {
             LaunchMethod.Web -> "${SystemConstant.AWS_SLOT}/hot_sort_10_wap.json"
@@ -60,6 +56,29 @@ class ApiController(
 
         return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGameUrl = hotGameUrl)
     }
+
+
+    @GetMapping("/{gameCategory}")
+    override fun categories(
+        @PathVariable("category") category: PlatformCategory
+    ): PlatformCategoryPage {
+
+        val platforms = Platform.all().filter { it.detail.category == category }
+
+        val bannerType = when (category) {
+            PlatformCategory.Slot -> BannerType.Slot
+            PlatformCategory.LiveVideo -> BannerType.Live
+            PlatformCategory.Sport -> BannerType.Sport
+            PlatformCategory.Fishing -> BannerType.Fish
+            else -> error( OnePieceExceptionCode.DATA_FAIL )
+        }
+        val banners = bannerService.findByType(clientId = getClientIdByDomain(), type = bannerType).map {
+            BannerVo(id = it.id, order = it.order, icon = it.icon, touchIcon = it.touchIcon, type = it.type, link = it.link)
+        }
+
+        return PlatformCategoryPage(platforms = platforms, banners = banners)
+    }
+
 
     @GetMapping("/promotion")
     override fun promotion(

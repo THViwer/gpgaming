@@ -21,6 +21,16 @@ data class ConfigVo(
 
 )
 
+data class PlatformCategoryPage(
+
+        @ApiModelProperty("平台列表")
+        val platforms: List<Platform>,
+
+        @ApiModelProperty("banner")
+        val banners: List<BannerVo>
+
+)
+
 data class AnnouncementVo(
 
         @ApiModelProperty("标题")
