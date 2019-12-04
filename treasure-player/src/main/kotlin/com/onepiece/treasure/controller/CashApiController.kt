@@ -526,8 +526,12 @@ open class CashApiController(
             when (platformMember == null) {
                 true -> BalanceVo(platform = it.platform, balance = BigDecimal.ZERO, transfer = true, tips = null, centerBalance = wallet.balance)
                 else -> {
-                    val platformBalance = gameApi.balance(clientId = clientId, platformUsername = platformMember.username, platform = it.platform,
-                            platformPassword = platformMember.password)
+                    val platformBalance = try {
+                        gameApi.balance(clientId = clientId, platformUsername = platformMember.username, platform = it.platform,
+                                platformPassword = platformMember.password)
+                    } catch (e: Exception) {
+                        BigDecimal.valueOf(-1)
+                    }
 
 //                    val transferIn = platformMember.joinPromotionId?.let {
 //                        val promotion = promotionService.get(it)
