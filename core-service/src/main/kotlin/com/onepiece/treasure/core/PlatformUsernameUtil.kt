@@ -23,8 +23,9 @@ object PlatformUsernameUtil  {
             Platform.Kiss918,
             Platform.MicroGaming,
             Platform.Pussy888,
+            Platform.PlaytechSlot,
 
-            // live
+                // live
             Platform.AllBet,
             Platform.DreamGaming -> StringUtil.generatePassword()
             else -> "-"

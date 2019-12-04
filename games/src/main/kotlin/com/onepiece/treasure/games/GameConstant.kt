@@ -30,6 +30,7 @@ class GameConstant(
             Platform.SpadeGaming -> "http://api-egame-staging.sgplay.net"
             Platform.TTG -> "https://ams-api.stg.ttms.co:8443"
             Platform.MicroGaming -> "https://api.adminserv88.com"
+            Platform.PlaytechSlot -> "https://api-uat.gamzo.com"
 
             // live
             Platform.CT -> "http://api.ctapi888.com"
@@ -70,6 +71,7 @@ class GameConstant(
             Platform.SpadeGaming -> "$domain:1006"
             Platform.TTG -> "$domain:1007"
             Platform.MicroGaming -> "$domain:1008"
+            Platform.PlaytechSlot -> "https://api-uat.gamzo.com" // 香港 CN2 01 - 443 单端口
 
             // live
             Platform.CT -> "$domain:2001"

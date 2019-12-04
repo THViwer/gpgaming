@@ -19,6 +19,7 @@ enum class Platform(
     SpadeGaming(PlatformDetail.ofSpadeGaming()),
     TTG(PlatformDetail.ofTTG()),
     MicroGaming(PlatformDetail.ofMicroGaming()),
+    PlaytechSlot(PlatformDetail.ofPlaytechSlot()),
 
     // live video
     CT(PlatformDetail.ofCT()),
@@ -28,6 +29,8 @@ enum class Platform(
     SexyGaming(PlatformDetail.ofSexyGaming()),
     Fgg(PlatformDetail.ofFgg()),
     AllBet(PlatformDetail.ofAllBet()),
+    SaGaming(PlatformDetail.ofAllBet()),
+    AsiaGaming(PlatformDetail.ofAsiaGaming()),
 
     // sport
 //    Sbo(PlatformDetail.ofSbo()),
@@ -116,6 +119,10 @@ open class PlatformDetail private constructor(
             return PlatformDetail(category = PlatformCategory.Slot, name = "Micro Gaming", icon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg", status = Status.Normal, demo = true)
         }
+        fun ofPlaytechSlot(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Slot, name = "playtech", icon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg",
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg", status = Status.Stop, demo = false)
+        }
 
         // live game
         fun ofCT(): PlatformDetail {
@@ -150,6 +157,14 @@ open class PlatformDetail private constructor(
         fun ofAllBet(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.LiveVideo, name = "allbet", icon = "${SystemConstant.AWS_LOGO_URL}/allBet.png",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/allBet.jpeg", status = Status.Normal)
+        }
+        fun ofSaGaming(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sa gaming", icon = "${SystemConstant.AWS_LOGO_URL}/allBet.png",
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/allBet.jpeg", status = Status.Stop)
+        }
+        fun ofAsiaGaming(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "asia gaming", icon = "${SystemConstant.AWS_LOGO_URL}/allBet.png",
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/allBet.jpeg", status = Status.Stop)
         }
 
         // soprt

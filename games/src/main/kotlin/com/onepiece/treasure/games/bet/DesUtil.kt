@@ -12,7 +12,7 @@ import javax.crypto.spec.IvParameterSpec
 
 object DesUtil {
 
-    private val NULL_IV = Base64.decodeBase64("AAAAAAAAAAA=")
+    val NULL_IV = Base64.decodeBase64("AAAAAAAAAAA=")
 
     /**
      * 解密<br></br>
@@ -41,11 +41,12 @@ object DesUtil {
      * @throws GeneralSecurityException
      */
     @Throws(GeneralSecurityException::class)
-    fun encrypt(data: ByteArray?, key: ByteArray?, iv: ByteArray?): ByteArray? {
+    fun encrypt(data: ByteArray, key: ByteArray, iv: ByteArray?): ByteArray {
         val keyFactory = SecretKeyFactory.getInstance("DESede")
         val sec = keyFactory.generateSecret(DESedeKeySpec(key))
         val cipher = Cipher.getInstance("DESede/CBC/PKCS5Padding")
-        val IvParameters = IvParameterSpec(iv)
+
+        val IvParameters = IvParameterSpec(iv ?: NULL_IV)
         cipher.init(Cipher.ENCRYPT_MODE, sec, IvParameters)
         return cipher.doFinal(data)
     }

@@ -64,6 +64,8 @@ data class PlatformBind(
                 Platform.MicroGaming -> MicroGamingClientToken::class.java
                 Platform.GoldDeluxe -> GoldDeluxeClientToken::class.java
                 Platform.Bcs -> BcsClientToken::class.java
+                Platform.PlaytechSlot -> PlaytechSlotClientToken::class.java
+                Platform.SaGaming -> SaGamingClientToken::class.java
                 else -> DefaultClientToken::class.java
             }
         }

@@ -13,6 +13,7 @@ import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.core.service.PlatformMemberService
+import com.onepiece.treasure.games.combination.PlaytechService
 import com.onepiece.treasure.games.fishing.GGFishingService
 import com.onepiece.treasure.games.live.*
 import com.onepiece.treasure.games.slot.*
@@ -57,8 +58,12 @@ class GameApi(
         private val cmdService: CMDService,
 
         // fishing
-        private val ggFishingService: GGFishingService
+        private val ggFishingService: GGFishingService,
 
+        // slot and live
+        private val playtechService: PlaytechService,
+        private val saGamingService: SaGamingService,
+        private val asiaGamingService: AsiaGamingService
 
 ) {
 
@@ -82,6 +87,8 @@ class GameApi(
             Platform.Evolution -> evolutionService
             Platform.AllBet -> allBetService
             Platform.DreamGaming -> dreamGamingService
+            Platform.GoldDeluxe -> goldDeluxeService
+            Platform.SexyGaming -> sexyGamingService
 
             // sport
             Platform.Lbc -> lbcService
@@ -91,9 +98,11 @@ class GameApi(
             // fishing
             Platform.GGFishing -> ggFishingService
 
-            // 未完成测试
-            Platform.GoldDeluxe -> goldDeluxeService
-            Platform.SexyGaming -> sexyGamingService
+            // slot and live
+            Platform.PlaytechSlot -> playtechService
+            Platform.SaGaming -> saGamingService
+            Platform.AsiaGaming -> asiaGamingService
+
 
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
@@ -274,8 +283,10 @@ class GameApi(
         }
 
         return try {
-            this.getPlatformApi(platform).transfer(transferReq)
-            true
+            val platformOrderId = this.getPlatformApi(platform).transfer(transferReq)
+            return true
+//            val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = platformOrderId)
+//            return this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
         } catch (e: Exception) {
             log.error("转账失败第${index}次，请求参数：$transferReq ", e)
             this.transfer(clientId, platformUsername, platform, orderId, amount, index + 1)
