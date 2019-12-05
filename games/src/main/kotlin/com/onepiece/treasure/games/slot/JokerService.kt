@@ -146,14 +146,14 @@ class JokerService : PlatformService() {
                 else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
         }.map { game ->
-            val category = when (game.asString("GameType")) {
-                "Slot" -> GameCategory.SLOT
-                "Fishing" -> GameCategory.FISHING
-                "ECasino" -> GameCategory.ECASINO
-                else -> {
-                    error(OnePieceExceptionCode.DATA_FAIL)
-                }
-            }
+//            val category = when (game.asString("GameType")) {
+//                "Slot" -> GameCategory.Slot
+//                "Fishing" -> GameCategory.Fishing
+//                "ECasino" -> GameCategory.Ec
+//                else -> {
+//                    error(OnePieceExceptionCode.DATA_FAIL)
+//                }
+//            }
 
             val specials = game.data["specials"]?.toString()?: ""
             val hot = specials.contains("hot")
@@ -163,7 +163,7 @@ class JokerService : PlatformService() {
             val gameName = game.asString("GameName")
             val icon = "http://${game.asString("Image1")}"
             val touchIcon = "http://${game.asString("Image2")}"
-            SlotGame(gameId = gameCode, category = category, gameName = gameName, icon = icon, touchIcon = touchIcon,
+            SlotGame(gameId = gameCode, category = GameCategory.Slot, gameName = gameName, icon = icon, touchIcon = touchIcon,
                     hot = hot, new = new, status = Status.Normal, chineseGameName = gameName, platform = Platform.Joker)
         }
     }

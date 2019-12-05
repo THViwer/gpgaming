@@ -5,12 +5,15 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.SystemConstant
+import com.onepiece.treasure.beans.enums.GameCategory
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.value.database.SlotGameUo
 import com.onepiece.treasure.beans.value.internet.web.SlotCategory
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.games.GameApi
 import com.onepiece.treasure.games.GameConstant
+import com.onepiece.treasure.games.SlotMenuUtil
 import com.onepiece.treasure.games.http.OkHttpUtil
 import com.onepiece.treasure.utils.AwsS3Util
 import okhttp3.OkHttpClient
@@ -30,17 +33,17 @@ class SlotGameTask(
 )  {
 
 
-    @Scheduled(cron="0 0 0/1 * * ? ")
+//    @Scheduled(cron="0 0 0/1 * * ? ")
 //         @Scheduled(cron="0/10 * *  * * ? ")
     fun execute() {
-        this.jokerGameTask()
+//        this.jokerGameTask()
 
-        this.spadeGameTask()
-
-        this.pragmaticTask()
+//        this.spadeGameTask()
+//
+//        this.pragmaticTask()
 
         //TODO 因为是死的 所以不需要更新
-        // this.ttgGameTask()
+//         this.ttgGameTask()
 
         // 生成热门游戏
 //        this.generatorHotGames()
@@ -86,10 +89,11 @@ class SlotGameTask(
     fun jokerGameTask() {
 
         val webGames = gameApi.slotGames(clientId = 1, platform = Platform.Joker, launch = LaunchMethod.Web)
-        this.upload(games = webGames, path = "slot/joker_web.json")
+        val games = SlotMenuUtil.addCategory(webGames, SlotMenuUtil.jokerJson)
+        this.upload(games = games, path = "slot/joker.json")
 
-        val wapGames = gameApi.slotGames(clientId = 1, platform = Platform.Joker, launch = LaunchMethod.Wap)
-        this.upload(games = wapGames, path = "slot/joker_wap.json")
+//        val wapGames = gameApi.slotGames(clientId = 1, platform = Platform.Joker, launch = LaunchMethod.Wap)
+//        this.upload(games = wapGames, path = "slot/joker_wap.json")
     }
 
 
@@ -103,28 +107,35 @@ class SlotGameTask(
                 val chineseGameName = pragmaticMap[it.gameId]?: it.chineseGameName
                 it.copy(chineseGameName = chineseGameName)
             }
-            this.upload(games = games, path = "slot/pragmatic_${it.name.toLowerCase()}.json")
+
+
+            val games2 = if (it == LaunchMethod.Web) {
+                SlotMenuUtil.addCategory(games, SlotMenuUtil.pramaticWebJson)
+            } else {
+                SlotMenuUtil.addCategory(games, SlotMenuUtil.pragmaticWapJson)
+            }
+            this.upload(games = games2, path = "slot/pragmatic_${it.name.toLowerCase()}.json")
         }
     }
 
     fun spadeGameTask() {
         val webGames = gameApi.slotGames(clientId = 1, platform = Platform.SpadeGaming, launch = LaunchMethod.Web)
 
-        val awsGameJsonUrl = "${SystemConstant.AWS_SLOT}/spade_game.json"
-
-        val awsGames = okHttpUtil.doGet(url = awsGameJsonUrl, clz = String::class.java)
-                .let { objectMapper.readValue<List<SlotCategory>>(it) }
-                .map { it.games }
-                .reduce { acc, list ->
-                    val all = arrayListOf<SlotGame>()
-                    all.addAll(acc)
-                    all.addAll(list)
-                    all
-                }.map { it.gameId }.toSet()
-
-        // 是否有变化
-        val change = webGames.any { !awsGames.contains(it.gameId) }
-        if (!change) return
+//        val awsGameJsonUrl = "${SystemConstant.AWS_SLOT}/spade_game.json"
+//
+//        val awsGames = okHttpUtil.doGet(url = awsGameJsonUrl, clz = String::class.java)
+//                .let { objectMapper.readValue<List<SlotCategory>>(it) }
+//                .map { it.games }
+//                .reduce { acc, list ->
+//                    val all = arrayListOf<SlotGame>()
+//                    all.addAll(acc)
+//                    all.addAll(list)
+//                    all
+//                }.map { it.gameId }.toSet()
+//
+//        // 是否有变化
+//        val change = webGames.any { !awsGames.contains(it.gameId) }
+//        if (!change) return
 
         // 保存图片
         val games = webGames.map {
@@ -149,17 +160,20 @@ class SlotGameTask(
             it.copy(icon = imageUrl)
         }
 
-        this.upload(games = games, path = "slot/spade_game.json")
+        val games2 = SlotMenuUtil.addCategory(games, SlotMenuUtil.spadeJson)
+        this.upload(games = games2, path = "slot/spade_game.json")
         println(games)
     }
 
     fun ttgGameTask() {
 
         val webGames = gameApi.slotGames(clientId = 1, platform = Platform.TTG, launch = LaunchMethod.Web)
-        this.upload(games = webGames, path = "slot/ttg_web.json")
+        val webGames2 = SlotMenuUtil.addCategory(webGames, SlotMenuUtil.ttgWebJson)
+        this.upload(games = webGames2, path = "slot/ttg_web.json")
 
         val wapGames = gameApi.slotGames(clientId = 1, platform = Platform.TTG, launch = LaunchMethod.Wap)
-        this.upload(games = wapGames, path = "slot/ttg_wap.json")
+        val wapGames2 = SlotMenuUtil.addCategory(wapGames, SlotMenuUtil.ttgWapJson)
+        this.upload(games = wapGames2, path = "slot/ttg_wap.json")
     }
 
 
@@ -250,3 +264,5 @@ class SlotGameTask(
 //
 //
 //}
+
+

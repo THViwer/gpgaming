@@ -137,7 +137,7 @@ class SpadeGamingService : PlatformService() {
             val gameName = game.asString("gameName")
             val icon = game.asString("thumbnail")
 
-            SlotGame(gameId = gameId, gameName = gameName, category = GameCategory.SLOT, icon = icon, touchIcon = null, hot = false,
+            SlotGame(gameId = gameId, gameName = gameName, category = GameCategory.Slot, icon = icon, touchIcon = null, hot = false,
                     new = false, status = Status.Normal, chineseGameName = gameName, platform = Platform.SpadeGaming)
         }
     }

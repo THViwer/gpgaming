@@ -168,6 +168,7 @@ class GameApi(
             Platform.SpadeGaming -> getPlatformApi(platform).slotGames(token = clientToken, launch = launch)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
+
 //        }
     }
 

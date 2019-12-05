@@ -108,18 +108,18 @@ class PragmaticService: PlatformService() {
             val gameName = bet.asString("gameName")
 
             val typeDescription = bet.asString("typeDescription")
-            val gameCategory = when (typeDescription) {
-                "Video Slots" -> GameCategory.SlotVideo
-                "Classic Slots" -> GameCategory.SLOT
-                "Blackjack" -> GameCategory.Blackjack
-                "Scratch card" -> GameCategory.ScratchCard
-                "Baccarat New" -> GameCategory.BaccaratNew
-                "Baccarat" -> GameCategory.Baccarat
-                "Keno" -> GameCategory.Keno
-                "Roulette" -> GameCategory.Roulette
-                "Video Poker" -> GameCategory.VideoPoker
-                else -> GameCategory.Default
-            }
+//            val gameCategory = when (typeDescription) {
+//                "Video Slots" -> GameCategory.SlotVideo
+//                "Classic Slots" -> GameCategory.SLOT
+//                "Blackjack" -> GameCategory.Blackjack
+//                "Scratch card" -> GameCategory.ScratchCard
+//                "Baccarat New" -> GameCategory.BaccaratNew
+//                "Baccarat" -> GameCategory.Baccarat
+//                "Keno" -> GameCategory.Keno
+//                "Roulette" -> GameCategory.Roulette
+//                "Video Poker" -> GameCategory.VideoPoker
+//                else -> GameCategory.Default
+//            }
 
             // 启动方式
             val technology = "html5"
@@ -138,7 +138,7 @@ class PragmaticService: PlatformService() {
              */
             val icon = "${gameConstant.getDomain(Platform.Pragmatic)}/game_pic/rec/325/${gameId}.png"
 
-            SlotGame(gameId = gameId, gameName = gameName, category = gameCategory, icon = icon, touchIcon = null, hot = false, new = false,
+            SlotGame(gameId = gameId, gameName = gameName, category = GameCategory.Slot, icon = icon, touchIcon = null, hot = false, new = false,
                     status = Status.Normal, chineseGameName = gameName, platform = Platform.Pragmatic)
         }
     }

@@ -9,6 +9,7 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.value.internet.web.SlotCategory
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
+import com.onepiece.treasure.games.SlotMenuUtil
 import com.onepiece.treasure.utils.AwsS3Util
 import java.io.File
 import java.util.*
@@ -43,22 +44,22 @@ object MicroGamingUtil {
         } else {
             "${flashGameId}_${flashAppId}"
         }
-
-        val gameCategory = when (category) {
-            "Bonus Slot" -> GameCategory.SLOT
-            "Feature Slot" -> GameCategory.SLOT
-            "Classic Slot" -> GameCategory.SLOT
-            "Video Poker" -> GameCategory.VideoPoker
-            "Video Slot" -> GameCategory.SlotVideo
-            "Table" -> GameCategory.Baccarat
-            "Others" -> GameCategory.Default
-            else -> GameCategory.Default
-        }
+//
+//        val gameCategory = when (category) {
+//            "Bonus Slot" -> GameCategory.SLOT
+//            "Feature Slot" -> GameCategory.SLOT
+//            "Classic Slot" -> GameCategory.SLOT
+//            "Video Poker" -> GameCategory.VideoPoker
+//            "Video Slot" -> GameCategory.SlotVideo
+//            "Table" -> GameCategory.Baccarat
+//            "Others" -> GameCategory.Default
+//            else -> GameCategory.Default
+//        }
 
         val imageName = imageList.split("/").first().split(".").first()
 
         val icon = "${SystemConstant.AWS_SLOT}/micro_game/${imageName}.png"
-        return SlotGame(gameId = gameId, gameName = gameName, chineseGameName = chineseGameName, category = gameCategory, icon = icon, touchIcon = null,
+        return SlotGame(gameId = gameId, gameName = gameName, chineseGameName = chineseGameName, category = GameCategory.Slot, icon = icon, touchIcon = null,
                 hot = false, new = false, status = Status.Normal, platform = Platform.MicroGaming)
     }
 
@@ -72,7 +73,11 @@ object MicroGamingUtil {
                 null
             }
         }
-        val slotCategories = list.groupBy { it.category }.map {
+
+
+        val games = SlotMenuUtil.addCategory(list, SlotMenuUtil.microJson)
+
+        val slotCategories = games.groupBy { it.category }.map {
             SlotCategory(gameCategory = it.key, games = it.value)
         }
         val json = jacksonObjectMapper().writeValueAsString(slotCategories)
