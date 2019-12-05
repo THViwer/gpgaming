@@ -228,6 +228,7 @@ class GameApi(
             Platform.Pragmatic,
             Platform.TTG,
             Platform.MicroGaming,
+            Platform.PlaytechSlot,
             Platform.SpadeGaming -> getPlatformApi(platform).startSlot(startSlotReq)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }

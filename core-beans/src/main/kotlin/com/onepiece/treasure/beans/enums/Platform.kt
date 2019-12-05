@@ -121,7 +121,7 @@ open class PlatformDetail private constructor(
         }
         fun ofPlaytechSlot(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "playtech", icon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg", status = Status.Stop, demo = false)
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg", status = Status.Delete, demo = false)
         }
 
         // live game
