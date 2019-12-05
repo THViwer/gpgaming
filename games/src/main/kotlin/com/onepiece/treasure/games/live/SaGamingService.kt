@@ -1,229 +1,253 @@
 package com.onepiece.treasure.games.live
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import com.onepiece.treasure.beans.enums.Language
+import com.onepiece.treasure.beans.enums.LaunchMethod
+import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.SaGamingClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
+import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
-import com.onepiece.treasure.games.http.OkHttpUtil
-import okhttp3.FormBody
+import com.onepiece.treasure.games.bet.MapUtil
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.net.URLEncoder
-import java.security.Key
+import java.security.spec.KeySpec
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.crypto.Cipher
-import javax.crypto.KeyGenerator
-import javax.crypto.SecretKey
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.DESKeySpec
+import javax.crypto.spec.IvParameterSpec
 
-
-/**
- * 密钥算法
- * java支持56位密钥，bouncycastle支持64位
- */
-const val KEY_ALGORITHM = "DES"
-
-/**
- * 加密/解密算法/工作模式/填充方式
- */
-const val CIPHER_ALGORITHM = "DES/ECB/PKCS5Padding"
 /**
  *
- * 生成密钥，java6只支持56位密钥，bouncycastle支持64位密钥
- * @return byte[] 二进制密钥
+Secret Key 密鑰: 08EFED20ECEC405F802246F1F0603CE4
+MD5Key MD5鍵: GgaIMaiNNtg
+EncryptKey 加密鍵: g9G16nTs
+SA APP EncryptKey 加密鍵: M06!1OgI
+
+我司根據不同功能設定了兩組API路徑。
+Generic通用API路徑: http://sai-api.sa-apisvr.com/api/api.aspx
+Get Bet Detail取得會員下注詳情API路徑 : http://sai-api.sa-rpt.com/api/api.aspx
  */
-@Throws(Exception::class)
-fun initkey(): ByteArray? { //实例化密钥生成器
-    val kg: KeyGenerator = KeyGenerator.getInstance(KEY_ALGORITHM)
-    //初始化密钥生成器
-    kg.init(56)
-    //生成密钥
-    val secretKey: SecretKey = kg.generateKey()
-    //获取二进制密钥编码形式
-    return secretKey.encoded
-}
-
-/**
- * 转换密钥
- * @param key 二进制密钥
- * @return Key 密钥
- */
-@Throws(Exception::class)
-fun toKey(key: ByteArray?): Key { //实例化Des密钥
-    val dks = DESKeySpec(key)
-    //实例化密钥工厂
-    val keyFactory = SecretKeyFactory.getInstance(KEY_ALGORITHM)
-    //生成密钥
-    return keyFactory.generateSecret(dks)
-}
-
-/**
- * 加密数据
- * @param data 待加密数据
- * @param key 密钥
- * @return byte[] 加密后的数据
- */
-@Throws(Exception::class)
-fun encrypt(data: String, key: String): String { //还原密钥
-    val k: Key = toKey(key.toByteArray())
-    //实例化
-    val cipher = Cipher.getInstance(CIPHER_ALGORITHM)
-    //初始化，设置为加密模式
-    cipher.init(Cipher.ENCRYPT_MODE, k)
-    //执行操作
-    val byte =  cipher.doFinal(data.toByteArray())
-    return Base64.encodeBase64String(byte)
-}
-
-//fun main() {
-//    val param = "method=RegUserInfo&Key=g9G16nTs&Time=20191204203051&Username=01000016aw&CurrencyType=MYR"
-//    val encryptKey = "g9G16nTs"
-//    val x = encrypt(param.toByteArray(), encryptKey.toByteArray()).let { Base64.encodeBase64String(it) }
-//
-//    println(x)
-//}
-
-val dateTimeFormatter =  DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
-
-
-fun main() {
-
-    val objectMapper = jacksonObjectMapper()
-    val xmlMapper = XmlMapper()
-
-    val okHttpUtil = OkHttpUtil(objectMapper, xmlMapper)
-
-
-    val time = LocalDateTime.now().format(dateTimeFormatter)
-
-    val param = mapOf(
-            "method" to "RegUserInfo",
-            "Key" to "08EFED20ECEC405F802246F1F0603CE4",
-            "Time" to time,
-            "Username" to "Ccaa234As",
-            "CurrencyType" to "MYR"
-    )
-
-    val signParam = param.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-    println(signParam)
-
-    val desSign = encrypt(data = signParam, key = "g9G16nTs").let { URLEncoder.encode(it, "utf-8") }
-    println(desSign)
-//
-    val md5Param = "${signParam}GgaIMaiNNtg${time}08EFED20ECEC405F802246F1F0603CE4"
-    val md5Sign = DigestUtils.md5Hex(md5Param)
-    println(md5Sign)
-//
-////        val url = "http://sai-api.sa-apisvr.com/api/api.aspx"
-//
-    val formBody = FormBody.Builder()
-            .add("method", "RegUserInfo")
-            .add("Key", "08EFED20ECEC405F802246F1F0603CE4")
-            .add("Time", time)
-            .add("Username", "Ccaa234As")
-            .add("CurrencyType", "MYR")
-            .add("q", desSign)
-            .add("s", md5Sign)
-            .build()
-    val url = "http://94.237.64.70:2008"
-    val xml = okHttpUtil.doPostForm(url = url, body = formBody, clz = String::class.java)
-    println(xml)
-
-}
-
-
-
 
 @Service
-class SaGamingService(
-        val xmlMapper: XmlMapper
-) : PlatformService() {
+class SaGamingService : PlatformService() {
 
-    /**
-     *
-    Secret Key 密鑰: 08EFED20ECEC405F802246F1F0603CE4
-    MD5Key MD5鍵: GgaIMaiNNtg
-    EncryptKey 加密鍵: g9G16nTs
-    SA APP EncryptKey 加密鍵: M06!1OgI
+    private val dateTimeFormatter =  DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+    private val dateTimeFormatter2 =  DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    我司根據不同功能設定了兩組API路徑。
-    Generic通用API路徑: http://sai-api.sa-apisvr.com/api/api.aspx
-    Get Bet Detail取得會員下注詳情API路徑 : http://sai-api.sa-rpt.com/api/api.aspx
-     */
+    fun encrypt(data: String, key: String): String {
 
-    val dateTimeFormatter =  DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+        val encryptKey = key.toByteArray()
+        val keySpec: KeySpec = DESKeySpec(encryptKey)
+        val myDesKey = SecretKeyFactory.getInstance("DES").generateSecret(keySpec)
+        val iv = IvParameterSpec(encryptKey)
+        val desCipher: Cipher = Cipher.getInstance("DES/CBC/PKCS5Padding")
+        desCipher.init(Cipher.ENCRYPT_MODE, myDesKey, iv)
+        val textEncrypted: ByteArray = desCipher.doFinal(data.toByteArray())
+        return  Base64.encodeBase64String(textEncrypted)
+    }
 
-//    fun encrypt(data: String, key: String): String {
-////        val keyFactory = SecretKeyFactory.getInstance("DES")
-////        val sec = keyFactory.generateSecret(DESedeKeySpec(key))
-////        val cipher = Cipher.getInstance("DES/CBC/PKCS5Padding")
-////
-////        val ivParameterSpec = IvParameterSpec(iv ?: DesUtil.NULL_IV)
-////        cipher.init(Cipher.ENCRYPT_MODE, sec, ivParameterSpec)
-////        return cipher.doFinal(data)
-//        val cipher = Cipher.getInstance("DES/CBC/PKCS5Padding")
-//        val dataBytes: ByteArray = data.toByteArray()
-//
-//        val keyspec = SecretKeySpec(key.toByteArray(), "DES")
-//
-//        val ivspec = IvParameterSpec(DesUtil.NULL_IV)
-//        cipher.init(Cipher.ENCRYPT_MODE, keyspec, ivspec)
-//
-//        val encrypted = cipher.doFinal(dataBytes)
-//        return Base64.encodeBase64String(encrypted)
-//    }
+    fun startGetXml(clientToken: SaGamingClientToken, data: List<String>, time: String): MapUtil {
+        val methodParam = data.joinToString(separator = "&")
+
+        val desSign = this.encrypt(data = methodParam, key = clientToken.encryptKey).let { URLEncoder.encode(it, "utf-8") }
+
+        val md5Param = "${methodParam}${clientToken.md5Key}${time}${clientToken.secretKey}"
+        val md5Sign = DigestUtils.md5Hex(md5Param)
+
+        val url = "${gameConstant.getDomain(Platform.SaGaming)}/api/api.aspx?q=$desSign&s=$md5Sign"
+        val result = okHttpUtil.doGetXml(url = url, clz = SaGamingValue.Result::class.java)
+
+        check(result.errorMsgId == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        return result.mapUtil()
+    }
+
+    fun startGetBetXml(clientToken: SaGamingClientToken, data: List<String>, time: String): List<SaGamingValue.BetResult.BetResult> {
+        val methodParam = data.joinToString(separator = "&")
+
+        val desSign = this.encrypt(data = methodParam, key = clientToken.encryptKey).let { URLEncoder.encode(it, "utf-8") }
+
+        val md5Param = "${methodParam}${clientToken.md5Key}${time}${clientToken.secretKey}"
+        val md5Sign = DigestUtils.md5Hex(md5Param)
+
+        val url = "${gameConstant.getDomain(Platform.SaGaming)}/api/api.aspx?q=$desSign&s=$md5Sign"
+        val betResult = okHttpUtil.doGetXml(url = url, clz = SaGamingValue.BetResult::class.java)
+
+        check(betResult.errorMsgId == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        return betResult.betDetailList?: emptyList()
+    }
 
 
     override fun register(registerReq: GameValue.RegisterReq): String {
         val clientToken = registerReq.token as SaGamingClientToken
 
         val time = LocalDateTime.now().format(dateTimeFormatter)
-        val formBody = FormBody.Builder()
-                .add("method", "RegUserInfo")
-                .add("Key", "08EFED20ECEC405F802246F1F0603CE4")
-                .add("Time", time)
-                .add("Username", registerReq.username)
-                .add("CurrencyType", "MYR")
-                .build()
 
-
-        val param = mapOf(
-                "method" to "RegUserInfo",
-                "Key" to "g9G16nTs",
-                "Time" to time,
-                "Username" to registerReq.username,
-                "CurrencyType" to "MYR"
+        val data = listOf(
+                "method=RegUserInfo",
+                "Key=${clientToken.secretKey}",
+                "Time=$time",
+                "Username=${registerReq.username}",
+                "CurrencyType=${clientToken.currency}"
         )
-        val signParam = param.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
 
-        val desSign = encrypt(data = signParam, key = "g9G16nTs")
-
-        val md5Param = "$signParam${clientToken.md5Key}${time}${clientToken.secretKey}"
-        val md5Sign = DigestUtils.md5Hex(md5Param)
-
-//        val url = "http://sai-api.sa-apisvr.com/api/api.aspx"
-        val url = "http://94.237.64.70:2008?q=$desSign&s=$md5Sign"
-        val xml = okHttpUtil.doPostForm(url = url, body = formBody, clz = String::class.java)
-        val result = xmlMapper.readValue<SaGamingValue.Result>(xml)
-
-        error("")
+        this.startGetXml(clientToken = clientToken, data = data, time = time)
+        return registerReq.username
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val clientToken = balanceReq.token as SaGamingClientToken
+        val time = LocalDateTime.now().format(dateTimeFormatter)
+        val data = listOf(
+                "method=GetUserStatusDV",
+                "key=${clientToken.secretKey}",
+                "Time=$time",
+                "Username=${balanceReq.username}"
+        )
+
+        val mapUtil = this.startGetXml(clientToken = clientToken, data = data, time = time)
+        return mapUtil.asBigDecimal("Balance")
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val clientToken = transferReq.token as SaGamingClientToken
+        val time = LocalDateTime.now().format(dateTimeFormatter)
+
+        val data = when (transferReq.amount.toDouble() > 0) {
+            true -> {
+                listOf(
+                        "method=CreditBalanceDV",
+                        "Key=${clientToken.secretKey}",
+                        "Time=$time",
+                        "Username=${transferReq.username}",
+                        "OrderId=${transferReq.orderId}",
+                        "CreditAmount=${transferReq.amount.abs()}"
+                )
+            }
+            false -> {
+                listOf(
+                        "method=DebitBalanceDV",
+                        "Key=${clientToken.secretKey}",
+                        "Time=$time",
+                        "Username=${transferReq.username}",
+                        "OrderId=${transferReq.orderId}",
+                        "DebitAmount=${transferReq.amount.abs()}"
+                )
+            }
+        }
+
+        this.startGetXml(clientToken = clientToken, data = data, time = time)
+        return transferReq.orderId
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val clientToken = checkTransferReq.token as SaGamingClientToken
+        val time = LocalDateTime.now().format(dateTimeFormatter)
+
+        val data = listOf(
+                "method=CheckOrderId",
+                "Key=${clientToken.secretKey}",
+                "Time=$time",
+                "OrderId=${checkTransferReq.orderId}"
+        )
+
+        val mapUtil = this.startGetXml(clientToken = clientToken, data = data, time = time)
+        return mapUtil.asBoolean("isExist")
+    }
+
+    override fun start(startReq: GameValue.StartReq): String {
+        val clientToken = startReq.token as SaGamingClientToken
+
+        val time = LocalDateTime.now().format(dateTimeFormatter)
+        val data = listOf(
+                "method=LoginRequest",
+                "key=${clientToken.secretKey}",
+                "Time=$time",
+                "Username=${startReq.username}",
+                "CurrencyType=${clientToken.currency}"
+        )
+
+        val mapUtil = this.startGetXml(clientToken = clientToken, data = data, time = time)
+        val token = mapUtil.asString("Token")
+
+
+        val domain = "https://www.sai.slgaming.net/app.aspx"
+
+        val lang = when (startReq.language) {
+            Language.CN -> "zh_CN"
+            Language.VI -> "vn"
+            Language.ID -> "id"
+            Language.TH -> "th"
+            Language.EN -> "en_US"
+            Language.MY -> "ms"
+            else -> "zh_CN"
+        }
+
+        val mobile = startReq.launch != LaunchMethod.Web
+        val urlParam = listOf(
+                "username=${startReq.username}",
+                "token=$token",
+                "lobby=GPGaming",
+                "lang=${lang}",
+                "mobile=${mobile}",
+                "h5web=true"
+        ).joinToString(separator = "&")
+        return "$domain?$urlParam"
+    }
+
+    override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
+        val clientToken = startSlotReq.token as SaGamingClientToken
+
+        val time = LocalDateTime.now().format(dateTimeFormatter)
+        val data = listOf(
+                "method=LoginRequest",
+                "key=${clientToken.secretKey}",
+                "GameCode=",
+                "Time=$time",
+                "Username=${startSlotReq.username}",
+                "CurrencyType=${clientToken.currency}"
+        )
+
+        val mapUtil = this.startGetXml(clientToken = clientToken, data = data, time = time)
+        val token = mapUtil.asString("Token")
+
+        return token
+    }
+
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+        val clientToken = pullBetOrderReq.token as SaGamingClientToken
+        val time = LocalDateTime.now().format(dateTimeFormatter)
+        val data = listOf(
+                "method=GetAllBetDetailsForTimeIntervalDV",
+                "key=${clientToken.secretKey}",
+                "Time=$time",
+                "FromTime=${pullBetOrderReq.startTime.format(dateTimeFormatter2)}",
+                "ToTime=${pullBetOrderReq.endTime.format(dateTimeFormatter2)}"
+        )
+        val betList = this.startGetBetXml(clientToken = clientToken, data = data, time = time)
+
+        return betList.map { betMap ->
+            val bet = betMap.mapUtil
+            val orderId = bet.asString("BetID")
+            val username = bet.asString("Username")
+            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.SaGaming, platformUsername = username)
+            val betTime = bet.asLocalDateTime("BetTime")
+            val settleTime = bet.asLocalDateTime("PayoutTime")
+            val betAmount = bet.asBigDecimal("BetAmount")
+            val resultAmount = bet.asBigDecimal("ResultAmount")
+            val winAmount = betAmount.plus(resultAmount)
+
+            val originData = objectMapper.writeValueAsString(bet.data)
+
+            BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, platform = Platform.SaGaming, betTime = betTime,
+                    settleTime = settleTime, betAmount = betAmount, winAmount = winAmount, originData = originData)
+
+        }
     }
 }

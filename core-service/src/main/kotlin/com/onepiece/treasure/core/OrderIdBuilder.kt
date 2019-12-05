@@ -19,6 +19,7 @@ class OrderIdBuilder(
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")
     private val dateTimeFormat2 = DateTimeFormatter.ofPattern("HHmmss")
     private val dateTimeFormat3 = DateTimeFormatter.ofPattern("yyMMddHHmmss")
+    private val dateTimeFormat4 = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
     private fun getCurrentTime(format: DateTimeFormatter = dateTimeFormat) = LocalDateTime.now().format(format)
 
     fun generatorDepositOrderId(): String {
@@ -29,7 +30,7 @@ class OrderIdBuilder(
         return "BW${getCurrentTime()}${StringUtil.generateNumNonce(5)}"
     }
 
-    fun generatorTransferOrderId(clientId: Int, platform: Platform, transfer: String): String {
+    fun generatorTransferOrderId(clientId: Int, platform: Platform, transfer: String, platformUsername: String): String {
 
         return when (platform) {
             //TODO SBO 订单生成
@@ -41,6 +42,11 @@ class OrderIdBuilder(
             Platform.GoldDeluxe -> {
                 val l = if (transfer == "out") "D" else "W"
                 "$l${getCurrentTime(dateTimeFormat3)}${StringUtil.generateNonce(5)}"
+            }
+            Platform.SaGaming -> {
+                val type = if (transfer == "out") "IN" else "OUT"
+                return "$type${getCurrentTime(dateTimeFormat4)}${platformUsername}"
+
             }
             Platform.AllBet -> "T${platform.name.substring(0, 1)}${getCurrentTime(dateTimeFormat2)}${StringUtil.generateNumNonce(5)}"
             else -> "T${platform.name.substring(0, 1)}${getCurrentTime()}${StringUtil.generateNumNonce(2)}"

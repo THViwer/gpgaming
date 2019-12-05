@@ -80,12 +80,14 @@ class GameConstant(
             Platform.GoldDeluxe -> "$domain:2004"
             Platform.SexyGaming -> "$domain:2005"
             Platform.AllBet -> "$domain:2007"
+            Platform.SaGaming -> "$domain:2008"
 
             // sport
             Platform.CMD -> "$domain:3002"
 
             // fishing
             Platform.GGFishing -> "$domain:4001"
+
 
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }

@@ -8,7 +8,8 @@ class SaGamingClientToken (
 
         val encryptKey: String,
 
-        val saAppEncryptKey: String
+        val saAppEncryptKey: String,
 
+        val currency: String
 
 ): ClientToken

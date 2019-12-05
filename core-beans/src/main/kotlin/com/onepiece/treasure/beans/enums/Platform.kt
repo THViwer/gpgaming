@@ -29,7 +29,7 @@ enum class Platform(
     SexyGaming(PlatformDetail.ofSexyGaming()),
     Fgg(PlatformDetail.ofFgg()),
     AllBet(PlatformDetail.ofAllBet()),
-    SaGaming(PlatformDetail.ofAllBet()),
+    SaGaming(PlatformDetail.ofSaGaming()),
     AsiaGaming(PlatformDetail.ofAsiaGaming()),
 
     // sport

@@ -189,6 +189,7 @@ class GameApi(
             Platform.DreamGaming,
             Platform.CMD,
             Platform.SexyGaming,
+            Platform.SaGaming,
             Platform.Bcs -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, launch = launch, language = language, password = platformPassword)
                 this.getPlatformApi(platform).start(startReq)
@@ -344,6 +345,7 @@ class GameApi(
             Platform.DreamGaming,
             Platform.MicroGaming,
             Platform.SexyGaming,
+            Platform.SaGaming,
             Platform.GoldDeluxe -> {
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken)
                 getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)

@@ -46,7 +46,7 @@ class PullBetTask(
         if (running.get()) return
         running.set(true)
 
-        val binds = platformBindService.all()
+        val binds = platformBindService.all().filter { it.platform == Platform.SaGaming }
 
         binds.parallelStream().forEach  { bind ->
             this.executePlatform(bind)
@@ -100,6 +100,7 @@ class PullBetTask(
             Platform.SpadeGaming,
             Platform.SexyGaming,
             Platform.GoldDeluxe,
+            Platform.SaGaming,
             Platform.MicroGaming -> {
                 val duration = Duration.between(startTime, LocalDateTime.now())
                 val minutes: Long = duration.toMinutes() //相差的分钟数

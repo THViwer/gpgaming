@@ -300,7 +300,7 @@ open class CashApiController(
         platformBindService.updateEarnestBalance(clientId = clientId, platform = platform, earnestBalance = amount.negate())
 
         // 转账订单编号
-        val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "out")
+        val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "out", platformUsername = platformMember.username)
 
         // 中心钱包扣款
         val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_OUT, money = amount,
@@ -423,7 +423,7 @@ open class CashApiController(
 
 
         // 生成转账订单
-        val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "in")
+        val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "in", platformUsername = platformMember.username)
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = BigDecimal.ZERO,
                 from = from, to = to, joinPromotionId = null)
         transferOrderService.create(transferOrderCo)
