@@ -35,6 +35,9 @@ data class WithdrawVo(
         @ApiModelProperty("订单Id")
         val orderId: String,
 
+        @ApiModelProperty("用户名")
+        val username: String,
+
         @ApiModelProperty("操作金额")
         val money: BigDecimal,
 

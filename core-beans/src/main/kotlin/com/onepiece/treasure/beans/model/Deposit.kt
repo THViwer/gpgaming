@@ -23,8 +23,14 @@ data class Deposit(
         // 厅主Id
         val clientId: Int,
 
+        // 会员登陆名
+        val username: String,
+
         // 会员Id
         val memberId: Int,
+
+        // 会员银行卡Id
+        val memberBankId: Int,
 
         // 充值银行
         val memberBank: Bank,

@@ -24,6 +24,9 @@ data class Withdraw(
         // 会员Id
         val memberId: Int,
 
+        // 用户名
+        val username: String,
+
         // 会员银行卡Id
         val memberBankId: Int,
 

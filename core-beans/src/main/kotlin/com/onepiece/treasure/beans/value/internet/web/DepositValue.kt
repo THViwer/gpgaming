@@ -71,6 +71,9 @@ data class DepositVo(
         @ApiModelProperty("会员Id")
         val memberId: Int,
 
+        @ApiModelProperty("用户名")
+        val username: String,
+
         @ApiModelProperty("锁定人员客服Id")
         val lockWaiterId: Int?,
 
