@@ -6,6 +6,8 @@ import com.onepiece.treasure.beans.value.database.MemberBankUo
 
 interface MemberBankService {
 
+    fun get(bankId: Int): MemberBank
+
     fun query(memberId: Int): List<MemberBank>
 
     fun create(memberBankCo: MemberBankCo): Int

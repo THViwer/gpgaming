@@ -155,6 +155,11 @@ class Query(
         return this
     }
 
+    fun asWhere(k: String): Query {
+        columns.add(k)
+        return this
+    }
+
     fun asWhere(k: String, v: Any?): Query {
         if (v == null) return this
 

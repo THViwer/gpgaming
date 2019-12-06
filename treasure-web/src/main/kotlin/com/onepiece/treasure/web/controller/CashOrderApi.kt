@@ -16,7 +16,10 @@ import java.time.LocalDateTime
 @Api(tags = ["cash"], description = "现金管理")
 interface CashOrderApi {
 
-    @ApiOperation(tags = ["cash"], value = "充值 -> 列表")
+    @ApiOperation(tags = ["cash"], value = "充值 -> 审核列表")
+    fun deposit(): List<DepositVo>
+
+    @ApiOperation(tags = ["cash"], value = "充值 -> 历史")
     fun deposit(
             @RequestParam(value = "state", required = false) state: DepositState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
@@ -37,7 +40,10 @@ interface CashOrderApi {
 //    @ResponseStatus(HttpStatus.NO_CONTENT)
 //    fun artificial(@RequestBody artificialCoReq: ArtificialCoReq)
 
-    @ApiOperation(tags = ["cash"], value = "取款 -> 列表")
+    @ApiOperation(tags = ["cash"], value = "取款 -> 审核列表")
+    fun withdraw(): List<WithdrawVo>
+
+    @ApiOperation(tags = ["cash"], value = "取款 -> 历史")
     fun withdraw(
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,

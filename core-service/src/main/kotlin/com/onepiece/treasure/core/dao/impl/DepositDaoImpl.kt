@@ -5,12 +5,7 @@ import com.onepiece.treasure.beans.enums.DepositChannel
 import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.model.Deposit
-import com.onepiece.treasure.beans.value.database.DepositCo
-import com.onepiece.treasure.beans.value.database.DepositLockUo
-import com.onepiece.treasure.beans.value.database.DepositQuery
-import com.onepiece.treasure.beans.value.database.DepositUo
-import com.onepiece.treasure.beans.value.database.ClientDepositReportVo
-import com.onepiece.treasure.beans.value.database.DepositReportVo
+import com.onepiece.treasure.beans.value.database.*
 import com.onepiece.treasure.core.dao.DepositDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import com.onepiece.treasure.core.dao.basic.getIntOrNull
@@ -30,6 +25,8 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
             val processId = rs.getString("process_id")
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
+            val username = rs.getString("username")
+            val memberBankId = rs.getInt("member_bank_id")
             val memberName = rs.getString("member_name")
             val memberBank = rs.getString("member_bank").let { Bank.valueOf(it) }
             val memberBankCardNumber = rs.getString("member_bank_card_number")
@@ -50,7 +47,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                     imgPath = imgPath, state = state, remarks = remarks, createdTime = createdTime, endTime = endTime,
                     memberBankCardNumber = memberBankCardNumber, processId = processId, memberName = memberName, clientBankId = clientBankId,
                     clientBankName = clientBankName, clientBankCardNumber = clientBankCardNumber, lockWaiterId = lockWaiterId,
-                    lockWaiterName = lockWaiterName, depositTime = depositTime, channel = channel)
+                    lockWaiterName = lockWaiterName, depositTime = depositTime, channel = channel, username = username, memberBankId = memberBankId)
         }
 
     override fun findDeposit(clientId: Int, orderId: String): Deposit {
@@ -60,13 +57,18 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
     }
 
     override fun query(query: DepositQuery, current: Int, size: Int): List<Deposit> {
-        return query().where("client_id", query.clientId)
+        val builder = query().where("client_id", query.clientId)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
                 .where("member_id", query.memberId)
                 .where("order_id", query.orderId)
                 .where("state", query.state)
-                .sort("id desc")
+
+        if (query.lockWaiterId != null) {
+            builder.asWhere("(lock_waiter_id is null || lock_waiter_id = ${query.lockWaiterId})")
+        }
+
+        return builder.sort("id desc")
                 .limit(current, size)
                 .execute(mapper)
     }
@@ -98,6 +100,8 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                 .set("process_id", UUID.randomUUID().toString())
                 .set("client_id", depositCo.clientId)
                 .set("member_id", depositCo.memberId)
+                .set("username", depositCo.username)
+                .set("member_bank_id", depositCo.memberBankId)
                 .set("member_name", depositCo.memberName)
                 .set("member_bank", depositCo.memberBank)
                 .set("member_bank_card_number", depositCo.memberBankCardNumber)

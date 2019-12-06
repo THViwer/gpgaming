@@ -63,9 +63,6 @@ data class DepositCoReq(
         @ApiModelProperty("厅主银行卡Id")
         val clientBankId: Int,
 
-        @ApiModelProperty("银行卡号")
-        val memberBankCardNumber: String,
-
         @ApiModelProperty("转账日期,格式：yyyy-MM-dd HH:mm:ss")
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         val depositTime: LocalDateTime,
@@ -73,8 +70,14 @@ data class DepositCoReq(
         @ApiModelProperty("充值方式")
         val channel: DepositChannel,
 
+        @ApiModelProperty("会员银行卡Id")
+        val memberBankId: Int?,
+
         @ApiModelProperty("充值银行")
         val memberBank: Bank,
+
+        @ApiModelProperty("银行卡号")
+        val memberBankCardNumber: String,
 
         @ApiModelProperty("充值金额")
         val money: BigDecimal,

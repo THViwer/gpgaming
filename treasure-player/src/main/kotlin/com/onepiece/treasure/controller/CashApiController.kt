@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.stream.Collectors
 
 @RestController
@@ -120,7 +119,7 @@ open class CashApiController(
         val (clientId, memberId) = this.currentClientIdAndMemberId()
 
         val depositQuery = DepositQuery(clientId = clientId, startTime = null, endTime = null, orderId = orderId,
-                memberId = memberId, state = state)
+                memberId = memberId, state = state, lockWaiterId = null)
 
         val page = depositService.query(depositQuery, current, size)
         if (page.total == 0) return Page.empty()
@@ -131,7 +130,7 @@ open class CashApiController(
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
                         imgPath = imgPath, memberId = memberId, bankOrderId = null, clientBankCardNumber = clientBankCardNumber,
                         clientBankName = clientBankName, clientBankId = clientBankId, lockWaiterId = it.lockWaiterId, depositTime = it.depositTime,
-                        channel = it.channel)
+                        channel = it.channel, username = username)
             }
         }
 
@@ -141,17 +140,17 @@ open class CashApiController(
 
     @PostMapping("/deposit")
     override fun deposit(@RequestBody depositCoReq: DepositCoReq): CashDepositResp {
-
-
         val clientBank = clientBankService.get(depositCoReq.clientBankId)
         val orderId = orderIdBuilder.generatorDepositOrderId()
 
         val current = this.current()
 
+        val memberBankId = this.bindMemberBank(bankId = depositCoReq.memberBankId, bank = depositCoReq.memberBank, bankCardNumber = depositCoReq.memberBankCardNumber)
+
         val depositCo = DepositCo(orderId = orderId, memberId = current.id, memberName = current.name, memberBankCardNumber = depositCoReq.memberBankCardNumber,
                 memberBank = depositCoReq.memberBank, clientId = current.clientId, clientBankId = clientBank.id, clientBankName = clientBank.name,
                 clientBankCardNumber = clientBank.bankCardNumber, money = depositCoReq.money, imgPath = depositCoReq.imgPath, depositTime = depositCoReq.depositTime,
-                channel = depositCoReq.channel)
+                channel = depositCoReq.channel, memberBankId = memberBankId, username = current.username)
         depositService.create(depositCo)
 
         return CashDepositResp(orderId = orderId)
@@ -169,7 +168,7 @@ open class CashApiController(
         val (clientId, memberId) = this.currentClientIdAndMemberId()
 
         val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = null, endTime = null, orderId = orderId,
-                memberId = memberId, state = state)
+                memberId = memberId, state = state, lockWaiterId = null)
 
         val page = withdrawService.query(withdrawQuery, current, size)
         if (page.total == 0) return Page.empty()
@@ -178,24 +177,37 @@ open class CashApiController(
             with(it) {
                 WithdrawVo(orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
-                        memberId = it.memberId, memberBankId = it.memberBankId, lockWaiterId = it.lockWaiterId)
+                        memberId = it.memberId, memberBankId = it.memberBankId, lockWaiterId = it.lockWaiterId, username = username)
             }
         }
 
         return Page.of(page.total, data)
     }
 
+    private fun bindMemberBank(bankId: Int?, bank: Bank?, bankCardNumber: String?): Int {
+
+        val current = this.current()
+
+        return if (bankId != null) {
+            check(this.memberBankService.get(bankId).memberId == this.current().id) { OnePieceExceptionCode.AUTHORITY_FAIL }
+            bankId
+        } else {
+            check(bank != null && bankCardNumber != null) { OnePieceExceptionCode.AUTHORITY_FAIL }
+            val memberBankCo = MemberBankCo(clientId = current.clientId, memberId = current.id, bank = bank,
+                    bankCardNumber = bankCardNumber)
+            memberBankService.create(memberBankCo)
+        }
+
+    }
+
     @PostMapping("/withdraw")
     override fun withdraw(@RequestBody withdrawCoReq: WithdrawCoReq): CashWithdrawResp {
 
-        val (clientId, memberId) = currentClientIdAndMemberId()
+        val current = this.current()
+        val clientId = current.clientId
+        val memberId = current.id
 
-        // 获得用户银行卡Id
-        val memberBankId = if (withdrawCoReq.memberBankId == null) {
-            val memberBankCo = MemberBankCo(clientId = clientId, memberId = memberId, bank = withdrawCoReq.bank,
-                    bankCardNumber = withdrawCoReq.bankCardNumber)
-            memberBankService.create(memberBankCo)
-        } else withdrawCoReq.memberBankId
+        val memberBankId = this.bindMemberBank(bankId = withdrawCoReq.memberBankId, bank = withdrawCoReq.bank, bankCardNumber = withdrawCoReq.bankCardNumber)
 
         // check bank id
         val memberBank = memberBankService.query(memberId).find { it.id == memberBankId }
@@ -208,7 +220,7 @@ open class CashApiController(
         val orderId = orderIdBuilder.generatorWithdrawOrderId()
         val withdrawCo = WithdrawCo(orderId = orderId, clientId = clientId, memberId = memberId,
                 memberBank = memberBank.bank, memberBankCardNumber = memberBank.bankCardNumber, memberBankId = memberBank.id,
-                money = withdrawCoReq.money, remarks = null)
+                money = withdrawCoReq.money, remarks = null, username = current.username)
         withdrawService.create(withdrawCo)
 
         return CashWithdrawResp(orderId = orderId)

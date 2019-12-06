@@ -28,4 +28,8 @@ class MemberBankServiceImpl(
         val state = memberBankDao.update(memberBankUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
+
+    override fun get(bankId: Int): MemberBank {
+        return memberBankDao.get(bankId)
+    }
 }

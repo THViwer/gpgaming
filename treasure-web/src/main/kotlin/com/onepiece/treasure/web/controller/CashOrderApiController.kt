@@ -28,7 +28,25 @@ class CashOrderApiController(
         private val orderIdBuilder: OrderIdBuilder
 ) : BasicController(), CashOrderApi {
 
+
+
     @GetMapping("/deposit")
+    override fun deposit(): List<DepositVo> {
+
+        val query = DepositQuery(clientId = this.getClientId(), startTime = null,
+                endTime = null, memberId = null, orderId = null, state = DepositState.Process, lockWaiterId = getCurrentWaiterId())
+        return depositService.query(query).map{
+            with(it) {
+                DepositVo(orderId = it.orderId, money = money, memberName = memberName, memberBankCardNumber= memberBankCardNumber,
+                        memberBank=  memberBank, imgPath = imgPath, createdTime = createdTime, remark = remarks, endTime = it.endTime,
+                        clientBankId = clientBankId, clientBankCardNumber = clientBankCardNumber, clientBankName = clientBankName,
+                        bankOrderId = null, memberId = memberId, state = it.state, lockWaiterId = it.lockWaiterId, depositTime = depositTime,
+                        channel = it.channel, username = username)
+            }
+        }
+    }
+
+    @GetMapping("/deposit/history")
     override fun deposit(
             @RequestParam(value = "state", required = false) state: DepositState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
@@ -37,14 +55,15 @@ class CashOrderApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
     ): List<DepositVo> {
         val clientId = getClientId()
-        val depositQuery = DepositQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state)
+        val depositQuery = DepositQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state,
+                lockWaiterId = null)
         return depositService.query(depositQuery).map {
             with(it) {
                 DepositVo(orderId = it.orderId, money = money, memberName = memberName, memberBankCardNumber= memberBankCardNumber,
                         memberBank=  memberBank, imgPath = imgPath, createdTime = createdTime, remark = remarks, endTime = it.endTime,
                         clientBankId = clientBankId, clientBankCardNumber = clientBankCardNumber, clientBankName = clientBankName,
                         bankOrderId = null, memberId = memberId, state = it.state, lockWaiterId = it.lockWaiterId, depositTime = depositTime,
-                        channel = it.channel)
+                        channel = it.channel, username = it.username)
             }
         }
     }
@@ -75,7 +94,24 @@ class CashOrderApiController(
 //        artificialOrderService.create(artificialOrderCo)
 //    }
 
+
+
     @GetMapping("/withdraw")
+    override fun withdraw(): List<WithdrawVo> {
+        val clientId = getClientId()
+        val withdrawQuery = WithdrawQuery(clientId = clientId, lockWaiterId = this.getCurrentWaiterId(), startTime = null, endTime = null,
+                orderId = null, memberId = null, state = WithdrawState.Process)
+
+        return withdrawService.query(withdrawQuery).map {
+            with(it) {
+                WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberId = memberId,
+                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime, lockWaiterId = it.lockWaiterId, username = username)
+            }
+        }
+
+    }
+
+    @GetMapping("/withdraw/history")
     override fun withdraw(
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
@@ -85,12 +121,12 @@ class CashOrderApiController(
     ): List<WithdrawVo> {
 
         val clientId = getClientId()
-        val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state)
+        val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state, lockWaiterId = null)
         return withdrawService.query(withdrawQuery).map {
 
             with(it) {
                 WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberId = memberId,
-                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime, lockWaiterId = it.lockWaiterId)
+                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime, lockWaiterId = it.lockWaiterId, username = it.username)
             }
         }
     }

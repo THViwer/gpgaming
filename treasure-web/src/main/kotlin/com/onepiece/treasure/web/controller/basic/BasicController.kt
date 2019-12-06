@@ -39,6 +39,10 @@ abstract class BasicController {
 
     fun getClientId() = current().clientId
 
+    fun getCurrentWaiterId(): Int? {
+        return if (this.current().role == Role.Client) null else this.current().id
+    }
+
 
     /**
      * 获得请求ip

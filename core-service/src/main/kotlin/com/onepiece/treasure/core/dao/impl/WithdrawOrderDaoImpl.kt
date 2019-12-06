@@ -3,12 +3,7 @@ package com.onepiece.treasure.core.dao.impl
 import com.onepiece.treasure.beans.enums.Bank
 import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.model.Withdraw
-import com.onepiece.treasure.beans.value.database.DepositLockUo
-import com.onepiece.treasure.beans.value.database.WithdrawCo
-import com.onepiece.treasure.beans.value.database.WithdrawQuery
-import com.onepiece.treasure.beans.value.database.WithdrawUo
-import com.onepiece.treasure.beans.value.database.ClientWithdrawReportVo
-import com.onepiece.treasure.beans.value.database.WithdrawReportVo
+import com.onepiece.treasure.beans.value.database.*
 import com.onepiece.treasure.core.dao.WithdrawDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
 import com.onepiece.treasure.core.dao.basic.getIntOrNull
@@ -28,6 +23,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
             val processId = rs.getString("process_id")
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
+            val username = rs.getString("username")
             val memberBankId = rs.getInt("member_bank_id")
             val memberBank = rs.getString("member_bank").let { Bank.valueOf(it) }
             val memberName = rs.getString("member_name")
@@ -42,7 +38,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
             Withdraw(id = id, orderId = orderId, processId = processId, clientId = clientId, memberId = memberId,
                     memberBankId = memberBankId, money = money, state = state, remarks = remarks, createdTime = createdTime,
                     endTime = endTime, memberName = memberName, lockWaiterId = lockWaiterId, lockWaiterName = lockWaiterName,
-                    memberBankCardNumber = memberBankCardNumber, memberBank = memberBank)
+                    memberBankCardNumber = memberBankCardNumber, memberBank = memberBank, username = username)
         }
 
     override fun findWithdraw(clientId: Int, orderId: String): Withdraw {
@@ -52,12 +48,16 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
     }
 
     override fun query(query: WithdrawQuery, current: Int, size: Int): List<Withdraw> {
-        return query().where("client_id", query.clientId)
+        val builder = query().where("client_id", query.clientId)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
                 .where("order_id", query.orderId)
                 .where("member_id", query.memberId)
-                .where("state", query.state)
+        if (query.lockWaiterId != null) {
+            builder.asWhere("(lock_waiter_id == null || lock_waiter_id = ${query.lockWaiterId})")
+        }
+
+        return builder.where("state", query.state)
                 .sort("id desc")
                 .limit(current, size)
                 .execute(mapper)
@@ -89,6 +89,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
                 .set("process_id", UUID.randomUUID().toString())
                 .set("client_id", orderCo.clientId)
                 .set("member_id", orderCo.memberId)
+                .set("username", orderCo.username)
                 .set("member_bank_id", orderCo.memberBankId)
                 .set("member_name", orderCo.memberBankId)
                 .set("member_bank", orderCo.memberBank)
