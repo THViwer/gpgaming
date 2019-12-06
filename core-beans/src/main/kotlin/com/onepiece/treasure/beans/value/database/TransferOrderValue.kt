@@ -25,6 +25,9 @@ data class TransferOrderCo(
         // 参加优惠活动Id
         val joinPromotionId: Int?,
 
+        // 优惠信息
+        val promotionJson: String?,
+
         // 转出平台
         val from: Platform,
 

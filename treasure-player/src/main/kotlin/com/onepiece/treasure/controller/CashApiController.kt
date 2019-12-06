@@ -295,6 +295,7 @@ open class CashApiController(
 
         // 优惠活动赠送金额
         val platformMemberTransferUo = this.handlerPromotion(platformMember = platformMember, amount = amount, promotionId = promotionId, platformBalance = platformBalance)
+        check(platformMemberTransferUo?.joinPlatform == null || platformMember.platform == platformMemberTransferUo.joinPlatform) { OnePieceExceptionCode.ILLEGAL_OPERATION }
 
         // 检查保证金是否足够
         platformBindService.updateEarnestBalance(clientId = clientId, platform = platform, earnestBalance = amount.negate())
@@ -310,7 +311,7 @@ open class CashApiController(
         // 生成转账订单
         val promotionAmount = platformMemberTransferUo?.promotionAmount?: BigDecimal.ZERO
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = promotionAmount,
-                from = from, to = to, joinPromotionId = platformMemberTransferUo?.joinPromotionId)
+                from = from, to = to, joinPromotionId = platformMemberTransferUo?.joinPromotionId, promotionJson = platformMemberTransferUo?.promotionJson)
         transferOrderService.create(transferOrderCo)
 
         // 平台钱包更改信息
@@ -318,7 +319,8 @@ open class CashApiController(
             platformMemberService.transferIn(platformMemberTransferUo)
         } else {
             val init = PlatformMemberTransferUo(id = platformMember.id, joinPromotionId = null, currentBet = BigDecimal.ZERO, requirementBet = BigDecimal.ZERO,
-                    promotionAmount = BigDecimal.ZERO, transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO)
+                    promotionAmount = BigDecimal.ZERO, transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO,
+                    promotionJson = null, joinPlatform = null)
             platformMemberService.transferIn(init)
         }
 
@@ -368,7 +370,7 @@ open class CashApiController(
         check(promotion.status == Status.Normal) { OnePieceExceptionCode.PROMOTION_EXPIRED }
         check(this.checkStopTime(promotion.stopTime)) { OnePieceExceptionCode.PROMOTION_EXPIRED }
 
-        return promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount =  amount, platformBalance = platformBalance, promotionId = promotionId)
+        return promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount =  amount, platformBalance = platformBalance, promotionId = promotion.id)
     }
 
 
@@ -425,7 +427,7 @@ open class CashApiController(
         // 生成转账订单
         val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "in", platformUsername = platformMember.username)
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = BigDecimal.ZERO,
-                from = from, to = to, joinPromotionId = null)
+                from = from, to = to, joinPromotionId = null, promotionJson = null)
         transferOrderService.create(transferOrderCo)
 
         // 中心钱包加钱

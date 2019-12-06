@@ -24,10 +24,15 @@ data class PlatformMemberCo(
 data class PlatformMemberTransferUo(
         val id: Int,
 
-
         // 下面属性随时会变 是做记录用
         // 参加优惠活动Id
         val joinPromotionId: Int?,
+
+        // 优惠活动的优惠信息
+        val promotionJson: String?,
+
+        // 参加活动的平台
+        val joinPlatform: Platform?,
 
         // 当前打码量
         val currentBet: BigDecimal,

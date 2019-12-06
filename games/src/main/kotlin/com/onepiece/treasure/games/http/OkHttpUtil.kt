@@ -24,6 +24,7 @@ class OkHttpUtil(
     companion object {
         val JSON = "application/json; charset=utf-8".toMediaType()
         val XML = "application/xml; charset=utf-8".toMediaType()
+        val TEXT_XML = "text/xml; charset=utf-8".toMediaType()
         val TEXT = "text/html; charset=utf-8".toMediaType()
     }
 
@@ -191,7 +192,7 @@ class OkHttpUtil(
 
         val response = client.newCall(request.build()).execute()
         if (response.code != 200 && response.code != 201) {
-            log.error("$response")
+            log.error("${response.body?.string()}")
             error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 

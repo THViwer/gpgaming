@@ -23,13 +23,15 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
             val money = rs.getBigDecimal("money")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
             val joinPromotionId = rs.getInt("join_promotion_id")
+            val promotionJson = rs.getString("promotion_json")
             val from = rs.getString("from").let { Platform.valueOf(it) }
             val to = rs.getString("to").let { Platform.valueOf(it) }
             val state = rs.getString("state").let { TransferState.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
             TransferOrder(orderId = orderId, clientId = clientId, memberId = memberId, money = money, promotionAmount = promotionAmount,
-                    from = from, to = to, state = state, createdTime = createdTime, updatedTime = updatedTime, joinPromotionId = joinPromotionId)
+                    from = from, to = to, state = state, createdTime = createdTime, updatedTime = updatedTime, joinPromotionId = joinPromotionId,
+                    promotionJson = promotionJson)
         }
 
     override fun create(transferOrderCo: TransferOrderCo): Boolean {
@@ -41,9 +43,10 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .set("promotion_amount", transferOrderCo.promotionAmount)
                 .set("`from`", transferOrderCo.from)
                 .set("`to`", transferOrderCo.to)
+                .set("join_promotion_id", transferOrderCo.joinPromotionId)
+                .set("promotion_json", transferOrderCo.promotionJson)
                 .set("state", TransferState.Process)
                 .executeOnlyOne()
-
     }
 
     override fun update(transferOrderUo: TransferOrderUo): Boolean {

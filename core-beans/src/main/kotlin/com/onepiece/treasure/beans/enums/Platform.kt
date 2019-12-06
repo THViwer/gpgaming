@@ -20,6 +20,7 @@ enum class Platform(
     TTG(PlatformDetail.ofTTG()),
     MicroGaming(PlatformDetail.ofMicroGaming()),
     PlaytechSlot(PlatformDetail.ofPlaytechSlot()),
+    PNG(PlatformDetail.ofPNG()),
 
     // live video
     CT(PlatformDetail.ofCT()),
@@ -123,6 +124,10 @@ open class PlatformDetail private constructor(
             return PlatformDetail(category = PlatformCategory.Slot, name = "playtech", icon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg", status = Status.Delete, demo = false)
         }
+        fun ofPNG(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Slot, name = "play n go", icon = "${SystemConstant.AWS_LOGO_URL}/allBet.png",
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/allBet.jpeg", status = Status.Stop)
+        }
 
         // live game
         fun ofCT(): PlatformDetail {
@@ -166,6 +171,7 @@ open class PlatformDetail private constructor(
             return PlatformDetail(category = PlatformCategory.LiveVideo, name = "asia gaming", icon = "${SystemConstant.AWS_LOGO_URL}/allBet.png",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/allBet.jpeg", status = Status.Stop)
         }
+
 
         // soprt
         fun ofSbo(): PlatformDetail {

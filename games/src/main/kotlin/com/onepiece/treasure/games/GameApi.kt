@@ -50,6 +50,7 @@ class GameApi(
         private val fggService: FggService,
         private val allBetService: AllBetService,
         private val dreamGamingService: DreamGamingService,
+        private val pngService: PNGService,
 
         // sport
 //        private val sboService: SboService,
@@ -89,6 +90,7 @@ class GameApi(
             Platform.DreamGaming -> dreamGamingService
             Platform.GoldDeluxe -> goldDeluxeService
             Platform.SexyGaming -> sexyGamingService
+            Platform.PNG -> pngService
 
             // sport
             Platform.Lbc -> lbcService
@@ -191,6 +193,7 @@ class GameApi(
             Platform.CMD,
             Platform.SexyGaming,
             Platform.SaGaming,
+            Platform.PNG,
             Platform.Bcs -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, launch = launch, language = language, password = platformPassword)
                 this.getPlatformApi(platform).start(startReq)

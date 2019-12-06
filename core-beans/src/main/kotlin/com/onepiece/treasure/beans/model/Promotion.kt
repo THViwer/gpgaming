@@ -129,7 +129,8 @@ data class Promotion (
     fun getPlatformMemberTransferUo(platformMemberId: Int, amount: BigDecimal, platformBalance: BigDecimal, promotionId: Int): PlatformMemberTransferUo {
 
         val init = PlatformMemberTransferUo(id = platformMemberId, joinPromotionId = promotionId, currentBet = BigDecimal.ZERO, requirementBet = BigDecimal.ZERO,
-                promotionAmount = BigDecimal.ZERO, transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO)
+                promotionAmount = BigDecimal.ZERO, transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO,
+                promotionJson = null, joinPlatform = null)
 
         return when (this.ruleType) {
             PromotionRuleType.Bet -> {
@@ -139,7 +140,7 @@ data class Promotion (
                 val requirementBet = (amount.plus(promotionAmount).plus(platformBalance)).multiply(betRule.betMultiple)
 
                 init.copy(currentBet = BigDecimal.ZERO, requirementBet = requirementBet, ignoreTransferOutAmount = betRule.ignoreTransferOutAmount,
-                        promotionAmount = promotionAmount)
+                        promotionAmount = promotionAmount, promotionJson = ruleJson, joinPlatform = platform)
 
             }
             PromotionRuleType.Withdraw -> {
@@ -150,7 +151,7 @@ data class Promotion (
                 val requirementTransferOutAmount = (amount.plus(promotionAmount).plus(platformBalance)).multiply(withdrawRule.transferMultiplied)
 
                 init.copy(currentBet = BigDecimal.ZERO, requirementTransferOutAmount = requirementTransferOutAmount, ignoreTransferOutAmount = withdrawRule.ignoreTransferOutAmount,
-                        promotionAmount = promotionAmount)
+                        promotionAmount = promotionAmount, promotionJson = ruleJson, joinPlatform = platform)
 
             }
         }
