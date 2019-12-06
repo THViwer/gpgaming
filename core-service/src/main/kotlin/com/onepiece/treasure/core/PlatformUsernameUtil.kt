@@ -23,6 +23,7 @@ object PlatformUsernameUtil  {
             Platform.Kiss918,
             Platform.MicroGaming,
             Platform.Pussy888,
+            Platform.Mega,
             Platform.PlaytechSlot,
 
                 // live
