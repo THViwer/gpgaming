@@ -242,6 +242,7 @@ open class CashApiController(
     @Transactional(rollbackFor = [Exception::class])
     override fun transfer(@RequestBody cashTransferReq: CashTransferReq) {
         check(cashTransferReq.from != cashTransferReq.to) { OnePieceExceptionCode.AUTHORITY_FAIL }
+        check(cashTransferReq.amount.toDouble() > 0) { OnePieceExceptionCode.ILLEGAL_OPERATION }
 
         val current = this.current()
 
