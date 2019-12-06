@@ -82,11 +82,12 @@ class ApiController(
 
     @GetMapping("/promotion")
     override fun promotion(
-            @RequestHeader("language", defaultValue = "EN") language: Language
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestParam("promotionCategory", required = false) promotionCategory: PromotionCategory?
     ): List<PromotionVo> {
 
         val clientId = getClientIdByDomain()
-        val promotions = promotionService.all(clientId)
+        val promotions = promotionService.all(clientId).filter { promotionCategory == null || it.category == promotionCategory }
 
         val i18nContentMap = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Promotion)
                 .map { "${it.configId}_${it.language}" to it }
