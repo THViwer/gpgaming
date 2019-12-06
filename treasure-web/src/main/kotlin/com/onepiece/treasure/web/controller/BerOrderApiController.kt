@@ -34,10 +34,7 @@ class BerOrderApiController(
         return when (platform) {
             Platform.Kiss918,
             Platform.Mega,
-            Platform.Pussy888,
-            Platform.AllBet,
-            Platform.Bcs,
-            Platform.TTG  -> {
+            Platform.Pussy888 -> {
                 val platformMember = platformMemberService.find(memberId = member.id, platform = platform) ?: return emptyList<Any>()
                 gameApi.queryBetOrder(clientId = clientId, platformUsername = platformMember.platformUsername, platform = platform, startTime = startTime, endTime = endTime)
             }
