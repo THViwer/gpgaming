@@ -2,6 +2,7 @@ package com.onepiece.treasure.games.slot
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.MegaClientToken
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
@@ -9,6 +10,7 @@ import com.onepiece.treasure.games.bet.MapUtil
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -134,6 +136,30 @@ class MegaService : PlatformService() {
         )
         val mapUtil = this.startPostJson(method = "open.mega.player.game.log.url.get", data = data, clientToken = clientToken)
         return mapUtil.asString("result")
+    }
+
+
+    fun queryBetReport(token: ClientToken, username: String, startTime: LocalDateTime): BigDecimal {
+
+        val clientToken = token as MegaClientToken
+
+        val random = UUID.randomUUID().toString()
+        val digest = this.sign(random = random, loginId = username, clientToken = clientToken)
+
+        val endTime = LocalDateTime.now()
+        val data = mapOf(
+                "loginId" to username,
+                "startTime" to startTime.format(dateTimeFormat),
+                "endTime" to endTime.format(dateTimeFormat),
+                "random" to random,
+                "sn" to clientToken.appId,
+                "digest" to digest
+        )
+        val mapUtil = this.startPostJson(method = "open.mega.player.total.report", data = data, clientToken = clientToken)
+        return BigDecimal.ZERO
+
+
+
     }
 
 }

@@ -2,6 +2,7 @@ package com.onepiece.treasure.games.slot
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.PlatformUsernameUtil
@@ -177,6 +178,28 @@ class Kiss918Service : PlatformService() {
         }
     }
 
+
+//
+//    fun queryBetReport(token: ClientToken, username: String, startDate: LocalDate): BigDecimal {
+//        val clientToken = token as Kiss918ClientToken
+//
+//        val endDate = LocalDate.now()
+//        val data = listOf(
+//                "userName=$username",
+//                "sDate=${startDate}",
+//                "eDate=${endDate}"
+//        )
+//
+//        val url = "${gameConstant.getDomain(Platform.Kiss918)}/ashx/AgentMoneyLog.ashx"
+//        val mapUtil = this.startGetJson(url = url, username = username, clientToken = clientToken, data = data)
+//
+//
+//
+//        return transferReq.orderId
+//
+//
+//
+//    }
 
 
 
