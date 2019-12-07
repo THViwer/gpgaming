@@ -86,6 +86,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .where("level_id", query.levelId)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
+                .sort("id desc")
                 .limit(current, size)
                 .execute(mapper)
     }
