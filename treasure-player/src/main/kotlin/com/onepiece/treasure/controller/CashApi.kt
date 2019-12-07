@@ -28,6 +28,9 @@ interface CashApi {
     @ApiOperation(tags = ["cash"], value = "我的银行卡")
     fun myBanks(): List<MemberBankVo>
 
+    @ApiOperation(tags = ["cash"], value = "取款检查打码量")
+    fun checkBet(): CheckBetResp
+
     @ApiOperation(tags = ["cash"], value = "银行创建")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun bankCreate(@RequestBody memberBankCoReq: MemberBankCoReq)

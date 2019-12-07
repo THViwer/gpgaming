@@ -34,8 +34,7 @@ open class CashApiController(
         private val memberService: MemberService,
         private val transferOrderService: TransferOrderService,
         private val walletNoteService: WalletNoteService,
-        private val promotionService: PromotionService,
-        private val objectMapper: ObjectMapper
+        private val promotionService: PromotionService
 ) : BasicController(), CashApi {
 
 
@@ -65,6 +64,25 @@ open class CashApiController(
                 }
             }
         }
+    }
+
+    @GetMapping("/checkBet")
+    override fun checkBet(): CheckBetResp {
+        val memberId = this.current().id
+
+        val wallet = walletService.getMemberWallet(memberId)
+
+        val platforms = platformMemberService.findPlatformMember(memberId)
+
+        val kiss918Deposit = platforms.firstOrNull { it.platform == Platform.Kiss918 }?.totalTransferOutAmount?: BigDecimal.ZERO
+        val pussyDeposit = platforms.find { it.platform == Platform.Pussy888 }?.totalTransferOutAmount?: BigDecimal.ZERO
+        val megaDeposit = platforms.find { it.platform == Platform.Mega }?.totalTransferOutAmount?: BigDecimal.ZERO
+
+        val betAmount = platforms.sumByDouble { it.totalBet.toDouble() }
+        val needBet = wallet.totalDepositBalance.minus(kiss918Deposit).minus(pussyDeposit).minus(megaDeposit) * BigDecimal.valueOf(0.8)
+
+        val overBet = betAmount.minus(needBet.toDouble()).toBigDecimal().setScale(2, 2)
+        return CheckBetResp(currentBet = betAmount.toBigDecimal().setScale(2, 2), needBet = needBet, overBet = overBet)
     }
 
     @PostMapping("/bank/my")
@@ -207,6 +225,9 @@ open class CashApiController(
         val clientId = current.clientId
         val memberId = current.id
 
+        // 检查打码量
+        check(this.checkBet().overBet.toDouble() <= 0) { "打码量不足" }
+
         val memberBankId = this.bindMemberBank(bankId = withdrawCoReq.memberBankId, bank = withdrawCoReq.bank, bankCardNumber = withdrawCoReq.bankCardNumber)
 
         // check bank id
@@ -225,7 +246,6 @@ open class CashApiController(
 
         return CashWithdrawResp(orderId = orderId)
     }
-
 
     @GetMapping("/check/promotion")
     override fun checkPromotion(

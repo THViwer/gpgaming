@@ -6,6 +6,7 @@ import com.onepiece.treasure.beans.model.PlatformMember
 import com.onepiece.treasure.beans.value.database.PlatformMemberBetUo
 import com.onepiece.treasure.beans.value.database.PlatformMemberCo
 import com.onepiece.treasure.beans.value.database.PlatformMemberTransferUo
+import com.onepiece.treasure.beans.value.internet.web.PlatformMemberDetailVo
 import com.onepiece.treasure.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.treasure.beans.value.order.BetCacheVo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
