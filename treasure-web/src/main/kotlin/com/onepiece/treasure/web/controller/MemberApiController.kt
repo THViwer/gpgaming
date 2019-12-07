@@ -39,12 +39,17 @@ class MemberApiController(
         val levels = levelService.all(clientId).map { it.id to it }.toMap()
 
         val data = page.data.map {
-            with(it) {
-                MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]!!.name,
-                        balance = BigDecimal.ZERO, status = it.status,createdTime = createdTime,
-                        loginIp = loginIp, loginTime = loginTime, name = it.name)
+            try {
+                with(it) {
+                    MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name?: "",
+                            balance = BigDecimal.ZERO, status = it.status, createdTime = createdTime,
+                            loginIp = loginIp, loginTime = loginTime, name = it.name)
+                }
+            } catch (e: Exception) {
+                println("$")
+                null
             }
-        }
+        }.filterNotNull()
 
         return MemberPage(total = page.total, data = data)
     }
