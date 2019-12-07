@@ -116,7 +116,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/cash/bank",
                         "/cash/upload/proof",
 
-                        "/meaga",
+                        "/mega",
                         "/cmd",
                         "/spadeGaming"
                 ).permitAll()
