@@ -1,6 +1,5 @@
 package com.onepiece.treasure.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.treasure.beans.base.Page
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
@@ -15,6 +14,7 @@ import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.OrderIdBuilder
 import com.onepiece.treasure.core.service.*
 import com.onepiece.treasure.utils.AwsS3Util
+import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -36,6 +36,8 @@ open class CashApiController(
         private val walletNoteService: WalletNoteService,
         private val promotionService: PromotionService
 ) : BasicController(), CashApi {
+
+    private val log = LoggerFactory.getLogger(CashApiController::class.java)
 
 
     @GetMapping("/bank")
@@ -274,7 +276,7 @@ open class CashApiController(
     @Transactional(rollbackFor = [Exception::class])
     override fun transfer(@RequestBody cashTransferReq: CashTransferReq) {
         check(cashTransferReq.from != cashTransferReq.to) { OnePieceExceptionCode.AUTHORITY_FAIL }
-        check(cashTransferReq.amount.toDouble() > 0) { OnePieceExceptionCode.ILLEGAL_OPERATION }
+        check(cashTransferReq.amount.toDouble() > 0 || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.ILLEGAL_OPERATION }
 
         val current = this.current()
 
@@ -287,6 +289,21 @@ open class CashApiController(
         }
     }
 
+    @PutMapping("/transfer/in/all")
+    override fun transferToCenter() {
+        val current = this.current()
+        val amount = BigDecimal.valueOf(-1)
+
+        val platformMembers = this.platformMemberService.myPlatforms(memberId = current.id)
+        platformMembers.parallelStream().forEach{ platformMember ->
+            val req = CashTransferReq(from = platformMember.platform, to = Platform.Center, amount = amount, promotionId = null)
+            try {
+                this.singleTransfer(clientId = current.clientId, platform = platformMember.platform, cashTransferReq = req, type = "in")
+            } catch (e: Exception) {
+                log.error("转账平台错误:", e)
+            }
+        }
+    }
 
     private fun singleTransfer(clientId: Int, platform: Platform, cashTransferReq: CashTransferReq, type: String) {
 
@@ -298,7 +315,13 @@ open class CashApiController(
         if (type == "out") { // 中心钱包 -> 平台钱包
             this.centerToPlatformTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId)
         } else if (type == "in") { // 平台钱包 -> 中心钱包
-            this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = cashTransferReq.amount)
+            // 如果金额为-1 则转入全部金额
+            val amount = if (cashTransferReq.amount.toInt() == -1) platformBalance else cashTransferReq.amount
+
+            // 如果平台没有钱 则直接返回
+            if (amount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)) return
+
+            this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = amount)
         }
 
 //        when (cashTransferReq.from) {
