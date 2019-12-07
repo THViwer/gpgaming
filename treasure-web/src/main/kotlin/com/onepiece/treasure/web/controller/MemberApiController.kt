@@ -26,8 +26,8 @@ class MemberApiController(
             @RequestParam(value = "username", required = false) username: String?,
             @RequestParam(value = "levelId", required = false) levelId: Int?,
             @RequestParam(value = "status", required = false) status: Status?,
-            @RequestParam(defaultValue = "0") current: Int,
-            @RequestParam(defaultValue = "10") size: Int
+            @RequestParam(value = "current", defaultValue = "0") current: Int,
+            @RequestParam(value = "size", defaultValue = "10") size: Int
     ): MemberPage {
         val clientId = getClientId()
 
