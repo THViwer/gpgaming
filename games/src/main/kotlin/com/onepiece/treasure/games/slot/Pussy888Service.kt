@@ -4,6 +4,7 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.Kiss918ClientToken
 import com.onepiece.treasure.beans.model.token.Pussy888ClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapUtil
@@ -11,6 +12,8 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 /**
@@ -143,18 +146,51 @@ class Pussy888Service : PlatformService() {
         error("")
     }
 
+//    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
+//        val clientToken = betOrderReq.token as Pussy888ClientToken
+//        val data = listOf(
+//                "pageIndex=1",
+//                "pageSize=1000",
+//                "userName=${betOrderReq.username}",
+//                "sDate=${betOrderReq.startTime.format(dateTimeFormatter)}",
+//                "eDate=${betOrderReq.endTime.format(dateTimeFormatter)}"
+//        )
+//
+//        val url = "${gameConstant.getOrderApiUrl(Platform.Pussy888)}/ashx/GameLog.ashx"
+//        val mapUtils = this.startGetJson(url = url, username = betOrderReq.username, clientToken = clientToken, data = data)
+//        return mapUtils.data
+//    }
+
     override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
         val clientToken = betOrderReq.token as Pussy888ClientToken
+
+        val endTime = LocalDateTime.now()
+        val startTime = LocalDate.now().atStartOfDay()
         val data = listOf(
                 "pageIndex=1",
                 "pageSize=1000",
                 "userName=${betOrderReq.username}",
-                "sDate=${betOrderReq.startTime.format(dateTimeFormatter)}",
-                "eDate=${betOrderReq.endTime.format(dateTimeFormatter)}"
+//                "sDate=${betOrderReq.startTime.format(dateTimeFormatter)}",
+//                "eDate=${betOrderReq.endTime.format(dateTimeFormatter)}"
+                "sDate=${startTime.format(dateTimeFormatter)}",
+                "eDate=${endTime.format(dateTimeFormatter)}"
         )
 
         val url = "${gameConstant.getOrderApiUrl(Platform.Pussy888)}/ashx/GameLog.ashx"
         val mapUtils = this.startGetJson(url = url, username = betOrderReq.username, clientToken = clientToken, data = data)
-        return mapUtils.data
+
+        val clientId = -1
+        val memberId = -1
+        return mapUtils.asList("results").map { bet ->
+            val orderId = bet.asString("uuid")
+            val betAmount = bet.asBigDecimal("bet")
+            val winAmount = bet.asBigDecimal("Win")
+            val betTime = bet.asLocalDateTime("CreateTime", dateTimeFormatter)
+
+            val originData = objectMapper.writeValueAsString(bet.data)
+
+            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Kiss918, orderId = orderId, betAmount = betAmount,
+                    winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData)
+        }
     }
 }

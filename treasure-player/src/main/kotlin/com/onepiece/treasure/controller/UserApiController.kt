@@ -91,8 +91,10 @@ class UserApiController(
         val current = this.currentUser()
         val platformMemberVo = getPlatformMember(platformMemberUo.platform)
 
-        gameApi.updatePassword(clientId = current.clientId, platform = platformMemberUo.platform, username = platformMemberVo.platformUsername,
-                password = platformMemberUo.password)
+        if (platformMemberUo.platform != Platform.Mega) {
+            gameApi.updatePassword(clientId = current.clientId, platform = platformMemberUo.platform, username = platformMemberVo.platformUsername,
+                    password = platformMemberUo.password)
+        }
 
         platformMemberService.updatePassword(id = platformMemberVo.id, password = platformMemberUo.password)
     }

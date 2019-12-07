@@ -12,6 +12,8 @@ interface PlatformMemberDao: BasicDao<PlatformMember> {
 
     fun findPlatformMember(memberId: Int): List<PlatformMember>
 
+    fun findByUsername(platform: Platform, username: String): PlatformMember
+
     fun create(platformMemberCo: PlatformMemberCo): Int
 
     fun transferIn(platformMemberTransferUo: PlatformMemberTransferUo): Boolean

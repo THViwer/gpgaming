@@ -4,6 +4,7 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.token.SpadeGamingClientToken
 import com.onepiece.treasure.controller.value.PlatformAuthValue
 import com.onepiece.treasure.core.service.PlatformBindService
+import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.GameApi
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
@@ -14,7 +15,8 @@ import java.util.*
 @RequestMapping
 class PlatformAuthApiController(
         private val gameApi: GameApi,
-        private val platformBindService: PlatformBindService
+        private val platformBindService: PlatformBindService,
+        private val platformMemberService: PlatformMemberService
 ): PlatformAuthApi {
 
     private val log = LoggerFactory.getLogger(PlatformAuthApiController::class.java)
@@ -25,6 +27,9 @@ class PlatformAuthApiController(
             @RequestBody loginReq: LoginReq): LoginResult {
 
         log.info("厅主：$d, 请求参数:$loginReq")
+
+        val successful = platformMemberService.login(platform = Platform.Mega, username = loginReq.loginId, password = loginReq.password)
+        log.info("登陆mega,用户名：${loginReq.loginId}是否成功:$successful")
 
         return LoginResult(success = "1", sessionId = UUID.randomUUID().toString(), msg = "login success")
     }

@@ -19,6 +19,8 @@ interface PlatformMemberService {
 
     fun findPlatformMember(memberId: Int): List<PlatformMember>
 
+    fun login(platform: Platform, username: String, password: String): Boolean
+
     fun find(memberId: Int, platform: Platform): PlatformMemberVo?
 
 //    fun bet(platformMemberBetUo: PlatformMemberBetUo)

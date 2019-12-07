@@ -52,6 +52,13 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
 
     }
 
+    override fun findByUsername(platform: Platform, username: String): PlatformMember {
+        return query()
+                .where("platform", platform)
+                .where("username", username)
+                .executeOnlyOne(mapper)
+    }
+
     override fun create(platformMemberCo: PlatformMemberCo): Int {
         return insert()
                 .set("platform", platformMemberCo.platform)
