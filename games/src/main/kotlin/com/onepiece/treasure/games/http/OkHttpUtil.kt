@@ -29,9 +29,9 @@ class OkHttpUtil(
     }
 
     val client = OkHttpClient.Builder()
-            .connectTimeout(5000, TimeUnit.SECONDS) //连接超时
-            .readTimeout(5000, TimeUnit.SECONDS) //读取超时
-            .writeTimeout(5000, TimeUnit.SECONDS) //写超时
+            .connectTimeout(10, TimeUnit.SECONDS) //连接超时
+            .readTimeout(10, TimeUnit.SECONDS) //读取超时
+            .writeTimeout(10, TimeUnit.SECONDS) //写超时
             .build()
 
 
