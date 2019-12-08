@@ -39,17 +39,12 @@ class MemberApiController(
         val levels = levelService.all(clientId).map { it.id to it }.toMap()
 
         val data = page.data.map {
-            try {
-                with(it) {
-                    MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name?: "",
-                            balance = BigDecimal.ZERO, status = it.status, createdTime = createdTime,
-                            loginIp = loginIp, loginTime = loginTime, name = it.name)
-                }
-            } catch (e: Exception) {
-                println("$")
-                null
+            with(it) {
+                MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name?: "error level",
+                        balance = BigDecimal.ZERO, status = it.status, createdTime = createdTime,
+                        loginIp = loginIp, loginTime = loginTime, name = it.name)
             }
-        }.filterNotNull()
+        }
 
         return MemberPage(total = page.total, data = data)
     }
@@ -69,6 +64,7 @@ class MemberApiController(
     @PostMapping
     override fun create(@RequestBody memberCoReq: MemberCoReq) {
         val clientId = getClientId()
+        check(memberCoReq.levelId > 0) { OnePieceExceptionCode.DATA_FAIL }
 
         val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password,
                 safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId, name = memberCoReq.name, phone = memberCoReq.phone)

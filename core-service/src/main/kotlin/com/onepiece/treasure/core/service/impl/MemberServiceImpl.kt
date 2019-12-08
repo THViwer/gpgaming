@@ -42,7 +42,7 @@ class MemberServiceImpl(
         val total = memberDao.total(query = memberQuery)
         if (total == 0) return Page.empty()
 
-        val data = memberDao.query(memberQuery, 0, 10).map { it.copy(password = "") }
+        val data = memberDao.query(memberQuery, current, size).map { it.copy(password = "") }
         return Page.of(total = total, data = data)
     }
 
