@@ -1,19 +1,18 @@
 package com.onepiece.treasure.beans.enums
 
-enum class PromotionCategory {
+enum class PromotionCategory(
+        val ename: String,
+        val cname: String
+) {
 
-    VIP,
+    First("New Member", "新会员"),
 
-    NewMember,
+    Slot("slot", "老虎机"),
 
-    Speial,
+    Live("live casino", "真人视频"),
 
-    SportBook,
+    Sport("sport", "体育"),
 
-    Casino,
-
-    Slot,
-
-    Winner
+    Fishing("fishing", "捕鱼")
 
 }
