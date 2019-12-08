@@ -100,9 +100,9 @@ open class ApiController(
 
             val i18nContent = i18nContentMap["${it.id}_${language}"] ?: i18nContentMap["${it.id}_${Language.EN}"] ?: error(OnePieceExceptionCode.LANGUAGE_CONFIG_FAIL)
 
-            PromotionVo(id = it.id, clientId = it.clientId, category = it.category, stopTime = it.stopTime, top = it.top, icon = it.icon, platform = it.platform,
+            PromotionVo(id = it.id, clientId = it.clientId, category = it.category, stopTime = it.stopTime, top = it.top, icon = it.icon, platforms = it.platforms,
                     title = i18nContent.title, synopsis = i18nContent.synopsis, content = i18nContent.content, status = it.status, createdTime = it.createdTime,
-                    precautions = i18nContent.precautions, ruleType = it.ruleType, rule = it.rule, platformName = it.platform?.detail?.name)
+                    precautions = i18nContent.precautions, ruleType = it.ruleType, rule = it.rule)
         }
 
     }

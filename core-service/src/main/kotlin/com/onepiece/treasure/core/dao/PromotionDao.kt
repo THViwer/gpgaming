@@ -12,6 +12,6 @@ interface PromotionDao: BasicDao<Promotion> {
 
     fun update(promotionUo: PromotionUo): Boolean
 
-    fun find(clientId: Int, platform: Platform): List<Promotion>
+//    fun find(clientId: Int, platform: Platform): List<Promotion>
 
 }

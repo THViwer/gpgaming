@@ -49,7 +49,7 @@ class PromotionApiController(
             PromotionVo(id = promotion.id, clientId = promotion.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
                     icon = promotion.icon, title = defaultContent.title, synopsis = defaultContent.synopsis, content = defaultContent.content, status = promotion.status,
                     createdTime = promotion.createdTime, updatedTime = promotion.updatedTime, i18nContents = i18nContents, promotionRuleVo = promotionRuleVo,
-                    platform = promotion.platform)
+                    platforms = promotion.platforms)
         }
     }
 
@@ -89,3 +89,4 @@ class PromotionApiController(
         promotionService.update(clientId = clientId, promotionUoReq = promotionUoReq)
     }
 }
+

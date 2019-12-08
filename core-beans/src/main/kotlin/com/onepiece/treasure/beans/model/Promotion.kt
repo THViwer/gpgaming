@@ -25,7 +25,7 @@ data class Promotion (
         val category: PromotionCategory,
 
         // 平台
-        val platform: Platform,
+        val platforms: List<Platform>,
 
         // 结束时间, 如果为null 则无限时间
         val stopTime: LocalDateTime?,
@@ -130,7 +130,7 @@ data class Promotion (
 
         val init = PlatformMemberTransferUo(id = platformMemberId, joinPromotionId = promotionId, currentBet = BigDecimal.ZERO, requirementBet = BigDecimal.ZERO,
                 promotionAmount = BigDecimal.ZERO, transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO,
-                promotionJson = null, joinPlatform = null)
+                promotionJson = null, platforms = platforms, category = category)
 
         return when (this.ruleType) {
             PromotionRuleType.Bet -> {
@@ -140,7 +140,7 @@ data class Promotion (
                 val requirementBet = (amount.plus(promotionAmount).plus(platformBalance)).multiply(betRule.betMultiple)
 
                 init.copy(currentBet = BigDecimal.ZERO, requirementBet = requirementBet, ignoreTransferOutAmount = betRule.ignoreTransferOutAmount,
-                        promotionAmount = promotionAmount, promotionJson = ruleJson, joinPlatform = platform)
+                        promotionAmount = promotionAmount, promotionJson = ruleJson)
 
             }
             PromotionRuleType.Withdraw -> {
@@ -151,7 +151,7 @@ data class Promotion (
                 val requirementTransferOutAmount = (amount.plus(promotionAmount).plus(platformBalance)).multiply(withdrawRule.transferMultiplied)
 
                 init.copy(currentBet = BigDecimal.ZERO, requirementTransferOutAmount = requirementTransferOutAmount, ignoreTransferOutAmount = withdrawRule.ignoreTransferOutAmount,
-                        promotionAmount = promotionAmount, promotionJson = ruleJson, joinPlatform = platform)
+                        promotionAmount = promotionAmount, promotionJson = ruleJson)
 
             }
         }

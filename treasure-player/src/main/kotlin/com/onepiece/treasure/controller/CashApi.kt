@@ -73,7 +73,7 @@ interface CashApi {
             @RequestParam("platform") platform: Platform,
             @RequestParam("amount") amount: BigDecimal,
             @RequestParam("promotionId", required = false) promotionId: Int?
-    ): CheckPromotionVo
+    ): CheckPromotinResp
 
     @ApiOperation(tags = ["cash"], value = "转账")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)

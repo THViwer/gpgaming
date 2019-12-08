@@ -24,13 +24,16 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
             val totalGiftBalance = rs.getBigDecimal("total_gift_balance")
             val totalDepositFrequency = rs.getInt("total_deposit_frequency")
             val totalWithdrawFrequency = rs.getInt("total_withdraw_frequency")
+            val totalTransferInFrequency = rs.getInt("total_transfer_in_frequency")
+            val totalTransferOutFrequency = rs.getInt("total_transfer_out_frequency")
 
             val processId = rs.getString("process_id")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             Wallet(id = id, clientId = clientId, memberId = memberId, balance = balance, totalDepositBalance = totalDepositBalance,
                     totalDepositFrequency = totalDepositFrequency, createdTime = createdTime,
                     processId = processId, freezeBalance = freezeBalance, totalWithdrawFrequency = totalWithdrawFrequency,
-                    totalGiftBalance = totalGiftBalance, totalWithdrawBalance = totalWithdrawBalance)
+                    totalGiftBalance = totalGiftBalance, totalWithdrawBalance = totalWithdrawBalance,
+                    totalTransferInFrequency = totalTransferInFrequency, totalTransferOutFrequency = totalTransferOutFrequency)
         }
 
     override fun getMemberWallet(memberId: Int): Wallet {
@@ -104,15 +107,20 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
     override fun transferIn(walletTransferInUo: WalletTransferInUo): Boolean {
         return update().asSet("balance = balance + ${walletTransferInUo.money}")
                 .set("process_id", UUID.randomUUID().toString())
+                .asSet("total_transfer_in_frequency = total_transfer_in_frequency + 1")
                 .where("id", walletTransferInUo.id)
                 .where("process_id", walletTransferInUo.processId)
                 .executeOnlyOne()
     }
 
-    override fun transferOut(walletTransferOutUo: WalletTransferOutUo): Boolean {
+    override fun transferOut(walletTransferOutUo: WalletTransferOutUo, frequency: Int): Boolean {
+
+        val frequencyStr = if (frequency > 0) " + 1" else " - 1"
+
         return update().asSet("balance = balance - ${walletTransferOutUo.money}")
                 .asSet("total_gift_balance = total_gift_balance + ${walletTransferOutUo.giftMoney}")
                 .set("process_id", UUID.randomUUID().toString())
+                .asSet("total_transfer_out_frequency = total_transfer_out_frequency $frequencyStr")
                 .where("id", walletTransferOutUo.id)
                 .where("process_id", walletTransferOutUo.processId)
                 .asWhere("balance >= ${walletTransferOutUo.money}")

@@ -1,11 +1,10 @@
 package com.onepiece.treasure.core.dao.impl
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.onepiece.treasure.beans.enums.*
-import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.PromotionCategory
+import com.onepiece.treasure.beans.enums.PromotionRuleType
+import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.model.Promotion
-import com.onepiece.treasure.beans.model.PromotionRules
 import com.onepiece.treasure.beans.value.database.PromotionCo
 import com.onepiece.treasure.beans.value.database.PromotionUo
 import com.onepiece.treasure.core.dao.PromotionDao
@@ -15,16 +14,14 @@ import java.sql.ResultSet
 import java.time.LocalDateTime
 
 @Repository
-class PromotionDaoImpl(
-        private val objectMapper: ObjectMapper
-) : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
+class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
 
     override val mapper: (rs: ResultSet) -> Promotion
         get() = { rs ->
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
             val category = rs.getString("category").let { PromotionCategory.valueOf(it) }
-            val platform = rs.getString("platform").let { Platform.valueOf(it) }
+            val platforms = rs.getString("platforms").split(",").map { Platform.valueOf(it) }
             val stopTime = rs.getTimestamp("stop_time")?.toLocalDateTime()
             val top = rs.getBoolean("top")
             val icon = rs.getString("icon")
@@ -38,7 +35,7 @@ class PromotionDaoImpl(
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
 
             Promotion(id = id, category = category, stopTime = stopTime, icon = icon, status = status, createdTime = createdTime,
-                    clientId = clientId, top = top, updatedTime = updatedTime, platform = platform, levelId = levelId,
+                    clientId = clientId, top = top, updatedTime = updatedTime, platforms = platforms, levelId = levelId,
                     ruleJson = ruleJson, ruleType = ruleType)
         }
 
@@ -46,7 +43,7 @@ class PromotionDaoImpl(
         return insert()
                 .set("client_id", promotionCo.clientId)
                 .set("category", promotionCo.category)
-                .set("platform", promotionCo.platform)
+                .set("platforms", promotionCo.platforms.joinToString(","))
                 .set("stop_time", promotionCo.stopTime)
                 .set("top", promotionCo.top)
                 .set("icon", promotionCo.icon)
@@ -60,6 +57,7 @@ class PromotionDaoImpl(
     override fun update(promotionUo: PromotionUo): Boolean {
         return update()
                 .set("category", promotionUo.category)
+                .set("platforms", promotionUo.platforms.joinToString(","))
                 .set("stop_time", promotionUo.stopTime)
                 .set("top", promotionUo.top)
                 .set("icon", promotionUo.icon)
@@ -71,10 +69,10 @@ class PromotionDaoImpl(
                 .executeOnlyOne()
     }
 
-    override fun find(clientId: Int, platform: Platform): List<Promotion> {
-        return query()
-                .where("client_id", clientId)
-                .where("platform", platform)
-                .execute(mapper)
-    }
+//    override fun find(clientId: Int, platform: Platform): List<Promotion> {
+//        return query()
+//                .where("client_id", clientId)
+//                .where("platform", platform)
+//                .execute(mapper)
+//    }
 }

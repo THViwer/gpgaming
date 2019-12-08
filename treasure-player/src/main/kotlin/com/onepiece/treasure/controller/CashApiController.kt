@@ -254,21 +254,29 @@ open class CashApiController(
             @RequestParam("platform") platform: Platform,
             @RequestParam("amount") amount: BigDecimal,
             @RequestParam("promotionId", required = false) promotionId: Int?
-    ): CheckPromotionVo {
+    ): CheckPromotinResp {
 
         val member = this.current()
+
+        val wallet = walletService.getMemberWallet(memberId = member.id)
         val promotions = promotionService.find(clientId = member.clientId, platform = platform)
 
-        val promotion = promotions.firstOrNull {
-            (promotionId != null && it.id == promotionId) ||
-                    (it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble())
+        val joinPromotions = promotions
+                .filter { promotionId == null || it.id == promotionId }
+                .filter { it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble() }
+                .filter { wallet.totalTransferOutFrequency == 0 || it.category != PromotionCategory.First }
+
+
+        val checkPromotions = joinPromotions.map { promotion ->
+
+            val platformMemberVo = getPlatformMember(platform)
+            val platformBalance = gameApi.balance(clientId = member.clientId, platform = platform, platformUsername = platformMemberVo.platformUsername,
+                    platformPassword =  platformMemberVo.platformPassword)
+            val promotionIntroduction = promotion.getPromotionIntroduction(amount = amount, language = language, platformBalance = platformBalance)
+            CheckPromotionVo(promotionId = promotion.id, promotionIntroduction = promotionIntroduction)
         }
 
-        val platformMemberVo = getPlatformMember(platform)
-        val platformBalance = gameApi.balance(clientId = member.clientId, platform = platform, platformUsername = platformMemberVo.platformUsername,
-                platformPassword =  platformMemberVo.platformPassword)
-        val promotionIntroduction = promotion?.getPromotionIntroduction(amount = amount, language = language, platformBalance = platformBalance)
-        return CheckPromotionVo(promotion = promotion != null, promotionId = promotion?.id, promotionIntroduction = promotionIntroduction)
+        return CheckPromotinResp(promotions = checkPromotions)
     }
 
     @PutMapping("/transfer")

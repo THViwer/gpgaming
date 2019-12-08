@@ -2,6 +2,7 @@ package com.onepiece.treasure.core.service.impl
 
 import com.onepiece.treasure.beans.enums.I18nConfig
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Promotion
 import com.onepiece.treasure.beans.value.database.I18nContentCo
@@ -39,7 +40,7 @@ class PromotionServiceImpl(
         // 创建优惠记录
         val promotionCo = PromotionCo(clientId = clientId, category = promotionCoReq.category, stopTime = promotionCoReq.stopTime, top = promotionCoReq.top,
                 icon = promotionCoReq.icon, levelId = promotionCoReq.promotionRuleVo.levelId, ruleType = promotionCoReq.promotionRuleVo.ruleType,
-                ruleJson = promotionCoReq.promotionRuleVo.ruleJson, platform = promotionCoReq.platform)
+                ruleJson = promotionCoReq.promotionRuleVo.ruleJson, platforms = promotionCoReq.platforms)
         val promotionId = promotionDao.create(promotionCo)
         check(promotionId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
@@ -68,7 +69,7 @@ class PromotionServiceImpl(
         // 更新优惠记录
         val promotionUo = PromotionUo(id = promotionUoReq.id, category = promotionUoReq.category, stopTime = promotionUoReq.stopTime,
                 top = promotionUoReq.top, icon = promotionUoReq.icon, status = promotionUoReq.status, levelId = promotionUoReq.levelId,
-                ruleJson = promotionUoReq.ruleJson)
+                ruleJson = promotionUoReq.ruleJson, platforms = promotionUoReq.platforms)
         val state = promotionDao.update(promotionUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
@@ -86,7 +87,8 @@ class PromotionServiceImpl(
     }
 
     override fun find(clientId: Int, platform: Platform): List<Promotion> {
-        return promotionDao.find(clientId = clientId, platform = platform)
+        return this.all(clientId).filter { it.status == Status.Normal }.filter { it.platforms.contains(platform) }
+//        return promotionDao.find(clientId = clientId, platform = platform)
     }
 
     //    override fun getCurrentPromotion(clientId: Int, platform: Platform): PromotionRule? {

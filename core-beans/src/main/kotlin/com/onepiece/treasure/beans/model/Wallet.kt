@@ -26,6 +26,12 @@ data class Wallet(
         // 总充值金额
         val totalDepositBalance: BigDecimal,
 
+        // 总转出次数
+        val totalTransferOutFrequency: Int,
+
+        // 总转入次数
+        val totalTransferInFrequency: Int,
+
         // 总取款金额
         val totalWithdrawBalance: BigDecimal,
 

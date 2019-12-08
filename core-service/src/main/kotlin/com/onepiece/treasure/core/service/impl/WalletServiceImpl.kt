@@ -53,13 +53,13 @@ class WalletServiceImpl(
             }
             WalletEvent.TRANSFER_IN_ROLLBACK -> {
                 val transferOutUo = WalletTransferOutUo(id = wallet.id, processId = wallet.processId, money = walletUo.money, giftMoney = BigDecimal.ZERO)
-                walletDao.transferOut(transferOutUo)
+                walletDao.transferOut(transferOutUo, -1)
             }
             WalletEvent.TRANSFER_OUT -> {
                 check(wallet.balance >= walletUo.money) { OnePieceExceptionCode.BALANCE_NOT_WORTH}
 
                 val transferOutUo = WalletTransferOutUo(id = wallet.id, processId = wallet.processId, money = walletUo.money, giftMoney = walletUo.giftBalance?: BigDecimal.ZERO)
-                walletDao.transferOut(transferOutUo)
+                walletDao.transferOut(transferOutUo, 1)
             }
             WalletEvent.TRANSFER_OUT_ROLLBACK -> {
                 val transferInUo = WalletTransferInUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)

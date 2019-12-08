@@ -24,8 +24,7 @@ interface WalletDao: BasicDao<Wallet> {
 
     fun transferIn(walletTransferInUo: WalletTransferInUo): Boolean
 
-    fun transferOut(walletTransferOutUo: WalletTransferOutUo): Boolean
-
+    fun transferOut(walletTransferOutUo: WalletTransferOutUo, frequency: Int): Boolean
 
     fun query(walletQuery: WalletQuery): List<Wallet>
 

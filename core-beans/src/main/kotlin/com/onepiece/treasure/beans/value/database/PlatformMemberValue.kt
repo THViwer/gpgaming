@@ -1,6 +1,7 @@
 package com.onepiece.treasure.beans.value.database
 
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.enums.PromotionCategory
 import java.math.BigDecimal
 
 data class PlatformMemberCo(
@@ -32,7 +33,13 @@ data class PlatformMemberTransferUo(
         val promotionJson: String?,
 
         // 参加活动的平台
-        val joinPlatform: Platform?,
+//        val joinPlatform: Platform?,
+
+        // 优惠活动列表
+        val platforms: List<Platform>,
+
+        // 优惠类型
+        val category: PromotionCategory,
 
         // 当前打码量
         val currentBet: BigDecimal,

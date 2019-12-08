@@ -15,7 +15,7 @@ data class PromotionCo(
         val category: PromotionCategory,
 
         // 平台
-        val platform: Platform,
+        val platforms: List<Platform>,
 
         // 结束时间, 如果为null 则无限时间
         val stopTime: LocalDateTime?,
@@ -43,6 +43,9 @@ data class PromotionUo(
 
         // 优惠类型
         val category: PromotionCategory? = null,
+
+        // 平台
+        val platforms: List<Platform>,
 
         // 结束时间, 如果为null 则无限时间
         val stopTime: LocalDateTime?,

@@ -156,16 +156,25 @@ data class CashWithdrawResp(
 )
 data class CheckPromotionVo(
 
-        @ApiModelProperty("是否有优惠活动")
-        val promotion: Boolean,
-
         @ApiModelProperty("优惠活动Id")
-        val promotionId: Int?,
+        val promotionId: Int,
 
         @ApiModelProperty("优惠活动介绍")
-        val promotionIntroduction: String?
+        val promotionIntroduction: String
 
 )
+
+data class CheckPromotinResp(
+
+        @ApiModelProperty("优惠活动列表")
+        val promotions: List<CheckPromotionVo>
+) {
+        val promotion: Boolean
+                @ApiModelProperty("是否有优惠活动")
+                get() = promotions.isNotEmpty()
+
+}
+
 
 data class CashTransferReq(
 

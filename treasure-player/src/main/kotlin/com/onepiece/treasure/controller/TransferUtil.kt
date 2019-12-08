@@ -100,7 +100,10 @@ class TransferUtil(
 
         // 优惠活动赠送金额
         val platformMemberTransferUo = this.handlerPromotion(platformMember = platformMember, amount = amount, promotionId = promotionId, platformBalance = platformBalance)
-        check(platformMemberTransferUo?.joinPlatform == null || platformMember.platform == platformMemberTransferUo.joinPlatform) { OnePieceExceptionCode.ILLEGAL_OPERATION }
+//        check(platformMemberTransferUo?.joinPlatform == null || platformMember.platform == platformMemberTransferUo.joinPlatform) { OnePieceExceptionCode.ILLEGAL_OPERATION }
+
+        // 检查是否满足首次优惠
+        check(wallet.totalTransferOutFrequency == 0 || platformMemberTransferUo?.category != PromotionCategory.First) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
         // 检查保证金是否足够
         platformBindService.updateEarnestBalance(clientId = clientId, platform = platform, earnestBalance = amount.negate())
@@ -125,7 +128,7 @@ class TransferUtil(
         } else {
             val init = PlatformMemberTransferUo(id = platformMember.id, joinPromotionId = null, currentBet = BigDecimal.ZERO, requirementBet = BigDecimal.ZERO,
                     promotionAmount = BigDecimal.ZERO, transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO,
-                    promotionJson = null, joinPlatform = null)
+                    promotionJson = null, platforms = emptyList(), category = PromotionCategory.Slot)
             platformMemberService.transferIn(init)
         }
 
@@ -175,7 +178,11 @@ class TransferUtil(
         check(promotion.status == Status.Normal) { OnePieceExceptionCode.PROMOTION_EXPIRED }
         check(this.checkStopTime(promotion.stopTime)) { OnePieceExceptionCode.PROMOTION_EXPIRED }
 
-        return promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount =  amount, platformBalance = platformBalance, promotionId = promotion.id)
+        val transferUo = promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount =  amount, platformBalance = platformBalance, promotionId = promotion.id)
+
+        // 检查当前平台是否是参加活动的平台
+        check(transferUo.platforms.contains(platformMember.platform)) { OnePieceExceptionCode.ILLEGAL_OPERATION }
+        return transferUo
     }
 
 

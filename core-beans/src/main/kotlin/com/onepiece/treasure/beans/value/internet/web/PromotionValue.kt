@@ -19,7 +19,7 @@ data class PromotionVo(
         val category: PromotionCategory,
 
         @ApiModelProperty("平台")
-        val platform: Platform,
+        val platforms: List<Platform>,
 
         @ApiModelProperty("结束时间, 如果为null 则无限时间")
         val stopTime: LocalDateTime?,
@@ -74,7 +74,7 @@ data class PromotionCoReq(
         val category: PromotionCategory,
 
         @ApiModelProperty("平台")
-        val platform: Platform,
+        val platforms: List<Platform>,
 
         @ApiModelProperty("结束时间, 如果为null 则无限时间")
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -119,6 +119,9 @@ data class PromotionUoReq(
 
         @ApiModelProperty("id")
         val id: Int,
+
+        @ApiModelProperty("平台")
+        val platforms: List<Platform>,
 
         @ApiModelProperty("优惠类型")
         val category: PromotionCategory?,

@@ -17,10 +17,10 @@ data class PromotionVo(
         val clientId: Int,
 
         @ApiModelProperty("平台")
-        val platform: Platform?,
+        val platforms: List<Platform>,
 
-        @ApiModelProperty("平台名称")
-        val platformName: String?,
+//        @ApiModelProperty("平台名称")
+//        val platformName: String?,
 
         @ApiModelProperty("优惠类型")
         val category: PromotionCategory,
