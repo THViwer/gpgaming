@@ -109,7 +109,7 @@ open class PlatformDetail private constructor(
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/pragmatic.jpeg", status = Status.Normal, demo = true)
         }
         fun ofSpadeGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "spade gaming", icon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "spade gaming", icon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.jpeg",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.jpeg", status = Status.Normal, demo = true)
         }
         fun ofTTG(): PlatformDetail {
