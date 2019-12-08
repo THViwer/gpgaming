@@ -10,17 +10,20 @@ import com.onepiece.treasure.core.service.BannerService
 import com.onepiece.treasure.core.service.ContactService
 import com.onepiece.treasure.core.service.I18nContentService
 import com.onepiece.treasure.core.service.PromotionService
+import org.springframework.scheduling.annotation.Async
 import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
 import kotlin.random.Random
 
 @RestController
 @RequestMapping("/api")
-class ApiController(
+open class ApiController(
         private val promotionService: PromotionService,
 //        private val announcementService: AnnouncementService,
         private val i18nContentService: I18nContentService,
         private val bannerService: BannerService,
-        private val contactService: ContactService
+        private val contactService: ContactService,
+        private val transferUtil: TransferUtil
 ) : BasicController(), Api {
 
     @GetMapping
@@ -134,7 +137,27 @@ class ApiController(
 
         val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
                 launch = launch, language = language, platformPassword = platformMember.platformPassword)
+
+        this.asyncTransfer(platform)
+
         return StartGameResp(path = gameUrl)
+    }
+
+
+    /**
+     * 异步转账
+     */
+    @Async
+    open fun asyncTransfer(platform: Platform) {
+
+        val current = this.current()
+        // 从其它钱包转到中心钱包
+        transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = platform)
+
+        // 从中心钱包转到
+        val platformMemberVo = getPlatformMember(platform)
+        val cashTransferReq = CashTransferReq(from = Platform.Center, to = platform, amount = BigDecimal.valueOf(-1), promotionId = null)
+        transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = cashTransferReq)
     }
 
     @GetMapping("/start/demo")
@@ -160,6 +183,9 @@ class ApiController(
 
         val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
                 gameId = gameId, language = language, launchMethod = launch)
+
+        this.asyncTransfer(platform)
+
         return StartGameResp(path = gameUrl)
 
     }

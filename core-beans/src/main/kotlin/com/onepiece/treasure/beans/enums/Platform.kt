@@ -185,7 +185,7 @@ open class PlatformDetail private constructor(
         }
 
         fun ofBcs(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Sport, name = "BCS", icon = "${SystemConstant.AWS_LOGO_URL}/bcs.png",
+            return PlatformDetail(category = PlatformCategory.Sport, name = "GP Gaming", icon = "${SystemConstant.AWS_LOGO_URL}/bcs.png",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/bcs.png", status = Status.Normal, demo = true)
         }
         fun ofCMD(): PlatformDetail {
