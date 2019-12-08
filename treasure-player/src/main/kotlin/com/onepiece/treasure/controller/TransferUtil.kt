@@ -95,7 +95,8 @@ class TransferUtil(
         // 检查余额
         val wallet = walletService.getMemberWallet(platformMember.memberId)
         val amount = if (transferAmount.toInt() == -1) wallet.balance else transferAmount
-        check(wallet.balance.toDouble() - amount.toDouble() >= 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
+        if (amount.toDouble() <= 0) return // 如果金额小于等于0 返回
+//        check(wallet.balance.toDouble() - amount.toDouble() > 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
 
         // 优惠活动赠送金额
         val platformMemberTransferUo = this.handlerPromotion(platformMember = platformMember, amount = amount, promotionId = promotionId, platformBalance = platformBalance)
