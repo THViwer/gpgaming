@@ -35,10 +35,9 @@ class UserApiController(
             LoginResp(id = client.id, clientId = client.id, username = client.username, role = Role.Client, token = authUser.token)
 
         } catch (e: Exception) {
-            e.printStackTrace()
             val waiter = waiterService.login(loginValue)
 
-            val authUser = authService.login(id = waiter.id, role = Role.Client, username = waiter.username)
+            val authUser = authService.login(id = waiter.id, role = Role.Waiter, username = waiter.username)
             LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = Role.Client, token = authUser.token)
         }
     }
