@@ -1,8 +1,7 @@
 package com.onepiece.treasure.games.slot
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.treasure.beans.enums.Language
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.model.token.PNGClientToken
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
@@ -158,8 +157,35 @@ class PNGService: PlatformService() {
 
         val token = this.getToken(clientToken =  clientToken, username = startSlotReq.username)
 
-        // pid = 8835
-        return super.startSlot(startSlotReq)
+        val lang = when (startSlotReq.language) {
+            Language.MY -> "ms_MY"
+            Language.VI -> "vi_VN"
+            Language.TH -> "th_TH"
+            Language.ID -> "id_ID"
+            Language.EN -> "en_US"
+            Language.CN -> "zh_CN"
+            else -> "en_US"
+        }
+
+        val urlParam = listOf(
+                "pid=8835",
+                "div=pngCasinoGame",
+                "gameid=${startSlotReq.gameId}",
+                "height=100%",
+                "width=100%",
+                "practice=0",
+                "ticket=$token",
+                "tusername=$token",
+                "lang=$lang"
+        ).joinToString("&")
+
+        val domain = when (startSlotReq.launchMethod) {
+            LaunchMethod.Web -> "https://bsistage.playngonetwork.com/casino/js"
+            LaunchMethod.Wap -> "https://bsistage.playngonetwork.com/casino/PlayMobile"
+            else -> "https://bsistage.playngonetwork.com/casino/js"
+        }
+
+        return "$domain?$urlParam"
     }
 
 }
