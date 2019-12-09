@@ -250,7 +250,7 @@ open class CashApiController(
 
     @GetMapping("/check/promotion")
     override fun checkPromotion(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("language") language: Language,
             @RequestParam("platform") platform: Platform,
             @RequestParam("amount") amount: BigDecimal,
             @RequestParam("promotionId", required = false) promotionId: Int?
@@ -322,7 +322,7 @@ open class CashApiController(
 
     @GetMapping("/balance")
     override fun balance(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("language") language: Language,
             @RequestHeader("platform") platform: Platform
     ): BalanceVo {
         val member = current()
@@ -355,7 +355,7 @@ open class CashApiController(
 
     @GetMapping("/balances")
     override fun balances(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("language") language: Language,
             @RequestParam("category", required = false) category: PlatformCategory?
     ): List<BalanceVo> {
 
