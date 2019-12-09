@@ -22,6 +22,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.io.File
 import java.util.*
+import java.util.stream.Collectors
 
 
 @Service
@@ -39,7 +40,7 @@ class SlotGameTask(
 //        this.jokerGameTask()
 
 //        this.spadeGameTask()
-//
+
 //        this.pragmaticTask()
 
         //TODO 因为是死的 所以不需要更新
@@ -138,7 +139,7 @@ class SlotGameTask(
 //        if (!change) return
 
         // 保存图片
-        val games = webGames.map {
+        val games = webGames.parallelStream().map {
             val url = "${gameConstant.getDomain(Platform.SpadeGaming)}/${it.icon}"
 
             val filePath = "${System.getProperties().getProperty("user.home")}/${UUID.randomUUID()}.jpg"
@@ -158,7 +159,7 @@ class SlotGameTask(
 
 
             it.copy(icon = imageUrl)
-        }
+        }.collect(Collectors.toList())
 
         val games2 = SlotMenuUtil.addCategory(games, SlotMenuUtil.spadeJson)
         this.upload(games = games2, path = "slot/spade_game.json")
@@ -180,9 +181,28 @@ class SlotGameTask(
     private fun upload(games: List<SlotGame>, path: String) {
         if (games.isEmpty()) return
 
-        val gameCategories = games.groupBy { it.category }.map {
-            SlotCategory(gameCategory = it.key, games = it.value)
-        }
+        val hots = hashSetOf<String>()
+        val news = hashSetOf<String>()
+
+        val gameCategories = games.groupBy { it.category }.map { entry ->
+
+
+            val tmpGames = entry.value.map {
+                if (entry.key == GameCategory.Hot) {
+                    hots.add(it.gameId)
+                } else if (entry.key == GameCategory.New) {
+                    news.add(it.gameId)
+                }
+
+                val hot = hots.contains(it.gameId)
+                val new = news.contains(it.gameId)
+
+                it.copy(hot = hot, new = new)
+
+            }
+
+            SlotCategory(gameCategory = entry.key, games = tmpGames)
+        }.sortedBy { it.gameCategory.sort }
 
         val webJson = objectMapper.writeValueAsString(gameCategories)
         val file = File("${System.getProperties().getProperty("user.home")}/${UUID.randomUUID()}.json")

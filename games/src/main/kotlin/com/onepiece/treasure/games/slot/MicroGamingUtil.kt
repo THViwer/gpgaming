@@ -26,7 +26,7 @@ object MicroGamingUtil {
 //        }.filterNotNull()
 //    }
 
-    fun handlerLines(line: String): SlotGame? {
+    fun handlerLines(line: String, iconPath: String): SlotGame? {
         val list = line.split(",")
         val gameName = list[0]
         val chineseGameName = list[1]
@@ -56,26 +56,51 @@ object MicroGamingUtil {
 //            else -> GameCategory.Default
 //        }
 
-        val imageName = imageList.split("/").first().split(".").first()
+        val imageName = imageList.split("/").first().split(".").first().replace(" ", "").replace("®", "")
 
-        val icon = "${SystemConstant.AWS_SLOT}/micro_game/${imageName}.png"
-        return SlotGame(gameId = gameId, gameName = gameName, chineseGameName = chineseGameName, category = GameCategory.Slot, icon = icon, touchIcon = null,
+        // 上传图片
+        val originIcon = File("$iconPath/${imageName}.png")
+        AwsS3Util.uploadLocalFile(originIcon, "slot/micro_game/${imageName}.png")
+
+        // 切分图片
+        val cupPath = "$iconPath/123"
+        val fileList = MicroGamingCutUtil.cutImageToFile(originIcon, cupPath, 2)
+
+        val icon: String
+        val touchIcon: String
+        if (fileList.size == 1) {
+            icon = "${SystemConstant.AWS_SLOT}/micro_game/${imageName}.png"
+            touchIcon = "${SystemConstant.AWS_SLOT}/micro_game/${imageName}.png"
+        } else {
+            AwsS3Util.uploadLocalFile(fileList[0], "slot/micro_game/${imageName}_0.png")
+            AwsS3Util.uploadLocalFile(fileList[1], "slot/micro_game/${imageName}_1.png")
+
+
+            icon = "${SystemConstant.AWS_SLOT}/micro_game/${imageName}_0.png"
+            touchIcon = "${SystemConstant.AWS_SLOT}/micro_game/${imageName}_1.png"
+        }
+
+        return SlotGame(gameId = gameId, gameName = gameName, chineseGameName = chineseGameName, category = GameCategory.Slot, icon = icon, touchIcon = touchIcon,
                 hot = false, new = false, status = Status.Normal, platform = Platform.MicroGaming)
     }
 
-    fun uploadJson(csvFile: String) {
+    fun uploadJson(csvFile: String, iconPath: String) {
         // 生成json格式
         val file = File(csvFile)
         val list = file.readLines().mapNotNull {
             try {
-                handlerLines(it)
+                handlerLines(it, iconPath)
             } catch (e: Exception) {
+                e.printStackTrace()
                 null
             }
         }
 
 
-        val games = SlotMenuUtil.addCategory(list, SlotMenuUtil.microJson)
+        val games = SlotMenuUtil.addCategory(list, SlotMenuUtil.microJson).map {
+            it.copy(icon = it.icon.replace(" ", "").replace("®", ""),
+                    touchIcon = it.touchIcon?.replace(" ", "")?.replace("®", ""))
+        }
 
         val slotCategories = games.groupBy { it.category }.map {
             SlotCategory(gameCategory = it.key, games = it.value)
@@ -97,7 +122,7 @@ object MicroGamingUtil {
     fun uploadImages(local: String) {
         // 上传mg图片
         val root = File(local)
-        root.listFiles().forEach {
+        root.listFiles().toList().parallelStream().forEach {
             val name = it.name
             val url = AwsS3Util.uploadLocalFile(it, "slot/micro_game/$name")
             println(url)
@@ -105,17 +130,44 @@ object MicroGamingUtil {
     }
 
 
+    fun cutImage(path: String) {
+        // BTN_3Empire_ZH.png
+
+        val file = File(path)
+
+        val savePath = "$path/123"
+
+        file.listFiles().filter { it.name.contains(".png") }.parallelStream().forEach {
+            try {
+                val list = MicroGamingCutUtil.cutImageToFile(it, savePath, 2)
+                if (list.size == 1) {
+                    println(it.name)
+                }
+            } catch (e: Exception) {
+
+            }
+        }
+
+
+    }
+
 }
 
 
 fun main() {
+//    val path = "/Users/cabbage/Downloads/MG__GameButtons__ALL/"
+//    MicroGamingUtil.cutImage(path = path)
 
 //     上传图片
-//    val local = "/Users/cabbage/Downloads/MG__GameButtons__ALL"
+//    val local = "/Users/cabbage/Downloads/MG__GameButtons__ALL/123"
 //    MicroGamingUtil.uploadImages(local)
 
     // 上传json
     val csvLocal = "/Users/cabbage/Desktop/MG_Game_List_November_2019_Dashur.csv"
-    MicroGamingUtil.uploadJson(csvLocal)
+    val iconPath = "/Users/cabbage/Downloads/MG__GameButtons__ALL"
+    MicroGamingUtil.uploadJson(csvLocal, iconPath)
 
+
+//    val x = File("/Users/cabbage/Downloads/MG__GameButtons__ALL/").listFiles().firstOrNull { it.name.contains("BTN_DoubleJoker") }
+//    println(x)
 }

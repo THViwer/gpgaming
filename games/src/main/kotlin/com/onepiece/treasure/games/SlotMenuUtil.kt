@@ -18,11 +18,14 @@ object SlotMenuUtil {
     val ttgWebJson = "{\"Hot\":[\"1079:ReelsOfFortune:0\",\"1077:GoldenAmazon:0\",\"1089:MonkeyLuck:0\",\"1072:SuperKids:0\",\"1078:Huluwa:0\",\"1075:DetectiveBlackCat:0\",\"1064:FireGoddessH5:0\",\"1069:MoreMonkeysH5:0\",\"1016:MadMonkey:0\",\"1052:FrogsNFliesH5:0\",\"1053:ChilliGoldH5:0\",\"1068:ThunderingZeusH5:0\",\"1058:LostTempleH5:0\",\"1057:SilverLionH5:0\",\"1070:DragonPalaceH5:0\",\"1025:LuckyPanda:0\"],\"New\":[\"1083:MadMonkey2:0\",\"1136:GoldenClaw:0\",\"1082:FrogsNFlies2:0\",\"1114:WildWildTiger:0\",\"1120:GoldenBuffalo:0\",\"1080:GoldenDragon:0\",\"1106:WildKartRacers:0\",\"1084:MedusaCurse:0\",\"1130:DiamondFortune:0\",\"1112:UltimateFighter:0\",\"1125:Shark:0\",\"1046:Crazy8s:0\",\"1098:DiaDeMuertos:0\",\"1099:NeptunesGoldH5:0\",\"1107:KingDinosaur:0\"],\"Slot\":[\"1079:ReelsOfFortune:0\",\"1077:GoldenAmazon:0\",\"1089:MonkeyLuck:0\",\"1072:SuperKids:0\",\"1078:Huluwa:0\",\"1075:DetectiveBlackCat:0\",\"1064:FireGoddessH5:0\",\"1069:MoreMonkeysH5:0\",\"1016:MadMonkey:0\",\"1052:FrogsNFliesH5:0\",\"1053:ChilliGoldH5:0\",\"1068:ThunderingZeusH5:0\",\"1058:LostTempleH5:0\",\"1057:SilverLionH5:0\",\"1070:DragonPalaceH5:0\",\"1025:LuckyPanda:0\",\"1118:LuckyPandaH5:0\",\"1103:HeroesNeverDie:0\",\"1109:FairyHollow:0\",\"1111:NeutronStarH5:0\",\"1132:ThreeDiamonds:0\",\"1133:GoldenPigNJ:0\",\"1044:StacksOfCheese:0\",\"1047:DynastyEmpire:0\",\"1063:FuStarH5:0\",\"1066:AladdinsLegacyH5:0\",\"1067:FivePiratesH5:0\",\"1080:GoldenDragon:0\",\"1101:GemRiches :0\",\"1087:YingCaiShen:0\",\"1102:WildTriads:0\",\"1100:TinyDoorGods:0\",\"1043:KungFuShowdown:0\",\"1091:BattleHeroes:0\",\"1104:DiamondTowerH5:0\",\"1024:TheSilkRoad:0\",\"1030:TikiTreasures:0\",\"1033:RobinHood:0\",\"1037:TigerSlayer:0\",\"1036:TheHoppingDead:0\",\"1040:DragonBallReels:0\",\"1042:EightImmortals :0\",\"1049:LegendOfLinkH5:0\",\"1054:YearOfTheMonkeyH5:0\",\"1003:DolphinGold:0\",\"1056:DragonKingH5:0\",\"1060:FortunePaysH5:0\",\"1061:HotVolcanoH5:0\",\"1073:GongXiFaCai:0\",\"526:FrogsNFlies:0\",\"1083:MadMonkey2:0\",\"533:ChilliGold:0\",\"486:ThunderingZeus:0\",\"1000:FortunePays:0\",\"484:LostTemple:0\",\"525:AladdinsLegacy:0\",\"480:VampiresVsWerewolves:0\",\"423:Dragon8sSlots:0\",\"1007:SilverLion:0\",\"411:FruitParty:0\",\"516:Taxi:0\",\"63:ArthursQuest:0\",\"478:SerengetiDiamonds:0\",\"477:AngelsTouch:0\",\"475:DracosFire:0\",\"1022:HotVolcano:0\",\"515:SamuraiPrincess:0\",\"444:BerryBlastSlots:0\",\"1039:RoseOfVenice:0\",\"1031:NeutronStar:0\",\"1034:Cleopatra:0\",\"1029:DragonPalace:0\",\"1027:AladdinHandOfMidas:0\",\"1026:Athena:0\",\"1011:JadeEmpire:0\",\"1035:YearOfTheMonkey:0\",\"1023:SnakeCharmer:0\",\"1028:GrandPrix:0\",\"1021:DragonKing:0\",\"1018:PotOGoldII:0\",\"1013:MonkeyAndTheMoon:0\",\"1017:ZeusVsHades:0\",\"1019:FireGoddess:0\",\"1009:KatLeeII:0\",\"1012:FivePirates:0\",\"1014:MoreMonkeys:0\",\"1004:JourneyWest:0\",\"1006:ActionHeroes:0\",\"1015:RedHotFreeSpins:0\",\"1008:CashGrabII:0\",\"1003:DolphinGold:0\",\"1002:ZodiacWilds:0\",\"1001:FuStar:0\",\"540:Fortune8Cat:0\",\"530:ChoySunDoa:0\",\"483:ShogunShowdown:0\",\"474:SinfulSpinsSlots:0\",\"473:BarsAndBellsSlots:0\",\"468:VictoryRidgeSlots:0\",\"462:ArthursQuestIISlots:0\",\"453:TheGreatCasiniSlots:0\",\"452:MagicalGroveSlots:0\",\"449:SurfsUpSlots:0\",\"447:TBSpinNWinSlots:0\",\"446:FortuneTellerSlots:0\",\"444:BerryBlastSlots:0\",\"440:KatLeeSlots:0\",\"439:LadysCharmsSlots:0\",\"438:VivaVeneziaSlots:0\",\"437:FanCashticSlots:0\",\"428:WildMummySlots:0\",\"424:PolarRichesSlots:0\",\"1083:MadMonkey2:0\",\"421:MonkeyLoveSlots:0\",\"416:NeptunesGoldSlots:0\",\"414:AmazonAdventureSlots:0\",\"413:JackpotHolidaySlots:0\",\"401:GoooalSlots:0\",\"1008:CashGrabII:0\",\"65:Oktoberfest:0\",\"64:BullsEyeBucks:0\",\"18:HoleInOne:0\",\"15:HollywoodReels:0\",\"10:FastTrack:0\",\"1136:GoldenClaw:0\",\"1082:FrogsNFlies2:0\",\"1114:WildWildTiger:0\",\"1120:GoldenBuffalo:0\",\"1080:GoldenDragon:0\",\"1106:WildKartRacers:0\",\"1084:MedusaCurse:0\",\"1130:DiamondFortune:0\",\"1112:UltimateFighter:0\",\"1125:Shark:0\",\"1046:Crazy8s:0\",\"1098:DiaDeMuertos:0\",\"1099:NeptunesGoldH5:0\",\"1107:KingDinosaur:0\"]}"
 
 
+
     fun addCategory(slotGames: List<SlotGame>, json: String): List<SlotGame> {
 
         val gameMap = slotGames.map { it.gameId to it }.toMap()
 
         val objectMapper = jacksonObjectMapper()
+        val hots = hashSetOf<String>()
+        val news = hashSetOf<String>()
         return objectMapper.readValue<Map<String, List<String>>>(json).filter { it.key.isNotBlank() } .map { a ->
 
             val category = GameCategory.valueOf(a.key)
@@ -31,7 +34,18 @@ object SlotMenuUtil {
                 game.copy(category = category)
 
             }
-        }.reduce { acc, list ->  acc.plus(list)}
+        }.reduce { acc, list ->  acc.plus(list)}.map {
+
+            if (it.category == GameCategory.Hot) {
+                hots.add(it.gameId)
+            } else if (it.category == GameCategory.New) {
+                news.add(it.gameId)
+            }
+
+            val hot = hots.contains(it.gameId)
+            val new = news.contains(it.gameId)
+            it.copy(hot = hot, new = new)
+        }
     }
 
 }

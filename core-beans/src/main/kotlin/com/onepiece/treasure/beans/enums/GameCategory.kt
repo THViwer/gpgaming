@@ -1,24 +1,26 @@
 package com.onepiece.treasure.beans.enums
 
-enum class GameCategory {
+enum class GameCategory(
+        val sort: Int
+) {
 
-    New,
+    New(2),
 
-    Hot,
+    Hot(1),
 
-    Slot,
+    Slot(3),
 
-    Fishing,
+    Fishing(4),
 
-    Table,
+    Table(5),
 
-    Arcrade,
+    Arcrade(5),
 
-    Scratch,
+    Scratc(6),
 
-    Keno,
+    Keno(6),
 
-    Default
+    Default(7)
 
 
 //    // 未分类

@@ -132,7 +132,7 @@ open class PlatformDetail private constructor(
         // live game
         fun ofCT(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.LiveVideo, name = "CT", icon = defaultLogoPath,
-                    disableIcon = defaultLogoPath, status = Status.Stop)
+                    disableIcon = defaultLogoPath, status = Status.Delete)
         }
 
         fun ofDreamGaming(): PlatformDetail {

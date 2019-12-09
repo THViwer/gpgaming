@@ -195,7 +195,8 @@ object TTGGames {
                     "chineseName" to chineseGameName,
                     "gameType" to gameType,
                     "platforms" to platforms,
-                    "category" to category
+                    "category" to category,
+                    "originGameId" to gameId
             )
 
             MapUtil.instance(map)
@@ -205,16 +206,18 @@ object TTGGames {
 
         mobileGames = list.filter { it.asString("platforms").contains("Mobile") }.map {
             val gameId = it.asString("gameId")
+            val originGameId = it.asString("originGameId")
             SlotGame(gameId = gameId, gameName = it.asString("englishName"), chineseGameName = it.asString("chineseName"),
-                    category = GameCategory.Slot, hot = false, new = false, icon = "http://ams-games.stg.ttms.co/player/assets/images/games/${gameId}.png",
-                    status = Status.Normal, touchIcon = "http://ams-games.stg.ttms.co/player/assets/images/games/${gameId}.png", platform = Platform.TTG)
+                    category = GameCategory.Slot, hot = false, new = false, icon = "http://ams-games.stg.ttms.co/player/assets/images/games/${originGameId}.png",
+                    status = Status.Normal, touchIcon = null, platform = Platform.TTG)
         }
 
         pcGames = list.filter { it.asString("platforms").contains("Web") }.map {
             val gameId = it.asString("gameId")
+            val originGameId = it.asString("originGameId")
             SlotGame(gameId = gameId, gameName = it.asString("gameName"), chineseGameName = it.asString("chineseName"),
-                    category = GameCategory.Slot, hot = false, new = false, icon = "http://ams-games.stg.ttms.co/player/assets/images/games/${gameId}.png",
-                    status = Status.Normal, touchIcon = "http://ams-games.stg.ttms.co/player/assets/images/games/${gameId}.png", platform = Platform.TTG)
+                    category = GameCategory.Slot, hot = false, new = false, icon = "http://ams-games.stg.ttms.co/player/assets/images/games/${originGameId}.png",
+                    status = Status.Normal, touchIcon = null, platform = Platform.TTG)
         }
 
 //        gameMapUtils = list.map { it.asString("gameId") to it }.toMap()

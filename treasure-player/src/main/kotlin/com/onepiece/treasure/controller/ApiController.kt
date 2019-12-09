@@ -39,7 +39,7 @@ open class ApiController(
         val platforms = platformBinds.map {
             PlatformVo(id = it.id, name = it.platform.detail.name, category = it.platform.detail.category, status = it.status, icon = it.platform.detail.icon,
                     launchs = it.platform.detail.launchs, platform = it.platform, demo = it.platform.detail.demo)
-        }
+        }.filter { it.platform.detail.status != Status.Delete }
 
         // 公告
         val contents = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Announcement)
@@ -194,7 +194,7 @@ open class ApiController(
     override fun startSlotDemoGame(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
-            @RequestParam("platform") platform: Platform,
+            @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp {
 
         val gameUrl = gameApi.startSlotDemo(clientId = getClientIdByDomain(), platform = platform, gameId = gameId, language = language,
