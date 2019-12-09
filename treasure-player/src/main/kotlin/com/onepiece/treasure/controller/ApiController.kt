@@ -175,7 +175,7 @@ open class ApiController(
     override fun startSlotGame(
             @RequestHeader("language", defaultValue = "EN") language: Language,
             @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
-            @RequestParam("platform") platform: Platform,
+            @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp {
 
         val platformMember = getPlatformMember(platform)
