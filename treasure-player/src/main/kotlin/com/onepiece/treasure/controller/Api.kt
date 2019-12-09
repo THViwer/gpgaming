@@ -13,8 +13,8 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "首页配置")
     fun config(
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
-            @RequestHeader("language", defaultValue = "EN") language: Language): ConfigVo
+            @RequestHeader("launch") launch: LaunchMethod,
+            @RequestHeader("language") language: Language): ConfigVo
 
     @ApiOperation(tags = ["api"], value = "平台类别页面详细资料")
     fun categories(
@@ -23,41 +23,41 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "优惠活动")
     fun promotion(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("language") language: Language,
             @RequestParam("promotionCategory", required = false) promotionCategory: PromotionCategory?
     ): List<PromotionVo>
 
         @ApiOperation(tags = ["api"], value = "老虎机菜单")
     fun slotMenu(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
+            @RequestHeader("language") language: Language,
+            @RequestHeader("launch") launch: LaunchMethod,
             @RequestParam("platform") platform: Platform): Map<String, String>
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台)")
     fun start(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("language") language: Language,
             @RequestHeader("platform") platform: Platform,
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
+            @RequestHeader("launch") launch: LaunchMethod
     ): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台试玩)")
     fun startDemo(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("language") language: Language,
             @RequestHeader("platform") platform: Platform,
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
+            @RequestHeader("launch") launch: LaunchMethod
     ): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始游戏(老虎机)")
     fun startSlotGame(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
+            @RequestHeader("language") language: Language,
+            @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始试玩(老虎机)")
     fun startSlotDemoGame(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
+            @RequestHeader("language") language: Language,
+            @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp
 
@@ -71,7 +71,7 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "获得平台类目页信息")
     fun categorys(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("language") language: Language,
             @PathVariable("category") category: PlatformCategory
     ): PlatformCategoryDetail
 

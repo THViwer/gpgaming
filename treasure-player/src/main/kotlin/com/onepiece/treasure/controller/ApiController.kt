@@ -4,6 +4,7 @@ import com.onepiece.treasure.beans.SystemConstant
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.internet.web.SlotCategory
+import com.onepiece.treasure.common.TransferSync
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
 import com.onepiece.treasure.core.service.BannerService
@@ -19,17 +20,16 @@ import kotlin.random.Random
 @RequestMapping("/api")
 open class ApiController(
         private val promotionService: PromotionService,
-//        private val announcementService: AnnouncementService,
         private val i18nContentService: I18nContentService,
         private val bannerService: BannerService,
         private val contactService: ContactService,
-        private val transferUtil: TransferUtil
+        private val transferSync: TransferSync
 ) : BasicController(), Api {
 
     @GetMapping
     override fun config(
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
-            @RequestHeader("language", defaultValue = "EN") language: Language
+            @RequestHeader("launch") launch: LaunchMethod,
+            @RequestHeader("language") language: Language
     ): ConfigVo {
 
         val clientId = this.getClientIdByDomain()
@@ -85,7 +85,7 @@ open class ApiController(
 
     @GetMapping("/promotion")
     override fun promotion(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("language") language: Language,
             @RequestParam("promotionCategory", required = false) promotionCategory: PromotionCategory?
     ): List<PromotionVo> {
 
@@ -109,8 +109,8 @@ open class ApiController(
 
     @GetMapping("/slot/menu")
     override fun slotMenu(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
+            @RequestHeader("language") language: Language,
+            @RequestHeader("launch") launch: LaunchMethod,
             @RequestParam("platform") platform: Platform): Map<String, String> {
 
         val url = when(platform) {
@@ -128,9 +128,9 @@ open class ApiController(
 
     @GetMapping("/start")
     override fun start(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("language") language: Language,
             @RequestHeader("platform") platform: Platform,
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
+            @RequestHeader("launch") launch: LaunchMethod
     ): StartGameResp {
         val member = current()
         val platformMember = getPlatformMember(platform)
@@ -138,33 +138,19 @@ open class ApiController(
         val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
                 launch = launch, language = language, platformPassword = platformMember.platformPassword)
 
-        this.asyncTransfer(platform)
+        transferSync.asyncTransfer(current(), platformMember)
 
         return StartGameResp(path = gameUrl)
     }
 
 
-    /**
-     * 异步转账
-     */
-    @Async
-    open fun asyncTransfer(platform: Platform) {
 
-        val current = this.current()
-        // 从其它钱包转到中心钱包
-        transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = platform)
-
-        // 从中心钱包转到
-        val platformMemberVo = getPlatformMember(platform)
-        val cashTransferReq = CashTransferReq(from = Platform.Center, to = platform, amount = BigDecimal.valueOf(-1), promotionId = null)
-        transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = cashTransferReq)
-    }
 
     @GetMapping("/start/demo")
     override fun startDemo(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("language") language: Language,
             @RequestHeader("platform") platform: Platform,
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
+            @RequestHeader("launch") launch: LaunchMethod
     ): StartGameResp {
         val url = gameApi.startDemo(clientId = getClientIdByDomain(), platform = platform, language = language, launch = launch)
 
@@ -173,8 +159,8 @@ open class ApiController(
 
     @GetMapping("/start/slot")
     override fun startSlotGame(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
+            @RequestHeader("language") language: Language,
+            @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp {
 
@@ -184,7 +170,7 @@ open class ApiController(
         val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
                 gameId = gameId, language = language, launchMethod = launch)
 
-        this.asyncTransfer(platform)
+        transferSync.asyncTransfer(current(), platformMember)
 
         return StartGameResp(path = gameUrl)
 
@@ -192,8 +178,8 @@ open class ApiController(
 
     @GetMapping("/start/slot/demo")
     override fun startSlotDemoGame(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
+            @RequestHeader("language") language: Language,
+            @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp {
 
@@ -238,7 +224,7 @@ open class ApiController(
 
     @GetMapping("/{category}")
     override fun categorys(
-            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestHeader("language") language: Language,
             @PathVariable("category") category: PlatformCategory
     ): PlatformCategoryDetail {
 
