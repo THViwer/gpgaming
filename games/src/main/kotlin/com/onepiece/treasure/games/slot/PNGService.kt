@@ -134,6 +134,7 @@ class PNGService: PlatformService() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+
     private fun getToken(clientToken: PNGClientToken, username: String): String {
         val data = """
             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://playngo.com/v1">  
@@ -149,6 +150,39 @@ class PNGService: PlatformService() {
 
         val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/GetTicket")
         return mapUtil.asMap("Body").asMap("GetTicketResponse").asString("Ticket")
+    }
+
+    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
+
+        val lang = when (startSlotReq.language) {
+            Language.MY -> "ms_MY"
+            Language.VI -> "vi_VN"
+            Language.TH -> "th_TH"
+            Language.ID -> "id_ID"
+            Language.EN -> "en_US"
+            Language.CN -> "zh_CN"
+            else -> "en_US"
+        }
+
+        val urlParam = listOf(
+                "pid=8835",
+                "div=pngCasinoGame",
+                "gid=${startSlotReq.gameId}",
+                "height=100%",
+                "width=100%",
+                "practice=1",
+//                "ticket=$token",
+//                "tusername=$token",
+                "lang=$lang"
+        ).joinToString("&")
+
+        val domain = when (startSlotReq.launchMethod) {
+            LaunchMethod.Web -> "https://bsistage.playngonetwork.com/casino/js"
+            LaunchMethod.Wap -> "https://bsistage.playngonetwork.com/casino/PlayMobile"
+            else -> "https://bsistage.playngonetwork.com/casino/js"
+        }
+
+        return "$domain?$urlParam"
     }
 
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
