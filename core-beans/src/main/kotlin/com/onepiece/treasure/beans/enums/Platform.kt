@@ -164,8 +164,8 @@ open class PlatformDetail private constructor(
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/allBet.jpeg", status = Status.Normal)
         }
         fun ofSaGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sa gaming", icon = "${SystemConstant.AWS_LOGO_URL}/saGaming.png",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/saGaming.png", status = Status.Stop)
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sa gaming", icon = "${SystemConstant.AWS_LOGO_URL}/saGaming.jpeg",
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/saGaming.jpeg", status = Status.Stop)
         }
         fun ofAsiaGaming(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.LiveVideo, name = "asia gaming", icon = "${SystemConstant.AWS_LOGO_URL}/asiaGaming.png",
