@@ -3,7 +3,6 @@ package com.onepiece.treasure.games
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.model.token.ClientToken
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIGlobalBinding
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
