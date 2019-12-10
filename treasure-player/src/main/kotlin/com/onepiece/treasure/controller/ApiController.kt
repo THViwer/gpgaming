@@ -119,6 +119,7 @@ open class ApiController(
             Platform.Pragmatic -> "${SystemConstant.AWS_SLOT}/pragmatic_${launch.name.toLowerCase()}.json"
             Platform.SpadeGaming -> "${SystemConstant.AWS_SLOT}/spade_game.json"
             Platform.TTG -> "${SystemConstant.AWS_SLOT}/ttg_${launch.name.toLowerCase()}.json"
+            Platform.PNG -> "${SystemConstant.AWS_SLOT}/png_${launch.name.toLowerCase()}.json"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
         return mapOf(
