@@ -81,6 +81,12 @@ sealed class GameValue {
 
             val orderId: String,
 
+            val amount: BigDecimal,
+
+
+            // deposit or withdraw
+            val type: String,
+
             val platformOrderId: String
     )
 

@@ -285,15 +285,20 @@ class GameApi(
 
         // 重试两次
         if (index > 2) {
+            val type = if (amount.toDouble() > 0) "deposit" else "withdraw"
             // 检查转账是否成功
-            val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = orderId)
+            val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = orderId,
+                    amount = amount, type = type)
             return this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
         }
 
         return try {
             val platformOrderId = this.getPlatformApi(platform).transfer(transferReq)
             return true
-//            val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = platformOrderId)
+
+//            val type = if (amount.toDouble() > 0) "deposit" else "withdraw"
+//            val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = platformOrderId,
+//                    amount = amount, type = type)
 //            return this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
         } catch (e: Exception) {
             log.error("转账失败第${index}次，请求参数：$transferReq ", e)

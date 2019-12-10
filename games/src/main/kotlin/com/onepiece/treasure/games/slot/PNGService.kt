@@ -2,6 +2,7 @@ package com.onepiece.treasure.games.slot
 
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
+import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.PNGClientToken
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
@@ -131,7 +132,43 @@ class PNGService: PlatformService() {
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val clientToken = checkTransferReq.token as PNGClientToken
+
+        val mapUtil = when (checkTransferReq.type) {
+            "deposit" -> {
+                val data = """
+                    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://playngo.com/v1">
+                       <soapenv:Header />
+                       <soapenv:Body>
+                          <v1:Credit>
+                             <v1:ExternalUserId>${checkTransferReq.username}</v1:ExternalUserId>
+                             <v1:Amount>${checkTransferReq.amount}</v1:Amount>
+                             <v1:ExternalTransactionId>${checkTransferReq.orderId}</v1:ExternalTransactionId>
+                          </v1:Credit>
+                       </soapenv:Body>
+                    </soapenv:Envelope>
+            """.trimIndent()
+                this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/CreditAccount")
+            }
+            "withdraw" -> {
+                val data = """
+                    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://playngo.com/v1">
+                       <soapenv:Header />
+                       <soapenv:Body>
+                          <v1:Debit>
+                             <v1:ExternalUserId>${checkTransferReq.username}</v1:ExternalUserId>
+                             <v1:Amount>${checkTransferReq.amount.abs()}</v1:Amount>
+                             <v1:ExternalTransactionId>${checkTransferReq.orderId}</v1:ExternalTransactionId>
+                          </v1:Debit>
+                       </soapenv:Body>
+                    </soapenv:Envelope>
+            """.trimIndent()
+                this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/DebitAccount")
+            }
+            else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+        }
+
+        return mapUtil.data["TransactionId"] != null
     }
 
 
