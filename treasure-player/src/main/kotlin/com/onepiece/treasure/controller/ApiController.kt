@@ -37,7 +37,13 @@ open class ApiController(
         // 平台信息
         val platformBinds = platformBindService.findClientPlatforms(clientId)
         val platforms = platformBinds.map {
-            PlatformVo(id = it.id, name = it.platform.detail.name, category = it.platform.detail.category, status = it.status, icon = it.platform.detail.icon,
+
+            val status = when {
+                it.platform.detail.status == Status.Normal -> it.status
+                else -> it.platform.detail.status
+            }
+
+            PlatformVo(id = it.id, name = it.platform.detail.name, category = it.platform.detail.category, status = status, icon = it.platform.detail.icon,
                     launchs = it.platform.detail.launchs, platform = it.platform, demo = it.platform.detail.demo)
         }.filter { it.platform.detail.status != Status.Delete }
 
