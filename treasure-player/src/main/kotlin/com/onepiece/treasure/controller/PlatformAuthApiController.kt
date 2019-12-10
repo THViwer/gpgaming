@@ -8,6 +8,8 @@ import com.onepiece.treasure.core.service.PlatformMemberService
 import com.onepiece.treasure.games.GameApi
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import java.math.BigDecimal
 import java.util.*
 
@@ -92,5 +94,16 @@ class PlatformAuthApiController(
         val response = PlatformAuthValue.SpadeGamingResponse(merchantCode = request.merchantCode, msg = "", acctInfo =  acctInfo)
         log.info("返回信息:$response")
         return response
+    }
+
+    @PostMapping("/png/order")
+    override fun pngCallData() {
+        log.info("png 开始调用方法")
+
+        val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
+        val json = String(request.inputStream.readBytes())
+        log.info("png post 数据： $json")
+
+
     }
 }

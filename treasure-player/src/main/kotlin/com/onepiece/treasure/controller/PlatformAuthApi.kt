@@ -30,4 +30,7 @@ interface PlatformAuthApi {
     @ApiOperation(tags = ["platform auth"], value = "spadeGaming 登陆")
     fun spadeGamingLogin(@RequestBody request: PlatformAuthValue.SpadeGamingRequest): PlatformAuthValue.SpadeGamingResponse
 
+    @ApiOperation(tags = ["platform auth"], value = "png 同步订单")
+    fun pngCallData()
+
 }
