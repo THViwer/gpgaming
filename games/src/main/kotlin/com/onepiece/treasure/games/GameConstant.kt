@@ -58,10 +58,10 @@ class GameConstant(
 
         val domain = "http://94.237.64.70"
         return  when (platform) {
-            Platform.Joker -> "http://45.124.64.29:89"
+            Platform.Joker -> "http://45.124.65.170:89"
             Platform.Pragmatic -> "https://api.prerelease-env.biz"
             Platform.Fgg -> "https://d-tapi.fgg365.com"
-//            Platform.Lbc -> "http://45.124.64.29:88"
+//            Platform.Lbc -> "http://45.124.65.170:88"
             Platform.Bcs -> "https://transferapi.ballcrown.com"
 
             // slot
