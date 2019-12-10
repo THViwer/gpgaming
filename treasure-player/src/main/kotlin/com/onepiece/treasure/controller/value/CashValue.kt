@@ -83,7 +83,7 @@ data class DepositCoReq(
         val money: BigDecimal,
 
         @ApiModelProperty("截图证明")
-        val imgPath: String
+        val imgPath: String?
 )
 
 data class CashDepositResp(

@@ -60,7 +60,7 @@ data class Deposit(
         val channel: DepositChannel,
 
         // 上传图片地址
-        val imgPath: String,
+        val imgPath: String?,
 
         // 充值状态
         val state: DepositState,

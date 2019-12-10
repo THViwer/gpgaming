@@ -70,7 +70,7 @@ data class DepositCo(
         val money: BigDecimal,
 
         // 上传图片地址
-        val imgPath: String
+        val imgPath: String?
 )
 
 

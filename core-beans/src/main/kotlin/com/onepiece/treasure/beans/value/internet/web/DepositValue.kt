@@ -84,7 +84,7 @@ data class DepositVo(
         val remark: String?,
 
         @ApiModelProperty("上传图片地址")
-        val imgPath: String,
+        val imgPath: String?,
 
         @ApiModelProperty("上传时间")
         val createdTime: LocalDateTime,
