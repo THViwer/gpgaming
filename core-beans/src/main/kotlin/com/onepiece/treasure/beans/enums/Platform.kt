@@ -121,12 +121,12 @@ open class PlatformDetail private constructor(
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg", status = Status.Normal, demo = true)
         }
         fun ofPlaytechSlot(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "playtech", icon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/microGaming.jpeg", status = Status.Delete, demo = false)
+            return PlatformDetail(category = PlatformCategory.Slot, name = "playtech", icon = "${SystemConstant.AWS_LOGO_URL}/playtech.jpeg",
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/playtech.jpeg", status = Status.Delete, demo = false)
         }
         fun ofPNG(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "play n go", icon = "${SystemConstant.AWS_LOGO_URL}/allBet.png",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/allBet.jpeg", status = Status.Stop)
+            return PlatformDetail(category = PlatformCategory.Slot, name = "play n go", icon = "${SystemConstant.AWS_LOGO_URL}/png.jpg",
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/png.jpg", status = Status.Stop)
         }
 
         // live game
@@ -168,8 +168,8 @@ open class PlatformDetail private constructor(
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/allBet.jpeg", status = Status.Stop)
         }
         fun ofAsiaGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "asia gaming", icon = "${SystemConstant.AWS_LOGO_URL}/allBet.png",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/allBet.jpeg", status = Status.Stop)
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "asia gaming", icon = "${SystemConstant.AWS_LOGO_URL}/saGaming.png",
+                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/saGaming.jpeg", status = Status.Stop)
         }
 
 
