@@ -30,9 +30,21 @@ class WalletNoteDaoImpl : BasicDaoImpl<WalletNote>("wallet_note"), WalletNoteDao
 
 
     override fun query(walletNoteQuery: WalletNoteQuery): List<WalletNote> {
-        return query().where("client_id", walletNoteQuery.clientId)
+        val builder = query().where("client_id", walletNoteQuery.clientId)
                 .where("member_id", walletNoteQuery.memberId)
                 .where("event", walletNoteQuery.event)
+
+
+        if (walletNoteQuery.onlyPromotion) {
+            builder.asWhere("promotion_money > 0")
+        }
+
+        if (walletNoteQuery.events != null) {
+            val v = walletNoteQuery.events!!.joinToString(","){ "'$it'" }
+            builder.asWhere("event in ($v)")
+        }
+
+        return builder
                 .sort("id desc")
                 .execute(mapper)
     }

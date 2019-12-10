@@ -37,5 +37,17 @@ data class WalletNoteQuery(
         val memberId: Int,
 
         // 事件
-        val event: WalletEvent?
+        val event: WalletEvent?,
+
+        // 事件列表
+        val events: List<WalletEvent>?,
+
+        // 是否已包含优惠
+        val onlyPromotion: Boolean,
+
+        // 当前条数
+        val current: Int,
+
+        // 大小
+        val size: Int
 )

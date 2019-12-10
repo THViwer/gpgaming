@@ -83,7 +83,12 @@ interface CashApi {
     fun transferToCenter(): List<BalanceAllInVo>
 
     @ApiOperation(tags = ["cash"], value = "钱包明细")
-    fun walletNote(): List<WalletNoteVo>
+    fun walletNote(
+            @RequestParam(value = "onlyPromotion", defaultValue = "false") onlyPromotion: Boolean,
+            @RequestParam(value = "events", required = false) events: String?,
+            @RequestParam("current") current: Int,
+            @RequestParam("size") size: Int
+    ): List<WalletNoteVo>
 
     @ApiOperation(tags = ["cash"], value = "查询余额")
     fun balance(

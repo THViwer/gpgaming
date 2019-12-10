@@ -11,8 +11,12 @@ class WalletNoteServiceImpl(
         private val walletNoteDao: WalletNoteDao
 ) : WalletNoteService {
 
-    override fun my(clientId: Int, memberId: Int): List<WalletNote> {
-        val walletNoteQuery = WalletNoteQuery(clientId = clientId, memberId = memberId, event = null)
+//    override fun my(clie/**/ntId: Int, memberId: Int): List<WalletNote> {
+//        val walletNoteQuery = WalletNoteQuery(clientId = clientId, memberId = memberId, event = null)
+//        return walletNoteDao.query(walletNoteQuery)
+//    }
+
+    override fun query(walletNoteQuery: WalletNoteQuery): List<WalletNote> {
         return walletNoteDao.query(walletNoteQuery)
     }
 }

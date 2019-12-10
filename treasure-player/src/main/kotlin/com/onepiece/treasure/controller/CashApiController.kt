@@ -308,15 +308,25 @@ open class CashApiController(
 
 
     @GetMapping("/wallet/note")
-    override fun walletNote(): List<WalletNoteVo> {
-
+    override fun walletNote(
+            @RequestParam(value = "onlyPromotion", defaultValue = "false") onlyPromotion: Boolean,
+            @RequestParam(value = "events", required = false) events: String?,
+            @RequestParam("current") current: Int,
+            @RequestParam("size") size: Int
+    ): List<WalletNoteVo> {
         val member = this.current()
 
-        return walletNoteService.my(clientId = member.clientId, memberId = member.id).map {
+        val eventList = when (onlyPromotion) {
+            true -> listOf(WalletEvent.TRANSFER_OUT)
+            false -> events?.let { it.split(",").map { WalletEvent.valueOf(it) } }
+        }
+
+        val walletNoteQuery = WalletNoteQuery(clientId = member.clientId, memberId = member.id, current = current, size = size, event = null, events = eventList, onlyPromotion = onlyPromotion)
+        val list = walletNoteService.query(walletNoteQuery)
+        return list.map {
             WalletNoteVo(id = it.id, memberId = it.memberId, eventId = it.eventId, event = it.event, money = it.money, remarks = it.remarks, createdTime = it.createdTime,
                     promotionMoney = it.promotionMoney)
         }
-
     }
 
     @GetMapping("/balance")
@@ -424,11 +434,6 @@ open class CashApiController(
     }
 
 }
-
-
-
-
-
 
 
 
