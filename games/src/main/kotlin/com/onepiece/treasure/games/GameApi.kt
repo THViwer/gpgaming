@@ -295,7 +295,7 @@ class GameApi(
         return try {
             val platformOrderId = this.getPlatformApi(platform).transfer(transferReq)
             return true
-
+//
 //            val type = if (amount.toDouble() > 0) "deposit" else "withdraw"
 //            val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = platformOrderId,
 //                    amount = amount, type = type)

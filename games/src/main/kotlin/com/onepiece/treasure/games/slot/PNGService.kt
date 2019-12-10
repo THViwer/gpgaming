@@ -134,41 +134,42 @@ class PNGService: PlatformService() {
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
         val clientToken = checkTransferReq.token as PNGClientToken
 
-        val mapUtil = when (checkTransferReq.type) {
+        return when (checkTransferReq.type) {
             "deposit" -> {
                 val data = """
                     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://playngo.com/v1">
                        <soapenv:Header />
                        <soapenv:Body>
-                          <v1:Credit>
+                          <v1:CreditAccount>
                              <v1:ExternalUserId>${checkTransferReq.username}</v1:ExternalUserId>
                              <v1:Amount>${checkTransferReq.amount}</v1:Amount>
                              <v1:ExternalTransactionId>${checkTransferReq.orderId}</v1:ExternalTransactionId>
-                          </v1:Credit>
+                          </v1:CreditAccount>
                        </soapenv:Body>
                     </soapenv:Envelope>
             """.trimIndent()
-                this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/CreditAccount")
+                val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/CreditAccount")
+                mapUtil.asMap("Body").asMap("CreditAccountResponse").asMap("UserAccount").data["TransactionId"] != null
             }
             "withdraw" -> {
                 val data = """
                     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://playngo.com/v1">
                        <soapenv:Header />
                        <soapenv:Body>
-                          <v1:Debit>
+                          <v1:DebitAccount>
                              <v1:ExternalUserId>${checkTransferReq.username}</v1:ExternalUserId>
                              <v1:Amount>${checkTransferReq.amount.abs()}</v1:Amount>
                              <v1:ExternalTransactionId>${checkTransferReq.orderId}</v1:ExternalTransactionId>
-                          </v1:Debit>
+                          </v1:DebitAccount>
                        </soapenv:Body>
                     </soapenv:Envelope>
             """.trimIndent()
-                this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/DebitAccount")
+                val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/DebitAccount")
+                mapUtil.asMap("Body").asMap("DebitAccountResponse").asMap("UserAccount").data["TransactionId"] != null
             }
             else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
         }
 
-        return mapUtil.data["TransactionId"] != null
     }
 
 
