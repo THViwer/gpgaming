@@ -118,7 +118,7 @@ data class ArtificialCoReq(
         @ApiModelProperty("会员Id")
         val memberId: Int,
 
-        @ApiModelProperty("添加金额")
+        @ApiModelProperty("操作金额")
         val money: BigDecimal,
 
         @ApiModelProperty("备注")

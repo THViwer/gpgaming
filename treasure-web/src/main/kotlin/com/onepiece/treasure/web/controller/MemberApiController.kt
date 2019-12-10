@@ -5,6 +5,7 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.database.MemberCo
 import com.onepiece.treasure.beans.value.database.MemberQuery
 import com.onepiece.treasure.beans.value.database.MemberUo
+import com.onepiece.treasure.beans.value.database.WalletQuery
 import com.onepiece.treasure.beans.value.internet.web.*
 import com.onepiece.treasure.core.service.LevelService
 import com.onepiece.treasure.core.service.MemberService
@@ -38,10 +39,14 @@ class MemberApiController(
 
         val levels = levelService.all(clientId).map { it.id to it }.toMap()
 
+        val ids = page.data.map { it.id }
+        val walletQuery = WalletQuery(clientId = clientId, memberIds = ids)
+        val memberMap = walletService.query(walletQuery).map { it.memberId to it }.toMap()
+
         val data = page.data.map {
             with(it) {
                 MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name?: "error level",
-                        balance = BigDecimal.ZERO, status = it.status, createdTime = createdTime,
+                        balance = memberMap[it.id]?.balance?: BigDecimal.valueOf(-1), status = it.status, createdTime = createdTime,
                         loginIp = loginIp, loginTime = loginTime, name = it.name)
             }
         }

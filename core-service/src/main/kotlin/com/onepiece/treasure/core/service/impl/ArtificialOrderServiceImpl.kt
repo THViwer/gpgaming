@@ -33,11 +33,9 @@ class ArtificialOrderServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun create(artificialOrderCo: ArtificialOrderCo) {
 
-
         val walletUo = WalletUo(clientId = artificialOrderCo.clientId, memberId = artificialOrderCo.memberId, money = artificialOrderCo.money,
-                event = WalletEvent.Artificial, eventId = artificialOrderCo.orderId, remarks = artificialOrderCo.remarks, waiterId = null)
-        val balance = walletService.update(walletUo)
-
+                event = WalletEvent.Artificial, eventId = artificialOrderCo.orderId, remarks = artificialOrderCo.remarks, waiterId = artificialOrderCo.operatorId)
+        walletService.update(walletUo)
 
         val state = artificialOrderDao.create(artificialOrderCo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }

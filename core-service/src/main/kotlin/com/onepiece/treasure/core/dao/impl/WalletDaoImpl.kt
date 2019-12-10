@@ -131,6 +131,7 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
         return query()
                 .where("client_id", walletQuery.clientId)
                 .where("member_id", walletQuery.memberId)
+                .whereIn("member_id", walletQuery.memberIds)
                 .asWhere("balance >= ?", walletQuery.minBalance)
                 .asWhere("balance < ?", walletQuery.maxBalance)
                 .asWhere("total_deposit_balance >= ?", walletQuery.minTotalDepositBalance)

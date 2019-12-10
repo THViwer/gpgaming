@@ -55,7 +55,7 @@ class OrderIdBuilder(
     }
 
     fun generatorArtificialOrderId(): String {
-        return UUID.randomUUID().toString()
+        return "AB${getCurrentTime()}${StringUtil.generateNumNonce(2)}"
     }
 
 

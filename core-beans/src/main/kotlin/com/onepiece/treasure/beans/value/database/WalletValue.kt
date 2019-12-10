@@ -10,37 +10,40 @@ data class WalletQuery(
         val clientId: Int,
 
         // 用户Id
-        val memberId: Int?,
+        val memberId: Int? = null,
+
+        // 用户id列表
+        val memberIds: List<Int>? = null,
 
         // 最小余额
-        val minBalance: BigDecimal?,
+        val minBalance: BigDecimal? = null,
 
         // 最大余额
-        val maxBalance: BigDecimal?,
+        val maxBalance: BigDecimal? = null,
 
         // 最小总充值金额
-        val minTotalDepositBalance: BigDecimal?,
+        val minTotalDepositBalance: BigDecimal? = null,
 
         // 最大总充值金额
-        val maxTotalDepositBalance: BigDecimal?,
+        val maxTotalDepositBalance: BigDecimal? = null,
 
         // 最小总取款金额
-        val minTotalWithdrawBalance: BigDecimal?,
+        val minTotalWithdrawBalance: BigDecimal? = null,
 
         // 最大总取款金额
-        val maxTotalWithdrawBalance: BigDecimal?,
+        val maxTotalWithdrawBalance: BigDecimal? = null,
 
         // 最小充值次数
-        val minTotalDepositFrequency: Int?,
+        val minTotalDepositFrequency: Int? = null,
 
         // 最大充值次数
-        val maxTotalDepositFrequency: Int?,
+        val maxTotalDepositFrequency: Int? = null,
 
         // 最小取款次数
-        val minTotalWithdrawFrequency: Int?,
+        val minTotalWithdrawFrequency: Int? = null,
 
         // 最小取款次数
-        val maxTotalWithdrawFrequency: Int?
+        val maxTotalWithdrawFrequency: Int? = null
 
 
 )
