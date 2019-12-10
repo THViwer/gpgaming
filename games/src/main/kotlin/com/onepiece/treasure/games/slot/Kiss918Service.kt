@@ -124,7 +124,7 @@ class Kiss918Service : PlatformService() {
         return mapUtil.asBigDecimal("MoneyNum")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as Kiss918ClientToken
         val data = listOf(
                 "action=setServerScore",
@@ -136,13 +136,14 @@ class Kiss918Service : PlatformService() {
         )
 
         val url = "${gameConstant.getDomain(Platform.Kiss918)}/ashx/account/setScore.ashx"
-        this.startGetJson(url = url, username = transferReq.username, clientToken = clientToken, data = data)
-        return transferReq.orderId
+        val mapUtil = this.startGetJson(url = url, username = transferReq.username, clientToken = clientToken, data = data)
+        val balance = mapUtil.asBigDecimal("money")
+        return GameValue.TransferResp.successful(balance)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         // TODO 暂时不实现
-        error("")
+        return GameValue.TransferResp.successful()
     }
 
     override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {

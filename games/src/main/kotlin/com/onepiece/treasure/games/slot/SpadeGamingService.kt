@@ -9,7 +9,6 @@ import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapUtil
-import com.onepiece.treasure.utils.StringUtil
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -67,7 +66,7 @@ class SpadeGamingService : PlatformService() {
         return mapUtil.asList("list").first().asBigDecimal("balance")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as SpadeGamingClientToken
 
         val data = """
@@ -82,10 +81,12 @@ class SpadeGamingService : PlatformService() {
 
         val method = if (transferReq.amount.toDouble() > 0) "deposit" else "withdraw"
         val mapUtil = this.startPostJson(method = method, data = data)
-        return mapUtil.asString("serialNo")
+        val platformOrderId = mapUtil.asString("serialNo")
+        val balance = mapUtil.asBigDecimal("afterBalance")
+        return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val clientToken = checkTransferReq.token as SpadeGamingClientToken
 
         val startTime = LocalDate.now().atStartOfDay()
@@ -104,7 +105,8 @@ class SpadeGamingService : PlatformService() {
         """.trimIndent()
 
         val mapUtil = this.startPostJson(method = "fundInOut", data = data)
-        return mapUtil.asInt("resultCount") == 1
+        val successful = mapUtil.asInt("resultCount") == 1
+        return GameValue.TransferResp.of(successful)
     }
 
     override fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {

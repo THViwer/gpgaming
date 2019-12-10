@@ -63,7 +63,7 @@ class PragmaticService: PlatformService() {
         return mapUtil.asBigDecimal("balance")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as PragmaticClientToken
 
         val data = hashMapOf(
@@ -72,11 +72,12 @@ class PragmaticService: PlatformService() {
                 "externalTransactionId" to transferReq.orderId,
                 "amount" to transferReq.amount
         )
-        this.startDoPostForm(method = "/balance/transfer", clientToken = clientToken, data = data)
-        return transferReq.orderId
+        val mapUtil = this.startDoPostForm(method = "/balance/transfer", clientToken = clientToken, data = data)
+        val balance = mapUtil.asBigDecimal("balance")
+        return GameValue.TransferResp.successful(balance = balance)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val clientToken = checkTransferReq.token as PragmaticClientToken
 
         val data = hashMapOf(
@@ -84,7 +85,9 @@ class PragmaticService: PlatformService() {
                 "externalTransactionId" to checkTransferReq.orderId
         )
         val mapUtil = this.startDoPostForm(method = "/balance/transfer/status/", clientToken = clientToken, data = data)
-        return mapUtil.asString("status") == "Success"
+        val successful = mapUtil.asString("status") == "Success"
+        val balance = mapUtil.asBigDecimal("balance")
+        return GameValue.TransferResp.of(successful = successful, balance = balance)
     }
 
 

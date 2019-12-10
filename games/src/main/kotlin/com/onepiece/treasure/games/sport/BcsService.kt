@@ -85,7 +85,7 @@ class BcsService : PlatformService() {
         return mapUtil.asMap("result").asBigDecimal("Balance")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
 
         val token = transferReq.token as BcsClientToken
         val transferType = if (transferReq.amount.toDouble() > 0) 0 else 1
@@ -105,10 +105,12 @@ class BcsService : PlatformService() {
 
         val url = this.getRequestUrl("/ThirdApi.asmx/Transfer", param)
         val mapUtil = this.startDoGetXml(url)
-        return mapUtil.asMap("result").asString("SerialNumber")
+        val platformOrderId =  mapUtil.asMap("result").asString("SerialNumber")
+        val balance = mapUtil.asMap("result").asBigDecimal("Balance")
+        return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
 
         val token = checkTransferReq.token as BcsClientToken
 
@@ -119,10 +121,10 @@ class BcsService : PlatformService() {
 
         val url = this.getRequestUrl("/ThirdApi.asmx/CheckTransfer", param)
         return try {
-            this.startDoGetXml(url)
-            true
+            val mapUtil = this.startDoGetXml(url)
+            GameValue.TransferResp.successful()
         } catch (e: Exception) {
-            false
+            GameValue.TransferResp.failed()
         }
     }
 

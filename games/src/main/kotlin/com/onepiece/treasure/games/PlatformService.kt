@@ -45,12 +45,12 @@ abstract class PlatformService {
     /**
      * 转账
      */
-    abstract fun transfer(transferReq: GameValue.TransferReq): String
+    abstract fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp
 
     /**
      * 检查转账状态
      */
-    abstract fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean
+    abstract fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp
 
     /**
      * 更新密码

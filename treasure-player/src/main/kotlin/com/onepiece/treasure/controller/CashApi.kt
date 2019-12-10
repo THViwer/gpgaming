@@ -80,8 +80,7 @@ interface CashApi {
     fun transfer(@RequestBody cashTransferReq: CashTransferReq)
 
     @ApiOperation(tags = ["cash"], value = "转账所以平台到中心")
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    fun transferToCenter()
+    fun transferToCenter(): List<BalanceAllInVo>
 
     @ApiOperation(tags = ["cash"], value = "钱包明细")
     fun walletNote(): List<WalletNoteVo>

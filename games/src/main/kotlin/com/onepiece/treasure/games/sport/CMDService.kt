@@ -64,7 +64,7 @@ class CMDService : PlatformService() {
 
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val cmdClientToken = transferReq.token as CMDClientToken
 
         val paymentType = if (transferReq.amount.toDouble() > 0) 1 else 0
@@ -77,10 +77,12 @@ class CMDService : PlatformService() {
                 "TicketNo=${transferReq.orderId}"
         )
         val mapUtil = this.startGetJson(data)
-        return mapUtil.asMap("Data").asString("PaymentId")
+        val platformOrderId = mapUtil.asMap("Data").asString("PaymentId")
+        val balance = mapUtil.asMap("Data").asBigDecimal("BetAmount")
+        return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val cmdClientToken = checkTransferReq.token as CMDClientToken
 
         val data = listOf(
@@ -90,7 +92,8 @@ class CMDService : PlatformService() {
                 "TicketNo=${checkTransferReq.orderId}"
         )
         val mapUtil = this.startGetJson(data)
-        return mapUtil.asList("Data").size == 1
+        val successful = mapUtil.asList("Data").size == 1
+        return GameValue.TransferResp.of(successful)
     }
 
     override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {

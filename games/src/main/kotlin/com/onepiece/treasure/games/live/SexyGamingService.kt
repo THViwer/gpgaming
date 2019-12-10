@@ -67,7 +67,7 @@ class SexyGamingService: PlatformService() {
         return mapUtil.asMap("results").data.entries.first().value.toString().toBigDecimal()
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as SexyGamingClientToken
 
         val mapUtil = when (transferReq.amount.toDouble() > 0) {
@@ -93,10 +93,12 @@ class SexyGamingService: PlatformService() {
                 this.startGetJson(method = "/wallet/withdraw", data = data)
             }
         }
-        return mapUtil.asString("txCode")
+        val platformOrderId =  mapUtil.asString("txCode")
+        val balance = mapUtil.asBigDecimal("currentBalance")
+        return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val clientToken = checkTransferReq.token as SexyGamingClientToken
 
         val data = mapOf(
@@ -105,7 +107,8 @@ class SexyGamingService: PlatformService() {
                 "txCode" to checkTransferReq.orderId
         )
         val mapUtil = this.startGetJson(method = "/wallet/checkTransferOperation", data = data)
-        return mapUtil.data["transferAmt"] != null
+        val successful = mapUtil.data["transferAmt"] != null
+        return GameValue.TransferResp.of(successful = successful)
     }
 
     override fun start(startReq: GameValue.StartReq): String {

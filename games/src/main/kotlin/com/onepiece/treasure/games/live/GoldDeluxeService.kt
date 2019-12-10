@@ -97,22 +97,11 @@ class GoldDeluxeService: PlatformService() {
         return MapResultUtil.asBigDecimal(result, "Balance")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
 
         val token = transferReq.token as GoldDeluxeClientToken
 
         val method = if (transferReq.amount.toDouble() > 0) "cDeposit" else "cWithdrawal"
-
-//        val (messageId, method) = when (transferReq.amount.toDouble() > 0) {
-//            true -> {
-//                val messageId = this.generatorMessageId("D")
-//                messageId to "cDeposit"
-//            }
-//            false -> {
-//                val messageId = this.generatorMessageId("W")
-//                messageId to "cWithdrawal"
-//            }
-//        }
 
         val data = """
                     <?xml version="1.0"?>
@@ -133,10 +122,12 @@ class GoldDeluxeService: PlatformService() {
                 """.trimIndent()
 
         val result = this.startDoPostXml(data = data)
-        return MapResultUtil.asString(result, "TransactionID")
+        val platformOrderId = MapResultUtil.asString(result, "TransactionID")
+        val balance = MapResultUtil.asBigDecimal(result, "Balance")
+        return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val token = checkTransferReq.token as GoldDeluxeClientToken
         val messageId = this.generatorMessageId("S")
         val data = """
@@ -155,7 +146,8 @@ class GoldDeluxeService: PlatformService() {
         """.trimIndent()
 
         val result = this.startDoPostXml(data = data)
-        return MapResultUtil.asString(result, "Status") == "SUCCESS"
+        val successful = MapResultUtil.asString(result, "Status") == "SUCCESS"
+        return GameValue.TransferResp.of(successful)
     }
 
     override fun start(startReq: GameValue.StartReq): String {

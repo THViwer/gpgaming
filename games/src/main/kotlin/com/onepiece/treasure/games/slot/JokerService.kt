@@ -90,7 +90,7 @@ class JokerService : PlatformService() {
         return mapUtil.asBigDecimal("Credit")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
 
         val clientToken = transferReq.token as DefaultClientToken
 
@@ -101,11 +101,13 @@ class JokerService : PlatformService() {
                 "RequestID" to transferReq.orderId,
                 "Username" to transferReq.username
         )
-        this.startPostForm(clientToken = clientToken, data = data)
-        return transferReq.orderId
+        val mapUtil = this.startPostForm(clientToken = clientToken, data = data)
+
+        val balance = mapUtil.asBigDecimal("Credit")
+        return GameValue.TransferResp.successful(balance = balance)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val clientToken = checkTransferReq.token as DefaultClientToken
 
         val data = mapOf(
@@ -115,13 +117,12 @@ class JokerService : PlatformService() {
         )
         return try {
             this.startPostForm(clientToken = clientToken, data = data)
-            true
+            GameValue.TransferResp.successful()
         } catch (e: Exception) {
             log.error("checkTransfer error", e)
-            false
+            GameValue.TransferResp.failed()
         }
     }
-
 
     override fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {
         val clientToken = token as DefaultClientToken

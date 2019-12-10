@@ -214,6 +214,14 @@ data class BalanceVo(
 
 )
 
+data class BalanceAllInVo(
+        @ApiModelProperty("平台名称")
+        val platform: Platform,
+
+        @ApiModelProperty("余额")
+        val balance: BigDecimal
+)
+
 data class WalletNoteVo(
 
         val id: Int,

@@ -3,6 +3,7 @@ package com.onepiece.treasure.games
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.model.token.ClientToken
+import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIGlobalBinding
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -71,8 +72,36 @@ sealed class GameValue {
             val username: String,
 
             val amount: BigDecimal
-
     )
+
+    data class TransferResp(
+            // 是否转账成功
+            val transfer: Boolean,
+
+            // 平台订单Id
+            val platformOrderId: String,
+
+            // 转账后余额
+            val balance: BigDecimal
+    ) {
+
+        companion object {
+
+            fun of(successful: Boolean, balance: BigDecimal = BigDecimal.valueOf(-1), platformOrderId: String = "-"): TransferResp {
+                return TransferResp(transfer = successful, balance = balance, platformOrderId = platformOrderId)
+            }
+
+            fun successful(balance: BigDecimal = BigDecimal.valueOf(-1), platformOrderId: String = "-"): TransferResp {
+                return TransferResp(transfer = true, platformOrderId = platformOrderId, balance = balance)
+            }
+
+            fun failed(): TransferResp {
+                return TransferResp(transfer = false, platformOrderId = "-", balance = BigDecimal.valueOf(-1))
+            }
+
+        }
+
+    }
 
     data class CheckTransferReq(
             val token: ClientToken,

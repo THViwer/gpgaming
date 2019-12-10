@@ -180,7 +180,7 @@ open class PlatformDetail private constructor(
         }
 
         fun ofLbc(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Sport, name = "lbc", icon = "${SystemConstant.AWS_LOGO_URL}/lbc.jpeg",
+            return PlatformDetail(category = PlatformCategory.Sport, name = "ibc", icon = "${SystemConstant.AWS_LOGO_URL}/lbc.jpeg",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/lbc.jpeg", status = Status.Normal, demo = true)
         }
 

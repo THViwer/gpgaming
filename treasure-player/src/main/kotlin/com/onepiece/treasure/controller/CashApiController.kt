@@ -30,7 +30,6 @@ open class CashApiController(
         private val orderIdBuilder: OrderIdBuilder,
         private val walletService: WalletService,
         private val memberService: MemberService,
-        private val transferOrderService: TransferOrderService,
         private val walletNoteService: WalletNoteService,
         private val promotionService: PromotionService,
         private val transferUtil: TransferUtil
@@ -302,9 +301,9 @@ open class CashApiController(
     }
 
     @PutMapping("/transfer/in/all")
-    override fun transferToCenter() {
+    override fun transferToCenter(): List<BalanceAllInVo> {
         val current = this.current()
-        transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = null)
+        return transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = null)
     }
 
 

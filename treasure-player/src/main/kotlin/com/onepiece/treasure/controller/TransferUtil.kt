@@ -2,6 +2,7 @@ package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.Balance
 import com.onepiece.treasure.beans.model.PlatformMember
 import com.onepiece.treasure.beans.model.Promotion
 import com.onepiece.treasure.beans.value.database.PlatformMemberTransferUo
@@ -9,14 +10,18 @@ import com.onepiece.treasure.beans.value.database.TransferOrderCo
 import com.onepiece.treasure.beans.value.database.TransferOrderUo
 import com.onepiece.treasure.beans.value.database.WalletUo
 import com.onepiece.treasure.beans.value.internet.web.PlatformMemberVo
+import com.onepiece.treasure.controller.value.BalanceAllInVo
+import com.onepiece.treasure.controller.value.BalanceVo
 import com.onepiece.treasure.controller.value.CashTransferReq
 import com.onepiece.treasure.core.OrderIdBuilder
 import com.onepiece.treasure.core.service.*
 import com.onepiece.treasure.games.GameApi
+import com.onepiece.treasure.games.GameValue
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.util.stream.Collectors
 
 @Component
 class TransferUtil(
@@ -35,56 +40,69 @@ class TransferUtil(
     /**
      * 如果轩心账金额为-1 则是转全部
      */
-    fun transferInAll(clientId: Int, memberId: Int, exceptPlatform: Platform? = null) {
+    fun transferInAll(clientId: Int, memberId: Int, exceptPlatform: Platform? = null): List<BalanceAllInVo> {
 
         val amount = BigDecimal.valueOf(-1)
         val platformMembers = this.platformMemberService.myPlatforms(memberId = memberId)
-        platformMembers.parallelStream().filter { exceptPlatform == null || exceptPlatform != it.platform }.forEach{ platformMember ->
+        val list = platformMembers.parallelStream().filter { exceptPlatform == null || exceptPlatform != it.platform }.map{ platformMember ->
             val req = CashTransferReq(from = platformMember.platform, to = Platform.Center, amount = amount, promotionId = null)
             try {
-                this.singleTransfer(clientId = clientId, platform = platformMember.platform, cashTransferReq = req, type = "in", platformMemberVo = platformMember)
+                val resp = this.singleTransfer(clientId = clientId, platform = platformMember.platform, cashTransferReq = req, type = "in", platformMemberVo = platformMember)
+                val balance = if (resp.balance.toInt() <= 0) BigDecimal.ZERO else resp.balance
+
+                BalanceAllInVo(platform = platformMember.platform, balance = balance)
             } catch (e: Exception) {
                 log.error("转账平台错误:", e)
+                BalanceAllInVo(platform = platformMember.platform, balance = BigDecimal.valueOf(-1))
             }
-        }
+        }.collect(Collectors.toList())
 
+        val wallet = walletService.getMemberWallet(memberId)
+        val centerBalance = BalanceAllInVo(platform = Platform.Center, balance = wallet.balance)
+
+        list.add(centerBalance)
+
+        return list
     }
 
     /**
      * 如果轩心账金额为-1 则是转全部
      */
-    fun transfer(clientId: Int, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo) {
-
+    fun transfer(clientId: Int, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp {
         val (type, platform) = if (cashTransferReq.from == Platform.Center) "out" to cashTransferReq.to else "in" to cashTransferReq.from
-
-
-        this.singleTransfer(clientId = clientId, platform =  platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo)
+        return singleTransfer(clientId = clientId, platform =  platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo)
     }
 
 
-    private fun singleTransfer(clientId: Int, platform: Platform, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo, type: String) {
+    private fun singleTransfer(clientId: Int, platform: Platform, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo, type: String): GameValue.TransferResp{
 
         val platformMember = platformMemberService.get(platformMemberVo.id)
-
         val platformBalance  = gameApi.balance(clientId = clientId, platformUsername = platformMemberVo.platformUsername, platform = platform, platformPassword = platformMember.password)
 
+        return when (type) {
 
-        if (type == "out") { // 中心钱包 -> 平台钱包
-            this.centerToPlatformTransfer(platformMember = platformMember, platformBalance = platformBalance, transferAmount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId)
-        } else if (type == "in") { // 平台钱包 -> 中心钱包
-            // 如果金额为-1 则转入全部金额
-            val amount = if (cashTransferReq.amount.toInt() == -1) platformBalance else cashTransferReq.amount
+            // 中心钱包 -> 平台钱包
+            "out" -> {
+                this.centerToPlatformTransfer(platformMember = platformMember, platformBalance = platformBalance, transferAmount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId)
+            }
+            // 平台钱包 -> 中心钱包
+            "in" -> {
+                // 如果金额为-1 则转入全部金额
+                val amount = if (cashTransferReq.amount.toInt() == -1) platformBalance else cashTransferReq.amount
 
-            // 如果平台没有钱 则直接返回
-            if (amount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)) return
-
-            this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = amount)
+                // 如果平台没有钱 则直接返回
+                if (amount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)) {
+                    GameValue.TransferResp.successful()
+                } else {
+                    this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = amount)
+                }
+            }
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
-
     }
 
     // 中心转平台
-    private fun centerToPlatformTransfer(platformMember: PlatformMember, platformBalance: BigDecimal, transferAmount: BigDecimal, promotionId: Int?) {
+    private fun centerToPlatformTransfer(platformMember: PlatformMember, platformBalance: BigDecimal, transferAmount: BigDecimal, promotionId: Int?): GameValue.TransferResp {
 
         val platform = platformMember.platform
         val from = Platform.Center
@@ -95,7 +113,7 @@ class TransferUtil(
         // 检查余额
         val wallet = walletService.getMemberWallet(platformMember.memberId)
         val amount = if (transferAmount.toInt() == -1) wallet.balance else transferAmount
-        if (amount.toDouble() <= 0) return // 如果金额小于等于0 返回
+        if (amount.toDouble() <= 0) return GameValue.TransferResp.successful() // 如果金额小于等于0 返回
 //        check(wallet.balance.toDouble() - amount.toDouble() > 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
 
         // 优惠活动赠送金额
@@ -133,18 +151,20 @@ class TransferUtil(
         }
 
         //调用平台接口充值
-        val transferFlag = gameApi.transfer(clientId = clientId, platformUsername = platformMember.username, orderId = transferOrderId, amount = amount.plus(promotionAmount),
-                platform = to)
+        val transferResp = gameApi.transfer(clientId = clientId, platformUsername = platformMember.username, orderId = transferOrderId, amount = amount.plus(promotionAmount),
+                platform = to, originBalance = platformBalance)
 
         // 转账失败 进行回滚
-        if (!transferFlag) {
+        if (!transferResp.transfer) {
             this.transferRollBack(clientId = clientId, memberId = memberId, money = amount, from = from, to = to, transferOrderId = transferOrderId)
         }
 
         // 更新转账订单
-        val state = if (transferFlag) TransferState.Successful else TransferState.Fail
+        val state = if (transferResp.transfer) TransferState.Successful else TransferState.Fail
         val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = state)
         transferOrderService.update(transferOrderUo)
+
+        return transferResp
     }
 
     private fun transferRollBack(clientId: Int, memberId: Int, money: BigDecimal, from: Platform, to: Platform, transferOrderId: String) {
@@ -216,7 +236,7 @@ class TransferUtil(
     }
 
 
-    private fun platformToCenterTransfer(platformMember: PlatformMember, platformBalance: BigDecimal, amount: BigDecimal) {
+    private fun platformToCenterTransfer(platformMember: PlatformMember, platformBalance: BigDecimal, amount: BigDecimal): GameValue.TransferResp {
         val platform = platformMember.platform
         val from = platformMember.platform
         val to = Platform.Center
@@ -242,28 +262,30 @@ class TransferUtil(
                 from = from, to = to, joinPromotionId = null, promotionJson = null)
         transferOrderService.create(transferOrderCo)
 
+
+        //调用平台接口取款
+        val transferResp = gameApi.transfer(clientId = clientId, platformUsername = platformMember.username, orderId = transferOrderId, amount = amount.negate(),
+                platform = platform, originBalance = platformBalance)
+
         // 中心钱包加钱
         val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_IN, money = amount,
                 remarks = "$platform => Center", waiterId = null, eventId = transferOrderId)
         walletService.update(walletUo)
 
-
-        //调用平台接口取款
-        val transferFlag = gameApi.transfer(clientId = clientId, platformUsername = platformMember.username, orderId = transferOrderId, amount = amount.negate(),
-                platform = platform)
-
-        if (!transferFlag) {
+        if (!transferResp.transfer) {
             this.transferRollBack(clientId = clientId, memberId = memberId, money = amount, from = from, to = to, transferOrderId = transferOrderId)
         }
 
         // 更新转账订单
-        val transferState = if (transferFlag) TransferState.Successful else TransferState.Fail
+        val transferState = if (transferResp.transfer) TransferState.Successful else TransferState.Fail
         val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = transferState)
         transferOrderService.update(transferOrderUo)
 
         // 清空平台用户优惠信息
-        if (transferFlag)
+        if (transferResp.transfer)
             platformMemberService.cleanTransferIn(memberId = memberId, platform = platform, transferOutAmount = amount)
+
+        return transferResp
     }
 
 

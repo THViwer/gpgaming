@@ -109,7 +109,7 @@ class AllBetService : PlatformService() {
         return mapUtil.asBigDecimal("balance")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val allBetClientToken = transferReq.token as AllBetClientToken
 
         val operFlag = if (transferReq.amount.toDouble() > 0) 1 else 0
@@ -125,11 +125,11 @@ class AllBetService : PlatformService() {
         )
         val urlParam = data.joinToString("&")
         this.startDoGet(method = "/agent_client_transfer", urlParam = urlParam, allBetClientToken = allBetClientToken)
-        return allBetOrderId
+        return GameValue.TransferResp.successful(platformOrderId = allBetOrderId)
     }
 
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val allBetClientToken = checkTransferReq.token as AllBetClientToken
 
         // query_transfer_state
@@ -141,7 +141,8 @@ class AllBetService : PlatformService() {
         val mapUtil = this.startDoGet(method = "/query_transfer_state", urlParam = urlParam, allBetClientToken = allBetClientToken)
 
         // 0 创建状态 1 成功 2 失败
-        return mapUtil.asInt("transferState") == 1
+        val successful = mapUtil.asInt("transferState") == 1
+        return GameValue.TransferResp.of(successful)
     }
 
     override fun start(startReq: GameValue.StartReq): String {

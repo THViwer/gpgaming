@@ -119,7 +119,7 @@ class MicroGamingService : PlatformService() {
         return mapUtil.asList("data").first().asBigDecimal("cash_balance")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as MicroGamingClientToken
 
         val type = if (transferReq.amount.toDouble() > 0) "CREDIT" else "DEBIT"
@@ -134,14 +134,18 @@ class MicroGamingService : PlatformService() {
         """.trimIndent()
 
         val mapUtil = this.startPostJson(method = "/v1/transaction", clientToken = clientToken, data = data)
-        return mapUtil.asList("data").first().asString("parent_transaction_id")
+        val platformOrderId =  mapUtil.asList("data").first().asString("parent_transaction_id")
+        val balance = mapUtil.asList("data").first().asBigDecimal("balance")
+        return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val clientToken = checkTransferReq.token as MicroGamingClientToken
         val urlParam = "ext_ref=${checkTransferReq.orderId}&account_ext_ref=${checkTransferReq.username}"
         val mapUtil = this.startGetJson(clientToken = clientToken, method = "/v1/transaction", urlParam = urlParam)
-        return mapUtil.asList("data").firstOrNull() != null
+        val successful = mapUtil.asList("data").firstOrNull() != null
+        val balance = mapUtil.asList("data").firstOrNull()?.asBigDecimal("balance") ?: BigDecimal.valueOf(-1)
+        return GameValue.TransferResp.of(successful = successful, balance = balance)
     }
 
     override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {

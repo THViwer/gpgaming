@@ -52,7 +52,7 @@ class TTGService(
         return mapUtil.asBigDecimal("real")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
 
         val tokenClient = transferReq.token as TTGClientToken
 
@@ -62,15 +62,16 @@ class TTGService(
         val mapUtil = this.startPostXml(method = "/cip/transaction/${tokenClient.agentName}/${transferReq.orderId}", data = data)
         check(mapUtil.asString("retry") == "0") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
 
-        return transferReq.orderId
+        return GameValue.TransferResp.successful()
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val tokenClient = checkTransferReq.token as TTGClientToken
         val url = "${gameConstant.getDomain(Platform.TTG)}/cip/transaction/${tokenClient.agentName}/${checkTransferReq.orderId}"
         val xml = okHttpUtil.doGetXml(url = url, clz = String::class.java)
         val map = xmlMapper.readValue<Map<String, Any>>(xml)
-        return map["amount"] != null
+        val successful = map["amount"] != null
+        return GameValue.TransferResp.of(successful = successful, balance = map["amount"]?.toString()?.toBigDecimal()?: BigDecimal.valueOf(-1))
     }
 
     private fun login(username: String, tokenClient: TTGClientToken): MapUtil {

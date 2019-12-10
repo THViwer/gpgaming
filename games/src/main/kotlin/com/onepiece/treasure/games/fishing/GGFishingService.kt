@@ -84,7 +84,7 @@ class GGFishingService : PlatformService() {
         return mapUtil.asList("results").first().asBigDecimal("balance")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
 
         val clientToken = transferReq.token as GGFishingClientToken
         val (path, data) = if (transferReq.amount.toDouble() > 0) {
@@ -109,10 +109,10 @@ class GGFishingService : PlatformService() {
         }
 
         this.startDoGet(clientToken = clientToken, path = path, data = data)
-        return transferReq.orderId
+        return GameValue.TransferResp.successful()
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val clientToken = checkTransferReq.token as GGFishingClientToken
         val data = mapOf(
                 "cert" to clientToken.cert,
@@ -122,7 +122,8 @@ class GGFishingService : PlatformService() {
 
         val mapUtil = this.startDoGet(clientToken = clientToken, path = "getBalanceOperationLog", data = data)
 
-        return mapUtil.asList("result").isNotEmpty()
+        val successful = mapUtil.asList("result").isNotEmpty()
+        return GameValue.TransferResp.of(successful)
     }
 
     override fun start(startReq: GameValue.StartReq): String {

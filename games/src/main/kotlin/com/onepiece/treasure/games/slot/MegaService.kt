@@ -73,7 +73,7 @@ class MegaService : PlatformService() {
         return mapUtil.asBigDecimal("result")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as MegaClientToken
         val random = UUID.randomUUID().toString()
         val digest = this.sign(random = random, loginId = transferReq.username, amount = "${transferReq.amount}", clientToken = clientToken)
@@ -85,11 +85,12 @@ class MegaService : PlatformService() {
                 "sn" to clientToken.appId,
                 "digest" to digest
         )
-        this.startPostJson(method = "open.mega.balance.transfer", data = data, clientToken = clientToken)
-        return transferReq.orderId
+        val mapUtil = this.startPostJson(method = "open.mega.balance.transfer", data = data, clientToken = clientToken)
+        val balance = mapUtil.asBigDecimal("result")
+        return GameValue.TransferResp.successful(balance = balance)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val clientToken = checkTransferReq.token as MegaClientToken
         val random = UUID.randomUUID().toString()
         val digest = this.sign(random = random, clientToken = clientToken)
@@ -104,7 +105,8 @@ class MegaService : PlatformService() {
         )
         val mapUtil = this.startPostJson(method = "open.mega.balance.transfer.query", data = data, clientToken = clientToken)
         //TODO 判断是否转账成功
-        return mapUtil.asMap("result").asInt("total") == 1
+        val successful = mapUtil.asMap("result").asInt("total") == 1
+        return GameValue.TransferResp.of(successful)
     }
 
     fun downApp(clientToken: MegaClientToken): String {

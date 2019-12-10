@@ -115,7 +115,7 @@ class SaGamingService : PlatformService() {
         return mapUtil.asBigDecimal("Balance")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as SaGamingClientToken
         val time = LocalDateTime.now().format(dateTimeFormatter)
 
@@ -142,11 +142,12 @@ class SaGamingService : PlatformService() {
             }
         }
 
-        this.startGetXml(clientToken = clientToken, data = data, time = time)
-        return transferReq.orderId
+        val mapUtil = this.startGetXml(clientToken = clientToken, data = data, time = time)
+        val balance = mapUtil.asBigDecimal("CreditAmount")
+        return GameValue.TransferResp.successful(balance = balance)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val clientToken = checkTransferReq.token as SaGamingClientToken
         val time = LocalDateTime.now().format(dateTimeFormatter)
 
@@ -158,7 +159,8 @@ class SaGamingService : PlatformService() {
         )
 
         val mapUtil = this.startGetXml(clientToken = clientToken, data = data, time = time)
-        return mapUtil.asBoolean("isExist")
+        val successful = mapUtil.asBoolean("isExist")
+        return GameValue.TransferResp.of(successful)
     }
 
     override fun start(startReq: GameValue.StartReq): String {

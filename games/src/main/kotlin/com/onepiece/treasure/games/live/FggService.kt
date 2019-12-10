@@ -69,7 +69,7 @@ class FggService: PlatformService() {
         return mapUtil.asBigDecimal("Balance")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
 
         val token = transferReq.token as DefaultClientToken
         val param = """
@@ -81,12 +81,12 @@ class FggService: PlatformService() {
                 "SerialNumber": "${transferReq.orderId}"
             }
         """.trimIndent()
-        this.startPostJson(method = "Transfer", data = param)
-        return transferReq.orderId
+        val mapUtil = this.startPostJson(method = "Transfer", data = param)
+        val balance = mapUtil.asBigDecimal("Balance")
+        return GameValue.TransferResp.successful(balance = balance)
     }
 
-
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val token = checkTransferReq.token as DefaultClientToken
         val param = """
             {
@@ -96,7 +96,8 @@ class FggService: PlatformService() {
             }
         """.trimIndent()
         val mapUtil = this.startPostJson(method = "GetTransferInfo", data = param)
-        return mapUtil.asBoolean("Exist")
+        val successful = mapUtil.asBoolean("Exist")
+        return GameValue.TransferResp.of(successful)
     }
 
     override fun start(startReq: GameValue.StartReq): String {

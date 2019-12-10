@@ -64,7 +64,7 @@ class PlaytechService(
         return mapUtil.asMap("data").asMap("wallets").asBigDecimal(wallet)
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as PlaytechSlotClientToken
 
         val toPlayer = "${clientToken.prefix}_${transferReq.username}".toUpperCase()
@@ -101,11 +101,11 @@ class PlaytechService(
         }
         check(result.code == 200) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
 
-        return result.mapUtil.asMap("data").asString("reference_no")
-
+        val platformOrderId = result.mapUtil.asMap("data").asString("reference_no")
+        return GameValue.TransferResp.successful(platformOrderId = platformOrderId)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val clientToken = checkTransferReq.token as PlaytechSlotClientToken
 
         val data = listOf(
@@ -113,7 +113,8 @@ class PlaytechService(
                 "client_reference_no=${checkTransferReq.orderId}"
         )
         val result = this.startGetJson(clientToken = clientToken, path = "/backoffice/transfer/player/status", data = data)
-        return result.code == 200
+        val successful = result.code == 200
+        return GameValue.TransferResp.of(successful)
     }
 
     override fun start(startReq: GameValue.StartReq): String {

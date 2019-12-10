@@ -90,10 +90,10 @@ class PNGService: PlatformService() {
         return mapUtil.asMap("Body").asMap("BalanceResponse").asMap("UserBalance").asBigDecimal("Real")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as PNGClientToken
 
-        when (transferReq.amount.toDouble() > 0) {
+        return when (transferReq.amount.toDouble() > 0) {
             true -> {
                 val data = """
                     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://playngo.com/v1">  
@@ -109,7 +109,8 @@ class PNGService: PlatformService() {
                     </soapenv:Envelope>
                 """.trimIndent()
 
-                this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/Credit")
+                val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/Credit")
+                GameValue.TransferResp.successful()
             }
             false -> {
                 val data = """
@@ -125,13 +126,13 @@ class PNGService: PlatformService() {
                       </soapenv:Body> 
                     </soapenv:Envelope>
                 """.trimIndent()
-                this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/Debit")
+                val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/Debit")
+                GameValue.TransferResp.successful()
             }
         }
-        return transferReq.orderId
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val clientToken = checkTransferReq.token as PNGClientToken
 
         return when (checkTransferReq.type) {
@@ -149,7 +150,8 @@ class PNGService: PlatformService() {
                     </soapenv:Envelope>
             """.trimIndent()
                 val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/CreditAccount")
-                mapUtil.asMap("Body").asMap("CreditAccountResponse").asMap("UserAccount").data["TransactionId"] != null
+                val successful = mapUtil.asMap("Body").asMap("CreditAccountResponse").asMap("UserAccount").data["TransactionId"] != null
+                GameValue.TransferResp.of(successful = successful)
             }
             "withdraw" -> {
                 val data = """
@@ -165,7 +167,9 @@ class PNGService: PlatformService() {
                     </soapenv:Envelope>
             """.trimIndent()
                 val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/DebitAccount")
-                mapUtil.asMap("Body").asMap("DebitAccountResponse").asMap("UserAccount").data["TransactionId"] != null
+                val successful = mapUtil.asMap("Body").asMap("DebitAccountResponse").asMap("UserAccount").data["TransactionId"] != null
+                val balance = mapUtil.asMap("Body").asMap("CreditAccountResponse").asMap("UserAccount").asBigDecimal("Real")
+                GameValue.TransferResp.of(successful = successful, balance = balance)
             }
             else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
         }

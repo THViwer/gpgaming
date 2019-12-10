@@ -70,7 +70,7 @@ class LbcService : PlatformService() {
         return mapUtil.asList("Data").first().data["balance"]?.toString()?.toBigDecimal() ?: BigDecimal.ZERO
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as LbcClientToken
 
         val direction = if (transferReq.amount.toDouble() > 0) 1 else 0
@@ -85,10 +85,11 @@ class LbcService : PlatformService() {
                 .build()
 
         val mapUtil = this.startGetJson(clientToken = clientToken, method = "FundTransfer", formBody = body)
-        return mapUtil.asMap("Data").asString("trans_id")
+        val platformOrderId = mapUtil.asMap("Data").asString("trans_id")
+        return GameValue.TransferResp.successful()
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val clientToken = checkTransferReq.token as LbcClientToken
 
         val body = FormBody.Builder()
@@ -97,7 +98,8 @@ class LbcService : PlatformService() {
                 .add("wallet_id", "1") // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
                 .build()
         val mapUtil = this.startGetJson(clientToken = clientToken, method = "CheckFundTransfer", formBody = body)
-        return mapUtil.asMap("Data").data["status"] == 0
+        val successful = mapUtil.asMap("Data").data["status"] == 0
+        return GameValue.TransferResp.of(successful)
     }
 
     override fun start(startReq: GameValue.StartReq): String {

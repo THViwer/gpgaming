@@ -98,7 +98,7 @@ class DreamGamingService : PlatformService() {
         return mapUtil.asMap("member").asBigDecimal("balance")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as DreamGamingClientToken
         val (random, sign) = this.getToken(clientToken)
 
@@ -115,10 +115,12 @@ class DreamGamingService : PlatformService() {
         """.trimIndent()
 
         val mapUtil = this.doStartPostJson(method = "/account/transfer/${clientToken.agentName}", data = data)
-        return mapUtil.asString("data")
+        val platformOrderId = mapUtil.asString("data")
+        val balance = mapUtil.asMap("member").asBigDecimal("balance")
+        return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val clientToken = checkTransferReq.token as DreamGamingClientToken
         val (random, sign) = this.getToken(clientToken)
 
@@ -133,7 +135,8 @@ class DreamGamingService : PlatformService() {
 
         val url = "${gameConstant.getDomain(Platform.DreamGaming)}/account/checkTransfer/${clientToken.agentName}"
         val result = okHttpUtil.doPostJson(url = url, data = data, clz = DreamGamingValue.Result::class.java)
-        return result.codeId == 0
+        val successful = result.codeId == 0
+        return GameValue.TransferResp.of(successful)
     }
 
 

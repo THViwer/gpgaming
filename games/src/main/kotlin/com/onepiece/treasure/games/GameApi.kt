@@ -276,7 +276,7 @@ class GameApi(
     /**
      * 转账
      */
-    fun transfer(clientId: Int, platformUsername: String, platform: Platform, orderId: String, amount: BigDecimal, index: Int = 0): Boolean {
+    fun transfer(clientId: Int, platformUsername: String, platform: Platform, orderId: String, originBalance: BigDecimal, amount: BigDecimal, index: Int = 0): GameValue.TransferResp {
 
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
@@ -293,26 +293,38 @@ class GameApi(
         }
 
         return try {
-            val platformOrderId = this.getPlatformApi(platform).transfer(transferReq)
-            return true
-//
-//            val type = if (amount.toDouble() > 0) "deposit" else "withdraw"
-//            val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = platformOrderId,
-//                    amount = amount, type = type)
-//            return this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
+            val resp = this.getPlatformApi(platform).transfer(transferReq)
+//            return resp
+
+            val type = if (amount.toDouble() > 0) "deposit" else "withdraw"
+            val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = resp.platformOrderId,
+                    amount = amount, type = type)
+            val checkResp = this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
+
+            val balance = when {
+                checkResp.transfer && checkResp.balance.toInt() <= 0 -> originBalance.minus(amount)
+                checkResp.transfer -> checkResp.balance
+                else -> BigDecimal.valueOf(-1)
+            }
+            return checkResp.copy(balance = balance)
         } catch (e: Exception) {
             log.error("转账失败第${index}次，请求参数：$transferReq ", e)
-            this.transfer(clientId, platformUsername, platform, orderId, amount, index + 1)
+            this.transfer(clientId, platformUsername, platform, orderId, originBalance, amount, index + 1)
         }
 
     }
 
-    private fun checkTransfer(platform: Platform, checkTransferReq: GameValue.CheckTransferReq, index: Int = 0): Boolean {
+    private fun checkTransfer(platform: Platform, checkTransferReq: GameValue.CheckTransferReq, index: Int = 0): GameValue.TransferResp {
 
-        if (platform == Platform.Kiss918 || platform == Platform.Pussy888) return true
+        if (platform == Platform.Kiss918 || platform == Platform.Pussy888) {
+
+            val balanceReq = GameValue.BalanceReq(token = checkTransferReq.token, username = checkTransferReq.username, password = "-")
+            val balance = this.getPlatformApi(platform).balance(balanceReq)
+            GameValue.TransferResp(transfer = true, platformOrderId = "-", balance = balance)
+        }
 
         try {
-            if (index > 2) return false
+            if (index > 2) return GameValue.TransferResp.failed()
 
             return this.getPlatformApi(platform).checkTransfer(checkTransferReq)
         } catch (e: Exception) {

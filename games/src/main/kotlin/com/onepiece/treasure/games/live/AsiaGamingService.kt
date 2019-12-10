@@ -16,11 +16,11 @@ class AsiaGamingService : PlatformService() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

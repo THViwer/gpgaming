@@ -56,7 +56,7 @@ class EvolutionService : PlatformService() {
         return MapResultUtil.asBigDecimal(result, "abalance")
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): String {
+    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
 
         val token = transferReq.token as EvolutionClientToken
         val cCode = if (transferReq.amount.toDouble() > 0) "ECR" else "EDB"
@@ -73,10 +73,12 @@ class EvolutionService : PlatformService() {
 
         val url = this.getRequestUrl(path = "/api/ecashier", data = data)
         val result = doGetResult(url, "transfer")
-        return MapResultUtil.asString(result, "etransid")
+        val platformOrderId = MapResultUtil.asString(result, "etransid")
+        val balance = MapResultUtil.asBigDecimal(result, "balance")
+        return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): Boolean {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val token = checkTransferReq.token as EvolutionClientToken
 
         val data = hashMapOf(
@@ -84,11 +86,12 @@ class EvolutionService : PlatformService() {
                 "ecID" to token.appId,
                 "euID" to checkTransferReq.username,
                 "output" to 0,
-                "TransID" to checkTransferReq.orderId
+                "eTransID" to checkTransferReq.orderId
         )
         val url = this.getRequestUrl(path = "/api/ecashier", data = data)
-        val result = this.doGetResult(url, "checktransfer")
-        return MapResultUtil.asString(result, "result") == "Y"
+        val result = this.doGetResult(url, "transaction")
+        val successful =  MapResultUtil.asString(result, "result") == "Y"
+        return GameValue.TransferResp.of(successful)
     }
 
     override fun start(startReq: GameValue.StartReq): String {
