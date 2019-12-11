@@ -17,14 +17,17 @@ interface CashOrderApi {
 
 
     @ApiOperation(tags = ["cash"], value = "出入款 -> 列表")
+    @Deprecated(message = "请使用出入款接口")
     fun check(): List<CashValue.CheckOrderVo>
 
     @ApiOperation(tags = ["cash"], value = "出入款 -> 锁定")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Deprecated(message = "请使用出入款接口")
     fun checkLock(@RequestBody req: CashValue.CheckOrderLockReq)
 
     @ApiOperation(tags = ["cash"], value = "出入款 -> 审核")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Deprecated(message = "请使用出入款接口")
     fun check(@RequestBody req: CashValue.CheckOrderReq)
 
 
@@ -33,7 +36,6 @@ interface CashOrderApi {
 
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 审核列表")
-    @Deprecated(message = "请使用check接口")
     fun deposit(): List<DepositVo>
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 历史")
@@ -47,12 +49,10 @@ interface CashOrderApi {
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 锁定")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Deprecated(message = "请使用check接口")
     fun tryLock(@RequestParam("orderId") orderId: String)
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 审核")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Deprecated(message = "请使用check接口")
     fun check(@RequestBody depositUoReq: DepositUoReq)
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 人工提存")
@@ -60,7 +60,6 @@ interface CashOrderApi {
     fun artificial(@RequestBody artificialCoReq: ArtificialCoReq)
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 审核列表")
-    @Deprecated(message = "请使用check接口")
     fun withdraw(): List<WithdrawVo>
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 历史")
@@ -74,12 +73,10 @@ interface CashOrderApi {
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 锁定")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Deprecated(message = "请使用check接口")
     fun withdrawLock(@RequestParam("orderId") orderId: String)
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 审核")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Deprecated(message = "请使用check接口")
     fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawUoReq)
 
 }

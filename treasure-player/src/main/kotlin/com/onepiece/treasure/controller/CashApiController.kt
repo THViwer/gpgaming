@@ -137,7 +137,7 @@ open class CashApiController(
         val (clientId, memberId) = this.currentClientIdAndMemberId()
 
         val depositQuery = DepositQuery(clientId = clientId, startTime = null, endTime = null, orderId = orderId,
-                memberId = memberId, state = state, lockWaiterId = null)
+                memberId = memberId, state = state, lockWaiterId = null, clientBankIdList = null)
 
         val page = depositService.query(depositQuery, current, size)
         if (page.total == 0) return Page.empty()

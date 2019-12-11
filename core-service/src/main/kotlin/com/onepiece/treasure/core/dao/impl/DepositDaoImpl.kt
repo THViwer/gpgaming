@@ -65,10 +65,13 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                 .where("member_id", query.memberId)
                 .where("order_id", query.orderId)
                 .where("state", query.state)
+                .whereIn("client_bank_id", query.clientBankIdList)
 
         if (query.lockWaiterId != null) {
             builder.asWhere("(lock_waiter_id is null || lock_waiter_id = ${query.lockWaiterId})")
         }
+
+
 
         return builder.sort("id desc")
                 .limit(current, size)

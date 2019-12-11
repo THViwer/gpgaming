@@ -21,6 +21,8 @@ data class DepositQuery(
 
         val memberId: Int?,
 
+        val clientBankIdList: List<Int>?,
+
         val state: DepositState?
 
 )

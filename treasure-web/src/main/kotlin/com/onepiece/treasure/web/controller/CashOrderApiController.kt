@@ -1,6 +1,7 @@
 package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.enums.Role
 import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.value.database.ArtificialOrderCo
@@ -11,6 +12,7 @@ import com.onepiece.treasure.beans.value.internet.web.*
 import com.onepiece.treasure.core.OrderIdBuilder
 import com.onepiece.treasure.core.service.ArtificialOrderService
 import com.onepiece.treasure.core.service.DepositService
+import com.onepiece.treasure.core.service.WaiterService
 import com.onepiece.treasure.core.service.WithdrawService
 import com.onepiece.treasure.web.controller.basic.BasicController
 import org.springframework.format.annotation.DateTimeFormat
@@ -23,7 +25,8 @@ class CashOrderApiController(
         private val depositService: DepositService,
         private val withdrawService: WithdrawService,
         private val artificialOrderService: ArtificialOrderService,
-        private val orderIdBuilder: OrderIdBuilder
+        private val orderIdBuilder: OrderIdBuilder,
+        private val waiterService: WaiterService
 ) : BasicController(), CashOrderApi {
 
 
@@ -32,7 +35,7 @@ class CashOrderApiController(
         val clientId = getClientId()
 
         val depositQuery = DepositQuery(clientId = clientId, startTime = null,
-                endTime = null, memberId = null, orderId = null, state = DepositState.Process, lockWaiterId = getCurrentWaiterId())
+                endTime = null, memberId = null, orderId = null, state = DepositState.Process, lockWaiterId = getCurrentWaiterId(), clientBankIdList = null)
         val deposits = depositService.query(depositQuery).map { CashValue.CheckOrderVo.of(it) }
 
         val withdrawQuery = WithdrawQuery(clientId = clientId, lockWaiterId = this.getCurrentWaiterId(), startTime = null, endTime = null,
@@ -91,8 +94,23 @@ class CashOrderApiController(
     @GetMapping("/deposit")
     override fun deposit(): List<DepositVo> {
 
-        val query = DepositQuery(clientId = this.getClientId(), startTime = null,
-                endTime = null, memberId = null, orderId = null, state = DepositState.Process, lockWaiterId = getCurrentWaiterId())
+        val user = current()
+
+        val clientBankIdList = when (user.role) {
+            Role.Client -> {
+                null
+            }
+            Role.Waiter -> {
+                val waiter = waiterService.get(user.id)
+                val clientBanks = waiter.clientBanks
+                if (clientBanks.isNullOrEmpty()) return emptyList()
+                clientBanks
+            }
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+
+        val query = DepositQuery(clientId = user.clientId, startTime = null, endTime = null, memberId = null, orderId = null,
+                state = DepositState.Process, lockWaiterId = getCurrentWaiterId(), clientBankIdList = clientBankIdList)
         return depositService.query(query).map{
             with(it) {
                 DepositVo(orderId = it.orderId, money = money, memberName = memberName, memberBankCardNumber= memberBankCardNumber,
@@ -114,7 +132,7 @@ class CashOrderApiController(
     ): List<DepositVo> {
         val clientId = getClientId()
         val depositQuery = DepositQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state,
-                lockWaiterId = null)
+                lockWaiterId = null, clientBankIdList = null)
         return depositService.query(depositQuery).map {
             with(it) {
                 DepositVo(orderId = it.orderId, money = money, memberName = memberName, memberBankCardNumber= memberBankCardNumber,
