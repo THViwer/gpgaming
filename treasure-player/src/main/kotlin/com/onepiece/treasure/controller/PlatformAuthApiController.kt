@@ -74,6 +74,7 @@ class PlatformAuthApiController: BasicController(), PlatformAuthApi {
         log.info(request.contextPath)
         log.info(request.requestURL.toString())
 
+
         return """
             <?xml version="1.0" encoding="UTF-8"?> 
                 <authenticate> 

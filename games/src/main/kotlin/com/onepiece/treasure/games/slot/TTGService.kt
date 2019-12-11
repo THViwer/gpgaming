@@ -250,22 +250,24 @@ class TTGService(
                 }
                 else -> {
                     betAmount = BigDecimal.ZERO
-                    winAmount = detail.asBigDecimal("amount")
+                    winAmount = detail.asBigDecimal("amount").abs()
                 }
             }
-            val handId = detail.asString("handId")
+//            val handId = detail.asString("handId")
 
-            handId to BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, betTime = betTime, betAmount = betAmount,
-                    winAmount = winAmount, originData = "", platform = Platform.TTG, settleTime = betTime)
-        }.groupBy { it.first }.map {
-            it.value.reduce { acc, pair ->
-                val betAmount = acc.second.betAmount.plus(pair.second.betAmount)
-                val winAmount = acc.second.winAmount.plus(pair.second.winAmount)
-                val origin = acc.second.copy(betAmount = betAmount, winAmount = winAmount)
-                val originData = objectMapper.writeValueAsString(origin)
-                "" to origin.copy(originData = originData)
-            }.second
+            val originData = objectMapper.writeValueAsString(it.data)
+            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, betTime = betTime, betAmount = betAmount,
+                    winAmount = winAmount, originData = originData, platform = Platform.TTG, settleTime = betTime)
         }
+//                .groupBy { it.first }.map {
+//            it.value.reduce { acc, pair ->
+//                val betAmount = acc.second.betAmount.plus(pair.second.betAmount)
+//                val winAmount = acc.second.winAmount.plus(pair.second.winAmount)
+//                val origin = acc.second.copy(betAmount = betAmount, winAmount = winAmount)
+//                val originData = objectMapper.writeValueAsString(origin)
+//                "" to origin.copy(originData = originData)
+//            }.second
+//        }
     }
 
 

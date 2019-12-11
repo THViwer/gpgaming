@@ -47,7 +47,7 @@ class PullBetTask(
         running.set(true)
 
         //TODO 暂时过滤其它厅主的
-        val binds = platformBindService.all().filter { it.clientId == 1 }
+        val binds = platformBindService.all().filter { it.clientId == 1 && it.platform == Platform.MicroGaming }
 
         binds.parallelStream().forEach  { bind ->
             this.executePlatform(bind)
@@ -77,7 +77,7 @@ class PullBetTask(
 
         val startTime = redisService.get(key = redisKey, clz = String::class.java) {
             //TODO 暂时10分钟 线上用30分钟
-            "${LocalDateTime.now().minusMinutes(60)}"
+            "${LocalDateTime.now().minusMinutes(10)}"
         }!!.let { LocalDateTime.parse(it) }
 
         if (!this.canExecutePlatform(startTime = startTime, platform = bind.platform)) return

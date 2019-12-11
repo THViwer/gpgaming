@@ -250,29 +250,21 @@ class PragmaticService: PlatformService() {
             }
         }
 
-        //
-        return list.groupBy { it.asString("playSessionID") }.map {
-            val mapUtil = it.value.reduce { acc, mapUtil ->
-                val betAmount = acc.asBigDecimal("betAmount").plus(mapUtil.asBigDecimal("betAmount"))
-                val winAmount = acc.asBigDecimal("winAmount").plus(mapUtil.asBigDecimal("winAmount"))
-                val data = acc.data as HashMap<String, Any>
-                data["betAmount"] = betAmount
-                data["winAmount"] = winAmount
-                MapUtil.instance(data = data)
-            }
 
-            val username = mapUtil.asString("extPlayerID")
+        return list.map { bet ->
+
+            val username = bet.asString("extPlayerID")
             val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(Platform.Pragmatic, username)
-            val orderId = mapUtil.asString("playSessionID")
-            val betTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(mapUtil.asLong("timestamp")), ZoneId.of("Asia/Shanghai"))
-            val betAmount = mapUtil.asBigDecimal("betAmount")
-            val winAmount = mapUtil.asBigDecimal("winAmount")
+            val orderId = bet.asString("referenceID")
+            val betTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(bet.asLong("timestamp")), ZoneId.of("Asia/Shanghai"))
+            val betAmount = bet.asBigDecimal("betAmount")
+            val winAmount = bet.asBigDecimal("winAmount")
 
-
-            val originData = objectMapper.writeValueAsString(mapUtil.data)
+            val originData = objectMapper.writeValueAsString(bet.data)
             BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, platform = Platform.Pragmatic,
                     betTime = betTime, settleTime = betTime, orderId = orderId, originData = originData)
         }
+
     }
 
 }
