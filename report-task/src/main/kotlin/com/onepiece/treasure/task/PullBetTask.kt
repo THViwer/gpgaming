@@ -46,7 +46,8 @@ class PullBetTask(
         if (running.get()) return
         running.set(true)
 
-        val binds = platformBindService.all()
+        //TODO 暂时过滤其它厅主的
+        val binds = platformBindService.all().filter { it.clientId == 1 }
 
         binds.parallelStream().forEach  { bind ->
             this.executePlatform(bind)
