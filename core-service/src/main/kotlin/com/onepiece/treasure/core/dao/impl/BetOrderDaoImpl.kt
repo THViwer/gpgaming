@@ -2,6 +2,7 @@ package com.onepiece.treasure.core.dao.impl
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.BetOrder
+import com.onepiece.treasure.beans.value.database.BetOrderReport
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.dao.BetOrderDao
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
@@ -11,6 +12,7 @@ import java.math.BigDecimal
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Timestamp
+import java.time.LocalDate
 
 @Repository
 class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
@@ -128,6 +130,28 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 .executeMaybeOne { rs ->
                     rs.getInt("id")
                 }?: 0
+    }
+
+    override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderReport> {
+        return (0 until 8).map { index ->
+            query(returnColumns = "client_id, platform, sum(bet_amount) as totalBet, sum(win_amount) as totalWin" ,defaultTable = "bet_order_$index")
+                    .asWhere("settle_time > ?", startDate)
+                    .group("client_id, platform")
+                    .execute { rs ->
+
+                        val clientId = rs.getInt("client_id")
+                        val platform = rs.getString("platform").let { Platform.valueOf(it) }
+                        val totalBet = rs.getBigDecimal("totalBet")
+                        val totalWin = rs.getBigDecimal("totalWin")
+                        BetOrderReport(clientId = clientId, platform = platform, totalBet = totalBet, totalWin = totalWin)
+                    }
+        }.reduce { acc, list ->  acc.plus(list)}
+                .groupBy { "${it.clientId}:${it.platform}" }
+                .map {
+                    val totalBet = it.value.sumByDouble { it.totalBet.toDouble() }.toBigDecimal().setScale(2, 2)
+                    val totalWin = it.value.sumByDouble { it.totalWin.toDouble() }.toBigDecimal().setScale(2, 2)
+                    it.value.first().copy(totalBet = totalBet, totalWin = totalWin)
+                }
 
     }
 }

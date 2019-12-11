@@ -2,8 +2,10 @@ package com.onepiece.treasure.core.dao
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.BetOrder
+import com.onepiece.treasure.beans.value.database.BetOrderReport
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.dao.basic.BasicDao
+import java.time.LocalDate
 import kotlin.math.absoluteValue
 
 interface BetOrderDao: BasicDao<BetOrder> {
@@ -31,5 +33,7 @@ interface BetOrderDao: BasicDao<BetOrder> {
     fun markBet(table: String, startId: Int, endId: Int): Boolean
 
     fun getLastNotMarkId(table: String): Int
+
+    fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderReport>
 
 }

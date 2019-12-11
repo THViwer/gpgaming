@@ -7,6 +7,7 @@ import com.onepiece.treasure.beans.model.ClientPlatformDailyReport
 import com.onepiece.treasure.beans.model.MemberDailyReport
 import com.onepiece.treasure.beans.model.MemberPlatformDailyReport
 import com.onepiece.treasure.core.dao.*
+import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.ReportService
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -18,7 +19,8 @@ class ReportServiceImpl(
         private val transferOrderDao: TransferOrderDao,
         private val depositDao: DepositDao,
         private val withdrawDao: WithdrawDao,
-        private val memberDao: MemberDao
+        private val memberDao: MemberDao,
+        private val betOrderService: BetOrderService
 ) : ReportService {
 
     override fun startMemberPlatformDailyReport(memberId: Int?, startDate: LocalDate): List<MemberPlatformDailyReport> {
@@ -104,8 +106,7 @@ class ReportServiceImpl(
         // 转账报表
         val transferQuery = TransferReportQuery(clientId = clientId, memberId = null, from = null, to = null, startDate = startDate, endDate = endDate)
         val transferReports = transferOrderDao.clientPlatformReport(query = transferQuery)
-
-        return transferReports.groupBy { "${it.clientId}:${it.platform}" }.map { maps ->
+        val data = transferReports.groupBy { "${it.clientId}:${it.platform}" }.map { maps ->
 
             val transferInReport = maps.value.find { it.from == Platform.Center }
             val transferOutReport = maps.value.find { it.to == Platform.Center }
@@ -113,11 +114,46 @@ class ReportServiceImpl(
             val first = maps.value.first()
             val platform = if (first.from == Platform.Center) first.to else first.from
             ClientPlatformDailyReport(id = -1, clientId = first.clientId, day = startDate, platform = platform,
-                    transferIn = transferInReport?.money?: BigDecimal.ZERO, transferOut = transferOutReport?.money?: BigDecimal.ZERO, createdTime = now)
-
+                    transferIn = transferInReport?.money?: BigDecimal.ZERO, transferOut = transferOutReport?.money?: BigDecimal.ZERO, createdTime = now,
+                    win = BigDecimal.valueOf(-1), bet = BigDecimal.valueOf(-1))
         }
 
+        // 盈利报表
+        val betOrderReports = betOrderService.report(startDate = startDate, endDate = endDate)
 
+
+        // 组合
+        val transferKeys = data.map { "${it.clientId}:${it.platform}" to it }.toMap()
+        val betOrderKeys = betOrderReports.map { "${it.clientId}:${it.platform}" to it }.toMap()
+        val keys = transferKeys.keys.plus(betOrderKeys.keys)
+
+        // 组合数据
+        return keys.map { key ->
+
+            val transferData = transferKeys[key]
+            val betOrderData = betOrderKeys[key]
+
+            when {
+                transferData == null -> {
+                    ClientPlatformDailyReport(id = -1, day = startDate, platform = betOrderData!!.platform, bet = betOrderData.totalBet, win = betOrderData.totalWin,
+                            transferIn = BigDecimal.ZERO, transferOut = BigDecimal.ZERO, clientId = betOrderData.clientId, createdTime = now)
+                }
+                betOrderData == null -> {
+                    when(transferData.platform) {
+                        Platform.Kiss918,
+                        Platform.Pussy888,
+                        Platform.Mega -> {
+                            transferData.copy(bet = BigDecimal.valueOf(-1), win = BigDecimal.valueOf(-1))
+                        }
+                        else -> transferData.copy(bet = BigDecimal.ZERO, win = BigDecimal.ZERO)
+                    }
+                }
+                else -> {
+                    transferData.copy(bet = betOrderData.totalBet, win = betOrderData.totalWin)
+
+                }
+            }
+        }
     }
 
     override fun startClientReport(clientId: Int?, startDate: LocalDate): List<ClientDailyReport> {

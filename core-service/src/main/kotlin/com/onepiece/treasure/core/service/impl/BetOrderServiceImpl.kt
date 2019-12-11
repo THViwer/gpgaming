@@ -2,12 +2,14 @@ package com.onepiece.treasure.core.service.impl
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.BetOrder
+import com.onepiece.treasure.beans.value.database.BetOrderReport
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.dao.BetOrderDao
 import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class BetOrderServiceImpl(
@@ -59,5 +61,7 @@ class BetOrderServiceImpl(
         return mergeOrders
     }
 
-
+    override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderReport> {
+        return betOrderDao.report(startDate = startDate, endDate = endDate)
+    }
 }
