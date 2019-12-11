@@ -53,7 +53,7 @@ class UserApiController(
                 clientService.update(clientUo)
             }
             Role.Waiter -> {
-                val waiterUo = WaiterUo(id = current.id, oldPassword = changePwdReq.oldPassword, password = changePwdReq.password)
+                val waiterUo = WaiterUo(id = current.id, oldPassword = changePwdReq.oldPassword, password = changePwdReq.password, clientBankData = null)
                 waiterService.update(waiterUo)
             }
             else -> check(false) { OnePieceExceptionCode.AUTHORITY_FAIL }
