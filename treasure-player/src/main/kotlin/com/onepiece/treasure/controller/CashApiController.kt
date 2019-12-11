@@ -148,7 +148,7 @@ open class CashApiController(
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
                         imgPath = imgPath, memberId = memberId, bankOrderId = null, clientBankCardNumber = clientBankCardNumber,
                         clientBankName = clientBankName, clientBankId = clientBankId, lockWaiterId = it.lockWaiterId, depositTime = it.depositTime,
-                        channel = it.channel, username = username)
+                        channel = it.channel, username = username, clientBank = it.clientBank)
             }
         }
 
