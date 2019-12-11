@@ -302,7 +302,7 @@ class GameApi(
             val checkResp = this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
 
             val balance = when {
-                checkResp.transfer && checkResp.balance.toInt() <= 0 -> originBalance.minus(amount)
+                checkResp.transfer && checkResp.balance.toInt() <= 0 -> originBalance.minus(amount.abs())
                 checkResp.transfer -> checkResp.balance
                 else -> BigDecimal.valueOf(-1)
             }
