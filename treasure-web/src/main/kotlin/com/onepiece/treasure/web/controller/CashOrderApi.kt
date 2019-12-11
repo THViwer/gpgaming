@@ -7,6 +7,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -78,5 +79,10 @@ interface CashOrderApi {
     @ApiOperation(tags = ["cash"], value = "取款 -> 审核")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawUoReq)
+
+    @ApiOperation(tags = ["cash"], value = "转账 -> 查询优惠转账")
+    fun query(
+            @RequestParam("promotionId") promotionId: Int
+    ): List<TransferOrderValue.TransferOrderVo>
 
 }

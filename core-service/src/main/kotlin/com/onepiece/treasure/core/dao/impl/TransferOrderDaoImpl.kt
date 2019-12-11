@@ -4,6 +4,7 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.TransferState
 import com.onepiece.treasure.beans.model.TransferOrder
 import com.onepiece.treasure.beans.value.database.*
+import com.onepiece.treasure.beans.value.internet.web.TransferOrderValue
 import com.onepiece.treasure.core.dao.TransferOrderDao
 import com.onepiece.treasure.core.dao.TransferReportQuery
 import com.onepiece.treasure.core.dao.basic.BasicDaoImpl
@@ -20,6 +21,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
             val orderId = rs.getString("order_id")
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
+            val username = rs.getString("username")
             val money = rs.getBigDecimal("money")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
             val joinPromotionId = rs.getInt("join_promotion_id")
@@ -31,7 +33,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
             TransferOrder(orderId = orderId, clientId = clientId, memberId = memberId, money = money, promotionAmount = promotionAmount,
                     from = from, to = to, state = state, createdTime = createdTime, updatedTime = updatedTime, joinPromotionId = joinPromotionId,
-                    promotionJson = promotionJson)
+                    promotionJson = promotionJson, username = username)
         }
 
     override fun create(transferOrderCo: TransferOrderCo): Boolean {
@@ -39,6 +41,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .set("order_id", transferOrderCo.orderId)
                 .set("client_id", transferOrderCo.clientId)
                 .set("member_id", transferOrderCo.memberId)
+                .set("username", transferOrderCo.username)
                 .set("money", transferOrderCo.money)
                 .set("promotion_amount", transferOrderCo.promotionAmount)
                 .set("`from`", transferOrderCo.from)
@@ -142,7 +145,15 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
 
                     ClientTransferReportVo(clientId = clientId, transferIn = transferIn, transferOut = transferOut)
                 }
-
     }
 
+    override fun query(query: TransferOrderValue.Query): List<TransferOrder> {
+        return query()
+                .where("client_id", query.clientId)
+                .where("from", query.from)
+                .where("join_promotion_id", query.promotionId)
+                .sort("created_time desc")
+                .execute(mapper)
+
+    }
 }

@@ -16,6 +16,9 @@ data class TransferOrderCo(
         // 会员Id
         val memberId: Int,
 
+        // 用户名
+        val username: String,
+
         // 转账金额
         val money: BigDecimal,
 

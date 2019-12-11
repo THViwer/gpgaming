@@ -3,6 +3,7 @@ package com.onepiece.treasure.core.dao
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.TransferOrder
 import com.onepiece.treasure.beans.value.database.*
+import com.onepiece.treasure.beans.value.internet.web.TransferOrderValue
 import com.onepiece.treasure.core.dao.basic.BasicDao
 import java.time.LocalDate
 
@@ -19,6 +20,8 @@ interface TransferOrderDao: BasicDao<TransferOrder> {
     fun clientPlatformReport(query: TransferReportQuery): List<ClientTransferPlatformReportVo>
 
     fun clientReport(query: TransferReportQuery): List<ClientTransferReportVo>
+
+    fun query(query: TransferOrderValue.Query): List<TransferOrder>
 
 //    fun reportByPlatform(memberId: Int?, from: Platform?, to: Platform?, startDate: LocalDate, endDate: LocalDate): List<MemberTransferPlatformReportVo>
 //

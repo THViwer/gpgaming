@@ -1,6 +1,7 @@
 package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.beans.enums.DepositState
+import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Role
 import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
@@ -10,10 +11,7 @@ import com.onepiece.treasure.beans.value.database.DepositQuery
 import com.onepiece.treasure.beans.value.database.WithdrawQuery
 import com.onepiece.treasure.beans.value.internet.web.*
 import com.onepiece.treasure.core.OrderIdBuilder
-import com.onepiece.treasure.core.service.ArtificialOrderService
-import com.onepiece.treasure.core.service.DepositService
-import com.onepiece.treasure.core.service.WaiterService
-import com.onepiece.treasure.core.service.WithdrawService
+import com.onepiece.treasure.core.service.*
 import com.onepiece.treasure.web.controller.basic.BasicController
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.*
@@ -26,7 +24,8 @@ class CashOrderApiController(
         private val withdrawService: WithdrawService,
         private val artificialOrderService: ArtificialOrderService,
         private val orderIdBuilder: OrderIdBuilder,
-        private val waiterService: WaiterService
+        private val waiterService: WaiterService,
+        private val transferOrderService: TransferOrderService
 ) : BasicController(), CashOrderApi {
 
 
@@ -224,5 +223,18 @@ class CashOrderApiController(
         val req = withdrawUoReq.copy(clientId = current.clientId, waiterId = current.id)
         withdrawService.check(req)
 
+    }
+
+    @GetMapping("/transfer")
+    override fun query(@RequestParam("promotionId") promotionId: Int): List<TransferOrderValue.TransferOrderVo> {
+        val user = current()
+
+        val query = TransferOrderValue.Query(clientId = user.clientId, from = Platform.Center, promotionId = promotionId)
+        val list = transferOrderService.query(query)
+
+        return list.map { order ->
+            TransferOrderValue.TransferOrderVo(orderId = order.orderId, memberId = order.memberId, money = order.money, promotionJson = order.promotionJson, joinPromotionId = order.joinPromotionId,
+                    from = order.from, to = order.to, state = order.state, createdTime = order.createdTime, promotionAmount = order.promotionAmount)
+        }
     }
 }

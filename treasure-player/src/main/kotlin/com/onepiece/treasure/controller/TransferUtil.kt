@@ -40,14 +40,14 @@ class TransferUtil(
     /**
      * 如果轩心账金额为-1 则是转全部
      */
-    fun transferInAll(clientId: Int, memberId: Int, exceptPlatform: Platform? = null): List<BalanceAllInVo> {
+    fun transferInAll(clientId: Int, memberId: Int, username: String, exceptPlatform: Platform? = null): List<BalanceAllInVo> {
 
         val amount = BigDecimal.valueOf(-1)
         val platformMembers = this.platformMemberService.myPlatforms(memberId = memberId)
         val list = platformMembers.parallelStream().filter { exceptPlatform == null || exceptPlatform != it.platform }.map{ platformMember ->
             val req = CashTransferReq(from = platformMember.platform, to = Platform.Center, amount = amount, promotionId = null)
             try {
-                val resp = this.singleTransfer(clientId = clientId, platform = platformMember.platform, cashTransferReq = req, type = "in", platformMemberVo = platformMember)
+                val resp = this.singleTransfer(clientId = clientId, platform = platformMember.platform, cashTransferReq = req, type = "in", platformMemberVo = platformMember, username = username)
                 val balance = if (resp.balance.toInt() <= 0) BigDecimal.ZERO else resp.balance
 
                 BalanceAllInVo(platform = platformMember.platform, balance = balance)
@@ -68,13 +68,13 @@ class TransferUtil(
     /**
      * 如果轩心账金额为-1 则是转全部
      */
-    fun transfer(clientId: Int, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp {
+    fun transfer(clientId: Int, username: String, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp {
         val (type, platform) = if (cashTransferReq.from == Platform.Center) "out" to cashTransferReq.to else "in" to cashTransferReq.from
-        return singleTransfer(clientId = clientId, platform =  platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo)
+        return singleTransfer(clientId = clientId, platform =  platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo, username = username)
     }
 
 
-    private fun singleTransfer(clientId: Int, platform: Platform, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo, type: String): GameValue.TransferResp{
+    private fun singleTransfer(clientId: Int, username: String, platform: Platform, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo, type: String): GameValue.TransferResp{
 
         val platformMember = platformMemberService.get(platformMemberVo.id)
         val platformBalance  = gameApi.balance(clientId = clientId, platformUsername = platformMemberVo.platformUsername, platform = platform, platformPassword = platformMember.password)
@@ -83,7 +83,7 @@ class TransferUtil(
 
             // 中心钱包 -> 平台钱包
             "out" -> {
-                this.centerToPlatformTransfer(platformMember = platformMember, platformBalance = platformBalance, transferAmount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId)
+                this.centerToPlatformTransfer(platformMember = platformMember, username = username, platformBalance = platformBalance, transferAmount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId)
             }
             // 平台钱包 -> 中心钱包
             "in" -> {
@@ -94,7 +94,7 @@ class TransferUtil(
                 if (amount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)) {
                     GameValue.TransferResp.successful()
                 } else {
-                    this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = amount)
+                    this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = amount, username = username)
                 }
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
@@ -102,7 +102,7 @@ class TransferUtil(
     }
 
     // 中心转平台
-    private fun centerToPlatformTransfer(platformMember: PlatformMember, platformBalance: BigDecimal, transferAmount: BigDecimal, promotionId: Int?): GameValue.TransferResp {
+    private fun centerToPlatformTransfer(username: String, platformMember: PlatformMember, platformBalance: BigDecimal, transferAmount: BigDecimal, promotionId: Int?): GameValue.TransferResp {
 
         val platform = platformMember.platform
         val from = Platform.Center
@@ -137,7 +137,7 @@ class TransferUtil(
         // 生成转账订单
         val promotionAmount = platformMemberTransferUo?.promotionAmount?: BigDecimal.ZERO
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = promotionAmount,
-                from = from, to = to, joinPromotionId = platformMemberTransferUo?.joinPromotionId, promotionJson = platformMemberTransferUo?.promotionJson)
+                from = from, to = to, joinPromotionId = platformMemberTransferUo?.joinPromotionId, promotionJson = platformMemberTransferUo?.promotionJson, username = username)
         transferOrderService.create(transferOrderCo)
 
         // 平台钱包更改信息
@@ -236,7 +236,7 @@ class TransferUtil(
     }
 
 
-    private fun platformToCenterTransfer(platformMember: PlatformMember, platformBalance: BigDecimal, amount: BigDecimal): GameValue.TransferResp {
+    private fun platformToCenterTransfer(platformMember: PlatformMember, username: String, platformBalance: BigDecimal, amount: BigDecimal): GameValue.TransferResp {
         val platform = platformMember.platform
         val from = platformMember.platform
         val to = Platform.Center
@@ -259,7 +259,7 @@ class TransferUtil(
         // 生成转账订单
         val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "in", platformUsername = platformMember.username)
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = BigDecimal.ZERO,
-                from = from, to = to, joinPromotionId = null, promotionJson = null)
+                from = from, to = to, joinPromotionId = null, promotionJson = null, username = username)
         transferOrderService.create(transferOrderCo)
 
 

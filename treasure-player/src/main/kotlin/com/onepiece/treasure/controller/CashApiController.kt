@@ -303,7 +303,7 @@ open class CashApiController(
     @PutMapping("/transfer/in/all")
     override fun transferToCenter(): List<BalanceAllInVo> {
         val current = this.current()
-        return transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = null)
+        return transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = null, username = current.username)
     }
 
 

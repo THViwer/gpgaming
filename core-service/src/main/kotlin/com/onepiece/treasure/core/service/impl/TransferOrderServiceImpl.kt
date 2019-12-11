@@ -1,8 +1,10 @@
 package com.onepiece.treasure.core.service.impl
 
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.TransferOrder
 import com.onepiece.treasure.beans.value.database.TransferOrderCo
 import com.onepiece.treasure.beans.value.database.TransferOrderUo
+import com.onepiece.treasure.beans.value.internet.web.TransferOrderValue
 import com.onepiece.treasure.core.dao.TransferOrderDao
 import com.onepiece.treasure.core.service.TransferOrderService
 import org.springframework.stereotype.Service
@@ -23,7 +25,12 @@ class TransferOrderServiceImpl(
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 
-//    override fun report(startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo> {
+    override fun query(query: TransferOrderValue.Query): List<TransferOrder> {
+        return transferOrderDao.query(query)
+    }
+
+
+    //    override fun report(startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo> {
 //        return transferOrderDao.report(startDate, endDate)
 //    }
 //

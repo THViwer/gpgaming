@@ -29,11 +29,11 @@ open class TransferSyncImpl(
         val platform = platformMemberVo.platform
 
         // 从其它钱包转到中心钱包
-        transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = platform)
+        transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = platform, username = current.username)
 
         // 从中心钱包转到
         val cashTransferReq = CashTransferReq(from = Platform.Center, to = platform, amount = BigDecimal.valueOf(-1), promotionId = null)
-        transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = cashTransferReq)
+        transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = cashTransferReq, username = current.username)
     }
 
 }
