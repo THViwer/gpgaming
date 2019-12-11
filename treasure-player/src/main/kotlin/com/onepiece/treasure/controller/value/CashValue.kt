@@ -212,7 +212,13 @@ data class BalanceVo(
 //        @ApiModelProperty("是否可以转入 中心 -> 平台")
 //        val transferIn: Boolean
 
-)
+) {
+        val category: PlatformCategory
+                @ApiModelProperty("平台类型")
+                get() {
+                        return platform.detail.category
+                }
+}
 
 data class BalanceAllInVo(
         @ApiModelProperty("平台名称")
