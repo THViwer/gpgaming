@@ -20,6 +20,9 @@ data class Waiter (
         // 密码
         val password: String,
 
+        // 维护厅主入款银行卡Id列表
+        val clientBankData: String?,
+
         // 名称 昵称
         val name: String,
 
@@ -34,4 +37,12 @@ data class Waiter (
 
         // 登陆时间
         val loginTime: LocalDateTime?
-)
+) {
+
+    val clientBanks: List<Int>?
+        get() {
+            return clientBankData?.let { it.split(",").map { it.toInt() } }
+        }
+
+
+}

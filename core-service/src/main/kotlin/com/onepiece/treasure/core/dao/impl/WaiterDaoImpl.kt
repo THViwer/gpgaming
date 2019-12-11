@@ -18,6 +18,7 @@ class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
             val clientId = rs.getInt("client_id")
             val username = rs.getString("username")
             val password = rs.getString("password")
+            val clientBankData = rs.getString("client_bank_data")
             val name = rs.getString("name")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
@@ -25,7 +26,7 @@ class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
 
             Waiter(id = id, clientId = clientId, username = username, password = password, name = name, status = status,
-                    createdTime = createdTime, loginIp = loginIp, loginTime = loginTime)
+                    createdTime = createdTime, loginIp = loginIp, loginTime = loginTime, clientBankData = clientBankData)
         }
 
     override fun findByUsername(username: String): Waiter? {
@@ -37,6 +38,7 @@ class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
                 .set("client_id", waiterCo.clientId)
                 .set("username", waiterCo.username)
                 .set("password", waiterCo.password)
+                .set("client_bank_data", waiterCo.clientBankData)
                 .set("name", waiterCo.name)
                 .set("status", Status.Normal)
                 .executeGeneratedKey()
@@ -45,6 +47,7 @@ class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
     override fun update(waiterUo: WaiterUo): Boolean {
         return update()
                 .set("password", waiterUo.password)
+                .set("client_bank_data", waiterUo.clientBankData)
                 .set("name", waiterUo.name)
                 .set("status", waiterUo.status)
                 .set("login_ip", waiterUo.loginIp)

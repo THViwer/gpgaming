@@ -56,7 +56,10 @@ data class WaiterUoReq(
         val status: Status?,
 
         @ApiModelProperty("密码")
-        val password: String?
+        val password: String?,
+
+        @ApiModelProperty("入款银行卡Id")
+        val clientBanks: List<Int>?
 )
 
 data class WaiterCoReq(
@@ -71,6 +74,9 @@ data class WaiterCoReq(
         val name: String,
 
         @ApiModelProperty("状态")
-        val status: Status
+        val status: Status,
+
+        @ApiModelProperty("入款银行卡Id")
+        val clientBanks: List<Int>?
 
 )

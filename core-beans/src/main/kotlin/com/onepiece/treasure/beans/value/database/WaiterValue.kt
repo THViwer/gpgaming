@@ -13,6 +13,9 @@ data class WaiterCo(
         // 密码
         val password: String,
 
+        // 入款银行卡Id
+        val clientBankData: String?,
+
         // 名称 昵称
         val name: String
 
@@ -26,6 +29,9 @@ data class WaiterUo(
 
         // 密码
         val password: String? = null,
+
+        // 入款银行卡Id
+        val clientBankData: String?,
 
         // 名称 昵称
         val name: String? = null,

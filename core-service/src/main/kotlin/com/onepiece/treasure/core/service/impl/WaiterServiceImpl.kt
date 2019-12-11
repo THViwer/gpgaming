@@ -35,7 +35,7 @@ class WaiterServiceImpl(
         check(waiter.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
 
         // update client
-        val waiterUo = WaiterUo(id = waiter.id, loginIp = loginValue.ip, loginTime = LocalDateTime.now())
+        val waiterUo = WaiterUo(id = waiter.id, loginIp = loginValue.ip, loginTime = LocalDateTime.now(), clientBankData = null)
         this.update(waiterUo)
 
         return waiter.copy(password = "")

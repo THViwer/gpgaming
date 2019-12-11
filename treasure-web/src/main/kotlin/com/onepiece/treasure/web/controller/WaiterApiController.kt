@@ -36,7 +36,7 @@ class WaiterApiController(
         val clientId = getClientId()
 
         val waiterCo = WaiterCo(clientId = clientId, username = waiterCoReq.username, name = waiterCoReq.name,
-                password = waiterCoReq.password)
+                password = waiterCoReq.password, clientBankData = waiterCoReq.clientBanks?.joinToString(","))
         waiterService.create(waiterCo)
     }
 
@@ -48,7 +48,7 @@ class WaiterApiController(
         check(hasWaiter.clientId == clientId) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
         val waiterUo = WaiterUo(id = waiterUoReq.id, name = waiterUoReq.name, status = waiterUoReq.status,
-                password = waiterUoReq.password)
+                password = waiterUoReq.password, clientBankData = waiterUoReq.clientBanks?.joinToString(","))
         waiterService.update(waiterUo)
     }
 
