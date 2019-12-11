@@ -46,7 +46,7 @@ class PullBetTask(
         if (running.get()) return
         running.set(true)
 
-        val binds = platformBindService.all().filter { it.platform == Platform.SaGaming }
+        val binds = platformBindService.all()
 
         binds.parallelStream().forEach  { bind ->
             this.executePlatform(bind)
