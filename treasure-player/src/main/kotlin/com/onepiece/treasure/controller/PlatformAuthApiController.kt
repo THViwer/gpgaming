@@ -2,10 +2,8 @@ package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.model.token.SpadeGamingClientToken
+import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.PlatformAuthValue
-import com.onepiece.treasure.core.service.PlatformBindService
-import com.onepiece.treasure.core.service.PlatformMemberService
-import com.onepiece.treasure.games.GameApi
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.context.request.RequestContextHolder
@@ -15,11 +13,7 @@ import java.util.*
 
 @RestController
 @RequestMapping
-class PlatformAuthApiController(
-        private val gameApi: GameApi,
-        private val platformBindService: PlatformBindService,
-        private val platformMemberService: PlatformMemberService
-): PlatformAuthApi {
+class PlatformAuthApiController: BasicController(), PlatformAuthApi {
 
     private val log = LoggerFactory.getLogger(PlatformAuthApiController::class.java)
 
@@ -65,11 +59,16 @@ class PlatformAuthApiController(
 
     @GetMapping("/cmd", produces = ["application/xml;charset=utf-8"])
     override fun cmdLogin(
-            @RequestParam("token") token: String,
-            @RequestParam("secret_key") secret_key: String
+            @RequestParam("token") token: String?,
+            @RequestParam("secret_key") secret_key: String?
     ): String {
 
         log.info("cmd 请求：token=$token, secret_key = $secret_key")
+
+        val request = getRequest()
+        request.parameterMap.map {
+            log.info(it.key, "${it.value}")
+        }
 
         return """
             <?xml version="1.0" encoding="UTF-8"?> 

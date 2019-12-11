@@ -23,8 +23,8 @@ interface PlatformAuthApi {
 
     @ApiOperation(tags = ["platform auth"], value = "cmd登陆")
     fun cmdLogin(
-            @RequestParam("token") token: String,
-            @RequestParam("secret_key") secret_key: String
+            @RequestParam("token", required = false) token: String?,
+            @RequestParam("secret_key", required = false) secret_key: String?
     ): String
 
     @ApiOperation(tags = ["platform auth"], value = "spadeGaming 登陆")
