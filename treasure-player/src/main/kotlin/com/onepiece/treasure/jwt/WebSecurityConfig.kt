@@ -119,6 +119,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/mega",
                         "/cmd",
                         "/spadeGaming",
+                        "/spadeGaming/",
                         "/png/order",
                         "/api/auth"
                 ).permitAll()
