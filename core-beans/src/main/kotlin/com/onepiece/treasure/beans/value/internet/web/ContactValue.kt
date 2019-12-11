@@ -10,6 +10,9 @@ sealed class ContactValue {
             @ApiModelProperty("号码(微信号或whatsapp)")
             val number: String,
 
+            @ApiModelProperty("二维码图片")
+            val qrCode: String?,
+
             @ApiModelProperty("类型")
             val type: ContactType
     )
@@ -20,6 +23,9 @@ sealed class ContactValue {
 
             @ApiModelProperty("号码(微信号或whatsapp)")
             val number: String,
+
+            @ApiModelProperty("二维码图片")
+            val qrCode: String?,
 
             @ApiModelProperty("类型")
             val status: Status

@@ -6,9 +6,9 @@ import com.onepiece.treasure.beans.model.Contact
 
 interface ContactService {
 
-    fun create(clientId: Int, type: ContactType, number: String)
+    fun create(clientId: Int, type: ContactType, number: String, qrCode: String?)
 
-    fun update(id: Int, number: String, status: Status)
+    fun update(id: Int, number: String, status: Status, qrCode: String?)
 
     fun list(clientId: Int): List<Contact>
 

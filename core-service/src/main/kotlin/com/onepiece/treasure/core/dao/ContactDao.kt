@@ -7,7 +7,7 @@ import com.onepiece.treasure.core.dao.basic.BasicDao
 
 interface ContactDao : BasicDao<Contact> {
 
-    fun create(clientId: Int, type: ContactType, number: String): Boolean
+    fun create(clientId: Int, type: ContactType, number: String, qrCode: String?): Boolean
 
-    fun update(id: Int, number: String, status: Status): Boolean
+    fun update(id: Int, number: String, status: Status, qrCode: String?): Boolean
 }

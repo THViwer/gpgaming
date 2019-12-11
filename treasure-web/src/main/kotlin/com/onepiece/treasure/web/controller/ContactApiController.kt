@@ -19,11 +19,11 @@ class ContactApiController(
 
     @PostMapping
     override fun create(@RequestBody create: ContactValue.Create) {
-        contactService.create(clientId = getClientId(), type = create.type, number = create.number)
+        contactService.create(clientId = getClientId(), type = create.type, number = create.number, qrCode = create.qrCode)
     }
 
     @PutMapping
     override fun update(@RequestBody update: ContactValue.Update) {
-        contactService.update(id = update.id, number = update.number, status = update.status)
+        contactService.update(id = update.id, number = update.number, status = update.status, qrCode = update.qrCode)
     }
 }

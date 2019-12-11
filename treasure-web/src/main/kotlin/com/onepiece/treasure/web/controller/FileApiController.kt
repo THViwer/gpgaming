@@ -23,6 +23,7 @@ class FileApiController : BasicController(), FileApi {
         val categoryName = when (category) {
             "banner" -> "banner"
             "promotion" -> "promotion"
+            "contact" -> "contact"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 

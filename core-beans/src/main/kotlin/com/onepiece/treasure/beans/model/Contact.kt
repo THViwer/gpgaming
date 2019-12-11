@@ -17,6 +17,9 @@ data class Contact (
 
         val number: String,
 
+        // 二维码图片
+        val qrCode: String?,
+
         val status: Status,
 
         val createdTime: LocalDateTime
