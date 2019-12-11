@@ -99,7 +99,7 @@ class CashOrderApiController(
                         memberBank=  memberBank, imgPath = imgPath, createdTime = createdTime, remark = remarks, endTime = it.endTime,
                         clientBankId = clientBankId, clientBankCardNumber = clientBankCardNumber, clientBankName = clientBankName,
                         bankOrderId = null, memberId = memberId, state = it.state, lockWaiterId = it.lockWaiterId, depositTime = depositTime,
-                        channel = it.channel, username = username)
+                        channel = it.channel, username = username, clientBank = it.clientBank)
             }
         }
     }
@@ -121,7 +121,7 @@ class CashOrderApiController(
                         memberBank=  memberBank, imgPath = imgPath, createdTime = createdTime, remark = remarks, endTime = it.endTime,
                         clientBankId = clientBankId, clientBankCardNumber = clientBankCardNumber, clientBankName = clientBankName,
                         bankOrderId = null, memberId = memberId, state = it.state, lockWaiterId = it.lockWaiterId, depositTime = depositTime,
-                        channel = it.channel, username = it.username)
+                        channel = it.channel, username = it.username, clientBank = it.clientBank)
             }
         }
     }

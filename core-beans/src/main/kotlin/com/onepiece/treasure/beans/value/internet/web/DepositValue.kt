@@ -59,6 +59,9 @@ data class DepositVo(
         @ApiModelProperty("厅主银行卡Id")
         val clientBankId: Int,
 
+        @ApiModelProperty("厅主银行卡")
+        val clientBank: Bank,
+
         @ApiModelProperty("厅主银行卡号")
         val clientBankCardNumber: String,
 
