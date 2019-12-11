@@ -2,7 +2,6 @@ package com.onepiece.treasure.controller.value
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.onepiece.treasure.beans.enums.*
-import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 import java.time.LocalDateTime
