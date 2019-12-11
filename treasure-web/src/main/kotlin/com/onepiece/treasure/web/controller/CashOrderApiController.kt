@@ -27,6 +27,66 @@ class CashOrderApiController(
 ) : BasicController(), CashOrderApi {
 
 
+    @GetMapping("/check")
+    override fun check(): List<CashValue.CheckOrderVo> {
+        val clientId = getClientId()
+
+        val depositQuery = DepositQuery(clientId = clientId, startTime = null,
+                endTime = null, memberId = null, orderId = null, state = DepositState.Process, lockWaiterId = getCurrentWaiterId())
+        val deposits = depositService.query(depositQuery).map { CashValue.CheckOrderVo.of(it) }
+
+        val withdrawQuery = WithdrawQuery(clientId = clientId, lockWaiterId = this.getCurrentWaiterId(), startTime = null, endTime = null,
+                orderId = null, memberId = null, state = WithdrawState.Process)
+        val withdraws = withdrawService.query(withdrawQuery).map { CashValue.CheckOrderVo.of(it) }
+
+        return deposits.plus(withdraws).sortedBy { it.applicationTime }
+
+    }
+
+    @PutMapping("/check/lock")
+    override fun checkLock(@RequestBody req: CashValue.CheckOrderLockReq) {
+
+        val current = this.current()
+        val orderId = req.orderId
+
+        when (req.type) {
+            CashValue.Type.Deposit -> {
+                val order = depositService.findDeposit(current.clientId, orderId)
+                check(order.state ==  DepositState.Close || order.state == DepositState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
+
+                val depositLockUo = DepositLockUo(clientId = current.clientId, orderId = orderId, processId = order.processId, lockWaiterId = current.id,
+                        lockWaiterName = current.username)
+                depositService.lock(depositLockUo)
+            }
+            CashValue.Type.Withdraw -> {
+                val order = withdrawService.findWithdraw(current.clientId, orderId)
+                check( order.state == WithdrawState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
+
+                val depositLockUo = DepositLockUo(clientId = current.clientId, orderId = orderId, processId = order.processId, lockWaiterId = current.id,
+                        lockWaiterName = current.musername)
+                withdrawService.lock(depositLockUo)
+            }
+        }
+    }
+
+    @PutMapping("/check")
+    override fun check(@RequestBody req: CashValue.CheckOrderReq) {
+
+        val current = this.current()
+        check(req.state == CashValue.State.Fail || req.state == CashValue.State.Successful) { OnePieceExceptionCode.DATA_FAIL }
+
+        when (req.type) {
+            CashValue.Type.Deposit -> {
+                val depositReq = DepositUoReq(orderId = req.orderId, state = DepositState.valueOf(req.state.toString()), remarks = req.remark, clientId = current.clientId, waiterId = current.id)
+                depositService.check(depositReq)
+            }
+            CashValue.Type.Withdraw -> {
+                val withdrawReq = WithdrawUoReq(orderId = req.orderId, state = WithdrawState.valueOf(req.state.toString()), remarks = req.remark, clientId = current.clientId, waiterId = current.id)
+                withdrawService.check(withdrawReq)
+            }
+        }
+
+    }
 
     @GetMapping("/deposit")
     override fun deposit(): List<DepositVo> {

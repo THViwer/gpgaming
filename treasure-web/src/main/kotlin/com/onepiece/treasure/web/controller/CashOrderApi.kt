@@ -4,7 +4,6 @@ import com.onepiece.treasure.beans.enums.DepositState
 import com.onepiece.treasure.beans.enums.WithdrawState
 import com.onepiece.treasure.beans.value.internet.web.*
 import io.swagger.annotations.Api
-import io.swagger.annotations.ApiModelProperty
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
@@ -16,7 +15,25 @@ import java.time.LocalDateTime
 @Api(tags = ["cash"], description = "现金管理")
 interface CashOrderApi {
 
+
+    @ApiOperation(tags = ["cash"], value = "出入款 -> 列表")
+    fun check(): List<CashValue.CheckOrderVo>
+
+    @ApiOperation(tags = ["cash"], value = "出入款 -> 锁定")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun checkLock(@RequestBody req: CashValue.CheckOrderLockReq)
+
+    @ApiOperation(tags = ["cash"], value = "出入款 -> 审核")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun check(@RequestBody req: CashValue.CheckOrderReq)
+
+
+
+
+
+
     @ApiOperation(tags = ["cash"], value = "充值 -> 审核列表")
+    @Deprecated(message = "请使用check接口")
     fun deposit(): List<DepositVo>
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 历史")
@@ -30,10 +47,12 @@ interface CashOrderApi {
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 锁定")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Deprecated(message = "请使用check接口")
     fun tryLock(@RequestParam("orderId") orderId: String)
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 审核")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Deprecated(message = "请使用check接口")
     fun check(@RequestBody depositUoReq: DepositUoReq)
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 人工提存")
@@ -41,6 +60,7 @@ interface CashOrderApi {
     fun artificial(@RequestBody artificialCoReq: ArtificialCoReq)
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 审核列表")
+    @Deprecated(message = "请使用check接口")
     fun withdraw(): List<WithdrawVo>
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 历史")
@@ -54,10 +74,12 @@ interface CashOrderApi {
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 锁定")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Deprecated(message = "请使用check接口")
     fun withdrawLock(@RequestParam("orderId") orderId: String)
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 审核")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Deprecated(message = "请使用check接口")
     fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawUoReq)
 
 }

@@ -168,7 +168,7 @@ open class CashApiController(
         val depositCo = DepositCo(orderId = orderId, memberId = current.id, memberName = current.name, memberBankCardNumber = depositCoReq.memberBankCardNumber,
                 memberBank = depositCoReq.memberBank, clientId = current.clientId, clientBankId = clientBank.id, clientBankName = clientBank.name,
                 clientBankCardNumber = clientBank.bankCardNumber, money = depositCoReq.money, imgPath = depositCoReq.imgPath, depositTime = depositCoReq.depositTime,
-                channel = depositCoReq.channel, memberBankId = memberBankId, username = current.username)
+                channel = depositCoReq.channel, memberBankId = memberBankId, username = current.username, clientBank = clientBank.bank)
         depositService.create(depositCo)
 
         return CashDepositResp(orderId = orderId)

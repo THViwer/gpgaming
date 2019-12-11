@@ -31,6 +31,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
             val memberBank = rs.getString("member_bank").let { Bank.valueOf(it) }
             val memberBankCardNumber = rs.getString("member_bank_card_number")
             val clientBankId = rs.getInt("client_bank_id")
+            val clientBank = rs.getString("client_bank").let { Bank.valueOf(it) }
             val clientBankCardNumber = rs.getString("client_bank_card_number")
             val clientBankName = rs.getString("client_bank_name")
             val money = rs.getBigDecimal("money")
@@ -47,7 +48,8 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                     imgPath = imgPath, state = state, remarks = remarks, createdTime = createdTime, endTime = endTime,
                     memberBankCardNumber = memberBankCardNumber, processId = processId, memberName = memberName, clientBankId = clientBankId,
                     clientBankName = clientBankName, clientBankCardNumber = clientBankCardNumber, lockWaiterId = lockWaiterId,
-                    lockWaiterName = lockWaiterName, depositTime = depositTime, channel = channel, username = username, memberBankId = memberBankId)
+                    lockWaiterName = lockWaiterName, depositTime = depositTime, channel = channel, username = username, memberBankId = memberBankId,
+                    clientBank = clientBank)
         }
 
     override fun findDeposit(clientId: Int, orderId: String): Deposit {
@@ -106,6 +108,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                 .set("member_bank", depositCo.memberBank)
                 .set("member_bank_card_number", depositCo.memberBankCardNumber)
                 .set("client_bank_id", depositCo.clientBankId)
+                .set("client_bank", depositCo.clientBank)
                 .set("client_bank_name", depositCo.clientBankName)
                 .set("client_bank_card_number", depositCo.clientBankCardNumber)
                 .set("money", depositCo.money)

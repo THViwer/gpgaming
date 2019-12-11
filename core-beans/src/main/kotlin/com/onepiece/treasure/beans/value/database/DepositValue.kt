@@ -54,6 +54,9 @@ data class DepositCo(
         // 厅主银行卡Id
         val clientBankId: Int,
 
+        // 厅主银行卡
+        val clientBank: Bank,
+
         // 厅主银行卡名称
         val clientBankName: String,
 
