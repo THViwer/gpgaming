@@ -122,7 +122,9 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/spadeGaming",
                         "/spadeGaming/",
                         "/png/order",
-                        "/api/auth"
+                        "/png/order/",
+                        "/api/auth",
+                        "/api/auth/"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, "/order").permitAll()
                 // 对于获取token的rest api要允许匿名访问
