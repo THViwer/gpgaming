@@ -1,5 +1,6 @@
 package com.onepiece.treasure.controller.basic
 
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.core.dao.MemberDao
 import com.onepiece.treasure.core.service.BetOrderService
@@ -47,6 +48,11 @@ class DemoController(
         val startDate = LocalDate.now().minusDays(1)
         val endDate = startDate.plusDays(1)
         return memberDao.report(clientId = null, startDate = startDate, endDate = endDate)
+    }
+
+    @GetMapping("/slot/menu")
+    fun slotMenuTesk(): Any {
+        return gameApi.slotGames(clientId = 1, platform = Platform.SpadeGaming, launch = LaunchMethod.Wap)
     }
 
 }

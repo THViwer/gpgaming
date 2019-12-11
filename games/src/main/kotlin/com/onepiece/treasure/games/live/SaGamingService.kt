@@ -79,7 +79,7 @@ class SaGamingService : PlatformService() {
         val url = "${gameConstant.getDomain(Platform.SaGaming)}/api/api.aspx?q=$desSign&s=$md5Sign"
         val betResult = okHttpUtil.doGetXml(url = url, clz = SaGamingValue.BetResult::class.java)
 
-        check(betResult.errorMsgId == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(betResult.errorMsgId == 0 || betResult.errorMsgId == 112) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
         return betResult.betDetailList?: emptyList()
     }
 

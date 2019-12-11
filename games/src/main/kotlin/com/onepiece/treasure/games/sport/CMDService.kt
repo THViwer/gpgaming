@@ -30,7 +30,7 @@ class CMDService : PlatformService() {
         val url = "${gameConstant.getDomain(Platform.CMD)}/SportsApi.aspx?$param"
 
         val result = okHttpUtil.doGet(url = url, clz = CMDValue.Result::class.java)
-        check(result.code == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.code == 0 || result.code == -102) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
 
         return result.mapUtil
     }
