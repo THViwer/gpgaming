@@ -289,14 +289,14 @@ open class CashApiController(
         if (cashTransferReq.from != Platform.Center) {
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.from)
             val toCenterTransferReq = cashTransferReq.copy(to = Platform.Center)
-            transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toCenterTransferReq)
+            transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toCenterTransferReq, username = current.username)
 
         }
 
         if (cashTransferReq.to != Platform.Center) {
             val toPlatformTransferReq = cashTransferReq.copy(from = Platform.Center)
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.to)
-            transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq)
+            transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = current.username)
         }
     }
 
