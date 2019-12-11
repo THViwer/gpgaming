@@ -220,7 +220,15 @@ data class BalanceAllInVo(
 
         @ApiModelProperty("余额")
         val balance: BigDecimal
-)
+) {
+
+        val category: PlatformCategory
+                @ApiModelProperty("平台类型")
+                get() {
+                        return platform.detail.category
+                }
+
+}
 
 data class WalletNoteVo(
 
