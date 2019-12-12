@@ -126,7 +126,7 @@ open class PlatformDetail private constructor(
         }
         fun ofPNG(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "play n go", icon = "${SystemConstant.AWS_LOGO_URL}/Play'n GO.png",
-                    disableIcon = null, status = Status.Stop, demo = true)
+                    disableIcon = null, status = Status.Normal, demo = true)
         }
 
         // live game
