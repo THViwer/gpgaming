@@ -1,6 +1,7 @@
 package com.onepiece.treasure.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
@@ -15,6 +16,14 @@ import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
 import java.util.*
+
+
+fun main() {
+    val json = "{\"method\":\"open.operator.user.login\",\"id\":\"6f537df3\",\"jsonrpc\":\"2.0\",\"params\":{\"random\":\"0d2c40c6-990c-4edf-a9de-4f005661a62b\",\"password\":\"11122\",\"loginId\":\"1682319984\",\"digest\":\"FDF7D79589ABDB12BBF5FAE7F0EF7FB4\",\"sn\":\"ld00\"}}"
+
+    val mapUtil = jacksonObjectMapper().readValue<JacksonMapUtil>(json)
+    println(mapUtil)
+}
 
 @RestController
 @RequestMapping
@@ -32,7 +41,7 @@ class PlatformAuthApiController(
         val json = String(getRequest().inputStream.readBytes())
         log.info("厅主：$d, 请求参数:$json")
 
-        val mapUtil = objectMapper.readValue<JacksonMapUtil>(json).mapUtil
+        val mapUtil = objectMapper.readValue<JacksonMapUtil>(json.replace("json=", "")).mapUtil
 
         val username = mapUtil.asMap("params").asString("loginId")
         val password = mapUtil.asMap("params").asString("password")
