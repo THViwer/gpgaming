@@ -4,6 +4,7 @@ import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.ClientToken
 import com.onepiece.treasure.beans.model.token.MegaClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapUtil
@@ -123,7 +124,7 @@ class MegaService : PlatformService() {
         return mapUtil.asString("result")
     }
 
-    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
+    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
         val clientToken = betOrderReq.token as MegaClientToken
         val random = UUID.randomUUID().toString()
         val digest = this.sign(random = random, loginId = betOrderReq.username, clientToken = clientToken)
@@ -137,7 +138,10 @@ class MegaService : PlatformService() {
                 "digest" to digest
         )
         val mapUtil = this.startPostJson(method = "open.mega.player.game.log.url.get", data = data, clientToken = clientToken)
-        return mapUtil.asString("result")
+        //TODO
+//        return mapUtil.asString("result")
+
+        return emptyList()
     }
 
 

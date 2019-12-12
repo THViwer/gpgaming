@@ -146,7 +146,7 @@ class Kiss918Service : PlatformService() {
         return GameValue.TransferResp.successful()
     }
 
-    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
+    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
         val clientToken = betOrderReq.token as Kiss918ClientToken
 
         val endTime = LocalDateTime.now()

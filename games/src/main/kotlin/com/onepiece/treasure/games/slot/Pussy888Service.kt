@@ -162,7 +162,7 @@ class Pussy888Service : PlatformService() {
 //        return mapUtils.data
 //    }
 
-    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
+    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
         val clientToken = betOrderReq.token as Pussy888ClientToken
 
         val endTime = LocalDateTime.now()

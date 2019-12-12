@@ -67,6 +67,7 @@ data class PlatformBind(
                 Platform.PlaytechSlot -> PlaytechSlotClientToken::class.java
                 Platform.SaGaming -> SaGamingClientToken::class.java
                 Platform.PNG -> PNGClientToken::class.java
+                Platform.GamePlay -> GamePlayClientToken::class.java
                 else -> DefaultClientToken::class.java
             }
         }

@@ -1,6 +1,8 @@
 package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.beans.enums.Platform
+import com.onepiece.treasure.beans.model.BetOrder
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.core.service.MemberService
 import com.onepiece.treasure.core.service.PlatformMemberService
@@ -26,17 +28,22 @@ class BerOrderApiController(
             @RequestParam("username") username: String,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
-    ): Any {
+    ): List<BetOrder> {
 
-        val member = memberService.findByUsername(username) ?: return emptyList<Any>()
+        val member = memberService.findByUsername(username) ?: return emptyList<BetOrder>()
 
         val clientId = getClientId()
         return when (platform) {
             Platform.Kiss918,
             Platform.Mega,
             Platform.Pussy888 -> {
-                val platformMember = platformMemberService.find(memberId = member.id, platform = platform) ?: return emptyList<Any>()
-                gameApi.queryBetOrder(clientId = clientId, platformUsername = platformMember.platformUsername, platform = platform, startTime = startTime, endTime = endTime)
+                val platformMember = platformMemberService.find(memberId = member.id, platform = platform) ?: return emptyList()
+                val list = gameApi.queryBetOrder(clientId = clientId, platformUsername = platformMember.platformUsername,
+                        platform = platform, startTime = startTime, endTime = endTime)
+                return list.map {
+                    BetOrder(id = -1, clientId = it.clientId, memberId = it.memberId, betTime = it.betTime, settleTime = it.settleTime, betAmount = it.betAmount,
+                            winAmount = it.winAmount, mark = true, orderId = it.orderId, createdTime = it.betTime, originData = it.originData, platform = it.platform)
+                }
             }
             else -> betOrderService.getBets(clientId = clientId, memberId = member.id, platform = platform)
         }

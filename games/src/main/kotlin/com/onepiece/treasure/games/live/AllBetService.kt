@@ -184,21 +184,21 @@ class AllBetService : PlatformService() {
         return mapUtil.asString("gameLoginUrl")
     }
 
-    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
-        val allBetClientToken = betOrderReq.token as AllBetClientToken
-        val data = listOf(
-                "client=${betOrderReq.username}",
-                "startTime=${betOrderReq.startTime.format(dateTimeFormat)}",
-                "endTime=${betOrderReq.endTime.format(dateTimeFormat)}",
-                "pageIndex=1",
-                "pageSize=100",
-                "random=${UUID.randomUUID()}"
-        )
-        val urlParam = data.joinToString(separator = "&")
-        val mapUtil = this.startDoGet(method = "/client_betlog_query", urlParam = urlParam, allBetClientToken = allBetClientToken)
-
-        return mapUtil.asMap("page").asList("datas").map { it.data }
-    }
+//    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
+//        val allBetClientToken = betOrderReq.token as AllBetClientToken
+//        val data = listOf(
+//                "client=${betOrderReq.username}",
+//                "startTime=${betOrderReq.startTime.format(dateTimeFormat)}",
+//                "endTime=${betOrderReq.endTime.format(dateTimeFormat)}",
+//                "pageIndex=1",
+//                "pageSize=100",
+//                "random=${UUID.randomUUID()}"
+//        )
+//        val urlParam = data.joinToString(separator = "&")
+//        val mapUtil = this.startDoGet(method = "/client_betlog_query", urlParam = urlParam, allBetClientToken = allBetClientToken)
+//
+//        return mapUtil.asMap("page").asList("datas").map { it.data }
+//    }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
 

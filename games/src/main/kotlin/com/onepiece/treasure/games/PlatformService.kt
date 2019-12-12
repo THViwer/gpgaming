@@ -98,7 +98,7 @@ abstract class PlatformService {
     /**
      * 查询订单
      */
-    open fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
+    open fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
         error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
     }
 

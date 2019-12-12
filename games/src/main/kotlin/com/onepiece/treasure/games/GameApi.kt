@@ -42,6 +42,7 @@ class GameApi(
         private val spadeGamingService: SpadeGamingService,
         private val ttgService: TTGService,
         private val microGameService: MicroGamingService,
+        private val gamePlayService: GamePlayService,
 
         // live game
         private val goldDeluxeService: GoldDeluxeService,
@@ -82,6 +83,7 @@ class GameApi(
             Platform.SpadeGaming -> spadeGamingService
             Platform.TTG -> ttgService
             Platform.MicroGaming -> microGameService
+            Platform.GamePlay -> gamePlayService
 
             // live game
             Platform.Fgg -> fggService
@@ -337,7 +339,7 @@ class GameApi(
     /**
      * 查询下注订单
      */
-    fun queryBetOrder(clientId: Int, platformUsername: String, platform: Platform, startTime: LocalDateTime, endTime: LocalDateTime): Any {
+    fun queryBetOrder(clientId: Int, platformUsername: String, platform: Platform, startTime: LocalDateTime, endTime: LocalDateTime): List<BetOrderValue.BetOrderCo> {
         val clientToken = getClientToken(clientId = clientId, platform = platform)
 
         return when(platform) {

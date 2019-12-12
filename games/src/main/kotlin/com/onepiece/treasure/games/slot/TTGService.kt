@@ -168,7 +168,7 @@ class TTGService(
         return "http://ams-games.stg.ttms.co/casino/default/game/game.html?$data"
     }
 
-    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
+    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
         val tokenClient = betOrderReq.token as TTGClientToken
 
         val startDate = betOrderReq.startTime.toLocalDate().toString().replace("-", "")

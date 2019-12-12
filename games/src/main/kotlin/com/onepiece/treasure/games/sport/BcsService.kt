@@ -180,24 +180,24 @@ class BcsService : PlatformService() {
 
     }
 
-    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
-
-        val token = betOrderReq.token as BcsClientToken
-
-        val param = mapOf(
-                "APIPassword" to token.key,
-                "MemberAccount" to betOrderReq.username,
-                "Status" to "0",
-                "ReportDate" to "${betOrderReq.startTime.toLocalDate()}"
-        )
-
-        val url = getRequestUrl(path = "/ThirdApi.asmx/GetBetSheetByReport", data = param)
-
-        val betResult = okHttpUtil.doGetXml(url = url, clz = BcsValue.BetResult::class.java)
-        check(betResult.errorCode == "000000") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
-
-        return betResult.result.betlist
-    }
+//    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
+//
+//        val token = betOrderReq.token as BcsClientToken
+//
+//        val param = mapOf(
+//                "APIPassword" to token.key,
+//                "MemberAccount" to betOrderReq.username,
+//                "Status" to "0",
+//                "ReportDate" to "${betOrderReq.startTime.toLocalDate()}"
+//        )
+//
+//        val url = getRequestUrl(path = "/ThirdApi.asmx/GetBetSheetByReport", data = param)
+//
+//        val betResult = okHttpUtil.doGetXml(url = url, clz = BcsValue.BetResult::class.java)
+//        check(betResult.errorCode == "000000") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+//
+//        return betResult.result.betlist
+//    }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
 
