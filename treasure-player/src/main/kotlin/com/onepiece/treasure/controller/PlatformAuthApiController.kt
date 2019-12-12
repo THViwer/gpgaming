@@ -27,9 +27,9 @@ class PlatformAuthApiController(
 
     private val log = LoggerFactory.getLogger(PlatformAuthApiController::class.java)
 
-    @PostMapping("/mega")
+    @PostMapping("/mega", produces = ["application/json;charset=utf-8"])
     override fun login(
-            @RequestParam("d") d: Int): LoginResult {
+            @RequestParam("d") d: Int): String {
 
         val json = String(getRequest().inputStream.readBytes())
         log.info("厅主：$d, 请求参数:$json")
@@ -43,7 +43,24 @@ class PlatformAuthApiController(
         val successful = platformMemberService.login(platform = Platform.Mega, username = username, password = password)
         log.info("登陆mega,用户名：${username}是否成功:$successful")
 
-        return LoginResult(success = "1", sessionId = UUID.randomUUID().toString(), msg = "login success")
+        val successCode = if (successful) 1 else 0
+        val msg = if (successful) "登陆成功" else "用户名或密码错误"
+
+        val data = """
+            {
+                "id": "${UUID.randomUUID()}",
+                "result": {
+                    "success": "$successCode",
+                    "sessionId": "${UUID.randomUUID()}",
+                    "msg": "$msg" 
+                    },
+                "error": null,
+                "jsonrpc": "2.0"
+            }
+        """.trimIndent()
+        return data
+
+//        return LoginResult(success = "1", sessionId = UUID.randomUUID().toString(), msg = "login success")
     }
 
     @GetMapping("/mega")
