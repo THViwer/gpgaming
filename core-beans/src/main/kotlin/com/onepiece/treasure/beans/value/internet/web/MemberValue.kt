@@ -65,7 +65,7 @@ data class MemberUoReq(
         val password: String?,
 
         @ApiModelProperty("状态")
-        val status: Status
+        val status: Status?
 )
 
 data class MemberCoReq(
