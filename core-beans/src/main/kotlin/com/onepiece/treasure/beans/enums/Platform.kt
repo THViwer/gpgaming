@@ -90,7 +90,7 @@ open class PlatformDetail private constructor(
         fun ofJoker(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = "${SystemConstant.AWS_LOGO_URL}/joker.png",
                     disableIcon = null, status = Status.Normal, launchs = listOf(LaunchMethod.Web, LaunchMethod.Wap, LaunchMethod.Android),
-                    demo = false)
+                    demo = true)
         }
         fun ofKiss918(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "918kiss", icon = "${SystemConstant.AWS_LOGO_URL}/918kiss.png",
@@ -126,7 +126,7 @@ open class PlatformDetail private constructor(
         }
         fun ofPNG(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "play n go", icon = "${SystemConstant.AWS_LOGO_URL}/Play'n GO.png",
-                    disableIcon = null, status = Status.Stop)
+                    disableIcon = null, status = Status.Stop, demo = true)
         }
 
         // live game
