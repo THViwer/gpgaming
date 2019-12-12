@@ -117,6 +117,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/cash/upload/proof",
 
                         "/mega",
+                        "/mega/",
                         "/cmd",
                         "/cmd/",
                         "/spadeGaming",
