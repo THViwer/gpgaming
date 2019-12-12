@@ -1,8 +1,6 @@
 package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.model.BetOrder
-import com.onepiece.treasure.beans.value.database.BetOrderValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
@@ -19,7 +17,7 @@ interface BetOrderApi {
             @RequestParam("username") username: String,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
-    ): List<BetOrder>
+    ): Any
 
 
 }

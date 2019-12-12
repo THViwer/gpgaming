@@ -1,20 +1,24 @@
 package com.onepiece.treasure.games.slot
 
 import com.onepiece.treasure.beans.enums.Language
+import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.token.GamePlayClientToken
+import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapUtil
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.format.DateTimeFormatter
 
 @Service
 class GamePlayService: PlatformService() {
 
     private val log = LoggerFactory.getLogger(GamePlayService::class.java)
+    private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     fun startGetXml(method: String, data: List<String>): MapUtil {
         val urlParam = data.joinToString("&")
@@ -85,6 +89,9 @@ class GamePlayService: PlatformService() {
 
     override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
 
+        val  clientToken = startSlotReq.token as GamePlayClientToken
+
+
         val lang = when (startSlotReq.language) {
             Language.CN -> "zh-cn"
             Language.ID -> "id-id"
@@ -94,8 +101,13 @@ class GamePlayService: PlatformService() {
             else -> "km-kh"
         }
 
-
-        return super.startSlotDemo(startSlotReq)
+        val urlParam = "token=test&op=${clientToken.merchId}&lang=$lang&homeURL=${startSlotReq.redirectUrl}&sys=CUSTOM"
+        val url = when (startSlotReq.launchMethod) {
+            LaunchMethod.Wap -> "http://casino.w88uat.com/html5/mobile"
+            LaunchMethod.Web -> "http://casino.w88uat.com"
+            else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+        }
+        return "$url?$urlParam"
     }
 
     private fun getTicket(startSlotReq: GameValue.StartSlotReq): String {
@@ -114,9 +126,45 @@ class GamePlayService: PlatformService() {
     }
 
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
-        this.getTicket(startSlotReq)
+        val  clientToken = startSlotReq.token as GamePlayClientToken
 
-        return super.startSlot(startSlotReq)
+        val ticket = this.getTicket(startSlotReq)
+
+        val lang = when (startSlotReq.language) {
+            Language.CN -> "zh-cn"
+            Language.ID -> "id-id"
+            Language.TH -> "th-th"
+            Language.VI -> "vi-vn"
+            Language.EN -> "km-kh"
+            else -> "km-kh"
+        }
+
+        val urlParam = "token=$ticket&op=${clientToken.merchId}&lang=$lang&homeURL=${startSlotReq.redirectUrl}&sys=CUSTOM"
+        val url = when (startSlotReq.launchMethod) {
+            LaunchMethod.Wap -> "http://casino.w88uat.com/html5/mobile"
+            LaunchMethod.Web -> "http://casino.w88uat.com"
+            else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+        }
+        return "$url?$urlParam"
+    }
+
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+
+        val clientToken = pullBetOrderReq.token as GamePlayClientToken
+
+
+        val data = listOf(
+                "merch_id=${clientToken.merchId}",
+                "merch_pwd=${clientToken.merchPwd}",
+                "date_from=${pullBetOrderReq.startTime.format(dateTimeFormat)}",
+                "date_to=${pullBetOrderReq.endTime.format(dateTimeFormat)}",
+                "page_num=1",
+                "page_size=2000"
+        )
+        val mapUtil = this.startGetXml(method = "/api/gateway/betDetail.html", data = data)
+
+        //TODO 处理订单
+        return emptyList()
     }
 
 }

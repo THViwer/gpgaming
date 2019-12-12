@@ -124,7 +124,7 @@ class MegaService : PlatformService() {
         return mapUtil.asString("result")
     }
 
-    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
+    open fun getBetOrderHtml(betOrderReq: GameValue.BetOrderReq): String {
         val clientToken = betOrderReq.token as MegaClientToken
         val random = UUID.randomUUID().toString()
         val digest = this.sign(random = random, loginId = betOrderReq.username, clientToken = clientToken)
@@ -132,16 +132,13 @@ class MegaService : PlatformService() {
         val data = mapOf(
                 "loginId" to betOrderReq.username,
                 "startTime" to betOrderReq.startTime.format(dateTimeFormat),
-                "endTime" to betOrderReq.startTime.format(dateTimeFormat),
+                "endTime" to betOrderReq.endTime.format(dateTimeFormat),
                 "random" to random,
                 "sn" to clientToken.appId,
                 "digest" to digest
         )
         val mapUtil = this.startPostJson(method = "open.mega.player.game.log.url.get", data = data, clientToken = clientToken)
-        //TODO
-//        return mapUtil.asString("result")
-
-        return emptyList()
+        return mapUtil.asString("result")
     }
 
 
