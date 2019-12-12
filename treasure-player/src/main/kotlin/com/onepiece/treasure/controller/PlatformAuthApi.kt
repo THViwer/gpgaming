@@ -1,6 +1,7 @@
 package com.onepiece.treasure.controller
 
 import com.onepiece.treasure.controller.value.PlatformAuthValue
+import com.onepiece.treasure.games.bet.JacksonMapUtil
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.RequestBody
@@ -31,6 +32,6 @@ interface PlatformAuthApi {
     fun spadeGamingLogin(@RequestBody request: PlatformAuthValue.SpadeGamingRequest): PlatformAuthValue.SpadeGamingResponse
 
     @ApiOperation(tags = ["platform auth"], value = "png 同步订单")
-    fun pngCallData()
+    fun pngCallData(@RequestBody jacksonMapUtil: JacksonMapUtil)
 
 }
