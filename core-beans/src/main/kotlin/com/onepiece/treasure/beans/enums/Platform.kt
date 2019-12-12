@@ -21,7 +21,7 @@ enum class Platform(
     MicroGaming(PlatformDetail.ofMicroGaming()),
     PlaytechSlot(PlatformDetail.ofPlaytechSlot()),
     PNG(PlatformDetail.ofPNG()),
-    GamePlay(PlatformDetail.ofPNG()),
+    GamePlay(PlatformDetail.ofGamePlay()),
 
     // live video
     CT(PlatformDetail.ofCT()),
@@ -130,7 +130,7 @@ open class PlatformDetail private constructor(
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofGamePlay(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "game play", icon = "${SystemConstant.AWS_LOGO_URL}/Play'n GO.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "game play", icon = "${SystemConstant.AWS_LOGO_URL}/gamePlay.png",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
 
