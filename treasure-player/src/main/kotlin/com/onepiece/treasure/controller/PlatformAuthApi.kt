@@ -15,8 +15,8 @@ interface PlatformAuthApi {
     @ApiIgnore
     @ApiOperation(tags = ["platform auth"], value = "mega 登陆")
     fun login(
-            @RequestParam("d") d: Int,
-            @RequestBody loginReq: PlatformAuthApiController.LoginReq): PlatformAuthApiController.LoginResult
+            @RequestParam("d") d: Int
+    ): PlatformAuthApiController.LoginResult
 
 
     @ApiOperation(tags = ["platform auth"], value = "下载mega的app")

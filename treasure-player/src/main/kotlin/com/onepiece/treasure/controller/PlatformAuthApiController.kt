@@ -1,7 +1,6 @@
 package com.onepiece.treasure.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
@@ -9,15 +8,11 @@ import com.onepiece.treasure.beans.model.token.SpadeGamingClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.PlatformAuthValue
-import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.core.service.BetOrderService
 import com.onepiece.treasure.games.bet.JacksonMapUtil
-import com.onepiece.treasure.utils.JacksonUtil
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 import java.math.BigDecimal
 import java.util.*
 
@@ -32,11 +27,12 @@ class PlatformAuthApiController(
 
     @PostMapping("/mega")
     override fun login(
-            @RequestParam("d") d: Int,
-            @RequestBody loginReq: LoginReq): LoginResult {
+            @RequestParam("d") d: Int): LoginResult {
 
-        log.info("厅主：$d, 请求参数:$loginReq")
+        val json = String(getRequest().inputStream.readBytes())
+        log.info("厅主：$d, 请求参数:$json")
 
+        val loginReq = objectMapper.readValue<LoginReq>(json)
         val successful = platformMemberService.login(platform = Platform.Mega, username = loginReq.loginId, password = loginReq.password)
         log.info("登陆mega,用户名：${loginReq.loginId}是否成功:$successful")
 

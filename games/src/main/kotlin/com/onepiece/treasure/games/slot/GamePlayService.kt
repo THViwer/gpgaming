@@ -60,7 +60,7 @@ class GamePlayService: PlatformService() {
                 "merch_pwd=${clientToken.merchPwd}",
                 "cust_id=${transferReq.username}",
                 "currency=${clientToken.currency}",
-                "amount=${transferReq.amount}",
+                "amount=${transferReq.amount.abs()}",
                 "trx_id=${transferReq.orderId}"
         )
 
@@ -98,7 +98,24 @@ class GamePlayService: PlatformService() {
         return super.startSlotDemo(startSlotReq)
     }
 
+    private fun getTicket(startSlotReq: GameValue.StartSlotReq): String {
+        val  clientToken = startSlotReq.token as GamePlayClientToken
+        val data = listOf(
+                "merch_id=${clientToken.merchId}",
+                "merch_pwd=${clientToken.merchPwd}",
+                "cust_id=${startSlotReq.username}",
+                "cust_name=${startSlotReq.username}",
+                "currency=${clientToken.currency}"
+        )
+
+        val mapUtil = this.startGetXml(method = "/op/createuser", data = data)
+        return ""
+
+    }
+
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
+        this.getTicket(startSlotReq)
+
         return super.startSlot(startSlotReq)
     }
 
