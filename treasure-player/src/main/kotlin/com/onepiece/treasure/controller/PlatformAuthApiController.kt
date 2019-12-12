@@ -32,9 +32,14 @@ class PlatformAuthApiController(
         val json = String(getRequest().inputStream.readBytes())
         log.info("厅主：$d, 请求参数:$json")
 
-        val loginReq = objectMapper.readValue<LoginReq>(json)
-        val successful = platformMemberService.login(platform = Platform.Mega, username = loginReq.loginId, password = loginReq.password)
-        log.info("登陆mega,用户名：${loginReq.loginId}是否成功:$successful")
+        val mapUtil = objectMapper.readValue<JacksonMapUtil>(json).mapUtil
+
+        val username = mapUtil.asMap("params").asString("loginId")
+        val password = mapUtil.asMap("params").asString("password")
+
+
+        val successful = platformMemberService.login(platform = Platform.Mega, username = username, password = password)
+        log.info("登陆mega,用户名：${username}是否成功:$successful")
 
         return LoginResult(success = "1", sessionId = UUID.randomUUID().toString(), msg = "login success")
     }
