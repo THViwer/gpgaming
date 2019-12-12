@@ -18,13 +18,6 @@ import java.math.BigDecimal
 import java.util.*
 
 
-fun main() {
-    val json = "{\"method\":\"open.operator.user.login\",\"id\":\"6f537df3\",\"jsonrpc\":\"2.0\",\"params\":{\"random\":\"0d2c40c6-990c-4edf-a9de-4f005661a62b\",\"password\":\"11122\",\"loginId\":\"1682319984\",\"digest\":\"FDF7D79589ABDB12BBF5FAE7F0EF7FB4\",\"sn\":\"ld00\"}}"
-
-    val mapUtil = jacksonObjectMapper().readValue<JacksonMapUtil>(json)
-    println(mapUtil)
-}
-
 @RestController
 @RequestMapping
 class PlatformAuthApiController(
