@@ -168,7 +168,7 @@ class PNGService: PlatformService() {
             """.trimIndent()
                 val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/DebitAccount")
                 val successful = mapUtil.asMap("Body").asMap("DebitAccountResponse").asMap("UserAccount").data["TransactionId"] != null
-                val balance = mapUtil.asMap("Body").asMap("CreditAccountResponse").asMap("UserAccount").asBigDecimal("Real")
+                val balance = mapUtil.asMap("Body").asMap("DebitAccountResponse").asMap("UserAccount").asBigDecimal("Real")
                 GameValue.TransferResp.of(successful = successful, balance = balance)
             }
             else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
