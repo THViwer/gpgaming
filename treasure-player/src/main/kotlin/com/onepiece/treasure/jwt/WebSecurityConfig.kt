@@ -116,6 +116,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/cash/bank",
                         "/cash/upload/proof",
 
+                        "/open/**",
                         "/mega",
                         "/mega/",
                         "/cmd",
