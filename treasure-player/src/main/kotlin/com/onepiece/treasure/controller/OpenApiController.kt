@@ -50,12 +50,12 @@ class OpenApiController(
     }
 
 
-    @PostMapping("/mega", produces = ["application/json;charset=utf-8"])
+    @PostMapping("/mega/{clientId}", produces = ["application/json;charset=utf-8"])
     override fun login(
-            @RequestParam("d") d: Int): String {
+            @PathVariable("clientId") clientId: Int): String {
 
         val json = String(getRequest().inputStream.readBytes())
-        log.info("厅主：$d, 请求参数:$json")
+        log.info("厅主：$clientId, 请求参数:$json")
 
         val mapUtil = objectMapper.readValue<JacksonMapUtil>(json.replace("json=", "")).mapUtil
 

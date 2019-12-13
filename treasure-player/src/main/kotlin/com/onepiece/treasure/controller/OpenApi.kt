@@ -4,6 +4,7 @@ import com.onepiece.treasure.controller.value.PlatformAuthValue
 import com.onepiece.treasure.games.bet.JacksonMapUtil
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
@@ -18,7 +19,7 @@ interface OpenApi {
     @ApiIgnore
     @ApiOperation(tags = ["platform auth"], value = "mega 登陆")
     fun login(
-            @RequestParam("d") d: Int
+            @PathVariable("clientId") clientId: Int
     ): String
 
 
