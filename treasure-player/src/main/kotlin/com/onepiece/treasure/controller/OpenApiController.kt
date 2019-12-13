@@ -4,13 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.token.GamePlayClientToken
 import com.onepiece.treasure.beans.model.token.SpadeGamingClientToken
 import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.PlatformAuthValue
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.core.service.BetOrderService
+import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.bet.JacksonMapUtil
+import com.onepiece.treasure.utils.StringUtil
+import org.apache.commons.codec.binary.Base64
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
@@ -30,27 +34,31 @@ class OpenApiController(
 
         val request = getRequest()
 
-        request.parameterMap.forEach {
+        val ticket = request.getParameter("ticket")
+        log.info("ticket = $ticket")
 
-            log.info("url key : ${it.key}, value: ${it.value}")
-        }
+        val originData = String(Base64.decodeBase64(ticket.toByteArray()))
+        log.info("origin data = $originData")
 
-        val data = request.inputStream.readBytes().let { String(it) }
-        log.info("game play 收到消息:$data")
+        val platformUsername = originData.split(":").first()
+        val (clientId, username) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.GamePlay, platformUsername = platformUsername)
+
+        val platformBind = platformBindService.find(clientId, Platform.GamePlay)
 
 
+        val clientToken = platformBind.clientToken as GamePlayClientToken
         return """
             <?xml version="1.0" encoding="UTF-8"?>
             <resp>
              <error_code>0</error_code>
-             <cust_id>GPGAMING88</cust_id>
-             <cust_name>Dummy</cust_name>
-             <currency_code>IDR</currency_code>
+             <cust_id>${clientToken.merchId}</cust_id>
+             <cust_name>${clientToken.merchId}</cust_name>
+             <currency_code>${clientToken.currency}</currency_code>
              <language>en-us</language>
-             <test_cust>false</test_cust>
-             <country>US</country>
+             <test_cust>true</test_cust>
+             <country>ms</country>
              <date_of_birth>29-09-1989</date_of_birth>
-             <ip>1.1.1.1</ip>
+             <ip>${StringUtil.generateNumNonce(2)}.${StringUtil.generateNumNonce(2)}.${StringUtil.generateNumNonce(2)}.${StringUtil.generateNumNonce(2)}</ip>
             </resp>
         """.trimIndent()
     }

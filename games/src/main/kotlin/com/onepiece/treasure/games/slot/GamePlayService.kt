@@ -23,8 +23,6 @@ class GamePlayService: PlatformService() {
     private val log = LoggerFactory.getLogger(GamePlayService::class.java)
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    private val ticket = ""
-
     fun startGetXml(method: String, data: List<String>): MapUtil {
         val urlParam = data.joinToString("&")
         val result = okHttpUtil.doGetXml(url = "${gameConstant.getDomain(Platform.GamePlay)}${method}?$urlParam", clz = GamePlayValue.Result::class.java)
