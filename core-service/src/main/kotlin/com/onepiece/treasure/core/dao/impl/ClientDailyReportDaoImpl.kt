@@ -61,8 +61,8 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
     override fun query(query: ClientReportQuery): List<ClientDailyReport> {
         return query()
                 .where("client_id", query.clientId)
-                .asWhere("day > ?", query.startDate)
-                .asWhere("day <= ?", query.endDate)
+                .asWhere("day >= ?", query.startDate)
+                .asWhere("day < ?", query.endDate)
                 .execute(mapper)
     }
 }
