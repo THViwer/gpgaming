@@ -2,6 +2,8 @@ package com.onepiece.treasure.web.controller
 
 import com.onepiece.treasure.beans.model.ClientDailyReport
 import com.onepiece.treasure.beans.model.ClientPlatformDailyReport
+import com.onepiece.treasure.beans.model.PromotionDailyReport
+import com.onepiece.treasure.beans.model.PromotionPlatformDailyReport
 import com.onepiece.treasure.beans.value.internet.web.MemberPlatformReportWebVo
 import com.onepiece.treasure.beans.value.internet.web.MemberReportWebVo
 import io.swagger.annotations.Api
@@ -38,5 +40,18 @@ interface ReportApi {
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
     ): List<ClientDailyReport>
+
+    @ApiOperation(tags = ["report"], value = "优惠活动日报表")
+    fun promotionDaily(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
+    ): List<PromotionDailyReport>
+
+    @ApiOperation(tags = ["report"], value = "优惠活动日报表详情")
+    fun promotionPlatformDaily(
+            @RequestParam("promotionId") promotionId: Int,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
+    ): List<PromotionPlatformDailyReport>
 
 }

@@ -27,7 +27,11 @@ enum class TaskTimerType {
 
     ClientPlatformDaily,
 
-    ClientDaily
+    ClientDaily,
+
+    PromotionPlatformDaily,
+
+    PromotionDaily
 
 }
 

@@ -23,6 +23,8 @@ interface TransferOrderDao: BasicDao<TransferOrder> {
 
     fun query(query: TransferOrderValue.Query): List<TransferOrder>
 
+    fun report(startDate: LocalDate): List<TransferOrderReportVo>
+
 //    fun reportByPlatform(memberId: Int?, from: Platform?, to: Platform?, startDate: LocalDate, endDate: LocalDate): List<MemberTransferPlatformReportVo>
 //
 //    fun report(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo>

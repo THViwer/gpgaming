@@ -111,7 +111,9 @@ data class MemberTransferReportVo(
 
         val memberId: Int,
 
-        val money: BigDecimal
+        val money: BigDecimal,
+
+        val promotionAmount: BigDecimal
 
 )
 
@@ -124,7 +126,9 @@ data class ClientTransferPlatformReportVo(
 
         val to: Platform,
 
-        val money: BigDecimal
+        val money: BigDecimal,
+
+        val promotionAmount: BigDecimal
 
 ) {
 
@@ -132,6 +136,17 @@ data class ClientTransferPlatformReportVo(
         get() = if (from == Platform.Center) to else from
 
 }
+
+data class TransferOrderReportVo(
+        val clientId: Int,
+
+        val platform: Platform,
+
+        val promotionId: Int,
+
+        val promotionAmount: BigDecimal
+
+)
 
 data class ClientTransferReportVo(
         val clientId: Int,

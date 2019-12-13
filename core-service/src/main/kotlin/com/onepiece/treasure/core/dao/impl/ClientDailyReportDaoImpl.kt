@@ -22,11 +22,13 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
             val depositCount = rs.getInt("deposit_count")
             val withdrawMoney = rs.getBigDecimal("withdraw_money")
             val withdrawCount = rs.getInt("withdraw_count")
+            val promotionAmount = rs.getBigDecimal("promotion_amount")
             val newMemberCount = rs.getInt("new_member_count")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             ClientDailyReport(id = id, day = day, clientId = clientId, transferIn = transferIn, transferOut = transferOut,
                     depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
-                    withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount)
+                    withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
+                    promotionAmount = promotionAmount)
         }
 
     override fun create(reports: List<ClientDailyReport>) {
@@ -39,6 +41,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                 .set("deposit_count")
                 .set("withdraw_money")
                 .set("withdraw_count")
+                .set("promotion_amount")
                 .set("new_member_count")
                 .execute { ps, entity ->
                     var x = 0
@@ -50,6 +53,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     ps.setInt(++x, entity.depositCount)
                     ps.setBigDecimal(++x, entity.withdrawMoney)
                     ps.setInt(++x, entity.withdrawCount)
+                    ps.setBigDecimal(++x, entity.promotionAmount)
                     ps.setInt(++x, entity.newMemberCount)
                 }
     }

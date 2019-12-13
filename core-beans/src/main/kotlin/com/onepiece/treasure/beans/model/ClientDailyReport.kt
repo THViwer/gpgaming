@@ -29,6 +29,9 @@ data class ClientDailyReport(
         // 充值金额
         val depositMoney: BigDecimal,
 
+        // 优惠金额
+        val promotionAmount: BigDecimal,
+
         // 充值次数
         val depositCount: Int,
 

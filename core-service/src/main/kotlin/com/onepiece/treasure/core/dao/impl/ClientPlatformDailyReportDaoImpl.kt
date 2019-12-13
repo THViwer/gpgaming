@@ -24,9 +24,10 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
             val win = rs.getBigDecimal("win")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
+            val promotionAmount = rs.getBigDecimal("promotion_amount")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             ClientPlatformDailyReport(id = id, day = day, clientId = clientId, platform = platform,
-                    transferIn = transferIn, transferOut = transferOut, createdTime = createdTime, bet = bet, win = win)
+                    transferIn = transferIn, transferOut = transferOut, createdTime = createdTime, bet = bet, win = win, promotionAmount = promotionAmount)
         }
 
     override fun create(reports: List<ClientPlatformDailyReport>) {

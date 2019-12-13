@@ -1,6 +1,7 @@
 package com.onepiece.treasure.task.controller
 
 import com.onepiece.treasure.core.service.ReportService
+import com.onepiece.treasure.task.PromotionTask
 import com.onepiece.treasure.task.ReportTask
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
@@ -11,7 +12,8 @@ import java.time.LocalDate
 @RestController
 class DemoController(
         private val reportService: ReportService,
-        private val reportTask: ReportTask
+        private val reportTask: ReportTask,
+        private val promotionTask: PromotionTask
 ) {
 
     @GetMapping("/report")
@@ -22,8 +24,14 @@ class DemoController(
 //        reportTask.startClientPlatformReport(startDate)
 //        reportTask.startClientReport(startDate)
 
-        return reportService.startClientPlatformReport(clientId = null, startDate= startDate)
+//        return reportService.startClientPlatformReport(clientId = null, startDate= startDate)
+        return reportService.startClientReport(clientId = null, startDate = startDate)
 
+    }
+
+    @GetMapping("/promotion")
+    fun promotion(): Any {
+        return promotionTask.execute()
     }
 
     @GetMapping("/kiss918")

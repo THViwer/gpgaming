@@ -115,7 +115,7 @@ class ReportServiceImpl(
             val platform = if (first.from == Platform.Center) first.to else first.from
             ClientPlatformDailyReport(id = -1, clientId = first.clientId, day = startDate, platform = platform,
                     transferIn = transferInReport?.money?: BigDecimal.ZERO, transferOut = transferOutReport?.money?: BigDecimal.ZERO, createdTime = now,
-                    win = BigDecimal.valueOf(-1), bet = BigDecimal.valueOf(-1))
+                    win = BigDecimal.valueOf(-1), bet = BigDecimal.valueOf(-1), promotionAmount = transferOutReport?.promotionAmount?: BigDecimal.ZERO)
         }
 
         // 盈利报表
@@ -136,7 +136,7 @@ class ReportServiceImpl(
             when {
                 transferData == null -> {
                     ClientPlatformDailyReport(id = -1, day = startDate, platform = betOrderData!!.platform, bet = betOrderData.totalBet, win = betOrderData.totalWin,
-                            transferIn = BigDecimal.ZERO, transferOut = BigDecimal.ZERO, clientId = betOrderData.clientId, createdTime = now)
+                            transferIn = BigDecimal.ZERO, transferOut = BigDecimal.ZERO, clientId = betOrderData.clientId, createdTime = now, promotionAmount = BigDecimal.ZERO)
                 }
                 betOrderData == null -> {
                     when(transferData.platform) {
@@ -196,10 +196,13 @@ class ReportServiceImpl(
             val withdrawReport = withdrawReportMap[it]
             val newMemberCount = memberReportMap[it]?: 0
 
+            val promotionAmount = transferOutReport?.promotionAmount?: BigDecimal.ZERO
+
             ClientDailyReport(id = -1, day = startDate, clientId = it, transferIn = transferInReport?.money?: BigDecimal.ZERO,
                     transferOut = transferOutReport?.money?: BigDecimal.ZERO, depositMoney = depositReport?.money?: BigDecimal.ZERO,
                     depositCount = depositReport?.count?: 0,  withdrawMoney = withdrawReport?.money?: BigDecimal.ZERO,
-                    withdrawCount = withdrawReport?.count?: 0, newMemberCount = newMemberCount, createdTime = now)
+                    withdrawCount = withdrawReport?.count?: 0, newMemberCount = newMemberCount, createdTime = now,
+                    promotionAmount = promotionAmount)
         }
     }
 }

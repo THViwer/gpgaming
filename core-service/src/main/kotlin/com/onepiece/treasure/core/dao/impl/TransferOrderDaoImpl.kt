@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository
 import reactor.core.publisher.toMono
 import java.math.BigDecimal
 import java.sql.ResultSet
+import java.time.LocalDate
 
 @Repository
 class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), TransferOrderDao {
@@ -78,7 +79,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
     }
 
     override fun memberReport(query: TransferReportQuery): List<MemberTransferReportVo> {
-        return query("client_id, member_id, sum(money) as money")
+        return query("client_id, member_id, sum(money) as money, sum(promotion_amount) as promotion_amount")
                 .asWhere("created_time >= ?", query.startDate)
                 .asWhere("created_time < ?", query.endDate)
                 .where("state", TransferState.Successful)
@@ -91,14 +92,15 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                     val clientId = rs.getInt("client_id")
                     val memberId = rs.getInt("member_id")
                     val money = rs.getBigDecimal("money")
+                    val promotionAmount = rs.getBigDecimal("promotion_amount")
 
-                    MemberTransferReportVo(clientId = clientId, memberId = memberId, money = money)
+                    MemberTransferReportVo(clientId = clientId, memberId = memberId, money = money, promotionAmount = promotionAmount)
                 }
 
     }
 
     override fun clientPlatformReport(query: TransferReportQuery): List<ClientTransferPlatformReportVo> {
-        return query("client_id, `from`, `to`, sum(money) as money")
+        return query("client_id, `from`, `to`, sum(money) as money, sum(promotion_amount) as promotion_amount")
                 .asWhere("created_time >= ?", query.startDate)
                 .asWhere("created_time < ?", query.endDate)
                 .where("state", TransferState.Successful)
@@ -110,8 +112,9 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                     val from = rs.getString("from").let { Platform.valueOf(it) }
                     val to = rs.getString("to").let{ Platform.valueOf(it) }
                     val money = rs.getBigDecimal("money")
+                    val promotionAmount = rs.getBigDecimal("promotion_amount")
 
-                    ClientTransferPlatformReportVo(clientId = clientId, from = from, to = to, money = money)
+                    ClientTransferPlatformReportVo(clientId = clientId, from = from, to = to, money = money, promotionAmount = promotionAmount)
                 }
 
     }
@@ -155,5 +158,20 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .sort("created_time desc")
                 .execute(mapper)
 
+    }
+
+    override fun report(startDate: LocalDate): List<TransferOrderReportVo> {
+        return query("client_id, `to`, join_promotion_Id, sum(promotion_amount) as promotion_amount")
+                .asWhere("join_promotion_id is not null")
+                .asWhere("created_time >= ?", startDate)
+                .asWhere("created_time < ?", startDate.plusDays(1))
+                .group("client_id, `to`, join_promotion_Id")
+                .execute { rs ->
+                    val clientId = rs.getInt("client_id")
+                    val platform = rs.getString("to").let { Platform.valueOf(it) }
+                    val promotionId = rs.getInt("join_promotion_Id")
+                    val promotionAmount = rs.getBigDecimal("promotion_amount")
+                    TransferOrderReportVo(clientId = clientId, platform = platform, promotionId = promotionId, promotionAmount = promotionAmount)
+                }
     }
 }

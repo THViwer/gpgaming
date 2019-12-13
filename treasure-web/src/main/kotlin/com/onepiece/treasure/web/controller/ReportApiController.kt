@@ -3,8 +3,11 @@ package com.onepiece.treasure.web.controller
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.ClientDailyReport
 import com.onepiece.treasure.beans.model.ClientPlatformDailyReport
+import com.onepiece.treasure.beans.model.PromotionDailyReport
+import com.onepiece.treasure.beans.model.PromotionPlatformDailyReport
 import com.onepiece.treasure.beans.value.database.ClientReportQuery
 import com.onepiece.treasure.beans.value.database.MemberReportQuery
+import com.onepiece.treasure.beans.value.database.PromotionDailyReportValue
 import com.onepiece.treasure.beans.value.internet.web.MemberPlatformReportWebVo
 import com.onepiece.treasure.beans.value.internet.web.MemberReportWebVo
 import com.onepiece.treasure.core.service.*
@@ -25,7 +28,9 @@ class ReportApiController(
         private val clientPlatformDailyReportService: ClientPlatformDailyReportService,
         private val clientDailyReportService: ClientDailyReportService,
         private val memberService: MemberService,
-        private val reportService: ReportService
+        private val reportService: ReportService,
+        private val promotionDailyReportService: PromotionDailyReportService,
+        private val promotionPlatformDailyReportService: PromotionPlatformDailyReportService
 ) : BasicController(), ReportApi {
 
     private fun <T> includeToday(endDate: LocalDate, function: () -> List<T>): List<T> {
@@ -138,4 +143,22 @@ class ReportApiController(
         return clientDailyReportService.query(query).plus(todayData).sortedByDescending { it.day }
     }
 
+    @GetMapping("/promotion")
+    override fun promotionDaily(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
+    ): List<PromotionDailyReport> {
+        val query = PromotionDailyReportValue.Query(clientId = current().clientId, startDate = startDate, endDate = endDate)
+        return promotionDailyReportService.query(query)
+    }
+
+    @GetMapping("/promotion/platform")
+    override fun promotionPlatformDaily(
+            @RequestParam("promotionId") promotionId: Int,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
+    ): List<PromotionPlatformDailyReport> {
+        val query = PromotionDailyReportValue.PlatformQuery(clientId = current().clientId, promotionId = promotionId, startDate = startDate, endDate = endDate)
+        return promotionPlatformDailyReportService.query(query)
+    }
 }
