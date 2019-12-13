@@ -9,16 +9,21 @@ import com.onepiece.treasure.beans.value.database.BetOrderValue
 import com.onepiece.treasure.games.GameValue
 import com.onepiece.treasure.games.PlatformService
 import com.onepiece.treasure.games.bet.MapUtil
+import org.apache.commons.codec.binary.Base64
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.net.URLEncoder
 import java.time.format.DateTimeFormatter
+
 
 @Service
 class GamePlayService: PlatformService() {
 
     private val log = LoggerFactory.getLogger(GamePlayService::class.java)
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+    private val ticket = ""
 
     fun startGetXml(method: String, data: List<String>): MapUtil {
         val urlParam = data.joinToString("&")
@@ -111,17 +116,21 @@ class GamePlayService: PlatformService() {
     }
 
     private fun getTicket(startSlotReq: GameValue.StartSlotReq): String {
-        val  clientToken = startSlotReq.token as GamePlayClientToken
-        val data = listOf(
-                "merch_id=${clientToken.merchId}",
-                "merch_pwd=${clientToken.merchPwd}",
-                "cust_id=${startSlotReq.username}",
-                "cust_name=${startSlotReq.username}",
-                "currency=${clientToken.currency}"
-        )
+//        val  clientToken = startSlotReq.token as GamePlayClientToken
+//        val data = listOf(
+//                "merch_id=${clientToken.merchId}",
+//                "merch_pwd=${clientToken.merchPwd}",
+//                "cust_id=${startSlotReq.username}",
+//                "cust_name=${startSlotReq.username}",
+//                "currency=${clientToken.currency}"
+//        )
+//
+//        val mapUtil = this.startGetXml(method = "/op/createuser", data = data)
+//        return ""
 
-        val mapUtil = this.startGetXml(method = "/op/createuser", data = data)
-        return ""
+        val key = "${startSlotReq.username}:${startSlotReq.gameId}"
+
+        return URLEncoder.encode(Base64.encodeBase64String(key.toByteArray()), "utf-8")
 
     }
 
@@ -168,3 +177,4 @@ class GamePlayService: PlatformService() {
     }
 
 }
+

@@ -29,6 +29,12 @@ class OpenApiController(
     override fun gamePlayLogin(): String {
 
         val request = getRequest()
+
+        request.parameterMap.forEach {
+
+            log.info("url key : ${it.key}, value: ${it.value}")
+        }
+
         val data = request.inputStream.readBytes().let { String(it) }
         log.info("game play 收到消息:$data")
 
