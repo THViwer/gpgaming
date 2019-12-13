@@ -68,6 +68,7 @@ data class PlatformBind(
                 Platform.SaGaming -> SaGamingClientToken::class.java
                 Platform.PNG -> PNGClientToken::class.java
                 Platform.GamePlay -> GamePlayClientToken::class.java
+                Platform.SimplePlay -> SimplePlayClientToken::class.java
                 else -> DefaultClientToken::class.java
             }
         }
