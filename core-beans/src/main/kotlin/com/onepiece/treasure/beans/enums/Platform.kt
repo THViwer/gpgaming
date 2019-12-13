@@ -81,7 +81,7 @@ open class PlatformDetail private constructor(
 
     companion object {
 
-        private const val defaultLogoPath = "${SystemConstant.AWS_LOGO_URL}/joker.png"
+        private const val defaultLogoPath = "${SystemConstant.AWS_LOGO_URL}/joker.jpg"
 
         fun ofCenter(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "AMZBET", icon = defaultLogoPath,
@@ -90,44 +90,44 @@ open class PlatformDetail private constructor(
 
         // slot
         fun ofJoker(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = "${SystemConstant.AWS_LOGO_URL}/joker.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Joker", icon = "${SystemConstant.AWS_LOGO_URL}/joker.jpg",
                     disableIcon = null, status = Status.Normal, launchs = listOf(LaunchMethod.Web, LaunchMethod.Wap, LaunchMethod.Android),
                     demo = true)
         }
         fun ofKiss918(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "918kiss", icon = "${SystemConstant.AWS_LOGO_URL}/918kiss.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "918kiss", icon = "${SystemConstant.AWS_LOGO_URL}/918kiss.jpg",
                     disableIcon = null, status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
         }
         fun ofPussy888(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "Pussy888", icon = "${SystemConstant.AWS_LOGO_URL}/pussy.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Pussy888", icon = "${SystemConstant.AWS_LOGO_URL}/pussy888.jpg",
                     disableIcon = null, status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
         }
         fun ofMega(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "Mega", icon = "${SystemConstant.AWS_LOGO_URL}/mega.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Mega", icon = "${SystemConstant.AWS_LOGO_URL}/mega888.jpg",
                     disableIcon = null, status = Status.Normal, launchs = listOf(LaunchMethod.Ios, LaunchMethod.Android))
         }
         fun ofPragmatic(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "pragmatic", icon = "${SystemConstant.AWS_LOGO_URL}/pragmatic.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "pragmatic", icon = "${SystemConstant.AWS_LOGO_URL}/pragmatic.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofSpadeGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "spade gaming", icon = "${SystemConstant.AWS_LOGO_URL}/spadeGaming.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "spade gaming", icon = "${SystemConstant.AWS_LOGO_URL}/spadegaming.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofTTG(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "top trend gamimg", icon = "${SystemConstant.AWS_LOGO_URL}/topTrendGaming.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "top trend gamimg", icon = "${SystemConstant.AWS_LOGO_URL}/toprend.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofMicroGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "Micro Gaming", icon = "${SystemConstant.AWS_LOGO_URL}/microGaming.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "Micro Gaming", icon = "${SystemConstant.AWS_LOGO_URL}/microgaming.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofPlaytechSlot(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "playtech", icon = "${SystemConstant.AWS_LOGO_URL}/playtech.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "playtech", icon = "${SystemConstant.AWS_LOGO_URL}/playtech.jpg",
                     disableIcon = null, status = Status.Delete, demo = false)
         }
         fun ofPNG(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "play n go", icon = "${SystemConstant.AWS_LOGO_URL}/Play'n GO.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "play n go", icon = "${SystemConstant.AWS_LOGO_URL}/play-go.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofGamePlay(): PlatformDetail {
@@ -135,7 +135,7 @@ open class PlatformDetail private constructor(
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofSimplePlay(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "simple play", icon = "${SystemConstant.AWS_LOGO_URL}/simple play.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "simple play", icon = "${SystemConstant.AWS_LOGO_URL}/asia-gaming.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
 
@@ -146,40 +146,40 @@ open class PlatformDetail private constructor(
         }
 
         fun ofDreamGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "DreamGaming", icon = "${SystemConstant.AWS_LOGO_URL}/dreamGaming.png",
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "DreamGaming", icon = "${SystemConstant.AWS_LOGO_URL}/Dream-gaming.jpg",
                     disableIcon = "{SystemConstant.AWS_LOGO_URL}/dreamGaming.jpeg", status = Status.Normal)
         }
 
         fun ofEvolution(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "Evolution", icon = "${SystemConstant.AWS_LOGO_URL}/evolution.png",
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "Evolution", icon = "${SystemConstant.AWS_LOGO_URL}/evolution.jpg",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/evolution.jpeg", status = Status.Normal)
         }
 
         fun ofGoldDeluxe(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "GoldDeluxe", icon = "${SystemConstant.AWS_LOGO_URL}/goldGeluxe.png",
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "GoldDeluxe", icon = "${SystemConstant.AWS_LOGO_URL}/gold-deluxe.jpg",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/goldGeluxe.jpeg", status = Status.Normal)
         }
         fun ofSexyGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sexy gaming", icon = "${SystemConstant.AWS_LOGO_URL}/saGaming.png",
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sexy gaming", icon = "${SystemConstant.AWS_LOGO_URL}/sexy-gaming.jpg",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/saGaming.jpeg", status = Status.Normal)
         }
 
         fun ofFgg(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "fgg", icon = "${SystemConstant.AWS_LOGO_URL}/fgg.png",
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "fgg", icon = "${SystemConstant.AWS_LOGO_URL}/guaranted.jpg",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/fgg.png", status = Status.Normal)
         }
 
         fun ofAllBet(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "allbet", icon = "${SystemConstant.AWS_LOGO_URL}/allBet.png",
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "allbet", icon = "${SystemConstant.AWS_LOGO_URL}/allbet.jpg",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/allBet.jpeg", status = Status.Normal)
         }
         fun ofSaGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sa gaming", icon = "${SystemConstant.AWS_LOGO_URL}/saGaming.png",
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "sa gaming", icon = "${SystemConstant.AWS_LOGO_URL}/sa-gaming.jpg",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/saGaming.jpeg", status = Status.Stop)
         }
         fun ofAsiaGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "asia gaming", icon = "${SystemConstant.AWS_LOGO_URL}/asiaGaming.png",
-                    disableIcon = "${SystemConstant.AWS_LOGO_URL}/asiaGaming.png", status = Status.Stop)
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "asia gaming", icon = "${SystemConstant.AWS_LOGO_URL}/Asia-gaming2.jpg",
+                    disableIcon = null, status = Status.Stop)
         }
 
 
@@ -190,12 +190,12 @@ open class PlatformDetail private constructor(
         }
 
         fun ofLbc(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Sport, name = "ibc", icon = "${SystemConstant.AWS_LOGO_URL}/ibcbet.png",
+            return PlatformDetail(category = PlatformCategory.Sport, name = "ibc", icon = "${SystemConstant.AWS_LOGO_URL}/maxbet.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
 
         fun ofBcs(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Sport, name = "GP Gaming", icon = "${SystemConstant.AWS_LOGO_URL}/bcs.png",
+            return PlatformDetail(category = PlatformCategory.Sport, name = "GP Gaming", icon = "${SystemConstant.AWS_LOGO_URL}/ball.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofCMD(): PlatformDetail {
