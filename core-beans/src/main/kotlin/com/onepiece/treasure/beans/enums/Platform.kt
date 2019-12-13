@@ -22,6 +22,7 @@ enum class Platform(
     PlaytechSlot(PlatformDetail.ofPlaytechSlot()),
     PNG(PlatformDetail.ofPNG()),
     GamePlay(PlatformDetail.ofGamePlay()),
+    SimplePlay(PlatformDetail.ofSimplePlay()), // 就是asia gaing的slot
 
     // live video
     CT(PlatformDetail.ofCT()),
@@ -131,6 +132,10 @@ open class PlatformDetail private constructor(
         }
         fun ofGamePlay(): PlatformDetail {
             return PlatformDetail(category = PlatformCategory.Slot, name = "game play", icon = "${SystemConstant.AWS_LOGO_URL}/gamePlay.png",
+                    disableIcon = null, status = Status.Normal, demo = true)
+        }
+        fun ofSimplePlay(): PlatformDetail {
+            return PlatformDetail(category = PlatformCategory.Slot, name = "simple play", icon = "${SystemConstant.AWS_LOGO_URL}/gamePlay.png",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
 
