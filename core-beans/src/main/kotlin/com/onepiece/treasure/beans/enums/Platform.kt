@@ -135,7 +135,7 @@ open class PlatformDetail private constructor(
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofSimplePlay(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "simple play", icon = "${SystemConstant.AWS_LOGO_URL}/gamePlay.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "simple play", icon = "${SystemConstant.AWS_LOGO_URL}/simple play.png",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
 
