@@ -12,8 +12,8 @@ import com.onepiece.treasure.core.service.ClientService
 import com.onepiece.treasure.core.service.WaiterService
 import com.onepiece.treasure.web.controller.basic.BasicController
 import com.onepiece.treasure.web.jwt.AuthService
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
-import java.util.*
 
 @RestController
 @RequestMapping("/user")
@@ -23,10 +23,13 @@ class UserApiController(
         private val authService: AuthService
 ) : BasicController(), UserApi {
 
+    private val log = LoggerFactory.getLogger(UserApiController::class.java)
+
     @PostMapping
     override fun login(@RequestBody loginReq: LoginReq): LoginResp {
         val loginValue = LoginValue(username = loginReq.username, password = loginReq.password, ip = getIpAddress())
 
+        log.info("admin login, username = ${loginReq.username}, password = ${loginReq.password}")
         return try {
             val client = clientService.login(loginValue)
 
