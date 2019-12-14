@@ -11,9 +11,8 @@ import com.onepiece.treasure.core.service.BannerService
 import com.onepiece.treasure.core.service.ContactService
 import com.onepiece.treasure.core.service.I18nContentService
 import com.onepiece.treasure.core.service.PromotionService
-import org.springframework.scheduling.annotation.Async
 import org.springframework.web.bind.annotation.*
-import java.math.BigDecimal
+import java.util.*
 import kotlin.random.Random
 
 @RestController
@@ -130,7 +129,7 @@ open class ApiController(
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
         return mapOf(
-                "url" to url
+                "url" to "$url?${UUID.randomUUID()}"
         )
     }
 
