@@ -61,7 +61,7 @@ object PNGUtil {
 
             val iconFile = File("$iconPath/$chineseGameName.png")
             if (iconFile.exists()) {
-                val path = AwsS3Util.uploadLocalFile(iconFile, "png/$englishGameName.png")
+                val path = AwsS3Util.uploadLocalFile(iconFile, "slot/png/${englishGameName.replace(" ", "").replace("'", "").replace(":", "")}.png")
 
                 val gameId = if (launch == LaunchMethod.Web) desktopGid else mobileGid
                 SlotGame(Platform.PNG, gameId = gameId, category = category, gameName = englishGameName, chineseGameName = chineseGameName,

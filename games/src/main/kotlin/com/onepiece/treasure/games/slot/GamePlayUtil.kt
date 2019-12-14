@@ -5,6 +5,7 @@ import com.onepiece.treasure.beans.enums.GameCategory
 import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.value.internet.web.SlotCategory
 import com.onepiece.treasure.beans.value.internet.web.SlotGame
 import com.onepiece.treasure.utils.AwsS3Util
 import java.io.File
@@ -60,7 +61,7 @@ object GamePlayUtil {
                 }
 
                 if (imageFile != null) {
-                    val iconUrl = AwsS3Util.upload(imageFile)
+                    val iconUrl = AwsS3Util.uploadLocalFile(imageFile, "slot/gameplay/${gameName.replace(" ", "").replace(":", "")}.png")
                     SlotGame(platform = Platform.GamePlay, gameId = gameId, category = GameCategory.Slot, gameName = name, chineseGameName = chineseName, hot = false, icon = iconUrl, new = false,
                             status = Status.Normal, touchIcon = null)
                 } else {
@@ -83,8 +84,12 @@ fun main() {
         val file = File("/Users/cabbage/Downloads/game_play_done.csv")
         val games = GamePlayUtil.handle(file, Language.EN)
 
+        val categories = games.groupBy { it.category }.map {
+            SlotCategory(gameCategory =  it.key, games = it.value)
+        }
+
         val objectMapper = jacksonObjectMapper()
-        val json = objectMapper.writeValueAsString(games)
+        val json = objectMapper.writeValueAsString(categories)
 
         val jsonFile = File("/Users/cabbage/Desktop/gameplay_${language.toString().toLowerCase()}.json")
         jsonFile.writeBytes(json.toByteArray())
