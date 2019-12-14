@@ -131,7 +131,7 @@ open class PlatformDetail private constructor(
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofGamePlay(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "game play", icon = "${SystemConstant.AWS_LOGO_URL}/gamePlay.png",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "game play", icon = "${SystemConstant.AWS_LOGO_URL}/gameplay.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofSimplePlay(): PlatformDetail {
@@ -199,12 +199,12 @@ open class PlatformDetail private constructor(
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofCMD(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Sport, name = "CMD", icon = "${SystemConstant.AWS_LOGO_URL}/cmd368.png",
+            return PlatformDetail(category = PlatformCategory.Sport, name = "CMD", icon = "${SystemConstant.AWS_LOGO_URL}/cmd.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         // Fishing
         fun ofGGFishng(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Fishing, name = "GGFishing", icon = "${SystemConstant.AWS_LOGO_URL}/GGFishing.png",
+            return PlatformDetail(category = PlatformCategory.Fishing, name = "GGFishing", icon = "${SystemConstant.AWS_LOGO_URL}/GGFishing.jpg",
                     disableIcon = null, status = Status.Normal)
         }
 
