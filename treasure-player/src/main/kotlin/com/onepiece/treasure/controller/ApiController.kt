@@ -119,7 +119,7 @@ open class ApiController(
         val url = when(platform) {
             Platform.Joker -> "${SystemConstant.AWS_SLOT}/joker_${language.name.toLowerCase()}.json"
             Platform.MicroGaming -> "${SystemConstant.AWS_SLOT}/micro_gaming_${language.name.toLowerCase()}.json"
-            Platform.Pragmatic -> "${SystemConstant.AWS_SLOT}/pragmatic_${launch.name.toLowerCase()}.json"
+            Platform.Pragmatic -> "${SystemConstant.AWS_SLOT}/pragmatic_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
             Platform.SpadeGaming -> "${SystemConstant.AWS_SLOT}/spade_game.json"
             Platform.TTG -> "${SystemConstant.AWS_SLOT}/ttg_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
             Platform.PNG -> "${SystemConstant.AWS_SLOT}/png_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
