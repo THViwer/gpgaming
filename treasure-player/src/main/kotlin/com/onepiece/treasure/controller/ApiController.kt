@@ -57,10 +57,8 @@ open class ApiController(
             BannerVo(id = it.id, order = it.order, icon = it.icon, touchIcon = it.touchIcon, type = it.type, link = it.link)
         }
         // hot games
-        val hotGameUrl = when (launch) {
-            LaunchMethod.Web -> "${SystemConstant.AWS_SLOT}/hot_sort_10_wap.json"
-            else -> "${SystemConstant.AWS_SLOT}/hot_sort_20_web.json"
-        }
+        val size = if (launch == LaunchMethod.Wap) "10" else "20"
+        val hotGameUrl = "${SystemConstant.AWS_SLOT}/hot_sort_${size}_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
 
         return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGameUrl = hotGameUrl)
     }
