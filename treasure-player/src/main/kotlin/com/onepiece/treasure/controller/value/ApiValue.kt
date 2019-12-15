@@ -177,6 +177,9 @@ data class PlatformCategoryDetail(
         val banners: List<BannerVo>,
 
         @ApiModelProperty("游戏列表(只有在slot下才有)")
-        val games: List<SlotCategory>? = null
+        val url: String?
+
+//        @ApiModelProperty("游戏列表(只有在slot下才有)")
+//        val games: List<SlotCategory>? = null
 
 )

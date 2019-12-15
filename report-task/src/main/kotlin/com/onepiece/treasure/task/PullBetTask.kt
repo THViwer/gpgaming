@@ -41,7 +41,7 @@ class PullBetTask(
     }
 
 
-    @Scheduled(cron="0/20 * *  * * ? ")
+//    @Scheduled(cron="0/20 * *  * * ? ")
     fun execute() {
         if (running.get()) return
         running.set(true)

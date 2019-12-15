@@ -124,7 +124,7 @@ class JokerService : PlatformService() {
         }
     }
 
-    override fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {
+    override fun slotGames(token: ClientToken, launch: LaunchMethod, language: Language): List<SlotGame> {
         val clientToken = token as DefaultClientToken
 
         val data = mapOf(
@@ -147,7 +147,7 @@ class JokerService : PlatformService() {
                 else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
         }.map { game ->
-//            val category = when (game.asString("GameType")) {
+            //            val category = when (game.asString("GameType")) {
 //                "Slot" -> GameCategory.Slot
 //                "Fishing" -> GameCategory.Fishing
 //                "ECasino" -> GameCategory.Ec
@@ -165,7 +165,7 @@ class JokerService : PlatformService() {
             val icon = "http:${game.asString("Image1")}"
             val touchIcon = "http:${game.asString("Image2")}"
             SlotGame(gameId = gameCode, category = GameCategory.Slot, gameName = gameName, icon = icon, touchIcon = touchIcon,
-                    hot = hot, new = new, status = Status.Normal, chineseGameName = gameName, platform = Platform.Joker)
+                    hot = hot, new = new, status = Status.Normal, platform = Platform.Joker)
         }
     }
 

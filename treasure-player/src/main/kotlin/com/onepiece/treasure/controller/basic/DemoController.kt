@@ -1,5 +1,6 @@
 package com.onepiece.treasure.controller.basic
 
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.LaunchMethod
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.core.dao.MemberDao
@@ -52,7 +53,7 @@ class DemoController(
 
     @GetMapping("/slot/menu")
     fun slotMenuTesk(): Any {
-        return gameApi.slotGames(clientId = 1, platform = Platform.SpadeGaming, launch = LaunchMethod.Wap)
+        return gameApi.slotGames(clientId = 1, platform = Platform.SpadeGaming, launch = LaunchMethod.Wap, language = Language.EN)
     }
 
 }

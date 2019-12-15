@@ -62,7 +62,7 @@ abstract class PlatformService {
     /**
      * 老虎机菜单
      */
-    open fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {
+    open fun slotGames(token: ClientToken, launch: LaunchMethod, language: Language): List<SlotGame> {
         error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
     }
 

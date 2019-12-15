@@ -5,6 +5,7 @@ package com.onepiece.treasure.games.slot
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.treasure.beans.SystemConstant
 import com.onepiece.treasure.beans.enums.GameCategory
+import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.value.internet.web.SlotCategory
@@ -26,9 +27,9 @@ object MicroGamingUtil {
 //        }.filterNotNull()
 //    }
 
-    fun handlerLines(line: String, iconPath: String): SlotGame? {
+    fun handlerLines(language: Language, line: String, iconPath: String): SlotGame? {
         val list = line.split(",")
-        val gameName = list[0]
+        val englishGameName = list[0]
         val chineseGameName = list[1]
         val flashGameId = list[2]
         val flashAppId = list[3]
@@ -80,16 +81,18 @@ object MicroGamingUtil {
             touchIcon = "${SystemConstant.AWS_SLOT}/micro_game/${imageName}_1.png"
         }
 
-        return SlotGame(gameId = gameId, gameName = gameName, chineseGameName = chineseGameName, category = GameCategory.Slot, icon = icon, touchIcon = touchIcon,
+        val gameName = if (language == Language.CN) chineseGameName else englishGameName
+
+        return SlotGame(gameId = gameId, gameName = gameName, category = GameCategory.Slot, icon = icon, touchIcon = touchIcon,
                 hot = false, new = false, status = Status.Normal, platform = Platform.MicroGaming)
     }
 
-    fun uploadJson(csvFile: String, iconPath: String) {
+    fun uploadJson(language: Language, csvFile: String, iconPath: String) {
         // 生成json格式
         val file = File(csvFile)
         val list = file.readLines().mapNotNull {
             try {
-                handlerLines(it, iconPath)
+                handlerLines(language, it, iconPath)
             } catch (e: Exception) {
                 e.printStackTrace()
                 null
@@ -163,9 +166,11 @@ fun main() {
 //    MicroGamingUtil.uploadImages(local)
 
     // 上传json
-    val csvLocal = "/Users/cabbage/Desktop/MG_Game_List_November_2019_Dashur.csv"
-    val iconPath = "/Users/cabbage/Downloads/MG__GameButtons__ALL"
-    MicroGamingUtil.uploadJson(csvLocal, iconPath)
+    listOf(Language.EN, Language.CN).forEach { language ->
+        val csvLocal = "/Users/cabbage/Desktop/MG_Game_List_November_2019_Dashur.csv"
+        val iconPath = "/Users/cabbage/Downloads/MG__GameButtons__ALL"
+        MicroGamingUtil.uploadJson(language, csvLocal, iconPath)
+    }
 
 
 //    val x = File("/Users/cabbage/Downloads/MG__GameButtons__ALL/").listFiles().firstOrNull { it.name.contains("BTN_DoubleJoker") }

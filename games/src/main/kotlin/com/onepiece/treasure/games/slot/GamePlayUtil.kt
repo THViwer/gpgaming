@@ -67,7 +67,7 @@ object GamePlayUtil {
 
                 if (imageFile != null) {
                     val iconUrl = AwsS3Util.uploadLocalFile(imageFile, "slot/gameplay/${gameName.replace(" ", "").replace(":", "").replace("'", "")}.png")
-                    SlotGame(platform = Platform.GamePlay, gameId = gameId, category = category, gameName = name, chineseGameName = chineseName, hot = false, icon = iconUrl, new = false,
+                    SlotGame(platform = Platform.GamePlay, gameId = gameId, category = category, gameName = name, hot = false, icon = iconUrl, new = false,
                             status = Status.Normal, touchIcon = null)
                 } else {
                     println("游戏：$gameName 图片不存在")

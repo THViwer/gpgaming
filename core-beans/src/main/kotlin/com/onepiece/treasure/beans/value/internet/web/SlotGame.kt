@@ -20,9 +20,6 @@ data class SlotGame(
         @ApiModelProperty("游戏名称")
         val gameName: String,
 
-        @ApiModelProperty("游戏中文名称")
-        val chineseGameName: String,
-
         @ApiModelProperty("游戏图标")
         val icon: String,
 

@@ -89,7 +89,7 @@ class TTGService(
         return this.startPostXml(method = "/cip/gametoken/${username}", data = data)
     }
 
-    override fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {
+    override fun slotGames(token: ClientToken, launch: LaunchMethod, language: Language): List<SlotGame> {
         return when (launch) {
             LaunchMethod.Wap -> TTGGames.mobileGames
             LaunchMethod.Web -> TTGGames.pcGames

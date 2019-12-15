@@ -119,12 +119,12 @@ open class ApiController(
             @RequestParam("platform") platform: Platform): Map<String, String> {
 
         val url = when(platform) {
-            Platform.Joker -> "${SystemConstant.AWS_SLOT}/joker.json"
-            Platform.MicroGaming -> "${SystemConstant.AWS_SLOT}/micro_gaming.json"
+            Platform.Joker -> "${SystemConstant.AWS_SLOT}/joker_${language.name.toLowerCase()}.json"
+            Platform.MicroGaming -> "${SystemConstant.AWS_SLOT}/micro_gaming_${language.name.toLowerCase()}.json"
             Platform.Pragmatic -> "${SystemConstant.AWS_SLOT}/pragmatic_${launch.name.toLowerCase()}.json"
             Platform.SpadeGaming -> "${SystemConstant.AWS_SLOT}/spade_game.json"
-            Platform.TTG -> "${SystemConstant.AWS_SLOT}/ttg_${launch.name.toLowerCase()}.json"
-            Platform.PNG -> "${SystemConstant.AWS_SLOT}/png_${launch.name.toLowerCase()}.json"
+            Platform.TTG -> "${SystemConstant.AWS_SLOT}/ttg_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
+            Platform.PNG -> "${SystemConstant.AWS_SLOT}/png_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
             Platform.GamePlay -> "${SystemConstant.AWS_SLOT}/gameplay_${language.name.toLowerCase()}.json"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -256,17 +256,20 @@ open class ApiController(
         val banners = bannerService.findByType(clientId = clientId, type = type).map {
             BannerVo(id = it.id, order = it.order, icon = it.icon, link = it.link, touchIcon = it.touchIcon, type = it.type)
         }
+//
+//        val games = if (category == PlatformCategory.Slot) {
+//            gameApi.slotGames(clientId = getClientIdByDomain(), platform = Platform.Joker, launch = LaunchMethod.Web)
+//                    .groupBy { it.category }
+//                    .map {
+//                        SlotCategory(gameCategory = it.key, games = it.value)
+//                    }
+//        } else null
 
         val games = if (category == PlatformCategory.Slot) {
-            gameApi.slotGames(clientId = getClientIdByDomain(), platform = Platform.Joker, launch = LaunchMethod.Web)
-                    .groupBy { it.category }
-                    .map {
-                        SlotCategory(gameCategory = it.key, games = it.value)
-                    }
+            this.slotMenu(language = language, launch = LaunchMethod.Web, platform = Platform.Pragmatic)["url"]
         } else null
 
-
-        return PlatformCategoryDetail(platforms = platforms, banners = banners, games = games)
+        return PlatformCategoryDetail(platforms = platforms, banners = banners, url = games )
     }
 
     @GetMapping("/contactUs")

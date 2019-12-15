@@ -109,14 +109,14 @@ class SpadeGamingService : PlatformService() {
         return GameValue.TransferResp.of(successful)
     }
 
-    override fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {
+    override fun slotGames(token: ClientToken, launch: LaunchMethod, language: Language): List<SlotGame> {
 
         val clientToken = token as SpadeGamingClientToken
 
         val data = """
             {
                 "merchantCode": "${clientToken.memberCode}",
-                "serialNo": "${UUID.randomUUID()}" 
+                "serialNo": "${UUID.randomUUID()}"
             }
             
         """.trimIndent()
@@ -140,7 +140,7 @@ class SpadeGamingService : PlatformService() {
             val icon = game.asString("thumbnail")
 
             SlotGame(gameId = gameId, gameName = gameName, category = GameCategory.Slot, icon = icon, touchIcon = null, hot = false,
-                    new = false, status = Status.Normal, chineseGameName = gameName, platform = Platform.SpadeGaming)
+                    new = false, status = Status.Normal, platform = Platform.SpadeGaming)
         }
     }
 

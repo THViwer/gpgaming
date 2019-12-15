@@ -158,7 +158,7 @@ class GameApi(
     /**
      * 老虎机游戏列表
      */
-    fun slotGames(clientId: Int, platform: Platform, launch: LaunchMethod): List<SlotGame> {
+    fun slotGames(clientId: Int, platform: Platform, launch: LaunchMethod, language: Language): List<SlotGame> {
 
         val redisKey = OnePieceRedisKeyConstant.slotGames(platform = platform, launch = launch)
 
@@ -169,7 +169,7 @@ class GameApi(
             Platform.Joker,
             Platform.Pragmatic,
             Platform.TTG,
-            Platform.SpadeGaming -> getPlatformApi(platform).slotGames(token = clientToken, launch = launch)
+            Platform.SpadeGaming -> getPlatformApi(platform).slotGames(token = clientToken, launch = launch, language = language)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 

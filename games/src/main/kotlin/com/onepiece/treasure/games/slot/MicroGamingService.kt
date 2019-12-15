@@ -178,11 +178,6 @@ class MicroGamingService : PlatformService() {
     }
 
 
-    override fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {
-        return emptyList()
-    }
-
-
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
         val clientToken = startSlotReq.token as MicroGamingClientToken
 

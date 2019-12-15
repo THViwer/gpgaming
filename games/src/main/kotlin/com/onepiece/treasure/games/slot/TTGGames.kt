@@ -173,7 +173,9 @@ object TTGGames {
     """.trimIndent()
 
     val mobileGames: List<SlotGame>
+    val mobileCNGames: List<SlotGame>
     val pcGames: List<SlotGame>
+    val pcCNGames: List<SlotGame>
 //    val gameMapUtils: Map<String, MapUtil>
 
     init {
@@ -207,7 +209,19 @@ object TTGGames {
         mobileGames = list.filter { it.asString("platforms").contains("Mobile") }.map {
             val gameId = it.asString("gameId")
             val originGameId = it.asString("originGameId")
-            SlotGame(gameId = gameId, gameName = it.asString("englishName"), chineseGameName = it.asString("chineseName"),
+
+            SlotGame(gameId = gameId, gameName = it.asString("englishName"),
+                    category = GameCategory.Slot, hot = false, new = false, icon = "http://ams-games.stg.ttms.co/player/assets/images/games/${originGameId}.png",
+                    status = Status.Normal, touchIcon = null, platform = Platform.TTG)
+        }
+
+        mobileCNGames = list.filter { it.asString("platforms").contains("Mobile") }.map {
+            val gameId = it.asString("gameId")
+            val originGameId = it.asString("originGameId")
+
+
+
+            SlotGame(gameId = gameId, gameName = it.asString("chineseName"),
                     category = GameCategory.Slot, hot = false, new = false, icon = "http://ams-games.stg.ttms.co/player/assets/images/games/${originGameId}.png",
                     status = Status.Normal, touchIcon = null, platform = Platform.TTG)
         }
@@ -215,7 +229,15 @@ object TTGGames {
         pcGames = list.filter { it.asString("platforms").contains("Web") }.map {
             val gameId = it.asString("gameId")
             val originGameId = it.asString("originGameId")
-            SlotGame(gameId = gameId, gameName = it.asString("gameName"), chineseGameName = it.asString("chineseName"),
+            SlotGame(gameId = gameId, gameName = it.asString("gameName"),
+                    category = GameCategory.Slot, hot = false, new = false, icon = "http://ams-games.stg.ttms.co/player/assets/images/games/${originGameId}.png",
+                    status = Status.Normal, touchIcon = null, platform = Platform.TTG)
+        }
+
+        pcCNGames = list.filter { it.asString("platforms").contains("Web") }.map {
+            val gameId = it.asString("gameId")
+            val originGameId = it.asString("originGameId")
+            SlotGame(gameId = gameId, gameName = it.asString("chineseName"),
                     category = GameCategory.Slot, hot = false, new = false, icon = "http://ams-games.stg.ttms.co/player/assets/images/games/${originGameId}.png",
                     status = Status.Normal, touchIcon = null, platform = Platform.TTG)
         }

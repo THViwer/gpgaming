@@ -91,7 +91,7 @@ class PragmaticService: PlatformService() {
     }
 
 
-    override fun slotGames(token: ClientToken, launch: LaunchMethod): List<SlotGame> {
+    override fun slotGames(token: ClientToken, launch: LaunchMethod, language: Language): List<SlotGame> {
         val clientToken = token as PragmaticClientToken
 
         val data = hashMapOf(
@@ -142,7 +142,7 @@ class PragmaticService: PlatformService() {
             val icon = "${gameConstant.getDomain(Platform.Pragmatic)}/game_pic/rec/325/${gameId}.png"
 
             SlotGame(gameId = gameId, gameName = gameName, category = GameCategory.Slot, icon = icon, touchIcon = null, hot = false, new = false,
-                    status = Status.Normal, chineseGameName = gameName, platform = Platform.Pragmatic)
+                    status = Status.Normal, platform = Platform.Pragmatic)
         }
     }
 
