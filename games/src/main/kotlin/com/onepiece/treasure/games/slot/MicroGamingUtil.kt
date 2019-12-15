@@ -14,6 +14,7 @@ import com.onepiece.treasure.games.SlotMenuUtil
 import com.onepiece.treasure.utils.AwsS3Util
 import java.io.File
 import java.util.*
+import kotlin.streams.toList
 
 object MicroGamingUtil {
 
@@ -90,14 +91,14 @@ object MicroGamingUtil {
     fun uploadJson(language: Language, csvFile: String, iconPath: String) {
         // 生成json格式
         val file = File(csvFile)
-        val list = file.readLines().mapNotNull {
+        val list = file.readLines().parallelStream().map {
             try {
                 handlerLines(language, it, iconPath)
             } catch (e: Exception) {
                 e.printStackTrace()
                 null
             }
-        }
+        }.toList().filterNotNull()
 
 
         val games = SlotMenuUtil.addCategory(list, SlotMenuUtil.microJson).map {
@@ -115,7 +116,7 @@ object MicroGamingUtil {
         tmpFile.writeBytes(json.toByteArray())
 
         // 上传
-        val url = AwsS3Util.uploadLocalFile(tmpFile, "slot/micro_gaming.json")
+        val url = AwsS3Util.uploadLocalFile(tmpFile, "slot/micro_gaming_${language.name.toLowerCase()}.json")
         println(url)
 
         tmpFile.delete()

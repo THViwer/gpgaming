@@ -20,7 +20,9 @@ enum class GameCategory(
 
     Keno(6),
 
-    Default(7)
+    Scratch(7),
+
+    Default(8)
 
 
 //    // 未分类
