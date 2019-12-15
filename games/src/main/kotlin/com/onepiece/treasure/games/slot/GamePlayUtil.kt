@@ -21,6 +21,11 @@ object GamePlayUtil {
             val gameName = data[0]
             val chineseName = data[1]
             val gameId = data[2]
+            val category = if (data[3].isBlank()) {
+                GameCategory.Slot
+            } else {
+                GameCategory.valueOf(data[3])
+            }
 
             val imageRootFile = if (gameName == "Vikings: Mega Reels") {
                 File("/Users/cabbage/Downloads/R Slot Done/Vikings Mega Reels")
@@ -61,8 +66,8 @@ object GamePlayUtil {
                 }
 
                 if (imageFile != null) {
-                    val iconUrl = AwsS3Util.uploadLocalFile(imageFile, "slot/gameplay/${gameName.replace(" ", "").replace(":", "")}.png")
-                    SlotGame(platform = Platform.GamePlay, gameId = gameId, category = GameCategory.Slot, gameName = name, chineseGameName = chineseName, hot = false, icon = iconUrl, new = false,
+                    val iconUrl = AwsS3Util.uploadLocalFile(imageFile, "slot/gameplay/${gameName.replace(" ", "").replace(":", "").replace("'", "")}.png")
+                    SlotGame(platform = Platform.GamePlay, gameId = gameId, category = category, gameName = name, chineseGameName = chineseName, hot = false, icon = iconUrl, new = false,
                             status = Status.Normal, touchIcon = null)
                 } else {
                     println("游戏：$gameName 图片不存在")
@@ -81,8 +86,20 @@ object GamePlayUtil {
 fun main() {
 
     listOf(Language.EN, Language.CN).forEach { language ->
-        val file = File("/Users/cabbage/Downloads/game_play_done.csv")
-        val games = GamePlayUtil.handle(file, Language.EN)
+//        val file = File("/Users/cabbage/Downloads/game_play_done.csv")
+        val file = File("/Users/cabbage/Desktop/gameplay_done.csv")
+
+        val hots = hashSetOf<String>()
+        val news = hashSetOf<String>()
+        val games = GamePlayUtil.handle(file, language).map {
+            if (it.category == GameCategory.Hot) {
+                hots.add(it.gameId)
+            }
+            if (it.category == GameCategory.New) {
+                news.add(it.gameId)
+            }
+            it.copy(hot = hots.contains(it.gameId), new = news.contains(it.gameId))
+        }
 
         val categories = games.groupBy { it.category }.map {
             SlotCategory(gameCategory =  it.key, games = it.value)
@@ -92,6 +109,7 @@ fun main() {
         val json = objectMapper.writeValueAsString(categories)
 
         val jsonFile = File("/Users/cabbage/Desktop/gameplay_${language.toString().toLowerCase()}.json")
+        jsonFile.delete()
         jsonFile.writeBytes(json.toByteArray())
 
         AwsS3Util.uploadLocalFile(jsonFile, "slot/gameplay_${language.toString().toLowerCase()}.json")
