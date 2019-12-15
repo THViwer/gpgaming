@@ -127,7 +127,7 @@ open class PlatformDetail private constructor(
                     disableIcon = null, status = Status.Delete, demo = false)
         }
         fun ofPNG(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "play n go", icon = "${SystemConstant.AWS_LOGO_URL}/play-go.jpg",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "play n go", icon = "${SystemConstant.AWS_LOGO_URL}/play-n-go.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofGamePlay(): PlatformDetail {
@@ -135,7 +135,7 @@ open class PlatformDetail private constructor(
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofSimplePlay(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Slot, name = "simple play", icon = "${SystemConstant.AWS_LOGO_URL}/asia-gaming.jpg",
+            return PlatformDetail(category = PlatformCategory.Slot, name = "simple play", icon = "${SystemConstant.AWS_LOGO_URL}/asia-gaming-slot.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
 
@@ -146,7 +146,7 @@ open class PlatformDetail private constructor(
         }
 
         fun ofDreamGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "DreamGaming", icon = "${SystemConstant.AWS_LOGO_URL}/Dream-gaming.jpg",
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "DreamGaming", icon = "${SystemConstant.AWS_LOGO_URL}/dream-gaming.jpg",
                     disableIcon = "{SystemConstant.AWS_LOGO_URL}/dreamGaming.jpeg", status = Status.Normal)
         }
 
@@ -178,7 +178,7 @@ open class PlatformDetail private constructor(
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/saGaming.jpeg", status = Status.Stop)
         }
         fun ofAsiaGaming(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "asia gaming", icon = "${SystemConstant.AWS_LOGO_URL}/Asia-gaming2.jpg",
+            return PlatformDetail(category = PlatformCategory.LiveVideo, name = "asia gaming", icon = "${SystemConstant.AWS_LOGO_URL}/asia-gaming-live.jpg",
                     disableIcon = null, status = Status.Stop)
         }
 
