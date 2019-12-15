@@ -23,8 +23,7 @@ class PromotionTask(
 
     private val log = LoggerFactory.getLogger(PromotionTask::class.java)
 
-
-    fun tryLock(localDate: LocalDate, type: TaskTimerType, function: () -> Unit) {
+    private fun tryLock(localDate: LocalDate, type: TaskTimerType, function: () -> Unit) {
 
         val state = taskTimerService.lock(day = localDate, type = type)
         if (!state) return
@@ -38,7 +37,7 @@ class PromotionTask(
         }
     }
 
-        @Scheduled(cron = "0 0 3 * * ?")
+    @Scheduled(cron = "0 0 3 * * ?")
     fun execute() {
 
         val startDate = LocalDate.now().minusDays(1)
