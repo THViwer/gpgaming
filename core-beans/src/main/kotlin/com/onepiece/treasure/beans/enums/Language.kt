@@ -3,24 +3,27 @@ package com.onepiece.treasure.beans.enums
 /**
  * 支持的语言列表
  */
-enum class Language {
+enum class Language(
+        val ename: String,
+        val cname: String
+) {
 
     // 英语
-    EN,
+    EN("English", "英语"),
 
     // 中文
-    CN,
+    CN("Chinese", "中文"),
 
     // 马来语
-    MY,
+    MY("Malay", "马来西亚"),
 
     // 印尼
-    ID,
+    ID("Indonesian", "印度尼西亚"),
 
     // 泰国
-    TH,
+    TH("Thailand", "泰语"),
 
     // 越南
-    VI
+    VI("Vietnamese", "越南语")
 
 }

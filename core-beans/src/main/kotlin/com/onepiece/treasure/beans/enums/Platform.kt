@@ -195,11 +195,11 @@ open class PlatformDetail private constructor(
         }
 
         fun ofBcs(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Sport, name = "GP Gaming", icon = "${SystemConstant.AWS_LOGO_URL}/ball.jpg",
+            return PlatformDetail(category = PlatformCategory.Sport, name = "amzbet", icon = "${SystemConstant.AWS_LOGO_URL}/amzbet.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         fun ofCMD(): PlatformDetail {
-            return PlatformDetail(category = PlatformCategory.Sport, name = "CMD", icon = "${SystemConstant.AWS_LOGO_URL}/cmd.jpg",
+            return PlatformDetail(category = PlatformCategory.Sport, name = "CMD", icon = "${SystemConstant.AWS_LOGO_URL}/amd.jpg",
                     disableIcon = null, status = Status.Normal, demo = true)
         }
         // Fishing

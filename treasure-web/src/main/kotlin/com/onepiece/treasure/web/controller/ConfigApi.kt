@@ -23,20 +23,28 @@ interface ConfigApi {
 sealed class EnumTypes {
     enum class EnumType {
 
+        // banner
         BannerEnum,
 
+        // 银行列表
         BankEnum,
 
+        // 支持语言
         LanguageEnum,
 
+        // 平台列表
         PlatformEnum,
 
+        // 联系我们类型
         ContactTypeEnum,
 
+        // 钱包事件
         WalletEventEnum,
 
+        // 优惠类型
         PromotionCategoryEnum,
 
+        // 平台类别
         PlatformCategoryEnum
 
     }
