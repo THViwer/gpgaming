@@ -37,5 +37,11 @@ data class ClientPlatformDailyReport(
         // 创建时间
         val createdTime: LocalDateTime
 
+) {
 
-)
+    val clientWin: BigDecimal
+        get() {
+            return bet.minus(win)
+        }
+
+}
