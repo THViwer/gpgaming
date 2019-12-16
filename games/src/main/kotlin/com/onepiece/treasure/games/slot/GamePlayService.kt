@@ -132,7 +132,7 @@ class GamePlayService: PlatformService() {
 
     }
 
-    // 启动游戏需要白名单 193.110.203.190
+    // 启动游戏需要白名单 193.110.203.190 香港 CN2 01 - 443 单端口
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
         val  clientToken = startSlotReq.token as GamePlayClientToken
 
