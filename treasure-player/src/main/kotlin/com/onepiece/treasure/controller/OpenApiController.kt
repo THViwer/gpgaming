@@ -11,7 +11,6 @@ import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.PlatformAuthValue
 import com.onepiece.treasure.core.PlatformUsernameUtil
 import com.onepiece.treasure.core.service.BetOrderService
-import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.games.bet.JacksonMapUtil
 import com.onepiece.treasure.utils.StringUtil
 import org.apache.commons.codec.binary.Base64
@@ -29,7 +28,7 @@ class OpenApiController(
 
     private val log = LoggerFactory.getLogger(OpenApiController::class.java)
 
-    @RequestMapping("/gameplay", produces = ["application/json;charset=utf-8"])
+    @RequestMapping(path = ["/gameplay"], consumes = ["application/xml;charset=utf-8"], produces = ["application/xml;charset=utf-8"])
     override fun gamePlayLogin(): String {
 
         val request = getRequest()
