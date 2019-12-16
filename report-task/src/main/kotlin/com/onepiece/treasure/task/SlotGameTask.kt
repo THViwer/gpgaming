@@ -17,6 +17,7 @@ import okhttp3.Request
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.io.File
+import java.lang.Exception
 import java.util.*
 import java.util.stream.Collectors
 
@@ -31,14 +32,13 @@ class SlotGameTask(
 
     @Scheduled(cron="0/10 * *  * * ? ")
     fun execute() {
-//        this.spadeGameTask()
+        this.spadeGameTask()
 
 //        this.jokerGameTask()
 
 //        this.pragmaticTask()
 
-
-        this.generatorHotGames()
+//        this.generatorHotGames()
 
     }
 
@@ -162,7 +162,11 @@ class SlotGameTask(
     }
 
     fun spadeGameTask() {
+
         val webGames = gameApi.slotGames(clientId = 1, platform = Platform.SpadeGaming, launch = LaunchMethod.Web, language = Language.EN)
+
+
+
 
 //        val awsGameJsonUrl = "${SystemConstant.AWS_SLOT}/spade_game.json"
 //
@@ -182,30 +186,53 @@ class SlotGameTask(
 
         // 保存图片
         val games = webGames.parallelStream().map {
-            val url = "${gameConstant.getDomain(Platform.SpadeGaming)}/${it.icon}"
+//            val url = "${gameConstant.getDomain(Platform.SpadeGaming)}/${it.icon}"
+//
+//            val filePath = "${System.getProperties().getProperty("user.home")}/${UUID.randomUUID()}.jpg"
+//            val file = File(filePath)
+//
+//            val request: Request = Request.Builder().url(url).build()
+//            val body = okHttpUtil.client.newCall(request).execute().body
+//
+//            val stream = body!!.byteStream()
+//            file.writeBytes(stream.readBytes())
+//
+//            val path = "slot/spade_game/${it.icon.split("/").last()}"
+//            val imageUrl = AwsS3Util.uploadLocalFile(file = file, name = path)
+//            println(imageUrl)
+//
+//            file.delete()
 
-            val filePath = "${System.getProperties().getProperty("user.home")}/${UUID.randomUUID()}.jpg"
-            val file = File(filePath)
 
-            val request: Request = Request.Builder().url(url).build()
-            val body = okHttpUtil.client.newCall(request).execute().body
-
-            val stream = body!!.byteStream()
-            file.writeBytes(stream.readBytes())
-
-            val path = "slot/spade_game/${it.icon.split("/").last()}"
-            val imageUrl = AwsS3Util.uploadLocalFile(file = file, name = path)
-            println(imageUrl)
-
-            file.delete()
-
-
-            it.copy(icon = imageUrl)
+            it.copy(icon = "https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/spade_game/${it.gameId}.jpg")
         }.collect(Collectors.toList())
 
-        val games2 = SlotMenuUtil.addCategory(games, SlotMenuUtil.spadeJson)
-        this.upload(games = games2, path = "slot/spade_game.json")
-        println(games)
+
+        val chineseFile = File("/Users/cabbage/Desktop/spade_game_chinese.csv")
+        val map = chineseFile.readLines().map { line ->
+            val data = line.split(",")
+            data[0] to data[1]
+        }.toMap()
+
+        listOf(Language.EN, Language.CN).forEach { language ->
+
+            val newGames = games.map {
+
+                when (language) {
+                    Language.CN -> {
+                        try {
+                            it.copy(gameName = map[it.gameId]!!)
+                        } catch (e: Exception) {
+                            it
+                        }
+                    }
+                    else -> it
+                }
+            }
+            val games2 = SlotMenuUtil.addCategory(newGames, SlotMenuUtil.spadeJson)
+            this.upload(games = games2, path = "slot/spade_game_${language.name.toLowerCase()}.json")
+            println(games2)
+        }
     }
 
     fun ttgGameTask() {

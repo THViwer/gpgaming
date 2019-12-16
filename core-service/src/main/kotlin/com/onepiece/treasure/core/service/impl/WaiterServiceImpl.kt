@@ -4,7 +4,7 @@ import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Waiter
 import com.onepiece.treasure.beans.value.database.LoginValue
-import com.onepiece.treasure.beans.value.database.PermissionCo
+import com.onepiece.treasure.beans.value.database.PermissionUo
 import com.onepiece.treasure.beans.value.database.WaiterCo
 import com.onepiece.treasure.beans.value.database.WaiterUo
 import com.onepiece.treasure.core.dao.WaiterDao
@@ -46,8 +46,8 @@ class WaiterServiceImpl(
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // 创建权限
-        val permissionCo = PermissionCo(waiterId = id, permissions = emptyList())
-        permissionService.create(permissionCo)
+        val permissionUo = PermissionUo(waiterId = id, permissions = emptyList())
+        permissionService.create(permissionUo)
     }
 
     override fun update(waiterUo: WaiterUo) {

@@ -1,12 +1,15 @@
 package com.onepiece.treasure.web.controller
 
+import com.onepiece.treasure.beans.enums.Language
+import com.onepiece.treasure.beans.enums.PermissionType
+import com.onepiece.treasure.beans.enums.Permissions
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.Permission
+import com.onepiece.treasure.beans.model.PermissionDetail
+import com.onepiece.treasure.beans.value.database.PermissionUo
 import com.onepiece.treasure.beans.value.database.WaiterCo
 import com.onepiece.treasure.beans.value.database.WaiterUo
-import com.onepiece.treasure.beans.value.internet.web.PermissionVo
-import com.onepiece.treasure.beans.value.internet.web.WaiterCoReq
-import com.onepiece.treasure.beans.value.internet.web.WaiterUoReq
-import com.onepiece.treasure.beans.value.internet.web.WaiterVo
+import com.onepiece.treasure.beans.value.internet.web.*
 import com.onepiece.treasure.core.service.PermissionService
 import com.onepiece.treasure.core.service.WaiterService
 import com.onepiece.treasure.web.controller.basic.BasicController
@@ -53,15 +56,42 @@ class WaiterApiController(
     }
 
     @GetMapping("/permission/{waiterId}")
-    override fun permission(@PathVariable("waiterId") waiterId: Int): List<PermissionVo> {
+    override fun permission(
+            @RequestHeader("language") language: Language,
+            @PathVariable("waiterId") waiterId: Int
+    ): List<PermissionValue.PermissionVo> {
 
         val permission = permissionService.findWaiterPermissions(waiterId = waiterId)
+        val permissions = permission.permissions.map { it.resourceId to it.effective }.toMap()
 
-        //TODO 加上其它全部的  现在暂时只是数据库有的
-        return permission.permissions.map {
-            with(it) {
-                PermissionVo(resourceId = resourceId, effective = effective)
+//        //TODO 加上其它全部的  现在暂时只是数据库有的
+//        return permission.permissions.map {
+//            with(it) {
+//                PermissionValue.PermissionVo(resourceId = resourceId, effective = effective)
+//            }
+//        }
+        val defaultPermissions = PermissionType.values()
+        val groupPermissions = defaultPermissions.groupBy { it.parentId }
+
+        return (groupPermissions[-1] ?: error("")).map {
+            val childPermissions = groupPermissions[it.resourceId]?.map { childPermission ->
+                val name = if (language == Language.CN) childPermission.cname else childPermission.ename
+                PermissionValue.PermissionVo(parentId = childPermission.parentId, resourceId = childPermission.resourceId, name = name,
+                        effective = permissions[it.resourceId]?: false, permissions = null)
             }
+
+            val name = if (language == Language.CN) it.cname else it.ename
+            PermissionValue.PermissionVo(parentId = it.parentId, resourceId = it.resourceId, name = name, effective = permissions[it.resourceId]?: false,
+                    permissions = childPermissions)
         }
+    }
+
+    @PutMapping("/permission")
+    override fun permission(@RequestBody req: PermissionValue.PermissionReq) {
+        val permissions = req.permissions.map {
+            PermissionDetail(resourceId = it.resourceId, effective = it.effective)
+        }
+        val permissionUo = PermissionUo(waiterId = req.waiterId, permissions = permissions)
+        permissionService.update(permissionUo)
     }
 }

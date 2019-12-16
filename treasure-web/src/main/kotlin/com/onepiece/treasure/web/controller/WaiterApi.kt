@@ -1,14 +1,14 @@
 package com.onepiece.treasure.web.controller
 
-import com.onepiece.treasure.beans.value.internet.web.PermissionVo
-import com.onepiece.treasure.beans.value.internet.web.WaiterCoReq
-import com.onepiece.treasure.beans.value.internet.web.WaiterUoReq
-import com.onepiece.treasure.beans.value.internet.web.WaiterVo
+import com.onepiece.treasure.beans.enums.Language
+import com.onepiece.treasure.beans.value.internet.web.*
 import io.swagger.annotations.Api
+import io.swagger.annotations.ApiModelProperty
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.ResponseStatus
 
 
@@ -26,8 +26,14 @@ interface WaiterApi {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun update(@RequestBody waiterUoReq: WaiterUoReq)
 
-    @ApiOperation(tags = ["user"], value = "客服 -> 权限")
-    fun permission(@PathVariable("waiterId") waiterId: Int): List<PermissionVo>
+    @ApiOperation(tags = ["user"], value = "客服 -> 权限列表")
+    fun permission(
+            @RequestHeader("language") language: Language,
+            @PathVariable("waiterId") waiterId: Int
+    ): List<PermissionValue.PermissionVo>
+
+    @ApiOperation(tags = ["user"], value = "客服 -> 权限修改")
+    fun permission(@RequestBody req: PermissionValue.PermissionReq)
 
 
 }
