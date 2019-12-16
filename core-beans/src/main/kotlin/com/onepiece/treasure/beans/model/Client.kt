@@ -1,7 +1,6 @@
 package com.onepiece.treasure.beans.model
 
 import com.onepiece.treasure.beans.enums.Status
-import java.math.BigDecimal
 import java.time.LocalDateTime
 
 /**
@@ -11,6 +10,9 @@ data class Client(
 
         // 用户Id
         val id: Int,
+
+        // logo
+        val logo: String,
 
         // 昵称
         val name: String,

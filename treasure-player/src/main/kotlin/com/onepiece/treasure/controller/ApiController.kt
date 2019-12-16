@@ -6,10 +6,7 @@ import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.common.TransferSync
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
-import com.onepiece.treasure.core.service.BannerService
-import com.onepiece.treasure.core.service.ContactService
-import com.onepiece.treasure.core.service.I18nContentService
-import com.onepiece.treasure.core.service.PromotionService
+import com.onepiece.treasure.core.service.*
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import kotlin.random.Random
@@ -21,7 +18,8 @@ open class ApiController(
         private val i18nContentService: I18nContentService,
         private val bannerService: BannerService,
         private val contactService: ContactService,
-        private val transferSync: TransferSync
+        private val transferSync: TransferSync,
+        private val clientService: ClientService
 ) : BasicController(), Api {
 
     @GetMapping
@@ -36,8 +34,8 @@ open class ApiController(
         val platformBinds = platformBindService.findClientPlatforms(clientId)
         val platforms = platformBinds.map {
 
-            val status = when {
-                it.platform.detail.status == Status.Normal -> it.status
+            val status = when (it.platform.detail.status) {
+                Status.Normal -> it.status
                 else -> it.platform.detail.status
             }
 
@@ -59,7 +57,10 @@ open class ApiController(
         val size = if (launch == LaunchMethod.Wap) "10" else "20"
         val hotGameUrl = "${SystemConstant.AWS_SLOT}/hot_sort_${size}_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
 
-        return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGameUrl = hotGameUrl)
+        // logo
+        val client = clientService.get(clientId)
+
+        return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGameUrl = hotGameUrl, logo = client.logo)
     }
 
 

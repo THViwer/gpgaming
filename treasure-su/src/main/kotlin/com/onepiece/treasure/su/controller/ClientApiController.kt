@@ -14,13 +14,15 @@ open class ClientApiController(
 
     @PostMapping
     override fun create(@RequestBody clientCoReq: ClientSuValue.ClientCoReq) {
-        val clientCo = ClientCo(username = clientCoReq.username, password = clientCoReq.password, name = clientCoReq.name)
+        val clientCo = ClientCo(username = clientCoReq.username, password = clientCoReq.password, name = clientCoReq.name,
+                logo = clientCoReq.logo)
         clientService.create(clientCo)
     }
 
     @PutMapping
     override fun update(@RequestBody clientUoReq: ClientSuValue.ClientUoReq) {
-        val clientUo = ClientUo(id = clientUoReq.id, password = clientUoReq.password, status = clientUoReq.status, name = clientUoReq.name)
+        val clientUo = ClientUo(id = clientUoReq.id, password = clientUoReq.password, status = clientUoReq.status,
+                name = clientUoReq.name, logo = clientUoReq.logo)
         clientService.update(clientUo)
     }
 

@@ -8,6 +8,9 @@ data class ClientCo(
         // 昵称
         val name: String,
 
+        // 平台logo
+        val logo: String,
+
         // 用户名
         val username: String,
 
@@ -23,6 +26,9 @@ data class ClientUo(
 
         // 昵称
         val name: String?,
+
+        // 平台logo
+        val logo: String?,
 
         // 旧密码
         val oldPassword: String? = null,

@@ -1,5 +1,6 @@
 package com.onepiece.treasure.web.controller
 
+import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.value.database.BannerCo
 import com.onepiece.treasure.beans.value.database.BannerUo
 import com.onepiece.treasure.beans.value.internet.web.BannerCoReq
@@ -12,16 +13,16 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/banner")
 class BannerApiController(
-        private val advertService: BannerService
+        private val bannerService: BannerService
 ) : BasicController(), BannerApi {
 
     @GetMapping
     override fun all(): List<BannerVo> {
-        return advertService.all(getClientId()).map {
+        return bannerService.all(getClientId()).map {
             BannerVo(id = it.id, clientId = it.clientId, icon = it.icon, touchIcon = it.touchIcon, order = it.order,
                     type = it.type, link = it.link, status = it.status, createdTime = it.createdTime,
                     updatedTime = it.updatedTime)
-        }
+        }.filter { it.status != Status.Delete }
     }
 
     @PostMapping
@@ -29,7 +30,7 @@ class BannerApiController(
 
         val advertCo = BannerCo(clientId = getClientId(), icon = bannerCoReq.icon, touchIcon = bannerCoReq.touchIcon, type = bannerCoReq.type,
                 order = bannerCoReq.order, link = bannerCoReq.link)
-        advertService.create(advertCo)
+        bannerService.create(advertCo)
     }
 
     @PutMapping
@@ -37,6 +38,6 @@ class BannerApiController(
 
         val bannerUo = BannerUo(id = bannerUoReq.id, icon = bannerUoReq.icon, touchIcon = bannerUoReq.touchIcon, type = bannerUoReq.type,
                 order = bannerUoReq.order, link = bannerUoReq.link, status = bannerUoReq.status)
-        advertService.update(bannerUo)
+        bannerService.update(bannerUo)
     }
 }

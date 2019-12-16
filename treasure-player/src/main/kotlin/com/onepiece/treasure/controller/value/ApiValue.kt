@@ -7,6 +7,9 @@ import io.swagger.annotations.ApiModelProperty
 
 data class ConfigVo(
 
+        @ApiModelProperty("logo")
+        val logo: String,
+
         @ApiModelProperty("公告")
         val announcementVo: AnnouncementVo?,
 

@@ -7,8 +7,10 @@ import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Client
 import com.onepiece.treasure.beans.value.database.*
+import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.dao.ClientDao
 import com.onepiece.treasure.core.service.*
+import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -20,12 +22,20 @@ class ClientServiceImpl(
         private val balanceService: BalanceService,
 
         private val i18nContentService: I18nContentService,
-        private val advertService: BannerService
+        private val advertService: BannerService,
+
+        private val redisService: RedisService
 
 ) : ClientService {
 
     override fun get(id: Int): Client {
-        return clientDao.get(id)
+
+        val redisKey = OnePieceRedisKeyConstant.getClient(id)
+
+        return redisService.get(key = redisKey, clz = Client::class.java) {
+            clientDao.get(id)
+        }!!
+
     }
 
     override fun all(): List<Client> {
@@ -39,7 +49,7 @@ class ClientServiceImpl(
         check(client.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
 
         // update client
-        val clientUo = ClientUo(id = client.id, ip = loginValue.ip, loginTime = LocalDateTime.now(), name = null)
+        val clientUo = ClientUo(id = client.id, ip = loginValue.ip, loginTime = LocalDateTime.now(), name = null, logo = null)
         this.update(clientUo)
 
         return client.copy(password = "")
@@ -103,6 +113,10 @@ class ClientServiceImpl(
     override fun update(clientUo: ClientUo) {
         val state = clientDao.update(clientUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        val redisKey = OnePieceRedisKeyConstant.getClient(clientUo.id)
+        redisService.delete(redisKey)
+
     }
 
 //    override fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal) {

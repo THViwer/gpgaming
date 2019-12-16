@@ -5,6 +5,8 @@ import com.onepiece.treasure.beans.enums.Platform
 
 object OnePieceRedisKeyConstant {
 
+    fun getClient(clientId: Int) = "client:${clientId}"
+
     fun member(id: Int) = "member:$id"
 
     fun level(clientId: Int) = "level:$clientId"
