@@ -28,7 +28,7 @@ class OpenApiController(
 
     private val log = LoggerFactory.getLogger(OpenApiController::class.java)
 
-    @RequestMapping(path = ["/gameplay"], consumes = ["application/xml;charset=utf-8"], produces = ["application/xml;charset=utf-8"])
+    @RequestMapping(path = ["/gameplay"], produces = ["application/xml;charset=utf-8"])
     override fun gamePlayLogin(): String {
 
         val request = getRequest()
