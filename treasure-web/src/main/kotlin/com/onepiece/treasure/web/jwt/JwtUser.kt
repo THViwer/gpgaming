@@ -19,14 +19,14 @@ data class JwtUser(
 
         val lastPasswordResetDate: Date,
 
-        val mAuthorities: List<String>
+        val mauthorities: List<String>
 
 
 ) : UserDetails {
 
     @JsonIgnore
     override fun getAuthorities(): List<GrantedAuthority> {
-        return mAuthorities.map { GrantedAuthority { it } }
+        return mauthorities.map { GrantedAuthority { it } }
     }
 
     @JsonIgnore

@@ -28,7 +28,7 @@ class JwtUserDetailsServiceImpl(
         }
 
         return JwtUser(id = currentUserId.toInt(), musername = mUsername, mpassword = passwordEncoder.encode(mUsername),
-                lastPasswordResetDate = Date(), clientId = clientId.toInt(), role = Role.valueOf(role), mAuthorities = permissions
+                lastPasswordResetDate = Date(), clientId = clientId.toInt(), role = Role.valueOf(role), mauthorities = permissions
         )
     }
 }

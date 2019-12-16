@@ -54,7 +54,7 @@ class AuthServiceImpl(
 
 
         val jwtUser = JwtUser(id = id, musername = username, mpassword = password, lastPasswordResetDate = Date(),
-                clientId = clientId, role = role, mAuthorities = mAuthorities)
+                clientId = clientId, role = role, mauthorities = mAuthorities)
         tokenStore.storeAccessToken(username = username, token = token, jwtUser = jwtUser)
 
         return MobileUser(userId = 1, token = token)
