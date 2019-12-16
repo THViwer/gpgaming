@@ -27,7 +27,10 @@ data class LoginResp(
         val role: Role,
 
         @ApiModelProperty("token")
-        val token: String
+        val token: String,
+
+        @ApiModelProperty("权限")
+        val permissions: List<String>
 )
 
 data class LoginReq(

@@ -35,10 +35,10 @@ sealed class PermissionValue {
     data class PermissionVo(
 
             @ApiModelProperty("父节点Id")
-            val parentId: Int,
+            val parentId: String,
 
             @ApiModelProperty("资源Id")
-            val resourceId: Int,
+            val resourceId: String,
 
             @ApiModelProperty("资源名称")
             val name: String,

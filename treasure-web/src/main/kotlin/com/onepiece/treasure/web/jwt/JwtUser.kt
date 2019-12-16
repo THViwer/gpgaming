@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.treasure.beans.enums.Role
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 import java.util.*
 
 data class JwtUser(
@@ -20,12 +17,16 @@ data class JwtUser(
 
         val mpassword: String,
 
-        val lastPasswordResetDate: Date
+        val lastPasswordResetDate: Date,
+
+        val mAuthorities: List<String>
+
+
 ) : UserDetails {
 
     @JsonIgnore
     override fun getAuthorities(): List<GrantedAuthority> {
-        return emptyList()
+        return mAuthorities.map { GrantedAuthority { it } }
     }
 
     @JsonIgnore

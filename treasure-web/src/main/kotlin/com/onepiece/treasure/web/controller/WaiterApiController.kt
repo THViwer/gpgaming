@@ -73,7 +73,7 @@ class WaiterApiController(
         val defaultPermissions = PermissionType.values()
         val groupPermissions = defaultPermissions.groupBy { it.parentId }
 
-        return (groupPermissions[-1] ?: error("")).map {
+        return (groupPermissions["-1"] ?: error("")).map {
             val childPermissions = groupPermissions[it.resourceId]?.map { childPermission ->
                 val name = if (language == Language.CN) childPermission.cname else childPermission.ename
                 PermissionValue.PermissionVo(parentId = childPermission.parentId, resourceId = childPermission.resourceId, name = name,
