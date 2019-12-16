@@ -158,6 +158,9 @@ data class CheckPromotionVo(
         @ApiModelProperty("优惠活动Id")
         val promotionId: Int,
 
+        @ApiModelProperty("标题")
+        val title: String,
+
         @ApiModelProperty("优惠活动介绍")
         val promotionIntroduction: String
 

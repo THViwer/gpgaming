@@ -32,7 +32,8 @@ open class CashApiController(
         private val memberService: MemberService,
         private val walletNoteService: WalletNoteService,
         private val promotionService: PromotionService,
-        private val transferUtil: TransferUtil
+        private val transferUtil: TransferUtil,
+        private val i18nContentService: I18nContentService
 ) : BasicController(), CashApi {
 
     private val log = LoggerFactory.getLogger(CashApiController::class.java)
@@ -266,13 +267,20 @@ open class CashApiController(
                 .filter { wallet.totalTransferOutFrequency == 0 || it.category != PromotionCategory.First }
 
 
+        val contentMap = i18nContentService.getConfigType(clientId = member.clientId, configType = I18nConfig.Promotion).map {
+            "${it.configId}:${it.language}" to it
+        }.toMap()
+
         val checkPromotions = joinPromotions.map { promotion ->
 
             val platformMemberVo = getPlatformMember(platform)
             val platformBalance = gameApi.balance(clientId = member.clientId, platform = platform, platformUsername = platformMemberVo.platformUsername,
                     platformPassword =  platformMemberVo.platformPassword)
+
+            val content = contentMap["${promotion.id}:${language}"] ?: (contentMap["${promotion.id}:${Language.EN}"] ?: error("没有配置英语内容"))
+
             val promotionIntroduction = promotion.getPromotionIntroduction(amount = amount, language = language, platformBalance = platformBalance)
-            CheckPromotionVo(promotionId = promotion.id, promotionIntroduction = promotionIntroduction)
+            CheckPromotionVo(promotionId = promotion.id, promotionIntroduction = promotionIntroduction, title = content.title)
         }
 
         return CheckPromotinResp(promotions = checkPromotions)
