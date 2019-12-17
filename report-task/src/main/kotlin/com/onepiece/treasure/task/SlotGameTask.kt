@@ -30,9 +30,9 @@ class SlotGameTask(
         private val okHttpUtil: OkHttpUtil
 )  {
 
-    @Scheduled(cron="0/10 * *  * * ? ")
+//    @Scheduled(cron="0/10 * *  * * ? ")
     fun execute() {
-        this.spadeGameTask()
+//        this.spadeGameTask()
 
 //        this.jokerGameTask()
 
