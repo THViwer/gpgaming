@@ -258,6 +258,15 @@ class Update(
         return this
     }
 
+    fun setIfNull(k: String, v: Any?): Update {
+        if (v == null) {
+            columns.add("$k = null")
+        } else {
+            this.set(k, v)
+        }
+        return this
+    }
+
     fun asSet(k: String): Update {
 
         columns.add(k)

@@ -19,7 +19,8 @@ open class ApiController(
         private val bannerService: BannerService,
         private val contactService: ContactService,
         private val transferSync: TransferSync,
-        private val clientService: ClientService
+        private val clientService: ClientService,
+        private val appDownService: AppDownService
 ) : BasicController(), Api {
 
     @GetMapping
@@ -216,40 +217,44 @@ open class ApiController(
 //                iosPath = "itms-services://?action=download-manifest&url=https://aka-dd-mega-appsetup.siderby.com/ios/Mega888.plist",
 //                androidPath = "https://aka-dd-mega-appsetup.siderby.com/apk/Mega888_V1.2.apk")
 
-        // ios and android
-        val kiss918 = DownloadAppVo(platform = Platform.Kiss918, icon = Platform.Kiss918.detail.icon,
-                iosPath = "itms-services://?action=download-manifest&url=https://s3-ap-southeast-1.amazonaws.com/app918kiss/ios/918Kiss.plist",
-                androidPath = "https://s3-ap-southeast-1.amazonaws.com/pussy888/pussy888/appsetup/apk/918kiss.apk")
+        return appDownService.all().filter { it.status == Status.Normal }.map {
+            DownloadAppVo(platform = it.platform, icon = it.platform.detail.icon, iosPath = it.iosPath, androidPath = it.androidPath)
+        }
 
-        val pussy888 = DownloadAppVo(platform = Platform.Pussy888, icon = Platform.Pussy888.detail.icon,
-                iosPath = "itms-services://?action=download-manifest&url=https://pussy888.s3.amazonaws.com/pussy888/appsetup/ios/pussy888.plist",
-                androidPath = "https://s3-ap-southeast-1.amazonaws.com/pussy888/pussy888/appsetup/apk/pussy888.apk")
-
-        val mega = DownloadAppVo(platform = Platform.Mega, icon = Platform.Mega.detail.icon,
-                iosPath = "itms-services://?action=download-manifest&url=https://aka-dd-mega-appsetup.siderby.com/ios/Mega888.plist",
-                androidPath = "https://aka-dd-mega-appsetup.siderby.com/apk/Mega888_V1.2.apk")
-
-        val allBet = DownloadAppVo(platform = Platform.AllBet, icon = Platform.AllBet.detail.icon,
-                iosPath = "itms-services://?action=download-manifest&url=https://www.abgapp88.net/downloads/iphone.plist?4322814",
-                androidPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/allbet_release_v2116.apk")
-
-        val dreamGaming = DownloadAppVo(platform = Platform.DreamGaming, icon = Platform.DreamGaming.detail.icon,
-                iosPath = "itms-services://?action=download-manifest&url=https://app-asia.873271.com/dg.com/ios/57/DG.plist",
-                androidPath = "https://app-asia.873271.com/dg.com/android/48/DG.apk")
-
-        // android
-        // https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/allbet_release_v2116.apk
-        val gameplay = DownloadAppVo(platform = Platform.DreamGaming, icon = Platform.DreamGaming.detail.icon, iosPath = null,
-                androidPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/gameplay.apk")
-
-        val playtech = DownloadAppVo(platform = Platform.PlaytechSlot, icon = Platform.PlaytechSlot.detail.icon, iosPath = null,
-                androidPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/playtech.apk")
-
-        val ggFishing = DownloadAppVo(platform = Platform.GGFishing, icon = Platform.GGFishing.detail.icon, iosPath = null,
-                androidPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/GGFishing.apk")
-
-        val list = listOf(kiss918, pussy888, mega, allBet, dreamGaming, gameplay, playtech, ggFishing)
-        return list.filter { platform == null || platform == it.platform }
+//        // ios and android
+//        val kiss918 = DownloadAppVo(platform = Platform.Kiss918, icon = Platform.Kiss918.detail.icon,
+//                iosPath = "itms-services://?action=download-manifest&url=https://s3-ap-southeast-1.amazonaws.com/app918kiss/ios/918Kiss.plist",
+//                androidPath = "https://s3-ap-southeast-1.amazonaws.com/pussy888/pussy888/appsetup/apk/918kiss.apk")
+//
+//        val pussy888 = DownloadAppVo(platform = Platform.Pussy888, icon = Platform.Pussy888.detail.icon,
+//                iosPath = "itms-services://?action=download-manifest&url=https://pussy888.s3.amazonaws.com/pussy888/appsetup/ios/pussy888.plist",
+//                androidPath = "https://s3-ap-southeast-1.amazonaws.com/pussy888/pussy888/appsetup/apk/pussy888.apk")
+//
+//        val mega = DownloadAppVo(platform = Platform.Mega, icon = Platform.Mega.detail.icon,
+//                iosPath = "itms-services://?action=download-manifest&url=https://aka-dd-mega-appsetup.siderby.com/ios/Mega888.plist",
+//                androidPath = "https://aka-dd-mega-appsetup.siderby.com/apk/Mega888_V1.2.apk")
+//
+//        val allBet = DownloadAppVo(platform = Platform.AllBet, icon = Platform.AllBet.detail.icon,
+//                iosPath = "itms-services://?action=download-manifest&url=https://www.abgapp88.net/downloads/iphone.plist?4322814",
+//                androidPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/allbet_release_v2116.apk")
+//
+//        val dreamGaming = DownloadAppVo(platform = Platform.DreamGaming, icon = Platform.DreamGaming.detail.icon,
+//                iosPath = "itms-services://?action=download-manifest&url=https://app-asia.873271.com/dg.com/ios/57/DG.plist",
+//                androidPath = "https://app-asia.873271.com/dg.com/android/48/DG.apk")
+//
+//        // android
+//        // https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/allbet_release_v2116.apk
+//        val gameplay = DownloadAppVo(platform = Platform.DreamGaming, icon = Platform.DreamGaming.detail.icon, iosPath = null,
+//                androidPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/gameplay.apk")
+//
+//        val playtech = DownloadAppVo(platform = Platform.PlaytechSlot, icon = Platform.PlaytechSlot.detail.icon, iosPath = null,
+//                androidPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/playtech.apk")
+//
+//        val ggFishing = DownloadAppVo(platform = Platform.GGFishing, icon = Platform.GGFishing.detail.icon, iosPath = null,
+//                androidPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/GGFishing.apk")
+//
+//        val list = listOf(kiss918, pussy888, mega, allBet, dreamGaming, gameplay, playtech, ggFishing)
+//        return list.filter { platform == null || platform == it.platform }
 
     }
 

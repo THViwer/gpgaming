@@ -44,4 +44,6 @@ object OnePieceRedisKeyConstant {
     fun getLastMarkBetId(betRuleTable: String) = "mark:$betRuleTable"
 
     fun getMicroGameToken(username: String) = "mg:token:$username"
+
+    fun getAllAppDown() = "app:down:all"
 }
