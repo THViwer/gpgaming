@@ -55,9 +55,9 @@ object SimplePlayUtil {
                     println("gameId = $gameId 无法查询到图片信息")
                 }
                 val imageFile = File(name!!)
-                val iconPath = AwsS3Util.uploadLocalFile(imageFile, "slot/simple_play")
+                val iconPath = AwsS3Util.uploadLocalFile(imageFile, "slot/${gameId}_${language.name.toLowerCase()}.jpg")
 
-                val gameName = if (language == Language.CN) ename else cname
+                val gameName = if (language == Language.CN) cname else ename
                 SlotGame(gameId = gameId, platform = Platform.SimplePlay, category = GameCategory.Slot, gameName = gameName,
                         icon = iconPath, touchIcon = null, hot = false, new = false, status = Status.Normal)
             } catch (e: Exception) {
