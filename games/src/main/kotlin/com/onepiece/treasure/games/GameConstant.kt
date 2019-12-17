@@ -32,6 +32,7 @@ class GameConstant(
             Platform.MicroGaming -> "https://api.adminserv88.com"
             Platform.PlaytechSlot -> "https://api-uat.gamzo.com"
             Platform.GamePlay -> "http://club8api.bet8uat.com"
+            Platform.SimplePlay -> " http://api.sp-portal.com/api/api.aspx"
 
             // live
             Platform.CT -> "http://api.ctapi888.com"
@@ -74,7 +75,7 @@ class GameConstant(
             Platform.MicroGaming -> "$domain:1008"
             Platform.PlaytechSlot -> "https://api-uat.gamzo.com" // 香港 CN2 01 - 443 单端口
             Platform.GamePlay -> "http://45.124.65.170:90"
-
+            Platform.SimplePlay -> "$domain:1011"
 
             // live
             Platform.CT -> "$domain:2001"

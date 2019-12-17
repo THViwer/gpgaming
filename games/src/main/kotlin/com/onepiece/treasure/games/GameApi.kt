@@ -43,6 +43,7 @@ class GameApi(
         private val ttgService: TTGService,
         private val microGameService: MicroGamingService,
         private val gamePlayService: GamePlayService,
+        private val simplePlayService: SimplePlayService,
 
         // live game
         private val goldDeluxeService: GoldDeluxeService,
@@ -84,6 +85,7 @@ class GameApi(
             Platform.TTG -> ttgService
             Platform.MicroGaming -> microGameService
             Platform.GamePlay -> gamePlayService
+            Platform.SimplePlay -> simplePlayService
 
             // live game
             Platform.Fgg -> fggService
@@ -237,6 +239,7 @@ class GameApi(
             Platform.PlaytechSlot,
             Platform.PNG,
             Platform.GamePlay,
+            Platform.SimplePlay,
             Platform.SpadeGaming -> getPlatformApi(platform).startSlot(startSlotReq)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -258,6 +261,8 @@ class GameApi(
             Platform.MicroGaming,
             Platform.TTG,
             Platform.PNG,
+            Platform.GamePlay,
+            Platform.SimplePlay,
             Platform.Pragmatic -> getPlatformApi(platform).startSlotDemo(startSlotReq)
             else  -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -373,6 +378,8 @@ class GameApi(
             Platform.MicroGaming,
             Platform.SexyGaming,
             Platform.SaGaming,
+//            Platform.GamePlay,
+            Platform.SimplePlay,
             Platform.GoldDeluxe -> {
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken)
                 getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)

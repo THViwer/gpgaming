@@ -1,15 +1,11 @@
 package com.onepiece.treasure.core
 
 import com.onepiece.treasure.beans.enums.Platform
-import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.treasure.beans.model.token.DefaultClientToken
 import com.onepiece.treasure.core.service.PlatformBindService
 import com.onepiece.treasure.utils.StringUtil
 import org.springframework.stereotype.Component
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 @Component
 class OrderIdBuilder(
@@ -43,7 +39,8 @@ class OrderIdBuilder(
                 val l = if (transfer == "out") "D" else "W"
                 "$l${getCurrentTime(dateTimeFormat3)}${StringUtil.generateNonce(5)}"
             }
-            Platform.SaGaming -> {
+            Platform.SaGaming,
+            Platform.SimplePlay -> {
                 val type = if (transfer == "out") "IN" else "OUT"
                 return "$type${getCurrentTime(dateTimeFormat4)}${platformUsername}"
 
