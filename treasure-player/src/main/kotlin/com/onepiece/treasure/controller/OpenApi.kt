@@ -16,7 +16,6 @@ interface OpenApi {
     @ApiOperation(tags = ["open"], value = "gameplay login")
     fun gamePlayLogin(): String
 
-    @ApiIgnore
     @ApiOperation(tags = ["platform auth"], value = "mega 登陆")
     fun login(
             @PathVariable("clientId") clientId: Int

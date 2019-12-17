@@ -100,17 +100,29 @@ class GamePlayService: PlatformService() {
             Language.ID -> "id-id"
             Language.TH -> "th-th"
             Language.VI -> "vi-vn"
-            Language.EN -> "km-kh"
-            else -> "km-kh"
+            Language.EN -> "en-us"
+            else -> "en-us"
         }
 
-        val urlParam = "token=test&op=${clientToken.merchId}&lang=$lang&homeURL=${startSlotReq.redirectUrl}&sys=CUSTOM"
-        val url = when (startSlotReq.launchMethod) {
-            LaunchMethod.Wap -> "http://casino.w88uat.com/html5/mobile"
-            LaunchMethod.Web -> "http://casino.w88uat.com"
-            else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-        }
-        return "$url?$urlParam"
+        val urlParam = listOf(
+                "token=test",
+                "fun=1",
+                "op=${clientToken.merchId}",
+                "lang=${lang}",
+                "lobbyURL=${startSlotReq.redirectUrl}",
+                "fundsURL=${startSlotReq.redirectUrl}"
+        ).joinToString(separator = "&")
+
+
+        return "http://rslots.gpiuat.com/${startSlotReq.gameId}?$urlParam"
+
+//        val urlParam = "token=test&op=${clientToken.merchId}&lang=$lang&homeURL=${startSlotReq.redirectUrl}&sys=CUSTOM"
+//        val url = when (startSlotReq.launchMethod) {
+//            LaunchMethod.Wap -> "http://casino.w88uat.com/v2/html5/mobile"
+//            LaunchMethod.Web -> "http://casino.w88uat.com/v2"
+//            else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+//        }
+//        return "$url?$urlParam"
     }
 
     private fun getTicket(startSlotReq: GameValue.StartSlotReq): String {
@@ -136,24 +148,35 @@ class GamePlayService: PlatformService() {
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
         val  clientToken = startSlotReq.token as GamePlayClientToken
 
-        val ticket = this.getTicket(startSlotReq)
+        val token = this.getTicket(startSlotReq)
 
         val lang = when (startSlotReq.language) {
             Language.CN -> "zh-cn"
             Language.ID -> "id-id"
             Language.TH -> "th-th"
             Language.VI -> "vi-vn"
-            Language.EN -> "km-kh"
-            else -> "km-kh"
+            Language.EN -> "en-us"
+            else -> "en-us"
         }
 
-        val urlParam = "token=$ticket&op=${clientToken.merchId}&lang=$lang&homeURL=${startSlotReq.redirectUrl}&sys=CUSTOM"
-        val url = when (startSlotReq.launchMethod) {
-            LaunchMethod.Wap -> "http://casino.w88uat.com/v2/html5/mobile"
-            LaunchMethod.Web -> "http://casino.w88uat.com/v2"
-            else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-        }
-        return "$url?$urlParam"
+        val urlParam = listOf(
+                "token=$token",
+                "fun=0",
+                "op=${clientToken.merchId}",
+                "lang=${lang}",
+                "lobbyURL=${startSlotReq.redirectUrl}",
+                "fundsURL=${startSlotReq.redirectUrl}"
+        ).joinToString(separator = "&")
+
+
+        return "http://rslots.gpiuat.com/${startSlotReq.gameId}?$urlParam"
+//        val urlParam = "token=$ticket&op=${clientToken.merchId}&lang=$lang&homeURL=${startSlotReq.redirectUrl}&sys=CUSTOM"
+//        val url = when (startSlotReq.launchMethod) {
+//            LaunchMethod.Wap -> "http://casino.w88uat.com/v2/html5/mobile"
+//            LaunchMethod.Web -> "http://casino.w88uat.com/v2"
+//            else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
+//        }
+//        return "$url?$urlParam"
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {

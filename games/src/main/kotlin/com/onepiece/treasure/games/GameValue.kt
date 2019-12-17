@@ -35,7 +35,7 @@ sealed class GameValue {
 
             val launch: LaunchMethod,
 
-            val redirectUrl: String = "http://www.baidu.com"
+            val redirectUrl: String = "http://wap.gpgaming88.com"
     )
 
     data class StartSlotReq(
@@ -51,7 +51,7 @@ sealed class GameValue {
             val launchMethod: LaunchMethod,
 
             // 重定向地址
-            val redirectUrl: String = "http://www.baidu.com"
+            val redirectUrl: String = "http://wap.gpgaming88.com"
 
     )
 
