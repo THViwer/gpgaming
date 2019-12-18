@@ -50,6 +50,7 @@ class OpenApiController(
             <?xml version="1.0" encoding="UTF-8"?>
             <resp>
              <error_code>0</error_code>
+             <error_msg></error_msg>
              <cust_id>${platformUsername}</cust_id>
              <cust_name>${platformUsername}</cust_name>
              <currency_code>${clientToken.currency}</currency_code>
