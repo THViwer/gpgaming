@@ -55,7 +55,7 @@ class OpenApiController(
              <currency_code>${clientToken.currency}</currency_code>
              <language>en-us</language>
              <test_cust>true</test_cust>
-             <country>IDR</country>
+             <country>${clientToken.currency}</country>
              <date_of_birth>29-09-1989</date_of_birth>
              <ip>${StringUtil.generateNumNonce(2)}.${StringUtil.generateNumNonce(2)}.${StringUtil.generateNumNonce(2)}.${StringUtil.generateNumNonce(2)}</ip>
             </resp>
