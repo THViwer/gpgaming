@@ -1,7 +1,6 @@
 package com.onepiece.treasure.controller.value
 
 import com.onepiece.treasure.beans.enums.*
-import com.onepiece.treasure.beans.value.internet.web.SlotCategory
 import io.swagger.annotations.ApiModelProperty
 
 
@@ -20,9 +19,78 @@ data class ConfigVo(
         val banners: List<BannerVo>,
 
         @ApiModelProperty("热门游戏")
-        val hotGameUrl: String
+        val hotGameUrl: String,
 
-)
+        @ApiModelProperty("推荐平台列表")
+        val recommendedPlatforms: List<RecommendedPlatform>,
+
+        @ApiModelProperty("视频介绍")
+        val lastestVideo: LastestVideo,
+
+        @ApiModelProperty("捕鱼推荐")
+        val fishes: List<FishingRecommended>,
+
+        @ApiModelProperty("直人推荐")
+        val lives: List<LiveRecommended>
+
+) {
+
+        data class RecommendedPlatform(
+
+                @ApiModelProperty("类别")
+                val category: PlatformCategory,
+
+                @ApiModelProperty("平台")
+                val platform: Platform,
+
+                @ApiModelProperty("logo")
+                val logo: String,
+
+                @ApiModelProperty("鼠标移上去logo")
+                val touchLogo: String
+
+
+        )
+
+        data class LastestVideo(
+                @ApiModelProperty("地址")
+                val path: String,
+
+                @ApiModelProperty("介绍图片")
+                val introductionImage: String
+        )
+
+        data class LiveRecommended(
+
+                @ApiModelProperty("platform")
+                val platform: Platform,
+
+                @ApiModelProperty("logo")
+                val originLogo: String,
+
+                @ApiModelProperty("内容图片")
+                val contentImage: String,
+
+                @ApiModelProperty("标题")
+                val title: String
+        )
+
+        data class FishingRecommended(
+
+                @ApiModelProperty("平台")
+                val platform: Platform,
+
+                @ApiModelProperty("内容图片")
+                val contentImage: String,
+
+                @ApiModelProperty("内容")
+                val content: String
+        )
+
+
+
+
+}
 
 data class PlatformCategoryPage(
 

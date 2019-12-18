@@ -66,7 +66,6 @@ object AwsS3Util {
 
         s3Client.putObject(putObjectRequest)
         return "$basePath/$name"
-
     }
 }
 
@@ -82,9 +81,9 @@ fun main() {
 //    fileList.listFiles().map {  file ->
 //        AwsS3Util.uploadLocalFile(file, "apk/${file.name}")
 //    }
-    val fileList = File("/Users/cabbage/Desktop/logo/main_logo")
+    val fileList = File("/Users/cabbage/Desktop/logo/logo")
 
-    fileList.listFiles().map {  file ->
-        AwsS3Util.uploadLocalFile(file, "main_logo/${file.name}")
+    fileList.listFiles().filter { it.name.contains(".jpeg") }.map {  file ->
+        AwsS3Util.uploadLocalFile(file, "origin_logo/${file.name}")
     }
 }

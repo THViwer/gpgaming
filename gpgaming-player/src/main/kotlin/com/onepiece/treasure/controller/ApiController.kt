@@ -61,7 +61,53 @@ open class ApiController(
         // logo
         val client = clientService.get(clientId)
 
-        return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGameUrl = hotGameUrl, logo = client.logo)
+        // 推荐平台
+        val recommendedPlatforms = listOf(
+                ConfigVo.RecommendedPlatform(category = PlatformCategory.Slot, platform = Platform.Kiss918,
+                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/918kiss.jpeg",
+                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/918kiss.jpeg"),
+
+                ConfigVo.RecommendedPlatform(category = PlatformCategory.Slot, platform = Platform.Joker,
+                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/joker.jpeg",
+                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/joker.jpeg"),
+
+                ConfigVo.RecommendedPlatform(category = PlatformCategory.LiveVideo, platform = Platform.AllBet,
+                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/allBet.jpeg",
+                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/allBet.jpeg"),
+
+                ConfigVo.RecommendedPlatform(category = PlatformCategory.Sport, platform = Platform.CMD,
+                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/cmd.jpeg",
+                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/cmd.jpeg"),
+
+                ConfigVo.RecommendedPlatform(category = PlatformCategory.Fishing, platform = Platform.GGFishing,
+                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/fishing.jpeg",
+                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/fishing.jpeg")
+        )
+
+        // 推荐视频
+        val lastestVideo = ConfigVo.LastestVideo(path = "https://streamable.com/s/12gua/gjaita",
+                introductionImage = "https://www.bk8my.com/public/banner/videoImage_001_20191218035231_EN.png")
+
+        // 捕鱼推荐
+        val fishes = listOf(
+                ConfigVo.FishingRecommended(platform = Platform.GGFishing, contentImage = "https://www.bk8my.com/banner/ui/images/matches/upcoming-matches-1-en.png?20191218-0952",
+                        content = "ssssss"),
+                ConfigVo.FishingRecommended(platform = Platform.GGFishing, contentImage = "https://www.bk8my.com/banner/ui/images/matches/upcoming-matches-1-en.png?20191218-0952",
+                        content = "ssssss")
+        )
+
+        // 真人推荐
+        val lives = listOf(
+                ConfigVo.LiveRecommended(originLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/allBet.jpeg", platform = Platform.AllBet, title = "百家乐1",
+                        contentImage = "https://www.bk8my.com/public/new_bk8/content/images/Baccarat%201.png"),
+                ConfigVo.LiveRecommended(originLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/dreamGaming.jpeg", platform = Platform.DreamGaming, title = "百家乐2",
+                        contentImage = "https://www.bk8my.com/public/new_bk8/content/images/Baccarat%201.png"),
+                ConfigVo.LiveRecommended(originLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/saGaming.jpeg", platform = Platform.SaGaming, title = "百家乐3",
+                        contentImage = "https://www.bk8my.com/public/new_bk8/content/images/Baccarat%201.png")
+        )
+
+        return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGameUrl = hotGameUrl, logo = client.logo,
+                recommendedPlatforms = recommendedPlatforms, lastestVideo = lastestVideo, fishes = fishes, lives = lives)
     }
 
 
