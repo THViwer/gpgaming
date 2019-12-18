@@ -26,17 +26,10 @@ class I18nContentDaoImpl(
             val configType = rs.getString("config_type").let { I18nConfig.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
-            val content = rs.getString("content")
-            val iContent = when (configType) {
-                I18nConfig.Announcement -> objectMapper.readValue<I18nContent.AnnouncementI18n>(content)
-                I18nConfig.Banner -> objectMapper.readValue<I18nContent.BannerI18n>(content)
-                I18nConfig.IndexVideo -> objectMapper.readValue<I18nContent.IndexVideoI18n>(content)
-                I18nConfig.Promotion -> objectMapper.readValue<I18nContent.PromotionI18n>(content)
-                I18nConfig.IndexSport -> objectMapper.readValue<I18nContent.IndexSportI18n>(content)
-            }
+            val contentJson = rs.getString("content_json")
 
             I18nContent(id = id, clientId = clientId, language = language, configId = configId,configType = configType,
-                    createdTime = createdTime, content= iContent)
+                    createdTime = createdTime, contentJson= contentJson)
         }
 
     override fun create(i18nContentCo: I18nContentCo): Int {

@@ -2,7 +2,6 @@ package com.onepiece.treasure.beans.value.internet.web
 
 import com.onepiece.treasure.beans.enums.Language
 import io.swagger.annotations.ApiModelProperty
-import java.time.LocalDateTime
 
 
 data class AnnouncementVo(
@@ -16,15 +15,12 @@ data class AnnouncementVo(
         @ApiModelProperty("标题")
         val title: String,
 
-        @ApiModelProperty("简介")
-        val synopsis: String?,
-
         @ApiModelProperty("内容")
-        val content: String,
-
-
-        @ApiModelProperty("国际化配置")
-        val i18nContents: List<I18nContentVo>
+        val content: String
+//
+//
+//        @ApiModelProperty("国际化配置")
+//        val i18nContents: List<I18nContentVo>
 )
 
 data class AnnouncementCoReq(

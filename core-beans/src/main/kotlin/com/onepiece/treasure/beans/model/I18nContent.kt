@@ -1,5 +1,8 @@
 package com.onepiece.treasure.beans.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.I18nConfig
 import com.onepiece.treasure.beans.enums.Language
 import java.time.LocalDateTime
@@ -26,12 +29,24 @@ data class I18nContent (
         val language: Language,
 
         // 内容
-        val content: II18nContent,
+        val contentJson: String,
 
         // 创建时间
         val createdTime: LocalDateTime
 
 ) {
+
+    @JsonIgnore
+    fun getII18nContent(objectMapper: ObjectMapper): II18nContent {
+        return when (configType) {
+            I18nConfig.Announcement -> objectMapper.readValue<AnnouncementI18n>(contentJson)
+            I18nConfig.Banner -> objectMapper.readValue<BannerI18n>(contentJson)
+            I18nConfig.IndexVideo -> objectMapper.readValue<IndexVideoI18n>(contentJson)
+            I18nConfig.Promotion -> objectMapper.readValue<PromotionI18n>(contentJson)
+            I18nConfig.IndexSport -> objectMapper.readValue<IndexSportI18n>(contentJson)
+        }
+    }
+
 
     interface II18nContent
 
@@ -93,5 +108,7 @@ data class I18nContent (
             // 介绍图片
             val introductionImage: String
     ): II18nContent
+
+
 
 }

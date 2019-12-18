@@ -2,21 +2,18 @@ package com.onepiece.treasure.web.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.onepiece.treasure.beans.enums.I18nConfig
-import com.onepiece.treasure.beans.enums.Language
-import com.onepiece.treasure.beans.enums.PromotionRuleType
-import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.I18nContent
 import com.onepiece.treasure.beans.model.PromotionRules
-import com.onepiece.treasure.beans.value.database.BannerCo
-import com.onepiece.treasure.beans.value.database.BannerUo
-import com.onepiece.treasure.beans.value.database.I18nContentCo
-import com.onepiece.treasure.beans.value.database.I18nContentUo
+import com.onepiece.treasure.beans.model.Recommended
+import com.onepiece.treasure.beans.value.database.*
 import com.onepiece.treasure.beans.value.internet.web.*
+import com.onepiece.treasure.core.IndexUtil
 import com.onepiece.treasure.core.service.BannerService
 import com.onepiece.treasure.core.service.I18nContentService
 import com.onepiece.treasure.core.service.PromotionService
+import com.onepiece.treasure.core.service.RecommendedService
 import com.onepiece.treasure.web.controller.basic.BasicController
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
@@ -26,6 +23,8 @@ class IndexApiController(
         private val bannerService: BannerService,
         private val i18nContentService: I18nContentService,
         private val promotionService: PromotionService,
+        private val recommendedService: RecommendedService,
+        private val indexUtil: IndexUtil,
         private val objectMapper: ObjectMapper
 ): BasicController(), IndexApi {
 
@@ -50,18 +49,22 @@ class IndexApiController(
                 language = i18nContentCoReq.language, configId = i18nContentCoReq.configId, configType = i18nContentCoReq.configType)
 
         i18nContentService.create(i18nContentCo)
+
+        indexUtil.generatorIndexPage(clientId = getClientId())
     }
 
     @PutMapping("/i18n")
     override fun update(@RequestBody i18nContentUoReq: I18nContentWebValue.I18nContentUoReq) {
         val i18nContentUo = I18nContentUo(id = i18nContentUoReq.id, content = i18nContentUoReq.getI18nContent(objectMapper))
         i18nContentService.update(i18nContentUo)
+
+        indexUtil.generatorIndexPage(clientId = getClientId())
     }
 
 
 
     @GetMapping("/banner")
-    override fun banerList(): List<BannerVo> {
+    override fun bannerList(): List<BannerVo> {
 
         val clientId = getClientId()
 
@@ -88,6 +91,8 @@ class IndexApiController(
         val bannerUo = BannerUo(id = bannerUoReq.id, type = bannerUoReq.type,
                 order = bannerUoReq.order, link = bannerUoReq.link, status = bannerUoReq.status)
         bannerService.update(bannerUo)
+
+        indexUtil.generatorIndexPage(clientId = getClientId())
     }
 
 
@@ -148,8 +153,30 @@ class IndexApiController(
         val clientId = getClientId()
 
         promotionService.update(clientId = clientId, promotionUoReq = promotionUoReq)
+
+        indexUtil.generatorIndexPage(clientId = getClientId())
     }
 
+
+    @GetMapping("/recommended")
+    override fun recommendedList(@RequestParam("type") type: RecommendedType): List<Recommended> {
+        val clientId = getClientId()
+        return recommendedService.getByType(clientId = clientId, type = type)
+    }
+
+    @PutMapping("/recommended")
+    override fun create(@RequestBody coReq: RecommendedWebValue.CreateReq) {
+        val co = RecommendedValue.CreateVo(clientId = getClientId(), type = coReq.type, contentJson = coReq.contentJson, status = Status.Stop)
+        recommendedService.create(co = co)
+    }
+
+    @PostMapping("/recommended")
+    override fun updagte(@RequestBody uoReq: RecommendedWebValue.UpdateReq) {
+        val uo = RecommendedValue.UpdateVo(id = uoReq.id, clientId = getClientId(), contentJson = uoReq.contentJson, status = uoReq.status)
+        recommendedService.update(uo = uo)
+
+        indexUtil.generatorIndexPage(clientId = getClientId())
+    }
 
 
 }
