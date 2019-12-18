@@ -5,7 +5,7 @@
 	<groupId>com.onepiece</groupId>
 	<artifactId>gpgaing</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>gpgaing</name>
+	<name>gpgaming</name>
 	<description>Demo project for Spring Boot</description>
 	<packaging>pom</packaging>
 
