@@ -40,7 +40,7 @@ class OpenApiController(
         log.info("origin data = $originData")
 
         val platformUsername = originData.split(":").first()
-        val (clientId, username) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.GamePlay, platformUsername = platformUsername)
+        val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.GamePlay, platformUsername = platformUsername)
 
         val platformBind = platformBindService.find(clientId, Platform.GamePlay)
 
@@ -50,8 +50,8 @@ class OpenApiController(
             <?xml version="1.0" encoding="UTF-8"?>
             <resp>
              <error_code>0</error_code>
-             <cust_id>${username}</cust_id>
-             <cust_name>${username}</cust_name>
+             <cust_id>${platformUsername}</cust_id>
+             <cust_name>${platformUsername}</cust_name>
              <currency_code>${clientToken.currency}</currency_code>
              <language>en-us</language>
              <test_cust>true</test_cust>
