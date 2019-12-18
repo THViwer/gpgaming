@@ -6,7 +6,7 @@
 
     <groupId>com.onepiece</groupId>
     <version>1.0.0-SNAPSHOT</version>
-    <artifactId>gpgming-task</artifactId>
+    <artifactId>gpgaming-task</artifactId>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
