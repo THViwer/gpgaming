@@ -1,31 +1,9 @@
 package com.onepiece.treasure.beans.value.internet.web
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.treasure.beans.enums.I18nConfig
 import com.onepiece.treasure.beans.enums.Language
+import com.onepiece.treasure.beans.model.I18nContent
 
-data class I18nContentCoReq(
 
-        // 标题
-        val title: String,
-
-        // banner
-        val banner: String?,
-
-        // 内容
-        val content: String,
-
-        // 简介
-        val synopsis: String?,
-
-        // 注意事项
-        val precautions: String?,
-
-        // 语言
-        val language: Language,
-
-        // 配置Id
-        val configId: Int,
-
-        // 配置类型
-        val configType: I18nConfig
-    )

@@ -8,6 +8,7 @@ import com.onepiece.treasure.beans.value.database.BannerUo
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.dao.BannerDao
 import com.onepiece.treasure.core.service.BannerService
+import com.onepiece.treasure.core.service.I18nContentService
 import com.onepiece.treasure.utils.RedisService
 import org.springframework.stereotype.Service
 
@@ -28,11 +29,12 @@ class BannerServiceImpl(
         return this.all(clientId).filter { it.type == type }
     }
 
-    override fun create(bannerCo: BannerCo) {
-        val state = bannerDao.create(bannerCo)
-        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+    override fun create(bannerCo: BannerCo): Int {
+        val id = bannerDao.create(bannerCo)
+        check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         redisService.delete(OnePieceRedisKeyConstant.banners(bannerCo.clientId))
+        return id
     }
 
     override fun update(bannerUo: BannerUo) {

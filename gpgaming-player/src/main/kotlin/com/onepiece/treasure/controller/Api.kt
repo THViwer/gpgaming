@@ -14,11 +14,13 @@ interface Api {
     @ApiOperation(tags = ["api"], value = "首页配置")
     fun config(
             @RequestHeader("launch") launch: LaunchMethod,
-            @RequestHeader("language") language: Language): ConfigVo
+            @RequestHeader("language") language: Language
+    ): ConfigVo
 
     @ApiOperation(tags = ["api"], value = "平台类别页面详细资料")
     fun categories(
-            @PathVariable("category") category: PlatformCategory
+            @PathVariable("category") category: PlatformCategory,
+            @RequestHeader("language") language: Language
     ): PlatformCategoryPage
 
     @ApiOperation(tags = ["api"], value = "优惠活动")

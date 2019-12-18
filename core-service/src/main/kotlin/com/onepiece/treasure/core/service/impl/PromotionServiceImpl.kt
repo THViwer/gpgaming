@@ -1,11 +1,9 @@
 package com.onepiece.treasure.core.service.impl
 
-import com.onepiece.treasure.beans.enums.I18nConfig
 import com.onepiece.treasure.beans.enums.Platform
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Promotion
-import com.onepiece.treasure.beans.value.database.I18nContentCo
 import com.onepiece.treasure.beans.value.database.PromotionCo
 import com.onepiece.treasure.beans.value.database.PromotionUo
 import com.onepiece.treasure.beans.value.internet.web.PromotionCoReq
@@ -45,12 +43,12 @@ class PromotionServiceImpl(
         check(promotionId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // 创建国际化
-        val i18nContent = promotionCoReq.i18nContent
-        val i18nContentCo = I18nContentCo(clientId = promotionCo.clientId, title = i18nContent.title, synopsis = i18nContent.synopsis,
-                content = i18nContent.content, configId = promotionId, configType = I18nConfig.Promotion, language = i18nContent.language,
-                banner = i18nContent.banner, precautions = i18nContent.precautions)
-        val i18nContentId = i18nContentService.create(i18nContentCo)
-        check(i18nContentId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+//        val i18nContent = promotionCoReq.i18nContent
+//        val i18nContentCo = I18nContentCo(clientId = promotionCo.clientId, title = i18nContent.title, synopsis = i18nContent.synopsis,
+//                content = i18nContent.content, configId = promotionId, configType = I18nConfig.Promotion, language = i18nContent.language,
+//                banner = i18nContent.banner, precautions = i18nContent.precautions)
+//        val i18nContentId = i18nContentService.create(i18nContentCo)
+//        check(i18nContentId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // 创建优惠活动
 //        val promotionRuleVo = promotionCoReq.PromotionRuleVo

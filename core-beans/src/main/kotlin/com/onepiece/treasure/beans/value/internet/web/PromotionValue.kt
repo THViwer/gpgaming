@@ -1,8 +1,8 @@
 package com.onepiece.treasure.beans.value.internet.web
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.onepiece.treasure.beans.enums.*
+import com.onepiece.treasure.beans.model.I18nContent
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
@@ -30,14 +30,14 @@ data class PromotionVo(
         @ApiModelProperty("图标")
         val icon: String,
 
-        @ApiModelProperty("标题")
-        val title: String,
-
-        @ApiModelProperty("简介")
-        val synopsis: String?,
-
-        @ApiModelProperty("内容")
-        val content: String,
+//        @ApiModelProperty("标题")
+//        val title: String,
+//
+//        @ApiModelProperty("简介")
+//        val synopsis: String?,
+//
+//        @ApiModelProperty("内容")
+//        val content: String,
 
         @ApiModelProperty("状态")
         val status: Status,
@@ -49,7 +49,7 @@ data class PromotionVo(
         val updatedTime: LocalDateTime,
 
         @ApiModelProperty("国际化内容 ")
-        val i18nContents: List<I18nContentVo>,
+        val i18nContents: List<I18nContent>,
 
         @ApiModelProperty("优惠规则")
         val promotionRuleVo: PromotionRuleVo
@@ -69,7 +69,6 @@ data class PromotionRuleVo(
 
 data class PromotionCoReq(
 
-        // 基础设置
         @ApiModelProperty("优惠类型")
         val category: PromotionCategory,
 
@@ -86,34 +85,10 @@ data class PromotionCoReq(
         @ApiModelProperty("图标")
         val icon: String,
 
-        @ApiModelProperty("默认国际化内容配置")
-        val i18nContent: PromotionDefaultContent,
-
         @ApiModelProperty("优惠规则")
         val promotionRuleVo: PromotionRuleVo
-
 )
 
-data class PromotionDefaultContent(
-        // 国际化设置
-        @ApiModelProperty("语言")
-        val language: Language,
-
-        @ApiModelProperty("标题")
-        val title: String,
-
-        @ApiModelProperty("banner")
-        val banner: String?,
-
-        @ApiModelProperty("简介")
-        val synopsis: String?,
-
-        @ApiModelProperty("注意事项")
-        val precautions: String?,
-
-        @ApiModelProperty("内容")
-        val content: String
-)
 
 data class PromotionUoReq(
 

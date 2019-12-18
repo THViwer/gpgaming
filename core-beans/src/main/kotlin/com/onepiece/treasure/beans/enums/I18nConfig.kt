@@ -9,6 +9,15 @@ enum class I18nConfig {
     Announcement,
 
     // 优惠活动
-    Promotion
+    Promotion,
+
+    // banner
+    Banner,
+
+    // 首页体育
+    IndexSport,
+
+    // 首页视频
+    IndexVideo
 
 }

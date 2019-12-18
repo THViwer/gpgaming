@@ -11,7 +11,7 @@ interface BannerService {
 
     fun findByType(clientId: Int, type: BannerType): List<Banner>
 
-    fun create(bannerCo: BannerCo)
+    fun create(bannerCo: BannerCo): Int
 
     fun update(bannerUo: BannerUo)
 

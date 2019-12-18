@@ -3,6 +3,7 @@ package com.onepiece.treasure.controller
 import com.onepiece.treasure.beans.base.Page
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.I18nContent
 import com.onepiece.treasure.beans.model.PlatformMember
 import com.onepiece.treasure.beans.value.database.*
 import com.onepiece.treasure.beans.value.internet.web.ClientBankVo
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.util.stream.Collectors
 
+@Suppress("CAST_NEVER_SUCCEEDS")
 @RestController
 @RequestMapping("/cash")
 open class CashApiController(
@@ -267,9 +269,10 @@ open class CashApiController(
                 .filter { wallet.totalTransferOutFrequency == 0 || it.category != PromotionCategory.First }
 
 
-        val contentMap = i18nContentService.getConfigType(clientId = member.clientId, configType = I18nConfig.Promotion).map {
-            "${it.configId}:${it.language}" to it
-        }.toMap()
+        val contentMap = i18nContentService.getConfigType(clientId = member.clientId, configType = I18nConfig.Promotion)
+                .map {
+                    "${it.configId}:${it.language}" to it
+                }.toMap()
 
         val checkPromotions = joinPromotions.map { promotion ->
 
@@ -277,11 +280,18 @@ open class CashApiController(
             val platformBalance = gameApi.balance(clientId = member.clientId, platform = platform, platformUsername = platformMemberVo.platformUsername,
                     platformPassword =  platformMemberVo.platformPassword)
 
-            val content = contentMap["${promotion.id}:${language}"] ?: (contentMap["${promotion.id}:${Language.EN}"] ?: error("没有配置英语内容"))
+            val content = contentMap["${promotion.id}:${language}"]
+                    ?: contentMap["${promotion.id}:${Language.EN}"]
 
-            val promotionIntroduction = promotion.getPromotionIntroduction(amount = amount, language = language, platformBalance = platformBalance)
-            CheckPromotionVo(promotionId = promotion.id, promotionIntroduction = promotionIntroduction, title = content.title)
-        }
+            if (content == null) {
+                null
+            } else {
+                val mContent = content as I18nContent.PromotionI18n
+
+                val promotionIntroduction = promotion.getPromotionIntroduction(amount = amount, language = language, platformBalance = platformBalance)
+                CheckPromotionVo(promotionId = promotion.id, promotionIntroduction = promotionIntroduction, title = mContent.title)
+            }
+        }.filterNotNull()
 
         return CheckPromotinResp(promotions = checkPromotions)
     }

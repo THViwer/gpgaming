@@ -7,7 +7,7 @@ import com.onepiece.treasure.core.dao.basic.BasicDao
 
 interface BannerDao: BasicDao<Banner> {
 
-    fun create(bannerCo: BannerCo): Boolean
+    fun create(bannerCo: BannerCo): Int
 
     fun update(bannerUo: BannerUo): Boolean
 

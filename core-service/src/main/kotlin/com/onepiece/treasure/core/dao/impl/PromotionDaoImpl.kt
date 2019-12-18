@@ -50,7 +50,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("level_id", promotionCo.levelId)
                 .set("rule_json", promotionCo.ruleJson)
                 .set("rule_type", promotionCo.ruleType)
-                .set("status", Status.Normal)
+                .set("status", Status.Stop)
                 .executeGeneratedKey()
     }
 

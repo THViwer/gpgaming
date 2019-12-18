@@ -3,6 +3,7 @@ package com.onepiece.treasure.controller
 import com.onepiece.treasure.beans.SystemConstant
 import com.onepiece.treasure.beans.enums.*
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.treasure.beans.model.I18nContent
 import com.onepiece.treasure.common.TransferSync
 import com.onepiece.treasure.controller.basic.BasicController
 import com.onepiece.treasure.controller.value.*
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 import kotlin.random.Random
 
+@Suppress("CAST_NEVER_SUCCEEDS")
 @RestController
 @RequestMapping("/api")
 open class ApiController(
@@ -29,92 +31,96 @@ open class ApiController(
             @RequestHeader("language") language: Language
     ): ConfigVo {
 
-        val clientId = this.getClientIdByDomain()
+//        val clientId = this.getClientIdByDomain()
+//
+//        // 平台信息
+//        val platformBinds = platformBindService.findClientPlatforms(clientId)
+//        val platforms = platformBinds.map {
+//
+//            val status = when (it.platform.detail.status) {
+//                Status.Normal -> it.status
+//                else -> it.platform.detail.status
+//            }
+//
+//            PlatformVo(id = it.id, name = it.platform.detail.name, category = it.platform.detail.category, status = status, icon = it.platform.detail.icon,
+//                    launchs = it.platform.detail.launchs, platform = it.platform, demo = it.platform.detail.demo)
+//        }.filter { it.platform.detail.status != Status.Delete }
+//
+//        // 公告
+//        val contents = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Announcement)
+//        val announcement = contents.firstOrNull { it.language == language }?: contents.find { it.language == Language.EN } ?: contents.first()
+//        val announcementVo = AnnouncementVo(title = announcement.title, content = announcement.content, synopsis = announcement.synopsis)
+//
+//        // 获得首页配置
+//        // banners
+//        val banners = bannerService.findByType(clientId = getClientIdByDomain(), type = BannerType.Banner).map {
+//            BannerVo(id = it.id, order = it.order, icon = it.icon, touchIcon = it.touchIcon, type = it.type, link = it.link)
+//        }
+//        // hot games
+//        val size = if (launch == LaunchMethod.Wap) "10" else "20"
+//        val hotGameUrl = "${SystemConstant.AWS_SLOT}/hot_sort_${size}_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
+//
+//        // logo
+//        val client = clientService.get(clientId)
+//
+//        // 推荐平台
+//        val recommendedPlatforms = listOf(
+//                ConfigVo.RecommendedPlatform(category = PlatformCategory.Slot, platform = Platform.Kiss918,
+//                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/918kiss.jpeg",
+//                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/918kiss.jpeg"),
+//
+//                ConfigVo.RecommendedPlatform(category = PlatformCategory.Slot, platform = Platform.Joker,
+//                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/joker.jpeg",
+//                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/joker.jpeg"),
+//
+//                ConfigVo.RecommendedPlatform(category = PlatformCategory.LiveVideo, platform = Platform.AllBet,
+//                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/allBet.jpeg",
+//                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/allBet.jpeg"),
+//
+//                ConfigVo.RecommendedPlatform(category = PlatformCategory.Sport, platform = Platform.CMD,
+//                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/cmd.jpeg",
+//                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/cmd.jpeg"),
+//
+//                ConfigVo.RecommendedPlatform(category = PlatformCategory.Fishing, platform = Platform.GGFishing,
+//                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/fishing.jpeg",
+//                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/fishing.jpeg")
+//        )
+//
+//        // 推荐视频
+//        val lastestVideo = ConfigVo.LastestVideo(path = "https://streamable.com/s/12gua/gjaita",
+//                introductionImage = "https://www.bk8my.com/public/banner/videoImage_001_20191218035231_EN.png")
+//
+//        // 捕鱼推荐
+//        val fishes = listOf(
+//                ConfigVo.FishingRecommended(platform = Platform.GGFishing, contentImage = "https://www.bk8my.com/banner/ui/images/matches/upcoming-matches-1-en.png?20191218-0952",
+//                        content = "ssssss"),
+//                ConfigVo.FishingRecommended(platform = Platform.GGFishing, contentImage = "https://www.bk8my.com/banner/ui/images/matches/upcoming-matches-1-en.png?20191218-0952",
+//                        content = "ssssss")
+//        )
+//
+//        // 真人推荐
+//        val lives = listOf(
+//                ConfigVo.LiveRecommended(originLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/allBet.jpeg", platform = Platform.AllBet, title = "百家乐1",
+//                        contentImage = "https://www.bk8my.com/public/new_bk8/content/images/Baccarat%201.png"),
+//                ConfigVo.LiveRecommended(originLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/dreamGaming.jpeg", platform = Platform.DreamGaming, title = "百家乐2",
+//                        contentImage = "https://www.bk8my.com/public/new_bk8/content/images/Baccarat%201.png"),
+//                ConfigVo.LiveRecommended(originLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/saGaming.jpeg", platform = Platform.SaGaming, title = "百家乐3",
+//                        contentImage = "https://www.bk8my.com/public/new_bk8/content/images/Baccarat%201.png")
+//        )
+//
+//        return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGameUrl = hotGameUrl, logo = client.logo,
+//                recommendedPlatforms = recommendedPlatforms, lastestVideo = lastestVideo, fishes = fishes, lives = lives)
 
-        // 平台信息
-        val platformBinds = platformBindService.findClientPlatforms(clientId)
-        val platforms = platformBinds.map {
-
-            val status = when (it.platform.detail.status) {
-                Status.Normal -> it.status
-                else -> it.platform.detail.status
-            }
-
-            PlatformVo(id = it.id, name = it.platform.detail.name, category = it.platform.detail.category, status = status, icon = it.platform.detail.icon,
-                    launchs = it.platform.detail.launchs, platform = it.platform, demo = it.platform.detail.demo)
-        }.filter { it.platform.detail.status != Status.Delete }
-
-        // 公告
-        val contents = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Announcement)
-        val announcement = contents.firstOrNull { it.language == language }?: contents.find { it.language == Language.EN } ?: contents.first()
-        val announcementVo = AnnouncementVo(title = announcement.title, content = announcement.content, synopsis = announcement.synopsis)
-
-        // 获得首页配置
-        // banners
-        val banners = bannerService.findByType(clientId = getClientIdByDomain(), type = BannerType.Banner).map {
-            BannerVo(id = it.id, order = it.order, icon = it.icon, touchIcon = it.touchIcon, type = it.type, link = it.link)
-        }
-        // hot games
-        val size = if (launch == LaunchMethod.Wap) "10" else "20"
-        val hotGameUrl = "${SystemConstant.AWS_SLOT}/hot_sort_${size}_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
-
-        // logo
-        val client = clientService.get(clientId)
-
-        // 推荐平台
-        val recommendedPlatforms = listOf(
-                ConfigVo.RecommendedPlatform(category = PlatformCategory.Slot, platform = Platform.Kiss918,
-                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/918kiss.jpeg",
-                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/918kiss.jpeg"),
-
-                ConfigVo.RecommendedPlatform(category = PlatformCategory.Slot, platform = Platform.Joker,
-                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/joker.jpeg",
-                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/joker.jpeg"),
-
-                ConfigVo.RecommendedPlatform(category = PlatformCategory.LiveVideo, platform = Platform.AllBet,
-                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/allBet.jpeg",
-                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/allBet.jpeg"),
-
-                ConfigVo.RecommendedPlatform(category = PlatformCategory.Sport, platform = Platform.CMD,
-                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/cmd.jpeg",
-                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/cmd.jpeg"),
-
-                ConfigVo.RecommendedPlatform(category = PlatformCategory.Fishing, platform = Platform.GGFishing,
-                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/fishing.jpeg",
-                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/fishing.jpeg")
-        )
-
-        // 推荐视频
-        val lastestVideo = ConfigVo.LastestVideo(path = "https://streamable.com/s/12gua/gjaita",
-                introductionImage = "https://www.bk8my.com/public/banner/videoImage_001_20191218035231_EN.png")
-
-        // 捕鱼推荐
-        val fishes = listOf(
-                ConfigVo.FishingRecommended(platform = Platform.GGFishing, contentImage = "https://www.bk8my.com/banner/ui/images/matches/upcoming-matches-1-en.png?20191218-0952",
-                        content = "ssssss"),
-                ConfigVo.FishingRecommended(platform = Platform.GGFishing, contentImage = "https://www.bk8my.com/banner/ui/images/matches/upcoming-matches-1-en.png?20191218-0952",
-                        content = "ssssss")
-        )
-
-        // 真人推荐
-        val lives = listOf(
-                ConfigVo.LiveRecommended(originLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/allBet.jpeg", platform = Platform.AllBet, title = "百家乐1",
-                        contentImage = "https://www.bk8my.com/public/new_bk8/content/images/Baccarat%201.png"),
-                ConfigVo.LiveRecommended(originLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/dreamGaming.jpeg", platform = Platform.DreamGaming, title = "百家乐2",
-                        contentImage = "https://www.bk8my.com/public/new_bk8/content/images/Baccarat%201.png"),
-                ConfigVo.LiveRecommended(originLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/saGaming.jpeg", platform = Platform.SaGaming, title = "百家乐3",
-                        contentImage = "https://www.bk8my.com/public/new_bk8/content/images/Baccarat%201.png")
-        )
-
-        return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGameUrl = hotGameUrl, logo = client.logo,
-                recommendedPlatforms = recommendedPlatforms, lastestVideo = lastestVideo, fishes = fishes, lives = lives)
+        error("")
     }
 
 
     @GetMapping("/{gameCategory}")
     override fun categories(
-            @PathVariable("category") category: PlatformCategory
+            @PathVariable("category") category: PlatformCategory,
+            @RequestHeader("language") language: Language
     ): PlatformCategoryPage {
+        val clientId = this.getClientIdByDomain()
 
         val platforms = Platform.all().filter { it.detail.category == category }
 
@@ -125,9 +131,24 @@ open class ApiController(
             PlatformCategory.Fishing -> BannerType.Fish
             else -> error( OnePieceExceptionCode.DATA_FAIL )
         }
+
+        val map = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Banner)
+                .map { "${it.configId}:${it.language}" to it }
+                .toMap()
+
         val banners = bannerService.findByType(clientId = getClientIdByDomain(), type = bannerType).map {
-            BannerVo(id = it.id, order = it.order, icon = it.icon, touchIcon = it.touchIcon, type = it.type, link = it.link)
-        }
+
+            val i18nContent = map["${it.id}:${language}"]
+                    ?: map["${it.id}:${Language.EN}"]
+
+            if (i18nContent == null) {
+                null
+            } else {
+                val content = i18nContent as I18nContent.BannerI18n
+                BannerVo(id = it.id, order = it.order, icon = content.imagePath , touchIcon = content.imagePath, type = it.type, link = it.link)
+
+            }
+        }.filterNotNull()
 
         return PlatformCategoryPage(platforms = platforms, banners = banners)
     }
@@ -143,17 +164,23 @@ open class ApiController(
         val promotions = promotionService.all(clientId).filter { promotionCategory == null || it.category == promotionCategory }
 
         val i18nContentMap = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Promotion)
-                .map { "${it.configId}_${it.language}" to it }
+                .map { "${it.configId}:${it.language}" to it }
                 .toMap()
 
         return promotions.map {
 
-            val i18nContent = i18nContentMap["${it.id}_${language}"] ?: i18nContentMap["${it.id}_${Language.EN}"] ?: error(OnePieceExceptionCode.LANGUAGE_CONFIG_FAIL)
+            val i18nContent = i18nContentMap["${it.id}_${language}"]
+                    ?: i18nContentMap["${it.id}_${Language.EN}"]
 
-            PromotionVo(id = it.id, clientId = it.clientId, category = it.category, stopTime = it.stopTime, top = it.top, icon = it.icon, platforms = it.platforms,
-                    title = i18nContent.title, synopsis = i18nContent.synopsis, content = i18nContent.content, status = it.status, createdTime = it.createdTime,
-                    precautions = i18nContent.precautions, ruleType = it.ruleType, rule = it.rule)
-        }
+            if (i18nContent == null) {
+                null
+            } else {
+                val content = i18nContent as I18nContent.PromotionI18n
+                PromotionVo(id = it.id, clientId = it.clientId, category = it.category, stopTime = it.stopTime, top = it.top, icon = it.icon, platforms = it.platforms,
+                        title = i18nContent.title, synopsis = i18nContent.synopsis, content = content.content, status = it.status, createdTime = it.createdTime,
+                        precautions = i18nContent.precautions, ruleType = it.ruleType, rule = it.rule)
+            }
+        }.filterNotNull()
 
     }
 
@@ -243,65 +270,9 @@ open class ApiController(
 
     @GetMapping("/down")
     override fun down(@RequestHeader("platform", required = false) platform: Platform?): List<DownloadAppVo> {
-        //TODO 暂时不解析网站
-
-        // kiss918 -> https://www.918kisse.com/
-
-        // pussy888 -> https://918kiss.care/pussy888/
-
-        // Mega -> http://m.mega585.com/ 可能需要通过接口
-
-//        val kiss918 = DownloadAppVo(platform = Platform.Kiss918, icon = Platform.Kiss918.detail.icon,
-//                iosPath = "itms-services://?action=download-manifest&url=https://s3-ap-southeast-1.amazonaws.com/app918kiss/ios/918Kiss.plist",
-//                androidPath = "https://s3-ap-southeast-1.amazonaws.com/app918kiss/apk/918Kiss.apk")
-//
-//        val pussy888 = DownloadAppVo(platform = Platform.Pussy888, icon = Platform.Pussy888.detail.icon,
-//                iosPath = "itms-services://?action=download-manifest&url=https://pussy888.s3.amazonaws.com/pussy888/appsetup/ios/pussy888.plist",
-//                androidPath = "https://s3-ap-southeast-1.amazonaws.com/pussy888/pussy888/appsetup/apk/pussy888.apk")
-//
-//        val mega = DownloadAppVo(platform = Platform.Mega, icon = Platform.Mega.detail.icon,
-//                iosPath = "itms-services://?action=download-manifest&url=https://aka-dd-mega-appsetup.siderby.com/ios/Mega888.plist",
-//                androidPath = "https://aka-dd-mega-appsetup.siderby.com/apk/Mega888_V1.2.apk")
-
         return appDownService.all().filter { it.status == Status.Normal }.map {
             DownloadAppVo(platform = it.platform, icon = it.platform.detail.icon, iosPath = it.iosPath, androidPath = it.androidPath)
         }
-
-//        // ios and android
-//        val kiss918 = DownloadAppVo(platform = Platform.Kiss918, icon = Platform.Kiss918.detail.icon,
-//                iosPath = "itms-services://?action=download-manifest&url=https://s3-ap-southeast-1.amazonaws.com/app918kiss/ios/918Kiss.plist",
-//                androidPath = "https://s3-ap-southeast-1.amazonaws.com/pussy888/pussy888/appsetup/apk/918kiss.apk")
-//
-//        val pussy888 = DownloadAppVo(platform = Platform.Pussy888, icon = Platform.Pussy888.detail.icon,
-//                iosPath = "itms-services://?action=download-manifest&url=https://pussy888.s3.amazonaws.com/pussy888/appsetup/ios/pussy888.plist",
-//                androidPath = "https://s3-ap-southeast-1.amazonaws.com/pussy888/pussy888/appsetup/apk/pussy888.apk")
-//
-//        val mega = DownloadAppVo(platform = Platform.Mega, icon = Platform.Mega.detail.icon,
-//                iosPath = "itms-services://?action=download-manifest&url=https://aka-dd-mega-appsetup.siderby.com/ios/Mega888.plist",
-//                androidPath = "https://aka-dd-mega-appsetup.siderby.com/apk/Mega888_V1.2.apk")
-//
-//        val allBet = DownloadAppVo(platform = Platform.AllBet, icon = Platform.AllBet.detail.icon,
-//                iosPath = "itms-services://?action=download-manifest&url=https://www.abgapp88.net/downloads/iphone.plist?4322814",
-//                androidPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/allbet_release_v2116.apk")
-//
-//        val dreamGaming = DownloadAppVo(platform = Platform.DreamGaming, icon = Platform.DreamGaming.detail.icon,
-//                iosPath = "itms-services://?action=download-manifest&url=https://app-asia.873271.com/dg.com/ios/57/DG.plist",
-//                androidPath = "https://app-asia.873271.com/dg.com/android/48/DG.apk")
-//
-//        // android
-//        // https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/allbet_release_v2116.apk
-//        val gameplay = DownloadAppVo(platform = Platform.DreamGaming, icon = Platform.DreamGaming.detail.icon, iosPath = null,
-//                androidPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/gameplay.apk")
-//
-//        val playtech = DownloadAppVo(platform = Platform.PlaytechSlot, icon = Platform.PlaytechSlot.detail.icon, iosPath = null,
-//                androidPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/playtech.apk")
-//
-//        val ggFishing = DownloadAppVo(platform = Platform.GGFishing, icon = Platform.GGFishing.detail.icon, iosPath = null,
-//                androidPath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/apk/GGFishing.apk")
-//
-//        val list = listOf(kiss918, pussy888, mega, allBet, dreamGaming, gameplay, playtech, ggFishing)
-//        return list.filter { platform == null || platform == it.platform }
-
     }
 
     @GetMapping("/platform/member")
@@ -335,17 +306,20 @@ open class ApiController(
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
-        val banners = bannerService.findByType(clientId = clientId, type = type).map {
-            BannerVo(id = it.id, order = it.order, icon = it.icon, link = it.link, touchIcon = it.touchIcon, type = it.type)
-        }
-//
-//        val games = if (category == PlatformCategory.Slot) {
-//            gameApi.slotGames(clientId = getClientIdByDomain(), platform = Platform.Joker, launch = LaunchMethod.Web)
-//                    .groupBy { it.category }
-//                    .map {
-//                        SlotCategory(gameCategory = it.key, games = it.value)
-//                    }
-//        } else null
+        val map = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Banner)
+                .map { "${it.configId}:${it.language}" to it }
+                .toMap()
+
+        val banners = bannerService.findByType(clientId = getClientIdByDomain(), type = type).map {
+            val i18nContent = map["${it.id}:${language}"]
+                    ?: map["${it.id}:${Language.EN}"]
+            if (i18nContent == null) {
+                null
+            } else {
+                val content = i18nContent as I18nContent.BannerI18n
+                BannerVo(id = it.id, order = it.order, icon = content.imagePath , touchIcon = content.imagePath, type = it.type, link = it.link)
+            }
+        }.filterNotNull()
 
         val games = if (category == PlatformCategory.Slot) {
             this.slotMenu(language = language, launch = LaunchMethod.Web, platform = Platform.Pragmatic)["url"]

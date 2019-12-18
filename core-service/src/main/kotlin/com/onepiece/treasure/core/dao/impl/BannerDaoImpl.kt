@@ -18,33 +18,29 @@ class BannerDaoImpl: BasicDaoImpl<Banner>("banner"), BannerDao {
         get() = { rs ->
             val id = rs.getInt("id")
             val clientId = rs.getInt("client_id")
-            val icon = rs.getString("icon")
-            val touchIcon = rs.getString("touch_icon")
             val type = rs.getString("type").let { BannerType.valueOf(it) }
             val link = rs.getString("link")
             val order = rs.getInt("order")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
-            Banner(id = id, clientId = clientId, icon = icon, touchIcon = touchIcon, type = type, link = link, order = order,
+            Banner(id = id, clientId = clientId, type = type, link = link, order = order,
                     status = status, createdTime = createdTime, updatedTime = updatedTime)
         }
 
-    override fun create(bannerCo: BannerCo): Boolean {
+    override fun create(bannerCo: BannerCo): Int {
         return insert()
                 .set("client_id", bannerCo.clientId)
-                .set("icon", bannerCo.icon)
-                .set("touch_icon", bannerCo.touchIcon)
+//                .set("icon", bannerCo.icon)
+//                .set("touch_icon", bannerCo.touchIcon)
                 .set("type", bannerCo.type)
                 .set("link", bannerCo.link)
-                .set("status", Status.Normal)
-                .executeOnlyOne()
+                .set("status", Status.Stop)
+                .executeGeneratedKey()
     }
 
     override fun update(bannerUo: BannerUo): Boolean {
         return update()
-                .set("icon", bannerUo.icon)
-                .set("touch_icon", bannerUo.touchIcon)
                 .set("type", bannerUo.type)
                 .set("link", bannerUo.link)
                 .set("status", bannerUo.status)

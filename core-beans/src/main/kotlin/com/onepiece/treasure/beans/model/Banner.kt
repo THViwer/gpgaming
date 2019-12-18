@@ -18,11 +18,11 @@ data class Banner(
         // 厅主Id
         val clientId: Int,
 
-        // 图标
-        val icon: String,
-
-        // 鼠标移动上去图标
-        val touchIcon: String?,
+//        // 图标
+//        val icon: String,
+//
+//        // 鼠标移动上去图标
+//        val touchIcon: String?,
 
         // 位置
         val type: BannerType,

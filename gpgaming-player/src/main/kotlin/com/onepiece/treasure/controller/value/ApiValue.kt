@@ -49,7 +49,6 @@ data class ConfigVo(
                 @ApiModelProperty("鼠标移上去logo")
                 val touchLogo: String
 
-
         )
 
         data class LastestVideo(
@@ -137,53 +136,6 @@ data class BannerVo(
         @ApiModelProperty("链接地址")
         val link: String?
 )
-//
-//data class HotGameVo(
-//
-//        @ApiModelProperty("图标")
-//        val icon: String,
-//
-//        @ApiModelProperty("平台")
-//        val platform: Platform,
-//
-//        @ApiModelProperty("游戏Id")
-//        val gameId: String,
-//
-//        @ApiModelProperty("是否热门")
-//        val hot: Boolean,
-//
-//        @ApiModelProperty("是否新游戏")
-//        val new: Boolean
-//) {
-//
-//        companion object {
-//
-//                fun of(): List<HotGameVo> {
-//
-//
-//                        val greekGods = HotGameVo(platform = Platform.Pragmatic, icon = "https://api.prerelease-env.biz/game_pic/rec/325/vs243fortseren.png", gameId = "vs243fortseren", hot = true, new = false)
-//
-//
-//
-//
-//                        val icon = "https://www.bk8my.com/public/new_bk8/content/images/hotgame_buffalo_blitz_1.jpg"
-//                        val h1 = HotGameVo(icon = icon, platform = Platform.Pussy888, gameId = StringUtil.generateNonce(5), hot = true, new = false)
-//                        val h2 = HotGameVo(icon = icon, platform = Platform.Kiss918, gameId = StringUtil.generateNonce(5), hot = false, new = false)
-//                        val h3 = HotGameVo(icon = icon, platform = Platform.Joker, gameId = StringUtil.generateNonce(5), hot = true, new = false)
-//                        val h4 = HotGameVo(icon = icon, platform = Platform.Joker, gameId = StringUtil.generateNonce(5), hot = false, new = false)
-//                        val h5 = HotGameVo(icon = icon, platform = Platform.Joker, gameId = StringUtil.generateNonce(5), hot = false, new = false)
-//                        val h6 = HotGameVo(icon = icon, platform = Platform.Mega, gameId = StringUtil.generateNonce(5), hot = false, new = true)
-//                        val h7 = HotGameVo(icon = icon, platform = Platform.Mega, gameId = StringUtil.generateNonce(5), hot = true, new = false)
-//                        val h8 = HotGameVo(icon = icon, platform = Platform.Pussy888, gameId = StringUtil.generateNonce(5), hot = true, new = false)
-//                        val h9 = HotGameVo(icon = icon, platform = Platform.Pussy888, gameId = StringUtil.generateNonce(5), hot = false, new = true)
-//                        val h10 = HotGameVo(icon = icon, platform = Platform.Kiss918, gameId = StringUtil.generateNonce(5), hot = true, new = false)
-//
-//                        return listOf(h1, h2, h3, h4, h5, h6, h7, h8, h9, h10)
-//                }
-//        }
-//}
-
-
 
 data class PlatformVo(
 

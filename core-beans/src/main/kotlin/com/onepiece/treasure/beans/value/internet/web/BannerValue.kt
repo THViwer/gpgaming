@@ -2,6 +2,7 @@ package com.onepiece.treasure.beans.value.internet.web
 
 import com.onepiece.treasure.beans.enums.BannerType
 import com.onepiece.treasure.beans.enums.Status
+import com.onepiece.treasure.beans.model.I18nContent
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
@@ -16,12 +17,12 @@ data class BannerVo(
         @ApiModelProperty("厅主Id")
         val clientId: Int,
 
-        @ApiModelProperty("图标")
-        val icon: String,
-
-        @ApiModelProperty("鼠标移动上去图标")
-        val touchIcon: String?,
-
+//        @ApiModelProperty("图标")
+//        val icon: String,
+//
+//        @ApiModelProperty("鼠标移动上去图标")
+//        val touchIcon: String?,
+//
         @ApiModelProperty("类型")
         val type: BannerType,
 
@@ -35,7 +36,11 @@ data class BannerVo(
         val createdTime: LocalDateTime,
 
         @ApiModelProperty("更新时间")
-        val updatedTime: LocalDateTime
+        val updatedTime: LocalDateTime,
+
+
+        @ApiModelProperty("国际化内容")
+        val contents: List<I18nContent>
 )
 
 data class BannerCoReq(

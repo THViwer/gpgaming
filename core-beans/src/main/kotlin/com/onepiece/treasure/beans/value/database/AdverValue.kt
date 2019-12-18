@@ -8,11 +8,11 @@ data class BannerCo(
         // 厅主Id
         val clientId: Int,
 
-        // 图标
-        val icon: String,
-
-        // 鼠标移动上去图标
-        val touchIcon: String?,
+//        // 图标
+//        val icon: String,
+//
+//        // 鼠标移动上去图标
+//        val touchIcon: String?,
 
         // 位置
         val type: BannerType,
@@ -28,11 +28,11 @@ data class BannerUo(
 
         val id: Int,
 
-        // 图标
-        val icon: String?,
-
-        // 鼠标移动上去图标
-        val touchIcon: String?,
+//        // 图标
+//        val icon: String?,
+//
+//        // 鼠标移动上去图标
+//        val touchIcon: String?,
 
         // 位置
         val type: BannerType?,

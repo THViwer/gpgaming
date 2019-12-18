@@ -6,6 +6,7 @@ import com.onepiece.treasure.beans.enums.Language
 import com.onepiece.treasure.beans.enums.Status
 import com.onepiece.treasure.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.treasure.beans.model.Client
+import com.onepiece.treasure.beans.model.I18nContent
 import com.onepiece.treasure.beans.value.database.*
 import com.onepiece.treasure.core.OnePieceRedisKeyConstant
 import com.onepiece.treasure.core.dao.ClientDao
@@ -22,7 +23,7 @@ class ClientServiceImpl(
         private val balanceService: BalanceService,
 
         private val i18nContentService: I18nContentService,
-        private val advertService: BannerService,
+        private val bannerService: BannerService,
 
         private val redisService: RedisService
 
@@ -83,18 +84,19 @@ class ClientServiceImpl(
     private fun indexDefaultConfig(clientId: Int) {
 
         // 配置语言(english)
-        val i18nContentCo = I18nContentCo(clientId = clientId, title = "hi", content = "hi, this is a demo", language = Language.EN, synopsis = null, configId = null,
-                configType = I18nConfig.Announcement, banner = null, precautions = null)
+        val eContent = I18nContent.AnnouncementI18n(title = "hi", content = "hi, this is a demo")
+        val i18nContentCo = I18nContentCo(clientId = clientId, language = Language.EN, configId = null,configType = I18nConfig.Announcement, content = eContent)
         i18nContentService.create(i18nContentCo)
 
         // 配置语言(中文)
-        val cnI18nContentCo = i18nContentCo.copy(title = "你好", content = "你好，这是个例子", language = Language.CN, synopsis = null)
+        val cContent = I18nContent.AnnouncementI18n(title = "你好", content = "你好，这是个例子")
+        val cnI18nContentCo = i18nContentCo.copy(language = Language.CN, content = cContent)
         i18nContentService.create(cnI18nContentCo)
 
         // 配置语言(马来文)
-        val myI18nContentCo = i18nContentCo.copy(title = "hi", content = "hi，ini adalah demo", language = Language.MY, synopsis = null)
+        val mContent = I18nContent.AnnouncementI18n(title = "hi", content = "hi，ini adalah demo")
+        val myI18nContentCo = i18nContentCo.copy(language = Language.MY, content = mContent)
         i18nContentService.create(myI18nContentCo)
-
 
         // 配置banner
         listOf(
@@ -103,9 +105,13 @@ class ClientServiceImpl(
                 "https://www.bk8my.com/public/banner/banner_001_20191106023622.jpg",
                 "https://www.bk8my.com/public/banner/banner_001_20191107104624.jpg",
                 "https://www.bk8my.com/public/banner/banner_001_20191031224436.jpg"
-        ).map {
-            val bannerUo = BannerCo(clientId = clientId, icon = it, touchIcon = null, type = BannerType.Banner, order = 1, link = null)
-            advertService.create(bannerUo)
+        ).forEach {
+            val bannerUo = BannerCo(clientId = clientId, type = BannerType.Banner, order = 1, link = null)
+            val id = bannerService.create(bannerUo)
+
+            val content = I18nContent.BannerI18n(imagePath = it)
+            val i18nContent = I18nContentCo(clientId = clientId, language = Language.EN, configId = id, configType = I18nConfig.Banner, content = content)
+            i18nContentService.create(i18nContent)
         }
 
     }
