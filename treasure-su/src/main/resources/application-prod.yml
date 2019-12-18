@@ -6,7 +6,7 @@ spring:
       driver-class-name: com.mysql.jdbc.Driver
       username: gp
       password: mWHzuJt4qWKrBjZc
-      url: jdbc:mysql://gp88db.cnzohpwidxge.ap-southeast-1.rds.amazonaws.com:3306/onepiece_dev?useUnicode=true&characterEncoding=UTF-8
+      url: jdbc:mysql://gp88db.cnzohpwidxge.ap-southeast-1.rds.amazonaws.com:3306/gpgaming?useUnicode=true&characterEncoding=UTF-8
   profiles:
     active: dev
 
