@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.onepiece</groupId>
+    <groupId>com.onepiece.gpgaming</groupId>
     <version>1.0.0-SNAPSHOT</version>
     <artifactId>core-service</artifactId>
     <packaging>jar</packaging>
@@ -48,7 +48,7 @@
         <!-- inner -->
 
         <dependency>
-            <groupId>com.onepiece</groupId>
+            <groupId>com.onepiece.gpgaming</groupId>
             <artifactId>utils</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
@@ -66,7 +66,7 @@
 
         <!-- inner service -->
         <dependency>
-            <groupId>com.onepiece</groupId>
+            <groupId>com.onepiece.gpgaming</groupId>
             <artifactId>core-beans</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
