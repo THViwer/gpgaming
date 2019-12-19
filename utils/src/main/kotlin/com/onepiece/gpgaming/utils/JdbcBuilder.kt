@@ -2,7 +2,10 @@ package com.onepiece.gpgaming.utils
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.PreparedStatementCreator
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
+import org.springframework.jdbc.support.GeneratedKeyHolder
+import org.springframework.jdbc.support.KeyHolder
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 
@@ -86,7 +89,7 @@ class Insert(
     fun set(k: String, v: Any?): Insert {
         if (v == null) return this
 
-        columns.add(k)
+        columns.add("`$k`")
 
         val value = if (v is Enum<*>) v.name else v
         param.add(value)
@@ -108,15 +111,33 @@ class Insert(
     }
 
     fun executeGeneratedKey(): Int {
-        val map = (0 until columns.size).mapIndexed { index, _ ->
-            columns[index] to param[index]
-        }.toMap()
 
-        return SimpleJdbcInsert(jdbcTemplate)
-                .withTableName(table)
-                .usingGeneratedKeyColumns("id")
-                .executeAndReturnKey(map)
-                .toInt()
+
+        val keyHolder: KeyHolder = GeneratedKeyHolder()
+
+        val names = columns.joinToString(separator = ",")
+        val questions = (0 until columns.size).joinToString(separator = ","){ "?" }
+        val sql = "insert ignore into `$table` (${names}) values (${questions})"
+
+
+        jdbcTemplate.update({ connection ->
+            val ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
+            param.forEachIndexed { index, any ->
+                ps.setObject(index+1, any)
+            }
+            ps
+        }, keyHolder)
+
+        return keyHolder.key!!.toInt()
+
+//        val map = (0 until columns.size).mapIndexed { index, _ ->
+//            "`${columns[index]}`" to param[index]
+//        }.toMap()
+//        return SimpleJdbcInsert(jdbcTemplate)
+//                .withTableName(table)
+//                .usingGeneratedKeyColumns("id")
+//                .executeAndReturnKey(map)
+//                .toInt()
     }
 
     fun executeOnlyOne(): Boolean {

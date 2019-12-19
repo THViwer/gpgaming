@@ -33,6 +33,7 @@ class BannerDaoImpl: BasicDaoImpl<Banner>("banner"), BannerDao {
                 .set("client_id", bannerCo.clientId)
 //                .set("icon", bannerCo.icon)
 //                .set("touch_icon", bannerCo.touchIcon)
+                .set("order", bannerCo.order)
                 .set("type", bannerCo.type)
                 .set("link", bannerCo.link)
                 .set("status", Status.Stop)
