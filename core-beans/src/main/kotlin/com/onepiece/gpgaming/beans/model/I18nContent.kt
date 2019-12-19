@@ -2,9 +2,11 @@ package com.onepiece.gpgaming.beans.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.Platform
 import java.time.LocalDateTime
 
 
@@ -92,8 +94,11 @@ data class I18nContent (
      */
     data class IndexSportI18n(
 
-            // 图片地址
-            val imagePath: String
+            // 平台
+            val platform: Platform,
+
+            // 介绍图片
+            val contentImage: String
 
     ): II18nContent
 
@@ -103,11 +108,32 @@ data class I18nContent (
     data class IndexVideoI18n(
 
             // 视频地址
-            val videoPath: String,
+            val path: String,
+
+            // 视频图片
+            val coverPhoto: String,
 
             // 介绍图片
             val introductionImage: String
     ): II18nContent
+
+
+
+}
+
+fun main() {
+
+//    val banner = I18nContent.BannerI18n(imagePath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/banner/2019122002010684576.jpg")
+//    val json = jacksonObjectMapper().writeValueAsString(banner)
+//    println(json)
+
+//    val indexVideoI18n = I18nContent.IndexVideoI18n(path = "xxx.mp4", coverPhoto = "xxx.png", introductionImage = "xxxx2.png")
+//    val json = jacksonObjectMapper().writeValueAsString(indexVideoI18n)
+//    println(json)
+
+        val indexVideoI18n = I18nContent.IndexSportI18n(platform = Platform.CMD, contentImage = "sfsfa.png")
+    val json = jacksonObjectMapper().writeValueAsString(indexVideoI18n)
+    println(json)
 
 
 

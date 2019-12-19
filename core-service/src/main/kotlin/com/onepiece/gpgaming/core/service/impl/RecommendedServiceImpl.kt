@@ -22,9 +22,10 @@ class RecommendedServiceImpl(
         return recommendedDao.all(clientId).filter { it.type == type }
     }
 
-    override fun create(co: RecommendedValue.CreateVo) {
-        val state = recommendedDao.create(co)
-        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+    override fun create(co: RecommendedValue.CreateVo): Int {
+        val id = recommendedDao.create(co)
+        check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+        return id
     }
 
     override fun update(uo: RecommendedValue.UpdateVo) {

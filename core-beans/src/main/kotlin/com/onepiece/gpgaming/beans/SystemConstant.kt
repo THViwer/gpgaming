@@ -6,6 +6,8 @@ object SystemConstant {
 
     const val AWS_LOGO_URL = "$AWS_URL/logo"
 
+    const val AWS_ORIGIN_LOGO_URL = "$AWS_URL/origin_logo"
+
     const val AWS_BANK_LOGO_URL = "$AWS_URL/bank/logo"
 
     const val AWS_BANK_PROOF = "$AWS_URL/bank_proof"

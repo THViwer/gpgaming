@@ -19,17 +19,17 @@ sealed class I18nContentWebValue {
             val configType: I18nConfig,
 
             // 内容
-            val content: String
+            val contentJson: String
 
     ) {
 
         fun getI18nContent(objectMapper: ObjectMapper): I18nContent.II18nContent {
             return when (configType) {
-                I18nConfig.Banner -> objectMapper.readValue<I18nContent.BannerI18n>(content)
-                I18nConfig.IndexSport -> objectMapper.readValue<I18nContent.IndexSportI18n>(content)
-                I18nConfig.Promotion -> objectMapper.readValue<I18nContent.PromotionI18n>(content)
-                I18nConfig.IndexVideo -> objectMapper.readValue<I18nContent.IndexVideoI18n>(content)
-                I18nConfig.Announcement -> objectMapper.readValue<I18nContent.AnnouncementI18n>(content)
+                I18nConfig.Banner -> objectMapper.readValue<I18nContent.BannerI18n>(contentJson)
+                I18nConfig.IndexSport -> objectMapper.readValue<I18nContent.IndexSportI18n>(contentJson)
+                I18nConfig.Promotion -> objectMapper.readValue<I18nContent.PromotionI18n>(contentJson)
+                I18nConfig.IndexVideo -> objectMapper.readValue<I18nContent.IndexVideoI18n>(contentJson)
+                I18nConfig.Announcement -> objectMapper.readValue<I18nContent.AnnouncementI18n>(contentJson)
             }
         }
     }
@@ -42,17 +42,17 @@ sealed class I18nContentWebValue {
             val configType: I18nConfig,
 
             // 内容
-            val content: String
+            val contentJson: String
 
     ) {
 
         fun getI18nContent(objectMapper: ObjectMapper): I18nContent.II18nContent {
             return when (configType) {
-                I18nConfig.Banner -> objectMapper.readValue<I18nContent.BannerI18n>(content)
-                I18nConfig.IndexSport -> objectMapper.readValue<I18nContent.IndexSportI18n>(content)
-                I18nConfig.Promotion -> objectMapper.readValue<I18nContent.PromotionI18n>(content)
-                I18nConfig.IndexVideo -> objectMapper.readValue<I18nContent.IndexVideoI18n>(content)
-                I18nConfig.Announcement -> objectMapper.readValue<I18nContent.AnnouncementI18n>(content)
+                I18nConfig.Banner -> objectMapper.readValue<I18nContent.BannerI18n>(contentJson)
+                I18nConfig.IndexSport -> objectMapper.readValue<I18nContent.IndexSportI18n>(contentJson)
+                I18nConfig.Promotion -> objectMapper.readValue<I18nContent.PromotionI18n>(contentJson)
+                I18nConfig.IndexVideo -> objectMapper.readValue<I18nContent.IndexVideoI18n>(contentJson)
+                I18nConfig.Announcement -> objectMapper.readValue<I18nContent.AnnouncementI18n>(contentJson)
             }
         }
     }

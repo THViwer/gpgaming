@@ -48,11 +48,11 @@ data class BannerCoReq(
         @ApiModelProperty("排序")
         val order: Int,
 
-        @ApiModelProperty("图标")
-        val icon: String,
+//        @ApiModelProperty("图标")
+//        val icon: String,
 
-        @ApiModelProperty("鼠标移动上去图标")
-        val touchIcon: String?,
+//        @ApiModelProperty("鼠标移动上去图标")
+//        val touchIcon: String?,
 
         @ApiModelProperty("类型")
         val type: BannerType,
@@ -70,11 +70,11 @@ data class BannerUoReq(
         @ApiModelProperty("排序")
         val order: Int?,
 
-        @ApiModelProperty("图标")
-        val icon: String?,
+//        @ApiModelProperty("图标")
+//        val icon: String?,
 
-        @ApiModelProperty("鼠标移动上去图标")
-        val touchIcon: String?,
+//        @ApiModelProperty("鼠标移动上去图标")
+//        val touchIcon: String?,
 
         @ApiModelProperty("类型")
         val type: BannerType?,

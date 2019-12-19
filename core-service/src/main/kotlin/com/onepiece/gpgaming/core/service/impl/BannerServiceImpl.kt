@@ -18,10 +18,10 @@ class BannerServiceImpl(
 ) : BannerService {
 
     override fun all(clientId: Int): List<Banner> {
-        val redisKey = OnePieceRedisKeyConstant.banners(clientId)
-        return redisService.getList(redisKey, Banner::class.java) {
-            bannerDao.all(clientId)
-        }
+//        val redisKey = OnePieceRedisKeyConstant.banners(clientId)
+//        return redisService.getList(redisKey, Banner::class.java) {
+//        }
+        return bannerDao.all(clientId)
     }
 
     override fun findByType(clientId: Int, type: BannerType): List<Banner> {

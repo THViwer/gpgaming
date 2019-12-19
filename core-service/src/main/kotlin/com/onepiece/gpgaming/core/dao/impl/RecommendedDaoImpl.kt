@@ -24,13 +24,13 @@ class RecommendedDaoImpl: BasicDaoImpl<Recommended>("recommended"), RecommendedD
             Recommended(id = id, clientId = clientId, type = type, contentJson = contentJson, status = status, createdTime = createdTime)
         }
 
-    override fun create(co: RecommendedValue.CreateVo): Boolean {
+    override fun create(co: RecommendedValue.CreateVo): Int {
         return insert()
                 .set("client_id", co.clientId)
                 .set("type", co.type)
                 .set("content_json", co.contentJson)
                 .set("status", co.status)
-                .executeOnlyOne()
+                .executeGeneratedKey()
     }
 
     override fun update(uo: RecommendedValue.UpdateVo): Boolean {

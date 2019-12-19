@@ -10,7 +10,7 @@ interface RecommendedService {
 
     fun getByType(clientId: Int, type: RecommendedType): List<Recommended>
 
-    fun create(co: RecommendedValue.CreateVo)
+    fun create(co: RecommendedValue.CreateVo): Int
 
     fun update(uo: RecommendedValue.UpdateVo)
 

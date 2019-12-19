@@ -6,7 +6,7 @@ import com.onepiece.gpgaming.core.dao.basic.BasicDao
 
 interface RecommendedDao: BasicDao<Recommended> {
 
-    fun create(co: RecommendedValue.CreateVo): Boolean
+    fun create(co: RecommendedValue.CreateVo): Int
 
     fun update(uo: RecommendedValue.UpdateVo): Boolean
 

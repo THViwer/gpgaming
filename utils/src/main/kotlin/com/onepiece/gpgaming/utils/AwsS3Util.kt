@@ -50,7 +50,7 @@ object AwsS3Util {
     fun upload(file: MultipartFile, clientId: Int, category: String): String {
         val originFileName = file.originalFilename!!
         val scheme = originFileName.substring(originFileName.lastIndexOf("."))
-        val randomFileName = generatorFileName("$category/$clientId", scheme)
+        val randomFileName = generatorFileName("client/${clientId}/$category", scheme)
 
         val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file.inputStream, ObjectMetadata())
         putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead
@@ -75,15 +75,31 @@ fun main() {
 //    fileList.listFiles().map {  file ->
 //        AwsS3Util.uploadLocalFile(file, "logo/${file.name}")
 //    }
+//
+    val fileList = File("/Users/cabbage/Downloads/live_re")
+
+    fileList.listFiles().map {  file ->
+        AwsS3Util.uploadLocalFile(file, "client/1/live/${file.name.replace(" ", "")}")
+    }
 
 //    val fileList = File("/Users/cabbage/Downloads/apk")
 //
 //    fileList.listFiles().map {  file ->
 //        AwsS3Util.uploadLocalFile(file, "apk/${file.name}")
 //    }
-    val fileList = File("/Users/cabbage/Desktop/logo/logo")
+//    val fileList = File("/Users/cabbage/Desktop/logo/logo")
+//
+//    fileList.listFiles().filter { it.name.contains(".jpeg") }.map {  file ->
+//        AwsS3Util.uploadLocalFile(file, "origin_logo/${file.name}")
+//    }
+//
+//    val fileList = File("/Users/cabbage/Desktop/origin_logo")
+//
+//    fileList.listFiles().map {  file ->
+//        AwsS3Util.uploadLocalFile(file, "origin_logo/${file.name}")
+//    }
 
-    fileList.listFiles().filter { it.name.contains(".jpeg") }.map {  file ->
-        AwsS3Util.uploadLocalFile(file, "origin_logo/${file.name}")
-    }
+//    val file = File("/Users/cabbage/Downloads/upcoming-matches-2-en.png")
+//    val path = AwsS3Util.uploadLocalFile(file, "client/1/sport/s2.png")
+//    println(path)
 }
