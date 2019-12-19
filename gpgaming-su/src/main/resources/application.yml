@@ -6,7 +6,7 @@ spring:
       driver-class-name: com.mysql.jdbc.Driver
       username: gp
       password: Onepiece123!@#!
-      url: jdbc:mysql://94.237.76.206:3306/gpgaming?useUnicode=true&characterEncoding=UTF-8
+      url: jdbc:mysql://94.237.76.206:3306/gpgaming_dev?useUnicode=true&characterEncoding=UTF-8
   profiles:
     active: dev
 

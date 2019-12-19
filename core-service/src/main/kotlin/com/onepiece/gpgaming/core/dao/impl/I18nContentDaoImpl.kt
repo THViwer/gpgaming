@@ -14,7 +14,7 @@ import java.sql.ResultSet
 @Repository
 class I18nContentDaoImpl(
         private val objectMapper: ObjectMapper
-) : BasicDaoImpl<I18nContent>("i18n_content"), I18nContentDao {
+) : BasicDaoImpl<I18nContent>("i18n_content2"), I18nContentDao {
 
     override val mapper: (rs: ResultSet) -> I18nContent
         get() = { rs ->
