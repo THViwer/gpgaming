@@ -85,7 +85,7 @@ class ClientServiceImpl(
 
         // 配置语言(english)
         val eContent = I18nContent.AnnouncementI18n(title = "hi", content = "hi, this is a demo")
-        val i18nContentCo = I18nContentCo(clientId = clientId, language = Language.EN, configId = null,configType = I18nConfig.Announcement, content = eContent)
+        val i18nContentCo = I18nContentCo(clientId = clientId, language = Language.EN, configId = -1,configType = I18nConfig.Announcement, content = eContent)
         i18nContentService.create(i18nContentCo)
 
         // 配置语言(中文)

@@ -13,7 +13,7 @@ data class I18nContentCo(
         val language: Language,
 
         // 配置Id
-        val configId: Int?,
+        val configId: Int,
 
         // 配置类型
         val configType: I18nConfig,

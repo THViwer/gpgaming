@@ -34,7 +34,7 @@ class I18nContentDaoImpl(
 
     override fun create(i18nContentCo: I18nContentCo): Int {
         return insert().set("client_id", i18nContentCo.clientId)
-                .set("content", objectMapper.writeValueAsString(i18nContentCo.content))
+                .set("content_json", objectMapper.writeValueAsString(i18nContentCo.content))
                 .set("language", i18nContentCo.language)
                 .set("config_id", i18nContentCo.configId)
                 .set("config_type", i18nContentCo.configType)
@@ -43,7 +43,7 @@ class I18nContentDaoImpl(
 
     override fun update(i18nContentUo: I18nContentUo): Boolean {
         return update()
-                .set("content", objectMapper.writeValueAsString(i18nContentUo.content))
+                .set("content_json", objectMapper.writeValueAsString(i18nContentUo.content))
                 .where("id", i18nContentUo.id)
                 .executeOnlyOne()
 
