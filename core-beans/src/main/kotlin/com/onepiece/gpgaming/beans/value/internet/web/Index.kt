@@ -79,6 +79,10 @@ data class Index(
                 val open: Boolean
         ) {
 
+                val demo: Boolean
+                        @ApiModelProperty("平台类型")
+                        get() = platform.detail.demo
+
                 val category: PlatformCategory
                         @ApiModelProperty("平台类型")
                         get() = platform.detail.category
