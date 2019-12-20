@@ -182,7 +182,22 @@ class IndexApiController(
     @GetMapping("/recommended")
     override fun recommendedList(@RequestParam("type") type: RecommendedType): List<Recommended> {
         val clientId = getClientId()
-        return recommendedService.getByType(clientId = clientId, type = type)
+        val recommendeds = recommendedService.getByType(clientId = clientId, type = type)
+
+
+        return when (type) {
+            RecommendedType.IndexSport -> I18nConfig.IndexSport
+            RecommendedType.IndexVideo -> I18nConfig.IndexVideo
+            else -> null
+        }?.let { i18nConfig ->
+            i18nContentService.getConfigType(clientId, i18nConfig).groupBy { it.configId }.toMap()
+        }?.let { map ->
+            recommendeds.map { recommended ->
+                val contents = map[recommended.id] ?: emptyList()
+                recommended.i18nContents = contents
+                recommended
+            }
+        }?: recommendeds
     }
 
     @PutMapping("/recommended")

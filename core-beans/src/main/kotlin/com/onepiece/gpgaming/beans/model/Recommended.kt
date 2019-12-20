@@ -7,6 +7,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.RecommendedType
 import com.onepiece.gpgaming.beans.enums.Status
+import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
 data class Recommended(
@@ -30,6 +31,9 @@ data class Recommended(
         val createdTime: LocalDateTime
 
 ) {
+
+    @ApiModelProperty("国际化内容")
+    var i18nContents: List<I18nContent> = emptyList()
 
     @JsonIgnore
     fun getRecommendedContent(objectMapper: ObjectMapper): IRecommended {
