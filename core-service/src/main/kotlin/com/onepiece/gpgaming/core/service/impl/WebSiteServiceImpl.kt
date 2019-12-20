@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.WebSiteDao
 import com.onepiece.gpgaming.core.service.WebSiteService
 import com.onepiece.gpgaming.utils.RedisService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,6 +16,7 @@ class WebSiteServiceImpl(
         private val webSiteDao: WebSiteDao,
         private val redisService: RedisService
 ): WebSiteService {
+    private val log = LoggerFactory.getLogger(WebSiteServiceImpl::class.java)
 
     override fun all(): List<WebSite> {
         val redisKey = OnePieceRedisKeyConstant.getAllWebSite()
@@ -42,6 +44,8 @@ class WebSiteServiceImpl(
     }
 
     override fun match(url: String): Int {
+        log.error("url = $url")
+        log.error("cleint web site list = ${this.all()}")
         return this.all().first { url.contains(it.domain) }.clientId
     }
 }
