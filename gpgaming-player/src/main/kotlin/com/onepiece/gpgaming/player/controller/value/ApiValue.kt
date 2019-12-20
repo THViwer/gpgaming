@@ -7,6 +7,9 @@ import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 
+data class IndexConfig(
+        val url: String
+)
 
 data class ConfigVo(
 

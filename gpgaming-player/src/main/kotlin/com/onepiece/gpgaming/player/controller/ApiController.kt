@@ -18,18 +18,21 @@ import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
+import com.onepiece.gpgaming.games.ActiveConfig
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.BannerVo
 import com.onepiece.gpgaming.player.controller.value.ConfigVo
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.DownloadAppVo
+import com.onepiece.gpgaming.player.controller.value.IndexConfig
 import com.onepiece.gpgaming.player.controller.value.PlatformCategoryDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformCategoryPage
 import com.onepiece.gpgaming.player.controller.value.PlatformMembrerDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformVo
 import com.onepiece.gpgaming.player.controller.value.PromotionVo
 import com.onepiece.gpgaming.player.controller.value.StartGameResp
+import com.onepiece.gpgaming.utils.AwsS3Util
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
@@ -49,15 +52,18 @@ open class ApiController(
         private val contactService: ContactService,
         private val transferSync: TransferSync,
         private val clientService: ClientService,
-        private val appDownService: AppDownService
+        private val appDownService: AppDownService,
+        private val activeConfig: ActiveConfig
 ) : BasicController(), Api {
 
     @GetMapping
     override fun config(
             @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("language") language: Language
-    ): ConfigVo {
-
+    ): IndexConfig {
+        val clientId = this.getClientIdByDomain()
+        val url = SystemConstant.getClientResourcePath(clientId = clientId, profile = activeConfig.profile)
+        return IndexConfig(url = "$url/index_${language.name.toLowerCase()}.json")
 //        val clientId = this.getClientIdByDomain()
 //
 //        // 平台信息

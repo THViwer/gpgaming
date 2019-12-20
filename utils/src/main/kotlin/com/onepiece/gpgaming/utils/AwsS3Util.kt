@@ -19,6 +19,7 @@ object AwsS3Util {
     private const val secretKey = "JcRXzoGaEY4Nzhs6/XRlAfdu6WfzL4MQ3g5iioOa"
     private const val bucktName = "awspg1"
     private const val basePath = "https://s3.ap-southeast-1.amazonaws.com/$bucktName"
+    private const val clientBasePath = "https://s3.ap-southeast-1.amazonaws.com"
 
     private val awsCreds = BasicAWSCredentials(accessKey, secretKey)
     private val s3Client = AmazonS3ClientBuilder.standard()
@@ -57,6 +58,20 @@ object AwsS3Util {
 
         s3Client.putObject(putObjectRequest)
         return "$basePath/$randomFileName"
+    }
+
+    fun clientUpload(file: MultipartFile, clientId: Int, path: String, profile: String): String {
+        val originFileName = file.originalFilename!!
+        val scheme = originFileName.substring(originFileName.lastIndexOf("."))
+        val randomFileName = generatorFileName("client/${clientId}/$path", scheme)
+
+        val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file.inputStream, ObjectMetadata())
+        putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead
+
+        s3Client.putObject(putObjectRequest)
+
+        val bucktName = if (profile == "dev" || profile == "sit") "awspg1" else "awspg2"
+        return "$clientBasePath/$bucktName/$randomFileName"
     }
 
     fun uploadLocalFile(file: File, name: String): String {

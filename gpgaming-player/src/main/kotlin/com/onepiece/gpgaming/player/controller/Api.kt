@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.beans.enums.PromotionCategory
 import com.onepiece.gpgaming.player.controller.value.ConfigVo
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.DownloadAppVo
+import com.onepiece.gpgaming.player.controller.value.IndexConfig
 import com.onepiece.gpgaming.player.controller.value.PlatformCategoryDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformCategoryPage
 import com.onepiece.gpgaming.player.controller.value.PlatformMembrerDetail
@@ -26,7 +27,7 @@ interface Api {
     fun config(
             @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("language") language: Language
-    ): ConfigVo
+    ): IndexConfig
 
     @ApiOperation(tags = ["api"], value = "平台类别页面详细资料")
     fun categories(
