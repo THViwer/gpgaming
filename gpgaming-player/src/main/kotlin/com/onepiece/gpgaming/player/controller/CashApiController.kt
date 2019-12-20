@@ -196,7 +196,7 @@ open class CashApiController(
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
                         imgPath = imgPath, memberId = memberId, bankOrderId = null, clientBankCardNumber = clientBankCardNumber,
                         clientBankName = clientBankName, clientBankId = clientBankId, lockWaiterId = it.lockWaiterId, depositTime = it.depositTime,
-                        channel = it.channel, username = username, clientBank = it.clientBank)
+                        channel = it.channel, username = username, clientBank = it.clientBank, lockWaiterUsername = null)
             }
         }
 
@@ -243,7 +243,8 @@ open class CashApiController(
             with(it) {
                 WithdrawVo(orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
-                        memberId = it.memberId, memberBankId = it.memberBankId, lockWaiterId = it.lockWaiterId, username = username)
+                        memberId = it.memberId, memberBankId = it.memberBankId, lockWaiterId = it.lockWaiterId, username = username,
+                        lockWaiterUsername = null)
             }
         }
 
