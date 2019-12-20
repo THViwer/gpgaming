@@ -23,7 +23,7 @@ object SystemConstant {
 
     fun getClientResourcePath(clientId: Int, profile: String = "dev", defaultPath: String = ""): String {
         val bucktName = if (profile == "dev") "awspg1" else "awspg2"
-        return "$AWS_CLIENT_URL/$bucktName$defaultPath"
+        return "$AWS_CLIENT_URL/$bucktName/client/$clientId$defaultPath"
     }
 
 }
