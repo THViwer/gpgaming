@@ -103,6 +103,7 @@ class PullBetTask(
             Platform.GoldDeluxe,
             Platform.SaGaming,
             Platform.SimplePlay,
+//            Platform.GamePlay,
             Platform.MicroGaming -> {
                 val duration = Duration.between(startTime, LocalDateTime.now())
                 val minutes: Long = duration.toMinutes() //相差的分钟数

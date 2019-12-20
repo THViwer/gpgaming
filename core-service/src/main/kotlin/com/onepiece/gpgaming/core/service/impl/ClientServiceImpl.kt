@@ -29,6 +29,7 @@ import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.RecommendedService
 import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -47,6 +48,7 @@ class ClientServiceImpl(
 ) : ClientService {
 
     @Autowired
+    @Lazy
     lateinit var indexUtil: IndexUtil
 
     override fun get(id: Int): Client {
