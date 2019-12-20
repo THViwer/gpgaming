@@ -35,7 +35,7 @@ object SimplePlayUtil {
 
     fun execute(file: File, imageFiles: File,  language: Language): List<SlotGame> {
 
-        return file.readLines().parallelStream().map { line ->
+        return file.readLines().parallelStream().filter { it.split(",").firstOrNull() != null } .map { line ->
 
             try {
                 val data = line.split(",")
@@ -43,6 +43,7 @@ object SimplePlayUtil {
                 val gameId = data[0]
                 val ename = data[1]
                 val cname = data[2]
+                val cetegory = data[3].let { GameCategory.valueOf(it) }
 
                 val name = listOf(
                         "530x328",
@@ -54,10 +55,10 @@ object SimplePlayUtil {
                     println("gameId = $gameId 无法查询到图片信息")
                 }
                 val imageFile = File(name!!)
-                val iconPath = AwsS3Util.uploadLocalFile(imageFile, "slot/${gameId}_${language.name.toLowerCase()}.jpg")
+                val iconPath = AwsS3Util.uploadLocalFile(imageFile, "slot/simple_play/${gameId}_${language.name.toLowerCase()}.jpg")
 
                 val gameName = if (language == Language.CN) cname else ename
-                SlotGame(gameId = gameId, platform = Platform.SimplePlay, category = GameCategory.Slot, gameName = gameName,
+                SlotGame(gameId = gameId, platform = Platform.SimplePlay, category = cetegory, gameName = gameName,
                         icon = iconPath, touchIcon = null, hot = false, new = false, status = Status.Normal)
             } catch (e: Exception) {
                 println("$line 不能上传图片")
@@ -70,7 +71,7 @@ object SimplePlayUtil {
 fun main() {
     val imageFiles = File("/Users/cabbage/Downloads/SP - Slot Games Art Work")
 
-    val csvFile = File("/Users/cabbage/Desktop/simple_done_test.csv")
+    val csvFile = File("/Users/cabbage/Desktop/simple_game_done.csv")
 
 
     listOf(Language.EN, Language.CN).forEach { language ->
