@@ -135,7 +135,7 @@ class GameApi(
     /**
      * 注册账号
      */
-    fun register(clientId: Int, memberId: Int, platform: Platform) {
+    fun register(clientId: Int, memberId: Int, platform: Platform, name: String) {
 
         // 生成用户名
         val (generatorUsername, generatorPassword) = PlatformUsernameUtil.generatorPlatformUsername(clientId = clientId, memberId = memberId, platform = platform)
@@ -144,7 +144,7 @@ class GameApi(
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         // 注册账号
-        val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = generatorUsername,
+        val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = name,
                 clientId = clientId, memberId = memberId)
         val platformUsername = getPlatformApi(platform).register(registerReq)
 

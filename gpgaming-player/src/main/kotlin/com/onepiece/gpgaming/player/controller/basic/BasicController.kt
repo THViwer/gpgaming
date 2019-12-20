@@ -88,7 +88,7 @@ abstract class BasicController {
         val platformMember = platforms.find { platform == it.platform }
 
         if (platformMember == null) {
-            gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform)
+            gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
             return this.getPlatformMember(platform)
         }
 
