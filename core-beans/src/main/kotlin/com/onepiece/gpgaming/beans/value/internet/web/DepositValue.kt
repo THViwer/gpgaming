@@ -80,6 +80,9 @@ data class DepositVo(
         @ApiModelProperty("锁定人员客服Id")
         val lockWaiterId: Int?,
 
+        @ApiModelProperty("锁定人员用户名")
+        val lockWaiterUsername: String?,
+
         @ApiModelProperty("状态")
         val state: DepositState,
 

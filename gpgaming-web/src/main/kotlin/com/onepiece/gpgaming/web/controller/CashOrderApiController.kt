@@ -123,6 +123,11 @@ class CashOrderApiController(
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
+        val waiters = waiterService.findClientWaiters(clientId = user.clientId).map {
+            it.id to it
+        }.toMap()
+
+
         val query = DepositQuery(clientId = user.clientId, startTime = null, endTime = null, memberId = null, orderId = null,
                 state = DepositState.Process, lockWaiterId = getCurrentWaiterId(), clientBankIdList = clientBankIdList)
         return depositService.query(query).map{
@@ -131,7 +136,7 @@ class CashOrderApiController(
                         memberBank = memberBank, imgPath = imgPath, createdTime = createdTime, remark = remarks, endTime = it.endTime,
                         clientBankId = clientBankId, clientBankCardNumber = clientBankCardNumber, clientBankName = clientBankName,
                         bankOrderId = null, memberId = memberId, state = it.state, lockWaiterId = it.lockWaiterId, depositTime = depositTime,
-                        channel = it.channel, username = username, clientBank = it.clientBank)
+                        channel = it.channel, username = username, clientBank = it.clientBank, lockWaiterUsername = waiters[it.lockWaiterId?: 0]?.username)
             }
         }
     }
@@ -147,13 +152,18 @@ class CashOrderApiController(
         val clientId = getClientId()
         val depositQuery = DepositQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state,
                 lockWaiterId = null, clientBankIdList = null)
+
+        val waiters = waiterService.findClientWaiters(clientId = clientId).map {
+            it.id to it
+        }.toMap()
+
         return depositService.query(depositQuery).map {
             with(it) {
                 DepositVo(orderId = it.orderId, money = money, memberName = memberName, memberBankCardNumber = memberBankCardNumber,
                         memberBank = memberBank, imgPath = imgPath, createdTime = createdTime, remark = remarks, endTime = it.endTime,
                         clientBankId = clientBankId, clientBankCardNumber = clientBankCardNumber, clientBankName = clientBankName,
                         bankOrderId = null, memberId = memberId, state = it.state, lockWaiterId = it.lockWaiterId, depositTime = depositTime,
-                        channel = it.channel, username = it.username, clientBank = it.clientBank)
+                        channel = it.channel, username = it.username, clientBank = it.clientBank, lockWaiterUsername = waiters[it.lockWaiterId?: 0]?.username)
             }
         }
     }
@@ -192,10 +202,15 @@ class CashOrderApiController(
         val withdrawQuery = WithdrawQuery(clientId = clientId, lockWaiterId = this.getCurrentWaiterId(), startTime = null, endTime = null,
                 orderId = null, memberId = null, state = WithdrawState.Process)
 
+        val waiters = waiterService.findClientWaiters(clientId = clientId).map {
+            it.id to it
+        }.toMap()
+
         return withdrawService.query(withdrawQuery).map {
             with(it) {
                 WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberId = memberId,
-                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime, lockWaiterId = it.lockWaiterId, username = username)
+                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime, lockWaiterId = it.lockWaiterId, username = username,
+                        lockWaiterUsername = waiters[it.lockWaiterId?:0]?.username)
             }
         }
 
@@ -212,11 +227,16 @@ class CashOrderApiController(
 
         val clientId = getClientId()
         val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state, lockWaiterId = null)
-        return withdrawService.query(withdrawQuery).map {
 
+        val waiters = waiterService.findClientWaiters(clientId = clientId).map {
+            it.id to it
+        }.toMap()
+
+        return withdrawService.query(withdrawQuery).map {
             with(it) {
                 WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberId = memberId,
-                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime, lockWaiterId = it.lockWaiterId, username = it.username)
+                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime, lockWaiterId = it.lockWaiterId, username = it.username,
+                        lockWaiterUsername = waiters[it.lockWaiterId?:0]?.username)
             }
         }
     }
