@@ -53,7 +53,7 @@ class IndexUtil(
             val detail = it.platform.detail
             val status = if (detail.status != Status.Normal) detail.status else it.status
             Index.PlatformVo(id = it.id, status = status, open = true, platform = it.platform)
-        }
+        }.filter { it.status != Status.Delete }
 
         // banner
         val banners = bannerService.findByType(clientId = clientId, type = BannerType.Banner)
