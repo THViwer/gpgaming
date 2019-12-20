@@ -120,13 +120,16 @@ class Insert(
         val sql = "insert ignore into `$table` (${names}) values (${questions})"
 
 
-        jdbcTemplate.update({ connection ->
+        val row = jdbcTemplate.update({ connection ->
             val ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
             param.forEachIndexed { index, any ->
                 ps.setObject(index+1, any)
             }
             ps
         }, keyHolder)
+        check(row == 1) {
+            1001
+        }
 
         return keyHolder.key!!.toInt()
 

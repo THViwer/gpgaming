@@ -241,10 +241,10 @@ class ClientServiceImpl(
                 "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/banner/2019122002020735253.jpg"
         ).forEach {
             val bannerUo = BannerCo(clientId = clientId, type = BannerType.Sport, order = 1, link = null)
-            val id = bannerService.create(bannerUo)
+            val configId = bannerService.create(bannerUo)
 
             val content = I18nContent.BannerI18n(imagePath = it)
-            val i18nContent = I18nContentCo(clientId = clientId, language = Language.EN, configId = id, configType = I18nConfig.Banner, content = content)
+            val i18nContent = I18nContentCo(clientId = clientId, language = Language.EN, configId = configId, configType = I18nConfig.Banner, content = content)
             i18nContentService.create(i18nContent)
         }
 
