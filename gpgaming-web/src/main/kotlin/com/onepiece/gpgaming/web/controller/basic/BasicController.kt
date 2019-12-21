@@ -79,7 +79,7 @@ abstract class BasicController {
             log.info("request.remoteAddr = $ip")
         }
 
-        return ip
+        return ip.split(",").first()
     }
 
     fun getRequest(): HttpServletRequest {
