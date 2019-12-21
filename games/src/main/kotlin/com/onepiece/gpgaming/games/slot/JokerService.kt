@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter
 class JokerService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(JokerService::class.java)
-    private val gameUrl = "http://94.237.64.70/iframe.html"
+    private val gameUrl = "https://iframe.gpgaming88.com/joker_iframe.html"
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
 
