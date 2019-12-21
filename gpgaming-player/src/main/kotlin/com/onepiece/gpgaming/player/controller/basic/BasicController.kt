@@ -36,24 +36,24 @@ abstract class BasicController {
         val request = this.getRequest()
 
         var ip = request.getHeader("x-forwarded-for")
-        if (ip.isNullOrBlank() || "unknown" == ip?.toLowerCase()) {
+        if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
             ip = request.getHeader("Proxy-Client-IP")
         }
 
-        if (ip.isNullOrBlank() || "unknown" == ip?.toLowerCase()) {
+        if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
             ip = request.getHeader("WL-Proxy-Client-IP")
         }
 
-        if (ip.isNullOrBlank() || "unknown" == ip?.toLowerCase()) {
+        if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
             ip = request.getHeader("HTTP_CLIENT_IP")
         }
 
-        if (ip.isNullOrBlank() || "unknown" == ip?.toLowerCase()) {
+        if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
             ip = request.getHeader("HTTP_X_FORWARDED_FOR")
         }
 
-        if (ip.isNullOrBlank() || "unknown" == ip?.toLowerCase()) {
-            ip = request.remoteAddr;
+        if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
+            ip = request.remoteAddr
         }
 
         return ip
