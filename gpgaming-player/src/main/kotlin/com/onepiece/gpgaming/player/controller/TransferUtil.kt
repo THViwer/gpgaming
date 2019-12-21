@@ -59,8 +59,10 @@ class TransferUtil(
 
                 BalanceAllInVo(platform = platformMember.platform, balance = balance)
             } catch (e: Exception) {
-                log.error("转账平台错误:", e)
-                BalanceAllInVo(platform = platformMember.platform, balance = BigDecimal.valueOf(-1))
+//                log.error("转账平台错误:", e)
+                val balance = gameApi.balance(clientId = clientId, platformUsername = platformMember.platformUsername,
+                        platform = platformMember.platform, platformPassword = platformMember.platformPassword)
+                BalanceAllInVo(platform = platformMember.platform, balance = balance)
             }
         }.collect(Collectors.toList())
 

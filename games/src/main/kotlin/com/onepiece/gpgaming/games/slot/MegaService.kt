@@ -76,10 +76,11 @@ class MegaService : PlatformService() {
     override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as MegaClientToken
         val random = UUID.randomUUID().toString()
-        val digest = this.sign(random = random, loginId = transferReq.username, amount = "${transferReq.amount}", clientToken = clientToken)
+
+        val digest = this.sign(random = random, loginId = transferReq.username, amount = transferReq.amount.stripTrailingZeros().toPlainString(), clientToken = clientToken)
         val data = mapOf(
                 "loginId" to transferReq.username,
-                "amount" to transferReq.amount,
+                "amount" to transferReq.amount.stripTrailingZeros().toPlainString(),
                 "bizId" to transferReq.orderId,
                 "random" to random,
                 "sn" to clientToken.appId,
