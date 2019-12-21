@@ -5,7 +5,6 @@ import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
-import com.onepiece.gpgaming.player.controller.value.ConfigVo
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.DownloadAppVo
 import com.onepiece.gpgaming.player.controller.value.IndexConfig

@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.player.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.SystemConstant
 import com.onepiece.gpgaming.beans.enums.BannerType
 import com.onepiece.gpgaming.beans.enums.ContactType
@@ -22,7 +23,6 @@ import com.onepiece.gpgaming.games.ActiveConfig
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.BannerVo
-import com.onepiece.gpgaming.player.controller.value.ConfigVo
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.DownloadAppVo
 import com.onepiece.gpgaming.player.controller.value.IndexConfig
@@ -32,7 +32,6 @@ import com.onepiece.gpgaming.player.controller.value.PlatformMembrerDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformVo
 import com.onepiece.gpgaming.player.controller.value.PromotionVo
 import com.onepiece.gpgaming.player.controller.value.StartGameResp
-import com.onepiece.gpgaming.utils.AwsS3Util
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
@@ -53,7 +52,8 @@ open class ApiController(
         private val transferSync: TransferSync,
         private val clientService: ClientService,
         private val appDownService: AppDownService,
-        private val activeConfig: ActiveConfig
+        private val activeConfig: ActiveConfig,
+        private val objectMapper: ObjectMapper
 ) : BasicController(), Api {
 
     @GetMapping
@@ -200,20 +200,18 @@ open class ApiController(
                 .map { "${it.configId}:${it.language}" to it }
                 .toMap()
 
-        return promotions.map {
+        return promotions.mapNotNull { promotion ->
 
-            val i18nContent = i18nContentMap["${it.id}_${language}"]
-                    ?: i18nContentMap["${it.id}_${Language.EN}"]
+            val i18nContent = i18nContentMap["${promotion.id}:${language}"]
+                    ?: i18nContentMap["${promotion.id}:${Language.EN}"]
 
-            if (i18nContent == null) {
-                null
-            } else {
-                val content = i18nContent as I18nContent.PromotionI18n
-                PromotionVo(id = it.id, clientId = it.clientId, category = it.category, stopTime = it.stopTime, top = it.top, icon = it.icon, platforms = it.platforms,
-                        title = i18nContent.title, synopsis = i18nContent.synopsis, content = content.content, status = it.status, createdTime = it.createdTime,
-                        precautions = i18nContent.precautions, ruleType = it.ruleType, rule = it.rule)
+            i18nContent?.let {
+                val content = i18nContent.getII18nContent(objectMapper) as I18nContent.PromotionI18n
+                PromotionVo(id = it.id, clientId = it.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
+                        icon = promotion.icon, platforms = promotion.platforms, title = content.title, synopsis = content.synopsis, content = content.content,
+                        status = promotion.status, createdTime = it.createdTime, precautions = content.precautions, ruleType = promotion.ruleType, rule = promotion.rule)
             }
-        }.filterNotNull()
+        }
 
     }
 

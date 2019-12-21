@@ -131,9 +131,20 @@ fun main() {
 //    val json = jacksonObjectMapper().writeValueAsString(indexVideoI18n)
 //    println(json)
 
-        val indexVideoI18n = I18nContent.IndexSportI18n(platform = Platform.CMD, contentImage = "sfsfa.png")
-    val json = jacksonObjectMapper().writeValueAsString(indexVideoI18n)
-    println(json)
+//        val indexVideoI18n = I18nContent.IndexSportI18n(platform = Platform.CMD, contentImage = "sfsfa.png")
+//    val json = jacksonObjectMapper().writeValueAsString(indexVideoI18n)
+//    println(json)
+
+    val promotion = I18nContent.PromotionI18n(
+            banner = "https://s3.ap-southeast-1.amazonaws.com/awspg1/banner/banner_3.jpg",
+            title = "老虎机优惠",
+            content = "你好，我是老虎机",
+            synopsis = "你好，我是老虎机",
+            precautions = "你好，我是老虎机"
+    )
+    println(jacksonObjectMapper().writeValueAsString(promotion))
+
+
 
 
 
