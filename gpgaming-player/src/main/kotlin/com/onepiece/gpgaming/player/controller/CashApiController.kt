@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.player.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.DepositState
@@ -80,7 +81,8 @@ open class CashApiController(
         private val walletNoteService: WalletNoteService,
         private val promotionService: PromotionService,
         private val transferUtil: TransferUtil,
-        private val i18nContentService: I18nContentService
+        private val i18nContentService: I18nContentService,
+        private val objectMapper: ObjectMapper
 ) : BasicController(), CashApi {
 
     private val log = LoggerFactory.getLogger(CashApiController::class.java)
@@ -332,7 +334,7 @@ open class CashApiController(
             if (content == null) {
                 null
             } else {
-                val mContent = content as I18nContent.PromotionI18n
+                val mContent = content.getII18nContent(objectMapper = objectMapper) as I18nContent.PromotionI18n
 
                 val promotionIntroduction = promotion.getPromotionIntroduction(amount = amount, language = language, platformBalance = platformBalance)
                 CheckPromotionVo(promotionId = promotion.id, promotionIntroduction = promotionIntroduction, title = mContent.title)
