@@ -30,9 +30,9 @@ data class PromotionVo(
         @ApiModelProperty("是否置顶")
         val top: Boolean,
 
-        @ApiModelProperty("图标")
-        val icon: String,
-
+//        @ApiModelProperty("图标")
+//        val icon: String,
+//
 //        @ApiModelProperty("标题")
 //        val title: String,
 //

@@ -37,7 +37,7 @@ class PromotionServiceImpl(
 
         // 创建优惠记录
         val promotionCo = PromotionCo(clientId = clientId, category = promotionCoReq.category, stopTime = promotionCoReq.stopTime, top = promotionCoReq.top,
-                icon = promotionCoReq.icon, levelId = promotionCoReq.promotionRuleVo.levelId, ruleType = promotionCoReq.promotionRuleVo.ruleType,
+                levelId = promotionCoReq.promotionRuleVo.levelId, ruleType = promotionCoReq.promotionRuleVo.ruleType,
                 ruleJson = promotionCoReq.promotionRuleVo.ruleJson, platforms = promotionCoReq.platforms)
         val promotionId = promotionDao.create(promotionCo)
         check(promotionId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
@@ -66,7 +66,7 @@ class PromotionServiceImpl(
 
         // 更新优惠记录
         val promotionUo = PromotionUo(id = promotionUoReq.id, category = promotionUoReq.category, stopTime = promotionUoReq.stopTime,
-                top = promotionUoReq.top, icon = promotionUoReq.icon, status = promotionUoReq.status, levelId = promotionUoReq.levelId,
+                top = promotionUoReq.top, status = promotionUoReq.status, levelId = promotionUoReq.levelId,
                 ruleJson = promotionUoReq.ruleJson, platforms = promotionUoReq.platforms)
         val state = promotionDao.update(promotionUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }

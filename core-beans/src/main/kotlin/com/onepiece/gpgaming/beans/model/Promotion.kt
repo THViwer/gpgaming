@@ -42,9 +42,6 @@ data class Promotion (
         // 是否置顶
         val top: Boolean,
 
-        // 图标
-        val icon: String,
-
         // 活动状态
         val status: Status,
 

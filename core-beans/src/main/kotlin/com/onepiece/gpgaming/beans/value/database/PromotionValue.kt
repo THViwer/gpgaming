@@ -23,9 +23,6 @@ data class PromotionCo(
         // 是否置顶
         val top: Boolean,
 
-        // 图标
-        val icon: String,
-
         // 层级Id
         val levelId: Int?,
 
@@ -52,9 +49,6 @@ data class PromotionUo(
 
         // 是否置顶
         val top: Boolean? = null,
-
-        // 图标
-        val icon: String? = null,
 
         // 活动状态
         val status: Status? = null,

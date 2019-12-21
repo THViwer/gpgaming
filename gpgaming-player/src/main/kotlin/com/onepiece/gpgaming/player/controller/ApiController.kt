@@ -208,7 +208,7 @@ open class ApiController(
             i18nContent?.let {
                 val content = i18nContent.getII18nContent(objectMapper) as I18nContent.PromotionI18n
                 PromotionVo(id = it.id, clientId = it.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
-                        icon = promotion.icon, platforms = promotion.platforms, title = content.title, synopsis = content.synopsis, content = content.content,
+                        icon = content.banner, platforms = promotion.platforms, title = content.title, synopsis = content.synopsis, content = content.content,
                         status = promotion.status, createdTime = it.createdTime, precautions = content.precautions, ruleType = promotion.ruleType, rule = promotion.rule)
             }
         }

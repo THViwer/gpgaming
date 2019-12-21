@@ -134,8 +134,7 @@ class IndexApiController(
             val promotionRuleVo = PromotionRuleVo(ruleType = promotion.ruleType, levelId = promotion.levelId, ruleJson = promotion.ruleJson)
 
             PromotionVo(id = promotion.id, clientId = promotion.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
-                    icon = promotion.icon, status = promotion.status,
-                    createdTime = promotion.createdTime, updatedTime = promotion.updatedTime, i18nContents = i18nContents, promotionRuleVo = promotionRuleVo,
+                    status = promotion.status, createdTime = promotion.createdTime, updatedTime = promotion.updatedTime, i18nContents = i18nContents, promotionRuleVo = promotionRuleVo,
                     platforms = promotion.platforms)
         }
     }

@@ -24,7 +24,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val platforms = rs.getString("platforms").split(",").map { Platform.valueOf(it) }
             val stopTime = rs.getTimestamp("stop_time")?.toLocalDateTime()
             val top = rs.getBoolean("top")
-            val icon = rs.getString("icon")
+//            val icon = rs.getString("icon")
             val status = rs.getString("status").let { Status.valueOf(it) }
 
             val levelId = rs.getInt("level_id")
@@ -34,7 +34,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
 
-            Promotion(id = id, category = category, stopTime = stopTime, icon = icon, status = status, createdTime = createdTime,
+            Promotion(id = id, category = category, stopTime = stopTime, status = status, createdTime = createdTime,
                     clientId = clientId, top = top, updatedTime = updatedTime, platforms = platforms, levelId = levelId,
                     ruleJson = ruleJson, ruleType = ruleType)
         }
@@ -46,7 +46,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("platforms", promotionCo.platforms.joinToString(","))
                 .set("stop_time", promotionCo.stopTime)
                 .set("top", promotionCo.top)
-                .set("icon", promotionCo.icon)
+//                .set("icon", promotionCo.icon)
                 .set("level_id", promotionCo.levelId)
                 .set("rule_json", promotionCo.ruleJson)
                 .set("rule_type", promotionCo.ruleType)
@@ -60,7 +60,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("platforms", promotionUo.platforms.joinToString(","))
                 .set("stop_time", promotionUo.stopTime)
                 .set("top", promotionUo.top)
-                .set("icon", promotionUo.icon)
+//                .set("icon", promotionUo.icon)
                 .set("status", promotionUo.status)
                 .set("level_id", promotionUo.levelId)
                 .set("rule_json", promotionUo.ruleJson)
