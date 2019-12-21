@@ -128,7 +128,7 @@ class IndexApiController(
         val i18nContentMap = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Promotion).groupBy { it.configId }
 
         return promotions.map { promotion ->
-            val i18nContents = i18nContentMap[promotion.id] ?: error(OnePieceExceptionCode.DATA_FAIL)
+            val i18nContents = i18nContentMap[promotion.id] ?: emptyList()
 //            val defaultContent = i18nContents.first()
 
             val promotionRuleVo = PromotionRuleVo(ruleType = promotion.ruleType, levelId = promotion.levelId, ruleJson = promotion.ruleJson)
