@@ -11,7 +11,7 @@ spring:
     active: dev
 
   redis:
-    host: myredis.gq4asq.ng.0001.apse1.cache.amazonaws.com:6379
+    host: 172.168.99.10
     port: 6379
   output:
     ansi:
