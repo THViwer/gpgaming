@@ -1,10 +1,12 @@
 package com.onepiece.gpgaming.games.slot
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.GamePlayClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
+import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
@@ -29,6 +31,16 @@ class GamePlayService: PlatformService() {
         check(result.error_code == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
         log.info("result: $result")
         return result.mapUtil
+    }
+
+    fun startGetBetXml(url: String, data: List<String>): GamePlayValue.BetResult {
+        val urlParam = data.joinToString("&")
+        val result = okHttpUtil.doGetXml(url = "$url?$urlParam", clz = GamePlayValue.BetResult::class.java)
+
+//        check(result.error_code == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+//        log.info("result: $result")
+//        return result.mapUtil
+        return result
     }
 
     override fun register(registerReq: GameValue.RegisterReq): String {
@@ -189,13 +201,66 @@ class GamePlayService: PlatformService() {
                 "date_from=${pullBetOrderReq.startTime.format(dateTimeFormat)}",
                 "date_to=${pullBetOrderReq.endTime.format(dateTimeFormat)}",
                 "page_num=1",
-                "page_size=2000"
+                "page_size=2000",
+                "product=slots"
         )
-        val mapUtil = this.startGetXml(method = "/api/gateway/betDetail.html", data = data)
+        val result = this.startGetBetXml(url = "${gameConstant.getOrderApiUrl(Platform.GamePlay)}/csnbo/api/gateway/betDetail.html", data = data)
 
-        //TODO 处理订单
-        return emptyList()
+        return result.betDetailList?.map { bet ->
+            val mapUtil = bet.mapUtil
+            val username = mapUtil.asString("user_id")
+            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.GamePlay, platformUsername = username)
+            val orderId = mapUtil.asString("bet_id")
+            val betAmount = mapUtil.asBigDecimal("bet")
+            val winLose = mapUtil.asBigDecimal("winlose")
+            val betTime = mapUtil.asLocalDateTime("trans_date", dateTimeFormat)
+
+            val originData = jacksonObjectMapper().writeValueAsString(mapUtil.data)
+
+            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.GamePlay, orderId = orderId, betAmount = betAmount,
+                    winAmount = betAmount.plus(winLose), betTime = betTime, settleTime = betTime, originData = originData)
+        }?: emptyList()
+
     }
 
 }
+
+
+/*
+fun main() {
+    val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+    val xml = "<resp>\n" +
+            "<error_code>0</error_code>\n" +
+            "<items page_num=\"1\" page_size=\"2000\" total_row=\"5\" total_page=\"1\">\n" +
+            "<item winlose=\"-0.50\" bet_id=\"47403073\" bundle_id=\"47403073\" trans_date=\"2019-12-20 22:52:59\" user_id=\"01000001jk\" game_type=\"1\" balance=\"0.00\" bet=\"0.50\" status=\"1\" game_result=\"\" currency=\"\" player_hand=\"Spin\" table_id=\"Wuxia Princess Mega Reels\" game_id=\"1\" lucky_num=\"\" platform=\"4\" round_id=\"\" game_code=\"\" fround=\"0\" jcon=\"0\" jwin=\"0.0\" rebate_amount=\"\"/>\n" +
+            "<item winlose=\"-0.50\" bet_id=\"47403074\" bundle_id=\"47403074\" trans_date=\"2019-12-20 22:53:03\" user_id=\"01000001jk\" game_type=\"1\" balance=\"0.00\" bet=\"0.50\" status=\"1\" game_result=\"\" currency=\"\" player_hand=\"Spin\" table_id=\"Wuxia Princess Mega Reels\" game_id=\"1\" lucky_num=\"\" platform=\"4\" round_id=\"\" game_code=\"\" fround=\"0\" jcon=\"0\" jwin=\"0.0\" rebate_amount=\"\"/>\n" +
+            "<item winlose=\"-0.42\" bet_id=\"47403075\" bundle_id=\"47403075\" trans_date=\"2019-12-20 22:53:06\" user_id=\"01000001jk\" game_type=\"1\" balance=\"0.00\" bet=\"0.50\" status=\"1\" game_result=\"\" currency=\"\" player_hand=\"Spin\" table_id=\"Wuxia Princess Mega Reels\" game_id=\"1\" lucky_num=\"\" platform=\"4\" round_id=\"\" game_code=\"\" fround=\"0\" jcon=\"0\" jwin=\"0.0\" rebate_amount=\"\"/>\n" +
+            "<item winlose=\"-0.50\" bet_id=\"47403076\" bundle_id=\"47403076\" trans_date=\"2019-12-20 22:53:10\" user_id=\"01000001jk\" game_type=\"1\" balance=\"0.00\" bet=\"0.50\" status=\"1\" game_result=\"\" currency=\"\" player_hand=\"Spin\" table_id=\"Wuxia Princess Mega Reels\" game_id=\"1\" lucky_num=\"\" platform=\"4\" round_id=\"\" game_code=\"\" fround=\"0\" jcon=\"0\" jwin=\"0.0\" rebate_amount=\"\"/>\n" +
+            "<item winlose=\"-0.50\" bet_id=\"47403077\" bundle_id=\"47403077\" trans_date=\"2019-12-20 22:53:13\" user_id=\"01000001jk\" game_type=\"1\" balance=\"0.00\" bet=\"0.50\" status=\"1\" game_result=\"\" currency=\"\" player_hand=\"Spin\" table_id=\"Wuxia Princess Mega Reels\" game_id=\"1\" lucky_num=\"\" platform=\"4\" round_id=\"\" game_code=\"\" fround=\"0\" jcon=\"0\" jwin=\"0.0\" rebate_amount=\"\"/>\n" +
+            "</items>\n" +
+            "</resp>"
+
+    val result = XmlMapper().readValue(xml, GamePlayValue.BetResult::class.java)
+
+    val orders = result.betDetailList?.map { bet ->
+        val mapUtil = bet.mapUtil
+        val username = mapUtil.asString("user_id")
+        val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.GamePlay, platformUsername = username)
+        val orderId = mapUtil.asString("bet_id")
+        val betAmount = mapUtil.asBigDecimal("bet")
+        val winLose = mapUtil.asBigDecimal("winlose")
+        val betTime = mapUtil.asLocalDateTime("trans_date", dateTimeFormat)
+
+        val originData = jacksonObjectMapper().writeValueAsString(mapUtil.data)
+
+        BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.GamePlay, orderId = orderId, betAmount = betAmount,
+                winAmount = betAmount.plus(winLose), betTime = betTime, settleTime = betTime, originData = originData)
+    }?: emptyList()
+
+    println(orders)
+
+}
+*/
+
 

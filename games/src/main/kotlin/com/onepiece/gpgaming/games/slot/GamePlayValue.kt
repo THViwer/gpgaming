@@ -16,4 +16,21 @@ sealed class GamePlayValue {
     ): JacksonMapUtil()
 
 
+    @JacksonXmlRootElement(localName = "resp")
+    data class BetResult(
+
+            @JacksonXmlProperty(localName = "localName")
+            val error_code: Int,
+
+            @JacksonXmlProperty(localName = "items")
+            val betDetailList: List<Item>? = arrayListOf()
+
+    ): JacksonMapUtil() {
+
+        class Item: JacksonMapUtil()
+
+
+    }
+
+
 }

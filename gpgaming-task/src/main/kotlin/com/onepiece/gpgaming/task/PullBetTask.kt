@@ -82,13 +82,13 @@ class PullBetTask(
 
         if (!this.canExecutePlatform(startTime = startTime, platform = bind.platform)) return
 
-        val endTime = startTime.plusMinutes(5)
+        val endTime = startTime.plusMinutes(3)
 
         log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 开始时间任务：${LocalDateTime.now()}, 查询开始时间：$startTime, 查询结束时间${endTime}")
         val orders = pull(startTime, endTime)
         this.asyncBatch(orders)
 
-        redisService.put(key = redisKey, value = startTime.plusMinutes(3))
+        redisService.put(key = redisKey, value = startTime.plusMinutes(2))
     }
 
     private fun canExecutePlatform(startTime: LocalDateTime, platform: Platform): Boolean {
@@ -103,11 +103,11 @@ class PullBetTask(
             Platform.GoldDeluxe,
             Platform.SaGaming,
             Platform.SimplePlay,
-//            Platform.GamePlay,
+            Platform.GamePlay,
             Platform.MicroGaming -> {
                 val duration = Duration.between(startTime, LocalDateTime.now())
                 val minutes: Long = duration.toMinutes() //相差的分钟数
-                minutes > 3
+                minutes > 2
             }
             // 不需要判断时间
             Platform.Pragmatic,
