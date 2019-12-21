@@ -78,13 +78,13 @@ data class Promotion (
             PromotionRuleType.Bet -> {
                 val betRule = this.rule as PromotionRules.BetRule
                 val promotionAmount = getPromotionAmount(amount = amount, platformBalance = platformBalance)
-                val requirementBet = (amount.plus(promotionAmount).plus(platformBalance)).multiply(betRule.betMultiple)
+                val requirementBet = (amount.plus(promotionAmount).plus(platformBalance)).multiply(betRule.betMultiple).setScale(2, 2)
                 "转账:$amount, 平台剩余:${platformBalance},优惠:${promotionAmount}, 实际到账:${amount.plus(promotionAmount).plus(platformBalance)}, 打码量达到${requirementBet}可取出"
             }
             PromotionRuleType.Withdraw -> {
                 val withdrawRule = this.rule as PromotionRules.WithdrawRule
                 val promotionAmount = getPromotionAmount(amount = amount, platformBalance = platformBalance)
-                val requirementTransferOutAmount = (amount.plus(promotionAmount).plus(platformBalance)).multiply(withdrawRule.transferMultiplied)
+                val requirementTransferOutAmount = (amount.plus(promotionAmount).plus(platformBalance)).multiply(withdrawRule.transferMultiplied).setScale(2,2)
                 "转账:$amount, 平台剩余:${platformBalance},优惠:${promotionAmount}, 实际到账:${amount.plus(promotionAmount).plus(platformBalance)}, 游戏金额${requirementTransferOutAmount}可取出"
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)

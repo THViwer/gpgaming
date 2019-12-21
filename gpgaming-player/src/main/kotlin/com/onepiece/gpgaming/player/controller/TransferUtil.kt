@@ -186,7 +186,7 @@ class TransferUtil(
     /**
      * 处理优惠活动
      */
-    private fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
+    fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
 
         // 是否有历史优惠活动
         if (platformMember.joinPromotionId != null) {
@@ -205,13 +205,13 @@ class TransferUtil(
         check(promotion.status == Status.Normal) { OnePieceExceptionCode.PROMOTION_EXPIRED }
         check(this.checkStopTime(promotion.stopTime)) { OnePieceExceptionCode.PROMOTION_EXPIRED }
 
-        val transferUo = promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount =  amount, platformBalance = platformBalance, promotionId = promotion.id)
+        val transferUo = promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount =  amount,
+                platformBalance = platformBalance, promotionId = promotion.id)
 
         // 检查当前平台是否是参加活动的平台
         check(transferUo.platforms.contains(platformMember.platform)) { OnePieceExceptionCode.ILLEGAL_OPERATION }
         return transferUo
     }
-
 
     /**
      * 检查是否清空优惠活动信息

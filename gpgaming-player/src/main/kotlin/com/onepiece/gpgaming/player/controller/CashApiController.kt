@@ -66,6 +66,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.util.stream.Collectors
+import kotlin.streams.toList
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 @RestController
@@ -322,24 +323,30 @@ open class CashApiController(
                     "${it.configId}:${it.language}" to it
                 }.toMap()
 
-        val checkPromotions = joinPromotions.map { promotion ->
+        val checkPromotions = joinPromotions.parallelStream().map { promotion ->
 
             val platformMemberVo = getPlatformMember(platform)
             val platformBalance = gameApi.balance(clientId = member.clientId, platform = platform, platformUsername = platformMemberVo.platformUsername,
-                    platformPassword =  platformMemberVo.platformPassword)
+                    platformPassword = platformMemberVo.platformPassword)
 
-            val content = contentMap["${promotion.id}:${language}"]
-                    ?: contentMap["${promotion.id}:${Language.EN}"]
+            val platformMember = platformMemberService.get(platformMemberVo.id)
 
-            if (content == null) {
+            try {
+                transferUtil.handlerPromotion(platformMember = platformMember, amount = amount, platformBalance = platformBalance, promotionId = promotion.id)
+
+                val content = contentMap["${promotion.id}:${language}"]
+                        ?: contentMap["${promotion.id}:${Language.EN}"]
+
+                content?.let {
+                    val mContent = content.getII18nContent(objectMapper = objectMapper) as I18nContent.PromotionI18n
+
+                    val promotionIntroduction = promotion.getPromotionIntroduction(amount = amount, language = language, platformBalance = platformBalance)
+                    CheckPromotionVo(promotionId = promotion.id, promotionIntroduction = promotionIntroduction, title = mContent.title)
+                }
+            } catch (e: Exception) {
                 null
-            } else {
-                val mContent = content.getII18nContent(objectMapper = objectMapper) as I18nContent.PromotionI18n
-
-                val promotionIntroduction = promotion.getPromotionIntroduction(amount = amount, language = language, platformBalance = platformBalance)
-                CheckPromotionVo(promotionId = promotion.id, promotionIntroduction = promotionIntroduction, title = mContent.title)
             }
-        }.filterNotNull()
+        }.toList().filterNotNull()
 
         return CheckPromotinResp(promotions = checkPromotions)
     }
