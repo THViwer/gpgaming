@@ -10,15 +10,18 @@ import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.PlatformBindDao
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.utils.RedisService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
 @Service
 class PlatformBindServiceImpl(
         private val platformBindDao: PlatformBindDao,
-        private val redisService: RedisService,
-        private val indexUtil: IndexUtil
+        private val redisService: RedisService
 ) : PlatformBindService {
+
+    @Autowired
+    lateinit var indexUtil: IndexUtil
 
 
     override fun all(): List<PlatformBind> {

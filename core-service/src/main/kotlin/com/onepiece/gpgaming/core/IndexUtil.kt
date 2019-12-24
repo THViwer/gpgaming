@@ -25,7 +25,6 @@ import java.util.*
 @Service
 class IndexUtil(
         private val i18nContentService: I18nContentService,
-        private val platformBindService: PlatformBindService,
         private val recommendedService: RecommendedService,
         private val bannerService: BannerService,
         private val objectMapper: ObjectMapper
@@ -33,6 +32,10 @@ class IndexUtil(
 
     @Autowired
     lateinit var clientService: ClientService
+
+    @Autowired
+    lateinit var platformBindService: PlatformBindService
+
 
     @Async
     fun generatorIndexPage(clientId: Int) {
