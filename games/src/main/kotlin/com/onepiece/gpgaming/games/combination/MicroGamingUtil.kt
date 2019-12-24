@@ -1,6 +1,6 @@
 @file:Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 
-package com.onepiece.gpgaming.games.slot
+package com.onepiece.gpgaming.games.combination
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.beans.SystemConstant

@@ -1,4 +1,4 @@
-package com.onepiece.gpgaming.games.slot;
+package com.onepiece.gpgaming.games.combination;
 
 import com.google.common.collect.Lists;
 import sun.misc.BASE64Encoder;

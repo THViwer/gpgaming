@@ -1,4 +1,4 @@
-package com.onepiece.gpgaming.games.slot
+package com.onepiece.gpgaming.games.combination
 
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonIgnore

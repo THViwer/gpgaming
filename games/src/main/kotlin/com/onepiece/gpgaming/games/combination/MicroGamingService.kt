@@ -1,4 +1,4 @@
-package com.onepiece.gpgaming.games.slot
+package com.onepiece.gpgaming.games.combination
 
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Platform

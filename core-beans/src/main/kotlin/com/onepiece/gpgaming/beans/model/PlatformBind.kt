@@ -3,7 +3,29 @@ package com.onepiece.gpgaming.beans.model
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
-import com.onepiece.gpgaming.beans.model.token.*
+import com.onepiece.gpgaming.beans.model.token.AllBetClientToken
+import com.onepiece.gpgaming.beans.model.token.BcsClientToken
+import com.onepiece.gpgaming.beans.model.token.CMDClientToken
+import com.onepiece.gpgaming.beans.model.token.ClientToken
+import com.onepiece.gpgaming.beans.model.token.DefaultClientToken
+import com.onepiece.gpgaming.beans.model.token.DreamGamingClientToken
+import com.onepiece.gpgaming.beans.model.token.EvolutionClientToken
+import com.onepiece.gpgaming.beans.model.token.GGFishingClientToken
+import com.onepiece.gpgaming.beans.model.token.GamePlayClientToken
+import com.onepiece.gpgaming.beans.model.token.GoldDeluxeClientToken
+import com.onepiece.gpgaming.beans.model.token.Kiss918ClientToken
+import com.onepiece.gpgaming.beans.model.token.LbcClientToken
+import com.onepiece.gpgaming.beans.model.token.MegaClientToken
+import com.onepiece.gpgaming.beans.model.token.MicroGamingClientToken
+import com.onepiece.gpgaming.beans.model.token.PNGClientToken
+import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
+import com.onepiece.gpgaming.beans.model.token.PragmaticClientToken
+import com.onepiece.gpgaming.beans.model.token.Pussy888ClientToken
+import com.onepiece.gpgaming.beans.model.token.SaGamingClientToken
+import com.onepiece.gpgaming.beans.model.token.SexyGamingClientToken
+import com.onepiece.gpgaming.beans.model.token.SimplePlayClientToken
+import com.onepiece.gpgaming.beans.model.token.SpadeGamingClientToken
+import com.onepiece.gpgaming.beans.model.token.TTGClientToken
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -65,7 +87,8 @@ data class PlatformBind(
                 Platform.MicroGamingLive -> MicroGamingClientToken::class.java
                 Platform.GoldDeluxe -> GoldDeluxeClientToken::class.java
                 Platform.Bcs -> BcsClientToken::class.java
-                Platform.PlaytechSlot -> PlaytechSlotClientToken::class.java
+                Platform.PlaytechSlot -> PlaytechClientToken::class.java
+                Platform.PlaytechLive -> PlaytechClientToken::class.java
                 Platform.SaGaming -> SaGamingClientToken::class.java
                 Platform.PNG -> PNGClientToken::class.java
                 Platform.GamePlay -> GamePlayClientToken::class.java

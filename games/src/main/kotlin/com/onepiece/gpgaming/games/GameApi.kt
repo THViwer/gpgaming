@@ -13,6 +13,7 @@ import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
+import com.onepiece.gpgaming.games.combination.MicroGamingService
 import com.onepiece.gpgaming.games.combination.PlaytechService
 import com.onepiece.gpgaming.games.fishing.GGFishingService
 import com.onepiece.gpgaming.games.live.AllBetService
@@ -27,7 +28,6 @@ import com.onepiece.gpgaming.games.slot.GamePlayService
 import com.onepiece.gpgaming.games.slot.JokerService
 import com.onepiece.gpgaming.games.slot.Kiss918Service
 import com.onepiece.gpgaming.games.slot.MegaService
-import com.onepiece.gpgaming.games.slot.MicroGamingService
 import com.onepiece.gpgaming.games.slot.PNGService
 import com.onepiece.gpgaming.games.slot.PragmaticService
 import com.onepiece.gpgaming.games.slot.Pussy888Service
@@ -102,6 +102,7 @@ class GameApi(
             Platform.MicroGaming -> microGameService
             Platform.GamePlay -> gamePlayService
             Platform.SimplePlay -> simplePlayService
+            Platform.PlaytechSlot -> playtechService
 
             // live game
             Platform.Fgg -> fggService
@@ -112,6 +113,7 @@ class GameApi(
             Platform.SexyGaming -> sexyGamingService
             Platform.PNG -> pngService
             Platform.MicroGamingLive -> microGameService
+            Platform.PlaytechLive -> playtechService
 
             // sport
             Platform.Lbc -> lbcService
@@ -122,7 +124,6 @@ class GameApi(
             Platform.GGFishing -> ggFishingService
 
             // slot and live
-            Platform.PlaytechSlot -> playtechService
             Platform.SaGaming -> saGamingService
             Platform.AsiaGaming -> asiaGamingService
 

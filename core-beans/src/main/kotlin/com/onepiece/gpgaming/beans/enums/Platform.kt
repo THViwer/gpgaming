@@ -35,6 +35,7 @@ enum class Platform(
     SaGaming(PlatformDetail.ofSaGaming()),
     AsiaGaming(PlatformDetail.ofAsiaGaming()),
     MicroGamingLive(PlatformDetail.ofMicroGamingLive()),
+    PlaytechLive(PlatformDetail.ofPlaytechLive()),
 
     // sport
 //    Sbo(PlatformDetail.ofSbo()),
@@ -341,6 +342,17 @@ open class PlatformDetail private constructor(
                     status = Status.Normal,
                     demo = true,
                     icon = "${SystemConstant.AWS_LOGO_URL}/microgaming.jpg",
+                    disableIcon = null,
+                    originIcon = "${SystemConstant.AWS_ORIGIN_LOGO_URL}/firms_slot_logo_sa.png",
+                    originIconOver = "${SystemConstant.AWS_ORIGIN_LOGO_URL}/firms_slot_logo_sa_over.png")
+        }
+        fun ofPlaytechLive(): PlatformDetail {
+            return PlatformDetail(
+                    category = PlatformCategory.LiveVideo,
+                    name = "playtech",
+                    status = Status.Normal,
+                    demo = false,
+                    icon = "${SystemConstant.AWS_LOGO_URL}/playtech.jpg",
                     disableIcon = null,
                     originIcon = "${SystemConstant.AWS_ORIGIN_LOGO_URL}/firms_slot_logo_sa.png",
                     originIconOver = "${SystemConstant.AWS_ORIGIN_LOGO_URL}/firms_slot_logo_sa_over.png")

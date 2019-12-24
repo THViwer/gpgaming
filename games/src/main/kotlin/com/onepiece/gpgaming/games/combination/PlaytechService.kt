@@ -2,7 +2,7 @@ package com.onepiece.gpgaming.games.combination
 
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.gpgaming.beans.model.token.PlaytechSlotClientToken
+import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.games.ActiveConfig
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
@@ -14,7 +14,7 @@ class PlaytechService(
         private val activeConfig: ActiveConfig
 ) : PlatformService() {
 
-    fun startPostJson(clientToken: PlaytechSlotClientToken, path: String, data: String): PlaytechValue.Result {
+    fun startPostJson(clientToken: PlaytechClientToken, path: String, data: String): PlaytechValue.Result {
         val url = "${gameConstant.getDomain(Platform.PlaytechSlot)}${path}"
         val headers = mapOf(
                 "X-Auth-Api-Key" to clientToken.accessToken
@@ -22,7 +22,7 @@ class PlaytechService(
         return  okHttpUtil.doPostJson(url = url, data = data, headers = headers, clz = PlaytechValue.Result::class.java)
     }
 
-    fun startGetJson(clientToken: PlaytechSlotClientToken, path: String, data: List<String>): PlaytechValue.Result {
+    fun startGetJson(clientToken: PlaytechClientToken, path: String, data: List<String>): PlaytechValue.Result {
         val urlParam = data.joinToString(separator = "&")
         val url = "${gameConstant.getDomain(Platform.PlaytechSlot)}${path}?$urlParam"
         val headers = mapOf(
@@ -33,7 +33,7 @@ class PlaytechService(
     }
 
     override fun register(registerReq: GameValue.RegisterReq): String {
-        val clientToken = registerReq.token as PlaytechSlotClientToken
+        val clientToken = registerReq.token as PlaytechClientToken
 
         val data = """
             {
@@ -50,7 +50,7 @@ class PlaytechService(
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
-        val clientToken = balanceReq.token as PlaytechSlotClientToken
+        val clientToken = balanceReq.token as PlaytechClientToken
 
         val data = listOf(
                 "player_name=${clientToken.prefix}_${balanceReq.username}",
@@ -65,7 +65,7 @@ class PlaytechService(
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
-        val clientToken = transferReq.token as PlaytechSlotClientToken
+        val clientToken = transferReq.token as PlaytechClientToken
 
         val toPlayer = "${clientToken.prefix}_${transferReq.username}".toUpperCase()
         val result = when (transferReq.amount.toDouble() > 0) {
@@ -106,7 +106,7 @@ class PlaytechService(
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
-        val clientToken = checkTransferReq.token as PlaytechSlotClientToken
+        val clientToken = checkTransferReq.token as PlaytechClientToken
 
         val data = listOf(
                 "reference_no=${checkTransferReq.platformOrderId}",
@@ -118,7 +118,7 @@ class PlaytechService(
     }
 
     override fun start(startReq: GameValue.StartReq): String {
-        val clientToken = startReq.token as PlaytechSlotClientToken
+        val clientToken = startReq.token as PlaytechClientToken
 
         error("")
     }

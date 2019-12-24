@@ -1,6 +1,6 @@
 package com.onepiece.gpgaming.beans.model.token
 
-class PlaytechSlotClientToken(
+class PlaytechClientToken(
 
         val accessToken: String,
 

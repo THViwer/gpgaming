@@ -26,6 +26,7 @@ object PlatformUsernameUtil  {
             Platform.Pussy888,
             Platform.Mega,
             Platform.PlaytechSlot,
+            Platform.PlaytechLive,
 
                 // live
             Platform.AllBet,
