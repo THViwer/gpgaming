@@ -63,7 +63,7 @@ open class ApiController(
     ): IndexConfig {
         val clientId = this.getClientIdByDomain()
         val url = SystemConstant.getClientResourcePath(clientId = clientId, profile = activeConfig.profile)
-        return IndexConfig(url = "$url/index_${language.name.toLowerCase()}.json")
+        return IndexConfig(url = "$url/index_${language.name.toLowerCase()}.json?${UUID.randomUUID()}")
 //        val clientId = this.getClientIdByDomain()
 //
 //        // 平台信息
@@ -144,7 +144,7 @@ open class ApiController(
 //        return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGameUrl = hotGameUrl, logo = client.logo,
 //                recommendedPlatforms = recommendedPlatforms, lastestVideo = lastestVideo, fishes = fishes, lives = lives)
 
-        error("")
+//        error("")
     }
 
 
