@@ -59,7 +59,7 @@ class IndexUtil(
         }.filter { it.status != Status.Delete }
 
         // banner
-        val banners = bannerService.findByType(clientId = clientId, type = BannerType.Banner)
+        val banners = bannerService.findByType(clientId = clientId, type = BannerType.Banner).filter { it.status == Status.Normal }
 
 
         // 推荐列表
