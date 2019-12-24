@@ -145,6 +145,47 @@ class MicroGamingService : PlatformService() {
         return GameValue.TransferResp.of(successful = successful, balance = balance)
     }
 
+    override fun start(startReq: GameValue.StartReq): String {
+
+        // 70577
+        val itemId = 1930
+        val appId = 1001
+
+        val clientToken = startReq.token as MicroGamingClientToken
+
+
+        val lang = when (startReq.language) {
+            Language.EN -> "en_US"
+            Language.VI -> "vi_VN"
+            Language.ID -> "in_ID"
+            Language.TH -> "th_TH"
+            Language.CN -> "zh_CN"
+            Language.MY -> "ms_MY"
+            else -> "en_US"
+        }
+        val data = """
+            {
+                "ext_ref": "${startReq.username}",
+                "item_id": ${itemId},
+                "app_id": ${appId},
+                "demo": false,
+                "login_context": {
+                    "lang": "$lang"
+                },
+                "conf_params": {
+                    "titanium": "default",
+                    "lobby_url": "${startReq.redirectUrl}",
+                    "banking_url": "${startReq.redirectUrl}",
+                    "logout_url": "${startReq.redirectUrl}",
+                    "failed_url": "${startReq.redirectUrl}"
+                }
+            }
+        """.trimIndent()
+        val mapUtil = this.startPostJson(clientToken = clientToken, method = "/v1/launcher/item", data = data)
+        return mapUtil.asString("data")
+    }
+
+
     override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
 
         val clientToken = startSlotReq.token as MicroGamingClientToken
@@ -243,8 +284,14 @@ class MicroGamingService : PlatformService() {
             }
             val betTime = bet.asLocalDateTime("transaction_time", betDateTimeFormat)
 
+            val platform = when (bet.asMap("meta_data").asString("item_id")) {
+                "1930", "1921", "2048", "2049", "1931", "1922", "1936", "1912" -> Platform.MicroGamingLive
+                else -> Platform.MicroGaming
+            }
+
+
             val originData = objectMapper.writeValueAsString(bet.data)
-            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, platform = Platform.MicroGaming, betAmount = betAmount,
+            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, platform = platform, betAmount = betAmount,
                     winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData)
         }
     }

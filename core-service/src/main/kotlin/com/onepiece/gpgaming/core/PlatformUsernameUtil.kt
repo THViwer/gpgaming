@@ -22,6 +22,7 @@ object PlatformUsernameUtil  {
             Platform.Joker,
             Platform.Kiss918,
             Platform.MicroGaming,
+            Platform.MicroGamingLive,
             Platform.Pussy888,
             Platform.Mega,
             Platform.PlaytechSlot,

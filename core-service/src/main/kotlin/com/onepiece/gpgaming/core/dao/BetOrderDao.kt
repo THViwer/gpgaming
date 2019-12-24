@@ -10,13 +10,13 @@ import kotlin.math.absoluteValue
 
 interface BetOrderDao: BasicDao<BetOrder> {
 
-    fun getRuleTable(clientId: Int, memberId: Int, platform: Platform): String {
-        val tableRule = this.getRuleKey(clientId, memberId, platform)
+    fun getRuleTable(clientId: Int, memberId: Int): String {
+        val tableRule = this.getRuleKey(clientId, memberId)
         return this.getRuleTable(tableRule)
     }
 
-    fun getRuleKey(clientId: Int, memberId: Int, platform: Platform): String {
-        return "$clientId$memberId$platform"
+    fun getRuleKey(clientId: Int, memberId: Int): String {
+        return "$clientId$memberId"
     }
 
     fun getRuleTable(tableRule: String): String {

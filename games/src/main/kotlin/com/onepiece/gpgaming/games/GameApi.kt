@@ -49,7 +49,6 @@ class GameApi(
         private val platformMemberService: PlatformMemberService,
         private val redisService: RedisService,
 
-
         // slot
         private val jokerService: JokerService,
         private val kiss918Service: Kiss918Service,
@@ -112,6 +111,7 @@ class GameApi(
             Platform.GoldDeluxe -> goldDeluxeService
             Platform.SexyGaming -> sexyGamingService
             Platform.PNG -> pngService
+            Platform.MicroGamingLive -> microGameService
 
             // sport
             Platform.Lbc -> lbcService
@@ -215,6 +215,7 @@ class GameApi(
             Platform.SexyGaming,
             Platform.SaGaming,
             Platform.PNG,
+            Platform.MicroGamingLive,
             Platform.Bcs -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, launch = launch, language = language, password = platformPassword)
                 this.getPlatformApi(platform).start(startReq)
@@ -393,6 +394,7 @@ class GameApi(
             Platform.Evolution,
             Platform.DreamGaming,
             Platform.MicroGaming,
+            Platform.MicroGamingLive,
             Platform.SexyGaming,
             Platform.SaGaming,
             Platform.GamePlay,

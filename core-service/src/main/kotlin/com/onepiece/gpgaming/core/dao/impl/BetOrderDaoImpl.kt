@@ -39,7 +39,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
     override fun batch(orders: List<BetOrderValue.BetOrderCo>) {
         if (orders.isEmpty()) return
 
-        orders.groupBy { this.getRuleKey(it.clientId, it.memberId, it.platform) }.map {
+        orders.groupBy { this.getRuleKey(it.clientId, it.memberId) }.map {
             val table = getRuleTable(it.key)
             this.batch(table = table, orders = it.value)
         }
@@ -83,7 +83,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
     }
 
     override fun getBets(clientId: Int, memberId: Int, platform: Platform): List<BetOrder> {
-        val table = this.getRuleTable(clientId, memberId, platform)
+        val table = this.getRuleTable(clientId, memberId)
 
         return query(defaultTable = table)
                 .where("client_id", clientId)
