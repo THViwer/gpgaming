@@ -196,7 +196,7 @@ open class PlatformDetail private constructor(
             return PlatformDetail(
                     category = PlatformCategory.Slot,
                     name = "playtech",
-                    status = Status.Delete,
+                    status = Status.Normal,
                     demo = false,
                     icon = "${SystemConstant.AWS_LOGO_URL}/playtech.jpg",
                     disableIcon = null,

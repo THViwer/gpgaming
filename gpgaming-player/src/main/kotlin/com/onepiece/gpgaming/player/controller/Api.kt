@@ -11,6 +11,7 @@ import com.onepiece.gpgaming.player.controller.value.IndexConfig
 import com.onepiece.gpgaming.player.controller.value.PlatformCategoryDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformCategoryPage
 import com.onepiece.gpgaming.player.controller.value.PlatformMembrerDetail
+import com.onepiece.gpgaming.player.controller.value.PlatformVo
 import com.onepiece.gpgaming.player.controller.value.PromotionVo
 import com.onepiece.gpgaming.player.controller.value.StartGameResp
 import io.swagger.annotations.Api
@@ -27,6 +28,9 @@ interface Api {
             @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("language") language: Language
     ): IndexConfig
+
+    @ApiOperation(tags = ["api"],  value = "首页平台列表")
+    fun indexPlatforms(): List<PlatformVo>
 
     @ApiOperation(tags = ["api"], value = "平台类别页面详细资料")
     fun categories(
@@ -90,8 +94,5 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "联系我们")
     fun contactUs(): Contacts
-
-    abstract fun getClientIdByDomain(): Any
-
 
 }
