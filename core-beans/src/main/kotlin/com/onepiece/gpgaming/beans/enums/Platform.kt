@@ -319,7 +319,7 @@ open class PlatformDetail private constructor(
                     name = "sa gaming",
                     icon = "${SystemConstant.AWS_LOGO_URL}/sa-gaming.jpg",
                     disableIcon = "${SystemConstant.AWS_LOGO_URL}/saGaming.jpeg",
-                    status = Status.Stop,
+                    status = Status.Normal,
                     originIcon = "${SystemConstant.AWS_ORIGIN_LOGO_URL}/firms_slot_logo_sa.png",
                     originIconOver = "${SystemConstant.AWS_ORIGIN_LOGO_URL}/firms_slot_logo_sa_over.png")
         }
@@ -329,7 +329,7 @@ open class PlatformDetail private constructor(
                     name = "asia gaming",
                     icon = "${SystemConstant.AWS_LOGO_URL}/asia-gaming-live.jpg",
                     disableIcon = null,
-                    status = Status.Stop,
+                    status = Status.Normal,
                     originIcon = "${SystemConstant.AWS_ORIGIN_LOGO_URL}/firms_slot_logo_sa.png",
                     originIconOver = "${SystemConstant.AWS_ORIGIN_LOGO_URL}/firms_slot_logo_sa_over.png")
         }
