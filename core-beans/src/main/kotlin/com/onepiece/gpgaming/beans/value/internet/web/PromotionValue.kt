@@ -85,9 +85,6 @@ data class PromotionCoReq(
         @ApiModelProperty("是否置顶")
         val top: Boolean,
 
-        @ApiModelProperty("图标")
-        val icon: String,
-
         @ApiModelProperty("优惠规则")
         val promotionRuleVo: PromotionRuleVo
 )
