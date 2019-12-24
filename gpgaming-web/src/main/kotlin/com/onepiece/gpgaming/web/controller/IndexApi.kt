@@ -43,6 +43,7 @@ interface IndexApi {
     fun bannerList(): List<BannerVo>
 
     @ApiOperation(tags = ["web setting"], value = "首页设置 -> 创建")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun create(@RequestBody bannerCoReq: BannerCoReq)
 
     @ApiOperation(tags = ["web setting"], value = "首页设置 -> 更新")
