@@ -1,17 +1,19 @@
 package com.onepiece.gpgaming.beans.enums
 
-enum class FileCategory {
+enum class FileCategory(
+        val path: String
+) {
 
-    Banner,
+    Banner("banner"),
 
-    Promotion,
+    Promotion("promotion"),
 
-    Contact,
+    Contact("contact"),
 
-    IndexVideo,
+    IndexVideo("video"),
 
-    IndexSport,
+    IndexSport("sport"),
 
-    IndexLive
+    IndexLive("live")
 
 }
