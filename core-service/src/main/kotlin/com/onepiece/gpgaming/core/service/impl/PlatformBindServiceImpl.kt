@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.PlatformBind
 import com.onepiece.gpgaming.beans.value.database.PlatformBindCo
 import com.onepiece.gpgaming.beans.value.database.PlatformBindUo
+import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.PlatformBindDao
 import com.onepiece.gpgaming.core.service.PlatformBindService
@@ -15,7 +16,8 @@ import java.math.BigDecimal
 @Service
 class PlatformBindServiceImpl(
         private val platformBindDao: PlatformBindDao,
-        private val redisService: RedisService
+        private val redisService: RedisService,
+        private val indexUtil: IndexUtil
 ) : PlatformBindService {
 
 
@@ -48,6 +50,8 @@ class PlatformBindServiceImpl(
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         redisService.delete(OnePieceRedisKeyConstant.openPlatforms(platformBindCo.clientId))
+
+        indexUtil.generatorIndexPage(platformBindCo.clientId)
     }
 
     override fun update(platformBindUo: PlatformBindUo) {
@@ -60,6 +64,7 @@ class PlatformBindServiceImpl(
                 OnePieceRedisKeyConstant.openPlatforms(bind.clientId),
                 OnePieceRedisKeyConstant.openPlatform(bind.clientId, bind.platform)
         )
+        indexUtil.generatorIndexPage(bind.clientId)
     }
 
     override fun updateEarnestBalance(clientId: Int, platform: Platform, earnestBalance: BigDecimal) {

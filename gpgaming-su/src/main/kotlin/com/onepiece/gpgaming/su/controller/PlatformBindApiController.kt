@@ -40,6 +40,7 @@ class PlatformBindApiController(
         val platformBindUo = PlatformBindUo(id = platformBindUoReq.id, username = platformBindUoReq.username, password = platformBindUoReq.password,
                 earnestBalance = platformBindUoReq.earnestBalance, status = platformBindUoReq.status, tokenJson = platformBindUoReq.tokenJson)
         platformBindService.update(platformBindUo)
+
     }
 
     private fun checkClientToken(platform: Platform, tokenJson: String) {
@@ -59,8 +60,6 @@ class PlatformBindApiController(
                         id = it.id)
             }?:PlatformBindSuValue.PlatformBindVo(platform = platform, backUrl = "-", clientId = clientId, earnestBalance = BigDecimal.valueOf(-1),
                     username = "-", password = "-", open = false, tokenJson = "-", id = -1)
-
         }
-
     }
 }
