@@ -38,12 +38,12 @@ class BannerServiceImpl(
 
     override fun update(bannerUo: BannerUo) {
 
-        val advert = bannerDao.get(bannerUo.id)
+        val banner = bannerDao.get(bannerUo.id)
 
         val state = bannerDao.update(bannerUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
 
-        redisService.delete(OnePieceRedisKeyConstant.banners(advert.clientId))
+        redisService.delete(OnePieceRedisKeyConstant.banners(banner.clientId))
     }
 }

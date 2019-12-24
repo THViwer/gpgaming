@@ -44,6 +44,7 @@ class BannerDaoImpl: BasicDaoImpl<Banner>("banner"), BannerDao {
         return update()
                 .set("type", bannerUo.type)
                 .set("link", bannerUo.link)
+                .set("`order`", bannerUo.order)
                 .set("status", bannerUo.status)
                 .set("updated_time", LocalDateTime.now())
                 .where("id", bannerUo.id)
