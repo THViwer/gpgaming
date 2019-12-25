@@ -23,15 +23,24 @@ class ClientPlatformApiController: BasicController(), ClientPlatformApi {
             val clientBind = clientBinds[it]
 
             if (clientBind != null) {
-                PlatformVo(id = clientBind.id, category = it.detail.category, name = it.detail.name, status = clientBind.status, open = true, logo = it.detail.icon)
+                PlatformVo(id = clientBind.id, platform = clientBind.platform, status = clientBind.status, open = true)
             } else {
-                PlatformVo(id = -1, category = it.detail.category, name = it.detail.name, status = Status.Stop, open = false, logo = it.detail.icon)
+                PlatformVo(id = -1, platform = it, status = Status.Stop, open = false)
             }
         }
-
     }
 
-//    @PutMapping
+    @GetMapping("/open")
+    override fun openList(): List<PlatformVo> {
+        val clientId = getClientId()
+        val clientBinds = platformBindService.findClientPlatforms(clientId)
+
+        return clientBinds.map {
+            PlatformVo(id = it.id, platform = it.platform, status = it.status, open = true)
+        }
+    }
+
+    //    @PutMapping
 //    override fun update(@RequestBody platformUoReq: PlatformUoReq) {
 //
 //        val platform = platformBindService.findClientPlatforms(clientId).find { it.id == platformUoReq.id }

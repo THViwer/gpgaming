@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
@@ -23,21 +24,30 @@ data class PlatformVo(
         @ApiModelProperty("id")
         val id: Int,
 
-        @ApiModelProperty("平台类型")
-        val category: PlatformCategory,
+        @ApiModelProperty("平台")
+        val platform: Platform,
 
-        @ApiModelProperty("平台logo")
-        val logo: String,
-
-        @ApiModelProperty("平台名称")
-        val name: String,
 
         @ApiModelProperty("是否启用")
         val status: Status,
 
         @ApiModelProperty("是否开通")
         val open: Boolean
-)
+) {
+
+        val category: PlatformCategory
+                @ApiModelProperty("平台类型")
+                get() = platform.detail.category
+
+        val logo: String
+                @ApiModelProperty("平台logo")
+                get() = platform.detail.icon
+
+        val name: String
+                @ApiModelProperty("平台名称")
+                get() = platform.detail.name
+
+}
 
 data class PlatformUoReq(
 
