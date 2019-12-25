@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.web.controller
 
-import com.onepiece.gpgaming.beans.SystemConstant
 import com.onepiece.gpgaming.beans.enums.FileCategory
 import com.onepiece.gpgaming.games.ActiveConfig
 import com.onepiece.gpgaming.utils.AwsS3Util
@@ -24,12 +23,12 @@ class FileApiController(
     ): Map<String, String> {
         val clientId = getClientId()
 
-        val path = category.path
-                .let {
-                    SystemConstant.getClientResourcePath(clientId = clientId, profile = activeConfig.profile, defaultPath = it)
-
-                }
-        val url = AwsS3Util.clientUpload(file = file, clientId = clientId, path = path, profile = activeConfig.profile)
+//        val path = category.path
+//                .let {
+//                    SystemConstant.getClientResourcePath(clientId = clientId, profile = activeConfig.profile, defaultPath = it)
+//
+//                }
+        val url = AwsS3Util.clientUpload(file = file, clientId = clientId, path = category.path, profile = activeConfig.profile)
         return mapOf(
                 "path" to url
         )
