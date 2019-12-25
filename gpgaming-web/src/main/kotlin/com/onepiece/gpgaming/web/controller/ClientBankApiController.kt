@@ -59,7 +59,7 @@ class ClientBankApiController(
     @PutMapping
     override fun update(@RequestBody clientBankUoReq: ClientBankUoReq) {
         val clientBankUo = ClientBankUo(id = clientBankUoReq.id, bank = clientBankUoReq.bank, bankCardNumber = clientBankUoReq.bankCardNumber,
-                status = clientBankUoReq.status, name = clientBankUoReq.name)
+                status = clientBankUoReq.status, name = clientBankUoReq.name, levelId = clientBankUoReq.levelId)
         clientBankService.update(clientBankUo)
     }
 }

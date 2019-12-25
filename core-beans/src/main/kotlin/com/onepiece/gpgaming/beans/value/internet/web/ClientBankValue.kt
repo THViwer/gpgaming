@@ -91,6 +91,9 @@ data class ClientBankUoReq(
         @ApiModelProperty("银行")
         val bank: Bank?,
 
+        @ApiModelProperty("层级Id")
+        val levelId: Int?,
+
         @ApiModelProperty("姓名")
         val name: String?,
 
