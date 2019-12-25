@@ -23,6 +23,9 @@ sealed class ClientSuValue {
             @ApiModelProperty("平台开通数量")
             val openNumber: Int,
 
+            @ApiModelProperty("状态")
+            val status: Status,
+
             @ApiModelProperty("创建时间")
             val createdTime: LocalDateTime
 
