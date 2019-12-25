@@ -6,6 +6,8 @@ enum class FileCategory(
 
     Banner("banner"),
 
+    Logo("logo"),
+
     Promotion("promotion"),
 
     Contact("contact"),
