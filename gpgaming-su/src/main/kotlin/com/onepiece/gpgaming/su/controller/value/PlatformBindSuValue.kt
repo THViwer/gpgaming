@@ -35,7 +35,10 @@ sealed class PlatformBindSuValue {
             val username: String,
 
             @ApiModelProperty("密码")
-            val password: String
+            val password: String,
+
+            @ApiModelProperty("状态")
+            val status: Status
 
     )
 

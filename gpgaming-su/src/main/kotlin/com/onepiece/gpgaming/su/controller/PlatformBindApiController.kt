@@ -57,9 +57,9 @@ class PlatformBindApiController(
             bindMap[platform]?.let {
                 PlatformBindSuValue.PlatformBindVo(platform = platform, backUrl = "-", clientId = clientId, earnestBalance = it.earnestBalance,
                         username = it.username, password = it.password, open = it.status == Status.Normal, tokenJson = objectMapper.writeValueAsString(it.clientToken),
-                        id = it.id)
+                        id = it.id, status = it.status)
             }?:PlatformBindSuValue.PlatformBindVo(platform = platform, backUrl = "-", clientId = clientId, earnestBalance = BigDecimal.valueOf(-1),
-                    username = "-", password = "-", open = false, tokenJson = "-", id = -1)
+                    username = "-", password = "-", open = false, tokenJson = "-", id = -1, status = Status.Stop)
         }
     }
 }
