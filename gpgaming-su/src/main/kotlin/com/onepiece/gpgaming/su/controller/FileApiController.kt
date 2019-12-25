@@ -15,14 +15,11 @@ class FileApiController: FileApi {
 
     @PostMapping("/upload")
     override fun uploadProof(
-            @RequestParam("clientId") clientId: Int,
             @RequestParam("category") category: FileCategory,
             @RequestParam("file") file: MultipartFile
     ): Map<String, String> {
 
-        val categoryName = category.path
-
-        val url = AwsS3Util.upload(file = file, clientId = clientId, category = categoryName)
+        val url = AwsS3Util.upload(file = file, category = category.path)
         return mapOf(
                 "path" to url
         )

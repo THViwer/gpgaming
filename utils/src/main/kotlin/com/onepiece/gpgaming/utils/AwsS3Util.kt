@@ -48,6 +48,18 @@ object AwsS3Util {
         return "$basePath/$randomFileName"
     }
 
+    fun upload(file: MultipartFile, category: String): String {
+        val originFileName = file.originalFilename!!
+        val scheme = originFileName.substring(originFileName.lastIndexOf("."))
+        val randomFileName = generatorFileName("client/$category", scheme)
+
+        val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file.inputStream, ObjectMetadata())
+        putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead
+
+        s3Client.putObject(putObjectRequest)
+        return "$basePath/$randomFileName"
+    }
+
     fun upload(file: MultipartFile, clientId: Int, category: String): String {
         val originFileName = file.originalFilename!!
         val scheme = originFileName.substring(originFileName.lastIndexOf("."))

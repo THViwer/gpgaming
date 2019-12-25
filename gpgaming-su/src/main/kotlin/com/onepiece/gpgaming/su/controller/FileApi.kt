@@ -11,7 +11,6 @@ interface FileApi {
 
     @ApiOperation(tags = ["index"], value = "上传图片")
     fun uploadProof(
-            @RequestParam("clientId") clientId: Int,
             @RequestParam("category") category: FileCategory,
             @RequestParam("file") file: MultipartFile): Map<String, String>
 
