@@ -11,6 +11,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.PermissionValue
 import com.onepiece.gpgaming.beans.value.internet.web.WaiterCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.WaiterUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.WaiterVo
+import com.onepiece.gpgaming.core.service.ClientBankService
 import com.onepiece.gpgaming.core.service.PermissionService
 import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
@@ -27,17 +28,27 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/waiter")
 class WaiterApiController(
         private val waiterService: WaiterService,
-        private val permissionService: PermissionService
+        private val permissionService: PermissionService,
+        private val clientBankService: ClientBankService
 ) : BasicController(), WaiterApi {
 
     @GetMapping
     override fun query(): List<WaiterVo> {
         val clientId = getClientId()
 
+        val clientBanks = clientBankService.findClientBank(clientId)
+                .map { it.id to it }
+                .toMap()
+
         return waiterService.findClientWaiters(clientId).map {
             with(it) {
+                val clientBankVoList = it.clientBanks?.map {  bankId ->
+                    val clientBank = clientBanks[bankId]!!
+
+                    WaiterVo.ClientBankVo(id = bankId, clientCardNumber = clientBank.bankCardNumber, clientCardName = clientBank.name)
+                }
                 WaiterVo(id = id, username = username, name = name, status = status, createdTime = createdTime,
-                        loginIp = loginIp, loginTime = loginTime)
+                        loginIp = loginIp, loginTime = loginTime, clientBanks = clientBankVoList)
             }
         }
     }

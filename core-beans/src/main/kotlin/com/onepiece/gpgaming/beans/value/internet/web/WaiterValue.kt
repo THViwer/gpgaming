@@ -41,8 +41,25 @@ data class WaiterVo(
         val loginIp: String?,
 
         @ApiModelProperty("登陆时间")
-        val loginTime: LocalDateTime?
-)
+        val loginTime: LocalDateTime?,
+
+        @ApiModelProperty("入款银行卡Id")
+        val clientBanks: List<ClientBankVo>?
+) {
+        data class ClientBankVo(
+
+                @ApiModelProperty("银行卡Id")
+                val id: Int,
+
+                @ApiModelProperty("银行卡号")
+                val clientCardNumber: String,
+
+                @ApiModelProperty("银行卡姓名")
+                val clientCardName: String
+        )
+
+
+}
 
 data class WaiterUoReq(
 
