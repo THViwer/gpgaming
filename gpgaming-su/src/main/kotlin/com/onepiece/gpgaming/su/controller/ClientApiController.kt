@@ -35,7 +35,8 @@ open class ClientApiController(
     override fun list(): List<ClientSuValue.ClientVo> {
         return clientService.all().map {
             //TODO 暂时100
-            ClientSuValue.ClientVo(id = it.id, username = it.username, name = it.name, openNumber = 100, createdTime = it.createdTime)
+            ClientSuValue.ClientVo(id = it.id, username = it.username, name = it.name, openNumber = 100, createdTime = it.createdTime,
+                    logo = it.logo)
         }
 
     }
