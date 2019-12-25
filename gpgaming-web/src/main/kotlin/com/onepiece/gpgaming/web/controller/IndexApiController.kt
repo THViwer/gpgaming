@@ -199,13 +199,13 @@ class IndexApiController(
         }?: recommendeds
     }
 
-    @PutMapping("/recommended")
+    @PostMapping("/recommended")
     override fun create(@RequestBody coReq: RecommendedWebValue.CreateReq) {
         val co = RecommendedValue.CreateVo(clientId = getClientId(), type = coReq.type, contentJson = coReq.contentJson, status = Status.Stop)
         recommendedService.create(co = co)
     }
 
-    @PostMapping("/recommended")
+    @PutMapping("/recommended")
     override fun updagte(@RequestBody uoReq: RecommendedWebValue.UpdateReq) {
         val uo = RecommendedValue.UpdateVo(id = uoReq.id, clientId = getClientId(), contentJson = uoReq.contentJson, status = uoReq.status)
         recommendedService.update(uo = uo)
