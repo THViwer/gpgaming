@@ -39,7 +39,7 @@ class ClientBankApiController(
 
         return clientBankService.findClientBank(clientId).map {
             with(it) {
-                val levelName = levelMap[it.levelId]
+                val levelName = levelMap[it.levelId]?: "-"
 
                 ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
                         status = status, createdTime = createdTime, levelId = levelId, levelName = levelName, logo = bank.logo)
