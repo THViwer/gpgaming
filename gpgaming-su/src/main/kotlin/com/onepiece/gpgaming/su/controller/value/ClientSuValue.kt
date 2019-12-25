@@ -53,16 +53,16 @@ sealed class ClientSuValue {
             val id: Int,
 
             @ApiModelProperty("昵称")
-            val name: String,
+            val name: String?,
 
             @ApiModelProperty("logo")
             val logo: String?,
 
             @ApiModelProperty("用户密码")
-            val password: String,
+            val password: String?,
 
             @ApiModelProperty("状态")
-            val status: Status
+            val status: Status?
 
     )
 
