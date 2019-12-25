@@ -15,6 +15,7 @@ interface ClientApi {
     fun create(@RequestBody clientCoReq: ClientSuValue.ClientCoReq)
 
     @ApiOperation(tags = ["client"], value = "厅主 -> 更新")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody clientUoReq: ClientSuValue.ClientUoReq)
 
     @ApiOperation(tags = ["client"], value = "厅主 -> 列表")
