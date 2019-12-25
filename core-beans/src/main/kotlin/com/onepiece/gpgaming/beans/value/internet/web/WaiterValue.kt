@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
+import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
@@ -49,7 +50,10 @@ data class WaiterVo(
         data class ClientBankVo(
 
                 @ApiModelProperty("银行卡Id")
-                val id: Int,
+                val bankId: Int,
+
+                @ApiModelProperty("银行卡")
+                val clientBank: Bank,
 
                 @ApiModelProperty("银行卡号")
                 val clientCardNumber: String,

@@ -45,7 +45,8 @@ class WaiterApiController(
                 val clientBankVoList = it.clientBanks?.map {  bankId ->
                     val clientBank = clientBanks[bankId]!!
 
-                    WaiterVo.ClientBankVo(id = bankId, clientCardNumber = clientBank.bankCardNumber, clientCardName = clientBank.name)
+                    WaiterVo.ClientBankVo(bankId = bankId, clientCardNumber = clientBank.bankCardNumber, clientCardName = clientBank.name,
+                            clientBank = clientBank.bank)
                 }
                 WaiterVo(id = id, username = username, name = name, status = status, createdTime = createdTime,
                         loginIp = loginIp, loginTime = loginTime, clientBanks = clientBankVoList)
