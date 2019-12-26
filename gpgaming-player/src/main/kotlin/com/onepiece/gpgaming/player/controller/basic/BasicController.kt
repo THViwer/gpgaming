@@ -90,14 +90,13 @@ abstract class BasicController {
         return (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
     }
 
-    fun getPlatformMember(platform: Platform): PlatformMemberVo {
-        val member = current()
+    fun getPlatformMember(platform: Platform, member: JwtUser): PlatformMemberVo {
         val platforms = platformMemberService.myPlatforms(memberId = member.id)
         val platformMember = platforms.find { platform == it.platform }
 
         if (platformMember == null) {
             gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
-            return this.getPlatformMember(platform)
+            return this.getPlatformMember(platform, member)
         }
 
         return platformMember

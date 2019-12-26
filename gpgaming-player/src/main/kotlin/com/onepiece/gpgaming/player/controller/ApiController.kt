@@ -264,7 +264,7 @@ open class ApiController(
             @RequestHeader("launch") launch: LaunchMethod
     ): StartGameResp {
         val member = current()
-        val platformMember = getPlatformMember(platform)
+        val platformMember = getPlatformMember(platform, member)
 
         val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
                 launch = launch, language = language, platformPassword = platformMember.platformPassword)
@@ -295,8 +295,8 @@ open class ApiController(
             @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp {
 
-        val platformMember = getPlatformMember(platform)
         val member = current()
+        val platformMember = getPlatformMember(platform, member)
 
         val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
                 gameId = gameId, language = language, launchMethod = launch)
@@ -328,7 +328,7 @@ open class ApiController(
 
     @GetMapping("/platform/member")
     override fun platformMemberDetail(@RequestHeader("platform") platform: Platform): PlatformMembrerDetail {
-        return getPlatformMember(platform).let {
+        return getPlatformMember(platform, current()).let {
             PlatformMembrerDetail(username = it.platformUsername, password = it.platformPassword)
         }
     }

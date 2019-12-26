@@ -325,7 +325,7 @@ open class CashApiController(
 
         val checkPromotions = joinPromotions.parallelStream().map { promotion ->
 
-            val platformMemberVo = getPlatformMember(platform)
+            val platformMemberVo = getPlatformMember(platform, member)
             val platformBalance = gameApi.balance(clientId = member.clientId, platform = platform, platformUsername = platformMemberVo.platformUsername,
                     platformPassword = platformMemberVo.platformPassword)
 
@@ -360,7 +360,7 @@ open class CashApiController(
         val current = this.current()
 
         if (cashTransferReq.from != Platform.Center) {
-            val platformMemberVo = getPlatformMember(platform = cashTransferReq.from)
+            val platformMemberVo = getPlatformMember(platform = cashTransferReq.from, member = current)
             val toCenterTransferReq = cashTransferReq.copy(to = Platform.Center)
             transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toCenterTransferReq, username = current.username)
 
@@ -368,7 +368,7 @@ open class CashApiController(
 
         if (cashTransferReq.to != Platform.Center) {
             val toPlatformTransferReq = cashTransferReq.copy(from = Platform.Center)
-            val platformMemberVo = getPlatformMember(platform = cashTransferReq.to)
+            val platformMemberVo = getPlatformMember(platform = cashTransferReq.to, member = current)
             transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = current.username)
         }
     }
@@ -417,7 +417,7 @@ open class CashApiController(
             }
             else -> {
                 // 判断用户是否有参加活动
-                val platformMemberVo = getPlatformMember(platform)
+                val platformMemberVo = getPlatformMember(platform, member)
                 val platformMember = platformMemberService.get(platformMemberVo.id)
 
                 val platformBalance = gameApi.balance(clientId = member.clientId, platformUsername = platformMemberVo.platformUsername, platform = platform,

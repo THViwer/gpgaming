@@ -100,7 +100,7 @@ class UserApiController(
     override fun platformUser(@RequestBody platformMemberUo: PlatformMemberUo) {
 
         val current = this.currentUser()
-        val platformMemberVo = getPlatformMember(platformMemberUo.platform)
+        val platformMemberVo = getPlatformMember(platformMemberUo.platform, current)
 
         if (platformMemberUo.platform != Platform.Mega) {
             gameApi.updatePassword(clientId = current.clientId, platform = platformMemberUo.platform, username = platformMemberVo.platformUsername,
