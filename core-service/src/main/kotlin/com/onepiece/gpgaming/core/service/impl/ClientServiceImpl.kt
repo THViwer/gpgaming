@@ -163,12 +163,13 @@ class ClientServiceImpl(
                     "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/sport/s1.png",
                     "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/sport/s2.png"
             ).forEach { contentImage ->
-                //            val sportRecommended = Recommended.SportRecommended(contentImage = contentImage, platform = Platform.Bcs)
-//            val sportRecommendedJson = objectMapper.writeValueAsString(sportRecommended)
-                val recommendedSportCo = RecommendedValue.CreateVo(clientId = clientId, contentJson = "{}", status = Status.Normal, type = RecommendedType.IndexSport)
+                val sportRecommended = Recommended.RecommendedSport(platform = Platform.Bcs)
+                val sportRecommendedJson = objectMapper.writeValueAsString(sportRecommended)
+
+                val recommendedSportCo = RecommendedValue.CreateVo(clientId = clientId, contentJson = sportRecommendedJson, status = Status.Normal, type = RecommendedType.IndexSport)
                 val id = recommendedService.create(recommendedSportCo)
 
-                val indexSportI18n = I18nContent.IndexSportI18n(contentImage = contentImage, platform = Platform.Bcs)
+                val indexSportI18n = I18nContent.IndexSportI18n(contentImage = contentImage)
                 val i18nContentCo = I18nContentCo(clientId = clientId, configId = id, configType = I18nConfig.IndexSport, content = indexSportI18n, language = Language.EN)
 
                 i18nContentService.create(i18nContentCo)

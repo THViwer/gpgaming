@@ -109,9 +109,11 @@ class IndexUtil(
                 val content = contentMap["${it.id}:${I18nConfig.IndexSport}:${language}"]
                         ?: contentMap["${it.id}:${I18nConfig.IndexSport}:${Language.EN}"]
 
+                val recommendedContent = it.getRecommendedContent(objectMapper) as Recommended.RecommendedSport
+
                 content?.let {
                     val data = content.getII18nContent(objectMapper) as I18nContent.IndexSportI18n
-                    Index.SportRecommended(contentImage = data.contentImage, platform = data.platform)
+                    Index.SportRecommended(contentImage = data.contentImage, platform = recommendedContent.platform)
                 }
             }
 
