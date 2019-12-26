@@ -93,10 +93,6 @@ data class I18nContent (
      * 首页体育
      */
     data class IndexSportI18n(
-
-            // 平台
-            val platform: Platform,
-
             // 介绍图片
             val contentImage: String
 
