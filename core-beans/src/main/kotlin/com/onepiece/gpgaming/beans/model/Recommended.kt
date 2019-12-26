@@ -39,7 +39,7 @@ data class Recommended(
     fun getRecommendedContent(objectMapper: ObjectMapper): IRecommended {
         return when (type) {
             RecommendedType.IndexPlatform -> objectMapper.readValue<RecommendedPlatform>(contentJson)
-            RecommendedType.IndexSport -> DefaultIRecommended()
+            RecommendedType.IndexSport -> objectMapper.readValue<RecommendedSport>(contentJson)
             RecommendedType.IndexVideo -> DefaultIRecommended()
             RecommendedType.IndexLive -> objectMapper.readValue<LiveRecommended>(contentJson)
         }
@@ -53,6 +53,13 @@ data class Recommended(
     data class RecommendedPlatform(
 
             val platforms: List<Platform>
+
+    ): IRecommended
+
+
+    data class RecommendedSport(
+
+            val platform: Platform
 
     ): IRecommended
 
