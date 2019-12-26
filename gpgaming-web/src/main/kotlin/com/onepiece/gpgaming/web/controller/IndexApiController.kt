@@ -123,6 +123,7 @@ class IndexApiController(
         val clientId = getClientId()
 
         val promotions = promotionService.all(clientId = clientId)
+                .filter { it.status != Status.Delete }
         if (promotions.isEmpty()) return emptyList()
 
         val i18nContentMap = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Promotion).groupBy { it.configId }
