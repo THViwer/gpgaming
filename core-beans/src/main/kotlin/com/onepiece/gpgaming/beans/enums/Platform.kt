@@ -341,7 +341,7 @@ open class PlatformDetail private constructor(
                     name = "Micro Gaming",
                     status = Status.Normal,
                     demo = true,
-                    icon = "${SystemConstant.AWS_LOGO_URL}/microgaming.jpg",
+                    icon = "${SystemConstant.AWS_LOGO_URL}/micro-gaming-live.jpg",
                     disableIcon = null,
                     originIcon = "${SystemConstant.AWS_ORIGIN_LOGO_URL}/firms_slot_logo_sa.png",
                     originIconOver = "${SystemConstant.AWS_ORIGIN_LOGO_URL}/firms_slot_logo_sa_over.png")
