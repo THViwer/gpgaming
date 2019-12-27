@@ -124,7 +124,7 @@ class IndexUtil(
             }
 
             // 热门游戏
-            val hotLanguage = if (language == Language.EN) language else Language.EN
+            val hotLanguage = if (language == Language.EN) language else Language.CN
             val hotGameUrl = "${SystemConstant.AWS_SLOT}/hot_sort_20_web_${hotLanguage.name.toLowerCase()}.json"
 
             val index = Index(logo = logo, platforms = platforms, announcement = announcement, recommendedPlatforms = recommendedPlatforms, lives = recommendLives,
