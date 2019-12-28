@@ -25,6 +25,9 @@ data class PromotionVo(
         @ApiModelProperty("平台")
         val platforms: List<Platform>,
 
+        @ApiModelProperty("周期")
+        val period: PromotionPeriod,
+
         @ApiModelProperty("结束时间, 如果为null 则无限时间")
         val stopTime: LocalDateTime?,
 
