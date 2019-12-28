@@ -5,7 +5,7 @@ enum class PromotionCategory(
         val cname: String
 ) {
 
-    First("New Member", "新会员"),
+    First("New Member", "首充"),
 
     Special("special promotion", "特别优惠"),
 

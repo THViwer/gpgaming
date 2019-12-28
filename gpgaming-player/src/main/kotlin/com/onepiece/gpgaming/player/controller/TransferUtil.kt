@@ -133,7 +133,10 @@ class TransferUtil(
 //        check(platformMemberTransferUo?.joinPlatform == null || platformMember.platform == platformMemberTransferUo.joinPlatform) { OnePieceExceptionCode.ILLEGAL_OPERATION }
 
         // 检查是否满足首次优惠
-        check(wallet.totalTransferOutFrequency == 0 || platformMemberTransferUo?.category != PromotionCategory.First) { OnePieceExceptionCode.AUTHORITY_FAIL }
+        if (platformMemberTransferUo?.category == PromotionCategory.First) {
+            val member = memberService.getMember(memberId)
+            check(!member.firstPromotion) { OnePieceExceptionCode.AUTHORITY_FAIL }
+        }
 
         // 检查保证金是否足够
         platformBindService.updateEarnestBalance(clientId = clientId, platform = platform, earnestBalance = amount.negate())
