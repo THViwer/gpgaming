@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.value.database.TransferOrderReportVo
 import com.onepiece.gpgaming.beans.value.database.TransferOrderUo
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 interface TransferOrderService {
 
@@ -16,6 +17,9 @@ interface TransferOrderService {
     fun query(query: TransferOrderValue.Query): List<TransferOrder>
 
     fun report(startDate: LocalDate): List<TransferOrderReportVo>
+
+    fun queryLastPromotion(clientId: Int, memberId: Int, startTime: LocalDateTime): List<TransferOrder>
+
 
 //    fun report(member: Int?, startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo>
 

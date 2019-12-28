@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
+import com.onepiece.gpgaming.beans.enums.PromotionPeriod
 import com.onepiece.gpgaming.beans.enums.PromotionRuleType
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Promotion
@@ -25,6 +26,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val stopTime = rs.getTimestamp("stop_time")?.toLocalDateTime()
             val top = rs.getBoolean("top")
 //            val icon = rs.getString("icon")
+            val period = rs.getString("period").let { PromotionPeriod.valueOf(it) }
             val status = rs.getString("status").let { Status.valueOf(it) }
 
             val levelId = rs.getInt("level_id")
@@ -36,7 +38,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
 
             Promotion(id = id, category = category, stopTime = stopTime, status = status, createdTime = createdTime,
                     clientId = clientId, top = top, updatedTime = updatedTime, platforms = platforms, levelId = levelId,
-                    ruleJson = ruleJson, ruleType = ruleType)
+                    ruleJson = ruleJson, ruleType = ruleType, period = period)
         }
 
     override fun create(promotionCo: PromotionCo): Int {
@@ -47,6 +49,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("stop_time", promotionCo.stopTime)
                 .set("top", promotionCo.top)
 //                .set("icon", promotionCo.icon)
+                .set("period", promotionCo.period)
                 .set("level_id", promotionCo.levelId)
                 .set("rule_json", promotionCo.ruleJson)
                 .set("rule_type", promotionCo.ruleType)
@@ -61,6 +64,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("stop_time", promotionUo.stopTime)
                 .set("top", promotionUo.top)
 //                .set("icon", promotionUo.icon)
+                .set("period", promotionUo.period)
                 .set("status", promotionUo.status)
                 .set("level_id", promotionUo.levelId)
                 .set("rule_json", promotionUo.ruleJson)

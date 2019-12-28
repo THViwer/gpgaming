@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.beans.value.database.TransferOrderUo
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.core.dao.basic.BasicDao
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 interface TransferOrderDao: BasicDao<TransferOrder> {
 
@@ -28,6 +29,8 @@ interface TransferOrderDao: BasicDao<TransferOrder> {
     fun clientReport(query: TransferReportQuery): List<ClientTransferReportVo>
 
     fun query(query: TransferOrderValue.Query): List<TransferOrder>
+
+    fun queryLastPromotion(clientId: Int, memberId: Int, startTime: LocalDateTime): List<TransferOrder>
 
     fun report(startDate: LocalDate): List<TransferOrderReportVo>
 

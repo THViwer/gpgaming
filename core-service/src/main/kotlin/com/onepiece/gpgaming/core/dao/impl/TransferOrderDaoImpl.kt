@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 import java.sql.ResultSet
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Repository
 class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), TransferOrderDao {
@@ -153,6 +154,15 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
 
                     ClientTransferReportVo(clientId = clientId, transferIn = transferIn, transferOut = transferOut)
                 }
+    }
+
+    override fun queryLastPromotion(clientId: Int, memberId: Int, startTime: LocalDateTime): List<TransferOrder> {
+        return query()
+                .where("client_id", clientId)
+                .where("member_id", memberId)
+                .asWhere("created_time >= ?", startTime)
+                .asWhere("join_promotion_id is not null")
+                .execute(mapper)
     }
 
     override fun query(query: TransferOrderValue.Query): List<TransferOrder> {

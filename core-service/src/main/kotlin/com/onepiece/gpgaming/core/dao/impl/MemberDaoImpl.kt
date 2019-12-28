@@ -23,6 +23,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val phone= rs.getString("phone")
             val password = rs.getString("password")
             val safetyPassword = rs.getString("safety_password")
+            val firstPromotion = rs.getBoolean("first_promotion")
             val levelId = rs.getInt("level_id")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
@@ -31,7 +32,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
 
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
-                    safetyPassword = safetyPassword, name = name, phone = phone)
+                    safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -41,6 +42,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("name", memberCo.name)
                 .set("phone", memberCo.phone)
                 .set("password", memberCo.password)
+                .set("first_promotion", false)
                 .set("safety_password", memberCo.safetyPassword)
                 .set("level_id", memberCo.levelId)
                 .set("status", Status.Normal)
@@ -53,6 +55,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("phone", memberUo.phone)
                 .set("password", memberUo.password)
                 .set("safety_password", memberUo.safetyPassword)
+                .set("first_promotion", false)
                 .set("status", memberUo.status)
                 .set("level_id", memberUo.levelId)
                 .set("login_ip", memberUo.loginIp)

@@ -36,6 +36,9 @@ data class Promotion (
         // 优惠层级Id 如果为null则是全部
         val levelId: Int?,
 
+        // 优惠周期
+        val period: PromotionPeriod,
+
         // 规则
         val ruleJson: String,
 

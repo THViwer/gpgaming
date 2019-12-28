@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.core.dao.TransferOrderDao
 import com.onepiece.gpgaming.core.service.TransferOrderService
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 @Service
@@ -33,6 +34,10 @@ class TransferOrderServiceImpl(
 
     override fun report(startDate: LocalDate): List<TransferOrderReportVo> {
         return transferOrderDao.report(startDate)
+    }
+
+    override fun queryLastPromotion(clientId: Int, memberId: Int, startTime: LocalDateTime): List<TransferOrder> {
+        return transferOrderDao.queryLastPromotion(clientId, memberId, startTime)
     }
 
     //    override fun report(startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo> {

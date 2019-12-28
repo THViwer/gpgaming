@@ -9,12 +9,14 @@ import com.onepiece.gpgaming.beans.enums.WalletEvent
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.PlatformMember
 import com.onepiece.gpgaming.beans.model.Promotion
+import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberTransferUo
 import com.onepiece.gpgaming.beans.value.database.TransferOrderCo
 import com.onepiece.gpgaming.beans.value.database.TransferOrderUo
 import com.onepiece.gpgaming.beans.value.database.WalletUo
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.core.OrderIdBuilder
+import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.core.service.PromotionService
@@ -38,7 +40,8 @@ class TransferUtil(
         private val transferOrderService: TransferOrderService,
         private val platformMemberService: PlatformMemberService,
         private val gameApi: GameApi,
-        private val promotionService: PromotionService
+        private val promotionService: PromotionService,
+        private val memberService: MemberService
 )  {
 
     private val log = LoggerFactory.getLogger(TransferUtil::class.java)
@@ -198,6 +201,12 @@ class TransferUtil(
             // 是否满足清空优惠活动
             val cleanState = this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
             check(cleanState) { OnePieceExceptionCode.PLATFORM_HAS_BALANCE_PROMOTION_FAIL }
+
+            // 如果是首充优惠 更新用户已使用过首充
+            if (promotion.category == PromotionCategory.First) {
+                val memberUo = MemberUo(id = platformMember.memberId, firstPromotion = true)
+                memberService.update(memberUo)
+            }
         }
 
         if (promotionId == null) return null

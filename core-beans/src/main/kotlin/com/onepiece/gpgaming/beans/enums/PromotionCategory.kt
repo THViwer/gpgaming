@@ -7,6 +7,8 @@ enum class PromotionCategory(
 
     First("New Member", "新会员"),
 
+    Special("special promotion", "特别优惠"),
+
     Slot("slot", "老虎机"),
 
     Live("live casino", "真人视频"),

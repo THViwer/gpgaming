@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.beans.value.internet.web
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
+import com.onepiece.gpgaming.beans.enums.PromotionPeriod
 import com.onepiece.gpgaming.beans.enums.PromotionRuleType
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.I18nContent
@@ -82,6 +83,9 @@ data class PromotionCoReq(
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         val stopTime: LocalDateTime?,
 
+        @ApiModelProperty("优惠周期")
+        val period: PromotionPeriod,
+
         @ApiModelProperty("是否置顶")
         val top: Boolean,
 
@@ -104,6 +108,9 @@ data class PromotionUoReq(
         @ApiModelProperty("结束时间, 如果为null 则无限时间")
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         val stopTime: LocalDateTime?,
+
+        @ApiModelProperty("优惠周期")
+        val period: PromotionPeriod?,
 
         @ApiModelProperty("是否置顶")
         val top: Boolean?,

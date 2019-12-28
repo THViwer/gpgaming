@@ -56,6 +56,9 @@ data class MemberUo(
         // 旧密码
         val oldPassword: String? = null,
 
+        // 首充优惠
+        val firstPromotion: Boolean? = null,
+
         // 密码
         val password: String? = null,
 

@@ -30,6 +30,8 @@ data class Member(
         // 等级Id
         val levelId: Int,
 
+        // 是否已有首充值
+        val firstPromotion: Boolean,
         // 状态
         val status: Status,
 

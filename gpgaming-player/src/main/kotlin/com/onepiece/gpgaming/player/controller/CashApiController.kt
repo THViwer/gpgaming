@@ -9,6 +9,7 @@ import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
+import com.onepiece.gpgaming.beans.enums.PromotionPeriod
 import com.onepiece.gpgaming.beans.enums.PromotionRuleType
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.enums.WalletEvent
@@ -34,6 +35,7 @@ import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.MemberBankService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PromotionService
+import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.core.service.WalletNoteService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
@@ -65,8 +67,11 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.stream.Collectors
 import kotlin.streams.toList
+import kotlin.time.toKotlinDuration
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 @RestController
@@ -83,7 +88,8 @@ open class CashApiController(
         private val promotionService: PromotionService,
         private val transferUtil: TransferUtil,
         private val i18nContentService: I18nContentService,
-        private val objectMapper: ObjectMapper
+        private val objectMapper: ObjectMapper,
+        private val transferOrderService: TransferOrderService
 ) : BasicController(), CashApi {
 
     private val log = LoggerFactory.getLogger(CashApiController::class.java)
@@ -307,25 +313,48 @@ open class CashApiController(
             @RequestParam("promotionId", required = false) promotionId: Int?
     ): CheckPromotinResp {
 
-        val member = this.current()
+        val current = this.current()
 
-        val wallet = walletService.getMemberWallet(memberId = member.id)
-        val promotions = promotionService.find(clientId = member.clientId, platform = platform)
+        val member = memberService.getMember(current.id)
+        val promotions = promotionService.find(clientId = current.clientId, platform = platform)
 
+        val lastTransferOrders = transferOrderService.queryLastPromotion(clientId = current.clientId, memberId = current.id,
+                startTime = LocalDateTime.now().minusDays(30))
+                .sortedBy { it.orderId }
+                .map { it.joinPromotionId!! to it }
+                .toMap()
+
+        val now = LocalDateTime.now()
         val joinPromotions = promotions
                 .filter { promotionId == null || it.id == promotionId }
                 .filter { it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble() }
-                .filter { wallet.totalTransferOutFrequency == 0 || it.category != PromotionCategory.First }
+                .filter { !member.firstPromotion || it.category != PromotionCategory.First }
+                .filter {
+                    val order = lastTransferOrders[it.id]
+
+                    order == null || when (it.period) {
+                        PromotionPeriod.Daily -> {
+                            now.plusDays(1) > order.createdTime
+                        }
+                        PromotionPeriod.Weekly -> {
+                            now.plusDays(7) > order.createdTime
+                        }
+                        PromotionPeriod.Monthly -> {
+                            now.plusDays(30) > order.createdTime
+                        }
+                        else -> true
+                    }
+                }
 
 
-        val contentMap = i18nContentService.getConfigType(clientId = member.clientId, configType = I18nConfig.Promotion)
+        val contentMap = i18nContentService.getConfigType(clientId = current.clientId, configType = I18nConfig.Promotion)
                 .map {
                     "${it.configId}:${it.language}" to it
                 }.toMap()
 
         val checkPromotions = joinPromotions.parallelStream().map { promotion ->
 
-            val platformMemberVo = getPlatformMember(platform, member)
+            val platformMemberVo = getPlatformMember(platform, current)
             val platformBalance = gameApi.balance(clientId = member.clientId, platform = platform, platformUsername = platformMemberVo.platformUsername,
                     platformPassword = platformMemberVo.platformPassword)
 
@@ -507,17 +536,6 @@ open class CashApiController(
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
