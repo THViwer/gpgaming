@@ -334,13 +334,13 @@ open class CashApiController(
 
                     order == null || when (it.period) {
                         PromotionPeriod.Daily -> {
-                            now.plusDays(1) > order.createdTime
+                            now > order.createdTime.plusDays(1)
                         }
                         PromotionPeriod.Weekly -> {
-                            now.plusDays(7) > order.createdTime
+                            now > order.createdTime.plusDays(7)
                         }
                         PromotionPeriod.Monthly -> {
-                            now.plusDays(30) > order.createdTime
+                            now > order.createdTime.plusDays(30)
                         }
                         else -> true
                     }
