@@ -41,7 +41,7 @@ data class PlatformVo(
 
         val category: PlatformCategory
                 @ApiModelProperty("平台类型")
-                get() = gamePlatform.category
+                get() = platform.category
 
         val logo: String
                 @ApiModelProperty("平台logo")

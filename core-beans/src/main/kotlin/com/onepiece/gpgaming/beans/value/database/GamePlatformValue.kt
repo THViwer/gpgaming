@@ -11,9 +11,6 @@ sealed class GamePlatformValue {
             // 平台
             val platform: Platform,
 
-            // 平台类型
-            val category: PlatformCategory,
-
             // 平台名称
             val name: String,
 
@@ -46,9 +43,6 @@ sealed class GamePlatformValue {
 
             // 平台
             val platform: Platform,
-
-            // 平台类型
-            val category: PlatformCategory,
 
             // 平台名称
             val name: String,

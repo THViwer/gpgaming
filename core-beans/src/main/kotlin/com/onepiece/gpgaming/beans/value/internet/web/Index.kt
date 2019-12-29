@@ -50,7 +50,7 @@ data class Index(
 
                 val category: PlatformCategory
                         @ApiModelProperty("类别")
-                        get() = gamePlatform.category
+                        get() = platform.category
 
                 val logo: String
                         @ApiModelProperty("logo")
@@ -91,7 +91,7 @@ data class Index(
 
                 val category: PlatformCategory
                         @ApiModelProperty("平台类型")
-                        get() = gamePlatform.category
+                        get() = platform.category
 
                 val logo: String
                         @ApiModelProperty("平台logo")

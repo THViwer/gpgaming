@@ -2,7 +2,6 @@ package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
-import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
 
 data class GamePlatform(

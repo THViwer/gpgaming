@@ -17,7 +17,6 @@ class GamePlatformDaoImpl : BasicDaoImpl<GamePlatform>("game_platform"), GamePla
         get() = { rs ->
             val id = rs.getInt("id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
-            val category = rs.getString("category").let { PlatformCategory.valueOf(it) }
             val name = rs.getString("name")
             val icon = rs.getString("icon")
             val disableIcon = rs.getString("disable_icon")
@@ -26,14 +25,13 @@ class GamePlatformDaoImpl : BasicDaoImpl<GamePlatform>("game_platform"), GamePla
             val demo = rs.getBoolean("demo")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val launchs = rs.getString("launchs")
-            GamePlatform(id = id, platform = platform, category = category, name = name, icon = icon, disableIcon = disableIcon,
+            GamePlatform(id = id, platform = platform, name = name, icon = icon, disableIcon = disableIcon,
                     originIcon = originIcon, originIconOver = originIconOver, demo = demo, status = status, launchs = launchs)
         }
 
     override fun create(co: GamePlatformValue.GamePlatformCo): Boolean {
         return insert()
                 .set("platform", co.platform)
-                .set("category", co.category)
                 .set("name", co.name)
                 .set("icon", co.icon)
                 .set("disable_icon", co.disableIcon)
@@ -48,7 +46,6 @@ class GamePlatformDaoImpl : BasicDaoImpl<GamePlatform>("game_platform"), GamePla
     override fun update(uo: GamePlatformValue.GamePlatformUo): Boolean {
         return update()
                 .set("platform", uo.platform)
-                .set("category", uo.category)
                 .set("name", uo.name)
                 .set("icon", uo.icon)
                 .set("disable_icon", uo.disableIcon)
