@@ -166,7 +166,7 @@ enum class PromotionPeriod {
         fun checkPeriodMaxPromotion(promotion: Promotion, history: List<TransferOrder>, startDate: LocalDate, endDate: LocalDate): Boolean {
             val totalHistoryPromotion = history.filter { startDate > it.createdTime.toLocalDate() && it.createdTime.toLocalDate() < endDate }
                     .sumByDouble { it.promotionAmount.toDouble() }
-            return promotion.periodMaxPromotion.toDouble() < totalHistoryPromotion
+            return promotion.periodMaxPromotion.toDouble() > totalHistoryPromotion
         }
 
         fun checkPeriodOnce(history: List<TransferOrder>, startDate: LocalDate, endDate: LocalDate): Boolean {
