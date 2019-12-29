@@ -19,10 +19,10 @@ data class GamePlatform(
         val disableIcon: String?,
 
         // 原始图标
-        val originIcon: String,
+        val originIcon: String?,
 
         // 原始鼠标移上去图标
-        val originIconOver: String,
+        val originIconOver: String?,
 
         // 是否有试玩
         val demo: Boolean = false,
@@ -31,13 +31,14 @@ data class GamePlatform(
         val status: Status,
 
         // 启动列表
-        val launchs: String
+        val launchs: String?
 
 ) {
 
     // 启动方式
     val launchList: List<LaunchMethod>
         get() {
-            return launchs.split(",").map { LaunchMethod.valueOf(it) }
+            return launchs?.split(",")?.map { LaunchMethod.valueOf(it) }
+                    ?: emptyList()
         }
 }
