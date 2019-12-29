@@ -17,8 +17,6 @@ import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.PlatformMember
-import com.onepiece.gpgaming.beans.model.Promotion
-import com.onepiece.gpgaming.beans.model.TransferOrder
 import com.onepiece.gpgaming.beans.value.database.DepositCo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.MemberBankCo
@@ -57,7 +55,6 @@ import com.onepiece.gpgaming.player.controller.value.MemberBankVo
 import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
 import com.onepiece.gpgaming.player.controller.value.WithdrawCoReq
 import com.onepiece.gpgaming.utils.AwsS3Util
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
@@ -70,10 +67,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
-import java.time.DayOfWeek
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.temporal.TemporalAdjusters
 import java.util.stream.Collectors
 import kotlin.streams.toList
 
@@ -474,7 +468,7 @@ open class CashApiController(
 
 
         // 查询余额 //TODO 暂时用简单的异步去处理
-        val balances = platforms.filter { category == null || it.platform.detail.category == category }.parallelStream().map {
+        val balances = platforms.filter { category == null || it.platform.category == category }.parallelStream().map {
             val platformMember = platformMemberMap[it.platform]
 
             when (platformMember == null) {

@@ -18,6 +18,7 @@ import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.ContactService
+import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.games.ActiveConfig
@@ -54,7 +55,8 @@ open class ApiController(
         private val clientService: ClientService,
         private val appDownService: AppDownService,
         private val activeConfig: ActiveConfig,
-        private val objectMapper: ObjectMapper
+        private val objectMapper: ObjectMapper,
+        private val gamePlatformService: GamePlatformService
 ) : BasicController(), Api {
 
     @GetMapping
@@ -65,107 +67,28 @@ open class ApiController(
         val clientId = this.getClientIdByDomain()
         val url = SystemConstant.getClientResourcePath(clientId = clientId, profile = activeConfig.profile)
         return IndexConfig(url = "$url/index_${language.name.toLowerCase()}.json?${UUID.randomUUID()}")
-//        val clientId = this.getClientIdByDomain()
-//
-//        // 平台信息
-//        val platformBinds = platformBindService.findClientPlatforms(clientId)
-//        val platforms = platformBinds.map {
-//
-//            val status = when (it.platform.detail.status) {
-//                Status.Normal -> it.status
-//                else -> it.platform.detail.status
-//            }
-//
-//            PlatformVo(id = it.id, name = it.platform.detail.name, category = it.platform.detail.category, status = status, icon = it.platform.detail.icon,
-//                    launchs = it.platform.detail.launchs, platform = it.platform, demo = it.platform.detail.demo)
-//        }.filter { it.platform.detail.status != Status.Delete }
-//
-//        // 公告
-//        val contents = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Announcement)
-//        val announcement = contents.firstOrNull { it.language == language }?: contents.find { it.language == Language.EN } ?: contents.first()
-//        val announcementVo = AnnouncementVo(title = announcement.title, content = announcement.content, synopsis = announcement.synopsis)
-//
-//        // 获得首页配置
-//        // banners
-//        val banners = bannerService.findByType(clientId = getClientIdByDomain(), type = BannerType.Banner).map {
-//            BannerVo(id = it.id, order = it.order, icon = it.icon, touchIcon = it.touchIcon, type = it.type, link = it.link)
-//        }
-//        // hot games
-//        val size = if (launch == LaunchMethod.Wap) "10" else "20"
-//        val hotGameUrl = "${SystemConstant.AWS_SLOT}/hot_sort_${size}_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
-//
-//        // logo
-//        val client = clientService.get(clientId)
-//
-//        // 推荐平台
-//        val recommendedPlatforms = listOf(
-//                ConfigVo.RecommendedPlatform(category = PlatformCategory.Slot, platform = Platform.Kiss918,
-//                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/918kiss.jpeg",
-//                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/918kiss.jpeg"),
-//
-//                ConfigVo.RecommendedPlatform(category = PlatformCategory.Slot, platform = Platform.Joker,
-//                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/joker.jpeg",
-//                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/joker.jpeg"),
-//
-//                ConfigVo.RecommendedPlatform(category = PlatformCategory.LiveVideo, platform = Platform.AllBet,
-//                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/allBet.jpeg",
-//                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/allBet.jpeg"),
-//
-//                ConfigVo.RecommendedPlatform(category = PlatformCategory.Sport, platform = Platform.CMD,
-//                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/cmd.jpeg",
-//                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/cmd.jpeg"),
-//
-//                ConfigVo.RecommendedPlatform(category = PlatformCategory.Fishing, platform = Platform.GGFishing,
-//                        logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/fishing.jpeg",
-//                        touchLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/fishing.jpeg")
-//        )
-//
-//        // 推荐视频
-//        val lastestVideo = ConfigVo.LastestVideo(path = "https://streamable.com/s/12gua/gjaita",
-//                introductionImage = "https://www.bk8my.com/public/banner/videoImage_001_20191218035231_EN.png")
-//
-//        // 捕鱼推荐
-//        val fishes = listOf(
-//                ConfigVo.FishingRecommended(platform = Platform.GGFishing, contentImage = "https://www.bk8my.com/banner/ui/images/matches/upcoming-matches-1-en.png?20191218-0952",
-//                        content = "ssssss"),
-//                ConfigVo.FishingRecommended(platform = Platform.GGFishing, contentImage = "https://www.bk8my.com/banner/ui/images/matches/upcoming-matches-1-en.png?20191218-0952",
-//                        content = "ssssss")
-//        )
-//
-//        // 真人推荐
-//        val lives = listOf(
-//                ConfigVo.LiveRecommended(originLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/allBet.jpeg", platform = Platform.AllBet, title = "百家乐1",
-//                        contentImage = "https://www.bk8my.com/public/new_bk8/content/images/Baccarat%201.png"),
-//                ConfigVo.LiveRecommended(originLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/dreamGaming.jpeg", platform = Platform.DreamGaming, title = "百家乐2",
-//                        contentImage = "https://www.bk8my.com/public/new_bk8/content/images/Baccarat%201.png"),
-//                ConfigVo.LiveRecommended(originLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/origin_logo/saGaming.jpeg", platform = Platform.SaGaming, title = "百家乐3",
-//                        contentImage = "https://www.bk8my.com/public/new_bk8/content/images/Baccarat%201.png")
-//        )
-//
-//        return ConfigVo(platforms = platforms, announcementVo = announcementVo, banners = banners, hotGameUrl = hotGameUrl, logo = client.logo,
-//                recommendedPlatforms = recommendedPlatforms, lastestVideo = lastestVideo, fishes = fishes, lives = lives)
-
-//        error("")
     }
 
     @GetMapping("/index/platforms")
     override fun indexPlatforms(): List<PlatformVo> {
 
         val clientId = getClientIdByDomain()
+        val gamePlatforms = gamePlatformService.all()
 
         // 平台信息
         val platformBinds = platformBindService.findClientPlatforms(clientId)
 
         return platformBinds.map {
+            val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
 
-            val status = when (it.platform.detail.status) {
+            val status = when (gamePlatform.status) {
                 Status.Normal -> it.status
-                else -> it.platform.detail.status
+                else -> gamePlatform.status
             }
 
-            PlatformVo(id = it.id, name = it.platform.detail.name, category = it.platform.detail.category, status = status, icon = it.platform.detail.icon,
-                    launchs = it.platform.detail.launchs, platform = it.platform, demo = it.platform.detail.demo)
-        }.filter { it.platform.detail.status != Status.Delete }
+            PlatformVo(id = it.id, name = gamePlatform.name, category = it.platform.category, status = status, icon = gamePlatform.icon,
+                    launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo)
+        }.filter { it.status != Status.Delete }
     }
 
     @GetMapping("/{gameCategory}")
@@ -175,7 +98,9 @@ open class ApiController(
     ): PlatformCategoryPage {
         val clientId = this.getClientIdByDomain()
 
-        val platforms = Platform.all().filter { it.detail.category == category }
+        val gamePlatforms = gamePlatformService.all()
+
+        val platforms = Platform.all().filter { it.category == category }
 
         val bannerType = when (category) {
             PlatformCategory.Slot -> BannerType.Slot
@@ -214,6 +139,7 @@ open class ApiController(
 
         val clientId = getClientIdByDomain()
 
+        val gamePlatforms = gamePlatformService.all()
         val allPromotion = promotionService.all(clientId).filter { it.status == Status.Normal }
 
         val promotions = arrayListOf<Promotion>()
@@ -222,7 +148,7 @@ open class ApiController(
             // 添加默认
             promotions.add(promotion)
             // 添加平台
-            promotion.platforms.map { it.detail.category }.toSet().map {
+            promotion.platforms.map { it.category }.toSet().map {
                 promotions.add(promotion.copy(category = it.getPromotionCategory()))
             }
         }
@@ -344,8 +270,11 @@ open class ApiController(
 
     @GetMapping("/down")
     override fun down(@RequestHeader("platform", required = false) platform: Platform?): List<DownloadAppVo> {
+        val gamePlatforms = gamePlatformService.all()
+
         return appDownService.all().filter { it.status == Status.Normal }.map {
-            DownloadAppVo(platform = it.platform, icon = it.platform.detail.icon, iosPath = it.iosPath, androidPath = it.androidPath)
+            val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
+            DownloadAppVo(platform = it.platform, icon = gamePlatform.icon, iosPath = it.iosPath, androidPath = it.androidPath)
         }
     }
 
@@ -363,13 +292,15 @@ open class ApiController(
     ): PlatformCategoryDetail {
 
         val clientId = this.getClientIdByDomain()
+        val gamePlatforms = gamePlatformService.all()
 
         val platforms = platformBindService.findClientPlatforms(clientId = getClientIdByDomain())
-                .filter { it.platform.detail.category == category }
+                .filter { it.platform.category == category }
                 .map {
-                    PlatformVo(id = it.id, platform = it.platform, name = it.platform.detail.name, category = it.platform.detail.category,
-                            status = it.platform.detail.status, icon = it.platform.detail.icon, launchs = it.platform.detail.launchs,
-                            demo = it.platform.detail.demo)
+                    val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
+                    PlatformVo(id = it.id, platform = it.platform, name = gamePlatform.name, category = it.platform.category,
+                            status = gamePlatform.status, icon = gamePlatform.icon, launchs = gamePlatform.launchList,
+                            demo = gamePlatform.demo)
                 }
 
         val type = when (category) {

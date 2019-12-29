@@ -1,8 +1,10 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
+import com.onepiece.gpgaming.beans.model.GamePlatform
 import io.swagger.annotations.ApiModelProperty
 
 object PlatformValueFactory {
@@ -27,6 +29,8 @@ data class PlatformVo(
         @ApiModelProperty("平台")
         val platform: Platform,
 
+        @JsonIgnore
+        val gamePlatform: GamePlatform,
 
         @ApiModelProperty("是否启用")
         val status: Status,
@@ -37,15 +41,15 @@ data class PlatformVo(
 
         val category: PlatformCategory
                 @ApiModelProperty("平台类型")
-                get() = platform.detail.category
+                get() = gamePlatform.category
 
         val logo: String
                 @ApiModelProperty("平台logo")
-                get() = platform.detail.icon
+                get() = gamePlatform.icon
 
         val name: String
                 @ApiModelProperty("平台名称")
-                get() = platform.detail.name
+                get() = gamePlatform.name
 
 }
 

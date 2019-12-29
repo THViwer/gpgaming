@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.beans.model.Recommended
 import com.onepiece.gpgaming.beans.value.internet.web.Index
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.ClientService
+import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.RecommendedService
@@ -27,7 +28,8 @@ class IndexUtil(
         private val i18nContentService: I18nContentService,
         private val recommendedService: RecommendedService,
         private val bannerService: BannerService,
-        private val objectMapper: ObjectMapper
+        private val objectMapper: ObjectMapper,
+        private val gamePlatformService: GamePlatformService
 ) {
 
     @Autowired
@@ -51,12 +53,13 @@ class IndexUtil(
         val announcements = contents.filter { it.configType == I18nConfig.Announcement }
 
         // 开通的平台列表
-        val binds = platformBindService.findClientPlatforms(clientId)
-        val platforms = binds.filter { it.status != Status.Delete }.map {
-            val detail = it.platform.detail
-            val status = if (detail.status != Status.Normal) detail.status else it.status
-            Index.PlatformVo(id = it.id, status = status, open = true, platform = it.platform)
-        }.filter { it.status != Status.Delete }
+//        val binds = platformBindService.findClientPlatforms(clientId)
+        val gamePlatforms = gamePlatformService.all()
+//        val platforms = binds.filter { it.status != Status.Delete }.map {
+//            val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
+//            val status = if (gamePlatform.status != Status.Normal) gamePlatform.status else it.status
+//            Index.PlatformVo(id = it.id, status = status, open = true, platform = it.platform)
+//        }.filter { it.status != Status.Delete }
 
         // banner
         val banners = bannerService.findByType(clientId = clientId, type = BannerType.Banner).filter { it.status == Status.Normal }
@@ -69,7 +72,7 @@ class IndexUtil(
         val recommendedPlatforms = recommendeds.first { it.type == RecommendedType.IndexPlatform }.let {
             val content = it.getRecommendedContent(objectMapper) as Recommended.RecommendedPlatform
             content.platforms.map { platform ->
-                Index.RecommendedPlatform(platform = platform)
+                Index.RecommendedPlatform(platform = platform, gamePlatform = platform.getGamePlatform(gamePlatforms))
             }
         }
 
@@ -120,14 +123,15 @@ class IndexUtil(
             // 首页推荐的真人
             val recommendLives = recommendeds.filter { it.type == RecommendedType.IndexLive }.map {
                 val content = it.getRecommendedContent(objectMapper) as Recommended.LiveRecommended
-                Index.LiveRecommended(platform = content.platform, contentImage = content.contentImage, title = content.title)
+                Index.LiveRecommended(platform = content.platform, contentImage = content.contentImage, title = content.title,
+                        gamePlatform = content.platform.getGamePlatform(gamePlatforms))
             }
 
             // 热门游戏
             val hotLanguage = if (language == Language.EN) language else Language.CN
             val hotGameUrl = "${SystemConstant.AWS_SLOT}/hot_sort_20_web_${hotLanguage.name.toLowerCase()}.json"
 
-            val index = Index(logo = logo, platforms = platforms, announcement = announcement, recommendedPlatforms = recommendedPlatforms, lives = recommendLives,
+            val index = Index(logo = logo, announcement = announcement, recommendedPlatforms = recommendedPlatforms, lives = recommendLives,
                     banners = bannerVoList, sports = recommendSports, hotGameUrl = hotGameUrl, recommendedVideos = recommendVideos)
 
             val json = objectMapper.writeValueAsString(index)

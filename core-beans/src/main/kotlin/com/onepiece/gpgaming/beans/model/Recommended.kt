@@ -63,16 +63,6 @@ data class Recommended(
 
     ): IRecommended
 
-//    data class VideoRecommended(
-//            // 地址
-//            val path: String,
-//
-//            // 封面照片
-//            val coverPhoto: String,
-//
-//            // 介绍图片
-//            val introductionImage: String
-//    ): IRecommended
 
     data class LiveRecommended(
 
@@ -87,44 +77,10 @@ data class Recommended(
 
     ): IRecommended {
 
-        val originLogo: String
-            @JsonIgnore
-            get() = platform.detail.originIconOver
+//        val originLogo: String
+//            @JsonIgnore
+//            get() = platform.detail.originIconOver
 
     }
-//
-//    data class IndexSportI18n(
-//
-//            // 平台
-//            val platform: Platform,
-//
-//            // 介绍图片
-//            val contentImage: String
-//
-//    ): I18nContent.II18nContent
-
-//    data class SportRecommended(
-//
-//            // 平台
-//            val platform: Platform
-//
-////             内容图片
-////            val contentImage: String
-//
-//    ): IRecommended
-
-}
-
-fun main() {
-
-//    val data = Recommended.RecommendedPlatform(platforms = listOf(Platform.SaGaming, Platform.Pragmatic))
-//    val json = jacksonObjectMapper().writeValueAsString(data)
-//    println(json)
-
-    val data = Recommended.LiveRecommended(platform = Platform.SexyGaming, title = "hello", contentImage = "xxb.png")
-    println(jacksonObjectMapper().writeValueAsString(data))
-
-
-
 
 }

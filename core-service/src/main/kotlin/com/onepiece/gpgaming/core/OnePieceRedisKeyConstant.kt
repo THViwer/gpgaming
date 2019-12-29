@@ -5,6 +5,8 @@ import com.onepiece.gpgaming.beans.enums.Platform
 
 object OnePieceRedisKeyConstant {
 
+    fun getPlatforms() = "platform:all"
+
     fun getClient(clientId: Int) = "client:${clientId}"
 
     fun member(id: Int) = "member:$id"

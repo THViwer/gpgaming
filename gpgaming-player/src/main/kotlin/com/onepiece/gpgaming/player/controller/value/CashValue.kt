@@ -224,7 +224,7 @@ data class BalanceVo(
         val category: PlatformCategory
                 @ApiModelProperty("平台类型")
                 get() {
-                        return platform.detail.category
+                        return platform.category
                 }
 }
 
@@ -239,7 +239,7 @@ data class BalanceAllInVo(
         val category: PlatformCategory
                 @ApiModelProperty("平台类型")
                 get() {
-                        return platform.detail.category
+                        return platform.category
                 }
 
 }
