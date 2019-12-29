@@ -33,7 +33,7 @@ class JwtAuthenticationTokenFilter(
                 if (userDetails != null && jwtTokenUtil.validateToken(authToken, userDetails)) {
                     val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
                     authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
-                    logger.info("authenticated user $authToken, setting security context")
+//                    logger.info("authenticated user $authToken, setting security context")
                     SecurityContextHolder.getContext().authentication = authentication
                 }
             }
