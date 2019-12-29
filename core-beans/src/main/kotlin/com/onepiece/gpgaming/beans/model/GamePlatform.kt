@@ -19,10 +19,10 @@ data class GamePlatform(
         val disableIcon: String?,
 
         // 原始图标
-        val originIcon: String?,
+        val originIcon: String,
 
         // 原始鼠标移上去图标
-        val originIconOver: String?,
+        val originIconOver: String,
 
         // 是否有试玩
         val demo: Boolean = false,
