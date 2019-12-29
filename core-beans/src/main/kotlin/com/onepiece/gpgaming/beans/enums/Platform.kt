@@ -22,7 +22,7 @@ enum class Platform(
     PlaytechSlot(PlatformCategory.Slot),
     PNG(PlatformCategory.Slot),
     GamePlay(PlatformCategory.Slot),
-    SimplePlay(PlatformCategory.Slot), // 就是asia gaing的slot
+    SimplePlay(PlatformCategory.Slot), // 就是sa 的slot
 
     // live video
     CT(PlatformCategory.LiveVideo),
