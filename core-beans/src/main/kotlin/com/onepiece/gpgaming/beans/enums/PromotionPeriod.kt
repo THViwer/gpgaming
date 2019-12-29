@@ -159,7 +159,7 @@ enum class PromotionPeriod {
 
             return promotionHistory.filter { it.createdTime >= startDate.atStartOfDay() && it.createdTime <= endDate.atStartOfDay().plusDays(1) }
                     .sumByDouble { it.promotionAmount.toDouble() }
-                    .let { BigDecimal.valueOf(it).setScale(2, 2) }
+                    .let { promotion.periodMaxPromotion.minus(BigDecimal.valueOf(it)).setScale(2, 2) }
         }
 
 
