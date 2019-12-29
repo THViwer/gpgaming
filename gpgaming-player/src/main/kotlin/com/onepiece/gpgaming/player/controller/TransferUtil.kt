@@ -198,7 +198,6 @@ class TransferUtil(
      */
     fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
 
-        var overPromotionAmountNotNull: BigDecimal = BigDecimal.ZERO
         // 是否有历史优惠活动
         if (platformMember.joinPromotionId != null) {
             // 已存在的优惠活动
@@ -214,10 +213,7 @@ class TransferUtil(
                 memberService.update(memberUo)
             }
 
-            overPromotionAmountNotNull = if (overPromotionAmount == null) {
-                val history = transferOrderService.queryLastPromotion(clientId = platformMember.clientId, memberId = platformMember.memberId, startTime = LocalDateTime.now())
-                PromotionPeriod.getOverPromotionAmount(promotion = promotion, historyOrders = history)
-            } else overPromotionAmount!!
+
 
         } else BigDecimal.ZERO
 
@@ -227,6 +223,12 @@ class TransferUtil(
         val promotion = promotionService.get(promotionId)
         check(promotion.status == Status.Normal) { OnePieceExceptionCode.PROMOTION_EXPIRED }
         check(this.checkStopTime(promotion.stopTime)) { OnePieceExceptionCode.PROMOTION_EXPIRED }
+
+        // 剩余优惠金额
+        val overPromotionAmountNotNull = if (overPromotionAmount == null) {
+            val history = transferOrderService.queryLastPromotion(clientId = platformMember.clientId, memberId = platformMember.memberId, startTime = LocalDateTime.now())
+            PromotionPeriod.getOverPromotionAmount(promotion = promotion, historyOrders = history)
+        } else overPromotionAmount
 
         val transferUo = promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount =  amount,
                 platformBalance = platformBalance, promotionId = promotion.id, overPromotionAmount = overPromotionAmountNotNull)
