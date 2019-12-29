@@ -303,14 +303,22 @@ class GameApi(
     /**
      * 转账
      */
-    fun transfer(clientId: Int, platformUsername: String, platform: Platform, orderId: String, originBalance: BigDecimal, amount: BigDecimal, index: Int = 0): GameValue.TransferResp {
+    fun transfer(clientId: Int,
+                 memberId: Int,
+                 platformUsername: String,
+                 platform: Platform,
+                 orderId: String,
+                 originBalance: BigDecimal,
+                 amount: BigDecimal,
+                 index: Int = 0
+    ): GameValue.TransferResp {
 
         val msg = if (amount.toDouble() > 0) {
             "中心 => $platform"
         } else {
             "$platform => 中心"
         }
-        log.info("转账开始: 订单Id:$orderId, $msg, 第${index}次转账，clientId=$clientId, 平台用户名=$platformUsername, 平台：$platform,  金额：$amount, 平台金额:$originBalance")
+        log.info("转账开始: 用户Id：$memberId, 平台用户名=$platformUsername, 订单Id:$orderId, $msg, 第${index}次转账，clientId=$clientId,  平台：$platform,  金额：$amount, 平台金额:$originBalance")
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
         val transferReq = GameValue.TransferReq(token = clientToken, orderId = orderId, username = platformUsername, amount = amount)
@@ -341,7 +349,7 @@ class GameApi(
             return checkResp.copy(balance = balance)
         } catch (e: Exception) {
             log.error("转账失败第${index}次，请求参数：$transferReq ", e)
-            this.transfer(clientId, platformUsername, platform, orderId, originBalance, amount, index + 1)
+            this.transfer(clientId, memberId, platformUsername, platform, orderId, originBalance, amount, index + 1)
         }
 
     }
