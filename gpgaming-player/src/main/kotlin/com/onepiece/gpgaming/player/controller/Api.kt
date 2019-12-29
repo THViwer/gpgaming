@@ -40,8 +40,7 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "优惠活动")
     fun promotion(
-            @RequestHeader("language") language: Language,
-            @RequestParam("promotionCategory", required = false) promotionCategory: PromotionCategory?
+            @RequestHeader("language") language: Language
     ): List<PromotionVo>
 
         @ApiOperation(tags = ["api"], value = "老虎机菜单")

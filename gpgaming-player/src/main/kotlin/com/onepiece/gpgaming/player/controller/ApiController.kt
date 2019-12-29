@@ -13,6 +13,7 @@ import com.onepiece.gpgaming.beans.enums.PromotionCategory
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
+import com.onepiece.gpgaming.beans.model.Promotion
 import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.ClientService
@@ -208,31 +209,35 @@ open class ApiController(
 
     @GetMapping("/promotion")
     override fun promotion(
-            @RequestHeader("language") language: Language,
-            @RequestParam("promotionCategory", required = false) promotionCategory: PromotionCategory?
+            @RequestHeader("language") language: Language
     ): List<PromotionVo> {
 
         val clientId = getClientIdByDomain()
 
-        val platformCategory = when (promotionCategory) {
-            PromotionCategory.Slot -> PlatformCategory.Slot
-            PromotionCategory.Live -> PlatformCategory.LiveVideo
-            PromotionCategory.Sport -> PlatformCategory.Sport
-            PromotionCategory.Fishing -> PlatformCategory.Fishing
-            else -> null
+        val allPromotion = promotionService.all(clientId).filter { it.status == Status.Normal }
+
+        val promotions = arrayListOf<Promotion>()
+
+        allPromotion.forEach { promotion ->
+            // 添加默认
+            promotions.add(promotion)
+            // 添加平台
+            promotion.platforms.map { it.detail.category }.toSet().map {
+                promotions.add(promotion.copy(category = it.getPromotionCategory()))
+            }
         }
 
-        val promotions = promotionService.all(clientId)
-                .filter { it.status == Status.Normal }
-                .filter {
-                    when {
-                        platformCategory == null -> true
-                        promotionCategory == PromotionCategory.First -> it.category == PromotionCategory.First
-                        promotionCategory == PromotionCategory.Special -> it.category == PromotionCategory.Special
-                        it.platforms.firstOrNull { it.detail.category == platformCategory } != null -> true
-                        else -> false
-                    }
-                }
+//        val promotions = promotionService.all(clientId)
+//                .filter { it.status == Status.Normal }
+//                .filter {
+//                    when {
+//                        platformCategory == null -> true
+//                        promotionCategory == PromotionCategory.First -> it.category == PromotionCategory.First
+//                        promotionCategory == PromotionCategory.Special -> it.category == PromotionCategory.Special
+//                        it.platforms.firstOrNull { it.detail.category == platformCategory } != null -> true
+//                        else -> false
+//                    }
+//                }
 
         val i18nContentMap = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Promotion)
                 .map { "${it.configId}:${it.language}" to it }

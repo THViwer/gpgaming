@@ -11,10 +11,17 @@ enum class PlatformCategory {
     // 真人视讯
     LiveVideo,
 
-    // 彩票
-    Lottery,
-
     // 老虎机
-    Slot
+    Slot;
+
+
+    fun getPromotionCategory(): PromotionCategory {
+        return when (this) {
+            Fishing -> PromotionCategory.Fishing
+            Sport -> PromotionCategory.Sport
+            LiveVideo -> PromotionCategory.Live
+            Slot -> PromotionCategory.Slot
+        }
+    }
 
 }
