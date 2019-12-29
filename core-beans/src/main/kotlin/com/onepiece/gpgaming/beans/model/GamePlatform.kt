@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
@@ -31,12 +32,14 @@ data class GamePlatform(
         val status: Status,
 
         // 启动列表
+        @JsonIgnore
         val launchs: String?
 
 ) {
 
     // 启动方式
     val launchList: List<LaunchMethod>
+        @JsonIgnore
         get() {
             return launchs?.split(",")?.map { LaunchMethod.valueOf(it) }
                     ?: emptyList()
