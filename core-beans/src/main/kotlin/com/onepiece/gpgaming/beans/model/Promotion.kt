@@ -39,8 +39,8 @@ data class Promotion (
         // 优惠周期
         val period: PromotionPeriod,
 
-        // 当天能获得的最大优惠量 只有在daily时有效
-        val dailyMaxPromotion: BigDecimal,
+        // 周期内最大金额
+        val periodMaxPromotion: BigDecimal,
 
         // 规则
         val ruleJson: String,

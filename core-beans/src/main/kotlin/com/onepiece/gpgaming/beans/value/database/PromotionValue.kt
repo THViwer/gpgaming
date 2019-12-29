@@ -26,7 +26,7 @@ data class PromotionCo(
         val period: PromotionPeriod,
 
         // 每天的最大优惠
-        val dailyMaxPromotion: BigDecimal,
+        val periodMaxPromotion: BigDecimal,
 
         // 是否置顶
         val top: Boolean,
@@ -56,7 +56,7 @@ data class PromotionUo(
         val stopTime: LocalDateTime?,
 
         // 每天的最大优惠
-        val dailyMaxPromotion: BigDecimal,
+        val periodMaxPromotion: BigDecimal,
 
         // 优惠周期
         val period: PromotionPeriod?,

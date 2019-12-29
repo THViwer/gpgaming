@@ -29,6 +29,9 @@ data class PromotionVo(
         @ApiModelProperty("周期")
         val period: PromotionPeriod,
 
+        @ApiModelProperty("每个周期最大优惠金额")
+        val periodMaxPromotion: BigDecimal,
+
         @ApiModelProperty("结束时间, 如果为null 则无限时间")
         val stopTime: LocalDateTime?,
 
@@ -91,7 +94,7 @@ data class PromotionCoReq(
         val period: PromotionPeriod,
 
         @ApiModelProperty("每天最大的优惠金额")
-        val dailyMaxPromotion: BigDecimal,
+        val periodMaxPromotion: BigDecimal,
 
         @ApiModelProperty("是否置顶")
         val top: Boolean,
@@ -120,7 +123,7 @@ data class PromotionUoReq(
         val period: PromotionPeriod?,
 
         @ApiModelProperty("每天最大的优惠金额")
-        val dailyMaxPromotion: BigDecimal,
+        val periodMaxPromotion: BigDecimal,
 
         @ApiModelProperty("是否置顶")
         val top: Boolean?,

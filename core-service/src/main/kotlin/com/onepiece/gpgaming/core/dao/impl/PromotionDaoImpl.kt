@@ -27,7 +27,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val top = rs.getBoolean("top")
 //            val icon = rs.getString("icon")
             val period = rs.getString("period").let { PromotionPeriod.valueOf(it) }
-            val dailyMaxPromotion = rs.getBigDecimal("daily_max_promotion")
+            val periodMaxPromotion = rs.getBigDecimal("period_max_promotion")
             val status = rs.getString("status").let { Status.valueOf(it) }
 
             val levelId = rs.getInt("level_id")
@@ -39,7 +39,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
 
             Promotion(id = id, category = category, stopTime = stopTime, status = status, createdTime = createdTime,
                     clientId = clientId, top = top, updatedTime = updatedTime, platforms = platforms, levelId = levelId,
-                    ruleJson = ruleJson, ruleType = ruleType, period = period, dailyMaxPromotion = dailyMaxPromotion)
+                    ruleJson = ruleJson, ruleType = ruleType, period = period, periodMaxPromotion = periodMaxPromotion)
         }
 
     override fun create(promotionCo: PromotionCo): Int {
@@ -51,7 +51,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("top", promotionCo.top)
 //                .set("icon", promotionCo.icon)
                 .set("period", promotionCo.period)
-                .set("daily_max_promotion", promotionCo.dailyMaxPromotion)
+                .set("period_max_promotion", promotionCo.periodMaxPromotion)
                 .set("level_id", promotionCo.levelId)
                 .set("rule_json", promotionCo.ruleJson)
                 .set("rule_type", promotionCo.ruleType)
@@ -67,7 +67,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("top", promotionUo.top)
 //                .set("icon", promotionUo.icon)
                 .set("period", promotionUo.period)
-                .set("daily_max_promotion", promotionUo.dailyMaxPromotion)
+                .set("period_max_promotion", promotionUo.periodMaxPromotion)
                 .set("status", promotionUo.status)
                 .set("level_id", promotionUo.levelId)
                 .set("rule_json", promotionUo.ruleJson)
