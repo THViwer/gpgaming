@@ -25,10 +25,14 @@ class GamePlatformServiceImpl(
     override fun create(gamePlatformCo: GamePlatformValue.GamePlatformCo) {
         val state = gamePlatformDao.create(gamePlatformCo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        redisService.delete(OnePieceRedisKeyConstant.getPlatforms())
     }
 
     override fun update(gamePlatformUo: GamePlatformValue.GamePlatformUo) {
         val state = gamePlatformDao.update(gamePlatformUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        redisService.delete(OnePieceRedisKeyConstant.getPlatforms())
     }
 }
