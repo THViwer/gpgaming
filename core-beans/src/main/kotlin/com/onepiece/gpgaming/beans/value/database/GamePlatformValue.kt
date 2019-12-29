@@ -33,7 +33,7 @@ sealed class GamePlatformValue {
             val status: Status,
 
             // 启动列表
-            val launchs: String
+            val launchs: String?
     )
 
 
@@ -66,7 +66,7 @@ sealed class GamePlatformValue {
             val status: Status,
 
             // 启动列表
-            val launchs: String
+            val launchs: String?
     )
 
 }
