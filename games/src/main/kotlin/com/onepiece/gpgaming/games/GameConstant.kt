@@ -22,7 +22,7 @@ class GameConstant(
         return when (platform) {
 
             // slot
-            Platform.Joker -> "http://api688.net"
+            Platform.Joker -> "http://www.gwc688.net"
             Platform.Kiss918 -> "http://api.918kiss.com:9991"
             Platform.Pussy888 -> "http://api.pussy888.com"
             Platform.Mega -> "http://mgt3.36ozhushou.com/mega-cloud"
