@@ -36,7 +36,7 @@ class OkHttpUtil(
 
 
     fun <T> doGet(url: String, clz: Class<T>,  headers: Map<String, String> = emptyMap()): T {
-        log.info("request url: $url")
+//        log.info("request url: $url")
         val request = Request.Builder()
                 .url(url)
                 .get()
@@ -54,7 +54,7 @@ class OkHttpUtil(
         }
 
         val json = response.body!!.string()
-        log.info("response data: $json")
+//        log.info("response data: $json")
 
         if (clz == String::class.java)
             return json as T
@@ -63,7 +63,7 @@ class OkHttpUtil(
     }
 
     fun <T> doGetXml(url: String, clz: Class<T>, authorization: String = ""): T {
-        log.info("request url: $url")
+//        log.info("request url: $url")
         val request = Request.Builder()
                 .url(url)
                 .addHeader("Authorization", authorization)
@@ -78,7 +78,7 @@ class OkHttpUtil(
         }
 
         val json = response.body!!.string()
-        log.info("response data: $json")
+//        log.info("response data: $json")
 
         if (clz == String::class.java)
             return json as T
@@ -127,8 +127,8 @@ class OkHttpUtil(
             }
             else -> {
                 val json = response.body!!.bytes()
-                log.info("request url : $url")
-                log.info("result json : ${String(json)}")
+//                log.info("request url : $url")
+//                log.info("result json : ${String(json)}")
                 objectMapper.readValue(json, clz)
             }
         }
@@ -147,8 +147,8 @@ class OkHttpUtil(
             objectMapper.writeValueAsString(data)
         }
 
-        log.info("request url : $url")
-        log.info("request param: $json")
+//        log.info("request url : $url")
+//        log.info("request param: $json")
 
         val body = json.toRequestBody(JSON)
 
@@ -169,14 +169,14 @@ class OkHttpUtil(
         }
 
         val responseData = response.body!!.string()
-        log.info("response json data : $responseData")
+//        log.info("response json data : $responseData")
         return objectMapper.readValue(responseData, clz)
     }
 
     fun <T> doPostXml(url: String, data: String, clz: Class<T>, mediaType: MediaType = XML, headers: Map<String, String> = emptyMap()): T {
 
-        log.info("request url : $url")
-        log.info("request param: $data")
+//        log.info("request url : $url")
+//        log.info("request param: $data")
 
         val body = data.toRequestBody(mediaType)
 
@@ -197,7 +197,7 @@ class OkHttpUtil(
         }
 
         val responseData = response.body!!.string()
-        log.info("response json data : $responseData")
+//        log.info("response json data : $responseData")
 
         return if (clz != String::class.java) {
             xmlMapper.readValue(responseData, clz)
