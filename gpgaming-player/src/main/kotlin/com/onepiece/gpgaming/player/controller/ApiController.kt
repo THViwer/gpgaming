@@ -213,8 +213,26 @@ open class ApiController(
     ): List<PromotionVo> {
 
         val clientId = getClientIdByDomain()
+
+        val platformCategory = when (promotionCategory) {
+            PromotionCategory.Slot -> PlatformCategory.Slot
+            PromotionCategory.Live -> PlatformCategory.LiveVideo
+            PromotionCategory.Sport -> PlatformCategory.Sport
+            PromotionCategory.Fishing -> PlatformCategory.Fishing
+            else -> null
+        }
+
         val promotions = promotionService.all(clientId)
-                .filter { it.status == Status.Normal && (promotionCategory == null || it.category == promotionCategory) }
+                .filter { it.status == Status.Normal }
+                .filter {
+                    when {
+                        platformCategory == null -> true
+                        promotionCategory == PromotionCategory.First -> it.category == PromotionCategory.First
+                        promotionCategory == PromotionCategory.Special -> it.category == PromotionCategory.Special
+                        it.platforms.firstOrNull { it.detail.category == platformCategory } != null -> true
+                        else -> false
+                    }
+                }
 
         val i18nContentMap = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Promotion)
                 .map { "${it.configId}:${it.language}" to it }
