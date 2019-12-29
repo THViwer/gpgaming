@@ -10,7 +10,6 @@ import com.onepiece.gpgaming.beans.value.internet.web.PromotionCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionUoReq
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.PromotionDao
-import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.stereotype.Service
@@ -19,9 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class PromotionServiceImpl(
         private val promotionDao: PromotionDao,
-        private val redisService: RedisService,
-        private val i18nContentService: I18nContentService
-//        private val promotionRoleDao: PromotionRuleDao
+        private val redisService: RedisService
 ) : PromotionService {
 
     override fun all(clientId: Int): List<Promotion> {
@@ -37,7 +34,7 @@ class PromotionServiceImpl(
 
         // 创建优惠记录
         val promotionCo = PromotionCo(clientId = clientId, category = promotionCoReq.category, stopTime = promotionCoReq.stopTime, top = promotionCoReq.top,
-                levelId = promotionCoReq.promotionRuleVo.levelId, ruleType = promotionCoReq.promotionRuleVo.ruleType,
+                levelId = promotionCoReq.promotionRuleVo.levelId, ruleType = promotionCoReq.promotionRuleVo.ruleType, dailyMaxPromotion = promotionCoReq.dailyMaxPromotion,
                 ruleJson = promotionCoReq.promotionRuleVo.ruleJson, platforms = promotionCoReq.platforms, period = promotionCoReq.period)
         val promotionId = promotionDao.create(promotionCo)
         check(promotionId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
@@ -66,7 +63,7 @@ class PromotionServiceImpl(
 
         // 更新优惠记录
         val promotionUo = PromotionUo(id = promotionUoReq.id, category = promotionUoReq.category, stopTime = promotionUoReq.stopTime,
-                top = promotionUoReq.top, status = promotionUoReq.status, levelId = promotionUoReq.levelId,
+                top = promotionUoReq.top, status = promotionUoReq.status, levelId = promotionUoReq.levelId, dailyMaxPromotion = promotionUoReq.dailyMaxPromotion,
                 ruleJson = promotionUoReq.ruleJson, platforms = promotionUoReq.platforms, period = promotionUoReq.period)
         val state = promotionDao.update(promotionUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }

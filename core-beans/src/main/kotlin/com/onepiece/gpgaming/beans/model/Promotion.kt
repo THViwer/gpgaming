@@ -39,6 +39,9 @@ data class Promotion (
         // 优惠周期
         val period: PromotionPeriod,
 
+        // 当天能获得的最大优惠量 只有在daily时有效
+        val dailyMaxPromotion: BigDecimal,
+
         // 规则
         val ruleJson: String,
 
@@ -75,18 +78,18 @@ data class Promotion (
     /**
      * 获得转账的文字描述
      */
-    fun getPromotionIntroduction(amount: BigDecimal, platformBalance: BigDecimal, language: Language): String {
+    fun getPromotionIntroduction(amount: BigDecimal, platformBalance: BigDecimal, overPromotionAmount: BigDecimal, language: Language): String {
 
         return when (this.ruleType) {
             PromotionRuleType.Bet -> {
                 val betRule = this.rule as PromotionRules.BetRule
-                val promotionAmount = getPromotionAmount(amount = amount, platformBalance = platformBalance)
+                val promotionAmount = getPromotionAmount(amount = amount, platformBalance = platformBalance, overPromotionAmount = overPromotionAmount)
                 val requirementBet = (amount.plus(promotionAmount).plus(platformBalance)).multiply(betRule.betMultiple).setScale(2, 2)
                 "转账:$amount, 平台剩余:${platformBalance},优惠:${promotionAmount}, 实际到账:${amount.plus(promotionAmount).plus(platformBalance)}, 打码量达到${requirementBet}可取出"
             }
             PromotionRuleType.Withdraw -> {
                 val withdrawRule = this.rule as PromotionRules.WithdrawRule
-                val promotionAmount = getPromotionAmount(amount = amount, platformBalance = platformBalance)
+                val promotionAmount = getPromotionAmount(amount = amount, platformBalance = platformBalance, overPromotionAmount = overPromotionAmount)
                 val requirementTransferOutAmount = (amount.plus(promotionAmount).plus(platformBalance)).multiply(withdrawRule.transferMultiplied).setScale(2,2)
                 "转账:$amount, 平台剩余:${platformBalance},优惠:${promotionAmount}, 实际到账:${amount.plus(promotionAmount).plus(platformBalance)}, 游戏金额${requirementTransferOutAmount}可取出"
             }
@@ -99,7 +102,7 @@ data class Promotion (
     /**
      * 获得优惠金额
      */
-    fun getPromotionAmount(amount: BigDecimal, platformBalance: BigDecimal): BigDecimal{
+    fun getPromotionAmount(amount: BigDecimal, platformBalance: BigDecimal, overPromotionAmount: BigDecimal): BigDecimal{
 
         if (this.rule.minAmount.toDouble() > amount.toDouble()) return BigDecimal.ZERO
         if (this.rule.maxAmount.toDouble() < amount.toDouble()) return BigDecimal.ZERO
@@ -116,17 +119,26 @@ data class Promotion (
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
-        return if (promotionAmount.toDouble() > this.rule.maxPromotionAmount.toDouble()) {
-            this.rule.maxPromotionAmount
-        } else {
-            promotionAmount
-        }.setScale(2, 2)
+        return promotionAmount
+                .let {
+                    if (it > this.rule.maxPromotionAmount) this.rule.maxPromotionAmount else it
+                }
+                .let {
+                    if (it > overPromotionAmount) overPromotionAmount else it
+                }
+                .setScale(2, 2)
     }
 
     /**
      * 获得活动的更新对象
      */
-    fun getPlatformMemberTransferUo(platformMemberId: Int, amount: BigDecimal, platformBalance: BigDecimal, promotionId: Int): PlatformMemberTransferUo {
+    fun getPlatformMemberTransferUo(
+            platformMemberId: Int,
+            amount: BigDecimal,
+            platformBalance: BigDecimal,
+            overPromotionAmount: BigDecimal,
+            promotionId: Int
+    ): PlatformMemberTransferUo {
 
         val init = PlatformMemberTransferUo(id = platformMemberId, joinPromotionId = promotionId, currentBet = BigDecimal.ZERO, requirementBet = BigDecimal.ZERO,
                 promotionAmount = BigDecimal.ZERO, transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO,
@@ -136,7 +148,7 @@ data class Promotion (
             PromotionRuleType.Bet -> {
                 val betRule = this.rule as PromotionRules.BetRule
 
-                val promotionAmount = this.getPromotionAmount(amount, platformBalance)
+                val promotionAmount = this.getPromotionAmount(amount = amount, platformBalance = platformBalance, overPromotionAmount = overPromotionAmount)
                 val requirementBet = (amount.plus(promotionAmount).plus(platformBalance)).multiply(betRule.betMultiple)
 
                 init.copy(currentBet = BigDecimal.ZERO, requirementBet = requirementBet, ignoreTransferOutAmount = betRule.ignoreTransferOutAmount,
@@ -147,7 +159,7 @@ data class Promotion (
 
                 val withdrawRule = this.rule as PromotionRules.WithdrawRule
 
-                val promotionAmount = this.getPromotionAmount(amount, platformBalance)
+                val promotionAmount = this.getPromotionAmount(amount = amount, platformBalance = platformBalance, overPromotionAmount = overPromotionAmount)
                 val requirementTransferOutAmount = (amount.plus(promotionAmount).plus(platformBalance)).multiply(withdrawRule.transferMultiplied)
 
                 init.copy(currentBet = BigDecimal.ZERO, requirementTransferOutAmount = requirementTransferOutAmount, ignoreTransferOutAmount = withdrawRule.ignoreTransferOutAmount,

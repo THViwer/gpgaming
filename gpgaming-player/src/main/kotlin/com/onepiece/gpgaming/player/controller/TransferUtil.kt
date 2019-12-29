@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
+import com.onepiece.gpgaming.beans.enums.PromotionPeriod
 import com.onepiece.gpgaming.beans.enums.PromotionRuleType
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.enums.TransferState
@@ -129,7 +130,8 @@ class TransferUtil(
 //        check(wallet.balance.toDouble() - amount.toDouble() > 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
 
         // 优惠活动赠送金额
-        val platformMemberTransferUo = this.handlerPromotion(platformMember = platformMember, amount = amount, promotionId = promotionId, platformBalance = platformBalance)
+        val platformMemberTransferUo = this.handlerPromotion(platformMember = platformMember, amount = amount, promotionId = promotionId,
+                platformBalance = platformBalance, overPromotionAmount = null)
 //        check(platformMemberTransferUo?.joinPlatform == null || platformMember.platform == platformMemberTransferUo.joinPlatform) { OnePieceExceptionCode.ILLEGAL_OPERATION }
 
         // 检查是否满足首次优惠
@@ -161,7 +163,7 @@ class TransferUtil(
         } else {
             val init = PlatformMemberTransferUo(id = platformMember.id, joinPromotionId = null, currentBet = BigDecimal.ZERO, requirementBet = BigDecimal.ZERO,
                     promotionAmount = BigDecimal.ZERO, transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO,
-                    promotionJson = null, platforms = emptyList(), category = PromotionCategory.Slot)
+                    promotionJson = null, platforms = emptyList(), category = PromotionCategory.First)
             platformMemberService.transferIn(init)
         }
 
@@ -194,8 +196,9 @@ class TransferUtil(
     /**
      * 处理优惠活动
      */
-    fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
+    fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
 
+        var overPromotionAmountNotNull: BigDecimal = BigDecimal.ZERO
         // 是否有历史优惠活动
         if (platformMember.joinPromotionId != null) {
             // 已存在的优惠活动
@@ -210,7 +213,13 @@ class TransferUtil(
                 val memberUo = MemberUo(id = platformMember.memberId, firstPromotion = true)
                 memberService.update(memberUo)
             }
-        }
+
+            overPromotionAmountNotNull = if (overPromotionAmount == null) {
+                val history = transferOrderService.queryLastPromotion(clientId = platformMember.clientId, memberId = platformMember.memberId, startTime = LocalDateTime.now())
+                PromotionPeriod.getOverPromotionAmount(promotion = promotion, historyOrders = history)
+            } else overPromotionAmount!!
+
+        } else BigDecimal.ZERO
 
         if (promotionId == null) return null
 
@@ -220,7 +229,7 @@ class TransferUtil(
         check(this.checkStopTime(promotion.stopTime)) { OnePieceExceptionCode.PROMOTION_EXPIRED }
 
         val transferUo = promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount =  amount,
-                platformBalance = platformBalance, promotionId = promotion.id)
+                platformBalance = platformBalance, promotionId = promotion.id, overPromotionAmount = overPromotionAmountNotNull)
 
         // 检查当前平台是否是参加活动的平台
         check(transferUo.platforms.contains(platformMember.platform)) { OnePieceExceptionCode.ILLEGAL_OPERATION }

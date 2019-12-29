@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.beans.enums.PromotionRuleType
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.I18nContent
 import io.swagger.annotations.ApiModelProperty
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 
@@ -89,6 +90,9 @@ data class PromotionCoReq(
         @ApiModelProperty("优惠周期")
         val period: PromotionPeriod,
 
+        @ApiModelProperty("每天最大的优惠金额")
+        val dailyMaxPromotion: BigDecimal,
+
         @ApiModelProperty("是否置顶")
         val top: Boolean,
 
@@ -114,6 +118,9 @@ data class PromotionUoReq(
 
         @ApiModelProperty("优惠周期")
         val period: PromotionPeriod?,
+
+        @ApiModelProperty("每天最大的优惠金额")
+        val dailyMaxPromotion: BigDecimal,
 
         @ApiModelProperty("是否置顶")
         val top: Boolean?,

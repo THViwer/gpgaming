@@ -17,6 +17,8 @@ import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.PlatformMember
+import com.onepiece.gpgaming.beans.model.Promotion
+import com.onepiece.gpgaming.beans.model.TransferOrder
 import com.onepiece.gpgaming.beans.value.database.DepositCo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.MemberBankCo
@@ -55,6 +57,7 @@ import com.onepiece.gpgaming.player.controller.value.MemberBankVo
 import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
 import com.onepiece.gpgaming.player.controller.value.WithdrawCoReq
 import com.onepiece.gpgaming.utils.AwsS3Util
+import com.sun.org.apache.xpath.internal.operations.Bool
 import org.slf4j.LoggerFactory
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
@@ -67,11 +70,12 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
-import java.time.Duration
+import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.temporal.TemporalAdjusters
 import java.util.stream.Collectors
 import kotlin.streams.toList
-import kotlin.time.toKotlinDuration
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 @RestController
@@ -318,33 +322,14 @@ open class CashApiController(
         val member = memberService.getMember(current.id)
         val promotions = promotionService.find(clientId = current.clientId, platform = platform)
 
-        val lastTransferOrders = transferOrderService.queryLastPromotion(clientId = current.clientId, memberId = current.id,
+        val historyOrders = transferOrderService.queryLastPromotion(clientId = current.clientId, memberId = current.id,
                 startTime = LocalDateTime.now().minusDays(30))
-                .sortedBy { it.orderId }
-                .map { it.joinPromotionId!! to it }
-                .toMap()
 
-        val now = LocalDateTime.now()
         val joinPromotions = promotions
                 .filter { promotionId == null || it.id == promotionId }
                 .filter { it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble() }
                 .filter { !member.firstPromotion || it.category != PromotionCategory.First }
-                .filter {
-                    val order = lastTransferOrders[it.id]
-
-                    order == null || when (it.period) {
-                        PromotionPeriod.Daily -> {
-                            now > order.createdTime.plusDays(1)
-                        }
-                        PromotionPeriod.Weekly -> {
-                            now > order.createdTime.plusDays(7)
-                        }
-                        PromotionPeriod.Monthly -> {
-                            now > order.createdTime.plusDays(30)
-                        }
-                        else -> true
-                    }
-                }
+                .filter { promotion -> PromotionPeriod.check(promotion = promotion, historyOrders = historyOrders) }
 
 
         val contentMap = i18nContentService.getConfigType(clientId = current.clientId, configType = I18nConfig.Promotion)
@@ -361,7 +346,9 @@ open class CashApiController(
             val platformMember = platformMemberService.get(platformMemberVo.id)
 
             try {
-                transferUtil.handlerPromotion(platformMember = platformMember, amount = amount, platformBalance = platformBalance, promotionId = promotion.id)
+                val overPromotionAmount = PromotionPeriod.getOverPromotionAmount(promotion = promotion, historyOrders = historyOrders)
+                transferUtil.handlerPromotion(platformMember = platformMember, amount = amount, platformBalance = platformBalance, promotionId = promotion.id,
+                        overPromotionAmount = overPromotionAmount)
 
                 val content = contentMap["${promotion.id}:${language}"]
                         ?: contentMap["${promotion.id}:${Language.EN}"]
@@ -369,7 +356,8 @@ open class CashApiController(
                 content?.let {
                     val mContent = content.getII18nContent(objectMapper = objectMapper) as I18nContent.PromotionI18n
 
-                    val promotionIntroduction = promotion.getPromotionIntroduction(amount = amount, language = language, platformBalance = platformBalance)
+                    val promotionIntroduction = promotion.getPromotionIntroduction(amount = amount, language = language, platformBalance = platformBalance,
+                            overPromotionAmount = overPromotionAmount)
                     CheckPromotionVo(promotionId = promotion.id, promotionIntroduction = promotionIntroduction, title = mContent.title)
                 }
             } catch (e: Exception) {

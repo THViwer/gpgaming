@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.enums.PromotionCategory
 import com.onepiece.gpgaming.beans.enums.PromotionPeriod
 import com.onepiece.gpgaming.beans.enums.PromotionRuleType
 import com.onepiece.gpgaming.beans.enums.Status
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class PromotionCo(
@@ -23,6 +24,9 @@ data class PromotionCo(
 
         // 优惠周期
         val period: PromotionPeriod,
+
+        // 每天的最大优惠
+        val dailyMaxPromotion: BigDecimal,
 
         // 是否置顶
         val top: Boolean,
@@ -50,6 +54,9 @@ data class PromotionUo(
 
         // 结束时间, 如果为null 则无限时间
         val stopTime: LocalDateTime?,
+
+        // 每天的最大优惠
+        val dailyMaxPromotion: BigDecimal,
 
         // 优惠周期
         val period: PromotionPeriod?,
