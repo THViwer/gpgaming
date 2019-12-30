@@ -27,6 +27,8 @@ interface MemberApi {
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): MemberPage
 
+
+
     @ApiOperation(tags = ["user"], value = "会员 -> 更新")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun update(@RequestBody memberUoReq: MemberUoReq)

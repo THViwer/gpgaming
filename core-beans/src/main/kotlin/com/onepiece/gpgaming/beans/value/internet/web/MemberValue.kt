@@ -30,6 +30,9 @@ data class MemberVo(
         @ApiModelProperty("层级名称")
         val level: String,
 
+        @ApiModelProperty("手机号")
+        val phone: String,
+
 //        @ApiModelProperty("姓名")
 //        val name: String,
 
@@ -47,6 +50,12 @@ data class MemberVo(
 
         @ApiModelProperty("登陆时间")
         val loginTime: LocalDateTime?
+
+)
+
+data class MemberDetail(
+
+        val id: Int
 
 )
 
