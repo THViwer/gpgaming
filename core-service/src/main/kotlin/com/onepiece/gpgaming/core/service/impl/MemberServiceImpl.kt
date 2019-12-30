@@ -57,7 +57,7 @@ class MemberServiceImpl(
         // check username and password
         val member  = memberDao.getByUsername(loginValue.username)
         checkNotNull(member) { OnePieceExceptionCode.LOGIN_FAIL}
-        check(loginValue.password == member.password) { OnePieceExceptionCode.LOGIN_FAIL }
+        check(bCryptPasswordEncoder.matches(loginValue.password, member.password)) { OnePieceExceptionCode.LOGIN_FAIL }
         check(member.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
 
         // update user for loginIp and loginTime
