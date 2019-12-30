@@ -139,7 +139,7 @@ open class ApiController(
 
         val clientId = getClientIdByDomain()
 
-        val gamePlatforms = gamePlatformService.all()
+//        val gamePlatforms = gamePlatformService.all()
         val allPromotion = promotionService.all(clientId).filter { it.status == Status.Normal }
 
         val promotions = arrayListOf<Promotion>()
