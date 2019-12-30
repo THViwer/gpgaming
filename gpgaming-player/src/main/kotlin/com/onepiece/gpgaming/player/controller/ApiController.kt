@@ -199,7 +199,7 @@ open class ApiController(
             Platform.PNG -> "${SystemConstant.AWS_SLOT}/png_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
             Platform.GamePlay -> "${SystemConstant.AWS_SLOT}/gameplay_${language.name.toLowerCase()}.json"
             Platform.SimplePlay -> "${SystemConstant.AWS_SLOT}/simple_play_${language.name.toLowerCase()}.json"
-            Platform.PlaytechSlot -> "${SystemConstant.AWS_SLOT}/playtech_${language.name.toLowerCase()}.json"
+            Platform.PlaytechSlot -> "${SystemConstant.AWS_SLOT}/playtech_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
         return mapOf(
