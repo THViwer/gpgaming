@@ -31,7 +31,7 @@ class WithdrawServiceImpl(
     }
 
     override fun query(withdrawQuery: WithdrawQuery): List<Withdraw> {
-        return withdrawDao.query(withdrawQuery, 0, 1000)
+        return withdrawDao.query(withdrawQuery, 0, withdrawQuery.size)
     }
 
     override fun query(withdrawQuery: WithdrawQuery, current: Int, size: Int): Page<Withdraw> {

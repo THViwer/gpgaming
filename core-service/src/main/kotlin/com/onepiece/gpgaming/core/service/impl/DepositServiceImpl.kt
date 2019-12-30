@@ -30,7 +30,7 @@ class DepositServiceImpl(
     }
 
     override fun query(depositQuery: DepositQuery): List<Deposit> {
-        return depositDao.query(query = depositQuery, current = 0, size = 1000)
+        return depositDao.query(query = depositQuery, current = 0, size = depositQuery.size)
     }
 
     override fun query(depositQuery: DepositQuery, current: Int, size: Int): Page<Deposit> {
