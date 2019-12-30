@@ -19,11 +19,8 @@ object PlaytechUtil {
             val list = it.split(",")
             list.firstOrNull { it.isNotBlank() } ?.let {
                 val gameId = list[0]
-                val cname = list[1]
-                val ename = list[2]
-                if (list[3].contains("白虎")) {
-                    println("xx")
-                }
+                val ename = list[1]
+                val cname = list[2]
                 val category = list[3].let { GameCategory.valueOf(it) }
 
                 val name = if (language == Language.CN) cname else ename
