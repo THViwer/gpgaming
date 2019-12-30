@@ -1,6 +1,10 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
+import com.onepiece.gpgaming.beans.model.Deposit
+import com.onepiece.gpgaming.beans.model.Wallet
+import com.onepiece.gpgaming.beans.model.Withdraw
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -53,11 +57,51 @@ data class MemberVo(
 
 )
 
-data class MemberDetail(
+data class MemberWalletInfo(
 
-        val id: Int
+        // id
+        val memberId: Int,
 
-)
+        // 钱包详情
+        val wallet: Wallet,
+
+        // 平台余额列表
+        val balances: List<BalanceVo>,
+
+        // 最后5个充值信息
+        val lastFiveDeposit: List<Deposit>,
+
+        // 最后5个取款信息
+        val lastFiveWithdraw: List<Withdraw>
+
+) {
+
+        data class BalanceVo(
+
+                // 平台
+                val platform: Platform,
+
+                // 当前余额
+                val balance: BigDecimal,
+
+                // 总打码量
+                val totalBet: BigDecimal,
+
+                // 总盈利
+                val totalWin: BigDecimal,
+
+                // 总充值金额
+                val totalAmount: BigDecimal,
+
+                // 总出款金额
+                val totalTransferOutAmount: BigDecimal,
+
+                // 总优惠金额
+                val totalPromotionAmount: BigDecimal
+        )
+
+
+}
 
 data class MemberUoReq(
 

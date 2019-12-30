@@ -4,16 +4,15 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.value.internet.web.MemberCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPage
 import com.onepiece.gpgaming.beans.value.internet.web.MemberUoReq
+import com.onepiece.gpgaming.beans.value.internet.web.MemberWalletInfo
 import com.onepiece.gpgaming.beans.value.internet.web.WalletVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
-import java.time.LocalDateTime
 
 @Api(tags = ["user"], description = " ")
 interface MemberApi {
@@ -28,6 +27,8 @@ interface MemberApi {
     ): MemberPage
 
 
+    @ApiOperation(tags = ["user"], value = "会员 -> 详细信息")
+    fun getWalletInfo(@RequestParam("memberId") memberId: Int): MemberWalletInfo
 
     @ApiOperation(tags = ["user"], value = "会员 -> 更新")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)

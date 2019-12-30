@@ -11,19 +11,21 @@ data class DepositQuery(
 
         val clientId: Int,
 
-        val startTime: LocalDateTime?,
+        val startTime: LocalDateTime? = null,
 
-        val endTime: LocalDateTime?,
+        val endTime: LocalDateTime? = null,
 
-        val orderId: String?,
+        val orderId: String? = null,
 
-        val lockWaiterId: Int?,
+        val lockWaiterId: Int? = null,
 
-        val memberId: Int?,
+        val memberId: Int? = null,
 
-        val clientBankIdList: List<Int>?,
+        val clientBankIdList: List<Int>? = null,
 
-        val state: DepositState?
+        val state: DepositState? = null,
+
+        val size: Int = 500
 
 )
 

@@ -10,17 +10,19 @@ data class WithdrawQuery(
 
         val clientId: Int,
 
-        val startTime: LocalDateTime?,
+        val startTime: LocalDateTime? = null,
 
-        val endTime: LocalDateTime?,
+        val endTime: LocalDateTime? = null,
 
-        val orderId: String?,
+        val orderId: String? = null,
 
-        val lockWaiterId: Int?,
+        val lockWaiterId: Int? = null,
 
-        val memberId: Int?,
+        val memberId: Int? = null,
 
-        val state: WithdrawState?
+        val state: WithdrawState? = null,
+
+        val size: Int = 500
 
 )
 
