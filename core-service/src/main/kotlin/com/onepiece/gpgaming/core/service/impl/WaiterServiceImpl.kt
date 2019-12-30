@@ -33,7 +33,7 @@ class WaiterServiceImpl(
 
         val waiter = waiterDao.findByUsername(loginValue.username)
         checkNotNull(waiter) { OnePieceExceptionCode.LOGIN_FAIL }
-        check(loginValue.password == waiter.password) { OnePieceExceptionCode.LOGIN_FAIL }
+        check(bCryptPasswordEncoder.matches(loginValue.password, waiter.password)) { OnePieceExceptionCode.LOGIN_FAIL }
         check(waiter.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
 
         // update client
