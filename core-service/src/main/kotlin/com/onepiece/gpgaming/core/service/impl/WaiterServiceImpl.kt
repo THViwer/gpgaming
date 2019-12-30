@@ -10,13 +10,15 @@ import com.onepiece.gpgaming.beans.value.database.WaiterUo
 import com.onepiece.gpgaming.core.dao.WaiterDao
 import com.onepiece.gpgaming.core.service.PermissionService
 import com.onepiece.gpgaming.core.service.WaiterService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 @Service
 class WaiterServiceImpl(
         private val waiterDao: WaiterDao,
-        private val permissionService: PermissionService
+        private val permissionService: PermissionService,
+        private val bCryptPasswordEncoder: BCryptPasswordEncoder
 ) : WaiterService {
 
     override fun get(id: Int): Waiter {
@@ -42,7 +44,8 @@ class WaiterServiceImpl(
     }
 
     override fun create(waiterCo: WaiterCo) {
-        val id = waiterDao.create(waiterCo)
+        val password = bCryptPasswordEncoder.encode(waiterCo.password)
+        val id = waiterDao.create(waiterCo.copy(password = password))
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // 创建权限
@@ -51,7 +54,11 @@ class WaiterServiceImpl(
     }
 
     override fun update(waiterUo: WaiterUo) {
-        val state = waiterDao.update(waiterUo)
+        val password = waiterUo.password?.let {
+            bCryptPasswordEncoder.encode(it)
+        }
+
+        val state = waiterDao.update(waiterUo.copy(password = password))
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 }

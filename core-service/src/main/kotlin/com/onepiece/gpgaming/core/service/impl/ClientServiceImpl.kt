@@ -30,6 +30,7 @@ import com.onepiece.gpgaming.core.service.RecommendedService
 import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -39,6 +40,7 @@ class ClientServiceImpl(
         private val clientDao: ClientDao,
         private val levelService: LevelService,
         private val balanceService: BalanceService,
+        private val bCryptPasswordEncoder: BCryptPasswordEncoder,
         private val i18nContentService: I18nContentService,
         private val bannerService: BannerService,
         private val redisService: RedisService,
@@ -68,7 +70,7 @@ class ClientServiceImpl(
     override fun login(loginValue: LoginValue): Client {
         val client = clientDao.findByUsername(loginValue.username)
         checkNotNull(client) { OnePieceExceptionCode.LOGIN_FAIL }
-        check(loginValue.password == client.password) { OnePieceExceptionCode.LOGIN_FAIL }
+        check(bCryptPasswordEncoder.matches(loginValue.password, client.password))
         check(client.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
 
         // update client
@@ -282,7 +284,11 @@ class ClientServiceImpl(
     }
 
     override fun update(clientUo: ClientUo) {
-        val state = clientDao.update(clientUo)
+
+        val password = clientUo.password?.let {
+            bCryptPasswordEncoder.encode(clientUo.password)
+        }
+        val state = clientDao.update(clientUo.copy(password = password))
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         val redisKey = OnePieceRedisKeyConstant.getClient(clientUo.id)

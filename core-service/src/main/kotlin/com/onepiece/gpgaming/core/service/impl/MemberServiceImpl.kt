@@ -14,6 +14,7 @@ import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.utils.RedisService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -22,7 +23,8 @@ import java.time.LocalDateTime
 class MemberServiceImpl(
         private val memberDao: MemberDao,
         private val walletService: WalletService,
-        private val redisService: RedisService
+        private val redisService: RedisService,
+        private val bCryptPasswordEncoder: BCryptPasswordEncoder
 ) : MemberService {
 
     override fun getMember(id: Int): Member {
@@ -78,7 +80,8 @@ class MemberServiceImpl(
         check(hasMember == null) { OnePieceExceptionCode.USERNAME_EXISTENCE }
 
         // create member
-        val id = memberDao.create(memberCo)
+        val password = bCryptPasswordEncoder.encode(memberCo.password)
+        val id = memberDao.create(memberCo.copy(password = password))
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // create wallet
@@ -88,14 +91,19 @@ class MemberServiceImpl(
 
     override fun update(memberUo: MemberUo) {
         val member = this.getMember(memberUo.id)
+
         if (memberUo.oldPassword != null) {
-            check(memberUo.oldPassword == member.password) { OnePieceExceptionCode.PASSWORD_FAIL }
+            check(bCryptPasswordEncoder.matches(memberUo.oldPassword, member.password)) { OnePieceExceptionCode.PASSWORD_FAIL }
         }
         if (memberUo.oldSafetyPassword != null) {
-            check(memberUo.oldPassword == member.password) { OnePieceExceptionCode.SAFETY_PASSWORD_FAIL }
+            check(memberUo.oldSafetyPassword == member.safetyPassword) { OnePieceExceptionCode.SAFETY_PASSWORD_FAIL }
         }
 
-        val state = memberDao.update(memberUo)
+        val password = memberUo.password?.let {
+            bCryptPasswordEncoder.encode(it)
+        }
+
+        val state = memberDao.update(memberUo.copy(password = password))
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         redisService.delete(OnePieceRedisKeyConstant.member(memberUo.id))
