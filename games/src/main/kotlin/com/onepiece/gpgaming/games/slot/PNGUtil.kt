@@ -37,7 +37,7 @@ object PNGUtil {
 
     fun execute(launch: LaunchMethod, language: Language): List<SlotGame> {
 
-        val filePath = "/Users/cabbage/workspace/onepiece/treasure/gamefile/png_game_doen.csv"
+        val filePath = "/Users/cabbage/workspace/onepiece/gpgaming/gamefile/png_game_doen.csv"
         val file = File(filePath)
 
         val iconPath = "/Users/cabbage/Downloads/中文图标"

@@ -13,6 +13,7 @@ import com.onepiece.gpgaming.games.GameConstant
 import com.onepiece.gpgaming.games.SlotMenuUtil
 import com.onepiece.gpgaming.games.http.OkHttpUtil
 import com.onepiece.gpgaming.utils.AwsS3Util
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.io.File
 import java.util.*
@@ -27,14 +28,14 @@ class SlotGameTask(
         private val okHttpUtil: OkHttpUtil
 )  {
 
-//    @Scheduled(cron="0/10 * *  * * ? ")
+    @Scheduled(cron="0/10 * *  * * ? ")
     fun execute() {
-//        this.spadeGameTask()
+        this.spadeGameTask()
 
 //        this.jokerGameTask()
-
+//
 //        this.pragmaticTask()
-
+//
 //        this.generatorHotGames()
 
     }

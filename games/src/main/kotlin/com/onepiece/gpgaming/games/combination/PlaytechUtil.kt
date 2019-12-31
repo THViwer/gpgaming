@@ -11,11 +11,12 @@ import com.onepiece.gpgaming.beans.value.internet.web.SlotGame
 import com.onepiece.gpgaming.utils.AwsS3Util
 import java.io.File
 import java.util.*
+import java.util.stream.Collectors
 
 object PlaytechUtil {
 
     fun handle(file: File, language: Language): List<SlotGame> {
-        return file.readLines().mapNotNull {
+        return file.readLines().parallelStream().map {
             val list = it.split(",")
             list.firstOrNull { it.isNotBlank() } ?.let {
                 val gameId = list[0]
@@ -23,11 +24,35 @@ object PlaytechUtil {
                 val cname = list[2]
                 val category = list[3].let { GameCategory.valueOf(it) }
 
+//                val iconFile = File("/Users/cabbage/Downloads/Done/all/${ename}").listFiles().firstOrNull {
+//                    it.name.contains("146x136.png")
+//                }
+//                if (iconFile == null || !iconFile.exists()) {
+//                    println("hello")
+//                }
+
                 val name = if (language == Language.CN) cname else ename
-                SlotGame(platform = Platform.PlaytechSlot, category = category, gameId = gameId, gameName = name, hot = false, new = false,
-                        icon = "-", status = Status.Normal, touchIcon = "-")
+
+                try {
+                    File("/Users/cabbage/Downloads/Done/all/${ename}").listFiles().first()
+//                    {
+//                        it.name.contains("146x136.png")
+//                    }
+                            ?.let { iconFile ->
+
+                                val path = AwsS3Util.uploadLocalFile(iconFile, "slot/playtech/$gameId.png")
+
+                        SlotGame(platform = Platform.PlaytechSlot, category = category, gameId = gameId, gameName = name, hot = false, new = false,
+                                icon = "$path", status = Status.Normal, touchIcon = null)
+                    }
+                } catch (e: Exception) {
+                    null
+                }
+
+
+
             }
-        }
+        }.collect(Collectors.toList()).filterNotNull()
     }
 
 }
@@ -37,6 +62,10 @@ fun main() {
     val mobileFile = File("/Users/cabbage/Downloads/playtech_mobile_done.csv")
     val html5File = File("/Users/cabbage/Downloads/playtech_html5_done.csv")
 
+//    val games = PlaytechUtil.handle(html5File, Language.EN)
+//    println(games)
+
+
     listOf(Language.CN, Language.EN)
             .forEach { language ->
 
@@ -44,9 +73,7 @@ fun main() {
 
                     val file = if (launch == LaunchMethod.Wap) mobileFile else html5File
 
-
-                    val games = PlaytechUtil.handle(html5File, language)
-
+                    val games = PlaytechUtil.handle(file, language)
                     val hots = hashSetOf<String>()
                     val news = hashSetOf<String>()
 
