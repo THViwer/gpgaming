@@ -133,13 +133,20 @@ open class CashApiController(
         val pussyDeposit = platforms.find { it.platform == Platform.Pussy888 }?.totalTransferOutAmount?: BigDecimal.ZERO
         val megaDeposit = platforms.find { it.platform == Platform.Mega }?.totalTransferOutAmount?: BigDecimal.ZERO
 
-        val betAmount = platforms.sumByDouble { it.totalBet.toDouble() }
-        val needBet = wallet.totalDepositBalance.minus(kiss918Deposit).minus(pussyDeposit).minus(megaDeposit) * BigDecimal.valueOf(0.8)
+        val currentBet = platforms.sumByDouble { it.totalBet.toDouble() }
+                .let { BigDecimal.valueOf(it) }
+                .plus(kiss918Deposit)
+                .plus(pussyDeposit)
+                .plus(megaDeposit)
+                .setScale(2, 2)
+
+        val needBet = wallet.totalDepositBalance.multiply(BigDecimal.valueOf(0.8))
+                .setScale(2, 2)
 
 //        val overBet = betAmount.minus(needBet.toDouble()).toBigDecimal().setScale(2, 2)
-        val overBet = wallet.totalDepositBalance.minus(needBet)
+        val overBet = needBet.minus(currentBet)
 
-        return CheckBetResp(currentBet = betAmount.toBigDecimal().setScale(2, 2), needBet = needBet, overBet = overBet)
+        return CheckBetResp(currentBet = currentBet, needBet = needBet, overBet = overBet)
     }
 
     @PostMapping("/bank/my")
