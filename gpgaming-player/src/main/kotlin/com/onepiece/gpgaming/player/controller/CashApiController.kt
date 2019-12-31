@@ -135,6 +135,7 @@ open class CashApiController(
 
         val betAmount = platforms.sumByDouble { it.totalBet.toDouble() }
         val needBet = wallet.totalDepositBalance.minus(kiss918Deposit).minus(pussyDeposit).minus(megaDeposit) * BigDecimal.valueOf(0.8)
+                .abs()
 
         val overBet = betAmount.minus(needBet.toDouble()).toBigDecimal().setScale(2, 2)
         return CheckBetResp(currentBet = betAmount.toBigDecimal().setScale(2, 2), needBet = needBet, overBet = overBet)
