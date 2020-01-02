@@ -74,6 +74,11 @@ class AsiaGamingService : PlatformService() {
 
         val clientToken = transferReq.token as AsiaGamingClientToken
 
+        val amount = when (clientToken.currency) {
+            "IDR", "VND" -> transferReq.amount.abs().div(BigDecimal.valueOf(1000))
+            else -> transferReq.amount.abs()
+        }
+
         val type = if (transferReq.amount.toDouble() > 0) "IN" else "OUT"
         val preData = listOf(
                 "cagent=${clientToken.agentCode}",
@@ -81,7 +86,7 @@ class AsiaGamingService : PlatformService() {
                 "method=tc",
                 "billno=${transferReq.orderId}",
                 "type=$type",
-                "credit=${transferReq.amount.abs()}",
+                "credit=${amount}",
                 "actype=1",
                 "password=${transferReq.password}",
                 "cur=${clientToken.currency}"
@@ -96,7 +101,7 @@ class AsiaGamingService : PlatformService() {
                 "method=tcc",
                 "billno=${transferReq.orderId}",
                 "type=$type",
-                "credit=${transferReq.amount.abs()}",
+                "credit=${amount}",
                 "actype=1",
                 "password=${transferReq.password}"
         )
