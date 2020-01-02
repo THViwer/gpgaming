@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.token.AllBetClientToken
+import com.onepiece.gpgaming.beans.model.token.AsiaGamingClientToken
 import com.onepiece.gpgaming.beans.model.token.BcsClientToken
 import com.onepiece.gpgaming.beans.model.token.CMDClientToken
 import com.onepiece.gpgaming.beans.model.token.ClientToken
@@ -83,8 +84,6 @@ data class PlatformBind(
                 Platform.SpadeGaming -> SpadeGamingClientToken::class.java
                 Platform.TTG -> TTGClientToken::class.java
                 Platform.CMD -> CMDClientToken::class.java
-                Platform.MicroGaming -> MicroGamingClientToken::class.java
-                Platform.MicroGamingLive -> MicroGamingClientToken::class.java
                 Platform.GoldDeluxe -> GoldDeluxeClientToken::class.java
                 Platform.Bcs -> BcsClientToken::class.java
                 Platform.PlaytechSlot -> PlaytechClientToken::class.java
@@ -93,6 +92,9 @@ data class PlatformBind(
                 Platform.PNG -> PNGClientToken::class.java
                 Platform.GamePlay -> GamePlayClientToken::class.java
                 Platform.SimplePlay -> SimplePlayClientToken::class.java
+
+                Platform.MicroGaming, Platform.MicroGamingLive -> MicroGamingClientToken::class.java
+                Platform.AsiaGamingSlot, Platform.AsiaGamingLive -> AsiaGamingClientToken::class.java
                 else -> DefaultClientToken::class.java
             }
         }
