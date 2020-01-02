@@ -99,7 +99,6 @@ class GameApi(
             Platform.Pragmatic -> pragmaticService
             Platform.SpadeGaming -> spadeGamingService
             Platform.TTG -> ttgService
-            Platform.MicroGaming -> microGameService
             Platform.GamePlay -> gamePlayService
             Platform.SimplePlay -> simplePlayService
             Platform.PlaytechSlot -> playtechService
@@ -112,8 +111,8 @@ class GameApi(
             Platform.GoldDeluxe -> goldDeluxeService
             Platform.SexyGaming -> sexyGamingService
             Platform.PNG -> pngService
-            Platform.MicroGamingLive -> microGameService
             Platform.PlaytechLive -> playtechService
+            Platform.SaGaming -> saGamingService
 
             // sport
             Platform.Lbc -> lbcService
@@ -124,8 +123,10 @@ class GameApi(
             Platform.GGFishing -> ggFishingService
 
             // slot and live
-            Platform.SaGaming -> saGamingService
-            Platform.AsiaGaming -> asiaGamingService
+            Platform.MicroGaming -> microGameService
+            Platform.MicroGamingLive -> microGameService
+            Platform.AsiaGamingSlot -> asiaGamingService
+            Platform.AsiaGamingLive -> asiaGamingService
 
 
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
