@@ -23,6 +23,7 @@ enum class Platform(
     PNG(PlatformCategory.Slot),
     GamePlay(PlatformCategory.Slot),
     SimplePlay(PlatformCategory.Slot), // 就是sa 的slot
+    AsiaGamingSlot(PlatformCategory.Slot),
 
     // live video
     CT(PlatformCategory.LiveVideo),
@@ -33,7 +34,7 @@ enum class Platform(
     Fgg(PlatformCategory.LiveVideo),
     AllBet(PlatformCategory.LiveVideo),
     SaGaming(PlatformCategory.LiveVideo),
-    AsiaGaming(PlatformCategory.LiveVideo),
+    AsiaGamingLive(PlatformCategory.LiveVideo),
     MicroGamingLive(PlatformCategory.LiveVideo),
     PlaytechLive(PlatformCategory.LiveVideo),
 

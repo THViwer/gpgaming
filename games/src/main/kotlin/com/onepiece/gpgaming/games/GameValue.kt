@@ -70,6 +70,8 @@ sealed class GameValue {
 
             val username: String,
 
+            val password: String,
+
             val amount: BigDecimal
     )
 

@@ -169,7 +169,8 @@ class TransferUtil(
 
         //调用平台接口充值
         val transferResp = gameApi.transfer(clientId = clientId, memberId = memberId, platformUsername = platformMember.username,
-                orderId = transferOrderId, amount = amount.plus(promotionAmount), platform = to, originBalance = platformBalance)
+                orderId = transferOrderId, amount = amount.plus(promotionAmount), platform = to, originBalance = platformBalance,
+                platformPassword = platformMember.password)
 
         // 转账失败 进行回滚
         if (!transferResp.transfer) {
@@ -297,7 +298,7 @@ class TransferUtil(
 
         //调用平台接口取款
         val transferResp = gameApi.transfer(clientId = clientId, memberId = memberId, platformUsername = platformMember.username,
-                orderId = transferOrderId, amount = amount.negate(), platform = platform, originBalance = platformBalance)
+                orderId = transferOrderId, amount = amount.negate(), platform = platform, originBalance = platformBalance, platformPassword = platformMember.password)
 
         // 中心钱包加钱
         val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_IN, money = amount,
