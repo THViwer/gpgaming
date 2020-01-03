@@ -109,7 +109,7 @@ interface CashApi {
             @RequestParam("size") size: Int
     ): List<WalletNoteVo>
 
-    @ApiOperation(tags = ["cash"], value = "钱包明细")
+    @ApiOperation(tags = ["cash"], value = "钱包明细(分页)")
     fun walletNotePage(
             @RequestParam(value = "onlyPromotion", defaultValue = "false") onlyPromotion: Boolean,
             @RequestParam(value = "events", required = false) events: String?,
