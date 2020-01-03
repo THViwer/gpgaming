@@ -47,7 +47,7 @@ class PullBetTask(
         running.set(true)
 
         //TODO 暂时过滤其它厅主的
-        val binds = platformBindService.all().filter { it.clientId == 1 } // && it.platform == Platform.MicroGaming
+        val binds = platformBindService.all().filter { it.platform == Platform.SexyGaming || it.platform == Platform.AsiaGamingLive }.filter { it.clientId == 1 } // && it.platform == Platform.MicroGaming
 
         binds.parallelStream().forEach  { bind ->
             this.executePlatform(bind)
@@ -65,7 +65,6 @@ class PullBetTask(
         } catch (e: Exception) {
             log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 执行任务失败", e)
         }
-
     }
 
     private fun handler(
@@ -105,7 +104,9 @@ class PullBetTask(
             Platform.SimplePlay,
             Platform.GamePlay,
             Platform.MicroGaming,
-            Platform.MicroGamingLive -> {
+            Platform.MicroGamingLive,
+            Platform.AsiaGamingSlot,
+            Platform.AsiaGamingLive -> {
                 val duration = Duration.between(startTime, LocalDateTime.now())
                 val minutes: Long = duration.toMinutes() //相差的分钟数
                 minutes > 2

@@ -56,6 +56,7 @@ import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
 import com.onepiece.gpgaming.player.controller.value.WithdrawCoReq
 import com.onepiece.gpgaming.utils.AwsS3Util
 import org.slf4j.LoggerFactory
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -67,6 +68,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.stream.Collectors
 import kotlin.streams.toList
@@ -404,6 +406,8 @@ open class CashApiController(
     override fun walletNote(
             @RequestParam(value = "onlyPromotion", defaultValue = "false") onlyPromotion: Boolean,
             @RequestParam(value = "events", required = false) events: String?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = false) startDate: LocalDate?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate?,
             @RequestParam("current") current: Int,
             @RequestParam("size") size: Int
     ): List<WalletNoteVo> {
@@ -414,12 +418,44 @@ open class CashApiController(
             false -> events?.let { it.split(",").map { WalletEvent.valueOf(it) } }
         }
 
-        val walletNoteQuery = WalletNoteQuery(clientId = member.clientId, memberId = member.id, current = current, size = size, event = null, events = eventList, onlyPromotion = onlyPromotion)
+        val walletNoteQuery = WalletNoteQuery(clientId = member.clientId, memberId = member.id, current = current, size = size, event = null,
+                events = eventList, onlyPromotion = onlyPromotion, startDate = startDate, endDate = endDate?.plusDays(1))
         val list = walletNoteService.query(walletNoteQuery)
         return list.map {
             WalletNoteVo(id = it.id, memberId = it.memberId, eventId = it.eventId, event = it.event, money = it.money, remarks = it.remarks, createdTime = it.createdTime,
                     promotionMoney = it.promotionMoney)
         }
+    }
+
+    @GetMapping("/wallet/note/page")
+    override fun walletNotePage(
+            @RequestParam(value = "onlyPromotion", defaultValue = "false") onlyPromotion: Boolean,
+            @RequestParam(value = "events", required = false) events: String?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = false) startDate: LocalDate?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate?,
+            @RequestParam("current") current: Int,
+            @RequestParam("size") size: Int
+    ): Page<WalletNoteVo> {
+        val member = this.current()
+
+        val eventList = when (onlyPromotion) {
+            true -> listOf(WalletEvent.TRANSFER_OUT)
+            false -> events?.let { it.split(",").map { WalletEvent.valueOf(it) } }
+        }
+
+        val walletNoteQuery = WalletNoteQuery(clientId = member.clientId, memberId = member.id, current = current, size = size, event = null,
+                events = eventList, onlyPromotion = onlyPromotion, startDate = startDate, endDate = endDate?.plusDays(1))
+
+        val total = walletNoteService.total(walletNoteQuery)
+        if (total <= 0) return Page.empty()
+
+        val notes = walletNoteService.query(walletNoteQuery)
+        val list = notes.map {
+            WalletNoteVo(id = it.id, memberId = it.memberId, eventId = it.eventId, event = it.event, money = it.money, remarks = it.remarks, createdTime = it.createdTime,
+                    promotionMoney = it.promotionMoney)
+        }
+
+        return Page.of(total = total, data = list)
     }
 
     @GetMapping("/balance")

@@ -25,6 +25,7 @@ import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
 import com.onepiece.gpgaming.player.controller.value.WithdrawCoReq
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
@@ -32,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Api(tags = ["cash"], description = " ")
 interface CashApi {
@@ -100,9 +103,22 @@ interface CashApi {
     fun walletNote(
             @RequestParam(value = "onlyPromotion", defaultValue = "false") onlyPromotion: Boolean,
             @RequestParam(value = "events", required = false) events: String?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = false) startDate: LocalDate?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate?,
             @RequestParam("current") current: Int,
             @RequestParam("size") size: Int
     ): List<WalletNoteVo>
+
+    @ApiOperation(tags = ["cash"], value = "钱包明细")
+    fun walletNotePage(
+            @RequestParam(value = "onlyPromotion", defaultValue = "false") onlyPromotion: Boolean,
+            @RequestParam(value = "events", required = false) events: String?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = false) startDate: LocalDate?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate?,
+            @RequestParam("current") current: Int,
+            @RequestParam("size") size: Int
+    ): Page<WalletNoteVo>
+
 
     @ApiOperation(tags = ["cash"], value = "查询余额")
     fun balance(

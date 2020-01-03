@@ -249,7 +249,7 @@ open class ApiController(
         val platformMember = getPlatformMember(platform, member)
 
         val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
-                gameId = gameId, language = language, launchMethod = launch)
+                gameId = gameId, language = language, launchMethod = launch, platformPassword = platformMember.platformPassword)
 
         transferSync.asyncTransfer(current(), platformMember)
 

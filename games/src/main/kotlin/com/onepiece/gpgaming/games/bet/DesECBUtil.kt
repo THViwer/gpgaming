@@ -1,5 +1,7 @@
 package com.onepiece.gpgaming.games.bet
 
+import org.apache.commons.codec.binary.Base64
+import org.apache.commons.codec.digest.DigestUtils
 import java.security.GeneralSecurityException
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
@@ -21,7 +23,7 @@ object DesECBUtil {
         val cipher = Cipher.getInstance("DES/ECB/PKCS5Padding")
         cipher.init(Cipher.ENCRYPT_MODE, keySpec)
 
-        return String(cipher.doFinal(data.toByteArray()))
+        return Base64.encodeBase64(cipher.doFinal(data.toByteArray())).let { String(it) }
     }
 
 

@@ -7,5 +7,7 @@ interface WalletNoteService {
 
 //    fun my(clientId: Int, memberId: Int): List<WalletNote>
 
+    fun total(walletNoteQuery: WalletNoteQuery): Int
+
     fun query(walletNoteQuery: WalletNoteQuery): List<WalletNote>
 }

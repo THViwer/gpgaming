@@ -16,6 +16,10 @@ class WalletNoteServiceImpl(
 //        return walletNoteDao.query(walletNoteQuery)
 //    }
 
+    override fun total(walletNoteQuery: WalletNoteQuery): Int {
+        return walletNoteDao.total(walletNoteQuery)
+    }
+
     override fun query(walletNoteQuery: WalletNoteQuery): List<WalletNote> {
         return walletNoteDao.query(walletNoteQuery)
     }

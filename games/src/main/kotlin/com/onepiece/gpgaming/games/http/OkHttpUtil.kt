@@ -34,6 +34,22 @@ class OkHttpUtil(
             .writeTimeout(100, TimeUnit.SECONDS) //写超时
             .build()
 
+    val httpsClient = OKHttpClientBuilder.buildOKHttpClient()
+            .connectTimeout(100, TimeUnit.SECONDS) //连接超时
+            .readTimeout(100, TimeUnit.SECONDS) //读取超时
+            .writeTimeout(100, TimeUnit.SECONDS) //写超时
+            .build()
+
+
+    fun getOkHttpClient(url: String): OkHttpClient {
+        return if (url.startsWith("https://")) {
+            httpsClient
+        } else {
+            client
+        }
+    }
+
+
 
     fun <T> doGet(url: String, clz: Class<T>,  headers: Map<String, String> = emptyMap()): T {
 //        log.info("request url: $url")
@@ -46,7 +62,7 @@ class OkHttpUtil(
             }
         }
 
-        val response = client.newCall(request.build()).execute()
+        val response = getOkHttpClient(url).newCall(request.build()).execute()
         check(response.code == 200) {
             val message = response.body?.string()
             log.error("post error: ", message)
@@ -62,15 +78,18 @@ class OkHttpUtil(
         return objectMapper.readValue(json, clz)
     }
 
-    fun <T> doGetXml(url: String, clz: Class<T>, authorization: String = ""): T {
+    fun <T> doGetXml(url: String, clz: Class<T>, headers: Map<String, String> = emptyMap()): T {
 //        log.info("request url: $url")
-        val request = Request.Builder()
-                .url(url)
-                .addHeader("Authorization", authorization)
-                .get()
-                .build()
+        // authorization: String = ""
+        val builder = Request.Builder().url(url)
 
-        val response = client.newCall(request).execute()
+        headers.map {
+            builder.addHeader(it.key, it.value)
+        }
+//                .addHeader("Authorization", authorization)
+        val request = builder.get().build()
+
+        val response = getOkHttpClient(url).newCall(request).execute()
         check(response.code == 200) {
             val message = response.body?.string()
             log.error("请求失败：$message")
@@ -78,7 +97,7 @@ class OkHttpUtil(
         }
 
         val json = response.body!!.string()
-//        log.info("response data: $json")
+        log.info("response data: $json")
 
         if (clz == String::class.java)
             return json as T
@@ -111,7 +130,7 @@ class OkHttpUtil(
             }
         }
 
-        val response = client.newCall(request.build()).execute()
+        val response = getOkHttpClient(url).newCall(request.build()).execute()
 
         val code = response.code
         if (code != 200 && code != 201) {
@@ -161,7 +180,7 @@ class OkHttpUtil(
         }
 
         val request = builder.build()
-        val response = client.newCall(request).execute()
+        val response = getOkHttpClient(url).newCall(request).execute()
         if (response.code != 200) {
             val message = response.body?.string()
             log.error("post error: ", message)
@@ -190,7 +209,7 @@ class OkHttpUtil(
             }
         }
 
-        val response = client.newCall(request.build()).execute()
+        val response = getOkHttpClient(url).newCall(request.build()).execute()
         if (response.code != 200 && response.code != 201) {
             log.error("${response.body?.string()}")
             error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)

@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.beans.value.database
 
 import com.onepiece.gpgaming.beans.enums.WalletEvent
 import java.math.BigDecimal
+import java.time.LocalDate
 
 data class WalletNoteCo(
         // 厅主Id
@@ -41,6 +42,10 @@ data class WalletNoteQuery(
 
         // 事件列表
         val events: List<WalletEvent>?,
+
+        val startDate: LocalDate?,
+
+        val endDate: LocalDate?,
 
         // 是否已包含优惠
         val onlyPromotion: Boolean,

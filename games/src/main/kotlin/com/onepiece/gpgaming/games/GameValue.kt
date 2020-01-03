@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.games
 
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -45,6 +46,8 @@ sealed class GameValue {
             val gameId: String,
 
             val username: String,
+
+            val password: String,
 
             val language: Language,
 
@@ -152,6 +155,8 @@ sealed class GameValue {
             val clientId: Int,
 
             val token: ClientToken,
+
+            val platform: Platform,
 
             val startTime: LocalDateTime,
 

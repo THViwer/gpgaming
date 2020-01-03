@@ -28,6 +28,29 @@ class WalletNoteDaoImpl : BasicDaoImpl<WalletNote>("wallet_note"), WalletNoteDao
                     waiterId = waiterId, eventId = eventId, money = money, promotionMoney = promotionMoney)
         }
 
+    override fun total(walletNoteQuery: WalletNoteQuery): Int {
+        val builder = query("count(*) as count").where("client_id", walletNoteQuery.clientId)
+                .where("member_id", walletNoteQuery.memberId)
+                .where("event", walletNoteQuery.event)
+
+
+        if (walletNoteQuery.onlyPromotion) {
+            builder.asWhere("promotion_money > 0")
+        }
+
+
+        if (walletNoteQuery.events != null) {
+            val v = walletNoteQuery.events!!.joinToString(","){ "'$it'" }
+            builder.asWhere("event in ($v)")
+        }
+
+        return builder
+                .asWhere("created_time >= ?", walletNoteQuery.startDate)
+                .asWhere("created_time <= ?", walletNoteQuery.endDate)
+                .sort("id desc")
+                .limit(walletNoteQuery.current, walletNoteQuery.size)
+                .count()
+    }
 
     override fun query(walletNoteQuery: WalletNoteQuery): List<WalletNote> {
         val builder = query().where("client_id", walletNoteQuery.clientId)
@@ -39,13 +62,17 @@ class WalletNoteDaoImpl : BasicDaoImpl<WalletNote>("wallet_note"), WalletNoteDao
             builder.asWhere("promotion_money > 0")
         }
 
+
         if (walletNoteQuery.events != null) {
             val v = walletNoteQuery.events!!.joinToString(","){ "'$it'" }
             builder.asWhere("event in ($v)")
         }
 
         return builder
+                .asWhere("created_time >= ?", walletNoteQuery.startDate)
+                .asWhere("created_time <= ?", walletNoteQuery.endDate)
                 .sort("id desc")
+                .limit(walletNoteQuery.current, walletNoteQuery.size)
                 .execute(mapper)
     }
 

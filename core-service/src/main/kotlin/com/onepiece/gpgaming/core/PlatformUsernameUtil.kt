@@ -31,6 +31,10 @@ object PlatformUsernameUtil  {
                 // live
             Platform.AllBet,
             Platform.DreamGaming -> StringUtil.generatePassword()
+
+            // slot and live
+            Platform.AsiaGamingLive,
+            Platform.AsiaGamingSlot -> StringUtil.generatePassword().toLowerCase()
             else -> "-"
         }
 
@@ -49,7 +53,7 @@ object PlatformUsernameUtil  {
             }
             else -> {
                 val clientId = platformUsername.substring(0, 2).toInt()
-                val memberId = platformUsername.substring(2, platformUsername.length-2).toInt()
+                val memberId = platformUsername.substring(2, platformUsername.length - 2).toInt()
 
                 clientId to memberId
             }

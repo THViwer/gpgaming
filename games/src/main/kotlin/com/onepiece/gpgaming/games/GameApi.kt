@@ -218,6 +218,7 @@ class GameApi(
             Platform.SaGaming,
             Platform.PNG,
             Platform.MicroGamingLive,
+            Platform.AsiaGamingLive,
             Platform.Bcs -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, launch = launch, language = language, password = platformPassword)
                 this.getPlatformApi(platform).start(startReq)
@@ -243,14 +244,14 @@ class GameApi(
     /**
      * 开始游戏(老虎机)
      */
-    fun start(clientId: Int, platformUsername: String, platform: Platform, gameId: String, language: Language,
+    fun start(clientId: Int, platformUsername: String, platformPassword: String, platform: Platform, gameId: String, language: Language,
               launchMethod: LaunchMethod): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         //TODO 跳转url
         val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId, language = language,
-                launchMethod = launchMethod)
+                launchMethod = launchMethod, password = platformPassword)
         return when (platform) {
             Platform.Joker,
             Platform.Pragmatic,
@@ -260,7 +261,8 @@ class GameApi(
             Platform.PNG,
             Platform.GamePlay,
             Platform.SimplePlay,
-            Platform.SpadeGaming -> getPlatformApi(platform).startSlot(startSlotReq)
+            Platform.SpadeGaming,
+            Platform.AsiaGamingSlot -> getPlatformApi(platform).startSlot(startSlotReq)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
@@ -274,7 +276,7 @@ class GameApi(
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
         val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = "", gameId = gameId, language = language,
-                launchMethod = launchMethod)
+                launchMethod = launchMethod, password = "-")
 
         return when (platform) {
             Platform.SpadeGaming,
@@ -415,8 +417,11 @@ class GameApi(
             Platform.SaGaming,
             Platform.GamePlay,
             Platform.SimplePlay,
-            Platform.GoldDeluxe -> {
-                val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken)
+            Platform.GoldDeluxe,
+            Platform.AsiaGamingLive,
+            Platform.AsiaGamingSlot -> {
+                val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken,
+                        platform = platformBind.platform)
                 getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
