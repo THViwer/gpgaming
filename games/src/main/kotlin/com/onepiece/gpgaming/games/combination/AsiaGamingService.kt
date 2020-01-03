@@ -183,6 +183,7 @@ class AsiaGamingService : PlatformService() {
         val clientToken = startReq.token as AsiaGamingClientToken
 
         val mh5 = if (startReq.launch == LaunchMethod.Wap) "mh5=y" else ""
+        val gameType = if (startReq.launch == LaunchMethod.Wap) "0" else "18"
         val data = listOf(
                 "cagent=${clientToken.agentCode}",
                 "loginname=${startReq.username}",
@@ -191,7 +192,7 @@ class AsiaGamingService : PlatformService() {
                 "dm=${startReq.redirectUrl}",
                 "sid=${clientToken.agentCode}${StringUtil.generateNumNonce(15)}",
                 "lang=${getLang(startReq.language)}",
-//                "gameType="
+                "gameType=$gameType",
                 "oddtype=A",
                 "cur=${clientToken.currency}",
                 mh5
