@@ -48,7 +48,6 @@ class WalletNoteDaoImpl : BasicDaoImpl<WalletNote>("wallet_note"), WalletNoteDao
                 .asWhere("created_time >= ?", walletNoteQuery.startDate)
                 .asWhere("created_time <= ?", walletNoteQuery.endDate)
                 .sort("id desc")
-                .limit(walletNoteQuery.current, walletNoteQuery.size)
                 .count()
     }
 
