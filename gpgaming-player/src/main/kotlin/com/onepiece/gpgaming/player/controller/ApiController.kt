@@ -91,47 +91,6 @@ open class ApiController(
         }.filter { it.status != Status.Delete }
     }
 
-    @GetMapping("/pc/{category}")
-    override fun categories(
-            @PathVariable("category") category: PlatformCategory,
-            @RequestHeader("language") language: Language
-    ): PlatformCategoryPage {
-        val clientId = this.getClientIdByDomain()
-
-        val gamePlatforms = gamePlatformService.all()
-
-        val platforms = Platform.all().filter { it.category == category }
-
-        val bannerType = when (category) {
-            PlatformCategory.Slot -> BannerType.Slot
-            PlatformCategory.LiveVideo -> BannerType.Live
-            PlatformCategory.Sport -> BannerType.Sport
-            PlatformCategory.Fishing -> BannerType.Fish
-            else -> error( OnePieceExceptionCode.DATA_FAIL )
-        }
-
-        val map = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Banner)
-                .map { "${it.configId}:${it.language}" to it }
-                .toMap()
-
-        val banners = bannerService.findByType(clientId = getClientIdByDomain(), type = bannerType).map {
-
-            val i18nContent = map["${it.id}:${language}"]
-                    ?: map["${it.id}:${Language.EN}"]
-
-            if (i18nContent == null) {
-                null
-            } else {
-                val content = i18nContent.getII18nContent(objectMapper) as I18nContent.BannerI18n
-                BannerVo(id = it.id, order = it.order, icon = content.imagePath , touchIcon = content.imagePath, type = it.type, link = it.link)
-
-            }
-        }.filterNotNull()
-
-        return PlatformCategoryPage(platforms = platforms, banners = banners)
-    }
-
-
     @GetMapping("/promotion")
     override fun promotion(
             @RequestHeader("language") language: Language
@@ -285,6 +244,46 @@ open class ApiController(
             PlatformMembrerDetail(username = it.platformUsername, password = it.platformPassword)
         }
     }
+
+    //    @GetMapping("/pc/{category}")
+//    override fun categories(
+//            @PathVariable("category") category: PlatformCategory,
+//            @RequestHeader("language") language: Language
+//    ): PlatformCategoryPage {
+//        val clientId = this.getClientIdByDomain()
+//
+//        val gamePlatforms = gamePlatformService.all()
+//
+//        val platforms = Platform.all().filter { it.category == category }
+//
+//        val bannerType = when (category) {
+//            PlatformCategory.Slot -> BannerType.Slot
+//            PlatformCategory.LiveVideo -> BannerType.Live
+//            PlatformCategory.Sport -> BannerType.Sport
+//            PlatformCategory.Fishing -> BannerType.Fish
+//            else -> error( OnePieceExceptionCode.DATA_FAIL )
+//        }
+//
+//        val map = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Banner)
+//                .map { "${it.configId}:${it.language}" to it }
+//                .toMap()
+//
+//        val banners = bannerService.findByType(clientId = getClientIdByDomain(), type = bannerType).map {
+//
+//            val i18nContent = map["${it.id}:${language}"]
+//                    ?: map["${it.id}:${Language.EN}"]
+//
+//            if (i18nContent == null) {
+//                null
+//            } else {
+//                val content = i18nContent.getII18nContent(objectMapper) as I18nContent.BannerI18n
+//                BannerVo(id = it.id, order = it.order, icon = content.imagePath , touchIcon = content.imagePath, type = it.type, link = it.link)
+//
+//            }
+//        }.filterNotNull()
+//
+//        return PlatformCategoryPage(platforms = platforms, banners = banners)
+//    }
 
     @GetMapping("/{category}")
     override fun categorys(
