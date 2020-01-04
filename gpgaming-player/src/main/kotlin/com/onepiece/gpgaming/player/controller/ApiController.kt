@@ -91,7 +91,7 @@ open class ApiController(
         }.filter { it.status != Status.Delete }
     }
 
-    @GetMapping("/category/{category}")
+    @GetMapping("/pc/{category}")
     override fun categories(
             @PathVariable("category") category: PlatformCategory,
             @RequestHeader("language") language: Language
@@ -322,7 +322,7 @@ open class ApiController(
             if (i18nContent == null) {
                 null
             } else {
-                val content = i18nContent as I18nContent.BannerI18n
+                val content = i18nContent.getII18nContent(objectMapper) as I18nContent.BannerI18n
                 BannerVo(id = it.id, order = it.order, icon = content.imagePath , touchIcon = content.imagePath, type = it.type, link = it.link)
             }
         }.filterNotNull()

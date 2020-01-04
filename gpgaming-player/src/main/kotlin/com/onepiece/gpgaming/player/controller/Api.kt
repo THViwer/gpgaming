@@ -32,11 +32,7 @@ interface Api {
     @ApiOperation(tags = ["api"],  value = "首页平台列表")
     fun indexPlatforms(): List<PlatformVo>
 
-    @ApiOperation(tags = ["api"], value = "平台类别页面详细资料")
-    fun categories(
-            @PathVariable("category") category: PlatformCategory,
-            @RequestHeader("language") language: Language
-    ): PlatformCategoryPage
+
 
     @ApiOperation(tags = ["api"], value = "优惠活动")
     fun promotion(
@@ -90,6 +86,12 @@ interface Api {
             @RequestHeader("language") language: Language,
             @PathVariable("category") category: PlatformCategory
     ): PlatformCategoryDetail
+
+    @ApiOperation(tags = ["api"], value = "平台类别页面详细资料")
+    fun categories(
+            @PathVariable("category") category: PlatformCategory,
+            @RequestHeader("language") language: Language
+    ): PlatformCategoryPage
 
     @ApiOperation(tags = ["api"], value = "联系我们")
     fun contactUs(): Contacts
