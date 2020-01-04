@@ -101,7 +101,6 @@ class GameApi(
             Platform.TTG -> ttgService
             Platform.GamePlay -> gamePlayService
             Platform.SimplePlay -> simplePlayService
-            Platform.PlaytechSlot -> playtechService
 
             // live game
             Platform.Fgg -> fggService
@@ -111,7 +110,6 @@ class GameApi(
             Platform.GoldDeluxe -> goldDeluxeService
             Platform.SexyGaming -> sexyGamingService
             Platform.PNG -> pngService
-            Platform.PlaytechLive -> playtechService
             Platform.SaGaming -> saGamingService
 
             // sport
@@ -127,6 +125,9 @@ class GameApi(
             Platform.MicroGamingLive -> microGameService
             Platform.AsiaGamingSlot -> asiaGamingService
             Platform.AsiaGamingLive -> asiaGamingService
+            Platform.PlaytechSlot -> playtechService
+            Platform.PlaytechLive -> playtechService
+
 
 
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)

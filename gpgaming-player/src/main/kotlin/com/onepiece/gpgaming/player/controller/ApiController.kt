@@ -91,7 +91,7 @@ open class ApiController(
         }.filter { it.status != Status.Delete }
     }
 
-    @GetMapping("/{gameCategory}")
+    @GetMapping("/category/{category}")
     override fun categories(
             @PathVariable("category") category: PlatformCategory,
             @RequestHeader("language") language: Language

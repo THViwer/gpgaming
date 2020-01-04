@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.games.ActiveConfig
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
+import com.onepiece.gpgaming.utils.StringUtil
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
@@ -35,9 +36,10 @@ class PlaytechService(
     override fun register(registerReq: GameValue.RegisterReq): String {
         val clientToken = registerReq.token as PlaytechClientToken
 
+        val name = if (registerReq.name.length < 6) "${registerReq.name}${StringUtil.generateNonce(3)}" else registerReq.name
         val data = """
             {
-                "name": "${registerReq.name}",
+                "name": "$name",
                 "username": "${registerReq.username}",
                 "password": "${registerReq.password}",
                 "kiosk_name": "${clientToken.agentName}"
