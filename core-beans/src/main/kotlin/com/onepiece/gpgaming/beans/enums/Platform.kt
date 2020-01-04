@@ -51,7 +51,7 @@ enum class Platform(
 
     companion object {
         fun all(): List<Platform> {
-            return values().filter { it != Center }
+            return values().filter { it != Center && it != CT }
         }
     }
 
