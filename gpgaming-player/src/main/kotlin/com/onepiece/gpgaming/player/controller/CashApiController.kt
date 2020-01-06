@@ -514,6 +514,9 @@ open class CashApiController(
 
         // 查询余额 //TODO 暂时用简单的异步去处理
         val balances = platforms.filter { category == null || it.platform.category == category }.parallelStream().map {
+
+            val watch = System.currentTimeMillis()
+
             val platformMember = platformMemberMap[it.platform]
 
             when (platformMember == null) {
@@ -534,6 +537,9 @@ open class CashApiController(
                     val (transfer, tips) = this.checkCanTransferOutAndTips(platformMember = platformMember, platformBalance = platformBalance, language = language)
                     BalanceVo(platform = it.platform, balance = platformBalance, transfer = transfer, tips = tips, centerBalance = wallet.balance)
                 }
+            }.let {
+                log.info("平台：${it.platform}, 查询余额耗时：${System.currentTimeMillis() - watch}ms")
+                it
             }
         }.collect(Collectors.toList())
 
