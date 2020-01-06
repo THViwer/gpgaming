@@ -152,7 +152,7 @@ class ClientServiceImpl(
             val indexVideoI18n = I18nContent.IndexVideoI18n(
                     path = "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/video/introduction.mp4",
                     coverPhoto = "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/video/coverPhoto.png",
-                    introductionImage = "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/video/introduction.jpeg"
+                    introductionImage = "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/video/introduction.png"
             )
             val i18nContentCo = I18nContentCo(clientId = clientId, configId = id, configType = I18nConfig.IndexVideo, content = indexVideoI18n, language = Language.EN)
             i18nContentService.create(i18nContentCo)
