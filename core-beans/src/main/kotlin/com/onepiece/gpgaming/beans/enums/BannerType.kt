@@ -4,6 +4,8 @@ enum class BannerType {
 
     Banner,
 
+    MobileBanner,
+
     Live,
 
     Slot,

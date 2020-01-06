@@ -84,7 +84,8 @@ interface Api {
     @ApiOperation(tags = ["api"], value = "获得平台类目页信息")
     fun categorys(
             @RequestHeader("language") language: Language,
-            @PathVariable("category") category: PlatformCategory
+            @RequestHeader("launch") launch: LaunchMethod,
+            @PathVariable(value =  "category", required = false) category: PlatformCategory?
     ): PlatformCategoryDetail
 
 //    @ApiOperation(tags = ["api"], value = "平台类别页面详细资料")

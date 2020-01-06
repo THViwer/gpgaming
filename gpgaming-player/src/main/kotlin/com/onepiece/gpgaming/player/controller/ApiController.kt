@@ -294,27 +294,32 @@ open class ApiController(
     @GetMapping("/{category}")
     override fun categorys(
             @RequestHeader("language") language: Language,
-            @PathVariable("category") category: PlatformCategory
+            @RequestHeader("launch") launch: LaunchMethod,
+            @PathVariable(value =  "category", required = false) category: PlatformCategory?
     ): PlatformCategoryDetail {
 
         val clientId = this.getClientIdByDomain()
         val gamePlatforms = gamePlatformService.all()
 
-        val platforms = platformBindService.findClientPlatforms(clientId = getClientIdByDomain())
-                .filter { it.platform.category == category }
-                .map {
-                    val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
-                    PlatformVo(id = it.id, platform = it.platform, name = gamePlatform.name, category = it.platform.category,
-                            status = gamePlatform.status, icon = gamePlatform.icon, launchs = gamePlatform.launchList,
-                            demo = gamePlatform.demo, disableIcon = gamePlatform.disableIcon)
-                }
+        val platforms = category?.let {
+            platformBindService.findClientPlatforms(clientId = getClientIdByDomain())
+                    .filter { it.platform.category == category }
+                    .map {
+                        val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
+                        PlatformVo(id = it.id, platform = it.platform, name = gamePlatform.name, category = it.platform.category,
+                                status = gamePlatform.status, icon = gamePlatform.icon, launchs = gamePlatform.launchList,
+                                demo = gamePlatform.demo, disableIcon = gamePlatform.disableIcon)
+                    }
+        }?: emptyList()
 
         val type = when (category) {
             PlatformCategory.Fishing -> BannerType.Fish
             PlatformCategory.Slot -> BannerType.Slot
             PlatformCategory.LiveVideo -> BannerType.Live
             PlatformCategory.Sport -> BannerType.Sport
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
+            else -> {
+                if (launch == LaunchMethod.Wap) BannerType.MobileBanner else BannerType.Banner
+            }
         }
 
         val map = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Banner)
