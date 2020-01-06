@@ -53,7 +53,7 @@ object AwsS3Util {
         val scheme = originFileName.substring(originFileName.lastIndexOf("."))
         val randomFileName = generatorFileName("client/$category", scheme)
 
-        val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file.inputStream, ObjectMetadata())
+        val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file.inputStream, this.getObjectMetadata(scheme))
         putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead
 
         s3Client.putObject(putObjectRequest)
@@ -65,7 +65,7 @@ object AwsS3Util {
         val scheme = originFileName.substring(originFileName.lastIndexOf("."))
         val randomFileName = generatorFileName("client/${clientId}/$category", scheme)
 
-        val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file.inputStream, ObjectMetadata())
+        val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file.inputStream, this.getObjectMetadata(scheme))
         putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead
 
         s3Client.putObject(putObjectRequest)
@@ -77,7 +77,7 @@ object AwsS3Util {
         val scheme = originFileName.substring(originFileName.lastIndexOf("."))
         val randomFileName = generatorFileName("client/${clientId}/$path", scheme)
 
-        val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file.inputStream, ObjectMetadata())
+        val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file.inputStream, this.getObjectMetadata(scheme))
         putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead
 
         s3Client.putObject(putObjectRequest)
@@ -94,6 +94,23 @@ object AwsS3Util {
         s3Client.putObject(putObjectRequest)
         return "$basePath/$name"
     }
+
+    fun getObjectMetadata(scheme: String): ObjectMetadata {
+        val objectMetadata = ObjectMetadata()
+        when (scheme) {
+            ".jpe" -> "image/jpeg"
+            ".png" -> "image/png"
+            ".gif" -> "image/gif"
+            ".mp4" -> "video/mp4"
+            else -> "application/octet-stream"
+        }.apply {
+            objectMetadata.contentType = this
+        }
+
+        return objectMetadata
+    }
+
+
 }
 
 fun main() {
