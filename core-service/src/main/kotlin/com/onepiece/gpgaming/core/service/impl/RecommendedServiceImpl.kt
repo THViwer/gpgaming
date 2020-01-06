@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.service.impl
 
 import com.onepiece.gpgaming.beans.enums.RecommendedType
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Recommended
 import com.onepiece.gpgaming.beans.value.database.RecommendedValue
@@ -19,7 +20,7 @@ class RecommendedServiceImpl(
     }
 
     override fun getByType(clientId: Int, type: RecommendedType): List<Recommended> {
-        return recommendedDao.all(clientId).filter { it.type == type }
+        return recommendedDao.all(clientId).filter { it.type == type }.filter { it.status != Status.Delete }
     }
 
     override fun create(co: RecommendedValue.CreateVo): Int {
