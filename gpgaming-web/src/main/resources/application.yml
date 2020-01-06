@@ -16,6 +16,10 @@ spring:
   output:
     ansi:
       enabled: always
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 
 server:
   servlet:
@@ -32,3 +36,4 @@ jwt:
       path: auth
       refresh: refresh
       register: "auth/register"
+
