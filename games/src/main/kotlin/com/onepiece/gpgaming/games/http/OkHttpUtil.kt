@@ -29,15 +29,15 @@ class OkHttpUtil(
     }
 
     val client = OkHttpClient.Builder()
-            .connectTimeout(100, TimeUnit.SECONDS) //连接超时
-            .readTimeout(100, TimeUnit.SECONDS) //读取超时
-            .writeTimeout(100, TimeUnit.SECONDS) //写超时
+            .connectTimeout(60, TimeUnit.SECONDS) //连接超时
+            .readTimeout(60, TimeUnit.SECONDS) //读取超时
+            .writeTimeout(60, TimeUnit.SECONDS) //写超时
             .build()
 
     val httpsClient = OKHttpClientBuilder.buildOKHttpClient()
-            .connectTimeout(100, TimeUnit.SECONDS) //连接超时
-            .readTimeout(100, TimeUnit.SECONDS) //读取超时
-            .writeTimeout(100, TimeUnit.SECONDS) //写超时
+            .connectTimeout(60, TimeUnit.SECONDS) //连接超时
+            .readTimeout(60, TimeUnit.SECONDS) //读取超时
+            .writeTimeout(60, TimeUnit.SECONDS) //写超时
             .build()
 
 
