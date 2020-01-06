@@ -291,26 +291,50 @@ open class ApiController(
 //        return PlatformCategoryPage(platforms = platforms, banners = banners)
 //    }
 
+    @GetMapping("/banner")
+    override fun banners(
+            @RequestHeader("language") language: Language,
+            @RequestHeader("launch") launch: LaunchMethod,
+            @RequestParam(value =  "type") type: BannerType
+    ): List<BannerVo> {
+
+        val clientId = this.getClientIdByDomain()
+
+        val map = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Banner)
+                .map { "${it.configId}:${it.language}" to it }
+                .toMap()
+
+        return bannerService.findByType(clientId = getClientIdByDomain(), type = type).mapNotNull {
+            val i18nContent = map["${it.id}:${language}"]
+                    ?: map["${it.id}:${Language.EN}"]
+            if (i18nContent == null) {
+                null
+            } else {
+                val content = i18nContent.getII18nContent(objectMapper) as I18nContent.BannerI18n
+                BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type, link = it.link)
+            }
+        }
+
+    }
+
     @GetMapping("/{category}")
     override fun categorys(
             @RequestHeader("language") language: Language,
             @RequestHeader("launch") launch: LaunchMethod,
-            @PathVariable(value =  "category", required = false) category: PlatformCategory?
+            @PathVariable(value =  "category") category: PlatformCategory
     ): PlatformCategoryDetail {
 
         val clientId = this.getClientIdByDomain()
         val gamePlatforms = gamePlatformService.all()
 
-        val platforms = category?.let {
-            platformBindService.findClientPlatforms(clientId = getClientIdByDomain())
-                    .filter { it.platform.category == category }
-                    .map {
-                        val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
-                        PlatformVo(id = it.id, platform = it.platform, name = gamePlatform.name, category = it.platform.category,
-                                status = gamePlatform.status, icon = gamePlatform.icon, launchs = gamePlatform.launchList,
-                                demo = gamePlatform.demo, disableIcon = gamePlatform.disableIcon)
-                    }
-        }?: emptyList()
+        val platforms = platformBindService.findClientPlatforms(clientId = getClientIdByDomain())
+                .filter { it.platform.category == category }
+                .map {
+                    val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
+                    PlatformVo(id = it.id, platform = it.platform, name = gamePlatform.name, category = it.platform.category,
+                            status = gamePlatform.status, icon = gamePlatform.icon, launchs = gamePlatform.launchList,
+                            demo = gamePlatform.demo, disableIcon = gamePlatform.disableIcon)
+                }
 
         val type = when (category) {
             PlatformCategory.Fishing -> BannerType.Fish
@@ -326,16 +350,16 @@ open class ApiController(
                 .map { "${it.configId}:${it.language}" to it }
                 .toMap()
 
-        val banners = bannerService.findByType(clientId = getClientIdByDomain(), type = type).map {
+        val banners = bannerService.findByType(clientId = getClientIdByDomain(), type = type).mapNotNull {
             val i18nContent = map["${it.id}:${language}"]
                     ?: map["${it.id}:${Language.EN}"]
             if (i18nContent == null) {
                 null
             } else {
                 val content = i18nContent.getII18nContent(objectMapper) as I18nContent.BannerI18n
-                BannerVo(id = it.id, order = it.order, icon = content.imagePath , touchIcon = content.imagePath, type = it.type, link = it.link)
+                BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type, link = it.link)
             }
-        }.filterNotNull()
+        }
 
         val games = if (category == PlatformCategory.Slot) {
             this.slotMenu(language = language, launch = LaunchMethod.Web, platform = Platform.Pragmatic)["url"]

@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.service.impl
 
 import com.onepiece.gpgaming.beans.enums.BannerType
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Banner
 import com.onepiece.gpgaming.beans.value.database.BannerCo
@@ -21,7 +22,7 @@ class BannerServiceImpl(
 //        val redisKey = OnePieceRedisKeyConstant.banners(clientId)
 //        return redisService.getList(redisKey, Banner::class.java) {
 //        }
-        return bannerDao.all(clientId)
+        return bannerDao.all(clientId).filter { it.status != Status.Delete }
     }
 
     override fun findByType(clientId: Int, type: BannerType): List<Banner> {

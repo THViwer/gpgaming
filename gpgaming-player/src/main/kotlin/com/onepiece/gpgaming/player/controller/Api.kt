@@ -1,10 +1,12 @@
 package com.onepiece.gpgaming.player.controller
 
+import com.onepiece.gpgaming.beans.enums.BannerType
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
+import com.onepiece.gpgaming.player.controller.value.BannerVo
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.DownloadAppVo
 import com.onepiece.gpgaming.player.controller.value.IndexConfig
@@ -81,11 +83,18 @@ interface Api {
     @ApiOperation(tags = ["api"], value = "获得游戏平台的账号密码")
     fun platformMemberDetail(@RequestHeader("platform") platform: Platform): PlatformMembrerDetail
 
+    @ApiOperation(tags = ["api"], value = "banner列表")
+    fun banners(
+            @RequestHeader("language") language: Language,
+            @RequestHeader("launch") launch: LaunchMethod,
+            @RequestParam(value =  "type") type: BannerType
+    ): List<BannerVo>
+
     @ApiOperation(tags = ["api"], value = "获得平台类目页信息")
     fun categorys(
             @RequestHeader("language") language: Language,
             @RequestHeader("launch") launch: LaunchMethod,
-            @PathVariable(value =  "category", required = false) category: PlatformCategory?
+            @PathVariable(value =  "category") category: PlatformCategory
     ): PlatformCategoryDetail
 
 //    @ApiOperation(tags = ["api"], value = "平台类别页面详细资料")
