@@ -30,9 +30,9 @@ interface Api {
     ): IndexConfig
 
     @ApiOperation(tags = ["api"],  value = "首页平台列表")
-    fun indexPlatforms(): List<PlatformVo>
-
-
+    fun indexPlatforms(
+            @RequestHeader("launch", defaultValue = "Wap") launch: LaunchMethod = LaunchMethod.Wap
+    ): List<PlatformVo>
 
     @ApiOperation(tags = ["api"], value = "优惠活动")
     fun promotion(

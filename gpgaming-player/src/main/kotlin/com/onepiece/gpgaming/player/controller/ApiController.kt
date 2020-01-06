@@ -70,7 +70,9 @@ open class ApiController(
     }
 
     @GetMapping("/index/platforms")
-    override fun indexPlatforms(): List<PlatformVo> {
+    override fun indexPlatforms(
+            @RequestHeader("launch", defaultValue = "Wap") launch: LaunchMethod
+    ): List<PlatformVo> {
 
         val clientId = getClientIdByDomain()
         val gamePlatforms = gamePlatformService.all()
@@ -86,8 +88,11 @@ open class ApiController(
                 else -> gamePlatform.status
             }
 
-            PlatformVo(id = it.id, name = gamePlatform.name, category = it.platform.category, status = status, icon = gamePlatform.icon,
-                    launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo)
+            val icon = if (launch == LaunchMethod.Wap) gamePlatform.mobileIcon else gamePlatform.icon
+            val disableIcon = if (launch == LaunchMethod.Wap) gamePlatform.mobileDisableIcon else gamePlatform.disableIcon
+
+            PlatformVo(id = it.id, name = gamePlatform.name, category = it.platform.category, status = status, icon = icon,
+                    launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo, disableIcon = disableIcon)
         }.filter { it.status != Status.Delete }
     }
 
@@ -301,7 +306,7 @@ open class ApiController(
                     val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
                     PlatformVo(id = it.id, platform = it.platform, name = gamePlatform.name, category = it.platform.category,
                             status = gamePlatform.status, icon = gamePlatform.icon, launchs = gamePlatform.launchList,
-                            demo = gamePlatform.demo)
+                            demo = gamePlatform.demo, disableIcon = gamePlatform.disableIcon)
                 }
 
         val type = when (category) {

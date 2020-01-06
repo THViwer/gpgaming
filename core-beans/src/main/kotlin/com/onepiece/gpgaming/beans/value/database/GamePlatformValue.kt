@@ -17,8 +17,14 @@ sealed class GamePlatformValue {
             // 图标
             val icon: String,
 
+            // 手机图标
+            val mobileIcon: String,
+
             // 平台维护图标
             val disableIcon: String?,
+
+            // 手机平台维护图标
+            val mobileDisableIcon: String?,
 
             // 原始图标
             val originIcon: String,
@@ -50,8 +56,14 @@ sealed class GamePlatformValue {
             // 图标
             val icon: String,
 
+            // 手机图标
+            val mobileIcon: String,
+
             // 平台维护图标
             val disableIcon: String?,
+
+            // 手机平台维护图标
+            val mobileDisableIcon: String?,
 
             // 原始图标
             val originIcon: String,

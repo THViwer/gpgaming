@@ -25,6 +25,12 @@ data class GamePlatform(
         // 原始鼠标移上去图标
         val originIconOver: String,
 
+        // 手机图标
+        val mobileIcon: String,
+
+        // 手机平台维护图标
+        val mobileDisableIcon: String?,
+
         // 是否有试玩
         val demo: Boolean = false,
 
