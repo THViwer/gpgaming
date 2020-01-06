@@ -141,10 +141,10 @@ class SlotGameTask(
             listOf(Language.EN, Language.CN).forEach { language ->
 
                 val games = gameApi.slotGames(clientId = 1, platform = Platform.Pragmatic, launch = launch, language = language)
-//                        .map {
-//                    val chineseGameName = pragmaticMap[it.gameId]?: it.chineseGameName
-//                    it.copy(chineseGameName = chineseGameName)
-//                }
+                        .map {
+                            val gameName = if (language == Language.CN) pragmaticMap[it.gameId]?: it.gameName else it.gameName
+                    it.copy(gameName = gameName)
+                }
 
 
                 val games2 = if (launch == LaunchMethod.Web) {
