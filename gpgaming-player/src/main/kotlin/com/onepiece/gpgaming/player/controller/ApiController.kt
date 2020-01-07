@@ -179,27 +179,24 @@ open class ApiController(
             @RequestHeader("platform") platform: Platform,
             @RequestHeader("launch") launch: LaunchMethod
     ): StartGameResp {
+
         val member = current()
         val platformMember = getPlatformMember(platform, member)
 
-        val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
-                launch = launch, language = language, platformPassword = platformMember.platformPassword)
-
         transferSync.asyncTransfer(current(), platformMember)
 
-        val (username, password) = when (platform) {
+        return when (platform) {
             Platform.PlaytechLive, Platform.PlaytechSlot -> {
                 val detail = this.platformMemberDetail(platform = platform)
-                detail.username to detail.password
+                StartGameResp(path = "-", username = detail.username, password = detail.password)
             }
-            else -> "-" to "-"
+            else -> {
+                val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
+                        launch = launch, language = language, platformPassword = platformMember.platformPassword)
+                StartGameResp(path = gameUrl, username = "-", password = "-")
+            }
         }
-
-        return StartGameResp(path = gameUrl, username = username, password = password)
     }
-
-
-
 
     @GetMapping("/start/demo")
     override fun startDemo(
@@ -222,21 +219,20 @@ open class ApiController(
         val member = current()
         val platformMember = getPlatformMember(platform, member)
 
-        val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
-                gameId = gameId, language = language, launchMethod = launch, platformPassword = platformMember.platformPassword)
-
         transferSync.asyncTransfer(current(), platformMember)
 
-        val (username, password) = when (platform) {
+        return when (platform) {
             Platform.PlaytechLive, Platform.PlaytechSlot -> {
                 val detail = this.platformMemberDetail(platform = platform)
                 detail.username to detail.password
+                StartGameResp(path = "-", username = detail.username, password = detail.password)
             }
-            else -> "-" to "-"
+            else -> {
+                val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
+                        gameId = gameId, language = language, launchMethod = launch, platformPassword = platformMember.platformPassword)
+                StartGameResp(path = gameUrl, username = "-", password = "-")
+            }
         }
-
-        return StartGameResp(path = gameUrl, username = username, password = password)
-
     }
 
     @GetMapping("/start/slot/demo")
