@@ -50,7 +50,7 @@ class PullBetTask(
 //        val binds = platformBindService.all().filter { it.platform == Platform.AsiaGamingSlot || it.platform == Platform.AsiaGamingLive }.filter { it.clientId == 1 } // && it.platform == Platform.MicroGaming
         val binds = platformBindService.all().filter { it.clientId == 1 } // && it.platform == Platform.MicroGaming
 
-        binds.parallelStream().forEach  { bind ->
+        binds.filter { it.platform != Platform.PlaytechLive }.parallelStream().forEach  { bind ->
             this.executePlatform(bind)
         }
 
@@ -107,7 +107,9 @@ class PullBetTask(
             Platform.MicroGaming,
             Platform.MicroGamingLive,
             Platform.AsiaGamingSlot,
-            Platform.AsiaGamingLive -> {
+            Platform.AsiaGamingLive,
+            Platform.PlaytechSlot,
+            Platform.PlaytechLive -> {
                 val duration = Duration.between(startTime, LocalDateTime.now())
                 val minutes: Long = duration.toMinutes() //相差的分钟数
                 minutes > 2

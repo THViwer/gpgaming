@@ -187,7 +187,15 @@ open class ApiController(
 
         transferSync.asyncTransfer(current(), platformMember)
 
-        return StartGameResp(path = gameUrl)
+        val (username, password) = when (platform) {
+            Platform.PlaytechLive, Platform.PlaytechSlot -> {
+                val detail = this.platformMemberDetail(platform = platform)
+                detail.username to detail.password
+            }
+            else -> "-" to "-"
+        }
+
+        return StartGameResp(path = gameUrl, username = username, password = password)
     }
 
 
@@ -219,7 +227,15 @@ open class ApiController(
 
         transferSync.asyncTransfer(current(), platformMember)
 
-        return StartGameResp(path = gameUrl)
+        val (username, password) = when (platform) {
+            Platform.PlaytechLive, Platform.PlaytechSlot -> {
+                val detail = this.platformMemberDetail(platform = platform)
+                detail.username to detail.password
+            }
+            else -> "-" to "-"
+        }
+
+        return StartGameResp(path = gameUrl, username = username, password = password)
 
     }
 

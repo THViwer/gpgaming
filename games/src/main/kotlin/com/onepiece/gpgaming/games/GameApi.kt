@@ -420,7 +420,9 @@ class GameApi(
             Platform.SimplePlay,
             Platform.GoldDeluxe,
             Platform.AsiaGamingLive,
-            Platform.AsiaGamingSlot -> {
+            Platform.AsiaGamingSlot,
+            Platform.PlaytechSlot,
+            Platform.PlaytechLive -> {
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken,
                         platform = platformBind.platform)
                 getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)

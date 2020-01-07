@@ -177,7 +177,13 @@ data class PlatformVo(
 data class StartGameResp(
 
         @ApiModelProperty("平台地址")
-        val path: String
+        val path: String,
+
+        @ApiModelProperty("用户名")
+        val username: String = "-",
+
+        @ApiModelProperty("密码")
+        val password: String = "-"
 )
 
 data class DownloadAppVo(

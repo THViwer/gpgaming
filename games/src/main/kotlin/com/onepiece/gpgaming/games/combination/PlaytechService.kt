@@ -3,17 +3,22 @@ package com.onepiece.gpgaming.games.combination
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
+import com.onepiece.gpgaming.beans.value.database.BetOrderValue
+import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.ActiveConfig
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.utils.StringUtil
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.format.DateTimeFormatter
 
 @Service
 class PlaytechService(
         private val activeConfig: ActiveConfig
 ) : PlatformService() {
+
+    private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     fun startPostJson(clientToken: PlaytechClientToken, path: String, data: String): PlaytechValue.Result {
         val url = "${gameConstant.getDomain(Platform.PlaytechSlot)}${path}"
@@ -121,7 +126,58 @@ class PlaytechService(
 
     override fun start(startReq: GameValue.StartReq): String {
         val clientToken = startReq.token as PlaytechClientToken
-
         error("")
     }
+
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+        val clientToken = pullBetOrderReq.token as PlaytechClientToken
+
+        var page = 1
+        var hasNextPage = false
+        val orders = arrayListOf<BetOrderValue.BetOrderCo>()
+
+        do {
+            val data = listOf(
+                    "game_server=${clientToken.serverName}",
+                    "date_from=${pullBetOrderReq.startTime.format(dateTimeFormat)}",
+                    "date_to=${pullBetOrderReq.endTime.format(dateTimeFormat)}",
+                    "page=1"
+            )
+
+            val urlParam = data.joinToString(separator = "&")
+            val url = "${gameConstant.getDomain(Platform.PlaytechSlot)}/backoffice/reports/gameTransactions?$urlParam"
+            val headers = mapOf(
+                    "X-Auth-Api-Key" to clientToken.accessToken
+            )
+            val result =  okHttpUtil.doGet(url = url, headers = headers, clz = PlaytechValue.BetResult::class.java)
+
+            if (result.data.data.isNotEmpty()) {
+                val list = result.data.orders.map { bet ->
+                    val orderId = bet.asString("game_server_reference_1")
+                    val betAmount = bet.asBigDecimal("bet")
+                    val winAmount = bet.asBigDecimal("win")
+                    val betTime = bet.asLocalDateTime("bet_datetime", dateTimeFormat)
+                    val username = bet.asString("gamzo_player_name").split("_")[1]
+                    val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = pullBetOrderReq.platform, platformUsername = username)
+
+                    val originData = objectMapper.writeValueAsString(bet.data)
+
+                    val gameType = bet.asString("game_type")
+                    val platform = if (gameType.toLowerCase().contains("slot")) Platform.PlaytechSlot else Platform.PlaytechLive
+
+                    BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform, orderId = orderId, betAmount = betAmount,
+                            winAmount = winAmount, originData = originData, betTime = betTime, settleTime = betTime)
+                }
+
+                orders.addAll(list)
+            }
+
+            page += 1
+            hasNextPage = result.data.pagination.has_next_page
+        } while (hasNextPage)
+
+        return orders
+    }
+
+
 }

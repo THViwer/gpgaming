@@ -30,7 +30,6 @@ class GameConstant(
             Platform.SpadeGaming -> "http://api-egame-staging.sgplay.net"
             Platform.TTG -> "https://ams-api.stg.ttms.co:8443"
             Platform.MicroGaming -> "https://api.adminserv88.com"
-            Platform.PlaytechSlot -> "https://api-uat.gamzo.com"
             Platform.GamePlay -> "http://club8api.bet8uat.com"
             Platform.SimplePlay -> " http://api.sp-portal.com/api/api.aspx"
 
@@ -51,6 +50,8 @@ class GameConstant(
 
             // fishing
             Platform.GGFishing -> "https://optest.365gaming.cc:10029"
+
+            Platform.PlaytechSlot, Platform.PlaytechLive -> "https://api-uat.gamzo.com"
 
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -73,7 +74,6 @@ class GameConstant(
             Platform.SpadeGaming -> "$domain:1006"
             Platform.TTG -> "$domain:1007"
             Platform.MicroGaming -> "$domain:1008"
-            Platform.PlaytechSlot -> "https://api-uat.gamzo.com" // 香港 CN2 01 - 443 单端口
             Platform.GamePlay -> "http://45.124.65.170:90"
             Platform.SimplePlay -> "$domain:1011"
 
@@ -92,6 +92,7 @@ class GameConstant(
             // fishing
             Platform.GGFishing -> "$domain:4001"
 
+            Platform.PlaytechSlot, Platform.PlaytechLive -> "https://api-uat.gamzo.com"
 
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
