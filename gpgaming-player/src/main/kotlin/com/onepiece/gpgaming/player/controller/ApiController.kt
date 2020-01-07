@@ -14,6 +14,7 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
+import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.ClientService
@@ -246,8 +247,19 @@ open class ApiController(
 
     @GetMapping("/platform/member")
     override fun platformMemberDetail(@RequestHeader("platform") platform: Platform): PlatformMembrerDetail {
-        return getPlatformMember(platform, current()).let {
-            PlatformMembrerDetail(username = it.platformUsername, password = it.platformPassword)
+
+        val current = current()
+
+        return getPlatformMember(platform, current).let {
+            val username = when (platform) {
+                Platform.PlaytechSlot, Platform.PlaytechLive -> {
+                    val bind = platformBindService.findClientPlatforms(clientId = current.clientId).first { it.platform == platform }
+                    val clientToken = bind.clientToken as PlaytechClientToken
+                    "${clientToken.prefix}_${it.platformUsername}".toUpperCase()
+                }
+                else -> it.platformUsername
+            }
+            PlatformMembrerDetail(username = username, password = it.platformPassword)
         }
     }
 
