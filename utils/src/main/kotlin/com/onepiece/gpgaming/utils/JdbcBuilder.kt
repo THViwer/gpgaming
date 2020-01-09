@@ -218,9 +218,9 @@ class Query(
         val queryColumn = returnColumns?: "*"
 
         val begin =  if (columns.isEmpty()) {
-            "select $queryColumn from `$table` where status != Delete"
+            "select $queryColumn from `$table` where status != 'Delete'"
         } else {
-            "select $queryColumn from `$table` where $names and status != Delete"
+            "select $queryColumn from `$table` where $names and status != 'Delete'"
         }
 
         val sql = StringBuilder(begin)
