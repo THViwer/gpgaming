@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -50,8 +51,8 @@ open class ClientApiController(
     }
 
     @GetMapping("/webSite")
-    override fun domains(): List<WebSite> {
-        return webSiteService.all()
+    override fun domains(@RequestParam(value = "clientId", required = false) clientId: Int?): List<WebSite> {
+        return webSiteService.all().filter { clientId == null || it.clientId == clientId }
     }
 
     @PostMapping("/webSite")

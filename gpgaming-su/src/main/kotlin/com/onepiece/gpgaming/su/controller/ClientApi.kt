@@ -8,6 +8,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
 @Api(tags = ["client"], description = " ")
@@ -25,7 +26,7 @@ interface ClientApi {
     fun list(): List<ClientSuValue.ClientVo>
 
     @ApiOperation(tags = ["client"], value = "厅主 -> 域名管理")
-    fun domains(): List<WebSite>
+    fun domains(@RequestParam(value = "clientId", required = false) clientId: Int?): List<WebSite>
 
     @ApiOperation(tags = ["client"], value = "厅主 -> 域名创建")
     @ResponseStatus(HttpStatus.NO_CONTENT)
