@@ -89,7 +89,7 @@ class ClientServiceImpl(
 
         // insert client
         val password = bCryptPasswordEncoder.encode(clientCo.password)
-        val id = clientDao.create(clientCo.copy(password))
+        val id = clientDao.create(clientCo.copy(password = password))
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // create default level
