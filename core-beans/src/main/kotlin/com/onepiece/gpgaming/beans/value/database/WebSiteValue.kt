@@ -19,6 +19,6 @@ data class WebSiteUo(
         val domain: String,
 
         // 状态
-        val status: Status
+        val status: Status = Status.Normal
 
 )

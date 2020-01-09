@@ -66,5 +66,18 @@ sealed class ClientSuValue {
 
     )
 
+    data class WebSiteCo(
+
+            val clientId: Int,
+
+            val domain: String
+    )
+
+    data class WebSiteUo(
+            val id: Int,
+
+            val domain: String
+    )
+
 
 }

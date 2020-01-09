@@ -1,9 +1,13 @@
 package com.onepiece.gpgaming.su.controller
 
+import com.onepiece.gpgaming.beans.model.WebSite
 import com.onepiece.gpgaming.beans.value.database.ClientCo
 import com.onepiece.gpgaming.beans.value.database.ClientUo
+import com.onepiece.gpgaming.beans.value.database.WebSiteCo
+import com.onepiece.gpgaming.beans.value.database.WebSiteUo
 import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.service.ClientService
+import com.onepiece.gpgaming.core.service.WebSiteService
 import com.onepiece.gpgaming.su.controller.value.ClientSuValue
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/client")
 open class ClientApiController(
         private val clientService: ClientService,
+        private val webSiteService: WebSiteService,
         private val indexUtil: IndexUtil
 ) : ClientApi {
 
@@ -42,6 +47,20 @@ open class ClientApiController(
             ClientSuValue.ClientVo(id = it.id, username = it.username, name = it.name, openNumber = 100, createdTime = it.createdTime,
                     logo = it.logo, status = it.status)
         }
+    }
 
+    @GetMapping("/webSite")
+    override fun domains(): List<WebSite> {
+        return webSiteService.all()
+    }
+
+    @PostMapping("/webSite")
+    override fun create(@RequestBody webSiteCo: WebSiteCo) {
+        webSiteService.create(webSiteCo = webSiteCo)
+    }
+
+    @PutMapping("/webSite")
+    override fun update(@RequestBody webSiteUo: WebSiteUo) {
+        webSiteService.update(webSiteUo = webSiteUo)
     }
 }
