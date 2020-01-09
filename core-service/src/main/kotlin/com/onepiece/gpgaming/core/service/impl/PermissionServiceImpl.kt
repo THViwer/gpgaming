@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.service.impl
 
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Permission
 import com.onepiece.gpgaming.beans.value.database.PermissionUo
@@ -14,7 +15,8 @@ class PermissionServiceImpl(
 ) : PermissionService {
 
     override fun findWaiterPermissions(waiterId: Int): Permission {
-        return permissionDao.findWaiterPermissions(waiterId)?: Permission(id = -1, waiterId = waiterId, permissions = emptyList(), createdTime = LocalDateTime.now())
+        return permissionDao.findWaiterPermissions(waiterId)
+                ?: Permission(id = -1, waiterId = waiterId, permissions = emptyList(), createdTime = LocalDateTime.now(), status = Status.Normal)
     }
 
     override fun create(permissionUo: PermissionUo) {

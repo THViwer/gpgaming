@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.enums.TransferState
 import com.onepiece.gpgaming.beans.model.TransferOrder
 import com.onepiece.gpgaming.beans.value.database.ClientTransferPlatformReportVo
@@ -38,9 +39,11 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
             val state = rs.getString("state").let { TransferState.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
+            val status = rs.getString("status").let { Status.valueOf(it) }
+
             TransferOrder(orderId = orderId, clientId = clientId, memberId = memberId, money = money, promotionAmount = promotionAmount,
                     from = from, to = to, state = state, createdTime = createdTime, updatedTime = updatedTime, joinPromotionId = joinPromotionId,
-                    promotionJson = promotionJson, username = username)
+                    promotionJson = promotionJson, username = username, status = status)
         }
 
     override fun create(transferOrderCo: TransferOrderCo): Boolean {

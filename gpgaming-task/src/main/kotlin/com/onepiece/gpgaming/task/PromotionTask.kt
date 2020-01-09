@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.task
 
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.PromotionDailyReport
 import com.onepiece.gpgaming.beans.model.PromotionPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.TaskTimerType
@@ -50,7 +51,7 @@ class PromotionTask(
                 val reports = transferReports.map {
 
                     PromotionPlatformDailyReport(id = -1, clientId = it.clientId, platform = it.platform, day = startDate, promotionId = it.promotionId, promotionAmount = it.promotionAmount,
-                            createdTime = now)
+                            createdTime = now, status = Status.Normal)
                 }
 
                 promotionPlatformDailyReportService.create(reports)
@@ -68,7 +69,7 @@ class PromotionTask(
                 val reports = transferReports.map {
 
                     PromotionDailyReport(id = -1, clientId = it.clientId, day = startDate, promotionId = it.promotionId, promotionAmount = it.promotionAmount,
-                            createdTime = now)
+                            createdTime = now, status = Status.Normal)
                 }
 
                 promotionDailyReportService.create(reports)

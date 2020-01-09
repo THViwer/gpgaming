@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.BetOrder
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.MemberService
@@ -47,7 +48,8 @@ class BerOrderApiController(
                         platform = platform, startTime = startTime, endTime = endTime)
                 return list.map {
                     BetOrder(id = -1, clientId = it.clientId, memberId = it.memberId, betTime = it.betTime, settleTime = it.settleTime, betAmount = it.betAmount,
-                            winAmount = it.winAmount, mark = true, orderId = it.orderId, createdTime = it.betTime, originData = it.originData, platform = it.platform)
+                            winAmount = it.winAmount, mark = true, orderId = it.orderId, createdTime = it.betTime, originData = it.originData, platform = it.platform,
+                            status = Status.Normal)
                 }
             }
             Platform.Mega -> {

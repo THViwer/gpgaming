@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.value.database.ClientPlatformDailyReportVo
 import com.onepiece.gpgaming.beans.value.database.ClientReportQuery
@@ -26,8 +27,12 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
             val transferOut = rs.getBigDecimal("transfer_out")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val status = rs.getString("status").let { Status.valueOf(it) }
+
+
             ClientPlatformDailyReport(id = id, day = day, clientId = clientId, platform = platform,
-                    transferIn = transferIn, transferOut = transferOut, createdTime = createdTime, bet = bet, win = win, promotionAmount = promotionAmount)
+                    transferIn = transferIn, transferOut = transferOut, createdTime = createdTime, bet = bet, win = win, promotionAmount = promotionAmount,
+                    status = status)
         }
 
     override fun create(reports: List<ClientPlatformDailyReport>) {

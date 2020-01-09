@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Permission
 import com.onepiece.gpgaming.beans.model.PermissionDetail
 import com.onepiece.gpgaming.beans.value.database.PermissionUo
@@ -22,9 +23,10 @@ class PermissionDaoImpl(
 
             val javaType = objectMapper.typeFactory.constructParametricType(List::class.java, PermissionDetail::class.java)
             val permissions: List<PermissionDetail> = objectMapper.readValue(permissionJson, javaType)
+            val status = rs.getString("status").let { Status.valueOf(it) }
 
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            Permission(id = id, waiterId = waiterId, permissions = permissions, createdTime = createdTime)
+            Permission(id = id, waiterId = waiterId, permissions = permissions, createdTime = createdTime, status = status)
         }
 
     override fun findWaiterPermissions(waiterId: Int): Permission? {

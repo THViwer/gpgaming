@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.PromotionPlatformDailyReport
 import com.onepiece.gpgaming.beans.value.database.PromotionDailyReportValue
 import com.onepiece.gpgaming.core.dao.PromotionPlatformDailyReportDao
@@ -21,8 +22,10 @@ class PromotionPlatformDailyReportDaoImpl : BasicDaoImpl<PromotionPlatformDailyR
             val promotionId = rs.getInt("promotion_id")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val status = rs.getString("status").let { Status.valueOf(it) }
+
             PromotionPlatformDailyReport(id = id, clientId = clientId, day = day, promotionId = promotionId, promotionAmount = promotionAmount,
-                    createdTime = createdTime, platform = platform)
+                    createdTime = createdTime, platform = platform, status = status)
         }
 
 

@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.dao.impl
 
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.core.dao.BalanceDao
 import com.onepiece.gpgaming.beans.value.database.BalanceCo
 import com.onepiece.gpgaming.beans.value.database.BalanceUo
@@ -20,9 +21,9 @@ class BalanceDaoImpl : BasicDaoImpl<Balance>("balance"), BalanceDao {
             val totalBalance = rs.getBigDecimal("total_balance")
             val giftBalance = rs.getBigDecimal("gift_balance")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val status = rs.getString("status").let { Status.valueOf(it) }
             Balance(id = id, clientId = clientId, balance = balance, totalBalance = totalBalance, giftBalance = giftBalance,
-                    createdTime = createdTime)
-
+                    createdTime = createdTime, status = status)
         }
 
     override fun getClientBalance(clientId: Int): Balance {

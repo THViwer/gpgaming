@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
+import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -15,7 +16,10 @@ data class TaskTimer(
 
         val createdTime: LocalDateTime,
 
-        val updatedTime: LocalDateTime
+        val updatedTime: LocalDateTime,
+
+        // 状态
+        val status: Status
 
 )
 

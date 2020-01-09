@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.dao.impl
 
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.TaskTimer
 import com.onepiece.gpgaming.beans.model.TaskTimerState
 import com.onepiece.gpgaming.beans.model.TaskTimerType
@@ -20,7 +21,10 @@ class TaskTimerDaoImpl : BasicDaoImpl<TaskTimer>("task_timer"), TaskTimerDao {
             val type = rs.getString("type").let { TaskTimerType.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
-            TaskTimer(id = id, day = day, state = state, type = type, createdTime = createdTime, updatedTime = updatedTime)
+            val status = rs.getString("status").let { Status.valueOf(it) }
+
+            TaskTimer(id = id, day = day, state = state, type = type, createdTime = createdTime, updatedTime = updatedTime,
+                    status = status)
 
         }
 

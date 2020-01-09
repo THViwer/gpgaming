@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.dao.impl
 
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.value.database.ClientReportQuery
 import com.onepiece.gpgaming.core.dao.ClientDailyReportDao
@@ -25,10 +26,11 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
             val promotionAmount = rs.getBigDecimal("promotion_amount")
             val newMemberCount = rs.getInt("new_member_count")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val status = rs.getString("status").let { Status.valueOf(it) }
             ClientDailyReport(id = id, day = day, clientId = clientId, transferIn = transferIn, transferOut = transferOut,
                     depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
                     withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
-                    promotionAmount = promotionAmount)
+                    promotionAmount = promotionAmount, status = status)
         }
 
     override fun create(reports: List<ClientDailyReport>) {

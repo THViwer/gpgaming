@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
+import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -24,7 +25,8 @@ data class Balance (
         val giftBalance: BigDecimal,
 
         // 创建时间
-        val createdTime: LocalDateTime
+        val createdTime: LocalDateTime,
 
+        val status: Status
 
 )

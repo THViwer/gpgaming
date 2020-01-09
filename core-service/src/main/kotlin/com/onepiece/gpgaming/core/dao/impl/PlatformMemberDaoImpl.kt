@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.PlatformMember
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberCo
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberTransferUo
@@ -38,12 +39,14 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
             val transferAmount = rs.getBigDecimal("transfer_amount")
             val requirementTransferOutAmount = rs.getBigDecimal("requirement_transfer_out_amount")
             val ignoreTransferOutAmount = rs.getBigDecimal("ignore_transfer_out_amount")
+            val status = rs.getString("status").let { Status.valueOf(it) }
 
             PlatformMember(id = id, platform = platform, memberId = memberId, username = username, password = password,
                     currentBet = currentBet, totalBet = totalBet, totalAmount = totalAmount, totalPromotionAmount = totalPromotionAmount,
                     createdTime = createdTime, clientId = clientId, joinPromotionId = joinPromotionId, promotionAmount = promotionAmount,
                     transferAmount = transferAmount, requirementTransferOutAmount = requirementTransferOutAmount, requirementBet = requirementBet,
-                    ignoreTransferOutAmount = ignoreTransferOutAmount, totalTransferOutAmount = totalTransferOutAmount, totalWin = totalWin)
+                    ignoreTransferOutAmount = ignoreTransferOutAmount, totalTransferOutAmount = totalTransferOutAmount, totalWin = totalWin,
+                    status = status)
         }
 
     override fun findPlatformMember(memberId: Int): List<PlatformMember> {

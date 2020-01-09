@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.beans.model
 import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.DepositChannel
 import com.onepiece.gpgaming.beans.enums.DepositState
+import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -81,5 +82,8 @@ data class Deposit(
         val createdTime: LocalDateTime,
 
         // 订单关闭时间
-        val endTime: LocalDateTime?
+        val endTime: LocalDateTime?,
+
+        // 状态
+        val status: Status
 )

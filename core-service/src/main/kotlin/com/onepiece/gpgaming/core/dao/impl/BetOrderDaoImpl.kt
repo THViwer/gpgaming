@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.BetOrder
 import com.onepiece.gpgaming.beans.value.database.BetOrderReport
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
@@ -31,9 +32,11 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
             val betTime = rs.getTimestamp("bet_time").toLocalDateTime()
             val settleTime = rs.getTimestamp("settle_time").toLocalDateTime()
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val status = rs.getString("status").let { Status.valueOf(it) }
 
             BetOrder(id = id, clientId = clientId, memberId = memberId, platform = platform, orderId = orderId, betAmount = betAmount,
-                    winAmount = winAmount, mark = mark, originData = originData, betTime = betTime, settleTime = settleTime, createdTime = createdTime)
+                    winAmount = winAmount, mark = mark, originData = originData, betTime = betTime, settleTime = settleTime,
+                    createdTime = createdTime, status = status)
         }
 
     override fun batch(orders: List<BetOrderValue.BetOrderCo>) {

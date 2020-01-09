@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.Bank
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.model.Withdraw
 import com.onepiece.gpgaming.beans.value.database.ClientWithdrawReportVo
@@ -40,10 +41,12 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
             val lockWaiterName = rs.getString("lock_waiter_name")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val endTime = rs.getTimestamp("end_time")?.toLocalDateTime()
+            val status = rs.getString("status").let { Status.valueOf(it) }
+
             Withdraw(id = id, orderId = orderId, processId = processId, clientId = clientId, memberId = memberId,
                     memberBankId = memberBankId, money = money, state = state, remarks = remarks, createdTime = createdTime,
                     endTime = endTime, memberName = memberName, lockWaiterId = lockWaiterId, lockWaiterName = lockWaiterName,
-                    memberBankCardNumber = memberBankCardNumber, memberBank = memberBank, username = username)
+                    memberBankCardNumber = memberBankCardNumber, memberBank = memberBank, username = username, status = status)
         }
 
     override fun findWithdraw(clientId: Int, orderId: String): Withdraw {

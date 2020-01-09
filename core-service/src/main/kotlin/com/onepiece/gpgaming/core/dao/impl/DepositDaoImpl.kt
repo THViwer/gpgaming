@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.core.dao.impl
 import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.DepositChannel
 import com.onepiece.gpgaming.beans.enums.DepositState
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.model.Deposit
 import com.onepiece.gpgaming.beans.value.database.ClientDepositReportVo
@@ -49,12 +50,14 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
             val lockWaiterName = rs.getString("lock_waiter_name")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val endTime = rs.getTimestamp("end_time")?.toLocalDateTime()
+            val status = rs.getString("status").let { Status.valueOf(it) }
+
             Deposit(id = id, orderId = orderId, clientId = clientId, memberId = memberId, memberBank = memberBank, money = money,
                     imgPath = imgPath, state = state, remarks = remarks, createdTime = createdTime, endTime = endTime,
                     memberBankCardNumber = memberBankCardNumber, processId = processId, memberName = memberName, clientBankId = clientBankId,
                     clientBankName = clientBankName, clientBankCardNumber = clientBankCardNumber, lockWaiterId = lockWaiterId,
                     lockWaiterName = lockWaiterName, depositTime = depositTime, channel = channel, username = username, memberBankId = memberBankId,
-                    clientBank = clientBank)
+                    clientBank = clientBank, status = status)
         }
 
     override fun findDeposit(clientId: Int, orderId: String): Deposit {

@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.dao.impl
 
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.enums.WalletEvent
 import com.onepiece.gpgaming.beans.model.WalletNote
 import com.onepiece.gpgaming.beans.value.database.WalletNoteCo
@@ -24,8 +25,10 @@ class WalletNoteDaoImpl : BasicDaoImpl<WalletNote>("wallet_note"), WalletNoteDao
             val promotionMoney = rs.getBigDecimal("promotion_money")
             val remarks = rs.getString("remarks")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val status = rs.getString("status").let { Status.valueOf(it) }
+
             WalletNote(id = id, clientId = clientId, memberId = memberId, event = event, remarks = remarks, createdTime = createdTime,
-                    waiterId = waiterId, eventId = eventId, money = money, promotionMoney = promotionMoney)
+                    waiterId = waiterId, eventId = eventId, money = money, promotionMoney = promotionMoney, status = status)
         }
 
     override fun total(walletNoteQuery: WalletNoteQuery): Int {

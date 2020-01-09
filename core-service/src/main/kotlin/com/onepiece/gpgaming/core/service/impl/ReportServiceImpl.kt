@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.service.impl
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
@@ -45,7 +46,7 @@ class ReportServiceImpl(
             val first = maps.value.first()
             val platform = if (first.from == Platform.Center) first.to else first.from
             MemberPlatformDailyReport(id = -1, clientId = first.clientId, day = startDate, memberId = first.memberId, platform = platform,
-                    transferIn = transferInReport?.money ?: BigDecimal.ZERO, transferOut = transferOutReport?.money ?: BigDecimal.ZERO, createdTime = now)
+                    transferIn = transferInReport?.money ?: BigDecimal.ZERO, transferOut = transferOutReport?.money ?: BigDecimal.ZERO, createdTime = now, status = Status.Normal)
 
         }
 
@@ -97,7 +98,7 @@ class ReportServiceImpl(
             }
             MemberDailyReport(id = -1, day = startDate, clientId = clientId, memberId = it, transferIn = transferInReport?.money ?: BigDecimal.ZERO,
                     transferOut = transferOutReport?.money ?: BigDecimal.ZERO, depositMoney = depositReport?.money ?: BigDecimal.ZERO,
-                    withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO, createdTime = now)
+                    withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO, createdTime = now, status = Status.Normal)
         }
     }
 
@@ -119,7 +120,8 @@ class ReportServiceImpl(
             val platform = if (first.from == Platform.Center) first.to else first.from
             ClientPlatformDailyReport(id = -1, clientId = first.clientId, day = startDate, platform = platform,
                     transferIn = transferInReport?.money ?: BigDecimal.ZERO, transferOut = transferOutReport?.money ?: BigDecimal.ZERO, createdTime = now,
-                    win = BigDecimal.valueOf(-1), bet = BigDecimal.valueOf(-1), promotionAmount = transferOutReport?.promotionAmount ?: BigDecimal.ZERO)
+                    win = BigDecimal.valueOf(-1), bet = BigDecimal.valueOf(-1), promotionAmount = transferOutReport?.promotionAmount ?: BigDecimal.ZERO,
+                    status = Status.Normal)
         }
 
         // 盈利报表
@@ -140,7 +142,8 @@ class ReportServiceImpl(
             when {
                 transferData == null -> {
                     ClientPlatformDailyReport(id = -1, day = startDate, platform = betOrderData!!.platform, bet = betOrderData.totalBet, win = betOrderData.totalWin,
-                            transferIn = BigDecimal.ZERO, transferOut = BigDecimal.ZERO, clientId = betOrderData.clientId, createdTime = now, promotionAmount = BigDecimal.ZERO)
+                            transferIn = BigDecimal.ZERO, transferOut = BigDecimal.ZERO, clientId = betOrderData.clientId, createdTime = now, promotionAmount = BigDecimal.ZERO,
+                            status = Status.Normal)
                 }
                 betOrderData == null -> {
                     when(transferData.platform) {
@@ -206,7 +209,7 @@ class ReportServiceImpl(
                     transferOut = transferOutReport?.money ?: BigDecimal.ZERO, depositMoney = depositReport?.money ?: BigDecimal.ZERO,
                     depositCount = depositReport?.count ?: 0, withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO,
                     withdrawCount = withdrawReport?.count ?: 0, newMemberCount = newMemberCount, createdTime = now,
-                    promotionAmount = promotionAmount)
+                    promotionAmount = promotionAmount, status = Status.Normal)
         }
     }
 }

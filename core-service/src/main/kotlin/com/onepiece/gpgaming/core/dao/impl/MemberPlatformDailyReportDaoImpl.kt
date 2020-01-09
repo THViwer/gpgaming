@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
 import com.onepiece.gpgaming.beans.value.database.ClientPlatformDailyReportVo
 import com.onepiece.gpgaming.beans.value.database.MemberPlatformDailyReportVo
@@ -27,7 +28,9 @@ class MemberPlatformDailyReportDaoImpl : BasicDaoImpl<MemberPlatformDailyReport>
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            MemberPlatformDailyReport(id = id, day = day, clientId = clientId, platform = platform,
+            val status = rs.getString("status").let { Status.valueOf(it) }
+
+            MemberPlatformDailyReport(id = id, day = day, clientId = clientId, platform = platform, status = status,
                     createdTime = createdTime, memberId = memberId, transferIn = transferIn, transferOut = transferOut)
         }
 

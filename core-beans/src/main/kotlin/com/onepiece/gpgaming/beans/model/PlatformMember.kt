@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -63,6 +64,9 @@ data class PlatformMember(
         val requirementTransferOutAmount: BigDecimal,
 
         // 当金额小于时 不需要打码量和转出金额限制
-        val ignoreTransferOutAmount: BigDecimal
+        val ignoreTransferOutAmount: BigDecimal,
+
+        // 状态
+        val status: Status
 
 )

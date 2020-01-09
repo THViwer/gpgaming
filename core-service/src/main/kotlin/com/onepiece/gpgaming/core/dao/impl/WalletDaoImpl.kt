@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.dao.impl
 
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Wallet
 import com.onepiece.gpgaming.beans.value.database.WalletCo
 import com.onepiece.gpgaming.beans.value.database.WalletDepositUo
@@ -35,11 +36,14 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
 
             val processId = rs.getString("process_id")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val status = rs.getString("status").let { Status.valueOf(it) }
+
             Wallet(id = id, clientId = clientId, memberId = memberId, balance = balance, totalDepositBalance = totalDepositBalance,
                     totalDepositFrequency = totalDepositFrequency, createdTime = createdTime,
                     processId = processId, freezeBalance = freezeBalance, totalWithdrawFrequency = totalWithdrawFrequency,
                     totalGiftBalance = totalGiftBalance, totalWithdrawBalance = totalWithdrawBalance,
-                    totalTransferInFrequency = totalTransferInFrequency, totalTransferOutFrequency = totalTransferOutFrequency)
+                    totalTransferInFrequency = totalTransferInFrequency, totalTransferOutFrequency = totalTransferOutFrequency,
+                    status = status)
         }
 
     override fun getMemberWallet(memberId: Int): Wallet {

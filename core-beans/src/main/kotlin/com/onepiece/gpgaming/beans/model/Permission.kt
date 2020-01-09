@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
+import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
 
 /**
@@ -17,7 +18,10 @@ data class Permission(
         val permissions: List<PermissionDetail>,
 
         // 创建时间
-        val createdTime: LocalDateTime
+        val createdTime: LocalDateTime,
+
+        // 状态
+        val status: Status
 )
 
 data class PermissionDetail(

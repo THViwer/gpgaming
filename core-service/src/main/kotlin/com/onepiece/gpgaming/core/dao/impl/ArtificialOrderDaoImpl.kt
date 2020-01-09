@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.Role
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderCo
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderQuery
@@ -24,8 +25,10 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
             val beforeBalance = rs.getBigDecimal("before_balance")
             val remarks = rs.getString("remarks")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val status = rs.getString("status").let { Status.valueOf(it) }
             ArtificialOrder(id = id, clientId = clientId, memberId = memberId, operatorId = operatorId, operatorRole = operatorRole,
-                    balance = balance, beforeBalance = beforeBalance, remarks = remarks, createdTime = createdTime, orderId = orderId)
+                    balance = balance, beforeBalance = beforeBalance, remarks = remarks, createdTime = createdTime, orderId = orderId,
+                    status = status)
         }
 
     override fun query(query: ArtificialOrderQuery): List<ArtificialOrder> {

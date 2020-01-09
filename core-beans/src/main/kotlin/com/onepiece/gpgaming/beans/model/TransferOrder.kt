@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.enums.TransferState
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -44,5 +45,8 @@ data class TransferOrder(
         val createdTime: LocalDateTime,
 
         // 更新日期
-        val updatedTime: LocalDateTime
+        val updatedTime: LocalDateTime,
+
+        // 状态
+        val status: Status
 )

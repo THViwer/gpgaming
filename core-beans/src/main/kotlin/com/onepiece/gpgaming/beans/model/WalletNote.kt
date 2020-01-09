@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.enums.WalletEvent
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -34,5 +35,8 @@ data class WalletNote(
         val remarks: String,
 
         // 创建时间
-        val createdTime: LocalDateTime
+        val createdTime: LocalDateTime,
+
+        // 状态
+        val status: Status
 )
