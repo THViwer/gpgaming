@@ -65,8 +65,10 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
 
     }
 
-    override fun getByUsername(username: String): Member? {
-        return query().where("username", username)
+    override fun getByUsername(clientId: Int, username: String): Member? {
+        return query()
+                .where("client_id", clientId)
+                .where("username", username)
                 .executeMaybeOne(mapper)
     }
 

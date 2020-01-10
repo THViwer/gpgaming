@@ -13,7 +13,7 @@ interface MemberService {
 
     fun findByIds(ids: List<Int>, levelId: Int? = null): List<Member>
 
-    fun findByUsername(username: String?): Member?
+    fun findByUsername(clientId: Int, username: String?): Member?
 
     fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member>
 

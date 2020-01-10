@@ -13,7 +13,7 @@ interface MemberDao: BasicDao<Member> {
 
     fun update(memberUo: MemberUo): Boolean
 
-    fun getByUsername(username: String): Member?
+    fun getByUsername(clientId: Int, username: String): Member?
 
     fun total(query: MemberQuery): Int
 

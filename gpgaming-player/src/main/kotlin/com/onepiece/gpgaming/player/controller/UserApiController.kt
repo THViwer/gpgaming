@@ -36,8 +36,9 @@ class UserApiController(
     @PostMapping
     override fun login(@RequestBody loginReq: LoginReq): LoginResp {
         //TODO 判断域名来选择厅主
+        val clientId = getClientIdByDomain()
 
-        val loginValue = LoginValue(username = loginReq.username, password = loginReq.password, ip = getIpAddress())
+        val loginValue = LoginValue(clientId = clientId, username = loginReq.username, password = loginReq.password, ip = getIpAddress())
         val member = memberService.login(loginValue)
 
         val token = authService.login(loginReq.username)

@@ -39,9 +39,9 @@ class MemberServiceImpl(
         return memberDao.list(query).toList()
     }
 
-    override fun findByUsername(username: String?): Member? {
+    override fun findByUsername(clientId: Int, username: String?): Member? {
         if (username.isNullOrBlank()) return null
-        return memberDao.getByUsername(username)?.copy(password = "", safetyPassword = "")
+        return memberDao.getByUsername(clientId, username)?.copy(password = "", safetyPassword = "")
     }
 
     override fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member> {
@@ -55,7 +55,7 @@ class MemberServiceImpl(
     override fun login(loginValue: LoginValue): Member {
 
         // check username and password
-        val member  = memberDao.getByUsername(loginValue.username)
+        val member  = memberDao.getByUsername(loginValue.clientId, loginValue.username)
         checkNotNull(member) { OnePieceExceptionCode.LOGIN_FAIL}
         check(bCryptPasswordEncoder.matches(loginValue.password, member.password)) { OnePieceExceptionCode.LOGIN_FAIL }
         check(member.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
@@ -76,7 +76,7 @@ class MemberServiceImpl(
     override fun create(memberCo: MemberCo) {
 
         // check username exist
-        val hasMember = memberDao.getByUsername(memberCo.username)
+        val hasMember = memberDao.getByUsername(memberCo.clientId, memberCo.username)
         check(hasMember == null) { OnePieceExceptionCode.USERNAME_EXISTENCE }
 
         // create member
