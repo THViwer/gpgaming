@@ -9,7 +9,7 @@ import java.util.*
 
 interface AuthService {
 
-    fun  login(username: String): String
+    fun  login(clientId: Int, username: String): String
 
     fun refresh(id: Int)
 
@@ -23,13 +23,13 @@ class AuthServiceImpl(
         private val tokenStore: TokenStore
 ) : AuthService {
 
-    override fun login(username: String): String {
+    override fun login(clientId: Int, username: String): String {
         val upToken = UsernamePasswordAuthenticationToken(username, username)
         val authentication = authenticationManager.authenticate(upToken)
         SecurityContextHolder.getContext().authentication = authentication
 
         // Reload password post-security so we can generate token
-        val jwtUser = jwtUserDetailsServiceImpl.loadUserByUsername(username) as JwtUser
+        val jwtUser = jwtUserDetailsServiceImpl.loadUserByUsername("$clientId@$username") as JwtUser
         val token = jwtTokenUtil.generateToken(jwtUser)
 
         tokenStore.storeAccessToken(username = username, token = token, jwtUser = jwtUser)

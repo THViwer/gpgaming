@@ -41,7 +41,7 @@ class UserApiController(
         val loginValue = LoginValue(clientId = clientId, username = loginReq.username, password = loginReq.password, ip = getIpAddress())
         val member = memberService.login(loginValue)
 
-        val token = authService.login(loginReq.username)
+        val token = authService.login(clientId, loginReq.username)
         return LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name)
 
     }
@@ -62,7 +62,8 @@ class UserApiController(
 
     @GetMapping("/check/{username}")
     override fun checkUsername(@PathVariable("username") username: String): CheckUsernameResp {
-        val exist = memberService.findByUsername(username) != null
+        val clientId = getClientIdByDomain()
+        val exist = memberService.findByUsername(clientId, username) != null
         return CheckUsernameResp(exist)
     }
 
