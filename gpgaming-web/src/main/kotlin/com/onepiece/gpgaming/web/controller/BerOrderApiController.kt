@@ -37,9 +37,8 @@ class BerOrderApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
     ): Any {
 
-        val member = memberService.findByUsername(username) ?: return emptyList<String>()
-
         val clientId = getClientId()
+        val member = memberService.findByUsername(clientId, username) ?: return emptyList<String>()
         return when (platform) {
             Platform.Kiss918,
             Platform.Pussy888 -> {

@@ -87,7 +87,7 @@ class LevelApiController(
                         || minTotalWithdrawFrequency == null || maxTotalWithdrawFrequency == null) { OnePieceExceptionCode.QUERY_COUNT_TOO_SMALL}
 
         val memberId = when (username != null) {
-            true -> memberService.findByUsername(username)?.id ?: return emptyList()
+            true -> memberService.findByUsername(clientId, username)?.id ?: return emptyList()
             false -> null
         }
 

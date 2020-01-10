@@ -89,7 +89,7 @@ class ReportApiController(
     ): List<MemberReportWebVo> {
         val clientId = getClientId()
 
-        val memberId = memberService.findByUsername(username)?.id
+        val memberId = memberService.findByUsername(clientId, username)?.id
 
         val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
         val history = memberDailyReportService.query(query)

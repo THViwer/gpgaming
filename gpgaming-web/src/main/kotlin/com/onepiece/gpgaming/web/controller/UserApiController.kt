@@ -34,7 +34,8 @@ class UserApiController(
 
     @PostMapping
     override fun login(@RequestBody loginReq: LoginReq): LoginResp {
-        val loginValue = LoginValue(username = loginReq.username, password = loginReq.password, ip = getIpAddress())
+        val clientId = getClientId()
+        val loginValue = LoginValue(clientId = clientId, username = loginReq.username, password = loginReq.password, ip = getIpAddress())
 
         log.info("admin login, username = ${loginReq.username}, password = ${loginReq.password}")
         return try {

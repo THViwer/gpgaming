@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.web.controller.basic
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.core.service.PlatformBindService
+import com.onepiece.gpgaming.core.service.WebSiteService
 import com.onepiece.gpgaming.games.value.ClientAuthVo
 import com.onepiece.gpgaming.web.jwt.JwtUser
 import org.slf4j.LoggerFactory
@@ -19,6 +20,9 @@ abstract class BasicController {
     @Autowired
     lateinit var platformBindService: PlatformBindService
 
+    @Autowired
+    lateinit var webSiteService: WebSiteService
+
 //    val id = 1
 //
 //    val clientId = 1
@@ -31,6 +35,12 @@ abstract class BasicController {
 //    val role = Role.Waiter
 //
 //    val name = "zhangdan"
+
+    fun getClientIdByDomain(): Int {
+        val request = this.getRequest()
+        val url = request.requestURL.toString()
+        return webSiteService.match(url)
+    }
 
     fun current(): JwtUser {
         try {
