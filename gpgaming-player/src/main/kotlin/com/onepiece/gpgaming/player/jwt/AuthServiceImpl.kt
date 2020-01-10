@@ -24,12 +24,12 @@ class AuthServiceImpl(
 ) : AuthService {
 
     override fun login(clientId: Int, username: String): String {
-        val upToken = UsernamePasswordAuthenticationToken(username, username)
+        val upToken = UsernamePasswordAuthenticationToken("${clientId}@${username}", "123456")
         val authentication = authenticationManager.authenticate(upToken)
         SecurityContextHolder.getContext().authentication = authentication
 
         // Reload password post-security so we can generate token
-        val jwtUser = jwtUserDetailsServiceImpl.loadUserByUsername("$clientId@$username") as JwtUser
+        val jwtUser = authentication.principal as JwtUser
         val token = jwtTokenUtil.generateToken(jwtUser)
 
         tokenStore.storeAccessToken(username = username, token = token, jwtUser = jwtUser)

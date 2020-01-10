@@ -20,9 +20,9 @@ class JwtUserDetailsServiceImpl(
 //        val user = userDao.getByUsername(username)!!
 
         val (clientId, platformUsername) = username.split("@")
-        val member = memberDao.getByUsername(clientId.toInt(), username)!!
+        val member = memberDao.getByUsername(clientId.toInt(), platformUsername)!!
 
-        return JwtUser(clientId = member.clientId, id = member.id, musername = username, mpassword = passwordEncoder.encode(username),
+        return JwtUser(clientId = member.clientId, id = member.id, musername = username, mpassword = passwordEncoder.encode("123456"),
                 lastPasswordResetDate = Date(), name = member.name)
     }
 }
