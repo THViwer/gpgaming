@@ -87,6 +87,7 @@ object AwsS3Util {
     }
 
     fun uploadLocalFile(file: File, name: String, profile: String = "dev"): String {
+        val bucktName = if (profile == "dev" || profile == "sit") "awspg1" else "awspg2"
 
         val putObjectRequest = PutObjectRequest(bucktName, name, file)
         putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead
