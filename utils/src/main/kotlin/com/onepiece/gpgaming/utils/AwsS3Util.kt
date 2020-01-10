@@ -86,7 +86,7 @@ object AwsS3Util {
         return "$clientBasePath/$bucktName/$randomFileName"
     }
 
-    fun uploadLocalFile(file: File, name: String): String {
+    fun uploadLocalFile(file: File, name: String, profile: String = "dev"): String {
 
         val putObjectRequest = PutObjectRequest(bucktName, name, file)
         putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead

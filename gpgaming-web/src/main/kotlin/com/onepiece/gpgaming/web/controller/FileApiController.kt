@@ -1,7 +1,7 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.FileCategory
-import com.onepiece.gpgaming.games.ActiveConfig
+import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.utils.AwsS3Util
 import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.springframework.web.bind.annotation.PostMapping

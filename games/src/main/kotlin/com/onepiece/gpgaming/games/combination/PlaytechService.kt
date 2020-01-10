@@ -5,7 +5,7 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.PlatformUsernameUtil
-import com.onepiece.gpgaming.games.ActiveConfig
+import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.utils.StringUtil

@@ -29,7 +29,8 @@ class IndexUtil(
         private val recommendedService: RecommendedService,
         private val bannerService: BannerService,
         private val objectMapper: ObjectMapper,
-        private val gamePlatformService: GamePlatformService
+        private val gamePlatformService: GamePlatformService,
+        private val activeConfig: ActiveConfig
 ) {
 
     @Autowired
@@ -138,7 +139,7 @@ class IndexUtil(
             val userHome = System.getProperty("user.home")
             val file = File("$userHome/${UUID.randomUUID()}.json")
             file.writeBytes(json.toByteArray())
-            AwsS3Util.uploadLocalFile(file, "client/${client.id}/index_${language.name.toLowerCase()}.json")
+            AwsS3Util.uploadLocalFile(file, "client/${client.id}/index_${language.name.toLowerCase()}.json", profile = activeConfig.profile)
             file.delete()
         }
     }

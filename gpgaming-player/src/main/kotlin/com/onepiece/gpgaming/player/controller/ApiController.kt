@@ -9,7 +9,6 @@ import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
-import com.onepiece.gpgaming.beans.enums.PromotionCategory
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
@@ -22,7 +21,7 @@ import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
-import com.onepiece.gpgaming.games.ActiveConfig
+import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.BannerVo
@@ -30,7 +29,6 @@ import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.DownloadAppVo
 import com.onepiece.gpgaming.player.controller.value.IndexConfig
 import com.onepiece.gpgaming.player.controller.value.PlatformCategoryDetail
-import com.onepiece.gpgaming.player.controller.value.PlatformCategoryPage
 import com.onepiece.gpgaming.player.controller.value.PlatformMembrerDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformVo
 import com.onepiece.gpgaming.player.controller.value.PromotionVo
