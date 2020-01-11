@@ -158,8 +158,14 @@ data class PlatformVo(
         @ApiModelProperty("图标")
         val icon: String,
 
-        @ApiModelProperty("图标")
-        val touchIcon: String,
+        @ApiModelProperty("原始图标")
+        val originIcon: String,
+
+        @ApiModelProperty("原始图标移动上去图杯")
+        val originIconOver: String,
+
+        @ApiModelProperty("类目下面详细图杯")
+        val categoryDetailIcon: String? = "-",
 
         @ApiModelProperty("平台维护图标")
         val disableIcon: String?,

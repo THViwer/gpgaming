@@ -91,7 +91,9 @@ open class ApiController(
             val disableIcon = if (launch == LaunchMethod.Wap) gamePlatform.mobileDisableIcon else gamePlatform.disableIcon
 
             PlatformVo(id = it.id, name = gamePlatform.name, category = it.platform.category, status = status, icon = icon,
-                    launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo, disableIcon = disableIcon, touchIcon = "-")
+                    launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo, disableIcon = disableIcon, originIcon = gamePlatform.originIcon,
+                    originIconOver = gamePlatform.originIconOver, categoryDetailIcon = gamePlatform.icon)
+            //TODO 设置图标
         }.filter { it.status != Status.Delete }
     }
 
@@ -353,9 +355,12 @@ open class ApiController(
                 .filter { it.platform.category == category }
                 .map {
                     val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
+
                     PlatformVo(id = it.id, platform = it.platform, name = gamePlatform.name, category = it.platform.category,
-                            status = gamePlatform.status, icon = gamePlatform.originIcon, launchs = gamePlatform.launchList,
-                            demo = gamePlatform.demo, disableIcon = gamePlatform.disableIcon, touchIcon = gamePlatform.originIconOver)
+                            status = gamePlatform.status, icon = gamePlatform.icon, launchs = gamePlatform.launchList,
+                            demo = gamePlatform.demo, disableIcon = gamePlatform.disableIcon, originIconOver = gamePlatform.originIconOver,
+                            originIcon = gamePlatform.originIcon, categoryDetailIcon = gamePlatform.icon)
+                    //TODO 配置图标
                 }
 
         val type = when (category) {
@@ -372,7 +377,7 @@ open class ApiController(
                 .map { "${it.configId}:${it.language}" to it }
                 .toMap()
 
-        val banners = bannerService.findByType(clientId = getClientIdByDomain(), type = type).mapNotNull {
+        val banners = bannerService.findByType(clientId = clientId, type = type).mapNotNull {
             val i18nContent = map["${it.id}:${language}"]
                     ?: map["${it.id}:${Language.EN}"]
             if (i18nContent == null) {
