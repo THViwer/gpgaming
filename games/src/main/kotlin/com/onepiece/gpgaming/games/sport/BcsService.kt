@@ -62,7 +62,7 @@ class BcsService : PlatformService() {
                 "APIPassword" to token.key,
                 "MemberAccount" to registerReq.username,
                 "NickName" to registerReq.name,
-                "Currency" to "${token.currency}"
+                "Currency" to token.currency
         )
 
 
