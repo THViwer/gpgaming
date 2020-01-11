@@ -91,7 +91,7 @@ open class ApiController(
             val disableIcon = if (launch == LaunchMethod.Wap) gamePlatform.mobileDisableIcon else gamePlatform.disableIcon
 
             PlatformVo(id = it.id, name = gamePlatform.name, category = it.platform.category, status = status, icon = icon,
-                    launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo, disableIcon = disableIcon)
+                    launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo, disableIcon = disableIcon, touchIcon = "-")
         }.filter { it.status != Status.Delete }
     }
 
@@ -354,8 +354,8 @@ open class ApiController(
                 .map {
                     val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
                     PlatformVo(id = it.id, platform = it.platform, name = gamePlatform.name, category = it.platform.category,
-                            status = gamePlatform.status, icon = gamePlatform.icon, launchs = gamePlatform.launchList,
-                            demo = gamePlatform.demo, disableIcon = gamePlatform.disableIcon)
+                            status = gamePlatform.status, icon = gamePlatform.originIcon, launchs = gamePlatform.launchList,
+                            demo = gamePlatform.demo, disableIcon = gamePlatform.disableIcon, touchIcon = gamePlatform.originIconOver)
                 }
 
         val type = when (category) {
