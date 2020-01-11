@@ -110,7 +110,7 @@ open class ApiController(
         val promotions = arrayListOf<Promotion>()
 
         allPromotion.forEach { promotion ->
-            // 添加默认
+            // 添加默认优惠
             promotions.add(promotion)
             // 添加平台
             promotion.platforms.map { it.category }.toSet().map {
