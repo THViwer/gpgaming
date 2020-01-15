@@ -32,6 +32,12 @@ sealed class GamePlatformValue {
             // 原始鼠标移上去图标
             val originIconOver: String,
 
+            // 平台详细图标
+            val platformDetailIcon: String?,
+
+            // 平台详情鼠标移动图片
+            val platformDetailIconOver: String?,
+
             // 是否有试玩
             val demo: Boolean = false,
 
@@ -70,6 +76,12 @@ sealed class GamePlatformValue {
 
             // 原始鼠标移上去图标
             val originIconOver: String,
+
+            // 平台详细图标
+            val platformDetailIcon: String?,
+
+            // 平台详情鼠标移动图片
+            val platformDetailIconOver: String?,
 
             // 是否有试玩
             val demo: Boolean = false,

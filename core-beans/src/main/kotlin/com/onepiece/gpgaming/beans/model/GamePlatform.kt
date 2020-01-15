@@ -31,6 +31,12 @@ data class GamePlatform(
         // 手机平台维护图标
         val mobileDisableIcon: String?,
 
+        // 平台详细图标
+        val platformDetailIcon: String?,
+
+        // 平台详情鼠标移动图片
+        val platformDetailIconOver: String?,
+
         // 是否有试玩
         val demo: Boolean = false,
 

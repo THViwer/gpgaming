@@ -27,9 +27,12 @@ class GamePlatformDaoImpl : BasicDaoImpl<GamePlatform>("game_platform"), GamePla
             val demo = rs.getBoolean("demo")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val launchs = rs.getString("launchs")
+            val platformDetailIcon = rs.getString("platform_detail_icon")
+            val platformDetailIconOver = rs.getString("platform_detail_icon_over")
             GamePlatform(id = id, platform = platform, name = name, icon = icon, disableIcon = disableIcon,
                     originIcon = originIcon, originIconOver = originIconOver, demo = demo, status = status, launchs = launchs,
-                    mobileIcon = mobileIcon, mobileDisableIcon = mobileDisableIcon)
+                    mobileIcon = mobileIcon, mobileDisableIcon = mobileDisableIcon, platformDetailIcon = platformDetailIcon,
+                    platformDetailIconOver = platformDetailIconOver)
         }
 
     override fun create(co: GamePlatformValue.GamePlatformCo): Boolean {
@@ -45,6 +48,8 @@ class GamePlatformDaoImpl : BasicDaoImpl<GamePlatform>("game_platform"), GamePla
                 .set("demo", co.demo)
                 .set("status", co.status)
                 .set("launchs", co.launchs)
+                .set("platform_detail_icon", co.platformDetailIcon)
+                .set("platform_detail_icon_over", co.platformDetailIconOver)
                 .executeOnlyOne()
     }
 
@@ -58,6 +63,8 @@ class GamePlatformDaoImpl : BasicDaoImpl<GamePlatform>("game_platform"), GamePla
                 .set("mobile_disable_icon", uo.mobileDisableIcon)
                 .set("origin_icon", uo.originIcon)
                 .set("origin_icon_over", uo.originIconOver)
+                .set("platform_detail_icon", uo.platformDetailIcon)
+                .set("platform_detail_icon_over", uo.platformDetailIconOver)
                 .set("demo", uo.demo)
                 .set("status", uo.status)
                 .set("launchs", uo.launchs)
