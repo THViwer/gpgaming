@@ -170,6 +170,12 @@ data class PlatformVo(
         @ApiModelProperty("平台维护图标")
         val disableIcon: String?,
 
+        // 平台详细图标
+        val platformDetailIcon: String?,
+
+        // 平台详情鼠标移动图片
+        val platformDetailIconOver: String?,
+
         @ApiModelProperty("类目")
         val category: PlatformCategory,
 

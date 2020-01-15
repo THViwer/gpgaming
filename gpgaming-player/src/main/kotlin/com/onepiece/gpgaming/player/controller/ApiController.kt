@@ -92,7 +92,8 @@ open class ApiController(
 
             PlatformVo(id = it.id, name = gamePlatform.name, category = it.platform.category, status = status, icon = icon,
                     launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo, disableIcon = disableIcon, originIcon = gamePlatform.originIcon,
-                    originIconOver = gamePlatform.originIconOver, categoryDetailIcon = gamePlatform.icon)
+                    originIconOver = gamePlatform.originIconOver, categoryDetailIcon = gamePlatform.icon, platformDetailIcon = gamePlatform.platformDetailIcon,
+                    platformDetailIconOver = gamePlatform.platformDetailIconOver)
             //TODO 设置图标
         }.filter { it.status != Status.Delete }
     }
@@ -359,7 +360,8 @@ open class ApiController(
                     PlatformVo(id = it.id, platform = it.platform, name = gamePlatform.name, category = it.platform.category,
                             status = gamePlatform.status, icon = gamePlatform.icon, launchs = gamePlatform.launchList,
                             demo = gamePlatform.demo, disableIcon = gamePlatform.disableIcon, originIconOver = gamePlatform.originIconOver,
-                            originIcon = gamePlatform.originIcon, categoryDetailIcon = gamePlatform.icon)
+                            originIcon = gamePlatform.originIcon, categoryDetailIcon = gamePlatform.icon, platformDetailIcon = gamePlatform.platformDetailIcon,
+                            platformDetailIconOver = gamePlatform.platformDetailIconOver)
                     //TODO 配置图标
                 }
 
