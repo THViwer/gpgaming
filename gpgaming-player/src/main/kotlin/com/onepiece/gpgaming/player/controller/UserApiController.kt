@@ -53,7 +53,7 @@ class UserApiController(
         val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
 
         val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
-                levelId = defaultLevel.id, name = registerReq.name, phone = registerReq.phone)
+                levelId = defaultLevel.id, name = registerReq.name, phone = registerReq.phone, promoteSource = registerReq.promoteSource)
         memberService.create(memberCo)
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)

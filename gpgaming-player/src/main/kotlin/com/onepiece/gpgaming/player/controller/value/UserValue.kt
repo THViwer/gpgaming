@@ -51,7 +51,10 @@ data class RegisterReq(
         val phone: String,
 
         @ApiModelProperty("安全密码")
-        val safetyPassword: String = "1234"
+        val safetyPassword: String = "1234",
+
+        @ApiModelProperty("推广码")
+        val promoteSource: String?
 )
 
 data class ChangePwdReq(

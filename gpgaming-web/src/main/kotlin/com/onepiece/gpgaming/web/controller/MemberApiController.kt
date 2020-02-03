@@ -51,13 +51,14 @@ class MemberApiController(
             @RequestParam(value = "username", required = false) username: String?,
             @RequestParam(value = "levelId", required = false) levelId: Int?,
             @RequestParam(value = "status", required = false) status: Status?,
+            @RequestParam(value = "promoteSource", required = false) promoteSource: String?,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): MemberPage {
         val clientId = getClientId()
 
         val query = MemberQuery(clientId = clientId, startTime = null, endTime = null, username = username,
-                levelId = levelId, status = status)
+                levelId = levelId, status = status, promoteCode = promoteSource)
         val page = memberService.query(query, current, size)
         if (page.total == 0) return MemberPage(total = 0, data = emptyList())
 
@@ -127,7 +128,7 @@ class MemberApiController(
         val clientId = getClientId()
         check(memberCoReq.levelId > 0) { OnePieceExceptionCode.DATA_FAIL }
 
-        val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password,
+        val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password, promoteSource = memberCoReq.promoteSource,
                 safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId, name = memberCoReq.name, phone = memberCoReq.phone)
         memberService.create(memberCo)
     }

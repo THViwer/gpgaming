@@ -32,6 +32,7 @@ data class Member(
 
         // 是否已有首充值
         val firstPromotion: Boolean,
+
         // 状态
         val status: Status,
 
@@ -40,6 +41,9 @@ data class Member(
 
         // 登陆Ip
         val loginIp: String?,
+
+        // 推广来源
+        val promoteSource: String?,
 
         // 登陆时间
         val loginTime: LocalDateTime?

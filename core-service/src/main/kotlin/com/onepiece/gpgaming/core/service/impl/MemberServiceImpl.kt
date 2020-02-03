@@ -35,7 +35,8 @@ class MemberServiceImpl(
     }
 
     override fun findByIds(ids: List<Int>, levelId: Int?): List<Member> {
-        val query = MemberQuery(ids = ids, clientId = null, startTime = null, endTime = null, status = null, levelId = levelId, username = null)
+        val query = MemberQuery(ids = ids, clientId = null, startTime = null, endTime = null, status = null, levelId = levelId,
+                username = null, promoteCode = null)
         return memberDao.list(query).toList()
     }
 

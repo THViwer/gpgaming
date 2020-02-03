@@ -99,8 +99,6 @@ data class MemberWalletInfo(
                 // 总优惠金额
                 val totalPromotionAmount: BigDecimal
         )
-
-
 }
 
 data class MemberUoReq(
@@ -139,6 +137,9 @@ data class MemberCoReq(
         val safetyPassword: String,
 
         @ApiModelProperty("层级")
-        val levelId: Int
+        val levelId: Int,
+
+        @ApiModelProperty("推广码")
+        val promoteSource: String?
 
 )

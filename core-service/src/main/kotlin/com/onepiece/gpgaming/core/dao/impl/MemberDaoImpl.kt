@@ -29,10 +29,12 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val loginIp = rs.getString("login_ip")
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
+            val promoteSource = rs.getString("promote_source")
 
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
-                    safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion)
+                    safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion,
+                    promoteSource = promoteSource)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -46,6 +48,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("safety_password", memberCo.safetyPassword)
                 .set("level_id", memberCo.levelId)
                 .set("status", Status.Normal)
+                .set("promote_source", memberCo.promoteSource)
                 .executeGeneratedKey()
     }
 
@@ -91,6 +94,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .where("level_id", query.levelId)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
+                .where("promote_code", query.promoteCode)
                 .sort("id desc")
                 .limit(current, size)
                 .execute(mapper)

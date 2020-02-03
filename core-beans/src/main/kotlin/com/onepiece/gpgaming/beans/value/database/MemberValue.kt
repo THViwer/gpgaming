@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.beans.value.database
 
 import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
+import java.util.*
 
 data class MemberQuery(
         val clientId: Int?,
@@ -13,6 +14,8 @@ data class MemberQuery(
         val levelId: Int?,
 
         val ids: List<Int>? = null,
+
+        val promoteCode: String?,
 
         val startTime: LocalDateTime?,
 
@@ -40,7 +43,10 @@ data class MemberCo(
         val safetyPassword: String,
 
         // 等级Id
-        val levelId: Int
+        val levelId: Int,
+
+        // 推广来源
+        val promoteSource: String?
 )
 
 data class MemberUo(
