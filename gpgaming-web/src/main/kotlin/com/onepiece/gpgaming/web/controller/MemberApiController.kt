@@ -72,7 +72,7 @@ class MemberApiController(
             with(it) {
                 MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name ?: "error level",
                         balance = memberMap[it.id]?.balance ?: BigDecimal.valueOf(-1), status = it.status, createdTime = createdTime,
-                        loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone)
+                        loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteSource = it.promoteSource)
             }
         }
 

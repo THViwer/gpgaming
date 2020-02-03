@@ -22,6 +22,9 @@ data class MemberVo(
         @ApiModelProperty("id")
         val id: Int,
 
+        @ApiModelProperty("推广码")
+        val promoteSource: String?,
+
         @ApiModelProperty("用户名")
         val username: String,
 
