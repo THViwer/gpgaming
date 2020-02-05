@@ -24,7 +24,7 @@ class PlatformMemberServiceImpl(
     private val log = LoggerFactory.getLogger(PlatformMemberServiceImpl::class.java)
 
     override fun get(id: Int): PlatformMember {
-        log.info("platformMember = ", "id = $id")
+        log.info("platformMember, id = $id")
         return platformMemberDao.get(id)
     }
 
