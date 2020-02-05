@@ -11,6 +11,7 @@ import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.PlatformMemberDao
 import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.utils.RedisService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
@@ -20,7 +21,10 @@ class PlatformMemberServiceImpl(
         private val redisService: RedisService
 ) : PlatformMemberService {
 
+    private val log = LoggerFactory.getLogger(PlatformMemberServiceImpl::class.java)
+
     override fun get(id: Int): PlatformMember {
+        log.info("platformMember = ", "id = $id")
         return platformMemberDao.get(id)
     }
 
