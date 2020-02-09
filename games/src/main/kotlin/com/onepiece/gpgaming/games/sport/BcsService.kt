@@ -98,8 +98,9 @@ class BcsService : PlatformService() {
         val transferType = if (transferReq.amount.toDouble() > 0) 0 else 1
 
         // :MD5(APIPassword+MemberAccount+Amount)
-        val sign = DigestUtils.md5Hex("${token.key}${transferReq.username}${transferReq.amount.abs().setScale(4,2)}")
-        log.info("签名key=${"${token.key}${transferReq.username}${transferReq.amount.abs().setScale(4,2)}"}")
+        val signKey = "${token.key}${transferReq.username}${transferReq.amount.abs().setScale(4,2)}".toLowerCase()
+        val sign = DigestUtils.md5Hex(signKey)
+        log.info("签名key=$signKey")
         val signLast6 = sign.substring(sign.length - 6, sign.length)
         log.info("最终签名：$signLast6")
 
