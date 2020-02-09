@@ -234,7 +234,7 @@ open class CashApiController(
         val depositCo = DepositCo(orderId = orderId, memberId = current.id, memberName = current.name, memberBankCardNumber = depositCoReq.memberBankCardNumber,
                 memberBank = depositCoReq.memberBank, clientId = current.clientId, clientBankId = clientBank.id, clientBankName = clientBank.name,
                 clientBankCardNumber = clientBank.bankCardNumber, money = depositCoReq.money, imgPath = depositCoReq.imgPath, depositTime = depositCoReq.depositTime,
-                channel = depositCoReq.channel, memberBankId = memberBankId, username = current.username, clientBank = clientBank.bank)
+                channel = depositCoReq.channel, memberBankId = memberBankId, username = currentUsername(), clientBank = clientBank.bank)
         depositService.create(depositCo)
 
         return CashDepositResp(orderId = orderId)
@@ -308,7 +308,7 @@ open class CashApiController(
         val orderId = orderIdBuilder.generatorWithdrawOrderId()
         val withdrawCo = WithdrawCo(orderId = orderId, clientId = clientId, memberId = memberId,
                 memberBank = memberBank.bank, memberBankCardNumber = memberBank.bankCardNumber, memberBankId = memberBank.id,
-                money = withdrawCoReq.money, remarks = null, username = current.username)
+                money = withdrawCoReq.money, remarks = null, username = currentUsername())
         withdrawService.create(withdrawCo)
 
         return CashWithdrawResp(orderId = orderId)
@@ -384,21 +384,21 @@ open class CashApiController(
         if (cashTransferReq.from != Platform.Center) {
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.from, member = current)
             val toCenterTransferReq = cashTransferReq.copy(to = Platform.Center)
-            transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toCenterTransferReq, username = current.username)
+            transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toCenterTransferReq, username = currentUsername())
 
         }
 
         if (cashTransferReq.to != Platform.Center) {
             val toPlatformTransferReq = cashTransferReq.copy(from = Platform.Center)
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.to, member = current)
-            transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = current.username)
+            transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = currentUsername())
         }
     }
 
     @PutMapping("/transfer/in/all")
     override fun transferToCenter(): List<BalanceAllInVo> {
         val current = this.current()
-        return transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = null, username = current.username)
+        return transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = null, username = currentUsername())
     }
 
 
