@@ -48,7 +48,10 @@ class Kiss918Service : PlatformService() {
         val requestUrl = "$url?$param&sign=${sign}&time=$time&authcode=${clientToken.autoCode}"
 
         val result = okHttpUtil.doGet(url = requestUrl, clz = Kiss918Value.Result::class.java)
-        check(result.success) {  OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.success) {
+            log.error("kiss918 接口error: $result")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
         return result.mapUtil
     }
 
@@ -143,7 +146,7 @@ class Kiss918Service : PlatformService() {
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         // TODO 暂时不实现
-        return GameValue.TransferResp.successful()
+        return GameValue.TransferResp.failed()
     }
 
     override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
