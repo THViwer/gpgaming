@@ -142,7 +142,7 @@ class BcsService : PlatformService() {
 
         val webType = when (startReq.launch) {
             LaunchMethod.Web -> "PC"
-            LaunchMethod.Wap -> "Wap"
+            LaunchMethod.Wap -> "Smart"
             else -> "Smart"
         }
 
@@ -174,7 +174,7 @@ class BcsService : PlatformService() {
     override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {
         val webType = when (launch) {
             LaunchMethod.Web -> "PC"
-            LaunchMethod.Wap -> "Wap"
+            LaunchMethod.Wap -> "Smart"
             else -> "Smart"
         }
 
