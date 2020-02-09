@@ -13,6 +13,7 @@ import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.DEFAULT_DATETIMEFORMATTER
 import com.onepiece.gpgaming.games.bet.MapUtil
 import org.apache.commons.codec.digest.DigestUtils
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
@@ -41,6 +42,8 @@ import java.math.BigDecimal
 @Service
 class BcsService : PlatformService() {
 
+    private val log = LoggerFactory.getLogger(BcsService::class.java)
+
 
     override fun getRequestUrl(path: String, data: Map<String, Any>): String {
         val urlParam = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
@@ -49,7 +52,11 @@ class BcsService : PlatformService() {
 
     fun startDoGetXml(url: String): MapUtil {
         val result = okHttpUtil.doGetXml(url = url, clz = BcsValue.Result::class.java)
-        check(result.errorCode == "000000") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.errorCode == "000000") {
+            log.error("amzbet sport platform error", url)
+            log.error("amzbet sport platform error", result.errorCode)
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
 
         return MapUtil.instance(result.data)
 
