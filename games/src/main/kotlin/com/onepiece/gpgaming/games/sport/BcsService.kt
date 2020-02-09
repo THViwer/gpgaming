@@ -99,7 +99,9 @@ class BcsService : PlatformService() {
 
         // :MD5(APIPassword+MemberAccount+Amount)
         val sign = DigestUtils.md5Hex("${token.key}${transferReq.username}${transferReq.amount.abs().setScale(4,2)}")
+        log.info("签名key=${"${token.key}${transferReq.username}${transferReq.amount.abs().setScale(4,2)}"}")
         val signLast6 = sign.substring(sign.length - 6, sign.length)
+        log.info("最终签名：$signLast6")
 
         val param = mapOf(
                 "APIPassword" to token.key,
