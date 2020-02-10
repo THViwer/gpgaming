@@ -16,12 +16,19 @@ import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
+
+fun main() {
+    val m = hashMapOf("1" to 1)
+    println(m)
+}
 @Service
 class SexyGamingService: PlatformService() {
 
     private val log = LoggerFactory.getLogger(SexyGamingService::class.java)
 
     fun startGetJson(method: String, data: Map<String, String>): MapUtil {
+
+        log.info("sexyGaming 请求数据：$data")
 
         val url = "${gameConstant.getDomain(Platform.SexyGaming)}$method"
 
@@ -94,6 +101,7 @@ class SexyGamingService: PlatformService() {
                         "userId" to transferReq.username,
                         "agentId" to clientToken.agentId,
                         "txCode" to transferReq.orderId,
+                        "withdrawType" to "0",
                         "transferAmt" to "${transferReq.amount.abs()}"
                 )
                 this.startGetJson(method = "/wallet/withdraw", data = data)
