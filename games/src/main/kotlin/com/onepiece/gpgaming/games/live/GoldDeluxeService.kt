@@ -42,7 +42,10 @@ class GoldDeluxeService: PlatformService() {
     private fun startDoPostXml(data: String): Map<String, Any> {
         val url = "${gameConstant.getDomain(Platform.GoldDeluxe)}/MerchantAPI/ewallet.php"
         val result = okHttpUtil.doPostXml(url = url, data = data, clz = GoldDeluxeValue.Result::class.java)
-        check(result.header.errorCode == "0") { OnePieceExceptionCode.PLATFORM_METHOD_FAIL}
+        check(result.header.errorCode == "0") {
+            log.error("goldDeluxe network error: codeId = ${result.header.errorCode}")
+            OnePieceExceptionCode.PLATFORM_METHOD_FAIL
+        }
         return result.param.data
     }
 
