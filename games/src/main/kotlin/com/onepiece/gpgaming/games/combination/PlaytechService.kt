@@ -9,6 +9,7 @@ import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.utils.StringUtil
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
@@ -19,6 +20,7 @@ class PlaytechService(
 ) : PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    private val log = LoggerFactory.getLogger(PlaytechService::class.java)
 
     fun startPostJson(clientToken: PlaytechClientToken, path: String, data: String): PlaytechValue.Result {
         val url = "${gameConstant.getDomain(Platform.PlaytechSlot)}${path}"
@@ -106,7 +108,10 @@ class PlaytechService(
                 this.startPostJson(clientToken = clientToken, path = "/backoffice/transfer/player/withdraw", data = data)
             }
         }
-        check(result.code == 200) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.code == 200) {
+            log.error("playtech transfer error: ${result.code}, ${result.message}")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
 
         val platformOrderId = result.mapUtil.asMap("data").asString("reference_no")
         return GameValue.TransferResp.successful(platformOrderId = platformOrderId)

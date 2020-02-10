@@ -9,6 +9,7 @@ import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.BetOrderUtil
 import com.onepiece.gpgaming.games.bet.MapUtil
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.net.URLEncoder
@@ -19,6 +20,7 @@ import java.time.format.DateTimeFormatter
 class GGFishingService : PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss.SSS")
+    private val log = LoggerFactory.getLogger(GGFishingService::class.java)
 
     fun startDoGet(clientToken: GGFishingClientToken, path: String, data: Map<String, Any>): MapUtil {
 
@@ -27,7 +29,10 @@ class GGFishingService : PlatformService() {
         val param = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
         val result = okHttpUtil.doGet(url = "$url?${param}", clz = GGFishingValue.Result::class.java)
 
-        check(result.status == 1 || result.status == 1003) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.status == 1 || result.status == 1003) {
+            log.error("ggFishing network error: ${result.status}")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
         return result.mapUtil
     }
 

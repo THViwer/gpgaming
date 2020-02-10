@@ -13,6 +13,7 @@ import com.onepiece.gpgaming.games.bet.DesECBUtil
 import com.onepiece.gpgaming.games.bet.MapUtil
 import com.onepiece.gpgaming.utils.StringUtil
 import org.apache.commons.codec.digest.DigestUtils
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.net.URLEncoder
@@ -23,6 +24,7 @@ class AsiaGamingService : PlatformService() {
 
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
+    private val log = LoggerFactory.getLogger(AsiaGamingService::class.java)
 
     fun startGetXml(data: List<String>, clientToken: AsiaGamingClientToken): AsiaGamingValue.Result {
 
@@ -54,8 +56,10 @@ class AsiaGamingService : PlatformService() {
         )
 
         val result = this.startGetXml(data = data, clientToken = clientToken)
-        check(result.info == "0") { result.msg }
-
+        check(result.info == "0") {
+            log.error("asiaGaming register error: ${result.info}, ${result.msg}")
+            result.msg
+        }
 
         return registerReq.username
     }
@@ -77,6 +81,7 @@ class AsiaGamingService : PlatformService() {
         return try {
             result.info.toBigDecimal()
         } catch (e: Exception) {
+            log.info("asiaGaming get balance error: ${result.info}, ${result.msg}")
             error(result.msg)
         }
     }
@@ -119,7 +124,10 @@ class AsiaGamingService : PlatformService() {
                 "cur=${clientToken.currency}"
         )
         val result = this.startGetXml(data = data, clientToken = clientToken)
-        check(result.info == "0") { result.msg }
+        check(result.info == "0") {
+            log.info("asiaGaming transfer error: ${result.info}, ${result.msg}")
+            result.msg
+        }
 
         return GameValue.TransferResp.successful(platformOrderId = transferReq.orderId)
     }
@@ -136,7 +144,10 @@ class AsiaGamingService : PlatformService() {
                 "cur=${clientToken.currency}"
         )
         val result = this.startGetXml(data = data, clientToken = clientToken)
-        check(result.info == "0") { result.msg }
+        check(result.info == "0") {
+            log.info("asiaGaming check transfer error: ${result.info}, ${result.msg}")
+            result.msg
+        }
 
         return GameValue.TransferResp.successful(platformOrderId = checkTransferReq.orderId)
     }

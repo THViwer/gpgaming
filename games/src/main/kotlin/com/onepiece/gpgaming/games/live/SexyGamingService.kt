@@ -11,12 +11,15 @@ import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
 import okhttp3.FormBody
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Service
 class SexyGamingService: PlatformService() {
+
+    private val log = LoggerFactory.getLogger(SexyGamingService::class.java)
 
     fun startGetJson(method: String, data: Map<String, String>): MapUtil {
 
@@ -28,7 +31,10 @@ class SexyGamingService: PlatformService() {
         }
 
         val result = okHttpUtil.doPostForm(url = url, body = body.build(), clz = SexyGamingValue.Result::class.java)
-        check(result.status == "0000" || result.status == "1" ) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.status == "0000" || result.status == "1" ) {
+            log.error("sexyGaming network error: status = ${result.status}, desc = ${result.desc}")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
 
         return result.mapUtil
     }

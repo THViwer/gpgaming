@@ -11,6 +11,7 @@ import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.BetOrderUtil
 import com.onepiece.gpgaming.games.bet.MapUtil
 import org.apache.commons.codec.digest.DigestUtils
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
@@ -20,13 +21,17 @@ import java.util.*
 class DreamGamingService : PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    private val log = LoggerFactory.getLogger(DreamGamingService::class.java)
 
     fun doStartPostJson(method: String, data: String): MapUtil {
 
         val url = "${gameConstant.getDomain(Platform.DreamGaming)}$method"
         val result = okHttpUtil.doPostJson(url = url, data = data, clz = DreamGamingValue.Result::class.java)
 
-        check(result.codeId == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.codeId == 0) {
+            log.error("dreamGaming network error: codeId = ${result.codeId}")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
         return result.mapUtil
     }
 

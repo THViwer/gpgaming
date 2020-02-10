@@ -15,6 +15,7 @@ import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
 import okhttp3.MediaType.Companion.toMediaType
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
@@ -27,6 +28,7 @@ class TTGService(
 ): PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss")
+    private val log = LoggerFactory.getLogger(TTGService::class.java)
 
     private fun startPostXml(method: String, data: String): MapUtil {
 
@@ -60,7 +62,10 @@ class TTGService(
             <transactiondetail uid="${transferReq.username}" amount="${transferReq.amount}" />
         """.trimIndent()
         val mapUtil = this.startPostXml(method = "/cip/transaction/${tokenClient.agentName}/${transferReq.orderId}", data = data)
-        check(mapUtil.asString("retry") == "0") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(mapUtil.asString("retry") == "0") {
+            log.error("ttgService network error: errorMsgId = ${mapUtil.asString("retry")}, errorMsg = ${mapUtil.data}")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
 
         return GameValue.TransferResp.successful()
     }

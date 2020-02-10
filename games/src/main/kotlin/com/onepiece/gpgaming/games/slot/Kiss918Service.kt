@@ -49,7 +49,7 @@ class Kiss918Service : PlatformService() {
 
         val result = okHttpUtil.doGet(url = requestUrl, clz = Kiss918Value.Result::class.java)
         check(result.success) {
-            log.error("kiss918 接口error: $result")
+            log.error("kiss918 network error: success = ${result.success}, msg = ${result.msg}")
             OnePieceExceptionCode.PLATFORM_DATA_FAIL
         }
         return result.mapUtil

@@ -28,7 +28,10 @@ class GamePlayService: PlatformService() {
         val urlParam = data.joinToString("&")
         val result = okHttpUtil.doGetXml(url = "${gameConstant.getDomain(Platform.GamePlay)}${method}?$urlParam", clz = GamePlayValue.Result::class.java)
 
-        check(result.error_code == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.error_code == 0) {
+            log.error("gamePlay network error: errorCode = ${result.error_code}")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
 //        log.info("result: $result")
         return result.mapUtil
     }

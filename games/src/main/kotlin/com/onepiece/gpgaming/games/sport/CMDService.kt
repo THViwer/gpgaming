@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
 import org.apache.commons.codec.digest.DigestUtils
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.Instant
@@ -25,12 +26,17 @@ class CMDService : PlatformService() {
         const val CMD_HASH = "afawefweaef"
     }
 
+    private val log = LoggerFactory.getLogger(CMDService::class.java)
+
     fun startGetJson(data: List<String>): MapUtil {
         val param = data.joinToString(separator = "&")
         val url = "${gameConstant.getDomain(Platform.CMD)}/SportsApi.aspx?$param"
 
         val result = okHttpUtil.doGet(url = url, clz = CMDValue.Result::class.java)
-        check(result.code == 0 || result.code == -102) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.code == 0 || result.code == -102) {
+            log.error("cmd network error: code = ${result.code}")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
 
         return result.mapUtil
     }

@@ -37,7 +37,11 @@ class PragmaticService: PlatformService() {
         val url = "${gameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/http/CasinoGameAPI${method}"
 
         val result = okHttpUtil.doGet(url = "$url?$urlParam", clz = PragmaticValue.Result::class.java)
-        check(result.error == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.error == 0) {
+            log.error("pragmatic network error: error = ${result.error}, msg = $result")
+
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
 
         return result.mapUtil
     }

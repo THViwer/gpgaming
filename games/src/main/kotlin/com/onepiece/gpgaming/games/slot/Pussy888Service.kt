@@ -47,7 +47,10 @@ class Pussy888Service : PlatformService() {
         val requestUrl = "$url?sign=${sign}&time=$time&authcode=${clientToken.autoCode}&$param"
 
         val result = okHttpUtil.doGet(url = requestUrl, clz = Kiss918Value.Result::class.java)
-        check(result.success) {  OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.success) {
+            log.error("pussy888 network error: errorMsgId = ${result.success}, msg = ${result.msg}")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
         return result.mapUtil
     }
 

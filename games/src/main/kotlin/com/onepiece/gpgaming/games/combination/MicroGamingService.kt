@@ -11,6 +11,7 @@ import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
 import okhttp3.FormBody
 import org.apache.commons.codec.binary.Base64
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
@@ -20,6 +21,7 @@ class MicroGamingService : PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     private val betDateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+    private val log = LoggerFactory.getLogger(MicroGamingService::class.java)
 
     private fun getOauthToken(clientToken: MicroGamingClientToken): String {
 

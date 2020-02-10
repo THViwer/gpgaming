@@ -33,7 +33,10 @@ class AllBetService : PlatformService() {
         val param = "propertyId=${allBetClientToken.propertyId}&data=${URLEncoder.encode(desData, "UTF-8")}&sign=${URLEncoder.encode(md5Data, "UTF-8")}&${urlParam}"
 
         val result = okHttpUtil.doGet(url = "${gameConstant.getDomain(Platform.AllBet)}${method}?$param", clz = AllBetValue.Result::class.java)
-        check(result.errorCode == "OK") { OnePieceExceptionCode.PLATFORM_DATA_FAIL}
+        check(result.errorCode == "OK") {
+            log.error("allBet network error: ${result.errorCode}, ${result.message}")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
         return result.mapUtil
     }
 

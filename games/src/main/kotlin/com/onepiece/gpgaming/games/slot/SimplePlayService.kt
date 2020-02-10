@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.DigestUtils
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.net.URLEncoder
@@ -40,6 +41,7 @@ class SimplePlayService : PlatformService() {
 
     private val dateTimeFormatter =  DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
     private val dateTimeFormatter2 =  DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    private val log = LoggerFactory.getLogger(SimplePlayService::class.java)
 
     fun encrypt(data: String, key: String): String {
 
@@ -64,7 +66,9 @@ class SimplePlayService : PlatformService() {
         val url = "${gameConstant.getDomain(Platform.SimplePlay)}/api/api.aspx?q=$desSign&s=$md5Sign"
         val result = okHttpUtil.doGetXml(url = url, clz = SimplePlayValue.Result::class.java)
 
-        check(result.errorMsgId == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.errorMsgId == 0) {
+            log.error("simplePlay network error: errorMsgId = ${result.errorMsgId}, errorMsg = ${result.errorMsg}")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL }
         return result.mapUtil()
     }
 
@@ -79,7 +83,10 @@ class SimplePlayService : PlatformService() {
         val url = "${gameConstant.getDomain(Platform.SimplePlay)}/api/api.aspx?q=$desSign&s=$md5Sign"
         val betResult = okHttpUtil.doGetXml(url = url, clz = SimplePlayValue.BetResult::class.java)
 
-        check(betResult.errorMsgId == 0 || betResult.errorMsgId == 112) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(betResult.errorMsgId == 0 || betResult.errorMsgId == 112) {
+            log.error("simplePlay network error: errorMsgId = ${betResult.errorMsgId}, errorMsg = ${betResult.errorMsg}")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
         return betResult.betDetailList?: emptyList()
     }
 

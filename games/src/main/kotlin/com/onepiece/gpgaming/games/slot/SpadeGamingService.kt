@@ -13,6 +13,7 @@ import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -23,6 +24,7 @@ import java.util.*
 class SpadeGamingService : PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
+    private val log = LoggerFactory.getLogger(SpadeGamingService::class.java)
 
     private fun startPostJson(method: String, data: String): MapUtil {
 
@@ -32,7 +34,10 @@ class SpadeGamingService : PlatformService() {
                 "DataType" to "JSON"
         )
         val result = okHttpUtil.doPostJson(url = url, data = data, headers = headers, clz = SpadeGamingValue.Result::class.java)
-        check(result.code == 0)
+        check(result.code == 0) {
+            log.error("simplePlay network error: code = ${result.code}, msg = ${result.msg}")
+            result.msg
+        }
 
         return result.mapUtil
     }

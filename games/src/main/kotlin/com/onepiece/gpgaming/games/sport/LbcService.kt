@@ -30,7 +30,7 @@ class LbcService : PlatformService() {
         val result = okHttpUtil.doPostForm(url = url, body = formBody, clz = LbcValue.Result::class.java)
 
         check(result.errorCode == 0) {
-            log.error("请求方法:$method:", result.message)
+            log.error("lbc network error: errorCode = ${result.errorCode}, msg = ${result.message}")
             OnePieceExceptionCode.DATA_FAIL
         }
         return result.mapUtil

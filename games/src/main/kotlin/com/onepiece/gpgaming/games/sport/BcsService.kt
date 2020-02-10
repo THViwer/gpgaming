@@ -54,7 +54,7 @@ class BcsService : PlatformService() {
         val result = okHttpUtil.doGetXml(url = url, clz = BcsValue.Result::class.java)
         check(result.errorCode == "000000") {
             log.error("amzbet sport platform error: $url" )
-            log.error("amzbet sport platform error: ${result.errorCode}")
+            log.error("amzbet sport platform error: errorCode = ${result.errorCode}")
             OnePieceExceptionCode.PLATFORM_DATA_FAIL
         }
 

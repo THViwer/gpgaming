@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
 import org.apache.commons.codec.digest.DigestUtils
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -18,6 +19,7 @@ import java.util.*
 class MegaService : PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    private val log = LoggerFactory.getLogger(MegaService::class.java)
 
     private fun sign(random: String, loginId: String = "", amount: String = "", clientToken: MegaClientToken): String {
         // 签名
@@ -37,7 +39,10 @@ class MegaService : PlatformService() {
 
         val url = "${gameConstant.getDomain(Platform.Mega)}/mega-cloud/api/"
         val result = okHttpUtil.doPostJson(url = url, data = param, clz = MegaValue.Result::class.java)
-        check(result.error.isNullOrBlank()) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.error.isNullOrBlank()) {
+            log.error("mega network error: errorMsgId = ${result.error}, $result")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
 
         return result.mapUtil
     }
