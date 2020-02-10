@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.Instant
@@ -38,11 +39,16 @@ import java.time.ZoneId
 @Service
 class FggService: PlatformService() {
 
+    private val log = LoggerFactory.getLogger(FggService::class.java)
+
     fun startPostJson(method: String, data: String): MapUtil {
 
         val url = "${gameConstant.getDomain(platform = Platform.Fgg)}/Game/$method"
         val result = okHttpUtil.doPostJson(url = url, data = data, clz = FggValue.Result::class.java)
-        check(result.errorCode.isBlank()) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.errorCode.isBlank()) {
+            log.error("fgg platform error: ${result.errorCode}, ${result.errorDesc}")
+            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        }
 
         return result.mapUtil
     }
