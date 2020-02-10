@@ -22,13 +22,16 @@ class WalletNoteDaoImpl : BasicDaoImpl<WalletNote>("wallet_note"), WalletNoteDao
             val eventId = rs.getString("event_id")
             val event = rs.getString("event").let { WalletEvent.valueOf(it) }
             val money = rs.getBigDecimal("money")
+            val originMoney = rs.getBigDecimal("origin_money")
+            val afterMoney = rs.getBigDecimal("after_money")
             val promotionMoney = rs.getBigDecimal("promotion_money")
             val remarks = rs.getString("remarks")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val status = rs.getString("status").let { Status.valueOf(it) }
 
             WalletNote(id = id, clientId = clientId, memberId = memberId, event = event, remarks = remarks, createdTime = createdTime,
-                    waiterId = waiterId, eventId = eventId, money = money, promotionMoney = promotionMoney, status = status)
+                    waiterId = waiterId, eventId = eventId, money = money, promotionMoney = promotionMoney, status = status,
+                    originMoney = originMoney, afterMoney = afterMoney)
         }
 
     override fun total(walletNoteQuery: WalletNoteQuery): Int {
@@ -85,6 +88,7 @@ class WalletNoteDaoImpl : BasicDaoImpl<WalletNote>("wallet_note"), WalletNoteDao
                 .set("event_id", walletNoteCo.eventId)
                 .set("event", walletNoteCo.event)
                 .set("money", walletNoteCo.money)
+
                 .set("promotion_money", walletNoteCo.promotionMoney)
                 .set("remarks", walletNoteCo.remarks)
                 .executeOnlyOne()

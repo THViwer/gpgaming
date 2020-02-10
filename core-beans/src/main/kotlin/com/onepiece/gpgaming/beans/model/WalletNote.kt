@@ -28,6 +28,12 @@ data class WalletNote(
         // 操作金额
         val money: BigDecimal,
 
+        // 原始金额
+        val originMoney: BigDecimal,
+
+        // 操作后金额
+        val afterMoney: BigDecimal,
+
         // 优惠金额
         val promotionMoney: BigDecimal?,
 
