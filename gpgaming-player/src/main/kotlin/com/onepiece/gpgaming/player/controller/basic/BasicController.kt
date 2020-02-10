@@ -90,6 +90,7 @@ abstract class BasicController {
         return (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
     }
 
+    @Synchronized
     fun getPlatformMember(platform: Platform, member: JwtUser): PlatformMemberVo {
         val platforms = platformMemberService.myPlatforms(memberId = member.id)
         val platformMember = platforms.find { platform == it.platform }
