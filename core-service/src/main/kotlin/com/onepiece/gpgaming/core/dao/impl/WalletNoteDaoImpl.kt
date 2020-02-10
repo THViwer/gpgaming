@@ -88,7 +88,8 @@ class WalletNoteDaoImpl : BasicDaoImpl<WalletNote>("wallet_note"), WalletNoteDao
                 .set("event_id", walletNoteCo.eventId)
                 .set("event", walletNoteCo.event)
                 .set("money", walletNoteCo.money)
-
+                .set("origin_money", walletNoteCo.originMoney)
+                .set("after_money", walletNoteCo.afterMoney)
                 .set("promotion_money", walletNoteCo.promotionMoney)
                 .set("remarks", walletNoteCo.remarks)
                 .executeOnlyOne()
