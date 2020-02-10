@@ -144,7 +144,7 @@ class Pussy888Service : PlatformService() {
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         // TODO 暂时不实现
-        return GameValue.TransferResp.successful()
+        return GameValue.TransferResp.failed()
     }
 
 //    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {

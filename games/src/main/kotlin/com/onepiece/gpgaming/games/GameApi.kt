@@ -344,7 +344,13 @@ class GameApi(
             val type = if (amount.toDouble() > 0) "deposit" else "withdraw"
             val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = resp.platformOrderId,
                     amount = amount, type = type)
-            val checkResp = this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
+
+            //TODO 如果是kiss918和Pussy888 则不能check
+            val checkResp = when (platform) {
+                Platform.Kiss918, Platform.Pussy888 -> resp
+                else -> this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
+            }
+//            val checkResp = this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
 
             val balance = when {
                 checkResp.transfer && checkResp.balance.toInt() <= 0 -> originBalance.minus(amount.abs())
