@@ -9,6 +9,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -52,7 +53,9 @@ class OkHttpUtil(
 
 
     fun <T> doGet(url: String, clz: Class<T>,  headers: Map<String, String> = emptyMap()): T {
-//        log.info("request url: $url")
+        val id = UUID.randomUUID().toString()
+        log.info("okHttp post request, requestId = $id, url = $url, headers = $headers")
+
         val request = Request.Builder()
                 .url(url)
                 .get()
@@ -65,12 +68,11 @@ class OkHttpUtil(
         val response = getOkHttpClient(url).newCall(request.build()).execute()
         check(response.code == 200) {
             val message = response.body?.string()
-            log.error("post error: ", message)
             OnePieceExceptionCode.PLATFORM_METHOD_FAIL
         }
 
         val json = response.body!!.string()
-//        log.info("response data: $json")
+        log.info("okHttp post request, requestId = $id, response = $json")
 
         if (clz == String::class.java)
             return json as T
@@ -79,8 +81,10 @@ class OkHttpUtil(
     }
 
     fun <T> doGetXml(url: String, clz: Class<T>, headers: Map<String, String> = emptyMap()): T {
-//        log.info("request url: $url")
-        // authorization: String = ""
+
+        val id = UUID.randomUUID().toString()
+        log.info("okHttp post request, requestId = $id, url = $url, headers = $headers")
+
         val builder = Request.Builder().url(url)
 
         headers.map {
@@ -97,7 +101,7 @@ class OkHttpUtil(
         }
 
         val json = response.body!!.string()
-        log.info("response data: $json")
+        log.info("okHttp post request, requestId = $id, response = $json")
 
         if (clz == String::class.java)
             return json as T
@@ -114,11 +118,14 @@ class OkHttpUtil(
 
     fun <T> doPostForm(url: String, body: FormBody, clz: Class<T>, headers: Map<String, String> = emptyMap()): T {
         return doPostForm(url = url, body = body, clz = clz, headers = headers) { code, response ->
-            throw LogicException(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
+            error (OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
     }
 
     fun <T> doPostForm(url: String, body: FormBody, clz: Class<T>? = null, headers: Map<String, String> = emptyMap(), function: (code: Int, response: Response) -> T): T {
+
+        val id = UUID.randomUUID().toString()
+        log.info("okHttp post request, requestId = $id, url = $url, data = $body, headers = $headers")
 
         val request = Request.Builder()
                 .url(url)
@@ -146,8 +153,8 @@ class OkHttpUtil(
             }
             else -> {
                 val json = response.body!!.bytes()
-//                log.info("request url : $url")
-//                log.info("result json : ${String(json)}")
+                log.info("okHttp post request, requestId = $id, response = ${String(json)}")
+
                 objectMapper.readValue(json, clz)
             }
         }
@@ -166,6 +173,8 @@ class OkHttpUtil(
             objectMapper.writeValueAsString(data)
         }
 
+        val id = UUID.randomUUID().toString()
+        log.info("okHttp post request, requestId = $id, url = $url, data = $data, headers = $headers")
 //        log.info("request url : $url")
 //        log.info("request param: $json")
 
@@ -188,14 +197,16 @@ class OkHttpUtil(
         }
 
         val responseData = response.body!!.string()
+
+        log.info("okHttp post request, requestId = $id, response = $responseData")
 //        log.info("response json data : $responseData")
         return objectMapper.readValue(responseData, clz)
     }
 
     fun <T> doPostXml(url: String, data: String, clz: Class<T>, mediaType: MediaType = XML, headers: Map<String, String> = emptyMap()): T {
 
-//        log.info("request url : $url")
-//        log.info("request param: $data")
+        val id = UUID.randomUUID().toString()
+        log.info("okHttp post request, requestId = $id, url = $url, data = $data, headers = $headers")
 
         val body = data.toRequestBody(mediaType)
 
@@ -216,7 +227,7 @@ class OkHttpUtil(
         }
 
         val responseData = response.body!!.string()
-//        log.info("response json data : $responseData")
+        log.info("okHttp post request, requestId = $id, response = $responseData")
 
         return if (clz != String::class.java) {
             xmlMapper.readValue(responseData, clz)
