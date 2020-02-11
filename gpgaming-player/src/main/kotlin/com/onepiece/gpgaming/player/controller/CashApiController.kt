@@ -27,6 +27,7 @@ import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
 import com.onepiece.gpgaming.beans.value.internet.web.BankVo
 import com.onepiece.gpgaming.beans.value.internet.web.ClientBankVo
 import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
+import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
 import com.onepiece.gpgaming.core.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.ClientBankService
@@ -54,6 +55,7 @@ import com.onepiece.gpgaming.player.controller.value.MemberBankUoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankVo
 import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
 import com.onepiece.gpgaming.player.controller.value.WithdrawCoReq
+import com.onepiece.gpgaming.player.jwt.JwtUser
 import com.onepiece.gpgaming.utils.AwsS3Util
 import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
@@ -344,7 +346,7 @@ open class CashApiController(
 
         val checkPromotions = joinPromotions.parallelStream().map { promotion ->
 
-            val platformMemberVo = getPlatformMember(platform, current)
+            val platformMemberVo = getPromotionPlatformMember(platform, current)
             val platformBalance = gameApi.balance(clientId = member.clientId, platform = platform, platformUsername = platformMemberVo.platformUsername,
                     platformPassword = platformMemberVo.platformPassword)
 
@@ -372,6 +374,12 @@ open class CashApiController(
 
         return CheckPromotinResp(promotions = checkPromotions)
     }
+
+    @Synchronized
+    private fun getPromotionPlatformMember(platform: Platform, member: JwtUser): PlatformMemberVo {
+        return getPlatformMember(platform, member)
+    }
+
 
     @PutMapping("/transfer")
     @Transactional(rollbackFor = [Exception::class])
