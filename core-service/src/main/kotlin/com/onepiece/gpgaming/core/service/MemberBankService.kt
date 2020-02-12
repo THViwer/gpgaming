@@ -10,6 +10,8 @@ interface MemberBankService {
 
     fun query(memberId: Int): List<MemberBank>
 
+    fun exist(clientId: Int, bankNo: String): MemberBank?
+
     fun create(memberBankCo: MemberBankCo): Int
 
     fun update(memberBankUo: MemberBankUo)

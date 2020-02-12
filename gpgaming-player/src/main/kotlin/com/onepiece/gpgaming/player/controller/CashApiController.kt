@@ -46,6 +46,7 @@ import com.onepiece.gpgaming.player.controller.value.BalanceVo
 import com.onepiece.gpgaming.player.controller.value.CashDepositResp
 import com.onepiece.gpgaming.player.controller.value.CashTransferReq
 import com.onepiece.gpgaming.player.controller.value.CashWithdrawResp
+import com.onepiece.gpgaming.player.controller.value.CheckBankResp
 import com.onepiece.gpgaming.player.controller.value.CheckBetResp
 import com.onepiece.gpgaming.player.controller.value.CheckPromotinResp
 import com.onepiece.gpgaming.player.controller.value.CheckPromotionVo
@@ -123,6 +124,13 @@ open class CashApiController(
                 }
             }
         }
+    }
+
+    @GetMapping("/bank/check")
+    override fun checkBank(@RequestParam("bankCardNo") bankCardNo: String): CheckBankResp {
+        val member = this.current()
+        val bank = memberBankService.exist(clientId = member.clientId, bankNo = bankCardNo)
+        return CheckBankResp(bank != null)
     }
 
     @GetMapping("/checkBet")

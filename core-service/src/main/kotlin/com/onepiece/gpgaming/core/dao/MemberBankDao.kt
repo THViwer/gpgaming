@@ -9,6 +9,8 @@ interface MemberBankDao: BasicDao<MemberBank> {
 
     fun query(memberId: Int): List<MemberBank>
 
+    fun get(clientId: Int, bankNo: String): MemberBank?
+
     fun create(memberBankCo: MemberBankCo): Int
 
     fun update(memberBankUo: MemberBankUo): Boolean

@@ -15,6 +15,7 @@ import com.onepiece.gpgaming.player.controller.value.BalanceVo
 import com.onepiece.gpgaming.player.controller.value.CashDepositResp
 import com.onepiece.gpgaming.player.controller.value.CashTransferReq
 import com.onepiece.gpgaming.player.controller.value.CashWithdrawResp
+import com.onepiece.gpgaming.player.controller.value.CheckBankResp
 import com.onepiece.gpgaming.player.controller.value.CheckBetResp
 import com.onepiece.gpgaming.player.controller.value.CheckPromotinResp
 import com.onepiece.gpgaming.player.controller.value.DepositCoReq
@@ -44,6 +45,9 @@ interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "我的银行卡")
     fun myBanks(): List<MemberBankVo>
+
+    @ApiOperation(tags = ["cash"], value = "检查银行卡号是否存在")
+    fun checkBank(@RequestParam("bankCardNo") bankCardNo: String): CheckBankResp
 
     @ApiOperation(tags = ["cash"], value = "取款检查打码量")
     fun checkBet(): CheckBetResp

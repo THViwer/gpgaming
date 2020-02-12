@@ -29,7 +29,13 @@ class MemberBankDaoImpl : BasicDaoImpl<MemberBank>("member_bank"), MemberBankDao
     override fun query(memberId: Int): List<MemberBank> {
         return query().where("member_id", memberId)
                 .execute(mapper)
+    }
 
+    override fun get(clientId: Int, bankNo: String): MemberBank? {
+        return query()
+                .where("bank_card_number", bankNo)
+                .where("client_id", clientId)
+                .executeMaybeOne(mapper)
     }
 
     override fun create(memberBankCo: MemberBankCo): Int {
