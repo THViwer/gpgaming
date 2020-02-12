@@ -100,7 +100,8 @@ open class ApiController(
 
     @GetMapping("/promotion")
     override fun promotion(
-            @RequestHeader("language") language: Language
+            @RequestHeader("language") language: Language,
+            @RequestHeader("launch") launch: LaunchMethod
     ): List<PromotionVo> {
 
         val clientId = getClientIdByDomain()
@@ -127,10 +128,18 @@ open class ApiController(
             val i18nContent = i18nContentMap["${promotion.id}:${language}"]
                     ?: i18nContentMap["${promotion.id}:${Language.EN}"]
 
+
             i18nContent?.let {
                 val content = i18nContent.getII18nContent(objectMapper) as I18nContent.PromotionI18n
+
+                val icon = if (launch == LaunchMethod.Wap) {
+                    content.mobileBanner
+                } else {
+                    content.banner
+                }
+
                 PromotionVo(id = it.id, clientId = it.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
-                        icon = content.banner, platforms = promotion.platforms, title = content.title, synopsis = content.synopsis, content = content.content,
+                        icon = icon, platforms = promotion.platforms, title = content.title, synopsis = content.synopsis, content = content.content,
                         status = promotion.status, createdTime = it.createdTime, precautions = content.precautions, ruleType = promotion.ruleType, rule = promotion.rule)
             }
         }
