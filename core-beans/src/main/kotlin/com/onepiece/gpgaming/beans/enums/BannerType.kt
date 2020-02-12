@@ -14,6 +14,9 @@ enum class BannerType {
 
     Sport,
 
+    // slot的优惠推荐
+    SlotPromotion,
+
     // 已删除
     Recommended
 
