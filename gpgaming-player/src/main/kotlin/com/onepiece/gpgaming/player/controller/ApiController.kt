@@ -105,7 +105,6 @@ open class ApiController(
 
         val clientId = getClientIdByDomain()
 
-//        val gamePlatforms = gamePlatformService.all()
         val allPromotion = promotionService.all(clientId).filter { it.status == Status.Normal }
 
         val promotions = arrayListOf<Promotion>()
@@ -118,18 +117,6 @@ open class ApiController(
                 promotions.add(promotion.copy(category = it.getPromotionCategory()))
             }
         }
-
-//        val promotions = promotionService.all(clientId)
-//                .filter { it.status == Status.Normal }
-//                .filter {
-//                    when {
-//                        platformCategory == null -> true
-//                        promotionCategory == PromotionCategory.First -> it.category == PromotionCategory.First
-//                        promotionCategory == PromotionCategory.Special -> it.category == PromotionCategory.Special
-//                        it.platforms.firstOrNull { it.detail.category == platformCategory } != null -> true
-//                        else -> false
-//                    }
-//                }
 
         val i18nContentMap = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Promotion)
                 .map { "${it.configId}:${it.language}" to it }

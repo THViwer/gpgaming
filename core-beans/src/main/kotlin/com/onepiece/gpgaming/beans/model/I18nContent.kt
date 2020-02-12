@@ -2,11 +2,9 @@ package com.onepiece.gpgaming.beans.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
-import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
 
@@ -80,6 +78,9 @@ data class I18nContent (
             // banner
             val banner: String,
 
+            // mobile banner
+            val mobileBanner: String,
+
             // 标题
             val title: String,
 
@@ -135,17 +136,13 @@ fun main() {
 //    val json = jacksonObjectMapper().writeValueAsString(indexVideoI18n)
 //    println(json)
 
-    val promotion = I18nContent.PromotionI18n(
-            banner = "https://s3.ap-southeast-1.amazonaws.com/awspg1/banner/banner_3.jpg",
-            title = "老虎机优惠",
-            content = "你好，我是老虎机",
-            synopsis = "你好，我是老虎机",
-            precautions = "你好，我是老虎机"
-    )
-    println(jacksonObjectMapper().writeValueAsString(promotion))
-
-
-
-
+//    val promotion = I18nContent.PromotionI18n(
+//            banner = "https://s3.ap-southeast-1.amazonaws.com/awspg1/banner/banner_3.jpg",
+//            title = "老虎机优惠",
+//            content = "你好，我是老虎机",
+//            synopsis = "你好，我是老虎机",
+//            precautions = "你好，我是老虎机"
+//    )
+//    println(jacksonObjectMapper().writeValueAsString(promotion))
 
 }
