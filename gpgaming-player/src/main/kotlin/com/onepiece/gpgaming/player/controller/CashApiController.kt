@@ -409,14 +409,16 @@ open class CashApiController(
         if (cashTransferReq.from != Platform.Center) {
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.from, member = current)
             val toCenterTransferReq = cashTransferReq.copy(to = Platform.Center)
-            transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toCenterTransferReq, username = currentUsername())
+            val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toCenterTransferReq, username = currentUsername())
+            check(result.transfer) {OnePieceExceptionCode.TRANSFER_FAILED}
 
         }
 
         if (cashTransferReq.to != Platform.Center) {
             val toPlatformTransferReq = cashTransferReq.copy(from = Platform.Center)
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.to, member = current)
-            transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = currentUsername())
+            val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = currentUsername())
+            check(result.transfer) {OnePieceExceptionCode.TRANSFER_FAILED}
         }
 
         watch.stop()
