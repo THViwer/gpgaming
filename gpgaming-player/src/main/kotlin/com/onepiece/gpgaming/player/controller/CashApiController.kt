@@ -61,6 +61,7 @@ import com.onepiece.gpgaming.utils.AwsS3Util
 import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.StopWatch
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -258,7 +259,6 @@ open class CashApiController(
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): Page<WithdrawVo> {
 
-
         val (clientId, memberId) = this.currentClientIdAndMemberId()
 
         val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = null, endTime = null, orderId = orderId,
@@ -298,6 +298,9 @@ open class CashApiController(
     @PostMapping("/withdraw")
     override fun withdraw(@RequestBody withdrawCoReq: WithdrawCoReq): CashWithdrawResp {
 
+        val watch = StopWatch()
+        watch.start()
+
         val current = this.current()
         val clientId = current.clientId
         val memberId = current.id
@@ -320,6 +323,9 @@ open class CashApiController(
                 memberBank = memberBank.bank, memberBankCardNumber = memberBank.bankCardNumber, memberBankId = memberBank.id,
                 money = withdrawCoReq.money, remarks = null, username = currentUsername())
         withdrawService.create(withdrawCo)
+
+        watch.stop()
+        log.info("withdraw userId: ${current.id} 耗时：${watch.totalTimeMillis}")
 
         return CashWithdrawResp(orderId = orderId)
     }
