@@ -399,6 +399,7 @@ open class CashApiController(
     @Transactional(rollbackFor = [Exception::class])
     override fun transfer(@RequestBody cashTransferReq: CashTransferReq) {
         val watch = StopWatch()
+        watch.start()
 
         check(cashTransferReq.from != cashTransferReq.to) { OnePieceExceptionCode.AUTHORITY_FAIL }
         check(cashTransferReq.amount.toDouble() > 0 || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.ILLEGAL_OPERATION }
@@ -425,6 +426,8 @@ open class CashApiController(
     @PutMapping("/transfer/in/all")
     override fun transferToCenter(): List<BalanceAllInVo> {
         val watch = StopWatch()
+        watch.start()
+
 
         val current = this.current()
         val data = transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = null, username = currentUsername())
