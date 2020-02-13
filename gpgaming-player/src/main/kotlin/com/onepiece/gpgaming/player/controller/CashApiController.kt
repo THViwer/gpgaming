@@ -398,6 +398,8 @@ open class CashApiController(
     @PutMapping("/transfer")
     @Transactional(rollbackFor = [Exception::class])
     override fun transfer(@RequestBody cashTransferReq: CashTransferReq) {
+        val watch = StopWatch()
+
         check(cashTransferReq.from != cashTransferReq.to) { OnePieceExceptionCode.AUTHORITY_FAIL }
         check(cashTransferReq.amount.toDouble() > 0 || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.ILLEGAL_OPERATION }
 
@@ -415,12 +417,21 @@ open class CashApiController(
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.to, member = current)
             transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = currentUsername())
         }
+
+        watch.stop()
+        log.info("transfer 用户Id：${current.id}, ${cashTransferReq.from} => ${cashTransferReq.to} 耗时：${watch.totalTimeMillis}ms")
     }
 
     @PutMapping("/transfer/in/all")
     override fun transferToCenter(): List<BalanceAllInVo> {
+        val watch = StopWatch()
+
         val current = this.current()
-        return transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = null, username = currentUsername())
+        val data = transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = null, username = currentUsername())
+
+        watch.stop()
+        log.info("transfer 用户Id：${current.id} 耗时：${watch.totalTimeMillis}ms")
+        return data
     }
 
 
