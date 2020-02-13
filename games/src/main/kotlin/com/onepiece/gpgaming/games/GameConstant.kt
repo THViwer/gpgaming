@@ -46,7 +46,7 @@ class GameConstant(
             // sport
 //            Platform.Lbc -> "http://tsa.gpgaming88.com"
             Platform.Bcs -> "https://transferapi.ballcrown.com"
-            Platform.CMD -> "http://api.1win88.net"
+            Platform.CMD -> "https://api.1win88.net"
 //            Platform.Sbo -> "http://sboapi.gsoft168.com"
 
             // fishing
@@ -76,6 +76,7 @@ class GameConstant(
             Platform.TTG -> "$domain:1007"
             Platform.MicroGaming -> "$domain:1008"
             Platform.GamePlay -> "http://45.124.65.170:90"
+
             Platform.SimplePlay -> "$domain:1011"
 
             // live
@@ -89,7 +90,7 @@ class GameConstant(
 
             // sport
 //            Platform.CMD -> "$domain:3002"
-            Platform.CMD -> "http://api.1win88.net"
+            Platform.CMD -> "https://api.1win88.net"
 
             // fishing
             Platform.GGFishing -> "$domain:4001"
