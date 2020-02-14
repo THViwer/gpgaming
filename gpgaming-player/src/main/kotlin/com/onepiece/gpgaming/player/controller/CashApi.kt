@@ -98,7 +98,10 @@ interface CashApi {
     ): CheckPromotinResp
 
     @ApiOperation(tags = ["cash"], value = "转账")
-    fun transfer(@RequestBody cashTransferReq: CashTransferReq): CashTransferResp
+    fun transfer(
+            @RequestHeader("language", defaultValue = "EN") language: Language,
+            @RequestBody cashTransferReq: CashTransferReq
+    ): List<BalanceVo>
 
     @ApiOperation(tags = ["cash"], value = "转账所有平台到中心")
     fun transferToCenter(): List<BalanceAllInVo>

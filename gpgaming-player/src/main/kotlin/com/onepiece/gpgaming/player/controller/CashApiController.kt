@@ -398,7 +398,10 @@ open class CashApiController(
 
     @PutMapping("/transfer")
     @Transactional(rollbackFor = [Exception::class])
-    override fun transfer(@RequestBody cashTransferReq: CashTransferReq): CashTransferResp {
+    override fun transfer(
+            @RequestHeader("language") language: Language,
+            @RequestBody cashTransferReq: CashTransferReq
+    ): List<BalanceVo> {
         val watch = StopWatch()
         watch.start()
 
@@ -412,24 +415,18 @@ open class CashApiController(
 
         val current = this.current()
 
-        var fromBalance = BigDecimal.ZERO
         if (cashTransferReq.from != Platform.Center) {
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.from, member = current)
             val toCenterTransferReq = cashTransferReq.copy(to = Platform.Center)
             val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toCenterTransferReq, username = currentUsername())
             check(result.transfer) {OnePieceExceptionCode.TRANSFER_FAILED}
-
-            fromBalance = result.balance
         }
 
-        var toBalance = BigDecimal.ZERO
         if (cashTransferReq.to != Platform.Center) {
             val toPlatformTransferReq = cashTransferReq.copy(from = Platform.Center)
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.to, member = current)
             val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = currentUsername())
             check(result.transfer) {OnePieceExceptionCode.TRANSFER_FAILED}
-
-            toBalance = result.balance
         }
 
         watch.stop()
@@ -438,13 +435,22 @@ open class CashApiController(
         val wallet = walletService.getMemberWallet(current.id)
         return when {
             cashTransferReq.from == Platform.Center -> {
-                CashTransferResp(fromBalance = wallet.balance, toBalance = toBalance)
+                val fromBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null)
+                val toBalance = this.balance(language = language, platform = cashTransferReq.to)
+
+                listOf(fromBalance, toBalance)
             }
             cashTransferReq.to == Platform.Center -> {
-                CashTransferResp(fromBalance = fromBalance, toBalance = wallet.balance)
+                val fromBalance = this.balance(language = language, platform = cashTransferReq.from)
+                val toBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null)
+
+                listOf(fromBalance, toBalance)
             }
             else -> {
-                CashTransferResp(fromBalance = fromBalance, toBalance = toBalance)
+                val fromBalance = this.balance(language = language, platform = cashTransferReq.from)
+                val toBalance = this.balance(language = language, platform = cashTransferReq.to)
+
+                listOf(fromBalance, toBalance)
             }
         }
 
