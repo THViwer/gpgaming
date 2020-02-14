@@ -96,7 +96,8 @@ class TransferUtil(
 
             // 中心钱包 -> 平台钱包
             "out" -> {
-                this.centerToPlatformTransfer(platformMember = platformMember, username = username, platformBalance = platformBalance, transferAmount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId)
+                this.centerToPlatformTransfer(platformMember = platformMember, username = username, platformBalance = platformBalance, transferAmount = cashTransferReq.amount,
+                        promotionId = cashTransferReq.promotionId)
             }
             // 平台钱包 -> 中心钱包
             "in" -> {

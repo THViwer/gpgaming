@@ -196,7 +196,7 @@ data class CashTransferReq(
         val amount: BigDecimal,
 
         @ApiModelProperty("参加优惠活动Id")
-        val promotionId: Int?
+        var promotionId: Int?
 
 )
 
@@ -205,7 +205,7 @@ data class CashTransferResp(
         @ApiModelProperty("转出平台的余额")
         val fromBalance: BigDecimal,
 
-        @ApiModelProperty("转入平台的余额")
+        @ApiModelProperty("转平台的余额")
         val toBalance: BigDecimal
 )
 

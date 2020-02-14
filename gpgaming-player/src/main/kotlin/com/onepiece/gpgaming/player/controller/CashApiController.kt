@@ -402,6 +402,11 @@ open class CashApiController(
         val watch = StopWatch()
         watch.start()
 
+        // 如果转入的平台是918kiss、pussy、mega 则默认添加优惠为-100
+        if (cashTransferReq.to == Platform.Kiss918 || cashTransferReq.to == Platform.Pussy888 || cashTransferReq.to == Platform.Mega) {
+            cashTransferReq.promotionId = -100
+        }
+
         check(cashTransferReq.from != cashTransferReq.to) { OnePieceExceptionCode.AUTHORITY_FAIL }
         check(cashTransferReq.amount.toDouble() > 0 || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.ILLEGAL_OPERATION }
 
