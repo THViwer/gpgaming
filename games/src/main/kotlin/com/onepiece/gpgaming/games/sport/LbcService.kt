@@ -47,9 +47,9 @@ class LbcService : PlatformService() {
          */
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
-                .add("Vendor_Member_ID", username)
+                .add("Vendor_Member_ID", registerReq.username)
                 .add("OperatorId", clientToken.memberCode)
-                .add("UserName", registerReq.username)
+                .add("UserName", username)
                 .add("Currency", clientToken.currency) //TODO 测试环境只能先用20(UUS) 以后替换成2(MYR)
                 .add("OddsType", "1")
                 .add("MaxTransfer", "999999")
