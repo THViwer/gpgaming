@@ -91,7 +91,7 @@ class PromotionServiceImpl(
 
             val now = LocalDateTime.now()
 
-            val rule = PromotionRules.WithdrawRule(minAmount = BigDecimal.ZERO, maxAmount = BigDecimal.valueOf(99999999), ignoreTransferOutAmount = BigDecimal.ZERO,
+            val rule = PromotionRules.WithdrawRule(minAmount = BigDecimal.ZERO, maxAmount = BigDecimal.valueOf(99999999), ignoreTransferOutAmount = BigDecimal.valueOf(5),
                     maxPromotionAmount = BigDecimal.ONE, transferMultiplied = BigDecimal.valueOf(2), promotionProportion = BigDecimal.ZERO)
             val ruleJson = objectMapper.writeValueAsString(rule)
 
@@ -112,7 +112,7 @@ class PromotionServiceImpl(
 //
 //        val promotion = this.all(clientId).firstOrNull{ it.platform == platform }
 //        if (promotion == null || promotion.status != Status.Normal) {
-//            return null
+//            return nul
 //        }
 //
 //        return promotionRoleDao.getByPromotionId(promotion.id)
