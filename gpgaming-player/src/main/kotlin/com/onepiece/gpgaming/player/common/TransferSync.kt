@@ -28,6 +28,10 @@ open class TransferSyncImpl(
 
         val platform = platformMemberVo.platform
 
+        if (platform == Platform.Kiss918 || platform == Platform.Pussy888 || platform == Platform.Mega) {
+            return
+        }
+
         // 从其它钱包转到中心钱包
         transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = platform, username = current.username)
 
