@@ -200,6 +200,15 @@ data class CashTransferReq(
 
 )
 
+data class CashTransferResp(
+
+        @ApiModelProperty("转出平台的余额")
+        val fromBalance: BigDecimal,
+
+        @ApiModelProperty("转入平台的余额")
+        val toBalance: BigDecimal
+)
+
 data class BalanceVo(
 
         @ApiModelProperty("中心钱包余额")

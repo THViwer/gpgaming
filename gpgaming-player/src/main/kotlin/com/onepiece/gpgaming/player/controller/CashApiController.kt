@@ -45,6 +45,7 @@ import com.onepiece.gpgaming.player.controller.value.BalanceAllInVo
 import com.onepiece.gpgaming.player.controller.value.BalanceVo
 import com.onepiece.gpgaming.player.controller.value.CashDepositResp
 import com.onepiece.gpgaming.player.controller.value.CashTransferReq
+import com.onepiece.gpgaming.player.controller.value.CashTransferResp
 import com.onepiece.gpgaming.player.controller.value.CashWithdrawResp
 import com.onepiece.gpgaming.player.controller.value.CheckBankResp
 import com.onepiece.gpgaming.player.controller.value.CheckBetResp
@@ -397,7 +398,7 @@ open class CashApiController(
 
     @PutMapping("/transfer")
     @Transactional(rollbackFor = [Exception::class])
-    override fun transfer(@RequestBody cashTransferReq: CashTransferReq) {
+    override fun transfer(@RequestBody cashTransferReq: CashTransferReq): CashTransferResp {
         val watch = StopWatch()
         watch.start()
 
@@ -406,23 +407,42 @@ open class CashApiController(
 
         val current = this.current()
 
+        var fromBalance = BigDecimal.ZERO
         if (cashTransferReq.from != Platform.Center) {
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.from, member = current)
             val toCenterTransferReq = cashTransferReq.copy(to = Platform.Center)
             val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toCenterTransferReq, username = currentUsername())
             check(result.transfer) {OnePieceExceptionCode.TRANSFER_FAILED}
 
+            fromBalance = result.balance
         }
 
+        var toBalance = BigDecimal.ZERO
         if (cashTransferReq.to != Platform.Center) {
             val toPlatformTransferReq = cashTransferReq.copy(from = Platform.Center)
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.to, member = current)
             val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = currentUsername())
             check(result.transfer) {OnePieceExceptionCode.TRANSFER_FAILED}
+
+            toBalance = result.balance
         }
 
         watch.stop()
         log.info("transfer 用户Id：${current.id}, ${cashTransferReq.from} => ${cashTransferReq.to} 耗时：${watch.totalTimeMillis}ms")
+
+        val wallet = walletService.getMemberWallet(current.id)
+        return when {
+            cashTransferReq.from == Platform.Center -> {
+                CashTransferResp(fromBalance = wallet.balance, toBalance = toBalance)
+            }
+            cashTransferReq.to == Platform.Center -> {
+                CashTransferResp(fromBalance = fromBalance, toBalance = wallet.balance)
+            }
+            else -> {
+                CashTransferResp(fromBalance = fromBalance, toBalance = toBalance)
+            }
+        }
+
     }
 
     @PutMapping("/transfer/in/all")
