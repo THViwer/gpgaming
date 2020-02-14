@@ -44,10 +44,17 @@ object PlatformUsernameUtil  {
     fun prefixPlatformUsername(platform: Platform, platformUsername: String): Pair<Int, Int> {
 
         return when (platform) {
-
             Platform.GoldDeluxe -> {
                 val clientId = platformUsername.substring(1, 3).toInt()
                 val memberId = platformUsername.substring(3, platformUsername.length).toInt()
+
+                clientId to memberId
+            }
+            Platform.Lbc -> {
+                val username = platformUsername.split("_")[1]
+
+                val clientId = platformUsername.substring(0, 2).toInt()
+                val memberId = platformUsername.substring(2, platformUsername.length - 2).toInt()
 
                 clientId to memberId
             }
