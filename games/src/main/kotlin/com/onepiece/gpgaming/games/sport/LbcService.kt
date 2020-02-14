@@ -47,7 +47,7 @@ class LbcService : PlatformService() {
          */
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
-                .add("Vendor_Member_ID", registerReq.username)
+                .add("Vendor_Member_ID", username)
                 .add("OperatorId", clientToken.memberCode)
                 .add("UserName", username)
                 .add("Currency", clientToken.currency) //TODO 测试环境只能先用20(UUS) 以后替换成2(MYR)
