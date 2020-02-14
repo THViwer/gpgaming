@@ -95,7 +95,7 @@ class LbcService : PlatformService() {
 
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
-                .add("vendor_trans_id", "${clientToken.memberCode}_${checkTransferReq.username}")
+                .add("vendor_trans_id", "${clientToken.memberCode}_${checkTransferReq.orderId}")
                 .add("wallet_id", "1") // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
                 .build()
         val mapUtil = this.startGetJson(clientToken = clientToken, method = "CheckFundTransfer", formBody = body)
