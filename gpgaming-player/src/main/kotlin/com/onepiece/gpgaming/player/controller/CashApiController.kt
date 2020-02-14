@@ -449,8 +449,9 @@ open class CashApiController(
             else -> {
                 val fromBalance = this.balance(language = language, platform = cashTransferReq.from)
                 val toBalance = this.balance(language = language, platform = cashTransferReq.to)
+                val centerBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null)
 
-                listOf(fromBalance, toBalance)
+                listOf(fromBalance, toBalance, centerBalance)
             }
         }
 
