@@ -41,22 +41,21 @@ class LbcService : PlatformService() {
         val clientToken = registerReq.token as LbcClientToken
 
 
-        val username = "${clientToken.memberCode}_${registerReq.username}"
         /**
          * 1 马来盘 2 香港盘 3 欧洲盘 4 印尼盘 5 美国盘
          */
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
-                .add("Vendor_Member_ID", username)
+                .add("Vendor_Member_ID", "${clientToken.memberCode}_${registerReq.username}")
                 .add("OperatorId", clientToken.memberCode)
-                .add("UserName", username)
+                .add("UserName", "${clientToken.memberCode}_${registerReq.username}")
                 .add("Currency", clientToken.currency) //TODO 测试环境只能先用20(UUS) 以后替换成2(MYR)
                 .add("OddsType", "1")
                 .add("MaxTransfer", "999999")
                 .add("MinTransfer", "1")
                 .build()
         this.startGetJson(clientToken = clientToken, method = "CreateMember", formBody = body)
-        return username
+        return registerReq.username
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
@@ -64,7 +63,7 @@ class LbcService : PlatformService() {
 
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
-                .add("vendor_member_ids", balanceReq.username)
+                .add("vendor_member_ids", "${clientToken.memberCode}_${balanceReq.username}")
                 .add("wallet_id", "1") // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
                 .build()
 
@@ -78,8 +77,8 @@ class LbcService : PlatformService() {
         val direction = if (transferReq.amount.toDouble() > 0) 1 else 0
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
-                .add("vendor_member_id", transferReq.username)
-                .add("vendor_trans_id", transferReq.orderId)
+                .add("vendor_member_id", "${clientToken.memberCode}_${transferReq.username}")
+                .add("vendor_trans_id", "${clientToken.memberCode}_${transferReq.orderId}")
                 .add("amount", "${transferReq.amount.abs()}")
                 .add("currency", "20") // 固定
                 .add("direction", "$direction")
@@ -96,7 +95,7 @@ class LbcService : PlatformService() {
 
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
-                .add("vendor_trans_id", checkTransferReq.orderId)
+                .add("vendor_trans_id", "${clientToken.memberCode}_${checkTransferReq.username}")
                 .add("wallet_id", "1") // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
                 .build()
         val mapUtil = this.startGetJson(clientToken = clientToken, method = "CheckFundTransfer", formBody = body)
@@ -109,7 +108,7 @@ class LbcService : PlatformService() {
 
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
-                .add("vendor_member_id", startReq.username)
+                .add("vendor_member_id", "${clientToken.memberCode}_${startReq.username}")
                 .build()
         val mapUtil = this.startGetJson(clientToken = clientToken, method = "Login", formBody = body)
         val token = mapUtil.asString("Data")
