@@ -40,12 +40,14 @@ class LbcService : PlatformService() {
     override fun register(registerReq: GameValue.RegisterReq): String {
         val clientToken = registerReq.token as LbcClientToken
 
+
+        val username = "${clientToken.memberCode}_${registerReq.username}"
         /**
          * 1 马来盘 2 香港盘 3 欧洲盘 4 印尼盘 5 美国盘
          */
         val body = FormBody.Builder()
                 .add("vendor_id", clientToken.vendorId)
-                .add("Vendor_Member_ID", registerReq.username)
+                .add("Vendor_Member_ID", username)
                 .add("OperatorId", clientToken.memberCode)
                 .add("UserName", registerReq.username)
                 .add("Currency", clientToken.currency) //TODO 测试环境只能先用20(UUS) 以后替换成2(MYR)
@@ -54,7 +56,7 @@ class LbcService : PlatformService() {
                 .add("MinTransfer", "1")
                 .build()
         this.startGetJson(clientToken = clientToken, method = "CreateMember", formBody = body)
-        return registerReq.username
+        return username
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
