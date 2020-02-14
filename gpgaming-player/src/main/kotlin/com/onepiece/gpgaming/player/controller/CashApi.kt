@@ -98,7 +98,6 @@ interface CashApi {
     ): CheckPromotinResp
 
     @ApiOperation(tags = ["cash"], value = "转账")
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun transfer(@RequestBody cashTransferReq: CashTransferReq): CashTransferResp
 
     @ApiOperation(tags = ["cash"], value = "转账所有平台到中心")
