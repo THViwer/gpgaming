@@ -7,12 +7,14 @@ import com.onepiece.gpgaming.beans.value.database.PlatformMemberCo
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberTransferUo
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.beans.value.order.BetCacheVo
+import com.onepiece.gpgaming.core.NoRollbackException
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.PlatformMemberDao
 import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
 @Service
@@ -28,6 +30,7 @@ class PlatformMemberServiceImpl(
         return platformMemberDao.get(id)
     }
 
+    @Transactional(rollbackFor = [NoRollbackException::class])
     override fun create(clientId: Int, memberId: Int, platform: Platform, platformUsername: String, platformPassword: String): PlatformMemberVo {
 
         val platformMemberCo = PlatformMemberCo(platform = platform, memberId = memberId, username = platformUsername,
