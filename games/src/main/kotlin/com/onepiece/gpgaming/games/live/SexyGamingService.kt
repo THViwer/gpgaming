@@ -121,7 +121,7 @@ class SexyGamingService: PlatformService() {
                 "txCode" to checkTransferReq.orderId
         )
         val mapUtil = this.startGetJson(method = "/wallet/checkTransferOperation", data = data)
-        val successful = mapUtil.data["transferAmt"] != null
+        val successful = mapUtil.data["txStatus"] == 1
         return GameValue.TransferResp.of(successful = successful)
     }
 
