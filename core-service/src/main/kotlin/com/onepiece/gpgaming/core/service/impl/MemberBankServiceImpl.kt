@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.value.database.MemberBankUo
 import com.onepiece.gpgaming.core.dao.MemberBankDao
 import com.onepiece.gpgaming.core.service.MemberBankService
 import org.springframework.stereotype.Service
+import java.lang.Exception
 
 @Service
 class MemberBankServiceImpl(
@@ -18,6 +19,14 @@ class MemberBankServiceImpl(
     }
 
     override fun create(memberBankCo: MemberBankCo): Int {
+
+        try {
+            memberBankCo.bankCardNumber.toInt()
+        } catch (e: Exception) {
+            error(OnePieceExceptionCode.BANK_CARD_ERROR)
+        }
+        check(memberBankCo.bankCardNumber.length > 10) { OnePieceExceptionCode.BANK_CARD_ERROR }
+
         val id = memberBankDao.create(memberBankCo)
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 

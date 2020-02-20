@@ -46,6 +46,7 @@ object OnePieceExceptionCode {
     const val PROMOTION_EXPIRED = "5009" // 优惠活动过期
     const val EARNESTBALANCE_OVER = "5010" // 厅主保证金不足
     const val TRANSFER_FAILED = "5011" // 转账失败
+    const val BANK_CARD_ERROR = "5012" // 银行卡错误 不为数字或长度不够
 
     // 60000 platform method error
     const val PLATFORM_METHOD_FAIL = "6001" // 平台方式错误
