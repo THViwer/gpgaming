@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.web.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.onepiece.gpgaming.beans.enums.HotGameType
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.PromotionRuleType
@@ -13,12 +14,14 @@ import com.onepiece.gpgaming.beans.model.PromotionRules
 import com.onepiece.gpgaming.beans.model.Recommended
 import com.onepiece.gpgaming.beans.value.database.BannerCo
 import com.onepiece.gpgaming.beans.value.database.BannerUo
+import com.onepiece.gpgaming.beans.value.database.HotGameValue
 import com.onepiece.gpgaming.beans.value.database.I18nContentCo
 import com.onepiece.gpgaming.beans.value.database.I18nContentUo
 import com.onepiece.gpgaming.beans.value.database.RecommendedValue
 import com.onepiece.gpgaming.beans.value.internet.web.BannerCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerVo
+import com.onepiece.gpgaming.beans.value.internet.web.HotGameVo
 import com.onepiece.gpgaming.beans.value.internet.web.I18nContentWebValue
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionRuleVo
@@ -27,6 +30,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.PromotionVo
 import com.onepiece.gpgaming.beans.value.internet.web.RecommendedWebValue
 import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.service.BannerService
+import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.core.service.RecommendedService
@@ -45,6 +49,7 @@ class IndexApiController(
         private val i18nContentService: I18nContentService,
         private val promotionService: PromotionService,
         private val recommendedService: RecommendedService,
+        private val hotGameService: HotGameService,
         private val indexUtil: IndexUtil,
         private val objectMapper: ObjectMapper
 ): BasicController(), IndexApi {
@@ -207,12 +212,35 @@ class IndexApiController(
     }
 
     @PutMapping("/recommended")
-    override fun updagte(@RequestBody uoReq: RecommendedWebValue.UpdateReq) {
+    override fun update(@RequestBody uoReq: RecommendedWebValue.UpdateReq) {
         val uo = RecommendedValue.UpdateVo(id = uoReq.id, clientId = getClientId(), contentJson = uoReq.contentJson, status = uoReq.status)
         recommendedService.update(uo = uo)
 
         indexUtil.generatorIndexPage(clientId = getClientId())
     }
 
+    @GetMapping("/hotGame")
+    override fun hotGameList(@RequestParam("type") type: HotGameType): List<HotGameVo> {
 
+        val client = current()
+        val contentMap = i18nContentService.getConfigType(clientId = client.id, configType = I18nConfig.HotGame)
+                .groupBy { it.configId }
+
+        val games = hotGameService.all(clientId = client.clientId)
+
+        return games.map {
+            val contents = contentMap[it.id] ?: emptyList()
+            HotGameVo(gameId = it.gameId, platform = it.platform, status = it.status, createdTime = it.createdTime, i18nContents = contents)
+        }
+    }
+
+    @PostMapping("/hotGame")
+    override fun create(@RequestBody hotGameCo: HotGameValue.HotGameCo) {
+        hotGameService.create(hotGameCo.copy(clientId = getClientId()))
+    }
+
+    @PutMapping("/hotGame")
+    override fun update(@RequestBody hotGameUo: HotGameValue.HotGameUo) {
+        hotGameService.update(hotGameUo)
+    }
 }

@@ -11,6 +11,30 @@ data class IndexConfig(
         val url: String
 )
 
+data class HotGameVo(
+
+        @ApiModelProperty("游戏名")
+        val name: String,
+
+        @ApiModelProperty("介绍")
+        val introduce: String,
+
+        @ApiModelProperty("平台")
+        val platform: Platform,
+
+        @ApiModelProperty("游戏Id")
+        val gameId: String,
+
+        @ApiModelProperty("图片1")
+        val img1: String,
+
+        @ApiModelProperty("图片2")
+        val img2: String?,
+
+        @ApiModelProperty("图片3")
+        val img3: String?
+)
+
 data class ConfigVo(
 
         @ApiModelProperty("logo")

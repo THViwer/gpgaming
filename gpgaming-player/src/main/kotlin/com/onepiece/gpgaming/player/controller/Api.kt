@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.player.controller.value.BannerVo
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.DownloadAppVo
+import com.onepiece.gpgaming.player.controller.value.HotGameVo
 import com.onepiece.gpgaming.player.controller.value.IndexConfig
 import com.onepiece.gpgaming.player.controller.value.PlatformCategoryDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformMembrerDetail
@@ -15,6 +16,7 @@ import com.onepiece.gpgaming.player.controller.value.PlatformVo
 import com.onepiece.gpgaming.player.controller.value.PromotionVo
 import com.onepiece.gpgaming.player.controller.value.StartGameResp
 import io.swagger.annotations.Api
+import io.swagger.annotations.ApiModelProperty
 import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
@@ -28,6 +30,12 @@ interface Api {
             @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("language") language: Language
     ): IndexConfig
+
+    @ApiOperation(tags = ["api"], value = "热门游戏")
+    fun hotGames(
+            @RequestHeader("launch") launch: LaunchMethod,
+            @RequestHeader("language") language: Language
+    ): List<HotGameVo>
 
     @ApiOperation(tags = ["api"],  value = "首页平台列表")
     fun indexPlatforms(

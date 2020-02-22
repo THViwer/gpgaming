@@ -30,6 +30,7 @@ sealed class I18nContentWebValue {
                 I18nConfig.Promotion -> objectMapper.readValue<I18nContent.PromotionI18n>(contentJson)
                 I18nConfig.IndexVideo -> objectMapper.readValue<I18nContent.IndexVideoI18n>(contentJson)
                 I18nConfig.Announcement -> objectMapper.readValue<I18nContent.AnnouncementI18n>(contentJson)
+                I18nConfig.HotGame -> objectMapper.readValue<I18nContent.HotGameI18n>(contentJson)
             }
         }
     }
@@ -53,6 +54,7 @@ sealed class I18nContentWebValue {
                 I18nConfig.Promotion -> objectMapper.readValue<I18nContent.PromotionI18n>(contentJson)
                 I18nConfig.IndexVideo -> objectMapper.readValue<I18nContent.IndexVideoI18n>(contentJson)
                 I18nConfig.Announcement -> objectMapper.readValue<I18nContent.AnnouncementI18n>(contentJson)
+                I18nConfig.HotGame -> objectMapper.readValue<I18nContent.HotGameI18n>(contentJson)
             }
         }
     }

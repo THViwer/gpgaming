@@ -48,6 +48,7 @@ data class I18nContent (
             I18nConfig.IndexVideo -> objectMapper.readValue<IndexVideoI18n>(contentJson)
             I18nConfig.Promotion -> objectMapper.readValue<PromotionI18n>(contentJson)
             I18nConfig.IndexSport -> objectMapper.readValue<IndexSportI18n>(contentJson)
+            I18nConfig.HotGame -> objectMapper.readValue<HotGameI18n>(contentJson)
         }
     }
 
@@ -118,12 +119,33 @@ data class I18nContent (
             val introductionImage: String
     ): II18nContent
 
+    /**
+     * 热门游戏
+     */
+    data class HotGameI18n(
+
+            // 名称
+            val name: String,
+
+            // 介绍
+            val introduce: String,
+
+            // 图片1
+            val img1: String,
+
+            // 图片2
+            val img2: String?,
+
+            // 图片3
+            val img3: String?
+    ): II18nContent
+
 
 
 }
 
-fun main() {
-
+//fun main() {
+//
 //    val banner = I18nContent.BannerI18n(imagePath = "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/banner/2019122002010684576.jpg")
 //    val json = jacksonObjectMapper().writeValueAsString(banner)
 //    println(json)
@@ -144,5 +166,5 @@ fun main() {
 //            precautions = "你好，我是老虎机"
 //    )
 //    println(jacksonObjectMapper().writeValueAsString(promotion))
-
-}
+//
+//}

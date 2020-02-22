@@ -48,4 +48,6 @@ object OnePieceRedisKeyConstant {
     fun getMicroGameToken(username: String) = "mg:token:$username"
 
     fun getAllAppDown() = "app:down:all"
+
+    fun getHotGames(clientId: Int) = "c:$clientId:hotGames"
 }

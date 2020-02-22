@@ -22,11 +22,13 @@ import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.core.ActiveConfig
+import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.BannerVo
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.DownloadAppVo
+import com.onepiece.gpgaming.player.controller.value.HotGameVo
 import com.onepiece.gpgaming.player.controller.value.IndexConfig
 import com.onepiece.gpgaming.player.controller.value.PlatformCategoryDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformMembrerDetail
@@ -55,6 +57,7 @@ open class ApiController(
         private val appDownService: AppDownService,
         private val activeConfig: ActiveConfig,
         private val objectMapper: ObjectMapper,
+        private val hotGameService: HotGameService,
         private val gamePlatformService: GamePlatformService
 ) : BasicController(), Api {
 
@@ -66,6 +69,45 @@ open class ApiController(
         val clientId = this.getClientIdByDomain()
         val url = SystemConstant.getClientResourcePath(clientId = clientId, profile = activeConfig.profile)
         return IndexConfig(url = "$url/index_${language.name.toLowerCase()}.json?${UUID.randomUUID()}")
+    }
+
+    @GetMapping("/hotGames")
+    override fun hotGames(
+            @RequestHeader("launch") launch: LaunchMethod,
+            @RequestHeader("language") language: Language
+    ): List<HotGameVo> {
+        val clientId = this.getClientIdByDomain()
+
+        val games = hotGameService.list(clientId)
+                .let {
+                    if (it.isEmpty()) hotGameService.list(1) else it
+                }
+
+        if (games.isEmpty()) return emptyList()
+
+
+        val i18nContentMap = i18nContentService.getConfigType(games.first().clientId, I18nConfig.HotGame)
+                .filter { it.language == language }
+                .map { it.configId to it }
+                .toMap()
+
+        if (i18nContentMap.isEmpty()) return emptyList()
+
+        val opens = platformBindService.findClientPlatforms(clientId)
+                .filter { it.platform.category == PlatformCategory.Slot }
+                .map { it.platform }
+                .toSet()
+
+        if (opens.isEmpty()) return emptyList()
+
+        return games.mapNotNull {
+            i18nContentMap[it.id]?.let { content ->
+                val hotGameContent = content as I18nContent.HotGameI18n
+                HotGameVo(name = content.name, introduce = content.introduce, gameId = it.gameId, img1 = content.img1, img2 = content.img2,
+                        img3 = content.img3, platform = it.platform)
+            }
+        }.filter { opens.contains(it.platform) }
+
     }
 
     @GetMapping("/index/platforms")

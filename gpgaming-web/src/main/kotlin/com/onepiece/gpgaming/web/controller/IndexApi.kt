@@ -1,12 +1,15 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.onepiece.gpgaming.beans.enums.HotGameType
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.RecommendedType
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Recommended
+import com.onepiece.gpgaming.beans.value.database.HotGameValue
 import com.onepiece.gpgaming.beans.value.internet.web.BannerCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerVo
+import com.onepiece.gpgaming.beans.value.internet.web.HotGameVo
 import com.onepiece.gpgaming.beans.value.internet.web.I18nContentWebValue
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionUoReq
@@ -77,7 +80,20 @@ interface IndexApi {
 
     @ApiOperation(tags = ["web setting"], value = "推荐 -> 更新")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun updagte(@RequestBody uoReq: RecommendedWebValue.UpdateReq)
+    fun update(@RequestBody uoReq: RecommendedWebValue.UpdateReq)
+
+
+
+    @ApiOperation(tags = ["web setting"], value = "热门游戏 -> 列表")
+    fun hotGameList(@RequestParam("type") type: HotGameType): List<HotGameVo>
+
+    @ApiOperation(tags = ["web setting"], value = "热门游戏 -> 创建")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun create(@RequestBody hotGameCo: HotGameValue.HotGameCo)
+
+    @ApiOperation(tags = ["web setting"], value = "热门游戏 -> 更新")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun update(@RequestBody hotGameUo: HotGameValue.HotGameUo)
 
 
 

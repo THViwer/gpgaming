@@ -18,6 +18,9 @@ enum class I18nConfig {
     IndexSport,
 
     // 首页视频
-    IndexVideo
+    IndexVideo,
+
+    // 热门游戏
+    HotGame
 
 }
