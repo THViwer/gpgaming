@@ -222,7 +222,7 @@ class ClientServiceImpl(
             val bannerUo = BannerCo(clientId = clientId, type = BannerType.Banner, order = 1, link = null)
             val id = bannerService.create(bannerUo)
 
-            val content = I18nContent.BannerI18n(imagePath = it)
+            val content = I18nContent.BannerI18n(imagePath = it, introduce = null)
             val i18nContent = I18nContentCo(clientId = clientId, language = Language.EN, configId = id, configType = I18nConfig.Banner, content = content)
             i18nContentService.create(i18nContent)
         }
@@ -236,7 +236,7 @@ class ClientServiceImpl(
             val bannerUo = BannerCo(clientId = clientId, type = BannerType.Slot, order = 1, link = null)
             val id = bannerService.create(bannerUo)
 
-            val content = I18nContent.BannerI18n(imagePath = it)
+            val content = I18nContent.BannerI18n(imagePath = it, introduce = null)
             val i18nContent = I18nContentCo(clientId = clientId, language = Language.EN, configId = id, configType = I18nConfig.Banner, content = content)
             i18nContentService.create(i18nContent)
         }
@@ -249,7 +249,7 @@ class ClientServiceImpl(
             val bannerUo = BannerCo(clientId = clientId, type = BannerType.Sport, order = 1, link = null)
             val configId = bannerService.create(bannerUo)
 
-            val content = I18nContent.BannerI18n(imagePath = it)
+            val content = I18nContent.BannerI18n(imagePath = it, introduce = null)
             val i18nContent = I18nContentCo(clientId = clientId, language = Language.EN, configId = configId, configType = I18nConfig.Banner, content = content)
             i18nContentService.create(i18nContent)
         }
@@ -262,7 +262,7 @@ class ClientServiceImpl(
             val bannerUo = BannerCo(clientId = clientId, type = BannerType.Live, order = 1, link = null)
             val id = bannerService.create(bannerUo)
 
-            val content = I18nContent.BannerI18n(imagePath = it)
+            val content = I18nContent.BannerI18n(imagePath = it, introduce = null)
             val i18nContent = I18nContentCo(clientId = clientId, language = Language.EN, configId = id, configType = I18nConfig.Banner, content = content)
             i18nContentService.create(i18nContent)
         }
@@ -274,7 +274,7 @@ class ClientServiceImpl(
             val bannerUo = BannerCo(clientId = clientId, type = BannerType.Banner, order = 1, link = null)
             val id = bannerService.create(bannerUo)
 
-            val content = I18nContent.BannerI18n(imagePath = it)
+            val content = I18nContent.BannerI18n(imagePath = it, introduce = null)
             val i18nContent = I18nContentCo(clientId = clientId, language = Language.EN, configId = id, configType = I18nConfig.Banner, content = content)
             i18nContentService.create(i18nContent)
         }

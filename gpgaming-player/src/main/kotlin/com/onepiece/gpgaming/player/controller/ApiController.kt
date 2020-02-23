@@ -370,12 +370,14 @@ open class ApiController(
         return bannerService.findByType(clientId = getClientIdByDomain(), type = type).mapNotNull {
             val i18nContent = map["${it.id}:${language}"]
                     ?: map["${it.id}:${Language.EN}"]
-            if (i18nContent == null) {
-                null
-            } else {
+            i18nContent?.let { x ->
                 val content = i18nContent.getII18nContent(objectMapper) as I18nContent.BannerI18n
-                BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type, link = it.link)
+
+                val introduce = content.introduce ?: "this is test"
+                BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type,
+                        link = it.link, introduce = introduce)
             }
+
         }
 
     }
@@ -424,7 +426,7 @@ open class ApiController(
                 null
             } else {
                 val content = i18nContent.getII18nContent(objectMapper) as I18nContent.BannerI18n
-                BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type, link = it.link)
+                BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type, link = it.link, introduce = content.introduce)
             }
         }
 

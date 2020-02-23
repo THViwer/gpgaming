@@ -57,7 +57,10 @@ data class I18nContent (
 
     data class BannerI18n(
 
-            val imagePath: String
+            val imagePath: String,
+
+            // 介绍
+            val introduce: String?
     ): II18nContent
 
     /**
