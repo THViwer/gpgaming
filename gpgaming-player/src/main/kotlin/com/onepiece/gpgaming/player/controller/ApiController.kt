@@ -373,9 +373,10 @@ open class ApiController(
             i18nContent?.let { x ->
                 val content = i18nContent.getII18nContent(objectMapper) as I18nContent.BannerI18n
 
+                val title = content.title ?: "this is title"
                 val introduce = content.introduce ?: "this is test"
                 BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type,
-                        link = it.link, introduce = introduce)
+                        link = it.link, introduce = introduce, title = title)
             }
 
         }
@@ -426,7 +427,8 @@ open class ApiController(
                 null
             } else {
                 val content = i18nContent.getII18nContent(objectMapper) as I18nContent.BannerI18n
-                BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type, link = it.link, introduce = content.introduce)
+                BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type, link = it.link,
+                        introduce = content.introduce, title = content.title)
             }
         }
 
