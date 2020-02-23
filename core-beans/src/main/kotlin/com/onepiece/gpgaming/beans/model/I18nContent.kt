@@ -59,6 +59,8 @@ data class I18nContent (
 
             val imagePath: String,
 
+            val title: String?,
+
             // 介绍
             val introduce: String?
     ): II18nContent
