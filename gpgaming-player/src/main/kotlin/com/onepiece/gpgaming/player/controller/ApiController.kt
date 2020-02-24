@@ -104,11 +104,19 @@ open class ApiController(
         if (opens.isEmpty()) return emptyList()
 
         return games.mapNotNull {
-            i18nContentMap[it.id]?.let { content ->
-                val hotGameContent = content as I18nContent.HotGameI18n
-                HotGameVo(name = content.name, introduce = content.introduce, gameId = it.gameId, img1 = content.img1, img2 = content.img2,
-                        img3 = content.img3, platform = it.platform)
+
+            if (i18nContentMap[it.id]  != null ) {
+                i18nContentMap[it.id] ?.let { content ->
+                    val hotGameContent = content as I18nContent.HotGameI18n
+                    HotGameVo(name = content.name, introduce = content.introduce, gameId = it.gameId, img1 = content.img1, img2 = content.img2,
+                            img3 = content.img3, platform = it.platform, logo = it.platform.hotGameLogo)
+                }
+            } else {
+                HotGameVo(name = "content.name", introduce = "content.introduce", gameId = it.gameId, img1 = "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png", img2 = null,
+                        img3 = null, platform = it.platform, logo = it.platform.hotGameLogo)
             }
+
+
         }.filter { opens.contains(it.platform) }
 
     }

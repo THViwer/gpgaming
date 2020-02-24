@@ -25,6 +25,9 @@ data class HotGameVo(
         @ApiModelProperty("游戏Id")
         val gameId: String,
 
+        @ApiModelProperty("logo")
+        val logo: String?,
+
         @ApiModelProperty("图片1")
         val img1: String,
 
