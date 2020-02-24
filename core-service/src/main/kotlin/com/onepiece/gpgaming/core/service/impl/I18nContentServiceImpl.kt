@@ -33,6 +33,8 @@ class I18nContentServiceImpl(
     }
 
     override fun getConfigType(clientId: Int, configType: I18nConfig): List<I18nContent> {
+
+        //TODO 看要不要用缓存
 //        return i18nContentDao.all(clientId)
         return i18nContentDao.getConfigType(clientId = clientId, configType = configType)
 //                .map {
