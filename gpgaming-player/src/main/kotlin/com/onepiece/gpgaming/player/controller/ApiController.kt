@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.SystemConstant
 import com.onepiece.gpgaming.beans.enums.BannerType
 import com.onepiece.gpgaming.beans.enums.ContactType
+import com.onepiece.gpgaming.beans.enums.HotGameType
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
@@ -78,7 +79,9 @@ open class ApiController(
     ): List<HotGameVo> {
         val clientId = this.getClientIdByDomain()
 
-        val games = hotGameService.list(clientId)
+        val type = if (launch == LaunchMethod.Wap) HotGameType.Mobile else HotGameType.Pc
+
+        val games = hotGameService.list(clientId).filter { it.type == type }
                 .let {
                     if (it.isEmpty()) hotGameService.list(1) else it
                 }
