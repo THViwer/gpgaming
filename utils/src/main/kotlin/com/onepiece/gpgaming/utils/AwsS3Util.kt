@@ -121,11 +121,11 @@ fun main() {
 //        AwsS3Util.uploadLocalFile(file, "logo/${file.name}")
 //    }
 //
-    val fileList = File("/Users/cabbage/Downloads/live_re")
-
-    fileList.listFiles().map {  file ->
-        AwsS3Util.uploadLocalFile(file, "client/1/live/${file.name.replace(" ", "")}")
-    }
+//    val fileList = File("/Users/cabbage/Downloads/live_re")
+//
+//    fileList.listFiles().map {  file ->
+//        AwsS3Util.uploadLocalFile(file, "client/1/live/${file.name.replace(" ", "")}")
+//    }
 
 //    val fileList = File("/Users/cabbage/Downloads/apk")
 //
@@ -147,4 +147,12 @@ fun main() {
 //    val file = File("/Users/cabbage/Downloads/upcoming-matches-2-en.png")
 //    val path = AwsS3Util.uploadLocalFile(file, "client/1/sport/s2.png")
 //    println(path)
+
+    val file = File("/Users/cabbage/Downloads/首页推荐平台小logo")
+    file.listFiles().forEach { file ->
+        val url = AwsS3Util.uploadLocalFile(file, "hotGame/logo/${file.name.replace(" ", "")}")
+        println("file: ${file.name}, url = $url")
+
+    }
+
 }

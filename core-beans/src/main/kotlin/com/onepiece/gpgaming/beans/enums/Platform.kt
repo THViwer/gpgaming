@@ -4,7 +4,8 @@ import com.onepiece.gpgaming.beans.model.GamePlatform
 
 
 enum class Platform(
-        val category: PlatformCategory
+        val category: PlatformCategory,
+        val hotGameLogo: String? = null
 ){
 
     // 中心 用于钱包 不用于游戏
@@ -13,17 +14,17 @@ enum class Platform(
     // slot
     Joker(PlatformCategory.Slot),
     Kiss918(PlatformCategory.Slot),
-    Pussy888(PlatformCategory.Slot),
-    Mega(PlatformCategory.Slot),
-    Pragmatic(PlatformCategory.Slot),
-    SpadeGaming(PlatformCategory.Slot),
-    TTG(PlatformCategory.Slot),
-    MicroGaming(PlatformCategory.Slot),
-    PlaytechSlot(PlatformCategory.Slot),
-    PNG(PlatformCategory.Slot),
-    GamePlay(PlatformCategory.Slot),
-    SimplePlay(PlatformCategory.Slot), // 就是sa 的slot
-    AsiaGamingSlot(PlatformCategory.Slot),
+    Pussy888(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/pussy888.png"),
+    Mega(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/mega888.png"),
+    Pragmatic(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/pragmatic.png"),
+    SpadeGaming(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/spadegaming.png"),
+    TTG(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/top.png"),
+    MicroGaming(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
+    PlaytechSlot(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"),
+    PNG(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgo.png"),
+    GamePlay(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgame.png"),
+    SimplePlay(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"), // 就是sa 的slot
+    AsiaGamingSlot(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
 
     // live video
     CT(PlatformCategory.LiveVideo),
@@ -33,10 +34,10 @@ enum class Platform(
     SexyGaming(PlatformCategory.LiveVideo),
     Fgg(PlatformCategory.LiveVideo),
     AllBet(PlatformCategory.LiveVideo),
-    SaGaming(PlatformCategory.LiveVideo),
-    AsiaGamingLive(PlatformCategory.LiveVideo),
-    MicroGamingLive(PlatformCategory.LiveVideo),
-    PlaytechLive(PlatformCategory.LiveVideo),
+    SaGaming(PlatformCategory.LiveVideo, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"),
+    AsiaGamingLive(PlatformCategory.LiveVideo, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
+    MicroGamingLive(PlatformCategory.LiveVideo, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
+    PlaytechLive(PlatformCategory.LiveVideo, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"),
 
     // sport
 //    Sbo(PlatformDetail.ofSbo()),
