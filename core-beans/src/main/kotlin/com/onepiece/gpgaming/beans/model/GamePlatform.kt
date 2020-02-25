@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.beans.model
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
 
 data class GamePlatform(
@@ -56,4 +57,6 @@ data class GamePlatform(
             return launchs?.split(",")?.map { LaunchMethod.valueOf(it) }
                     ?: emptyList()
         }
+
+    val category: PlatformCategory = this.platform.category
 }
