@@ -81,6 +81,9 @@ class IndexApiController(
 
     @PutMapping("/i18n")
     override fun update(@RequestBody i18nContentUoReq: I18nContentWebValue.I18nContentUoReq) {
+
+        log.info("国际化修改内容：$i18nContentUoReq")
+
         val i18nContentUo = I18nContentUo(id = i18nContentUoReq.id, content = i18nContentUoReq.getI18nContent(objectMapper))
         i18nContentService.update(i18nContentUo)
 
