@@ -107,9 +107,9 @@ open class ApiController(
 
             if (i18nContentMap["${it.id}_${language}"]  != null ) {
                 i18nContentMap["${it.id}_${language}"] ?.let { content ->
-                    val hotGameContent = content as I18nContent.HotGameI18n
-                    HotGameVo(name = content.name, introduce = content.introduce, gameId = it.gameId, img1 = content.img1, img2 = content.img2,
-                            img3 = content.img3, platform = it.platform, logo = it.platform.hotGameLogo)
+                    val hotGameContent = content.getII18nContent(objectMapper) as I18nContent.HotGameI18n
+                    HotGameVo(name = hotGameContent.name, introduce = hotGameContent.introduce, gameId = it.gameId, img1 = hotGameContent.img1, img2 = hotGameContent.img2,
+                            img3 = hotGameContent.img3, platform = it.platform, logo = it.platform.hotGameLogo)
                 }
             } else {
                 HotGameVo(name = "content.name", introduce = "content.introduce", gameId = it.gameId, img1 = "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png", img2 = null,
