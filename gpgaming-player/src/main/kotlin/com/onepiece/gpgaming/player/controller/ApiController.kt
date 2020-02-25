@@ -90,11 +90,11 @@ open class ApiController(
 
 
         val i18nContentMap = i18nContentService.getConfigType(games.first().clientId, I18nConfig.HotGame)
-                .filter { it.language == language }
-                .map { it.configId to it }
+//                .filter { it.language == language }
+                .map { "${it.configId}_${it.language}" to it }
                 .toMap()
 
-        if (i18nContentMap.isEmpty()) return emptyList()
+//        if (i18nContentMap.isEmpty()) return emptyList()
 
         val opens = platformBindService.findClientPlatforms(clientId)
                 .filter { it.platform.category == PlatformCategory.Slot }
@@ -105,8 +105,8 @@ open class ApiController(
 
         return games.mapNotNull {
 
-            if (i18nContentMap[it.id]  != null ) {
-                i18nContentMap[it.id] ?.let { content ->
+            if (i18nContentMap["${it.id}_${language}"]  != null ) {
+                i18nContentMap["${it.id}_${language}"] ?.let { content ->
                     val hotGameContent = content as I18nContent.HotGameI18n
                     HotGameVo(name = content.name, introduce = content.introduce, gameId = it.gameId, img1 = content.img1, img2 = content.img2,
                             img3 = content.img3, platform = it.platform, logo = it.platform.hotGameLogo)
