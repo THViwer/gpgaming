@@ -230,7 +230,8 @@ class IndexApiController(
 
         return games.map {
             val contents = contentMap[it.id] ?: emptyList()
-            HotGameVo(gameId = it.gameId, platform = it.platform, status = it.status, createdTime = it.createdTime, i18nContents = contents)
+            HotGameVo(gameId = it.gameId, platform = it.platform, status = it.status, createdTime = it.createdTime,
+                    i18nContents = contents, id = it.id)
         }
     }
 

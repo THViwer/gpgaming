@@ -8,6 +8,9 @@ import java.time.LocalDateTime
 
 data class HotGameVo(
 
+        @ApiModelProperty("Id")
+        val id: Int,
+
         @ApiModelProperty("游戏Id")
         val gameId: String,
 
