@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.su.controller.value
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import io.swagger.annotations.ApiModelProperty
@@ -40,7 +41,11 @@ sealed class PlatformBindSuValue {
             @ApiModelProperty("状态")
             val status: Status
 
-    )
+    ) {
+        @ApiModelProperty("平台类型")
+        val category: PlatformCategory = platform.category
+
+    }
 
     data class PlatformBindCoReq(
 
