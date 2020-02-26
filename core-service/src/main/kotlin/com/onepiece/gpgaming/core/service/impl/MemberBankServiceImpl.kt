@@ -19,12 +19,6 @@ class MemberBankServiceImpl(
     }
 
     override fun create(memberBankCo: MemberBankCo): Int {
-
-        try {
-            memberBankCo.bankCardNumber.toInt()
-        } catch (e: Exception) {
-            error(OnePieceExceptionCode.BANK_CARD_ERROR)
-        }
         check(memberBankCo.bankCardNumber.length > 10) { OnePieceExceptionCode.BANK_CARD_ERROR }
 
         val id = memberBankDao.create(memberBankCo)
