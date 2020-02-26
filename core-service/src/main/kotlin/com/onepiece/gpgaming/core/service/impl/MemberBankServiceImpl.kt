@@ -23,7 +23,6 @@ class MemberBankServiceImpl(
 
         val id = memberBankDao.create(memberBankCo)
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
-
         return id
     }
 
