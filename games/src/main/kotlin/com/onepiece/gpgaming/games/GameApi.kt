@@ -223,6 +223,7 @@ class GameApi(
             Platform.PNG,
             Platform.MicroGamingLive,
             Platform.AsiaGamingLive,
+            Platform.EBet,
             Platform.Bcs -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, launch = launch, language = language, password = platformPassword)
                 this.getPlatformApi(platform).start(startReq)

@@ -60,4 +60,8 @@ sealed class PlatformAuthValue {
             val current: String = "MYR"
     )
 
+    data class EBetCheckResponse(
+            val status: String
+    )
+
 }

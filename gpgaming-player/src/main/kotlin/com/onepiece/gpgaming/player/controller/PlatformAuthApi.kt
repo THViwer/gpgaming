@@ -22,6 +22,8 @@ interface PlatformAuthApi {
     @ApiOperation(tags = ["platform auth"], value = "ebet 登陆")
     fun login(@RequestBody data: Map<String, Any>): PlatformAuthValue.EBetResponse
 
+    @ApiOperation(tags = ["platform auth"], value = "ebet 登陆")
+    fun ebetCheck(@RequestBody data: Map<String, Any>): PlatformAuthValue.EBetCheckResponse
 
     @ApiOperation(tags = ["platform auth"], value = "下载mega的app")
     fun download(@RequestHeader("clientId", defaultValue = "1") clientId: Int): String

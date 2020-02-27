@@ -77,16 +77,36 @@ class PlatformAuthApiController(
 
         val mapUtil = MapUtil.instance(data)
         val username = mapUtil.asString("username")
-        val accessToken = mapUtil.asString("accessToken")
+//        val accessToken = mapUtil.asString("accessToken")
 
         val sign = DigestUtils.md5Hex("$username:ebet:1")
 
-        log.info("签名校验：accessToken=$accessToken, sign=$sign, 是否通过：${accessToken == sign}")
+//        log.info("签名校验：accessToken=$accessToken, sign=$sign, 是否通过：${accessToken == sign}")
 
-        return PlatformAuthValue.EBetResponse(accessToken = accessToken, username = username, status = "200", nickname = username)
+        return PlatformAuthValue.EBetResponse(accessToken = sign, username = username, status = "200", nickname = username)
     }
 
+    @PostMapping("/ebet/check", produces = ["application/json;charset=utf-8"])
+    override fun ebetCheck(@RequestBody data: Map<String, Any>): PlatformAuthValue.EBetCheckResponse {
 
+        log.info("ebet 获得check数据：$data")
+
+        /**
+         * {
+        "cmd": "UserInfo",
+        "money": 1000.01,
+        "username": "apitest01",
+        "channelId": 1,
+        "subChannelId": 0,
+        "timestamp": 1577808000,
+        "userId": 123456789,
+        "ip": "127.0.0.1",
+        "signature": "bCP+wYe8TxN3UIHeNPxEv7czYkXueoe1pKSB6IaUDfoR4mtFYcJl3rNFk8Uz84XAHfeD3mNE+p4gECOVw2JxxQ=="
+        }
+         */
+
+        return PlatformAuthValue.EBetCheckResponse(status = "200")
+    }
 
     @GetMapping("/mega")
     override fun download(@RequestHeader("clientId", defaultValue = "1") clientId: Int): String {
