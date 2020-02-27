@@ -12,13 +12,13 @@ import springfox.documentation.annotations.ApiIgnore
 @Api(tags = ["platform auth"], description = " ")
 interface PlatformAuthApi {
 
-    @ApiIgnore
+//    @ApiIgnore
     @ApiOperation(tags = ["platform auth"], value = "mega 登陆")
     fun login(
             @RequestParam("d") d: Int
     ): String
 
-    @ApiIgnore
+//    @ApiIgnore
     @ApiOperation(tags = ["platform auth"], value = "ebet 登陆")
     fun login(@RequestBody data: Map<String, Any>): PlatformAuthValue.EBetResponse
 

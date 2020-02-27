@@ -121,6 +121,8 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/mega/",
                         "/cmd",
                         "/cmd/",
+                        "/ebet",
+                        "/ebet/",
                         "/spadeGaming",
                         "/spadeGaming/",
                         "/png/order",
