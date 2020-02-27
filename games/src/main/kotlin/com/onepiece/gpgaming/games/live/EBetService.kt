@@ -5,12 +5,15 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.EBetClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.ActiveConfig
+import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.Instant
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.HashMap
@@ -121,18 +124,31 @@ class EBetService(
                 "startTimeStr" to pullBetOrderReq.startTime.format(dateTimeFormat),
                 "endTimeStr" to pullBetOrderReq.endTime.format(dateTimeFormat)
         )
-        val result = this.doStartPost(data = data, clientToken = clientToken, path = "/api/getbetlimit")
+        val result = this.doStartPost(data = data, clientToken = clientToken, path = "/api/userbethistory")
 
-        result.mapUtil.asList("betHistories").map { mapUtil ->
+        return result.mapUtil.asList("betHistories").map { mapUtil ->
             val bet = mapUtil.asBigDecimal("bet")
             val win = mapUtil.asBigDecimal("payout")
             val orderId = mapUtil.asString("roundNo")
+            val username = mapUtil.asString("username")
+
+            val betTime = mapUtil.asLong("createTime").div(1000)
+                    .let { Instant.ofEpochMilli(it) }
+                    .atZone(ZoneId.of("Asia/Shanghai"))
+                    .toLocalDateTime()
+
+            val settleTime = mapUtil.asLong("createTime").div(1000)
+                    .let { Instant.ofEpochMilli(it) }
+                    .atZone(ZoneId.of("Asia/Shanghai"))
+                    .toLocalDateTime()
+
+
+            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.EBet, platformUsername = username)
 
             val originData = objectMapper.writeValueAsString(mapUtil.data)
-//            BetOrderValue.BetOrderCo(clientId = 1, memberId = 1, betAmount = bet, winAmount = win, orderId = orderId, betTime = )
+            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = bet, winAmount = win, orderId = orderId, betTime = betTime, settleTime = settleTime,
+                    originData = originData, platform = Platform.EBet)
         }
-
-        return emptyList()
     }
 
 }

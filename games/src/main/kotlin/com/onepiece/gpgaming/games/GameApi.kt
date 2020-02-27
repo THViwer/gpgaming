@@ -432,6 +432,7 @@ class GameApi(
             Platform.AsiaGamingLive,
             Platform.AsiaGamingSlot,
             Platform.PlaytechSlot,
+            Platform.EBet,
             Platform.PlaytechLive -> {
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken,
                         platform = platformBind.platform)
