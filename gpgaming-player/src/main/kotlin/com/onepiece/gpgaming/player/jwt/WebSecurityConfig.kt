@@ -123,6 +123,8 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/cmd/",
                         "/ebet",
                         "/ebet/",
+                        "/ebet/",
+                        "/ebet/check",
                         "/spadeGaming",
                         "/spadeGaming/",
                         "/png/order",
