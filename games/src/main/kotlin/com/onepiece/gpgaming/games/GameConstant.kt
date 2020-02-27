@@ -42,6 +42,7 @@ class GameConstant(
             Platform.SexyGaming -> "https://testapi.onlinegames22.com"
             Platform.Fgg -> "https://d-tapi.fgg365.com"
             Platform.AllBet -> "https://api3.apidemo.net:8443"
+            Platform.EBet -> "http://gpgaming88myr.ebet.im:8888/api/"
 
             // sport
 //            Platform.Lbc -> "http://tsa.gpgaming88.com"
@@ -86,6 +87,7 @@ class GameConstant(
             Platform.SexyGaming -> "$domain:2005"
             Platform.AllBet -> "$domain:2007"
             Platform.SaGaming -> "$domain:2008"
+            Platform.EBet -> "$domain:2010"
 
             // sport
 //            Platform.CMD -> "$domain:3002"

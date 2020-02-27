@@ -18,6 +18,10 @@ interface PlatformAuthApi {
             @RequestParam("d") d: Int
     ): String
 
+    @ApiIgnore
+    @ApiOperation(tags = ["platform auth"], value = "ebet 登陆")
+    fun login(@RequestBody data: Map<String, Any>): PlatformAuthValue.EBetResponse
+
 
     @ApiOperation(tags = ["platform auth"], value = "下载mega的app")
     fun download(@RequestHeader("clientId", defaultValue = "1") clientId: Int): String

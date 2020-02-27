@@ -9,8 +9,10 @@ import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.games.bet.JacksonMapUtil
+import com.onepiece.gpgaming.games.bet.MapUtil
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.PlatformAuthValue
+import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -67,6 +69,24 @@ class PlatformAuthApiController(
 
 //        return LoginResult(success = "1", sessionId = UUID.randomUUID().toString(), msg = "login success")
     }
+
+
+    @PostMapping("/ebet", produces = ["application/json;charset=utf-8"])
+    override fun login(@RequestBody data: Map<String, Any>): PlatformAuthValue.EBetResponse {
+        log.info("ebet 获得登陆数据：$data")
+
+        val mapUtil = MapUtil.instance(data)
+        val username = mapUtil.asString("username")
+        val accessToken = mapUtil.asString("accessToken")
+
+        val sign = DigestUtils.md5Hex("$username:ebet:1")
+
+        log.info("签名校验：accessToken=$accessToken, sign=$sign, 是否通过：${accessToken == sign}")
+
+        return PlatformAuthValue.EBetResponse(accessToken = accessToken, username = username, status = "200", nickname = username)
+    }
+
+
 
     @GetMapping("/mega")
     override fun download(@RequestHeader("clientId", defaultValue = "1") clientId: Int): String {

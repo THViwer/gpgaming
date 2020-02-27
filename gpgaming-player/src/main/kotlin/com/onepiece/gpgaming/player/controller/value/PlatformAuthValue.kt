@@ -45,4 +45,19 @@ sealed class PlatformAuthValue {
         )
     }
 
+    data class EBetResponse(
+
+            val accessToken: String,
+
+            val subChannelId: Int = 0,
+
+            val username: String,
+
+            val status: String,
+
+            val nickname: String,
+
+            val current: String = "MYR"
+    )
+
 }

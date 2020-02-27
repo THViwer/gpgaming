@@ -38,6 +38,7 @@ enum class Platform(
     AsiaGamingLive(PlatformCategory.LiveVideo, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
     MicroGamingLive(PlatformCategory.LiveVideo, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
     PlaytechLive(PlatformCategory.LiveVideo, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"),
+    EBet(PlatformCategory.LiveVideo),
 
     // sport
 //    Sbo(PlatformDetail.ofSbo()),

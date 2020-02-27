@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.beans.model.token.CMDClientToken
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.DefaultClientToken
 import com.onepiece.gpgaming.beans.model.token.DreamGamingClientToken
+import com.onepiece.gpgaming.beans.model.token.EBetClientToken
 import com.onepiece.gpgaming.beans.model.token.EvolutionClientToken
 import com.onepiece.gpgaming.beans.model.token.GGFishingClientToken
 import com.onepiece.gpgaming.beans.model.token.GamePlayClientToken
@@ -92,6 +93,7 @@ data class PlatformBind(
                 Platform.PNG -> PNGClientToken::class.java
                 Platform.GamePlay -> GamePlayClientToken::class.java
                 Platform.SimplePlay -> SimplePlayClientToken::class.java
+                Platform.EBet -> EBetClientToken::class.java
 
                 Platform.MicroGaming, Platform.MicroGamingLive -> MicroGamingClientToken::class.java
                 Platform.AsiaGamingSlot, Platform.AsiaGamingLive -> AsiaGamingClientToken::class.java

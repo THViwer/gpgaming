@@ -19,6 +19,7 @@ import com.onepiece.gpgaming.games.combination.PlaytechService
 import com.onepiece.gpgaming.games.fishing.GGFishingService
 import com.onepiece.gpgaming.games.live.AllBetService
 import com.onepiece.gpgaming.games.live.DreamGamingService
+import com.onepiece.gpgaming.games.live.EBetService
 import com.onepiece.gpgaming.games.live.EvolutionService
 import com.onepiece.gpgaming.games.live.FggService
 import com.onepiece.gpgaming.games.live.GoldDeluxeService
@@ -69,6 +70,7 @@ class GameApi(
         private val allBetService: AllBetService,
         private val dreamGamingService: DreamGamingService,
         private val pngService: PNGService,
+        private val eBetService: EBetService,
 
         // sport
 //        private val sboService: SboService,
@@ -111,6 +113,7 @@ class GameApi(
             Platform.SexyGaming -> sexyGamingService
             Platform.PNG -> pngService
             Platform.SaGaming -> saGamingService
+            Platform.EBet -> eBetService
 
             // sport
             Platform.Lbc -> lbcService
