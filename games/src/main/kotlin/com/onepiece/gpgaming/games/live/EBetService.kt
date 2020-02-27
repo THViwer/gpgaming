@@ -1,5 +1,7 @@
 package com.onepiece.gpgaming.games.live
 
+import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.EBetClientToken
@@ -110,8 +112,20 @@ class EBetService(
 
     override fun start(startReq: GameValue.StartReq): String {
         val clientToken = startReq.token as EBetClientToken
+
+        val language = when (startReq.language) {
+            Language.CN -> "zh_cn"
+            Language.MY -> "ms_my"
+            Language.ID -> "in_id"
+            Language.TH -> "th_th"
+            Language.VI -> "vi_vn"
+            else -> "en_us"
+        }
+
+//        val orientation = if (startReq.launch == LaunchMethod.Wap) "&orientation=1" else ""
+
         val accessToken = DigestUtils.md5Hex("${startReq.username}:ebet:1:${UUID.randomUUID().toString().replace("-", "")}")
-        return "${clientToken.gameUrl}&username=${startReq.username}&accessToken=$accessToken"
+        return "${clientToken.gameUrl}&username=${startReq.username}&accessToken=$accessToken&language=$language&gameType=0,1,2,7"
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
