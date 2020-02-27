@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.HashMap
 
 @Service
 class EBetService(
@@ -105,7 +107,7 @@ class EBetService(
 
     override fun start(startReq: GameValue.StartReq): String {
         val clientToken = startReq.token as EBetClientToken
-        val accessToken = DigestUtils.md5Hex("${startReq.username}:ebet:1")
+        val accessToken = DigestUtils.md5Hex("${startReq.username}:ebet:1:${UUID.randomUUID().toString().replace("-", "")}")
         return "${clientToken.gameUrl}&username=${startReq.username}&accessToken=$accessToken"
     }
 
