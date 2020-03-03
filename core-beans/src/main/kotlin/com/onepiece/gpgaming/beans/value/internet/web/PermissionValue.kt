@@ -29,7 +29,16 @@ sealed class PermissionValue {
             val waiterId: Int,
 
             @ApiModelProperty("权限列表")
-            val permissions: List<PermissionVo>
+            val permissions: List<PermissionVoReq>
+    )
+
+    data class PermissionVoReq(
+
+            @ApiModelProperty("资源Id")
+            val resourceId: String,
+
+            @ApiModelProperty("是否有权限")
+            val effective: Boolean
     )
 
     data class PermissionVo(
