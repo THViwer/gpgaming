@@ -48,7 +48,7 @@ class GameConstant(
             // sport
 //            Platform.Lbc -> "http://tsa.gpgaming88.com"
             Platform.Bcs -> "https://transferapi.ballcrown.com"
-            Platform.CMD -> "http://api.1win888.net"
+            Platform.CMD -> "https://api.fts368.com"
 //            Platform.Sbo -> "http://sboapi.gsoft168.com"
 
             // fishing.
