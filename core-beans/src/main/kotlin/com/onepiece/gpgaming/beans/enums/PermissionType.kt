@@ -29,7 +29,10 @@ enum class PermissionType(
     WEBSITE_ANNOUNCEMENT("4000", "4100", "公告管理", "公告管理"),
     WEBSITE_BANNER("4000", "4200", "Banner", "Banner"),
     WEBSITE_PROMOTION( "4000", "4300", "优惠活动", "优惠活动"),
-    WEBSITE_CONTACT("4000", "4400", "联系我们", "联系我们"),
+    WEBSITE_HOT_GAME("4000", "4400", "热门游戏", "联系我们"),
+    WEBSITE_INDEX_VIDEO("4000", "4500", "首页视频", "首页视频"),
+    WEBSITE_INDEX_SPORT("4000", "4600", "首页体育", "首页体育"),
+    WEBSITE_INDEX_LIVE("4000", "4700", "首页真人", "首页真人"),
 
     // 报表
     REPORT_MANAGE("-1", "5000", "报表", "报表"),
