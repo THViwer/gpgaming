@@ -51,8 +51,8 @@ class GameConstant(
             Platform.CMD -> "http://api.1win888.net"
 //            Platform.Sbo -> "http://sboapi.gsoft168.com"
 
-            // fishing
-            Platform.GGFishing -> "https://ap626.ylgaming.net"
+            // fishing.
+            Platform.GGFishing -> "https://yl368.ylgaming.net"
 
             Platform.PlaytechSlot, Platform.PlaytechLive -> "https://api-uat.gamzo.com"
 
