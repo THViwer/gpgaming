@@ -43,6 +43,7 @@ class GameConstant(
             Platform.Fgg -> "https://d-tapi.fgg365.com"
             Platform.AllBet -> "https://api3.apidemo.net:8443"
             Platform.EBet -> "http://gpgaming88myr.ebet.im:8888/api/"
+            Platform.SaGaming -> "http://sai-api.sa-apisvr.com"
 
             // sport
 //            Platform.Lbc -> "http://tsa.gpgaming88.com"
