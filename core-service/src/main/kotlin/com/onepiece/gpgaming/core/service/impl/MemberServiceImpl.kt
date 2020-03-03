@@ -14,6 +14,7 @@ import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.utils.RedisService
+import org.springframework.scheduling.annotation.Async
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -74,6 +75,7 @@ class MemberServiceImpl(
     }
 
     @Transactional(rollbackFor = [Exception::class])
+    @Async
     override fun create(memberCo: MemberCo) {
 
         // check username exist
