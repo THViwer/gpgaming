@@ -52,7 +52,7 @@ class GameConstant(
 //            Platform.Sbo -> "http://sboapi.gsoft168.com"
 
             // fishing
-            Platform.GGFishing -> "https://optest.365gaming.cc:10029"
+            Platform.GGFishing -> "https://ap626.ylgaming.net"
 
             Platform.PlaytechSlot, Platform.PlaytechLive -> "https://api-uat.gamzo.com"
 
