@@ -35,6 +35,7 @@ interface WaiterApi {
     ): List<PermissionValue.PermissionVo>
 
     @ApiOperation(tags = ["user"], value = "客服 -> 权限修改")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun permission(@RequestBody req: PermissionValue.PermissionReq)
 
 
