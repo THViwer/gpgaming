@@ -91,7 +91,7 @@ open class ApiController(
 
         if (games.isEmpty()) return emptyList()
 
-        log.info("step 1 ", games)
+        log.info("step 1 ${games}")
 
         val i18nContentMap = i18nContentService.getConfigType(games.first().clientId, I18nConfig.HotGame)
 //                .filter { it.language == language }
@@ -99,7 +99,7 @@ open class ApiController(
                 .toMap()
 
 //        if (i18nContentMap.isEmpty()) return emptyList()
-        log.info("step 2 ", i18nContentMap)
+        log.info("step 2 $i18nContentMap")
 
 
         val opens = platformBindService.findClientPlatforms(clientId)
@@ -107,7 +107,7 @@ open class ApiController(
                 .map { it.platform }
                 .toSet()
 
-        log.info("step 3 ", opens)
+        log.info("step 3 $opens")
 
 
         if (opens.isEmpty()) return emptyList()
