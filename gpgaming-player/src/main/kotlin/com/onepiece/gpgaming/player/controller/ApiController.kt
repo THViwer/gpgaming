@@ -103,7 +103,7 @@ open class ApiController(
 
 
         val opens = platformBindService.findClientPlatforms(clientId)
-                .filter { it.platform.category == PlatformCategory.Slot }
+//                .filter { it.platform.category == PlatformCategory.Slot }
                 .map { it.platform }
                 .toSet()
 
