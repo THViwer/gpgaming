@@ -36,6 +36,7 @@ import com.onepiece.gpgaming.player.controller.value.PlatformMembrerDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformVo
 import com.onepiece.gpgaming.player.controller.value.PromotionVo
 import com.onepiece.gpgaming.player.controller.value.StartGameResp
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
@@ -61,6 +62,8 @@ open class ApiController(
         private val hotGameService: HotGameService,
         private val gamePlatformService: GamePlatformService
 ) : BasicController(), Api {
+
+    private val log = LoggerFactory.getLogger(ApiController::class.java)
 
     @GetMapping
     override fun config(
@@ -88,6 +91,7 @@ open class ApiController(
 
         if (games.isEmpty()) return emptyList()
 
+        log.info("step 1 ", games)
 
         val i18nContentMap = i18nContentService.getConfigType(games.first().clientId, I18nConfig.HotGame)
 //                .filter { it.language == language }
@@ -95,11 +99,16 @@ open class ApiController(
                 .toMap()
 
 //        if (i18nContentMap.isEmpty()) return emptyList()
+        log.info("step 2 ", i18nContentMap)
+
 
         val opens = platformBindService.findClientPlatforms(clientId)
                 .filter { it.platform.category == PlatformCategory.Slot }
                 .map { it.platform }
                 .toSet()
+
+        log.info("step 3 ", opens)
+
 
         if (opens.isEmpty()) return emptyList()
 
