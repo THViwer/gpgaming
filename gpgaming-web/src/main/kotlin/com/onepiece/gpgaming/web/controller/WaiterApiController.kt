@@ -97,7 +97,7 @@ class WaiterApiController(
             val childPermissions = groupPermissions[it.resourceId]?.map { childPermission ->
                 val name = if (language == Language.CN) childPermission.cname else childPermission.ename
                 PermissionValue.PermissionVo(parentId = childPermission.parentId, resourceId = childPermission.resourceId, name = name,
-                        effective = permissions[it.resourceId]?: false, permissions = null)
+                        effective = permissions[childPermission.resourceId]?: false, permissions = null)
             }
 
             val name = if (language == Language.CN) it.cname else it.ename
