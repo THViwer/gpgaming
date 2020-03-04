@@ -76,13 +76,14 @@ object AwsS3Util {
         val originFileName = file.originalFilename!!
         val scheme = originFileName.substring(originFileName.lastIndexOf("."))
         val randomFileName = generatorFileName("client/${clientId}/$path", scheme)
+        val bucktName = if (profile == "dev" || profile == "sit") "awspg1" else "awspg2"
+
 
         val putObjectRequest = PutObjectRequest(bucktName, randomFileName, file.inputStream, this.getObjectMetadata(scheme))
         putObjectRequest.cannedAcl = CannedAccessControlList.PublicRead
 
         s3Client.putObject(putObjectRequest)
 
-        val bucktName = if (profile == "dev" || profile == "sit") "awspg1" else "awspg2"
         return "$clientBasePath/$bucktName/$randomFileName"
     }
 
