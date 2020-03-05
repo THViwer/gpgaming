@@ -15,8 +15,8 @@ import java.time.format.DateTimeFormatter
 
 object AwsS3Util {
 
-    private const val accessKey = "AKIAIZ5L767H2KC5WYPA"
-    private const val secretKey = "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"
+    private const val accessKey = "AKIA53BDZ52AVQFGNV5B"
+    private const val secretKey = "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"
     private const val bucktName = "awspg1"
     private const val basePath = "https://s3.ap-southeast-1.amazonaws.com/$bucktName"
     private const val clientBasePath = "https://s3.ap-southeast-1.amazonaws.com"
