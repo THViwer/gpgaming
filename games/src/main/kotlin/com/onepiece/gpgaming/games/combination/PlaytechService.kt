@@ -69,7 +69,7 @@ class PlaytechService(
         check(result.code == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
         val mapUtil = result.mapUtil
 
-        val wallet = if (activeConfig.profile == "dev") "FOURBLESSINGS88" else "main_wallet"
+        val wallet = if (activeConfig.profile == "dev") "FOURBLESSINGS88" else "FOURBLESSINGS88"
         return mapUtil.asMap("data").asMap("wallets").asBigDecimal(wallet)
     }
 
