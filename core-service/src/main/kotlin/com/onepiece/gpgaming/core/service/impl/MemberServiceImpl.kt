@@ -75,7 +75,6 @@ class MemberServiceImpl(
     }
 
     @Transactional(rollbackFor = [Exception::class])
-    @Async
     override fun create(memberCo: MemberCo) {
 
         // check username exist
