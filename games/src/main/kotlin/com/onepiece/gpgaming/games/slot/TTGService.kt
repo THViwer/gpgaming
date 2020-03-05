@@ -83,7 +83,7 @@ class TTGService(
         val data = """
             <?xml version="1.0" encoding="UTF-8"?>
             <logindetail>
-               <player account="MYR" country="MY" firstName="" lastName="" userName="" nickName="" tester="0" partnerId="Gpgaming88" commonWallet="0" />
+               <player account="MYR" country="MY" firstName="" lastName="" userName="" nickName="" tester="0" partnerId="${tokenClient.agentName}" commonWallet="0" />
                <partners>
                   <partner partnerId="zero" partnerType="0" />
                   <partner partnerId="IG" partnerType="1" />
