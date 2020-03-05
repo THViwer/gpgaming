@@ -90,7 +90,7 @@ class SexyGamingService: PlatformService() {
                         "cert" to clientToken.cert,
                         "agentId" to clientToken.agentId,
                         "userId" to transferReq.username,
-                        "transferAmt" to "${transferReq.amount}",
+                        "transferAmount" to "${transferReq.amount}",
                         "txCode" to transferReq.orderId
                 )
                 this.startGetJson(method = "/wallet/deposit", data = data)
@@ -102,7 +102,7 @@ class SexyGamingService: PlatformService() {
                         "agentId" to clientToken.agentId,
                         "txCode" to transferReq.orderId,
                         "withdrawType" to "0",
-                        "transferAmt" to "${transferReq.amount.abs()}"
+                        "transferAmount" to "${transferReq.amount.abs()}"
                 )
                 this.startGetJson(method = "/wallet/withdraw", data = data)
             }
