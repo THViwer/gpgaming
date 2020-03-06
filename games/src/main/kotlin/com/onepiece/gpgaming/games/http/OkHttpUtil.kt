@@ -68,6 +68,7 @@ class OkHttpUtil(
         val response = getOkHttpClient(url).newCall(request.build()).execute()
         check(response.code == 200) {
             val message = response.body?.string()
+            log.error("请求失败：$message")
             OnePieceExceptionCode.PLATFORM_METHOD_FAIL
         }
 
