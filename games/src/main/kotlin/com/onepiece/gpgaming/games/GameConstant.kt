@@ -26,7 +26,7 @@ class GameConstant(
             Platform.Joker -> "http://www.gwc688.net"
             Platform.Kiss918 -> "http://api.918kiss.com:9991"
             Platform.Pussy888 -> "http://api.pussy888.com"
-            Platform.Mega -> "http://mgt3.36ozhushou.com/mega-cloud"
+            Platform.Mega -> "http://mgt3.36ozhushou.com"
             Platform.Pragmatic -> "https://api.prerelease-env.biz"
             Platform.SpadeGaming -> "http://api-egame-staging.sgplay.net"
             Platform.TTG -> "https://ams-api.stg.ttms.co:8443"
