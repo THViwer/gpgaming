@@ -192,7 +192,7 @@ class OkHttpUtil(
         val response = getOkHttpClient(url).newCall(request).execute()
         if (response.code != 200) {
             val message = response.body?.string()
-            log.error("post error: ", message)
+            log.error("post error: $message")
             error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
