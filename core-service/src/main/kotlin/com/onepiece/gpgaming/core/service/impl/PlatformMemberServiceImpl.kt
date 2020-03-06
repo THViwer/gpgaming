@@ -41,8 +41,6 @@ class PlatformMemberServiceImpl(
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         //TODO 调用第三方平台创建账号
-
-
         redisService.delete(OnePieceRedisKeyConstant.myPlatformMembers(memberId))
 
         return PlatformMemberVo(memberId = memberId, platformUsername = platformMemberCo.username, platformPassword = platformMemberCo.password,
