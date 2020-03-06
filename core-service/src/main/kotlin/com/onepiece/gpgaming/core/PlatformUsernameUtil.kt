@@ -25,8 +25,7 @@ object PlatformUsernameUtil  {
             Platform.MicroGamingLive,
             Platform.Pussy888,
             Platform.Mega,
-            Platform.PlaytechSlot,
-            Platform.PlaytechLive,
+
 
                 // live
             Platform.AllBet,
@@ -35,6 +34,9 @@ object PlatformUsernameUtil  {
             // slot and live
             Platform.AsiaGamingLive,
             Platform.AsiaGamingSlot -> StringUtil.generatePassword().toLowerCase()
+
+            Platform.PlaytechSlot,
+            Platform.PlaytechLive -> "${StringUtil.generateNonce(2)}${StringUtil.generateNumNonce(6)}"
             else -> "-"
         }
 
