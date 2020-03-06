@@ -15,6 +15,7 @@ import com.onepiece.gpgaming.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
@@ -31,7 +32,7 @@ class PlatformMemberServiceImpl(
         return platformMemberDao.get(id)
     }
 
-    @Transactional(rollbackFor = [NoRollbackException::class])
+    @Transactional(rollbackFor = [Exception::class], propagation = Propagation.REQUIRES_NEW)
     override fun create(clientId: Int, memberId: Int, platform: Platform, platformUsername: String, platformPassword: String): PlatformMemberVo {
 
         val platformMemberCo = PlatformMemberCo(platform = platform, memberId = memberId, username = platformUsername,
