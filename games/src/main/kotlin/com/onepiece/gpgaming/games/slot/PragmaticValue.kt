@@ -5,9 +5,9 @@ import com.onepiece.gpgaming.games.bet.JacksonMapUtil
 sealed class PragmaticValue {
 
     data class Result(
-            val error: Int,
+            val error: Int
 
-            val description: String
+//            val description: String
 
     ): JacksonMapUtil()
 
