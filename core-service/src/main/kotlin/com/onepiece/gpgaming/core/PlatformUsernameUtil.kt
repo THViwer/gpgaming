@@ -36,7 +36,7 @@ object PlatformUsernameUtil  {
             Platform.AsiaGamingSlot -> StringUtil.generatePassword().toLowerCase()
 
             Platform.PlaytechSlot,
-            Platform.PlaytechLive -> "${StringUtil.generateNonce(2)}${StringUtil.generateNumNonce(6)}".toUpperCase()
+            Platform.PlaytechLive -> "${StringUtil.generateNonce(1).toUpperCase()}${StringUtil.generateNonce(1)}${StringUtil.generateNumNonce(6)}"
             else -> "-"
         }
 
