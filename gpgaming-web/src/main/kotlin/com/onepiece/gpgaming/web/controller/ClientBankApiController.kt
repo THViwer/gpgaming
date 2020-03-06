@@ -34,6 +34,7 @@ class ClientBankApiController(
     @GetMapping
     override fun all(): List<ClientBankVo> {
 
+
         val clientId = getClientId()
         val levelMap = levelService.all(clientId).map { it.id to it.name }.toMap()
 
