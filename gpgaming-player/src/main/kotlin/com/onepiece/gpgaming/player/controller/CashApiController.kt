@@ -118,11 +118,11 @@ open class CashApiController(
             when (myBank != null) {
                 true -> {
                     MemberBankVo(id = myBank.id, name = member.name, bank = myBank.bank, bankCardNumber = myBank.bankCardNumber,
-                            clientId = member.clientId, memberId = member.id, logo = myBank.bank.logo)
+                            clientId = member.clientId, memberId = member.id, logo = myBank.bank.logo, grayLogo = myBank.bank.grayLogo)
                 }
                 else -> {
                     MemberBankVo(id = -1, name = it.cname, bank = it, bankCardNumber = null, clientId = member.clientId,
-                            memberId = member.clientId, logo = it.logo)
+                            memberId = member.clientId, logo = it.logo, grayLogo = it.grayLogo)
                 }
             }
         }
