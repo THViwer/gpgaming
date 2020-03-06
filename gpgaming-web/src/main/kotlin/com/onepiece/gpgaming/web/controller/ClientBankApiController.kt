@@ -27,7 +27,7 @@ class ClientBankApiController(
     @GetMapping("/default/bank")
     override fun banks(): List<BankVo> {
         return Bank.values().map {
-            BankVo(bank = it, name = it.cname, logo = it.logo)
+            BankVo(bank = it, name = it.cname, logo = it.logo, grayLogo = it.grayLogo)
         }
     }
 
