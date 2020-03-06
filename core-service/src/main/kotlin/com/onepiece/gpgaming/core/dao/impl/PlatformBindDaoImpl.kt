@@ -43,6 +43,7 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
                 .set("username", platformBindCo.username)
                 .set("password", platformBindCo.password)
                 .set("token_json", platformBindCo.tokenJson)
+                .set("earnest_balance", platformBindCo.earnestBalance)
                 .set("process_id", UUID.randomUUID().toString())
                 .executeOnlyOne()
     }
