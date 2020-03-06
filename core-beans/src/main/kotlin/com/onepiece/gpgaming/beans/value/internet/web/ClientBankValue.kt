@@ -26,6 +26,8 @@ data class BankVo(
 
         val name: String,
 
+        val grayLogo: String,
+
         val logo: String
 
 )

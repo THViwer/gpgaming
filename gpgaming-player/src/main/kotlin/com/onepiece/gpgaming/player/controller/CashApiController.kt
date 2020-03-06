@@ -102,7 +102,7 @@ open class CashApiController(
 
     @GetMapping("/bank")
     override fun banks(): List<BankVo> {
-        return Bank.values().map { BankVo(logo = it.logo, name = it.cname, bank = it) }
+        return Bank.values().map { BankVo(grayLogo = it.grayLogo, logo = it.logo, name = it.cname, bank = it) }
     }
 
     @GetMapping("/bank/my")
