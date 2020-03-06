@@ -32,7 +32,6 @@ class PlatformMemberServiceImpl(
     }
 
     @Transactional(rollbackFor = [NoRollbackException::class])
-    @Async
     override fun create(clientId: Int, memberId: Int, platform: Platform, platformUsername: String, platformPassword: String): PlatformMemberVo {
 
         val platformMemberCo = PlatformMemberCo(platform = platform, memberId = memberId, username = platformUsername,
