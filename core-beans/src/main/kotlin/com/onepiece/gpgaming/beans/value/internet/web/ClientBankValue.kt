@@ -43,6 +43,9 @@ data class ClientBankVo(
         @ApiModelProperty("银行名称")
         val bankName: String,
 
+        @ApiModelProperty("银行的logo 灰色")
+        val grayLogo: String,
+
         @ApiModelProperty("银行的logo")
         val logo: String,
 
