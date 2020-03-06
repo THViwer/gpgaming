@@ -22,6 +22,9 @@ data class MemberBankVo(
         @ApiModelProperty("会员Id")
         val memberId: Int,
 
+        @ApiModelProperty("银行logo 灰色")
+        val grayLogo: String,
+
         @ApiModelProperty("银行logo")
         val logo: String,
 
