@@ -31,8 +31,7 @@ class GameConstant(
             Platform.SpadeGaming -> "http://api-egame-staging.sgplay.net"
             Platform.TTG -> "https://ams-api.stg.ttms.co:8443"
             Platform.MicroGaming -> "https://api.adminserv88.com"
-//            Platform.GamePlay -> "http://club8api.bet8uat.com"
-            Platform.GamePlay -> "http://18.163.131.134:1001"
+            Platform.GamePlay -> "http://gameplay.gpgaming88.com/" // => http://club8api.bet8uat.com
             Platform.SimplePlay -> " http://api.sp-portal.com/api/api.aspx"
 
             // live
