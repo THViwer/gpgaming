@@ -51,7 +51,7 @@ class OrderIdBuilder(
 
             Platform.TTG -> {
                 val clientToken = platformBindService.find(clientId = clientId, platform = platform).clientToken as TTGClientToken
-                "${clientToken.agentName}_${getCurrentTime(dateTimeFormat2)}${StringUtil.generateNumNonce(2)}"
+                "${clientToken.agentName}_${getCurrentTime(dateTimeFormat)}${StringUtil.generateNumNonce(2)}"
             }
 
             else -> "T${platform.name.substring(0, 1)}${getCurrentTime()}${StringUtil.generateNumNonce(2)}"
