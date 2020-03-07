@@ -43,7 +43,7 @@ object PlatformUsernameUtil  {
         return username to password
     }
 
-    fun prefixPlatformUsername(platform: Platform, platformUsername: String): Pair<Int, Int> {
+    fun prefixPlatformUsername(platform: Platform, platformUsername: String, prefix: String = " "): Pair<Int, Int> {
 
         return when (platform) {
             Platform.GoldDeluxe -> {
@@ -60,6 +60,16 @@ object PlatformUsernameUtil  {
 
                 clientId to memberId
             }
+
+            Platform.TTG -> {
+                val username = platformUsername.replace(prefix, "").split("_")[1]
+
+                val clientId = platformUsername.substring(0, 2).toInt()
+                val memberId = platformUsername.substring(2, platformUsername.length - 2).toInt()
+
+                clientId to memberId
+            }
+
             else -> {
                 val clientId = platformUsername.substring(0, 2).toInt()
                 val memberId = platformUsername.substring(2, platformUsername.length - 2).toInt()
