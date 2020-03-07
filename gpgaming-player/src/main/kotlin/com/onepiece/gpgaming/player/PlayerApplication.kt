@@ -8,6 +8,9 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.scheduling.annotation.EnableAsync
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.*
 
 
 @SpringBootApplication
@@ -28,4 +31,6 @@ open class PlayerApplication {
 
 fun main() {
     runApplication<PlayerApplication>()
+
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"))
 }

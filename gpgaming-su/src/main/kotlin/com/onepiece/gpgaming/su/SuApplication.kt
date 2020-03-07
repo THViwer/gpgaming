@@ -7,6 +7,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
+import java.util.*
 
 @SpringBootApplication
 @ComponentScan("com.onepiece.gpgaming")
@@ -27,4 +28,6 @@ open class SuApplication {
 
 fun main() {
     runApplication<SuApplication>()
+
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"))
 }
