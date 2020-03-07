@@ -65,7 +65,7 @@ object PlatformUsernameUtil  {
                 val username = platformUsername.replace(prefix, "").split("_")[1]
 
                 val clientId = username.substring(0, 2).toInt()
-                val memberId = username.substring(2, platformUsername.length - 2).toInt()
+                val memberId = username.substring(2, username.length - 2).toInt()
 
                 clientId to memberId
             }
