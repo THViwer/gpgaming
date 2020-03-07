@@ -42,9 +42,11 @@ class TTGService(
     override fun register(registerReq: GameValue.RegisterReq): String {
 
         val tokenClient = registerReq.token as TTGClientToken
-        this.login(username = registerReq.username, tokenClient = tokenClient)
 
-        return registerReq.username
+        val newUsername = "${tokenClient.agentName}_${registerReq.username}"
+        this.login(username = newUsername, tokenClient = tokenClient)
+
+        return newUsername
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {

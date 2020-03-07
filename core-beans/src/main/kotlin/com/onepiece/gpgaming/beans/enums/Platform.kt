@@ -20,10 +20,10 @@ enum class Platform(
     SpadeGaming(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/spadegaming.png"),
     TTG(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/top.png"),
     MicroGaming(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
-    PlaytechSlot(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"),
+    PlaytechSlot(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"), // mac下的chrome有问题 需要用safari启动 启动游戏需要白名单
     PNG(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgo.png"),
-    GamePlay(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgame.png"),
-    SimplePlay(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"), // 就是sa 的slot
+    GamePlay(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgame.png"), // 不能添加 sg服务器 从hk转发
+    SimplePlay(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"), // 就是sa 的slot  测试环境启动游戏需要白名单
     AsiaGamingSlot(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
 
     // live video

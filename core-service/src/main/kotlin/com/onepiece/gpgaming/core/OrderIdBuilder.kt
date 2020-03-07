@@ -1,6 +1,8 @@
 package com.onepiece.gpgaming.core
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.model.token.ClientToken
+import com.onepiece.gpgaming.beans.model.token.TTGClientToken
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.utils.StringUtil
 import org.springframework.stereotype.Component
@@ -46,6 +48,12 @@ class OrderIdBuilder(
 
             }
             Platform.AllBet -> "T${platform.name.substring(0, 1)}${getCurrentTime(dateTimeFormat2)}${StringUtil.generateNumNonce(5)}"
+
+            Platform.TTG -> {
+                val clientToken = platformBindService.find(clientId = clientId, platform = platform).clientToken as TTGClientToken
+                "${clientToken.agentName}_${getCurrentTime(dateTimeFormat2)}${StringUtil.generateNumNonce(2)}"
+            }
+
             else -> "T${platform.name.substring(0, 1)}${getCurrentTime()}${StringUtil.generateNumNonce(2)}"
         }
 
