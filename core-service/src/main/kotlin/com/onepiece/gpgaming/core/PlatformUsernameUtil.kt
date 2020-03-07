@@ -64,8 +64,8 @@ object PlatformUsernameUtil  {
             Platform.TTG -> {
                 val username = platformUsername.replace(prefix, "").split("_")[1]
 
-                val clientId = platformUsername.substring(0, 2).toInt()
-                val memberId = platformUsername.substring(2, platformUsername.length - 2).toInt()
+                val clientId = username.substring(0, 2).toInt()
+                val memberId = username.substring(2, platformUsername.length - 2).toInt()
 
                 clientId to memberId
             }
