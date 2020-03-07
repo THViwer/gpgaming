@@ -180,8 +180,14 @@ class SexyGamingService: PlatformService() {
             } catch (e: Exception) {
                 bet.asBigDecimal("winAmount")
             }
-            val betTime = bet.asString("createTime").substring(0, 19).let { LocalDateTime.parse(it) }
+
             val settleTime = bet.asString("updateTime").substring(0, 19).let { LocalDateTime.parse(it) }
+
+            val betTime = try {
+                bet.asString("createTime").substring(0, 19).let { LocalDateTime.parse(it) }
+            } catch (e: Exception) {
+                settleTime
+            }
 
             val originData = objectMapper.writeValueAsString(bet.data)
 
