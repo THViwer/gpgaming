@@ -13,6 +13,7 @@ import com.onepiece.gpgaming.games.bet.MapUtil
 import okhttp3.FormBody
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.lang.Exception
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -169,8 +170,16 @@ class SexyGamingService: PlatformService() {
             val orderId = bet.asString("roundId")
             val username = bet.asString("userId")
             val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.SexyGaming, platformUsername = username)
-            val betAmount = bet.asBigDecimal("betAmt")
-            val winAmount = bet.asBigDecimal("winAmt")
+            val betAmount = try {
+                bet.asBigDecimal("betAmt")
+            } catch (e: Exception) {
+                bet.asBigDecimal("betAmount")
+            }
+            val winAmount = try {
+                bet.asBigDecimal("winAmt")
+            } catch (e: Exception) {
+                bet.asBigDecimal("winAmount")
+            }
             val betTime = bet.asString("createTime").substring(0, 19).let { LocalDateTime.parse(it) }
             val settleTime = bet.asString("updateTime").substring(0, 19).let { LocalDateTime.parse(it) }
 
