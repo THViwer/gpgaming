@@ -186,7 +186,7 @@ class SexyGamingService: PlatformService() {
             val betTime = try {
                 bet.asString("createTime").substring(0, 19).let { LocalDateTime.parse(it) }
             } catch (e: Exception) {
-                settleTime
+                bet.asString("txTime").substring(0, 19).let { LocalDateTime.parse(it) }
             }
 
             val originData = objectMapper.writeValueAsString(bet.data)
