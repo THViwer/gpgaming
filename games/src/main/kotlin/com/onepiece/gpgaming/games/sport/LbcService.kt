@@ -80,7 +80,7 @@ class LbcService : PlatformService() {
                 .add("vendor_member_id", "${clientToken.memberCode}_${transferReq.username}")
                 .add("vendor_trans_id", "${clientToken.memberCode}_${transferReq.orderId}")
                 .add("amount", "${transferReq.amount.abs()}")
-                .add("currency", "20") // 固定
+                .add("currency", clientToken.currency) // 固定
                 .add("direction", "$direction")
                 .add("wallet_id", "1") // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
                 .build()
