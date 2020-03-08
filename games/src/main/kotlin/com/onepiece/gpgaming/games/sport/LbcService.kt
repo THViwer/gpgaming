@@ -123,7 +123,7 @@ class LbcService : PlatformService() {
         }
 
 
-        return "http://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&token=${token}&skincolor=bl001"
+        return "https://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&token=${token}&skincolor=bl001"
     }
 
     override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {
@@ -137,8 +137,8 @@ class LbcService : PlatformService() {
         }
 
         return when (launch) {
-            LaunchMethod.Wap -> "http://c.gsoft888.net/vender.aspx?lang=${lang}&OType=1&skincolor=bl00"
-            else -> "http://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&skincolor=bl001"
+            LaunchMethod.Wap -> "https://c.gsoft888.net/vender.aspx?lang=${lang}&OType=1&skincolor=bl00"
+            else -> "https://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&skincolor=bl001"
         }
 
     }
