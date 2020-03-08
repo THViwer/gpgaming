@@ -257,7 +257,7 @@ class MicroGamingService : PlatformService() {
         val clientToken = pullBetOrderReq.token as MicroGamingClientToken
 
         val data = listOf(
-                "company_id=131362069",
+                "company_id=${clientToken.parentId}",
                 "include_transfers=false",
                 "start_time=${pullBetOrderReq.startTime.format(dateTimeFormat)}",
                 "end_time=${pullBetOrderReq.endTime.format(dateTimeFormat)}",
