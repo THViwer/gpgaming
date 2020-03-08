@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.enums.BannerType
+import com.onepiece.gpgaming.beans.enums.GameCategory
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
@@ -14,6 +15,8 @@ import com.onepiece.gpgaming.player.controller.value.PlatformCategoryDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformMembrerDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformVo
 import com.onepiece.gpgaming.player.controller.value.PromotionVo
+import com.onepiece.gpgaming.player.controller.value.SlotCategoryVo
+import com.onepiece.gpgaming.player.controller.value.SlotGameVo
 import com.onepiece.gpgaming.player.controller.value.StartGameResp
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiModelProperty
@@ -53,6 +56,14 @@ interface Api {
             @RequestHeader("language") language: Language,
             @RequestHeader("launch") launch: LaunchMethod,
             @RequestParam("platform") platform: Platform): Map<String, String>
+
+    @ApiOperation(tags = ["api"], value = "老虎机游戏列表")
+    fun slots(
+            @RequestHeader("language") language: Language,
+            @RequestHeader("launch") launch: LaunchMethod,
+            @RequestParam("platform") platform: Platform
+    ): Map<GameCategory, List<SlotGameVo>>
+
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台)")
     fun start(

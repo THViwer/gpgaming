@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.SystemConstant
 import com.onepiece.gpgaming.beans.enums.BannerType
 import com.onepiece.gpgaming.beans.enums.ContactType
+import com.onepiece.gpgaming.beans.enums.GameCategory
 import com.onepiece.gpgaming.beans.enums.HotGameType
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
@@ -15,15 +16,15 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
+import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.BannerService
-import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.GamePlatformService
+import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
-import com.onepiece.gpgaming.core.ActiveConfig
-import com.onepiece.gpgaming.core.service.HotGameService
+import com.onepiece.gpgaming.core.service.SlotGameService
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.BannerVo
@@ -35,6 +36,8 @@ import com.onepiece.gpgaming.player.controller.value.PlatformCategoryDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformMembrerDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformVo
 import com.onepiece.gpgaming.player.controller.value.PromotionVo
+import com.onepiece.gpgaming.player.controller.value.SlotCategoryVo
+import com.onepiece.gpgaming.player.controller.value.SlotGameVo
 import com.onepiece.gpgaming.player.controller.value.StartGameResp
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
@@ -55,7 +58,7 @@ open class ApiController(
         private val bannerService: BannerService,
         private val contactService: ContactService,
         private val transferSync: TransferSync,
-        private val clientService: ClientService,
+        private val slotGameService: SlotGameService,
         private val appDownService: AppDownService,
         private val activeConfig: ActiveConfig,
         private val objectMapper: ObjectMapper,
@@ -233,6 +236,32 @@ open class ApiController(
         return mapOf(
                 "url" to "$url?${UUID.randomUUID()}"
         )
+    }
+
+
+
+    @GetMapping("/slots")
+    override fun slots(
+            @RequestHeader("language") language: Language,
+            @RequestHeader("launch") launch: LaunchMethod,
+            @RequestParam("platform") platform: Platform
+    ): Map<GameCategory, List<SlotGameVo>> {
+        if (platform.category != PlatformCategory.Slot) return emptyMap()
+
+        val list = slotGameService.findByPlatform(platform)
+        if (list.isEmpty()) return emptyMap()
+
+        val games = list.map { slot ->
+            val gameName = if (language == Language.CN) slot.cname else slot.ename
+            val icon = if (language == Language.CN) slot.clogo else slot.elogo
+
+            SlotGameVo(platform = slot.platform, gameId = slot.gameId, category = slot.category, gameName = gameName, icon = icon,
+                    touchIcon = null, hot = slot.hot, new = slot.new, status = slot.status)
+        }
+
+        val hots = games.filter { it.hot }.let { GameCategory.Hot to it }
+        val news = games.filter { it.new }.let { GameCategory.New to it }
+        return games.groupBy { it.category }.plus(hots).plus(news).toMap()
     }
 
     @GetMapping("/start")
