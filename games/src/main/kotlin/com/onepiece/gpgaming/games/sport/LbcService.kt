@@ -122,8 +122,12 @@ class LbcService : PlatformService() {
             else -> "en"
         }
 
+        return when (startReq.launch) {
+            LaunchMethod.Wap -> "https://mkt.l0030.ig128.com/deposit_processlogin.aspx?lang=${lang}&token=${token}&skincolor=bl001"
+            else -> "https://ismart.l0030.ig128.com/deposit_processlogin.aspx?lang=${lang}&token=${token}&skincolor=bl001"
+        }
 
-        return "https://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&token=${token}&skincolor=bl001"
+//        return "https://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&token=${token}&skincolor=bl001"
     }
 
     override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {
@@ -137,9 +141,13 @@ class LbcService : PlatformService() {
         }
 
         return when (launch) {
-            LaunchMethod.Wap -> "https://c.gsoft888.net/vender.aspx?lang=${lang}&OType=1&skincolor=bl00"
-            else -> "https://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&skincolor=bl001"
+           LaunchMethod.Wap -> "https://ismart.l0030.ig128.com/DepositLogin/bfindex?lang=${lang}&OType=1&skincolor=bl00"
+            else -> "https://mkt.l0030.ig128.com/NewIndex"
         }
+//        return when (launch) {
+//            LaunchMethod.Wap -> "https://c.gsoft888.net/vender.aspx?lang=${lang}&OType=1&skincolor=bl00"
+//            else -> "https://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&skincolor=bl001"
+//        }
 
     }
 
