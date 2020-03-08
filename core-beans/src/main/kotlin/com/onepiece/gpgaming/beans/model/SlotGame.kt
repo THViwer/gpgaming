@@ -7,6 +7,14 @@ import com.onepiece.gpgaming.beans.enums.SlotSupport
 import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
 
+/**
+ * 平台gameId规则：
+ * GamePlay: gameId = blossomgarden csv: /Users/cabbage/Desktop/gameplay_done.csv
+ * Joker: gameId = 79mafnrjt48aa
+ * Png: gameId = reactoonz
+ * ttg: gameId = 1083:MadMonkey2:0 json = https://s3.ap-southeast-1.amazonaws.com/awspg1/slot/ttg_wap_en.json
+ *
+ */
 data class SlotGame(
 
         // id
