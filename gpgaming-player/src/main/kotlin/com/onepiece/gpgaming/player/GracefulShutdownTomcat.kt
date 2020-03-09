@@ -24,7 +24,7 @@ class GracefulShutdownTomcat: TomcatConnectorCustomizer, ApplicationListener<Con
         this.connector = connector
     }
 
-    override fun onApplicationEvent(contextClosedEvent: ContextClosedEvent) {
+    override fun onApplicationEvent(contextClosedEvent: ContextClosedEvent?) {
         connector?.let {
             it.pause()
             val executor: Executor = it.protocolHandler.executor
