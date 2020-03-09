@@ -168,7 +168,7 @@ class LbcService : PlatformService() {
             }.map { bet ->
                 val orderId = bet.asString("trans_id")
                 val username = bet.asString("vendor_member_id")
-                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Lbc, platformUsername = username)
+                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Lbc, platformUsername = username, prefix = clientToken.memberCode)
                 val betAmount = bet.asBigDecimal("stake")
                 val winAmount = bet.asBigDecimal("winlost_amount")
                 val betTime = bet.asLocalDateTime("transaction_time", dateTimeFormat)

@@ -52,15 +52,7 @@ object PlatformUsernameUtil  {
 
                 clientId to memberId
             }
-            Platform.Lbc -> {
-                val username = platformUsername.split("_")[1]
-
-                val clientId = platformUsername.substring(0, 2).toInt()
-                val memberId = platformUsername.substring(2, platformUsername.length - 2).toInt()
-
-                clientId to memberId
-            }
-
+            Platform.Lbc,
             Platform.TTG -> {
                 val username = platformUsername.replace(prefix, "").split("_")[1]
 
