@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
+import com.onepiece.gpgaming.games.bet.MapResultUtil
 import com.onepiece.gpgaming.games.bet.MapUtil
 import okhttp3.FormBody
 import org.slf4j.LoggerFactory
@@ -171,8 +172,8 @@ class LbcService : PlatformService() {
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Lbc, platformUsername = username, prefix = clientToken.memberCode)
                 val betAmount = bet.asBigDecimal("stake")
                 val winAmount = bet.asBigDecimal("winlost_amount")
-                val betTime = bet.asLocalDateTime("transaction_time", dateTimeFormat)
-                val settleTime = bet.asLocalDateTime("winlost_datetime", dateTimeFormat)
+                val betTime = bet.asLocalDateTime("transaction_time")
+                val settleTime = bet.asLocalDateTime("winlost_datetime")
 
                 val originData = objectMapper.writeValueAsString(bet.data)
                 BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount,
