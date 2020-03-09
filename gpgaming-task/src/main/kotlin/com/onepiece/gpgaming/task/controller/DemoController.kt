@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.task.controller
 import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.task.PromotionTask
 import com.onepiece.gpgaming.task.ReportTask
+import com.onepiece.gpgaming.task.SexyGamingTask
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -13,8 +14,14 @@ import java.time.LocalDate
 class DemoController(
         private val reportService: ReportService,
         private val reportTask: ReportTask,
-        private val promotionTask: PromotionTask
+        private val promotionTask: PromotionTask,
+        private val sexyGamingTask: SexyGamingTask
 ) {
+
+    @GetMapping("/sexyGaming")
+    fun sexyGaming() {
+        sexyGamingTask.reconciliation()
+    }
 
     @GetMapping("/report")
     fun start(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate): Any {

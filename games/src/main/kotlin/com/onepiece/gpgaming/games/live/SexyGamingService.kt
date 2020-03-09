@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.lang.Exception
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 
@@ -194,7 +195,17 @@ class SexyGamingService: PlatformService() {
             BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, betTime = betTime,
                     settleTime = settleTime, originData = originData, platform = Platform.SexyGaming)
         }
+    }
 
+    fun getSummaryByTxTimeHour(clientToken: SexyGamingClientToken, startDate: LocalDate): MapUtil {
+        val data = mapOf(
+                "cert" to clientToken.cert,
+                "agentId" to clientToken.agentId,
+                "startTime" to "${startDate}T00+08:00",
+                "endTime" to "${startDate.plusDays(1)}T00+08:00"
+        )
+        val mapUtil = this.startGetJson(method = "/wallet/getSummaryByTxTimeHour", data = data)
+        return mapUtil.asList("transactions").firstOrNull() ?: MapUtil.instance(hashMapOf())
     }
 
 }
