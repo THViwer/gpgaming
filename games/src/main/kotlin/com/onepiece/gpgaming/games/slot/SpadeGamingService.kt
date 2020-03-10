@@ -35,7 +35,7 @@ class SpadeGamingService : PlatformService() {
         )
         val result = okHttpUtil.doPostJson(url = url, data = data, headers = headers, clz = SpadeGamingValue.Result::class.java)
         check(result.code == 0) {
-            log.error("simplePlay network error: code = ${result.code}, msg = ${result.msg}")
+            log.error("SpadeGaming network error: code = ${result.code}, msg = ${result.msg}")
             result.msg
         }
 
