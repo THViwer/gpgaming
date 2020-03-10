@@ -115,7 +115,8 @@ class GameConstant(
             platform == Platform.GoldDeluxe && activeConfig.profile == "dev" -> "$domain:7004"
             platform == Platform.GoldDeluxe -> "http://wsgdreport.gdsecure88.com"
             platform == Platform.GamePlay && activeConfig.profile == "dev" -> "http://45.124.65.170:91"
-            platform == Platform.GamePlay -> "http://casino.w88uat.com"
+//            platform == Platform.GamePlay -> "http://casino.w88uat.com"
+            platform == Platform.GamePlay -> "http://gameplay2.gpgaming88.com"
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
