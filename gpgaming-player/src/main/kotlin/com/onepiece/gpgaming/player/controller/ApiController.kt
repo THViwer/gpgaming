@@ -250,7 +250,9 @@ open class ApiController(
         val list = slotGameService.findByPlatform(platform)
         if (list.isEmpty()) return emptyList()
 
-        val games = list.map { slot ->
+        val games = list.filter {
+            it.launchs.toString().contains(launch.toString())
+        }.map { slot ->
             val gameName = if (language == Language.CN) slot.cname else slot.ename
             val icon = if (language == Language.CN) slot.clogo else slot.elogo
 
