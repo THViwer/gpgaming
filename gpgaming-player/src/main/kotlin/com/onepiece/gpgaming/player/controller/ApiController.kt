@@ -12,7 +12,6 @@ import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
-import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
@@ -36,7 +35,6 @@ import com.onepiece.gpgaming.player.controller.value.PlatformCategoryDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformMembrerDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformVo
 import com.onepiece.gpgaming.player.controller.value.PromotionVo
-import com.onepiece.gpgaming.player.controller.value.SlotCategoryVo
 import com.onepiece.gpgaming.player.controller.value.SlotGameVo
 import com.onepiece.gpgaming.player.controller.value.StartGameResp
 import org.slf4j.LoggerFactory
@@ -214,29 +212,29 @@ open class ApiController(
 
     }
 
-    @GetMapping("/slot/menu")
-    override fun slotMenu(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod,
-            @RequestParam("platform") platform: Platform): Map<String, String> {
-
-        val url = when(platform) {
-            Platform.Joker -> "${SystemConstant.AWS_SLOT}/joker_${language.name.toLowerCase()}.json"
-            Platform.MicroGaming -> "${SystemConstant.AWS_SLOT}/micro_gaming_${language.name.toLowerCase()}.json"
-            Platform.Pragmatic -> "${SystemConstant.AWS_SLOT}/pragmatic_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
-            Platform.SpadeGaming -> "${SystemConstant.AWS_SLOT}/spade_game_${language.name.toLowerCase()}.json"
-            Platform.TTG -> "${SystemConstant.AWS_SLOT}/ttg_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
-            Platform.PNG -> "${SystemConstant.AWS_SLOT}/png_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
-            Platform.GamePlay -> "${SystemConstant.AWS_SLOT}/gameplay_${language.name.toLowerCase()}.json"
-            Platform.SimplePlay -> "${SystemConstant.AWS_SLOT}/simple_play_${language.name.toLowerCase()}.json"
-            Platform.PlaytechSlot -> "${SystemConstant.AWS_SLOT}/playtech_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
-            Platform.AsiaGamingSlot -> "${SystemConstant.AWS_SLOT}/asia_gaming_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
-        }
-        return mapOf(
-                "url" to "$url?${UUID.randomUUID()}"
-        )
-    }
+//    @GetMapping("/slot/menu")
+//    override fun slotMenu(
+//            @RequestHeader("language") language: Language,
+//            @RequestHeader("launch") launch: LaunchMethod,
+//            @RequestParam("platform") platform: Platform): Map<String, String> {
+//
+//        val url = when(platform) {
+//            Platform.Joker -> "${SystemConstant.AWS_SLOT}/joker_${language.name.toLowerCase()}.json"
+//            Platform.MicroGaming -> "${SystemConstant.AWS_SLOT}/micro_gaming_${language.name.toLowerCase()}.json"
+//            Platform.Pragmatic -> "${SystemConstant.AWS_SLOT}/pragmatic_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
+//            Platform.SpadeGaming -> "${SystemConstant.AWS_SLOT}/spade_game_${language.name.toLowerCase()}.json"
+//            Platform.TTG -> "${SystemConstant.AWS_SLOT}/ttg_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
+//            Platform.PNG -> "${SystemConstant.AWS_SLOT}/png_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
+//            Platform.GamePlay -> "${SystemConstant.AWS_SLOT}/gameplay_${language.name.toLowerCase()}.json"
+//            Platform.SimplePlay -> "${SystemConstant.AWS_SLOT}/simple_play_${language.name.toLowerCase()}.json"
+//            Platform.PlaytechSlot -> "${SystemConstant.AWS_SLOT}/playtech_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
+//            Platform.AsiaGamingSlot -> "${SystemConstant.AWS_SLOT}/asia_gaming_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
+//            else -> error(OnePieceExceptionCode.DATA_FAIL)
+//        }
+//        return mapOf(
+//                "url" to "$url?${UUID.randomUUID()}"
+//        )
+//    }
 
 
 
@@ -484,11 +482,11 @@ open class ApiController(
             }
         }
 
-        val games = if (category == PlatformCategory.Slot) {
-            this.slotMenu(language = language, launch = LaunchMethod.Web, platform = Platform.Pragmatic)["url"]
-        } else null
+//        val games = if (category == PlatformCategory.Slot) {
+//            this.slotMenu(language = language, launch = LaunchMethod.Web, platform = Platform.Pragmatic)["url"]
+//        } else null
 
-        return PlatformCategoryDetail(platforms = platforms, banners = banners, url = games )
+        return PlatformCategoryDetail(platforms = platforms, banners = banners )
     }
 
     @GetMapping("/contactUs")

@@ -51,11 +51,12 @@ interface Api {
             @RequestHeader("launch") launch: LaunchMethod
     ): List<PromotionVo>
 
-    @ApiOperation(tags = ["api"], value = "老虎机菜单")
-    fun slotMenu(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod,
-            @RequestParam("platform") platform: Platform): Map<String, String>
+//    @ApiOperation(tags = ["api"], value = "老虎机菜单")
+//    @Deprecated("推荐使用/slots方法")
+//    fun slotMenu(
+//            @RequestHeader("language") language: Language,
+//            @RequestHeader("launch") launch: LaunchMethod,
+//            @RequestParam("platform") platform: Platform): Map<String, String>
 
     @ApiOperation(tags = ["api"], value = "老虎机游戏列表")
     fun slots(
