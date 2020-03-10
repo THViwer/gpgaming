@@ -63,7 +63,7 @@ interface Api {
             @RequestHeader("language") language: Language,
             @RequestHeader("launch") launch: LaunchMethod,
             @RequestParam("platform") platform: Platform
-    ): Map<GameCategory, List<SlotGameVo>>
+    ): List<SlotCategoryVo>
 
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台)")

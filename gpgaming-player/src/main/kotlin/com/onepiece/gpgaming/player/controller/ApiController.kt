@@ -35,6 +35,7 @@ import com.onepiece.gpgaming.player.controller.value.PlatformCategoryDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformMembrerDetail
 import com.onepiece.gpgaming.player.controller.value.PlatformVo
 import com.onepiece.gpgaming.player.controller.value.PromotionVo
+import com.onepiece.gpgaming.player.controller.value.SlotCategoryVo
 import com.onepiece.gpgaming.player.controller.value.SlotGameVo
 import com.onepiece.gpgaming.player.controller.value.StartGameResp
 import org.slf4j.LoggerFactory
@@ -243,11 +244,11 @@ open class ApiController(
             @RequestHeader("language") language: Language,
             @RequestHeader("launch") launch: LaunchMethod,
             @RequestParam("platform") platform: Platform
-    ): Map<GameCategory, List<SlotGameVo>> {
-        if (platform.category != PlatformCategory.Slot) return emptyMap()
+    ): List<SlotCategoryVo> {
+        if (platform.category != PlatformCategory.Slot) return emptyList()
 
         val list = slotGameService.findByPlatform(platform)
-        if (list.isEmpty()) return emptyMap()
+        if (list.isEmpty()) return emptyList()
 
         val games = list.map { slot ->
             val gameName = if (language == Language.CN) slot.cname else slot.ename
@@ -259,7 +260,12 @@ open class ApiController(
 
         val hots = games.filter { it.hot }.let { GameCategory.Hot to it }
         val news = games.filter { it.new }.let { GameCategory.New to it }
-        return games.groupBy { it.category }.plus(hots).plus(news).toMap()
+
+        return games.groupBy { it.category }.plus(hots).plus(news)
+                .map {
+                    SlotCategoryVo(gameCategory = it.key, games = it.value)
+                }
+
     }
 
     @GetMapping("/start")
