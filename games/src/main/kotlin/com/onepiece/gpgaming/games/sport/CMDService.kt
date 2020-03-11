@@ -141,7 +141,7 @@ class CMDService : PlatformService() {
             else -> "https://gp8.1win888.net"
         }
         // view: v1 = 传统风格 v2 = 亚洲风格 v3 = 电子竞技风格
-        return "$domain/auth.aspx?lang=$lang&user=${startReq.username}&token=$token&currency=${clientToken.currency}&templatename=aliceblue&view=v2"
+        return "$domain/auth.aspx?lang=$lang&user=${startReq.username}&token=$token&currency=${clientToken.currency}&templatename=aliceblue&view=v1"
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
