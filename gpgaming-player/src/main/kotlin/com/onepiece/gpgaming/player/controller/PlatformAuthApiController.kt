@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.model.token.GamePlayClientToken
 import com.onepiece.gpgaming.beans.model.token.SpadeGamingClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.PlatformUsernameUtil
@@ -12,6 +13,8 @@ import com.onepiece.gpgaming.games.bet.JacksonMapUtil
 import com.onepiece.gpgaming.games.bet.MapUtil
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.PlatformAuthValue
+import com.onepiece.gpgaming.utils.StringUtil
+import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
@@ -33,6 +36,42 @@ class PlatformAuthApiController(
 ): BasicController(), PlatformAuthApi {
 
     private val log = LoggerFactory.getLogger(PlatformAuthApiController::class.java)
+
+    @RequestMapping(path = ["/gameplay"], produces = ["application/xml;charset=utf-8"])
+    override fun gamePlayLogin(): String {
+
+        val request = getRequest()
+
+        val ticket = request.getParameter("ticket")
+        log.info("ticket = $ticket")
+
+        val originData = String(Base64.decodeBase64(ticket.toByteArray()))
+        log.info("origin data = $originData")
+
+        val platformUsername = originData.split(":").first()
+        val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.GamePlay, platformUsername = platformUsername)
+
+        val platformBind = platformBindService.find(clientId, Platform.GamePlay)
+
+
+        val clientToken = platformBind.clientToken as GamePlayClientToken
+        return """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <resp>
+             <error_code>0</error_code>
+             <error_msg></error_msg>
+             <cust_id>${platformUsername}</cust_id>
+             <cust_name>${platformUsername}</cust_name>
+             <currency_code>${clientToken.currency}</currency_code>
+             <language>en-us</language>
+             <test_cust>true</test_cust>
+             <country>${clientToken.currency}</country>
+             <date_of_birth>29-09-1989</date_of_birth>
+             <ip>${StringUtil.generateNumNonce(2)}.${StringUtil.generateNumNonce(2)}.${StringUtil.generateNumNonce(2)}.${StringUtil.generateNumNonce(2)}</ip>
+            </resp>
+        """.trimIndent()
+    }
+
 
     @PostMapping("/mega", produces = ["application/json;charset=utf-8"])
     override fun login(

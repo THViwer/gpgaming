@@ -12,6 +12,10 @@ import springfox.documentation.annotations.ApiIgnore
 @Api(tags = ["platform auth"], description = " ")
 interface PlatformAuthApi {
 
+
+    @ApiOperation(tags = ["open"], value = "gameplay login")
+    fun gamePlayLogin(): String
+
 //    @ApiIgnore
     @ApiOperation(tags = ["platform auth"], value = "mega 登陆")
     fun login(
