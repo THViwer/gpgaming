@@ -36,15 +36,15 @@ class EBetService(
         val sign = EBetSignUtil.sign(signKey, clientToken.privateKey)
         data["signature"] = sign
 
-        val url = if (activeConfig.profile == "dev") {
-            "http://94.237.64.70:2011"
-        } else {
-            clientToken.apiUrl
-        }
+//        val url = if (activeConfig.profile == "dev") {
+//            "http://94.237.64.70:2011"
+//        } else {
+//            clientToken.apiUrl
+//        }
 //        val url = clientToken.apiUrl
-        val result = okHttpUtil.doPostJson(url = "$url$path", data = data, clz = EBetValue.Result::class.java)
+        val result = okHttpUtil.doPostJson(url = "${clientToken.apiUrl}$path", data = data, clz = EBetValue.Result::class.java)
         check(result.status == "200") {
-            log.error("eBet request error: url = $url, request = $data, response: $result")
+            log.error("eBet request error: url = ${clientToken.apiUrl}, request = $data, response: $result")
             OnePieceExceptionCode.PLATFORM_DATA_FAIL
         }
         return result
