@@ -2,7 +2,7 @@ package com.onepiece.gpgaming.beans.model.token
 
 data class EBetClientToken(
 
-        val apiDomain: String = "http://gpgaming88myr.ebet.im:8888/api",
+        val apiPath: String = "http://gpgaming88myr.ebet.im:8888/api",
 
         val channelId: String = "517",
 

@@ -42,9 +42,9 @@ class EBetService(
 //            clientToken.apiUrl
 //        }
 //        val url = clientToken.apiUrl
-        val result = okHttpUtil.doPostJson(url = "${clientToken.apiUrl}$path", data = data, clz = EBetValue.Result::class.java)
+        val result = okHttpUtil.doPostJson(url = "${clientToken.apiPath}$path", data = data, clz = EBetValue.Result::class.java)
         check(result.status == "200") {
-            log.error("eBet request error: url = ${clientToken.apiUrl}, request = $data, response: $result")
+            log.error("eBet request error: url = ${clientToken.apiPath}, request = $data, response: $result")
             OnePieceExceptionCode.PLATFORM_DATA_FAIL
         }
         return result
