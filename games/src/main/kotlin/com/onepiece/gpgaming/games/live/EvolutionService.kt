@@ -129,13 +129,7 @@ class EvolutionService : PlatformService() {
                      "id":"1",
                      "skin":"1"
                   },
-                  "game":{
-                     "category":"TopGames",
-                     "interface":"view1",
-                     "table":{
-                        "id":"leqhceumaq6qfoug"
-                     }
-                  },
+
                   "channel":{
                      "wrapped":false,
                      "mobile":false
