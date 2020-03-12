@@ -171,10 +171,6 @@ class EvolutionService : PlatformService() {
                      "id":"1",
                      "skin":"1"
                   },
-                  "game":{
-                     "category":"TopGames",
-                     "interface":"view1"
-                  },
                   "channel":{
                      "wrapped":false,
                      "mobile":false
