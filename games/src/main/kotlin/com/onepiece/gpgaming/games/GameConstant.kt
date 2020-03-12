@@ -43,9 +43,9 @@ class GameConstant(
 //            Platform.SexyGaming -> "https://testapi.onlinegames22.com"
             Platform.SexyGaming -> "https://api.onlinegames22.com"
             Platform.Fgg -> "https://d-tapi.fgg365.com"
-            Platform.AllBet -> "https://api3.apidemo.net:8443"
-//            Platform.EBet -> "http://gpgaming88myr.ebet.im:8888/api/"
-            Platform.EBet -> "https://api3.abgapi.net"
+//            Platform.AllBet -> "https://api3.apidemo.net:8443"
+            Platform.AllBet -> "https://api3.abgapi.net"
+            Platform.EBet -> "http://gpgaming88myr.ebet.im:8888/api/"
             Platform.SaGaming -> "http://sai-api.sa-apisvr.com"
 
             // sport
