@@ -214,7 +214,8 @@ class PragmaticService: PlatformService() {
                     "timepoint=$startId"
             ).joinToString(separator = "&")
 
-            val url = "${gameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/DataFeeds/transactions?$urlParam"
+//            val url = "${gameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/DataFeeds/transactions?$urlParam"
+            val url = "${gameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/DataFeeds/gamerounds/finished/?$urlParam"
             val csv = okHttpUtil.doGet(url = url, clz = String::class.java)
             val orders = parseCsv(csv = csv)
             "$timepoint" to orders

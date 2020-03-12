@@ -49,8 +49,8 @@ class PullBetTask(
         //TODO 暂时过滤其它厅主的
 //        val binds = platformBindService.all().filter { it.platform == Platform.AsiaGamingSlot || it.platform == Platform.AsiaGamingLive }.filter { it.clientId == 1 } // && it.platform == Platform.MicroGaming
         val binds = platformBindService.all()
-                //.filter { it.clientId == 1  }
-//                .filter { it.platform == Platform.EBet }
+                .filter { it.clientId == 1  }
+                .filter { it.platform == Platform.Pragmatic }
 
         binds.filter { it.platform != Platform.PlaytechLive }.parallelStream().forEach  { bind ->
             this.executePlatform(bind)
@@ -117,8 +117,13 @@ class PullBetTask(
                 val minutes: Long = duration.toMinutes() //相差的分钟数
                 minutes > 2
             }
+            Platform.Pragmatic -> {
+                val duration = Duration.between(startTime, LocalDateTime.now())
+                val minutes: Long = duration.toMinutes() //相差的分钟数
+                minutes > 5
+            }
             // 不需要判断时间
-            Platform.Pragmatic,
+//            Platform.Pragmatic,
             Platform.GGFishing,
             Platform.Bcs,
             Platform.CMD,
