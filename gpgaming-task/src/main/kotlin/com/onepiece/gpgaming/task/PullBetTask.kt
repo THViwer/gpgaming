@@ -49,8 +49,8 @@ class PullBetTask(
         //TODO 暂时过滤其它厅主的
 //        val binds = platformBindService.all().filter { it.platform == Platform.AsiaGamingSlot || it.platform == Platform.AsiaGamingLive }.filter { it.clientId == 1 } // && it.platform == Platform.MicroGaming
         val binds = platformBindService.all()
-                .filter { it.clientId == 1  }
-                .filter { it.platform == Platform.Pragmatic }
+//                .filter { it.clientId == 1  }
+//                .filter { it.platform == Platform.Pragmatic }
 
         binds.filter { it.platform != Platform.PlaytechLive }.parallelStream().forEach  { bind ->
             this.executePlatform(bind)
