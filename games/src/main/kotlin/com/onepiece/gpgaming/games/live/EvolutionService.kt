@@ -105,7 +105,49 @@ class EvolutionService : PlatformService() {
             Language.MY -> "ms"
             else -> "en"
         }
-
+//        val json = """
+//            {
+//               "uuid":"$uuid",
+//               "player":{
+//                  "id":"${startReq.username}",
+//                  "update":true,
+//                  "firstName":"firstName",
+//                  "lastName":"lastName",
+//                  "nickname":"nickname",
+//                  "country":"MY",
+//                  "language":"$lang",
+//                  "currency":"${token.currency}",
+//                  "session":{
+//                     "id":"$uuid",
+//                     "ip":"192.168.0.1"
+//                  }
+//               },
+//               "config":{
+//                  "brand":{
+//                     "id":"1",
+//                     "skin":"1"
+//                  },
+//                  "game":{
+//                     "category":"TopGames",
+//                     "interface":"view1",
+//                     "table":{
+//                        "id":"leqhceumaq6qfoug"
+//                     }
+//                  },
+//                  "channel":{
+//                     "wrapped":false,
+//                     "mobile":false
+//                  },
+//                  "urls":{
+//                     "cashier":"http://www.chs.ee",
+//                     "responsibleGaming":"http://www.RGam.ee",
+//                     "lobby":"http://www.lobb.ee",
+//                     "sessionTimeout":"http://www.sesstm.ee"
+//                  }
+//               }
+//            }
+//
+//        """.trimIndent()
 
         val json = """
             {
@@ -129,7 +171,10 @@ class EvolutionService : PlatformService() {
                      "id":"1",
                      "skin":"1"
                   },
-
+                  "game":{
+                     "category":"TopGames",
+                     "interface":"view1"
+                  },
                   "channel":{
                      "wrapped":false,
                      "mobile":false
