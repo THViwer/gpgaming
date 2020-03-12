@@ -90,7 +90,13 @@ class PullBetTask(
         val orders = pull(startTime, endTime)
         this.asyncBatch(orders)
 
-        redisService.put(key = redisKey, value = startTime.plusMinutes(2))
+        val v = if (bind.platform == Platform.Pragmatic) {
+            LocalDateTime.now().minusMinutes(5)
+        } else {
+            startTime.plusMinutes(2)
+        }
+
+        redisService.put(key = redisKey, value = v)
     }
 
     private fun canExecutePlatform(startTime: LocalDateTime, platform: Platform): Boolean {
