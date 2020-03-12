@@ -221,7 +221,8 @@ class SaGamingService : PlatformService() {
                 "GameCode=",
                 "Time=$time",
                 "Username=${startSlotReq.username}",
-                "CurrencyType=${clientToken.currency}"
+                "CurrencyType=${clientToken.currency}",
+                "h5web=true"
         )
 
         val mapUtil = this.startGetXml(clientToken = clientToken, data = data, time = time)
