@@ -28,7 +28,7 @@ enum class Platform(
 
     // live video
     CT(PlatformCategory.LiveVideo),
-    DreamGaming(PlatformCategory.LiveVideo),
+        DreamGaming(PlatformCategory.LiveVideo),
     Evolution(PlatformCategory.LiveVideo),
     GoldDeluxe(PlatformCategory.LiveVideo),
     SexyGaming(PlatformCategory.LiveVideo),

@@ -37,7 +37,8 @@ class GameConstant(
             // live
             Platform.CT -> "http://api.ctapi888.com"
             Platform.DreamGaming -> "http://api.dg99web.com"
-            Platform.Evolution -> "http://staging.evolution.asia-live.com"
+//            Platform.Evolution -> "http://staging.evolution.asia-live.com"
+            Platform.Evolution -> "https://api.luckylivegames.com"
             Platform.GoldDeluxe -> "http://wsgd.gdsecure88.com"
             Platform.SexyGaming -> "https://testapi.onlinegames22.com"
             Platform.Fgg -> "https://d-tapi.fgg365.com"
