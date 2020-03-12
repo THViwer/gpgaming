@@ -78,7 +78,7 @@ class PragmaticService: PlatformService() {
                 "secureLogin" to clientToken.secureLogin,
                 "externalPlayerId" to transferReq.username,
                 "externalTransactionId" to transferReq.orderId,
-                "amount" to transferReq.amount
+                "amount" to transferReq.amount.setScale(2, 2)
         )
         val mapUtil = this.startDoPostForm(method = "/balance/transfer", clientToken = clientToken, data = data)
         val balance = mapUtil.asBigDecimal("balance")
