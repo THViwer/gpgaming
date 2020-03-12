@@ -120,6 +120,11 @@ class GameConstant(
             platform == Platform.GamePlay && activeConfig.profile == "dev" -> "http://45.124.65.170:91"
 //            platform == Platform.GamePlay -> "http://casino.w88uat.com"
             platform == Platform.GamePlay -> "http://gameplay2.gpgaming88.com"
+
+            //TODO Evo Test
+            platform == Platform.Evolution && activeConfig.profile == "dev" -> "http://admin.luckylivegames.com"
+            platform == Platform.Evolution -> "http://admin.luckylivegames.com"
+
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
