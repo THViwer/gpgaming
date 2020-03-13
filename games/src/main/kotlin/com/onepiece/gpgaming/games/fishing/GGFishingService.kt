@@ -25,7 +25,7 @@ class GGFishingService : PlatformService() {
     fun startDoGet(clientToken: GGFishingClientToken, path: String, data: Map<String, Any>): MapUtil {
 
 //        val url = "${gameConstant.getDomain(Platform.GGFishing)}/api/${clientToken.webSite}/${path}"
-        val url = "${clientToken.apiPath}/${clientToken.webSite}/api/${path}"
+        val url = "${clientToken.apiPath}/api/${clientToken.webSite}/${path}"
 
         val param = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
         val result = okHttpUtil.doGet(url = "$url?${param}", clz = GGFishingValue.Result::class.java)
