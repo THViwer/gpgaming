@@ -25,7 +25,7 @@ class DefaultRedisService(
 
         return if (json == null) {
             val data = function()
-            this.put(key, data, timeout)
+            if (data.isNotEmpty()) this.put(key, data, timeout)
             data
         } else {
             val javaType = objectMapper.typeFactory.constructCollectionType(List::class.java, clz)
