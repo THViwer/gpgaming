@@ -147,7 +147,7 @@ class PragmaticService: PlatformService() {
              * 方形，大小 138x138：
              * http(s)://{game server domain}/game_pic/square/138/{gameID}.jpg
              */
-            val icon = "${gameConstant.getDomain(Platform.Pragmatic)}/game_pic/rec/325/${gameId}.png"
+            val icon = "${clientToken.apiPath}/game_pic/rec/325/${gameId}.png"
 
             SlotGame(gameId = gameId, gameName = gameName, category = GameCategory.Slot, icon = icon, touchIcon = null, hot = false, new = false,
                     status = Status.Normal, platform = Platform.Pragmatic)
@@ -215,7 +215,7 @@ class PragmaticService: PlatformService() {
             ).joinToString(separator = "&")
 
 //            val url = "${gameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/DataFeeds/transactions?$urlParam"
-            val url = "${gameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/DataFeeds/gamerounds/finished/?$urlParam"
+            val url = "${clientToken.apiPath}/IntegrationService/v3/DataFeeds/gamerounds/finished/?$urlParam"
             val csv = okHttpUtil.doGet(url = url, clz = String::class.java)
             val orders = parseCsv(csv = csv)
             "$timepoint" to orders

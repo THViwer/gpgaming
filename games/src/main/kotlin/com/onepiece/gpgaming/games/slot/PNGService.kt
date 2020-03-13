@@ -243,6 +243,11 @@ class PNGService: PlatformService() {
         }
 
 //        val ticket = if (startSlotReq.launchMethod == LaunchMethod.Web) "username=$token" else "ticket=$token"
+
+        //https://bsistage.playngonetwork.com/casino/ContainerLauncher?pid=8835&gameid=105&height=100%&width=100%&practice=0&channel=desktop&ticket=30-473M844R116P305T&lang=ms_MY
+
+        val channel = if (startSlotReq.launchMethod == LaunchMethod.Web) "channel=desktop" else ""
+
         val urlParam = listOf(
                 "pid=8835",
                 "div=pngCasinoGame",
@@ -250,16 +255,17 @@ class PNGService: PlatformService() {
                 "height=100%",
                 "width=100%",
                 "practice=0",
+                channel,
 //                ticket,
                 "ticket=$token",
 //                "tusername=$token",
                 "lang=$lang"
-        ).joinToString("&")
+        ).filter { it.isNotBlank() }.joinToString("&")
 
 
 
         val domain = when (startSlotReq.launchMethod) {
-            LaunchMethod.Web -> "https://bsistage.playngonetwork.com/casino/js"
+            LaunchMethod.Web -> "https://bsistage.playngonetwork.com/casino/ContainerLauncher"
             LaunchMethod.Wap -> "https://bsistage.playngonetwork.com/casino/PlayMobile"
             else -> "https://bsistage.playngonetwork.com/casino/js"
         }

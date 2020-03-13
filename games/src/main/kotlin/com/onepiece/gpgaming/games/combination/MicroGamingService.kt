@@ -45,7 +45,7 @@ class MicroGamingService : PlatformService() {
                     .add("password", clientToken.password)
                     .build()
 
-            val url = "${gameConstant.getDomain(Platform.MicroGaming)}/oauth/token"
+            val url = "${clientToken.apiPath}/oauth/token"
             val oauthToken = okHttpUtil.doPostForm(url = url, body = body, headers = headers, clz = MicroGamingValue.OauthToken::class.java)
             oauthToken.access_token
         }!!
@@ -78,7 +78,7 @@ class MicroGamingService : PlatformService() {
                 "X-DAS-LANG" to "en"
         )
 
-        val url = "${gameConstant.getDomain(Platform.MicroGaming)}$method?$urlParam"
+        val url = "${clientToken.apiPath}$method?$urlParam"
         val result = okHttpUtil.doGet(url = url, headers = header, clz = MicroGamingValue.Result::class.java)
         return result.mapUtil
     }

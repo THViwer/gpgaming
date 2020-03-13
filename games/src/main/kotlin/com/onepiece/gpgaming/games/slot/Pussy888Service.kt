@@ -123,7 +123,7 @@ class Pussy888Service : PlatformService() {
                 "userName=${balanceReq.username}"
         )
 
-        val url = "${gameConstant.getDomain(Platform.Pussy888)}/ashx/account/account.ashx"
+        val url = "${clientToken.apiPath}/ashx/account/account.ashx"
         val mapUtil = this.startGetJson(url = url , username = balanceReq.username, clientToken = clientToken, data = data)
         return mapUtil.asBigDecimal("MoneyNum")
     }

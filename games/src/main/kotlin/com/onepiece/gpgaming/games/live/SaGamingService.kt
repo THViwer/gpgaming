@@ -81,7 +81,7 @@ class SaGamingService : PlatformService() {
         val md5Param = "${methodParam}${clientToken.md5Key}${time}${clientToken.secretKey}"
         val md5Sign = DigestUtils.md5Hex(md5Param)
 
-        val url = "${gameConstant.getDomain(Platform.SaGaming)}/api/api.aspx?q=$desSign&s=$md5Sign"
+        val url = "${clientToken.apiPath}/api/api.aspx?q=$desSign&s=$md5Sign"
         val betResult = okHttpUtil.doGetXml(url = url, clz = SaGamingValue.BetResult::class.java)
 
         check(betResult.errorMsgId == 0 || betResult.errorMsgId == 112) {

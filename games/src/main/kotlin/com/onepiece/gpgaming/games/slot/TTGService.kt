@@ -224,7 +224,7 @@ class TTGService(
             </searchdetail>
         """.trimIndent()
 
-        val url = "${gameConstant.getOrderApiUrl(Platform.TTG)}/dataservice/datafeed/transaction/current"
+        val url = "${tokenClient.apiOrderPath}/dataservice/datafeed/transaction/current"
 
         val headers = mapOf(
                 "Affiliate-Login" to tokenClient.affiliateLogin,

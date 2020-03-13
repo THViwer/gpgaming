@@ -9,11 +9,9 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.value.internet.web.SlotCategory
 import com.onepiece.gpgaming.beans.value.internet.web.SlotGame
 import com.onepiece.gpgaming.games.GameApi
-import com.onepiece.gpgaming.games.GameConstant
 import com.onepiece.gpgaming.games.SlotMenuUtil
 import com.onepiece.gpgaming.games.http.OkHttpUtil
 import com.onepiece.gpgaming.utils.AwsS3Util
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.io.File
 import java.util.*
@@ -24,7 +22,6 @@ import java.util.stream.Collectors
 class SlotGameTask(
         private val objectMapper: ObjectMapper,
         private val gameApi: GameApi,
-        private val gameConstant: GameConstant,
         private val okHttpUtil: OkHttpUtil
 )  {
 

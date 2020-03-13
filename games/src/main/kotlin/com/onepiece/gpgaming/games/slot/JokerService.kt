@@ -210,7 +210,7 @@ class JokerService : PlatformService() {
 
             val sign = this.generatorSign(clientToken = clientToken, data = data)
             val urlParam = "AppID=${clientToken.appId}&Signature=${sign}"
-            val url = "${gameConstant.getDomain(Platform.Joker)}?$urlParam"
+            val url = "${clientToken.apiPath}?$urlParam"
 
             val body = FormBody.Builder()
             data.forEach { body.add(it.key, "${it.value}") }

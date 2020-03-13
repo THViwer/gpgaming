@@ -164,7 +164,7 @@ class GGFishingService : PlatformService() {
         )
 
         val param = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-        return "${gameConstant.getDomain(Platform.GGFishing)}/api/${clientToken.webSite}/loginV2?$param"
+        return "${clientToken.apiPath}/api/${clientToken.webSite}/loginV2?$param"
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {

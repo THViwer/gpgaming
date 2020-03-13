@@ -23,7 +23,7 @@ class PlaytechService(
     private val log = LoggerFactory.getLogger(PlaytechService::class.java)
 
     fun startPostJson(clientToken: PlaytechClientToken, path: String, data: String): PlaytechValue.Result {
-        val url = "${gameConstant.getDomain(Platform.PlaytechSlot)}${path}"
+        val url = "${clientToken.apiPath}${path}"
         val headers = mapOf(
                 "X-Auth-Api-Key" to clientToken.accessToken
         )
@@ -32,7 +32,7 @@ class PlaytechService(
 
     fun startGetJson(clientToken: PlaytechClientToken, path: String, data: List<String>): PlaytechValue.Result {
         val urlParam = data.joinToString(separator = "&")
-        val url = "${gameConstant.getDomain(Platform.PlaytechSlot)}${path}?$urlParam"
+        val url = "${clientToken.apiPath}${path}?$urlParam"
         val headers = mapOf(
                 "X-Auth-Api-Key" to clientToken.accessToken
         )
@@ -150,7 +150,7 @@ class PlaytechService(
             )
 
             val urlParam = data.joinToString(separator = "&")
-            val url = "${gameConstant.getDomain(Platform.PlaytechSlot)}/backoffice/reports/gameTransactions?$urlParam"
+            val url = "${clientToken.apiPath}/backoffice/reports/gameTransactions?$urlParam"
             val headers = mapOf(
                     "X-Auth-Api-Key" to clientToken.accessToken
             )
