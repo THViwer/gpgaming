@@ -47,7 +47,7 @@ class PlaytechService(
         val data = """
             {
                 "name": "$name",
-                "username": "${registerReq.username}",
+                "username": "${clientToken.prefix}_${registerReq.username}",
                 "password": "${registerReq.password}",
                 "kiosk_name": "${clientToken.agentName}"
             }
@@ -69,7 +69,7 @@ class PlaytechService(
         check(result.code == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
         val mapUtil = result.mapUtil
 
-        val wallet = if (activeConfig.profile == "dev") "FOURBLESSINGS88" else "FOURBLESSINGS88"
+        val wallet = clientToken.serverName
         return mapUtil.asMap("data").asMap("wallets").asBigDecimal(wallet)
     }
 
