@@ -205,6 +205,8 @@ class PNGService: PlatformService() {
             else -> "en_US"
         }
 
+        val channel = if (startSlotReq.launchMethod == LaunchMethod.Web) "channel=desktop" else "channel=mobile"
+
         val urlParam = listOf(
                 "pid=8835",
                 "div=pngCasinoGame",
@@ -212,18 +214,11 @@ class PNGService: PlatformService() {
                 "height=100%",
                 "width=100%",
                 "practice=1",
-//                "ticket=$token",
-//                "tusername=$token",
+                channel,
                 "lang=$lang"
         ).joinToString("&")
 
-        val domain = when (startSlotReq.launchMethod) {
-            LaunchMethod.Web -> "https://bsistage.playngonetwork.com/casino/js"
-            LaunchMethod.Wap -> "https://bsistage.playngonetwork.com/casino/PlayMobile"
-            else -> "https://bsistage.playngonetwork.com/casino/js"
-        }
-
-        return "$domain?$urlParam"
+        return "https://bsistage.playngonetwork.com/casino/ContainerLauncher?$urlParam"
     }
 
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
@@ -241,10 +236,6 @@ class PNGService: PlatformService() {
             Language.CN -> "zh_CN"
             else -> "en_US"
         }
-
-//        val ticket = if (startSlotReq.launchMethod == LaunchMethod.Web) "username=$token" else "ticket=$token"
-
-        //https://bsistage.playngonetwork.com/casino/ContainerLauncher?pid=8835&gameid=105&height=100%&width=100%&practice=0&channel=desktop&ticket=30-473M844R116P305T&lang=ms_MY
 
         val channel = if (startSlotReq.launchMethod == LaunchMethod.Web) "channel=desktop" else "channel=mobile"
 
