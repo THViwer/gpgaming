@@ -143,6 +143,10 @@ class GameApi(
      */
     fun register(clientId: Int, memberId: Int, platform: Platform, name: String) {
 
+
+        val has = platformMemberService.find(memberId, platform)
+        if (has != null) return
+
         // 生成用户名
         val (generatorUsername, generatorPassword) = PlatformUsernameUtil.generatorPlatformUsername(clientId = clientId, memberId = memberId, platform = platform)
 
