@@ -164,7 +164,8 @@ class PlaytechService(
                     val winAmount = bet.asBigDecimal("win")
                     val betTime = bet.asLocalDateTime("bet_datetime", dateTimeFormat)
                     val username = bet.asString("gamzo_player_name").split("_")[1]
-                    val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = pullBetOrderReq.platform, platformUsername = username)
+                    val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = pullBetOrderReq.platform,
+                            platformUsername = username, prefix = "${clientToken.prefix}_")
 
                     val originData = objectMapper.writeValueAsString(bet.data)
 

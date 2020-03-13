@@ -52,9 +52,11 @@ object PlatformUsernameUtil  {
 
                 clientId to memberId
             }
+            Platform.PlaytechSlot,
+            Platform.PlaytechLive,
             Platform.Lbc,
             Platform.TTG -> {
-                val username = platformUsername.replace(prefix, "").split("_")[1]
+                val username = platformUsername.replace("${prefix}_", "")
 
                 val clientId = username.substring(0, 2).toInt()
                 val memberId = username.substring(2, username.length - 2).toInt()
