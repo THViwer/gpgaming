@@ -62,7 +62,8 @@ class PlaytechService(
         val clientToken = balanceReq.token as PlaytechClientToken
 
         val data = listOf(
-                "player_name=${clientToken.prefix}_${balanceReq.username}",
+//                "player_name=${clientToken.prefix}_${balanceReq.username}",
+                "player_name=${balanceReq.username}",
                 "server_name=${clientToken.serverName}"
         )
         val result = this.startGetJson(clientToken = clientToken, path = "/backoffice/player/serverBalance", data = data)
@@ -76,7 +77,7 @@ class PlaytechService(
     override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as PlaytechClientToken
 
-        val toPlayer = "${clientToken.prefix}_${transferReq.username}".toUpperCase()
+        val toPlayer = "${transferReq.username}".toUpperCase()
         val result = when (transferReq.amount.toDouble() > 0) {
             true -> {
                 val data = """
