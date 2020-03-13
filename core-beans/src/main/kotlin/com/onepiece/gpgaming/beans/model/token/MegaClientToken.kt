@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.model.token
 
 class MegaClientToken(
+        val apiPath: String,
 
         val appId: String,
 

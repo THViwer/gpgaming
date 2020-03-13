@@ -27,7 +27,7 @@ class LbcService : PlatformService() {
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 
     fun startGetJson(clientToken: LbcClientToken, method: String, formBody: FormBody): MapUtil {
-        val url = "${clientToken.apiDomain}/api/${method}"
+        val url = "${clientToken.apiPath}/api/${method}"
         val result = okHttpUtil.doPostForm(url = url, body = formBody, clz = LbcValue.Result::class.java)
 
         check(result.errorCode == 0) {

@@ -23,9 +23,9 @@ class DreamGamingService : PlatformService() {
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     private val log = LoggerFactory.getLogger(DreamGamingService::class.java)
 
-    fun doStartPostJson(method: String, data: String): MapUtil {
+    fun doStartPostJson(clientToken: DreamGamingClientToken, method: String, data: String): MapUtil {
 
-        val url = "${gameConstant.getDomain(Platform.DreamGaming)}$method"
+        val url = "${clientToken.apiPath}/$method"
         val result = okHttpUtil.doPostJson(url = url, data = data, clz = DreamGamingValue.Result::class.java)
 
         check(result.codeId == 0) {
@@ -61,7 +61,7 @@ class DreamGamingService : PlatformService() {
             }
         """.trimIndent()
 
-        this.doStartPostJson(method = "/user/signup/${clientToken.agentName}", data = data)
+        this.doStartPostJson(clientToken = clientToken, method = "/user/signup/${clientToken.agentName}", data = data)
         return registerReq.username
     }
 
@@ -83,7 +83,7 @@ class DreamGamingService : PlatformService() {
             }
         """.trimIndent()
 
-        this.doStartPostJson(method = "/user/update/${clientToken.agentName}", data = data)
+        this.doStartPostJson(clientToken = clientToken, method = "/user/update/${clientToken.agentName}", data = data)
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
@@ -98,7 +98,7 @@ class DreamGamingService : PlatformService() {
             } 
         """.trimIndent()
 
-        val mapUtil = this.doStartPostJson(method = "/user/getBalance/${clientToken.agentName}", data = data)
+        val mapUtil = this.doStartPostJson(clientToken = clientToken,  method = "/user/getBalance/${clientToken.agentName}", data = data)
 
         return mapUtil.asMap("member").asBigDecimal("balance")
     }
@@ -119,7 +119,7 @@ class DreamGamingService : PlatformService() {
             } 
         """.trimIndent()
 
-        val mapUtil = this.doStartPostJson(method = "/account/transfer/${clientToken.agentName}", data = data)
+        val mapUtil = this.doStartPostJson(clientToken = clientToken, method = "/account/transfer/${clientToken.agentName}", data = data)
         val platformOrderId = mapUtil.asString("data")
         val balance = mapUtil.asMap("member").asBigDecimal("balance")
         return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
@@ -138,7 +138,7 @@ class DreamGamingService : PlatformService() {
         """.trimIndent()
 
 
-        val url = "${gameConstant.getDomain(Platform.DreamGaming)}/account/checkTransfer/${clientToken.agentName}"
+        val url = "${clientToken.apiPath}/account/checkTransfer/${clientToken.agentName}"
         val result = okHttpUtil.doPostJson(url = url, data = data, clz = DreamGamingValue.Result::class.java)
         val successful = result.codeId == 0
         return GameValue.TransferResp.of(successful)
@@ -166,7 +166,7 @@ class DreamGamingService : PlatformService() {
                 }
             }
         """.trimIndent()
-        val mapUtil = this.doStartPostJson(method = "/user/login/${clientToken.agentName}", data = data)
+        val mapUtil = this.doStartPostJson(clientToken = clientToken, method = "/user/login/${clientToken.agentName}", data = data)
         val list = mapUtil.data["list"] as List<String>
 
         val token = mapUtil.asString("token")
@@ -211,7 +211,7 @@ class DreamGamingService : PlatformService() {
             } 
         """.trimIndent()
 
-        val mapUtil = this.doStartPostJson(method = "/game/getReport/${clientToken.agentName}", data = data)
+        val mapUtil = this.doStartPostJson(clientToken = clientToken, method = "/game/getReport/${clientToken.agentName}", data = data)
         val orders = mapUtil.asList("list").map { bet ->
             BetOrderUtil.instance(platform = Platform.DreamGaming, mapUtil = bet)
                     .set("orderId", "id")
@@ -242,7 +242,7 @@ class DreamGamingService : PlatformService() {
             } 
         """.trimIndent()
 
-        this.doStartPostJson(method = "/game/markReport/${clientToken.agentName}", data = data)
+        this.doStartPostJson(clientToken = clientToken, method = "/game/markReport/${clientToken.agentName}", data = data)
     }
 
 }

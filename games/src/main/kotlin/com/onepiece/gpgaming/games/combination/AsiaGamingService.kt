@@ -37,7 +37,7 @@ class AsiaGamingService : PlatformService() {
         val headers = mapOf(
                 "headers" to "WEB_LIB_GI_${clientToken.agentCode}"
         )
-        val apiPath = "${clientToken.apiDomain}/doBusiness.do?params=${params.let { URLEncoder.encode(it, "utf-8") }}&key=$key"
+        val apiPath = "${clientToken.apiPath}/doBusiness.do?params=${params.let { URLEncoder.encode(it, "utf-8") }}&key=$key"
         return okHttpUtil.doGetXml(url = apiPath, clz = AsiaGamingValue.Result::class.java, headers = headers)
     }
 
@@ -187,7 +187,7 @@ class AsiaGamingService : PlatformService() {
         val key = DigestUtils.md5Hex("$params${clientToken.md5Secret}")
 
 
-        return "${clientToken.startGameApiDomain}/forwardGame.do?params=${params}&key=${key}"
+        return "${clientToken.gamePath}/forwardGame.do?params=${params}&key=${key}"
     }
 
     override fun start(startReq: GameValue.StartReq): String {
@@ -214,7 +214,7 @@ class AsiaGamingService : PlatformService() {
         val key = DigestUtils.md5Hex("$params${clientToken.md5Secret}")
 
 
-        return "${clientToken.startGameApiDomain}/forwardGame.do?params=${params}&key=${key}"
+        return "${clientToken.gamePath}/forwardGame.do?params=${params}&key=${key}"
     }
 
 

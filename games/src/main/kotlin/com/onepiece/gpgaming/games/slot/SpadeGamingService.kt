@@ -26,9 +26,9 @@ class SpadeGamingService : PlatformService() {
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
     private val log = LoggerFactory.getLogger(SpadeGamingService::class.java)
 
-    private fun startPostJson(method: String, data: String): MapUtil {
+    private fun startPostJson(clientToken: SpadeGamingClientToken, method: String, data: String): MapUtil {
 
-        val url = "${gameConstant.getDomain(Platform.SpadeGaming)}/api"
+        val url = "${clientToken.apiPath}/api"
         val headers = mapOf(
                 "API" to method,
                 "DataType" to "JSON"
@@ -56,7 +56,7 @@ class SpadeGamingService : PlatformService() {
             }
         """.trimIndent()
 
-        this.startPostJson(method = "createAcct", data = data)
+        this.startPostJson(clientToken = clientToken, method = "createAcct", data = data)
         return registerReq.username
     }
 
@@ -71,7 +71,7 @@ class SpadeGamingService : PlatformService() {
                 "serialNo": "${UUID.randomUUID()}" 
             }
         """.trimIndent()
-        val mapUtil = this.startPostJson(method = "getAcctInfo", data = data)
+        val mapUtil = this.startPostJson(clientToken = clientToken, method = "getAcctInfo", data = data)
         return mapUtil.asList("list").first().asBigDecimal("balance")
     }
 
@@ -89,7 +89,7 @@ class SpadeGamingService : PlatformService() {
                 """.trimIndent()
 
         val method = if (transferReq.amount.toDouble() > 0) "deposit" else "withdraw"
-        val mapUtil = this.startPostJson(method = method, data = data)
+        val mapUtil = this.startPostJson(clientToken = clientToken, method = method, data = data)
         val platformOrderId = mapUtil.asString("serialNo")
         val balance = mapUtil.asBigDecimal("afterBalance")
         return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
@@ -113,7 +113,7 @@ class SpadeGamingService : PlatformService() {
             }
         """.trimIndent()
 
-        val mapUtil = this.startPostJson(method = "fundInOut", data = data)
+        val mapUtil = this.startPostJson(clientToken = clientToken, method = "fundInOut", data = data)
         val successful = mapUtil.asInt("resultCount") == 1
         return GameValue.TransferResp.of(successful)
     }
@@ -130,7 +130,7 @@ class SpadeGamingService : PlatformService() {
             
         """.trimIndent()
 
-        val mapUtil = this.startPostJson(method = "getGames", data = data)
+        val mapUtil = this.startPostJson(clientToken = clientToken, method = "getGames", data = data)
 
         return mapUtil.asList("games").map { game ->
 
@@ -164,29 +164,12 @@ class SpadeGamingService : PlatformService() {
             }
         """.trimIndent()
 
-        val mapUtil = this.startPostJson(method = "createToken", data = data)
+        val mapUtil = this.startPostJson(clientToken = clientToken, method = "createToken", data = data)
         return mapUtil.asString("token")
     }
 
 
     override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
-
-//        val clientToken = startSlotReq.token as SpadeGamingClientToken
-//        val token = this.getToken(startSlotReq)
-//
-//        val mobile = startSlotReq.launchMethod == LaunchMethod.Wap
-//        val urlParam = listOf(
-//                "acctId=${StringUtil.generateNonce(6)}",
-//                "language=en",
-//                "token=$token",
-//                "game=${startSlotReq.gameId}",
-//                "fun=true",
-////                "minigame=false",
-//                "mobile=$mobile",
-//                "menumode=on"
-//        ).joinToString(separator = "&")
-//
-//        return "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth?$urlParam"
 
         val lang = when (startSlotReq.language) {
             Language.EN -> "en-US"
@@ -234,10 +217,6 @@ class SpadeGamingService : PlatformService() {
                 "mobile=$mobile",
                 "menumode=on"
         ).joinToString(separator = "&")
-//        return "http://portal.e-games.com/auth/?$urlParam"
-//        return "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth/?$urlParam"
-
-        // http://portal.e-games.com/auth/?acctId=TESTPLAYER1&language=en_US&token=fe1a85adc54545d2963b661a22d09c9e&game=S-DG02&fun=true&minigame=false&mobile=true&menumode=on
 
         return "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth?$urlParam"
     }
@@ -270,7 +249,7 @@ class SpadeGamingService : PlatformService() {
             }
         """.trimIndent()
 
-        val mapUtil = this.startPostJson(method = "getBetHistory", data = data)
+        val mapUtil = this.startPostJson(clientToken = clientToken, method = "getBetHistory", data = data)
         val orders = mapUtil.asList("list").filter { it.asBoolean("completed") }.map { bet ->
 
             val orderId = bet.asString("ticketId")

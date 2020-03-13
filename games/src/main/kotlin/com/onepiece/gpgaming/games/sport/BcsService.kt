@@ -45,9 +45,9 @@ class BcsService : PlatformService() {
     private val log = LoggerFactory.getLogger(BcsService::class.java)
 
 
-    override fun getRequestUrl(path: String, data: Map<String, Any>): String {
+    fun getRequestPath(clientToken: BcsClientToken, path: String, data: Map<String, Any>): String {
         val urlParam = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-        return "${gameConstant.getDomain(Platform.Bcs)}${path}?$urlParam"
+        return "${clientToken.apiPath}${path}?$urlParam"
     }
 
     fun startDoGetXml(url: String): MapUtil {
@@ -73,7 +73,7 @@ class BcsService : PlatformService() {
         )
 
 
-        val url = this.getRequestUrl("/ThirdApi.asmx/Register", param)
+        val url = this.getRequestPath(token,"/ThirdApi.asmx/Register", param)
 
         this.startDoGetXml(url = url)
         return registerReq.username
@@ -87,7 +87,7 @@ class BcsService : PlatformService() {
                 "MemberAccount" to balanceReq.username
         )
 
-        val url = this.getRequestUrl(path = "/ThirdApi.asmx/GetBalance", data = param)
+        val url = this.getRequestPath(clientToken = token, path = "/ThirdApi.asmx/GetBalance", data = param)
         val mapUtil = this.startDoGetXml(url = url)
         return mapUtil.asMap("result").asBigDecimal("Balance")
     }
@@ -113,7 +113,7 @@ class BcsService : PlatformService() {
                 "Key" to signLast6
         )
 
-        val url = this.getRequestUrl("/ThirdApi.asmx/Transfer", param)
+        val url = this.getRequestPath(token, "/ThirdApi.asmx/Transfer", param)
         val mapUtil = this.startDoGetXml(url)
         val platformOrderId =  mapUtil.asMap("result").asString("SerialNumber")
         val balance = mapUtil.asMap("result").asBigDecimal("Balance")
@@ -129,7 +129,7 @@ class BcsService : PlatformService() {
                 "SerialNumber" to checkTransferReq.orderId
         )
 
-        val url = this.getRequestUrl("/ThirdApi.asmx/CheckTransfer", param)
+        val url = this.getRequestPath(token, "/ThirdApi.asmx/CheckTransfer", param)
         return try {
             val mapUtil = this.startDoGetXml(url)
             GameValue.TransferResp.successful()
@@ -165,7 +165,7 @@ class BcsService : PlatformService() {
                 "PageStyle" to "SP3" // SP1:TBS SP2:SBO SP3:LBC SP4:HG
 
         )
-        val url = this.getRequestUrl("/ThirdApi.asmx/Login", param)
+        val url = this.getRequestPath(token, "/ThirdApi.asmx/Login", param)
         val mapUtil = this.startDoGetXml(url)
 
         return mapUtil.asString("result")
@@ -221,7 +221,7 @@ class BcsService : PlatformService() {
                     "Rows" to 1000
             )
 
-            val url = getRequestUrl(path = "/ThirdApi.asmx/GetBetSheetBySort", data = param)
+            val url = getRequestPath(clientToken = token, path = "/ThirdApi.asmx/GetBetSheetBySort", data = param)
             val result = okHttpUtil.doGetXml(url = url, clz = BcsValue.PullBetResult::class.java)
 
             if (result.result.isNullOrEmpty()) {

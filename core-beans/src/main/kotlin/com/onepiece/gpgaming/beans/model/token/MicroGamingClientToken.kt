@@ -1,6 +1,8 @@
 package com.onepiece.gpgaming.beans.model.token
 
 class MicroGamingClientToken(
+        val apiPath: String,
+
         val authUsername: String,
 
         val authPassword: String,

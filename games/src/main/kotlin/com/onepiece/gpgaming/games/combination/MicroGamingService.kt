@@ -62,7 +62,7 @@ class MicroGamingService : PlatformService() {
                 "X-DAS-LANG" to "en"
         )
 
-        val url = "${gameConstant.getDomain(Platform.MicroGaming)}$method"
+            val url = "${clientToken.apiPath}$method"
         val result = okHttpUtil.doPostJson(url = url, headers = header, data = data, clz = MicroGamingValue.Result::class.java)
         return result.mapUtil
     }

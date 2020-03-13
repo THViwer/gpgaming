@@ -30,14 +30,12 @@ class TTGService(
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss")
     private val log = LoggerFactory.getLogger(TTGService::class.java)
 
-    private fun startPostXml(method: String, data: String): MapUtil {
+    private fun startPostXml(clientToken: TTGClientToken, method: String, data: String): MapUtil {
 
-        val url = "${gameConstant.getDomain(Platform.TTG)}${method}"
+        val url = "${clientToken.apiPath}${method}"
         val xmlData = okHttpUtil.doPostXml(url = url, data = data, clz = Map::class.java)
         return MapUtil.instance(data = xmlData as Map<String, Any>)
     }
-
-
 
     override fun register(registerReq: GameValue.RegisterReq): String {
 
@@ -50,7 +48,9 @@ class TTGService(
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
-        val url = "${gameConstant.getDomain(Platform.TTG)}/cip/player/${balanceReq.username}/balance"
+        val clientToken = balanceReq.token as TTGClientToken
+
+        val url = "${clientToken.apiPath}/cip/player/${balanceReq.username}/balance"
         val xml = okHttpUtil.doGetXml(url = url, clz = Map::class.java)
         val mapUtil = MapUtil.instance(xml as Map<String, Any>)
         return mapUtil.asBigDecimal("real")
@@ -63,7 +63,7 @@ class TTGService(
         val data = """
             <transactiondetail uid="${transferReq.username}" amount="${transferReq.amount}" />
         """.trimIndent()
-        val mapUtil = this.startPostXml(method = "/cip/transaction/${tokenClient.agentName}/${transferReq.orderId}", data = data)
+        val mapUtil = this.startPostXml(clientToken = tokenClient, method = "/cip/transaction/${tokenClient.agentName}/${transferReq.orderId}", data = data)
         check(mapUtil.asString("retry") == "0") {
             log.error("ttgService network error: errorMsgId = ${mapUtil.asString("retry")}, errorMsg = ${mapUtil.data}")
             OnePieceExceptionCode.PLATFORM_DATA_FAIL
@@ -74,7 +74,7 @@ class TTGService(
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val tokenClient = checkTransferReq.token as TTGClientToken
-        val url = "${gameConstant.getDomain(Platform.TTG)}/cip/transaction/${tokenClient.agentName}/${checkTransferReq.orderId}"
+        val url = "${tokenClient.apiPath}/cip/transaction/${tokenClient.agentName}/${checkTransferReq.orderId}"
         val xml = okHttpUtil.doGetXml(url = url, clz = String::class.java)
         val map = xmlMapper.readValue<Map<String, Any>>(xml)
         val successful = map["amount"] != null
@@ -93,7 +93,7 @@ class TTGService(
                </partners>
             </logindetail>
         """.trimIndent()
-        return this.startPostXml(method = "/cip/gametoken/${username}", data = data)
+        return this.startPostXml(clientToken = tokenClient, method = "/cip/gametoken/${username}", data = data)
     }
 
     override fun slotGames(token: ClientToken, launch: LaunchMethod, language: Language): List<SlotGame> {
@@ -190,7 +190,7 @@ class TTGService(
             </searchdetail>
         """.trimIndent()
 
-        val url = "${gameConstant.getOrderApiUrl(Platform.TTG)}/dataservice/datafeed/transaction/${betOrderReq.username}"
+        val url = "${tokenClient.apiOrderPath}/dataservice/datafeed/transaction/${betOrderReq.username}"
 
         val headers = mapOf(
                 "Affiliate-Login" to tokenClient.affiliateLogin,

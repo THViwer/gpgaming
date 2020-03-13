@@ -34,7 +34,7 @@ class PragmaticService: PlatformService() {
         val sign = DigestUtils.md5Hex(signParam)
 
         val urlParam = "$param&hash=$sign"
-        val url = "${gameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/http/CasinoGameAPI${method}"
+        val url = "${clientToken.apiPath}/IntegrationService/v3/http/CasinoGameAPI${method}"
 
         val result = okHttpUtil.doGet(url = "$url?$urlParam", clz = PragmaticValue.Result::class.java)
         check(result.error == 0) {

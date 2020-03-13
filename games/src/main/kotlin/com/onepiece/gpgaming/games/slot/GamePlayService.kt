@@ -24,9 +24,9 @@ class GamePlayService: PlatformService() {
     private val log = LoggerFactory.getLogger(GamePlayService::class.java)
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    fun startGetXml(method: String, data: List<String>): MapUtil {
+    fun startGetXml(clientToken: GamePlayClientToken, method: String, data: List<String>): MapUtil {
         val urlParam = data.joinToString("&")
-        val result = okHttpUtil.doGetXml(url = "${gameConstant.getDomain(Platform.GamePlay)}${method}?$urlParam", clz = GamePlayValue.Result::class.java)
+        val result = okHttpUtil.doGetXml(url = "${clientToken.apiPath}${method}?$urlParam", clz = GamePlayValue.Result::class.java)
 
         check(result.error_code == 0) {
             log.error("gamePlay network error: errorCode = ${result.error_code}")
@@ -56,7 +56,7 @@ class GamePlayService: PlatformService() {
                 "currency=${clientToken.currency}"
         )
 
-        this.startGetXml(method = "/op/createuser", data = data)
+        this.startGetXml(clientToken = clientToken, method = "/op/createuser", data = data)
         return registerReq.username
     }
 
@@ -68,7 +68,7 @@ class GamePlayService: PlatformService() {
                 "cust_id=${balanceReq.username}",
                 "currency=${clientToken.currency}"
         )
-        val mapUtil = this.startGetXml(method = "/op/getbalance", data = data)
+        val mapUtil = this.startGetXml(clientToken = clientToken, method = "/op/getbalance", data = data)
 
         return mapUtil.asBigDecimal("balance")
     }
@@ -85,7 +85,7 @@ class GamePlayService: PlatformService() {
                 "trx_id=${transferReq.orderId}"
         )
 
-        val mapUtil = this.startGetXml(method = method, data = data)
+        val mapUtil = this.startGetXml(clientToken = clientToken, method = method, data = data)
         val balance = mapUtil.asBigDecimal("after")
         return GameValue.TransferResp.successful(balance = balance)
     }
@@ -99,7 +99,7 @@ class GamePlayService: PlatformService() {
                 "merch_pwd=${clientToken.merchPwd}",
                 "trx_id=${checkTransferReq.orderId}"
         )
-        val mapUtil = this.startGetXml(method = "/op/check", data = data)
+        val mapUtil = this.startGetXml(clientToken = clientToken, method = "/op/check", data = data)
         val balance = mapUtil.asBigDecimal("after")
         return GameValue.TransferResp.successful(balance = balance)
     }
@@ -207,7 +207,7 @@ class GamePlayService: PlatformService() {
                 "page_size=2000",
                 "product=slots"
         )
-        val result = this.startGetBetXml(url = "${gameConstant.getOrderApiUrl(Platform.GamePlay)}/csnbo/api/gateway/betDetail.html", data = data)
+        val result = this.startGetBetXml(url = "${clientToken.apiOrderPath}/csnbo/api/gateway/betDetail.html", data = data)
 
         return result.betDetailList?.map { bet ->
             val mapUtil = bet.mapUtil
@@ -228,42 +228,5 @@ class GamePlayService: PlatformService() {
 
 }
 
-
-/*
-fun main() {
-    val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-
-    val xml = "<resp>\n" +
-            "<error_code>0</error_code>\n" +
-            "<items page_num=\"1\" page_size=\"2000\" total_row=\"5\" total_page=\"1\">\n" +
-            "<item winlose=\"-0.50\" bet_id=\"47403073\" bundle_id=\"47403073\" trans_date=\"2019-12-20 22:52:59\" user_id=\"01000001jk\" game_type=\"1\" balance=\"0.00\" bet=\"0.50\" status=\"1\" game_result=\"\" currency=\"\" player_hand=\"Spin\" table_id=\"Wuxia Princess Mega Reels\" game_id=\"1\" lucky_num=\"\" platform=\"4\" round_id=\"\" game_code=\"\" fround=\"0\" jcon=\"0\" jwin=\"0.0\" rebate_amount=\"\"/>\n" +
-            "<item winlose=\"-0.50\" bet_id=\"47403074\" bundle_id=\"47403074\" trans_date=\"2019-12-20 22:53:03\" user_id=\"01000001jk\" game_type=\"1\" balance=\"0.00\" bet=\"0.50\" status=\"1\" game_result=\"\" currency=\"\" player_hand=\"Spin\" table_id=\"Wuxia Princess Mega Reels\" game_id=\"1\" lucky_num=\"\" platform=\"4\" round_id=\"\" game_code=\"\" fround=\"0\" jcon=\"0\" jwin=\"0.0\" rebate_amount=\"\"/>\n" +
-            "<item winlose=\"-0.42\" bet_id=\"47403075\" bundle_id=\"47403075\" trans_date=\"2019-12-20 22:53:06\" user_id=\"01000001jk\" game_type=\"1\" balance=\"0.00\" bet=\"0.50\" status=\"1\" game_result=\"\" currency=\"\" player_hand=\"Spin\" table_id=\"Wuxia Princess Mega Reels\" game_id=\"1\" lucky_num=\"\" platform=\"4\" round_id=\"\" game_code=\"\" fround=\"0\" jcon=\"0\" jwin=\"0.0\" rebate_amount=\"\"/>\n" +
-            "<item winlose=\"-0.50\" bet_id=\"47403076\" bundle_id=\"47403076\" trans_date=\"2019-12-20 22:53:10\" user_id=\"01000001jk\" game_type=\"1\" balance=\"0.00\" bet=\"0.50\" status=\"1\" game_result=\"\" currency=\"\" player_hand=\"Spin\" table_id=\"Wuxia Princess Mega Reels\" game_id=\"1\" lucky_num=\"\" platform=\"4\" round_id=\"\" game_code=\"\" fround=\"0\" jcon=\"0\" jwin=\"0.0\" rebate_amount=\"\"/>\n" +
-            "<item winlose=\"-0.50\" bet_id=\"47403077\" bundle_id=\"47403077\" trans_date=\"2019-12-20 22:53:13\" user_id=\"01000001jk\" game_type=\"1\" balance=\"0.00\" bet=\"0.50\" status=\"1\" game_result=\"\" currency=\"\" player_hand=\"Spin\" table_id=\"Wuxia Princess Mega Reels\" game_id=\"1\" lucky_num=\"\" platform=\"4\" round_id=\"\" game_code=\"\" fround=\"0\" jcon=\"0\" jwin=\"0.0\" rebate_amount=\"\"/>\n" +
-            "</items>\n" +
-            "</resp>"
-
-    val result = XmlMapper().readValue(xml, GamePlayValue.BetResult::class.java)
-
-    val orders = result.betDetailList?.map { bet ->
-        val mapUtil = bet.mapUtil
-        val username = mapUtil.asString("user_id")
-        val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.GamePlay, platformUsername = username)
-        val orderId = mapUtil.asString("bet_id")
-        val betAmount = mapUtil.asBigDecimal("bet")
-        val winLose = mapUtil.asBigDecimal("winlose")
-        val betTime = mapUtil.asLocalDateTime("trans_date", dateTimeFormat)
-
-        val originData = jacksonObjectMapper().writeValueAsString(mapUtil.data)
-
-        BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.GamePlay, orderId = orderId, betAmount = betAmount,
-                winAmount = betAmount.plus(winLose), betTime = betTime, settleTime = betTime, originData = originData)
-    }?: emptyList()
-
-    println(orders)
-
-}
-*/
 
 

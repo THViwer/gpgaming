@@ -41,7 +41,7 @@ class JokerService : PlatformService() {
     private fun startPostForm(clientToken: DefaultClientToken, data: Map<String, Any>): MapUtil {
         val sign = this.generatorSign(clientToken = clientToken, data = data)
         val urlParam = "AppID=${clientToken.appId}&Signature=${sign}"
-        val url = "${gameConstant.getDomain(Platform.Joker)}?$urlParam"
+        val url = "${clientToken.apiPath}?$urlParam"
 
         val body = FormBody.Builder()
         data.forEach { body.add(it.key, "${it.value}") }
@@ -141,7 +141,7 @@ class JokerService : PlatformService() {
         data.forEach { body.add(it.key, "${it.value}") }
 
         val urlParam = "AppID=${clientToken.appId}&Signature=${sign}"
-        val url = "${gameConstant.getDomain(Platform.Joker)}?$urlParam"
+        val url = "${clientToken.apiPath}?$urlParam"
         val result = okHttpUtil.doPostForm(url = url, body = body.build(), clz = JokerValue.GameResult::class.java)
 
         return result.games.filter {

@@ -19,20 +19,16 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 
-fun main() {
-    val m = hashMapOf("1" to 1)
-    println(m)
-}
 @Service
 class SexyGamingService: PlatformService() {
 
     private val log = LoggerFactory.getLogger(SexyGamingService::class.java)
 
-    fun startGetJson(method: String, data: Map<String, String>): MapUtil {
+    fun startGetJson(clientToken: SexyGamingClientToken, method: String, data: Map<String, String>): MapUtil {
 
         log.info("sexyGaming 请求数据：$data")
 
-        val url = "${gameConstant.getDomain(Platform.SexyGaming)}$method"
+        val url = "${clientToken.apiPath}/$method"
 
         val body = FormBody.Builder()
         data.forEach {
@@ -57,13 +53,11 @@ class SexyGamingService: PlatformService() {
                 "agentId" to clientToken.agentId,
                 "userId" to registerReq.username,
                 "currency" to clientToken.currency,
-//                "betLimit" to "{\"SEXYBCRT\":{\"LIVE\":{\"limitId\":[280101,280102,280103,280104,280105,280106,280107]}}}"
-//                "betLimit" to "{\"SEXYBCRT\":{\"LIVE\":{\"limitId\":[280101,280102]}},\"SV388\":{\"LIVE\":{\"maxbet\":1000,\"minbet\":100,\"mindraw\":100,\"matchlimit\":1000,\"maxdraw\":100}},\"VENUS\":{\"LIVE\":{\"limitId\":[280101,280102]}}}"
                 "betLimit" to clientToken.betLimit
 
         )
 
-        this.startGetJson(method = "/wallet/createMember", data = data)
+        this.startGetJson(clientToken = clientToken, method = "/wallet/createMember", data = data)
         return registerReq.username
     }
 
@@ -76,7 +70,7 @@ class SexyGamingService: PlatformService() {
                 "agentId" to clientToken.agentId,
                 "userIds" to balanceReq.username
         )
-        val mapUtil = this.startGetJson(method = "/wallet/getBalance", data = data)
+        val mapUtil = this.startGetJson(clientToken = clientToken, method = "/wallet/getBalance", data = data)
 
 
         return mapUtil.asMap("results").data.entries.first().value.toString().toBigDecimal()
@@ -95,7 +89,7 @@ class SexyGamingService: PlatformService() {
                         "transferAmount" to "${transferReq.amount}",
                         "txCode" to transferReq.orderId
                 )
-                this.startGetJson(method = "/wallet/deposit", data = data)
+                this.startGetJson(clientToken = clientToken, method = "/wallet/deposit", data = data)
             }
             else -> {
                 val data = mapOf(
@@ -106,7 +100,7 @@ class SexyGamingService: PlatformService() {
                         "withdrawType" to "0",
                         "transferAmount" to "${transferReq.amount.abs()}"
                 )
-                this.startGetJson(method = "/wallet/withdraw", data = data)
+                this.startGetJson(clientToken = clientToken, method = "/wallet/withdraw", data = data)
             }
         }
         val platformOrderId =  mapUtil.asString("txCode")
@@ -122,7 +116,7 @@ class SexyGamingService: PlatformService() {
                 "agentId" to clientToken.agentId,
                 "txCode" to checkTransferReq.orderId
         )
-        val mapUtil = this.startGetJson(method = "/wallet/checkTransferOperation", data = data)
+        val mapUtil = this.startGetJson(clientToken = clientToken, method = "/wallet/checkTransferOperation", data = data)
         val successful = mapUtil.data["txStatus"] == 1
         return GameValue.TransferResp.of(successful = successful)
     }
@@ -149,7 +143,7 @@ class SexyGamingService: PlatformService() {
                 "gameType" to "LIVE", // 启动真人
                 "platform" to "SEXYBCRT"
         )
-        val mapUtil = this.startGetJson(method = "/wallet/doLoginAndLaunchGame", data = data)
+        val mapUtil = this.startGetJson(clientToken = clientToken, method = "/wallet/doLoginAndLaunchGame", data = data)
         //TODO 判断语言设置启动
         return mapUtil.asString("url")
     }
@@ -164,7 +158,7 @@ class SexyGamingService: PlatformService() {
                 "status" to "1" //已结算
         )
 
-        val mapUtil = this.startGetJson(method = "/wallet/getTransactionByUpdateDate", data = data)
+        val mapUtil = this.startGetJson(clientToken = clientToken, method = "/wallet/getTransactionByUpdateDate", data = data)
 
         return mapUtil.asList("transactions").map { bet ->
 
@@ -204,7 +198,7 @@ class SexyGamingService: PlatformService() {
                 "startTime" to "${startDate}T00+08:00",
                 "endTime" to "${startDate.plusDays(1)}T00+08:00"
         )
-        val mapUtil = this.startGetJson(method = "/wallet/getSummaryByTxTimeHour", data = data)
+        val mapUtil = this.startGetJson(clientToken = clientToken, method = "/wallet/getSummaryByTxTimeHour", data = data)
         return mapUtil.asList("transactions").firstOrNull() ?: MapUtil.instance(hashMapOf())
     }
 

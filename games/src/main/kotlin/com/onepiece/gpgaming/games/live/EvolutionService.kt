@@ -21,9 +21,9 @@ class EvolutionService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(EvolutionService::class.java)
 
-    override fun getRequestUrl(path: String, data: Map<String, Any>): String {
+    private fun getRequestPath(clientToken: EvolutionClientToken, path: String, data: Map<String, Any>): String {
         val params = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-        return "${gameConstant.getDomain(Platform.Evolution)}${path}?$params"
+        return "${clientToken.apiPath}${path}?$params"
     }
 
     fun doGetResult(url: String, pojo: String): Map<String, Any> {
@@ -50,7 +50,7 @@ class EvolutionService : PlatformService() {
                 "euID" to balanceReq.username,
                 "output" to 0
         )
-        val url = this.getRequestUrl(path = "/api/ecashier", data = data)
+        val url = this.getRequestPath(clientToken = token, path = "/api/ecashier", data = data)
         val result = this.doGetResult(url, "userbalance")
         return MapResultUtil.asBigDecimal(result, "abalance")
     }
@@ -70,7 +70,7 @@ class EvolutionService : PlatformService() {
                 "output" to 0
         )
 
-        val url = this.getRequestUrl(path = "/api/ecashier", data = data)
+        val url = this.getRequestPath(clientToken = token, path = "/api/ecashier", data = data)
         val result = doGetResult(url, "transfer")
         val platformOrderId = MapResultUtil.asString(result, "etransid")
         val balance = MapResultUtil.asBigDecimal(result, "balance")
@@ -87,7 +87,7 @@ class EvolutionService : PlatformService() {
                 "output" to 0,
                 "eTransID" to checkTransferReq.orderId
         )
-        val url = this.getRequestUrl(path = "/api/ecashier", data = data)
+        val url = this.getRequestPath(clientToken =  token, path = "/api/ecashier", data = data)
         val result = this.doGetResult(url, "transaction")
         val successful =  MapResultUtil.asString(result, "result") == "Y"
         return GameValue.TransferResp.of(successful)
@@ -186,7 +186,7 @@ class EvolutionService : PlatformService() {
 
         """.trimIndent()
 
-        val url = "${gameConstant.getDomain(Platform.Evolution)}/ua/v1/${token.appId}/${token.key}"
+        val url = "${token.apiPath}/ua/v1/${token.appId}/${token.key}"
         val result= okHttpUtil.doPostJson(url = url, data = json, clz = EvolutionValue.Result::class.java)
         return MapResultUtil.asString(result.data, "entry")
     }
@@ -197,7 +197,7 @@ class EvolutionService : PlatformService() {
 
         val utcStartTime = pullBetOrderReq.startTime.minusHours(8) // 设置UTC时间 所以要减8小时
         val utcEndTime = pullBetOrderReq.endTime.minusHours(8) // 设置UTC时间 所以要减8小时
-        val url = "${gameConstant.getOrderApiUrl(Platform.Evolution)}/api/gamehistory/v1/casino/games?startDate=${utcStartTime}&endDate=${utcEndTime}"
+        val url = "${token.apiOrderPath}/api/gamehistory/v1/casino/games?startDate=${utcStartTime}&endDate=${utcEndTime}"
         val headers = mapOf( "Authorization" to  "Basic $authorization")
         val jsonValue = okHttpUtil.doGet(url, String::class.java, headers)
 

@@ -65,7 +65,7 @@ class Pussy888Service : PlatformService() {
 
         )
 
-        val url = "${gameConstant.getDomain(Platform.Pussy888)}/ashx/account/account.ashx"
+        val url = "${clientToken.apiPath}/ashx/account/account.ashx"
         val mapUtil = this.startGetJson(url = url, beforeParam = agentName, username = agentName, clientToken = clientToken, data = data)
         return mapUtil.asString("account")
     }
@@ -89,7 +89,7 @@ class Pussy888Service : PlatformService() {
                 "UserAreaId=1",
                 "pwdtype=1"
         )
-        val url = "${gameConstant.getDomain(Platform.Pussy888)}/ashx/account/account.ashx"
+        val url = "${clientToken.apiPath}/ashx/account/account.ashx"
         this.startGetJson(url = url, username = username, clientToken = clientToken, data = data)
         return username
     }
@@ -112,7 +112,7 @@ class Pussy888Service : PlatformService() {
                 "pwdtype=1"
         )
 
-        val url = "${gameConstant.getDomain(Platform.Pussy888)}/ashx/account/account.ashx"
+        val url = "${clientToken.apiPath}/ashx/account/account.ashx"
         this.startGetJson(url = url, username = updatePasswordReq.username, clientToken = clientToken, data = data)
     }
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
@@ -139,7 +139,7 @@ class Pussy888Service : PlatformService() {
                 "ActionIp=12.213.1.24"
         )
 
-        val url = "${gameConstant.getDomain(Platform.Pussy888)}/ashx/account/setScore.ashx"
+        val url = "${clientToken.apiPath}/ashx/account/setScore.ashx"
         val mapUtil = this.startGetJson(url = url, username = transferReq.username, clientToken = clientToken, data = data)
         val balance = mapUtil.asBigDecimal("money")
         return GameValue.TransferResp.successful(balance = balance)
@@ -180,7 +180,7 @@ class Pussy888Service : PlatformService() {
                 "eDate=${endTime.format(dateTimeFormatter)}"
         )
 
-        val url = "${gameConstant.getOrderApiUrl(Platform.Pussy888)}/ashx/GameLog.ashx"
+        val url = "${clientToken.apiOrderPath}/ashx/GameLog.ashx"
         val mapUtils = this.startGetJson(url = url, username = betOrderReq.username, clientToken = clientToken, data = data)
 
         val clientId = -1

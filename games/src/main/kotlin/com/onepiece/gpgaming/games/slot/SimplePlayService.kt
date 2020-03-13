@@ -63,7 +63,7 @@ class SimplePlayService : PlatformService() {
         val md5Param = "${methodParam}${clientToken.md5Key}${time}${clientToken.secretKey}"
         val md5Sign = DigestUtils.md5Hex(md5Param)
 
-        val url = "${gameConstant.getDomain(Platform.SimplePlay)}/api/api.aspx?q=$desSign&s=$md5Sign"
+        val url = "${clientToken.apiPath}/api/api.aspx?q=$desSign&s=$md5Sign"
         val result = okHttpUtil.doGetXml(url = url, clz = SimplePlayValue.Result::class.java)
 
         check(result.errorMsgId == 0) {

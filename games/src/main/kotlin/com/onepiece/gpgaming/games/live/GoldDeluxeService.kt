@@ -39,8 +39,8 @@ class GoldDeluxeService: PlatformService() {
         return "$first${LocalDateTime.now().format(dateTimeFormat)}${StringUtil.generateNonce(5)}"
     }
 
-    private fun startDoPostXml(data: String): Map<String, Any> {
-        val url = "${gameConstant.getDomain(Platform.GoldDeluxe)}/MerchantAPI/ewallet.php"
+    private fun startDoPostXml(clientToken: GoldDeluxeClientToken, data: String): Map<String, Any> {
+        val url = "${clientToken.apiPath}/MerchantAPI/ewallet.php"
         val result = okHttpUtil.doPostXml(url = url, data = data, clz = GoldDeluxeValue.Result::class.java)
         check(result.header.errorCode == "0") {
             log.error("goldDeluxe network error: codeId = ${result.header.errorCode}")
@@ -71,7 +71,7 @@ class GoldDeluxeService: PlatformService() {
             </Request>
         """.trimIndent()
 
-        this.startDoPostXml(data = data)
+        this.startDoPostXml(clientToken = token, data = data)
         return registerReq.username
     }
 
@@ -96,7 +96,7 @@ class GoldDeluxeService: PlatformService() {
             </Request>
         """.trimIndent()
 
-        val result = this.startDoPostXml(data = data)
+        val result = this.startDoPostXml(clientToken = token, data = data)
         return MapResultUtil.asBigDecimal(result, "Balance")
     }
 
@@ -124,7 +124,7 @@ class GoldDeluxeService: PlatformService() {
                     </Request>
                 """.trimIndent()
 
-        val result = this.startDoPostXml(data = data)
+        val result = this.startDoPostXml(clientToken = token, data = data)
         val platformOrderId = MapResultUtil.asString(result, "TransactionID")
         val balance = MapResultUtil.asBigDecimal(result, "Balance")
         return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
@@ -148,7 +148,7 @@ class GoldDeluxeService: PlatformService() {
               </Request>
         """.trimIndent()
 
-        val result = this.startDoPostXml(data = data)
+        val result = this.startDoPostXml(clientToken = token, data = data)
         val successful = MapResultUtil.asString(result, "Status") == "SUCCESS"
         return GameValue.TransferResp.of(successful)
     }
@@ -182,8 +182,7 @@ class GoldDeluxeService: PlatformService() {
                 "theme=deafult"
         )
         val urlParam = param.joinToString(separator = "&")
-        val baseUrl = "http://gd.gpgaming88.com/main.php"
-        return "$baseUrl?$urlParam"
+        return "$${token.gamePath}?$urlParam"
     }
 
 
@@ -212,7 +211,7 @@ class GoldDeluxeService: PlatformService() {
         """.trimIndent()
 
 
-        val url = "${gameConstant.getOrderApiUrl(Platform.GoldDeluxe)}/MerchantAPI/report.php"
+        val url = "${clientToken.gamePath}/MerchantAPI/report.php"
         val result = okHttpUtil.doPostXml(url = url, data = data, clz = GoldDeluxeValue.BetResult::class.java)
 
         if (result.param.totalRecord == 0) return emptyList()

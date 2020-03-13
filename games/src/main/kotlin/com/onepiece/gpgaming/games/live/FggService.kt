@@ -41,9 +41,9 @@ class FggService: PlatformService() {
 
     private val log = LoggerFactory.getLogger(FggService::class.java)
 
-    fun startPostJson(method: String, data: String): MapUtil {
+    fun startPostJson(clientToken: DefaultClientToken, method: String, data: String): MapUtil {
 
-        val url = "${gameConstant.getDomain(platform = Platform.Fgg)}/Game/$method"
+        val url = "${clientToken.apiPath}/Game/$method"
         val result = okHttpUtil.doPostJson(url = url, data = data, clz = FggValue.Result::class.java)
         check(result.errorCode.isBlank()) {
             log.error("fgg platform error: ${result.errorCode}, ${result.errorDesc}")
@@ -71,7 +71,7 @@ class FggService: PlatformService() {
             }
         """.trimIndent()
 
-        val mapUtil = this.startPostJson(method = "GetBalance", data = param)
+        val mapUtil = this.startPostJson(clientToken = token, method = "GetBalance", data = param)
         return mapUtil.asBigDecimal("Balance")
     }
 
@@ -87,7 +87,7 @@ class FggService: PlatformService() {
                 "SerialNumber": "${transferReq.orderId}"
             }
         """.trimIndent()
-        val mapUtil = this.startPostJson(method = "Transfer", data = param)
+        val mapUtil = this.startPostJson(clientToken = token, method = "Transfer", data = param)
         val balance = mapUtil.asBigDecimal("Balance")
         return GameValue.TransferResp.successful(balance = balance)
     }
@@ -101,7 +101,7 @@ class FggService: PlatformService() {
                 "SerialNumber": "${checkTransferReq.orderId}"
             }
         """.trimIndent()
-        val mapUtil = this.startPostJson(method = "GetTransferInfo", data = param)
+        val mapUtil = this.startPostJson(clientToken = token, method = "GetTransferInfo", data = param)
         val successful = mapUtil.asBoolean("Exist")
         return GameValue.TransferResp.of(successful)
     }
@@ -137,7 +137,7 @@ class FggService: PlatformService() {
             
         """.trimIndent()
 
-        val mapUtil = this.startPostJson(method = "GetGameUrl", data = param)
+        val mapUtil = this.startPostJson(clientToken = token, method = "GetGameUrl", data = param)
         return mapUtil.asString("Url")
     }
 
@@ -155,7 +155,7 @@ class FggService: PlatformService() {
             }
         """.trimIndent()
 
-            val mapUtil = this.startPostJson(method = "GetBets", data = param)
+            val mapUtil = this.startPostJson(clientToken = token, method = "GetBets", data = param)
 
 
             val nextSortNo =  mapUtil.asString("SortNo")

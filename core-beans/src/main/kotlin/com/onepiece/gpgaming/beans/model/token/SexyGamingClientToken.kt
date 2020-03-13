@@ -2,6 +2,8 @@ package com.onepiece.gpgaming.beans.model.token
 
 class SexyGamingClientToken(
 
+        val apiPath: String,
+
         val agentId: String,
 
         val cert: String,

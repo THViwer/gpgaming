@@ -23,8 +23,7 @@ class PNGService: PlatformService() {
                 "SOAPAction" to action
         )
 
-        val url = "https://bsistage1.playngonetwork.com:48835/CasinoGameService"
-        val result = okHttpUtil.doPostXml(url = url, data = data, mediaType = OkHttpUtil.TEXT_XML, headers = headers, clz = PNGValue.Result::class.java)
+        val result = okHttpUtil.doPostXml(url = clientToken.apiPath, data = data, mediaType = OkHttpUtil.TEXT_XML, headers = headers, clz = PNGValue.Result::class.java)
         //TODO check
         return result.mapUtil
     }

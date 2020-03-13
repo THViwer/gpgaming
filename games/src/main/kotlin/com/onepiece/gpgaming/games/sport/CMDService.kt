@@ -28,9 +28,9 @@ class CMDService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(CMDService::class.java)
 
-    fun startGetJson(data: List<String>): MapUtil {
+    fun startGetJson(clientToken: CMDClientToken, data: List<String>): MapUtil {
         val param = data.joinToString(separator = "&")
-        val url = "${gameConstant.getDomain(Platform.CMD)}/SportsApi.aspx?$param"
+        val url = "${clientToken.apiPath}/SportsApi.aspx?$param"
 
         val result = okHttpUtil.doGet(url = url, clz = CMDValue.Result::class.java)
         check(result.code == 0 || result.code == -102) {
@@ -52,7 +52,7 @@ class CMDService : PlatformService() {
                 "Currency=${cmdClientToken.currency}"
         )
 
-        this.startGetJson(data)
+        this.startGetJson(clientToken = cmdClientToken, data = data)
         return registerReq.username
     }
 
@@ -65,7 +65,7 @@ class CMDService : PlatformService() {
                 "UserName=${balanceReq.username}"
         )
 
-        val mapUtil = this.startGetJson(data)
+        val mapUtil = this.startGetJson(clientToken = cmdClientToken, data = data)
         return mapUtil.asList("Data").first().asBigDecimal("BetAmount")
 
     }
@@ -82,7 +82,7 @@ class CMDService : PlatformService() {
                 "Money=${transferReq.amount.abs()}",
                 "TicketNo=${transferReq.orderId}"
         )
-        val mapUtil = this.startGetJson(data)
+        val mapUtil = this.startGetJson(clientToken = cmdClientToken, data = data)
         val platformOrderId = mapUtil.asMap("Data").asString("PaymentId")
         val balance = mapUtil.asMap("Data").asBigDecimal("BetAmount")
         return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
@@ -97,7 +97,7 @@ class CMDService : PlatformService() {
                 "UserName=${checkTransferReq.username}",
                 "TicketNo=${checkTransferReq.orderId}"
         )
-        val mapUtil = this.startGetJson(data)
+        val mapUtil = this.startGetJson(clientToken = cmdClientToken, data = data)
         val successful = mapUtil.asList("Data").size == 1
         return GameValue.TransferResp.of(successful)
     }
@@ -154,7 +154,7 @@ class CMDService : PlatformService() {
                     "PartnerKey=${cmdClientToken.partnerKey}",
                     "Version=${startId}"
             )
-            val mapUtil = this.startGetJson(data)
+            val mapUtil = this.startGetJson(clientToken = cmdClientToken, data = data)
 
             var nextId: String = startId
             val orders = mapUtil.asList("Data").filter { it.asString("WinLoseStatus") != "P" }.map { bet ->
