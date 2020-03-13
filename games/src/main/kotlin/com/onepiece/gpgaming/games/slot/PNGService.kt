@@ -209,8 +209,7 @@ class PNGService: PlatformService() {
 
         val urlParam = listOf(
                 "pid=8835",
-                "div=pngCasinoGame",
-                "gid=${startSlotReq.gameId}",
+                "gameid=${startSlotReq.gameId}",
                 "height=100%",
                 "width=100%",
                 "practice=1",
@@ -241,8 +240,7 @@ class PNGService: PlatformService() {
 
         val urlParam = listOf(
                 "pid=8835",
-                "div=pngCasinoGame",
-                "gid=${startSlotReq.gameId}",
+                "gameid=${startSlotReq.gameId}",
                 "height=100%",
                 "width=100%",
                 "practice=0",
