@@ -242,7 +242,7 @@ class PNGService: PlatformService() {
             else -> "en_US"
         }
 
-        val ticket = if (startSlotReq.launchMethod == LaunchMethod.Web) "username=$token" else "ticket=$token"
+//        val ticket = if (startSlotReq.launchMethod == LaunchMethod.Web) "username=$token" else "ticket=$token"
         val urlParam = listOf(
                 "pid=8835",
                 "div=pngCasinoGame",
@@ -250,8 +250,8 @@ class PNGService: PlatformService() {
                 "height=100%",
                 "width=100%",
                 "practice=0",
-                ticket,
-//                "ticket=$token",
+//                ticket,
+                "ticket=$token",
 //                "tusername=$token",
                 "lang=$lang"
         ).joinToString("&")
@@ -268,5 +268,3 @@ class PNGService: PlatformService() {
     }
 
 }
-//https://bsistage.playngonetwork.com/casino/PlayMobile?pid=8835&div=pngCasinoGame&gameid=aztecwarriorprincessmobile&height=100%&width=100%&practice=0&ticket=5-522J362H618R289G&lang=zh_CN
-//https://bsistage.playngonetwork.com/casino/PlayMobile?pid=8835&div=pngCasinoGame&gid=aztecwarriorprincessmobile&height=100%&width=100%&practice=0&ticket=5-239I16W645C578B&lang=zh_CN
