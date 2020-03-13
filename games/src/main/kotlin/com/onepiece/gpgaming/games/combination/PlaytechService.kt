@@ -47,7 +47,7 @@ class PlaytechService(
         val data = """
             {
                 "name": "$name",
-                "username": "${clientToken.prefix}_${registerReq.username}",
+                "username": "${registerReq.username}",
                 "password": "${registerReq.password}",
                 "kiosk_name": "${clientToken.agentName}"
             }
