@@ -211,7 +211,7 @@ class GoldDeluxeService: PlatformService() {
         """.trimIndent()
 
 
-        val url = "${clientToken.gamePath}/MerchantAPI/report.php"
+        val url = "${clientToken.apiOrderPath}/MerchantAPI/report.php"
         val result = okHttpUtil.doPostXml(platform = Platform.GoldDeluxe, url = url, data = data, clz = GoldDeluxeValue.BetResult::class.java)
 
         if (result.param.totalRecord == 0) return emptyList()
