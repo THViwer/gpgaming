@@ -5,11 +5,12 @@ import com.onepiece.gpgaming.beans.model.GamePlatform
 
 enum class Platform(
         val category: PlatformCategory,
+        val cname: String,
         val hotGameLogo: String? = null
 ){
 
     // 中心 用于钱包 不用于游戏
-    Center(PlatformCategory.Slot),
+    Center(PlatformCategory.Slot, "gpgaming"),
 
     // slot
     Joker(PlatformCategory.Slot),

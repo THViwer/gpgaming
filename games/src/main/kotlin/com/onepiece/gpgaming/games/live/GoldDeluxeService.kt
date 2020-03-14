@@ -182,7 +182,7 @@ class GoldDeluxeService: PlatformService() {
                 "theme=deafult"
         )
         val urlParam = param.joinToString(separator = "&")
-        return "$${token.gamePath}?$urlParam"
+        return "${token.gamePath}?$urlParam"
     }
 
 
