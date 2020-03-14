@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.games.live
 
 import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.GoldDeluxeClientToken
@@ -169,15 +170,17 @@ class GoldDeluxeService: PlatformService() {
             else -> "en"
         }
 
+        val isMobile = if (startReq.launch == LaunchMethod.Wap) "mobile=1" else "mobile=0"
+
         val param = listOf(
                 "OperatorCode=${token.merchantCode}",
                 "lang=${lang}",
-                "Currency=MYR",
+                "Currency=${token.currency}",
                 "playerid=${startReq.username}",
                 "LoginTokenID=$loginTokenId",
                 "Key=$key",
                 "view=MB",
-                "mobile=0",
+                isMobile,
                 "PlayerGroup=default",
                 "theme=deafult"
         )
