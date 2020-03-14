@@ -67,7 +67,7 @@ class OkHttpUtil(
         val response = getOkHttpClient(url).newCall(request.build()).execute()
         check(response.code == 200) {
             val message = response.body?.string()
-            log.error("请求失败：$message")
+            log.error("get error, platform = $platform: $message")
             OnePieceExceptionCode.PLATFORM_METHOD_FAIL
         }
 
@@ -96,7 +96,7 @@ class OkHttpUtil(
         val response = getOkHttpClient(url).newCall(request).execute()
         check(response.code == 200) {
             val message = response.body?.string()
-            log.error("请求失败：$message")
+            log.error("get error, platform = $platform: $message")
             OnePieceExceptionCode.PLATFORM_METHOD_FAIL
         }
 
@@ -192,7 +192,7 @@ class OkHttpUtil(
         val response = getOkHttpClient(url).newCall(request).execute()
         if (response.code != 200) {
             val message = response.body?.string()
-            log.error("post error: $message")
+            log.error("post error, platform = $platform: $message")
             error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
@@ -222,7 +222,8 @@ class OkHttpUtil(
 
         val response = getOkHttpClient(url).newCall(request.build()).execute()
         if (response.code != 200 && response.code != 201) {
-            log.error("${response.body?.string()}")
+            val message = response.body?.string()
+            log.error("post error, platform = $platform: $message")
             error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
