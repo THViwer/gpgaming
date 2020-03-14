@@ -33,6 +33,12 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
                     tokenJson = tokenJson)
         }
 
+    override fun get(id: Int): PlatformBind {
+        val sql = "select * from platform_bind where id = ?"
+        return jdbcTemplate.query(sql, arrayOf<Any>(id)) { rs, _ ->
+            mapper(rs)
+        }.first()
+    }
     override fun allWithDel(clientId: Int): List<PlatformBind> {
         val sql = "select * from platform_bind where client_id = ?"
         return jdbcTemplate.query(sql, arrayOf<Any>(clientId)) { rs, _ ->
