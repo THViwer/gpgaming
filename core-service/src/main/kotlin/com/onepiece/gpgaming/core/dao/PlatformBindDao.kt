@@ -9,6 +9,8 @@ import java.math.BigDecimal
 
 interface PlatformBindDao : BasicDao<PlatformBind> {
 
+    fun allWithDel(clientId: Int): List<PlatformBind>
+
     fun find(platform: Platform): List<PlatformBind>
 
     fun find(clientId: Int, platform: Platform): PlatformBind

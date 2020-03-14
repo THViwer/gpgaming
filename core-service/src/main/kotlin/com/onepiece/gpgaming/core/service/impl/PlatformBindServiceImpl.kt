@@ -44,7 +44,7 @@ class PlatformBindServiceImpl(
         val redisKey = OnePieceRedisKeyConstant.openPlatforms(clientId)
 
         return redisService.getList(redisKey, PlatformBind::class.java) {
-            platformBindDao.all(clientId)
+            platformBindDao.allWithDel(clientId)
         }
     }
 
