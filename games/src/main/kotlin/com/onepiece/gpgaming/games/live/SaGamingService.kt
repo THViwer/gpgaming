@@ -180,7 +180,8 @@ class SaGamingService : PlatformService() {
                 "key=${clientToken.secretKey}",
                 "Time=$time",
                 "Username=${startReq.username}",
-                "CurrencyType=${clientToken.currency}"
+                "CurrencyType=${clientToken.currency}",
+                "h5web=true"
         )
 
         val mapUtil = this.startGetXml(clientToken = clientToken, data = data, time = time)
