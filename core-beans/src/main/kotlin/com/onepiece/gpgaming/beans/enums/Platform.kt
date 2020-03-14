@@ -5,49 +5,50 @@ import com.onepiece.gpgaming.beans.model.GamePlatform
 
 enum class Platform(
         val category: PlatformCategory,
+        val cname: String,
         val hotGameLogo: String? = null
 ){
 
     // 中心 用于钱包 不用于游戏
-    Center(PlatformCategory.Slot),
+    Center(PlatformCategory.Slot, "gpgaming"),
 
     // slot
-    Joker(PlatformCategory.Slot),
-    Kiss918(PlatformCategory.Slot),
-    Pussy888(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/pussy888.png"),
-    Mega(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/mega888.png"),
-    Pragmatic(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/pragmatic.png"),
-    SpadeGaming(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/spadegaming.png"),
-    TTG(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/top.png"),
-    MicroGaming(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
-    PlaytechSlot(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"), // mac下的chrome有问题 需要用safari启动 启动游戏需要白名单
-    PNG(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgo.png"),
-    GamePlay(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgame.png"), // 不能添加 sg服务器 从hk转发
-    SimplePlay(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"), // 就是sa 的slot  测试环境启动游戏需要白名单
-    AsiaGamingSlot(PlatformCategory.Slot, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
+    Joker(PlatformCategory.Slot, "Joker"),
+    Kiss918(PlatformCategory.Slot, "918kiss"),
+    Pussy888(PlatformCategory.Slot, "Pussy888", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/pussy888.png"),
+    Mega(PlatformCategory.Slot, "Mega888", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/mega888.png"),
+    Pragmatic(PlatformCategory.Slot, "Pragmatic Play", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/pragmatic.png"),
+    SpadeGaming(PlatformCategory.Slot, "Spadegaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/spadegaming.png"),
+    TTG(PlatformCategory.Slot, "Top Trend Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/top.png"),
+    MicroGaming(PlatformCategory.Slot,  "Microgaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
+    PlaytechSlot(PlatformCategory.Slot, "Playtech", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"), // mac下的chrome有问题 需要用safari启动 启动游戏需要白名单
+    PNG(PlatformCategory.Slot, "Play'n GO", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgo.png"),
+    GamePlay(PlatformCategory.Slot, "Game Play", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgame.png"), // 不能添加 sg服务器 从hk转发
+    SimplePlay(PlatformCategory.Slot,  "S","https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"), // 就是sa 的slot  测试环境启动游戏需要白名单
+    AsiaGamingSlot(PlatformCategory.Slot, "Asia Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
 
     // live video
-    CT(PlatformCategory.LiveVideo),
-        DreamGaming(PlatformCategory.LiveVideo),
-    Evolution(PlatformCategory.LiveVideo),
-    GoldDeluxe(PlatformCategory.LiveVideo),
-    SexyGaming(PlatformCategory.LiveVideo),
-    Fgg(PlatformCategory.LiveVideo),
-    AllBet(PlatformCategory.LiveVideo),
-    SaGaming(PlatformCategory.LiveVideo, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"),
-    AsiaGamingLive(PlatformCategory.LiveVideo, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
-    MicroGamingLive(PlatformCategory.LiveVideo, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
-    PlaytechLive(PlatformCategory.LiveVideo, "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"),
-    EBet(PlatformCategory.LiveVideo),
+    CT(PlatformCategory.LiveVideo, "ct"),
+    DreamGaming(PlatformCategory.LiveVideo, "Dream Gaming"),
+    Evolution(PlatformCategory.LiveVideo, "Evolution Gaming"),
+    GoldDeluxe(PlatformCategory.LiveVideo, "Gold Deluxe"),
+    SexyGaming(PlatformCategory.LiveVideo, "Sexy Gaming"),
+    Fgg(PlatformCategory.LiveVideo, "FGG Gaming"),
+    AllBet(PlatformCategory.LiveVideo, "Allbet"),
+    SaGaming(PlatformCategory.LiveVideo, "SA Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"),
+    AsiaGamingLive(PlatformCategory.LiveVideo, "Asia Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
+    MicroGamingLive(PlatformCategory.LiveVideo,  "Microgaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
+    PlaytechLive(PlatformCategory.LiveVideo, "Playtech", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"),
+    EBet(PlatformCategory.LiveVideo, "Ebet"),
 
     // sport
 //    Sbo(PlatformDetail.ofSbo()),
-    Lbc(PlatformCategory.Sport),
-    Bcs(PlatformCategory.Sport),
-    CMD(PlatformCategory.Sport),
+    Lbc(PlatformCategory.Sport, "I-Sport"),
+    Bcs(PlatformCategory.Sport, "S-Sport"),
+    CMD(PlatformCategory.Sport, "C-Sport"),
 
     // fishing
-    GGFishing(PlatformCategory.Fishing)
+    GGFishing(PlatformCategory.Fishing, "GGFisning")
 
     ;
 
