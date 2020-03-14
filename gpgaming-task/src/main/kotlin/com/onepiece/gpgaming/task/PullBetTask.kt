@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.task
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.PlatformBind
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.service.BetOrderService
@@ -49,6 +50,7 @@ class PullBetTask(
         //TODO 暂时过滤其它厅主的
 //        val binds = platformBindService.all().filter { it.platform == Platform.AsiaGamingSlot || it.platform == Platform.AsiaGamingLive }.filter { it.clientId == 1 } // && it.platform == Platform.MicroGaming
         val binds = platformBindService.all()
+                .filter { it.status != Status.Delete }
 //                .filter { it.clientId == 1  }
 //                .filter { it.platform == Platform.Pragmatic }
 
