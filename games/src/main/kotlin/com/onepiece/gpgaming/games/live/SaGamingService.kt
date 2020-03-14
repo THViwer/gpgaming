@@ -64,7 +64,7 @@ class SaGamingService : PlatformService() {
         val md5Sign = DigestUtils.md5Hex(md5Param)
 
         val url = "${clientToken.apiPath}/api/api.aspx?q=$desSign&s=$md5Sign"
-        val result = okHttpUtil.doGetXml(url = url, clz = SaGamingValue.Result::class.java)
+        val result = okHttpUtil.doGetXml(platform = Platform.SaGaming, url = url, clz = SaGamingValue.Result::class.java)
 
         check(result.errorMsgId == 0) {
             log.error("saGaming network error: errorMsgId = ${result.errorMsgId}, errorMsg = ${result.errorMsg}")
@@ -82,7 +82,7 @@ class SaGamingService : PlatformService() {
         val md5Sign = DigestUtils.md5Hex(md5Param)
 
         val url = "${clientToken.apiPath}/api/api.aspx?q=$desSign&s=$md5Sign"
-        val betResult = okHttpUtil.doGetXml(url = url, clz = SaGamingValue.BetResult::class.java)
+        val betResult = okHttpUtil.doGetXml(platform = Platform.SaGaming, url = url, clz = SaGamingValue.BetResult::class.java)
 
         check(betResult.errorMsgId == 0 || betResult.errorMsgId == 112) {
             log.error("saGaming network error: errorMsgId = ${betResult.errorMsgId}, errorMsg = ${betResult.errorMsg}")

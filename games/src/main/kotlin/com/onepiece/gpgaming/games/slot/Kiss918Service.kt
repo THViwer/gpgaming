@@ -47,7 +47,7 @@ class Kiss918Service : PlatformService() {
         val param = data.joinToString(separator = "&")
         val requestUrl = "$url?$param&sign=${sign}&time=$time&authcode=${clientToken.autoCode}"
 
-        val result = okHttpUtil.doGet(url = requestUrl, clz = Kiss918Value.Result::class.java)
+        val result = okHttpUtil.doGet(platform = Platform.Kiss918, url = requestUrl, clz = Kiss918Value.Result::class.java)
         check(result.success) {
             log.error("kiss918 network error: success = ${result.success}, msg = ${result.msg}")
             OnePieceExceptionCode.PLATFORM_DATA_FAIL

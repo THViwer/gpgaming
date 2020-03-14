@@ -27,7 +27,7 @@ class PlaytechService(
         val headers = mapOf(
                 "X-Auth-Api-Key" to clientToken.accessToken
         )
-        return  okHttpUtil.doPostJson(url = url, data = data, headers = headers, clz = PlaytechValue.Result::class.java)
+        return  okHttpUtil.doPostJson(platform = Platform.PlaytechLive, url = url, data = data, headers = headers, clz = PlaytechValue.Result::class.java)
     }
 
     fun startGetJson(clientToken: PlaytechClientToken, path: String, data: List<String>): PlaytechValue.Result {
@@ -36,7 +36,7 @@ class PlaytechService(
         val headers = mapOf(
                 "X-Auth-Api-Key" to clientToken.accessToken
         )
-        return okHttpUtil.doGet(url = url, headers = headers, clz = PlaytechValue.Result::class.java)
+        return okHttpUtil.doGet(platform = Platform.PlaytechLive, url = url, headers = headers, clz = PlaytechValue.Result::class.java)
 
     }
 
@@ -155,7 +155,7 @@ class PlaytechService(
             val headers = mapOf(
                     "X-Auth-Api-Key" to clientToken.accessToken
             )
-            val result =  okHttpUtil.doGet(url = url, headers = headers, clz = PlaytechValue.BetResult::class.java)
+            val result =  okHttpUtil.doGet(platform = Platform.PlaytechLive, url = url, headers = headers, clz = PlaytechValue.BetResult::class.java)
 
             if (result.data.data.isNotEmpty()) {
                 val list = result.data.orders.map { bet ->

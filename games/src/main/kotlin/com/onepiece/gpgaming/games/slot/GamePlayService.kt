@@ -26,7 +26,7 @@ class GamePlayService: PlatformService() {
 
     fun startGetXml(clientToken: GamePlayClientToken, method: String, data: List<String>): MapUtil {
         val urlParam = data.joinToString("&")
-        val result = okHttpUtil.doGetXml(url = "${clientToken.apiPath}${method}?$urlParam", clz = GamePlayValue.Result::class.java)
+        val result = okHttpUtil.doGetXml(platform = Platform.GamePlay, url = "${clientToken.apiPath}${method}?$urlParam", clz = GamePlayValue.Result::class.java)
 
         check(result.error_code == 0) {
             log.error("gamePlay network error: errorCode = ${result.error_code}")
@@ -38,7 +38,7 @@ class GamePlayService: PlatformService() {
 
     fun startGetBetXml(url: String, data: List<String>): GamePlayValue.BetResult {
         val urlParam = data.joinToString("&")
-        val result = okHttpUtil.doGetXml(url = "$url?$urlParam", clz = GamePlayValue.BetResult::class.java)
+        val result = okHttpUtil.doGetXml(platform = Platform.GamePlay, url = "$url?$urlParam", clz = GamePlayValue.BetResult::class.java)
 
 //        check(result.error_code == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
 //        log.info("result: $result")

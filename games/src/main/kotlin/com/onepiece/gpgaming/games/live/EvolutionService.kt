@@ -27,7 +27,7 @@ class EvolutionService : PlatformService() {
     }
 
     fun doGetResult(url: String, pojo: String): Map<String, Any> {
-        val result = okHttpUtil.doGet(url = url, clz = EvolutionValue.Result::class.java)
+        val result = okHttpUtil.doGet(platform = Platform.Evolution, url = url, clz = EvolutionValue.Result::class.java)
         //TODO check
         return MapResultUtil.asMap(result.data, pojo)
     }
@@ -187,7 +187,7 @@ class EvolutionService : PlatformService() {
         """.trimIndent()
 
         val url = "${token.apiPath}/ua/v1/${token.appId}/${token.key}"
-        val result= okHttpUtil.doPostJson(url = url, data = json, clz = EvolutionValue.Result::class.java)
+        val result= okHttpUtil.doPostJson(platform = Platform.Evolution, url = url, data = json, clz = EvolutionValue.Result::class.java)
         return MapResultUtil.asString(result.data, "entry")
     }
 
@@ -199,7 +199,7 @@ class EvolutionService : PlatformService() {
         val utcEndTime = pullBetOrderReq.endTime.minusHours(8) // 设置UTC时间 所以要减8小时
         val url = "${token.apiOrderPath}/api/gamehistory/v1/casino/games?startDate=${utcStartTime}&endDate=${utcEndTime}"
         val headers = mapOf( "Authorization" to  "Basic $authorization")
-        val jsonValue = okHttpUtil.doGet(url, String::class.java, headers)
+        val jsonValue = okHttpUtil.doGet(Platform.Evolution, url, String::class.java, headers)
 
         if (jsonValue.contains("Data could not be found.")) return emptyList()
 

@@ -41,7 +41,7 @@ class GoldDeluxeService: PlatformService() {
 
     private fun startDoPostXml(clientToken: GoldDeluxeClientToken, data: String): Map<String, Any> {
         val url = "${clientToken.apiPath}/MerchantAPI/ewallet.php"
-        val result = okHttpUtil.doPostXml(url = url, data = data, clz = GoldDeluxeValue.Result::class.java)
+        val result = okHttpUtil.doPostXml(platform = Platform.GoldDeluxe, url = url, data = data, clz = GoldDeluxeValue.Result::class.java)
         check(result.header.errorCode == "0") {
             log.error("goldDeluxe network error: codeId = ${result.header.errorCode}")
             OnePieceExceptionCode.PLATFORM_METHOD_FAIL
@@ -212,7 +212,7 @@ class GoldDeluxeService: PlatformService() {
 
 
         val url = "${clientToken.gamePath}/MerchantAPI/report.php"
-        val result = okHttpUtil.doPostXml(url = url, data = data, clz = GoldDeluxeValue.BetResult::class.java)
+        val result = okHttpUtil.doPostXml(platform = Platform.GoldDeluxe, url = url, data = data, clz = GoldDeluxeValue.BetResult::class.java)
 
         if (result.param.totalRecord == 0) return emptyList()
 

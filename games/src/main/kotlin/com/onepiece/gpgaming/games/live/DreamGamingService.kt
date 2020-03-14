@@ -26,7 +26,7 @@ class DreamGamingService : PlatformService() {
     fun doStartPostJson(clientToken: DreamGamingClientToken, method: String, data: String): MapUtil {
 
         val url = "${clientToken.apiPath}/$method"
-        val result = okHttpUtil.doPostJson(url = url, data = data, clz = DreamGamingValue.Result::class.java)
+        val result = okHttpUtil.doPostJson(platform = Platform.DreamGaming, url = url, data = data, clz = DreamGamingValue.Result::class.java)
 
         check(result.codeId == 0) {
             log.error("dreamGaming network error: codeId = ${result.codeId}")
@@ -139,7 +139,7 @@ class DreamGamingService : PlatformService() {
 
 
         val url = "${clientToken.apiPath}/account/checkTransfer/${clientToken.agentName}"
-        val result = okHttpUtil.doPostJson(url = url, data = data, clz = DreamGamingValue.Result::class.java)
+        val result = okHttpUtil.doPostJson(platform = Platform.DreamGaming, url = url, data = data, clz = DreamGamingValue.Result::class.java)
         val successful = result.codeId == 0
         return GameValue.TransferResp.of(successful)
     }

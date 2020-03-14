@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.games.http
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.LogicException
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import okhttp3.*
@@ -50,11 +51,9 @@ class OkHttpUtil(
         }
     }
 
-
-
-    fun <T> doGet(url: String, clz: Class<T>,  headers: Map<String, String> = emptyMap()): T {
+    fun <T> doGet(platform: Platform, url: String, clz: Class<T>,  headers: Map<String, String> = emptyMap()): T {
         val id = UUID.randomUUID().toString()
-        log.info("okHttp post request, requestId = $id, url = $url, headers = $headers")
+        log.info("okHttp post request, platform: $platform, requestId = $id, url = $url, headers = $headers")
 
         val request = Request.Builder()
                 .url(url)
@@ -73,7 +72,7 @@ class OkHttpUtil(
         }
 
         val json = response.body!!.string()
-        log.info("okHttp post request, requestId = $id, response = $json")
+        log.info("okHttp post request, platform: $platform, requestId = $id, response = $json")
 
         if (clz == String::class.java)
             return json as T
@@ -81,10 +80,10 @@ class OkHttpUtil(
         return objectMapper.readValue(json, clz)
     }
 
-    fun <T> doGetXml(url: String, clz: Class<T>, headers: Map<String, String> = emptyMap()): T {
+    fun <T> doGetXml(platform: Platform, url: String, clz: Class<T>, headers: Map<String, String> = emptyMap()): T {
 
         val id = UUID.randomUUID().toString()
-        log.info("okHttp post request, requestId = $id, url = $url, headers = $headers")
+        log.info("okHttp post request, platform: $platform, requestId = $id, url = $url, headers = $headers")
 
         val builder = Request.Builder().url(url)
 
@@ -102,7 +101,7 @@ class OkHttpUtil(
         }
 
         val json = response.body!!.string()
-        log.info("okHttp post request, requestId = $id, response = $json")
+        log.info("okHttp post request, platform: $platform, requestId = $id, response = $json")
 
         if (clz == String::class.java)
             return json as T
@@ -111,22 +110,22 @@ class OkHttpUtil(
     }
 
 
-    fun doPostForm(url: String, body: FormBody, headers: Map<String, String> = emptyMap()){
-        doPostForm(url, body, String::class.java, headers) { code, response ->
+    fun doPostForm(platform: Platform, url: String, body: FormBody, headers: Map<String, String> = emptyMap()){
+        doPostForm(platform, url, body, String::class.java, headers) { code, response ->
             OnePieceExceptionCode.PLATFORM_METHOD_FAIL
         }
     }
 
-    fun <T> doPostForm(url: String, body: FormBody, clz: Class<T>, headers: Map<String, String> = emptyMap()): T {
-        return doPostForm(url = url, body = body, clz = clz, headers = headers) { code, response ->
+    fun <T> doPostForm(platform: Platform, url: String, body: FormBody, clz: Class<T>, headers: Map<String, String> = emptyMap()): T {
+        return doPostForm(platform = platform, url = url, body = body, clz = clz, headers = headers) { code, response ->
             error (OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
     }
 
-    fun <T> doPostForm(url: String, body: FormBody, clz: Class<T>? = null, headers: Map<String, String> = emptyMap(), function: (code: Int, response: Response) -> T): T {
+    fun <T> doPostForm(platform: Platform, url: String, body: FormBody, clz: Class<T>? = null, headers: Map<String, String> = emptyMap(), function: (code: Int, response: Response) -> T): T {
 
         val id = UUID.randomUUID().toString()
-        log.info("okHttp post request, requestId = $id, url = $url, data = $body, headers = $headers")
+        log.info("okHttp post request,platform: $platform,  requestId = $id, url = $url, data = $body, headers = $headers")
 
         val request = Request.Builder()
                 .url(url)
@@ -154,7 +153,7 @@ class OkHttpUtil(
             }
             else -> {
                 val json = response.body!!.bytes()
-                log.info("okHttp post request, requestId = $id, response = ${String(json)}")
+                log.info("okHttp post request, platform: $platform, requestId = $id, response = ${String(json)}")
 
                 objectMapper.readValue(json, clz)
             }
@@ -162,11 +161,11 @@ class OkHttpUtil(
 
     }
 
-    fun <T> doPostJson(url: String, data: Any, clz: Class<T>): T {
-        return this.doPostJson(url, data, emptyMap(), clz)
+    fun <T> doPostJson(platform: Platform, url: String, data: Any, clz: Class<T>): T {
+        return this.doPostJson(platform, url, data, emptyMap(), clz)
     }
 
-    fun <T> doPostJson(url: String, data: Any, headers: Map<String, String>, clz: Class<T>): T {
+    fun <T> doPostJson(platform: Platform, url: String, data: Any, headers: Map<String, String>, clz: Class<T>): T {
 
         val json = if (data is String) {
             data
@@ -175,7 +174,7 @@ class OkHttpUtil(
         }
 
         val id = UUID.randomUUID().toString()
-        log.info("okHttp post request, requestId = $id, url = $url, data = $data, headers = $headers")
+        log.info("okHttp post request, platform: $platform, requestId = $id, url = $url, data = $data, headers = $headers")
 //        log.info("request url : $url")
 //        log.info("request param: $json")
 
@@ -199,15 +198,15 @@ class OkHttpUtil(
 
         val responseData = response.body!!.string()
 
-        log.info("okHttp post request, requestId = $id, response = $responseData")
+        log.info("okHttp post request, platform: $platform, requestId = $id, response = $responseData")
 //        log.info("response json data : $responseData")
         return objectMapper.readValue(responseData, clz)
     }
 
-    fun <T> doPostXml(url: String, data: String, clz: Class<T>, mediaType: MediaType = XML, headers: Map<String, String> = emptyMap()): T {
+    fun <T> doPostXml(platform: Platform, url: String, data: String, clz: Class<T>, mediaType: MediaType = XML, headers: Map<String, String> = emptyMap()): T {
 
         val id = UUID.randomUUID().toString()
-        log.info("okHttp post request, requestId = $id, url = $url, data = $data, headers = $headers")
+        log.info("okHttp post request, platform: $platform, requestId = $id, url = $url, data = $data, headers = $headers")
 
         val body = data.toRequestBody(mediaType)
 
@@ -228,7 +227,7 @@ class OkHttpUtil(
         }
 
         val responseData = response.body!!.string()
-        log.info("okHttp post request, requestId = $id, response = $responseData")
+        log.info("okHttp post request, platform: $platform, requestId = $id, response = $responseData")
 
         return if (clz != String::class.java) {
             xmlMapper.readValue(responseData, clz)

@@ -46,7 +46,7 @@ class MicroGamingService : PlatformService() {
                     .build()
 
             val url = "${clientToken.apiPath}/oauth/token"
-            val oauthToken = okHttpUtil.doPostForm(url = url, body = body, headers = headers, clz = MicroGamingValue.OauthToken::class.java)
+            val oauthToken = okHttpUtil.doPostForm(platform = Platform.MicroGaming, url = url, body = body, headers = headers, clz = MicroGamingValue.OauthToken::class.java)
             oauthToken.access_token
         }!!
     }
@@ -63,7 +63,7 @@ class MicroGamingService : PlatformService() {
         )
 
             val url = "${clientToken.apiPath}$method"
-        val result = okHttpUtil.doPostJson(url = url, headers = header, data = data, clz = MicroGamingValue.Result::class.java)
+        val result = okHttpUtil.doPostJson(platform = Platform.MicroGaming, url = url, headers = header, data = data, clz = MicroGamingValue.Result::class.java)
         return result.mapUtil
     }
 
@@ -79,7 +79,7 @@ class MicroGamingService : PlatformService() {
         )
 
         val url = "${clientToken.apiPath}$method?$urlParam"
-        val result = okHttpUtil.doGet(url = url, headers = header, clz = MicroGamingValue.Result::class.java)
+        val result = okHttpUtil.doGet(platform = Platform.MicroGaming, url = url, headers = header, clz = MicroGamingValue.Result::class.java)
         return result.mapUtil
     }
 

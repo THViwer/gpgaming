@@ -33,7 +33,7 @@ class SpadeGamingService : PlatformService() {
                 "API" to method,
                 "DataType" to "JSON"
         )
-        val result = okHttpUtil.doPostJson(url = url, data = data, headers = headers, clz = SpadeGamingValue.Result::class.java)
+        val result = okHttpUtil.doPostJson(platform = Platform.SpadeGaming, url = url, data = data, headers = headers, clz = SpadeGamingValue.Result::class.java)
         check(result.code == 0) {
             log.error("SpadeGaming network error: code = ${result.code}, msg = ${result.msg}")
             result.msg

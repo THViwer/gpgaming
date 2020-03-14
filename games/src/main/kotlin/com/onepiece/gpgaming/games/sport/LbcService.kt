@@ -28,7 +28,7 @@ class LbcService : PlatformService() {
 
     fun startGetJson(clientToken: LbcClientToken, method: String, formBody: FormBody): MapUtil {
         val url = "${clientToken.apiPath}/api/${method}"
-        val result = okHttpUtil.doPostForm(url = url, body = formBody, clz = LbcValue.Result::class.java)
+        val result = okHttpUtil.doPostForm(platform = Platform.Lbc, url = url, body = formBody, clz = LbcValue.Result::class.java)
 
         check(result.errorCode == 0) {
             log.error("lbc network error: errorCode = ${result.errorCode}, msg = ${result.message}")

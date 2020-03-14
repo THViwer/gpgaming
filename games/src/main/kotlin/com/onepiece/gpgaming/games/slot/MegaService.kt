@@ -38,7 +38,7 @@ class MegaService : PlatformService() {
         )
 
         val url = "${clientToken.apiPath}/mega-cloud/api/"
-        val result = okHttpUtil.doPostJson(url = url, data = param, clz = MegaValue.Result::class.java)
+        val result = okHttpUtil.doPostJson(platform = Platform.Mega, url = url, data = param, clz = MegaValue.Result::class.java)
         check(result.error.isNullOrBlank()) {
             log.error("mega network error: errorMsgId = ${result.error}, $result")
             OnePieceExceptionCode.PLATFORM_DATA_FAIL

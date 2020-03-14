@@ -44,7 +44,7 @@ class FggService: PlatformService() {
     fun startPostJson(clientToken: DefaultClientToken, method: String, data: String): MapUtil {
 
         val url = "${clientToken.apiPath}/Game/$method"
-        val result = okHttpUtil.doPostJson(url = url, data = data, clz = FggValue.Result::class.java)
+        val result = okHttpUtil.doPostJson(platform = Platform.Fgg, url = url, data = data, clz = FggValue.Result::class.java)
         check(result.errorCode.isBlank()) {
             log.error("fgg platform error: ${result.errorCode}, ${result.errorDesc}")
             OnePieceExceptionCode.PLATFORM_DATA_FAIL

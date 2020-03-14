@@ -32,7 +32,7 @@ class CMDService : PlatformService() {
         val param = data.joinToString(separator = "&")
         val url = "${clientToken.apiPath}/SportsApi.aspx?$param"
 
-        val result = okHttpUtil.doGet(url = url, clz = CMDValue.Result::class.java)
+        val result = okHttpUtil.doGet(platform = Platform.CMD, url = url, clz = CMDValue.Result::class.java)
         check(result.code == 0 || result.code == -102) {
             log.error("cmd network error: code = ${result.code}")
             OnePieceExceptionCode.PLATFORM_DATA_FAIL

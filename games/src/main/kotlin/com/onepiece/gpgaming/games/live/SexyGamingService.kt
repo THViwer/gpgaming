@@ -35,7 +35,7 @@ class SexyGamingService: PlatformService() {
             body.add(it.key, it.value)
         }
 
-        val result = okHttpUtil.doPostForm(url = url, body = body.build(), clz = SexyGamingValue.Result::class.java)
+        val result = okHttpUtil.doPostForm(platform = Platform.SexyGaming, url = url, body = body.build(), clz = SexyGamingValue.Result::class.java)
         check(result.status == "0000" || result.status == "1" ) {
             log.error("sexyGaming network error: status = ${result.status}, desc = ${result.desc}")
             OnePieceExceptionCode.PLATFORM_DATA_FAIL

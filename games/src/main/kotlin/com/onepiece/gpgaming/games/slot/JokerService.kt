@@ -46,7 +46,7 @@ class JokerService : PlatformService() {
         val body = FormBody.Builder()
         data.forEach { body.add(it.key, "${it.value}") }
 
-        val result = okHttpUtil.doPostForm(url = url, body = body.build(), clz = JokerValue.Result::class.java)
+        val result = okHttpUtil.doPostForm(platform = Platform.Joker, url = url, body = body.build(), clz = JokerValue.Result::class.java)
 
         return result.mapUtil
     }
@@ -142,7 +142,7 @@ class JokerService : PlatformService() {
 
         val urlParam = "AppID=${clientToken.appId}&Signature=${sign}"
         val url = "${clientToken.apiPath}?$urlParam"
-        val result = okHttpUtil.doPostForm(url = url, body = body.build(), clz = JokerValue.GameResult::class.java)
+        val result = okHttpUtil.doPostForm(platform = Platform.Joker, url = url, body = body.build(), clz = JokerValue.GameResult::class.java)
 
         return result.games.filter {
             when (launch) {
@@ -214,7 +214,7 @@ class JokerService : PlatformService() {
 
             val body = FormBody.Builder()
             data.forEach { body.add(it.key, "${it.value}") }
-            val result = okHttpUtil.doPostForm(url = url, body = body.build(), clz = JokerValue.BetResult::class.java)
+            val result = okHttpUtil.doPostForm(platform = Platform.Joker, url = url, body = body.build(), clz = JokerValue.BetResult::class.java)
             val list = result.mapUtil.asList("Game")
 
 

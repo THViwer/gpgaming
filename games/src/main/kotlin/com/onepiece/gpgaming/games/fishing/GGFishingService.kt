@@ -28,7 +28,7 @@ class GGFishingService : PlatformService() {
         val url = "${clientToken.apiPath}/api/${clientToken.webSite}/${path}"
 
         val param = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-        val result = okHttpUtil.doGet(url = "$url?${param}", clz = GGFishingValue.Result::class.java)
+        val result = okHttpUtil.doGet(platform = Platform.GGFishing, url = "$url?${param}", clz = GGFishingValue.Result::class.java)
 
         check(result.status == 1 || result.status == 1003) {
             log.error("ggFishing network error: ${result.status}")

@@ -33,7 +33,7 @@ class TTGService(
     private fun startPostXml(clientToken: TTGClientToken, method: String, data: String): MapUtil {
 
         val url = "${clientToken.apiPath}${method}"
-        val xmlData = okHttpUtil.doPostXml(url = url, data = data, clz = Map::class.java)
+        val xmlData = okHttpUtil.doPostXml(platform = Platform.TTG, url = url, data = data, clz = Map::class.java)
         return MapUtil.instance(data = xmlData as Map<String, Any>)
     }
 
@@ -51,7 +51,7 @@ class TTGService(
         val clientToken = balanceReq.token as TTGClientToken
 
         val url = "${clientToken.apiPath}/cip/player/${balanceReq.username}/balance"
-        val xml = okHttpUtil.doGetXml(url = url, clz = Map::class.java)
+        val xml = okHttpUtil.doGetXml(platform = Platform.TTG, url = url, clz = Map::class.java)
         val mapUtil = MapUtil.instance(xml as Map<String, Any>)
         return mapUtil.asBigDecimal("real")
     }
@@ -75,7 +75,7 @@ class TTGService(
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
         val tokenClient = checkTransferReq.token as TTGClientToken
         val url = "${tokenClient.apiPath}/cip/transaction/${tokenClient.agentName}/${checkTransferReq.orderId}"
-        val xml = okHttpUtil.doGetXml(url = url, clz = String::class.java)
+        val xml = okHttpUtil.doGetXml(platform = Platform.TTG, url = url, clz = String::class.java)
         val map = xmlMapper.readValue<Map<String, Any>>(xml)
         val successful = map["amount"] != null
         return GameValue.TransferResp.of(successful = successful, balance = map["amount"]?.toString()?.toBigDecimal()?: BigDecimal.valueOf(-1))
@@ -199,7 +199,7 @@ class TTGService(
         )
 
         val mediaType = "text/xml".toMediaType()
-        val result = okHttpUtil.doPostXml(url = url, data = data, clz = TTGValue.BetResult::class.java, headers = headers, mediaType = mediaType)
+        val result = okHttpUtil.doPostXml(platform = Platform.TTG, url = url, data = data, clz = TTGValue.BetResult::class.java, headers = headers, mediaType = mediaType)
         return this.handlerBetResult(result = result).map { it.copy(originData = "") }
     }
 
@@ -233,7 +233,7 @@ class TTGService(
         )
 
         val mediaType = "text/xml".toMediaType()
-        val result = okHttpUtil.doPostXml(url = url, data = data, clz = TTGValue.BetResult::class.java, headers = headers, mediaType = mediaType)
+        val result = okHttpUtil.doPostXml(platform = Platform.TTG, url = url, data = data, clz = TTGValue.BetResult::class.java, headers = headers, mediaType = mediaType)
         return this.handlerBetResult(result = result)
     }
 

@@ -51,7 +51,7 @@ class BcsService : PlatformService() {
     }
 
     fun startDoGetXml(url: String): MapUtil {
-        val result = okHttpUtil.doGetXml(url = url, clz = BcsValue.Result::class.java)
+        val result = okHttpUtil.doGetXml(platform = Platform.Bcs, url = url, clz = BcsValue.Result::class.java)
         check(result.errorCode == "000000") {
             log.error("amzbet sport platform error: $url" )
             log.error("amzbet sport platform error: errorCode = ${result.errorCode}")
@@ -222,7 +222,7 @@ class BcsService : PlatformService() {
             )
 
             val url = getRequestPath(clientToken = token, path = "/ThirdApi.asmx/GetBetSheetBySort", data = param)
-            val result = okHttpUtil.doGetXml(url = url, clz = BcsValue.PullBetResult::class.java)
+            val result = okHttpUtil.doGetXml(platform = Platform.Bcs, url = url, clz = BcsValue.PullBetResult::class.java)
 
             if (result.result.isNullOrEmpty()) {
                 nowId to emptyList()

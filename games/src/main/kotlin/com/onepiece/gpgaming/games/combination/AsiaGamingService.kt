@@ -38,7 +38,7 @@ class AsiaGamingService : PlatformService() {
                 "headers" to "WEB_LIB_GI_${clientToken.agentCode}"
         )
         val apiPath = "${clientToken.apiPath}/doBusiness.do?params=${params.let { URLEncoder.encode(it, "utf-8") }}&key=$key"
-        return okHttpUtil.doGetXml(url = apiPath, clz = AsiaGamingValue.Result::class.java, headers = headers)
+        return okHttpUtil.doGetXml(platform = Platform.AsiaGamingLive, url = apiPath, clz = AsiaGamingValue.Result::class.java, headers = headers)
     }
 
 
@@ -286,7 +286,7 @@ class AsiaGamingService : PlatformService() {
             val urlParam = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
 
             val url =  "http://gdpfb8.gdcapi.com:3333/${path}?$urlParam&key=$sign"
-            val result = okHttpUtil.doGetXml(url = url, clz = AsiaGamingValue.BetResult::class.java)
+            val result = okHttpUtil.doGetXml(platform = Platform.AsiaGamingLive, url = url, clz = AsiaGamingValue.BetResult::class.java)
 
             val list = result.row.map {  row ->
                 val bet = row.mapUtil

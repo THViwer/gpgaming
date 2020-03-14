@@ -36,7 +36,7 @@ class PragmaticService: PlatformService() {
         val urlParam = "$param&hash=$sign"
         val url = "${clientToken.apiPath}/IntegrationService/v3/http/CasinoGameAPI${method}"
 
-        val result = okHttpUtil.doGet(url = "$url?$urlParam", clz = PragmaticValue.Result::class.java)
+        val result = okHttpUtil.doGet(platform = Platform.Pragmatic, url = "$url?$urlParam", clz = PragmaticValue.Result::class.java)
         check(result.error == 0) {
             log.error("pragmatic network error: error = ${result.error}, msg = $result")
 
@@ -216,7 +216,7 @@ class PragmaticService: PlatformService() {
 
 //            val url = "${gameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/DataFeeds/transactions?$urlParam"
             val url = "${clientToken.apiPath}/IntegrationService/v3/DataFeeds/gamerounds/finished/?$urlParam"
-            val csv = okHttpUtil.doGet(url = url, clz = String::class.java)
+            val csv = okHttpUtil.doGet(platform = Platform.Pragmatic, url = url, clz = String::class.java)
             val orders = parseCsv(csv = csv)
             "$timepoint" to orders
         }

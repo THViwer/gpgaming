@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.games.slot
 
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.PNGClientToken
 import com.onepiece.gpgaming.games.GameValue
@@ -23,7 +24,8 @@ class PNGService: PlatformService() {
                 "SOAPAction" to action
         )
 
-        val result = okHttpUtil.doPostXml(url = clientToken.apiPath, data = data, mediaType = OkHttpUtil.TEXT_XML, headers = headers, clz = PNGValue.Result::class.java)
+        val result = okHttpUtil.doPostXml(platform = Platform.PNG, url = clientToken.apiPath, data = data, mediaType = OkHttpUtil.TEXT_XML,
+                headers = headers, clz = PNGValue.Result::class.java)
         //TODO check
         return result.mapUtil
     }
