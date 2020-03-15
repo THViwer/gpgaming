@@ -5,7 +5,7 @@ import com.onepiece.gpgaming.beans.model.GamePlatform
 
 enum class Platform(
         val category: PlatformCategory,
-        val cname: String,
+        val pname: String,
         val hotGameLogo: String? = null
 ){
 
@@ -24,7 +24,7 @@ enum class Platform(
     PlaytechSlot(PlatformCategory.Slot, "Playtech", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"), // mac下的chrome有问题 需要用safari启动 启动游戏需要白名单
     PNG(PlatformCategory.Slot, "Play'n GO", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgo.png"),
     GamePlay(PlatformCategory.Slot, "Game Play", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgame.png"), // 不能添加 sg服务器 从hk转发
-    SimplePlay(PlatformCategory.Slot,  "S","https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"), // 就是sa 的slot  测试环境启动游戏需要白名单
+    SimplePlay(PlatformCategory.Slot,  "Sa Gaming","https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"), // 就是sa 的slot  测试环境启动游戏需要白名单
     AsiaGamingSlot(PlatformCategory.Slot, "Asia Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
 
     // live video

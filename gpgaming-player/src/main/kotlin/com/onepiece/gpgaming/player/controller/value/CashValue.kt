@@ -214,7 +214,7 @@ data class BalanceVo(
         @ApiModelProperty("中心钱包余额")
         val centerBalance: BigDecimal,
 
-        @ApiModelProperty("平台名称")
+        @ApiModelProperty("平台")
         val platform: Platform,
 
         @ApiModelProperty("余额")
@@ -235,6 +235,13 @@ data class BalanceVo(
                 get() {
                         return platform.category
                 }
+
+        val pname: String
+                @ApiModelProperty("平台名称")
+                get() {
+                        return platform.pname
+                }
+
 }
 
 data class BalanceAllInVo(

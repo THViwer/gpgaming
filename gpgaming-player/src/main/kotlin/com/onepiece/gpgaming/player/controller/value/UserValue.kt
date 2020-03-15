@@ -82,7 +82,14 @@ data class PlatformMemberVo(
 
         @ApiModelProperty("排序")
         val sort: Int
-)
+) {
+
+        val pname: String
+                @ApiModelProperty("平台名称")
+                get() {
+                        return platform.pname
+                }
+}
 
 data class PlatformMemberUo(
 
