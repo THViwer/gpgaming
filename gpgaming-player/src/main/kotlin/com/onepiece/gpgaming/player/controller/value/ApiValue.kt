@@ -247,7 +247,15 @@ data class DownloadAppVo(
 
         @ApiModelProperty("android下载地址")
         val androidPath: String?
-)
+) {
+
+        val pname: String
+                @ApiModelProperty("平台名称")
+                get() {
+                        return platform.pname
+                }
+
+}
 
 data class PlatformMembrerDetail(
         val username: String,

@@ -348,7 +348,10 @@ open class ApiController(
     override fun down(@RequestHeader("platform", required = false) platform: Platform?): List<DownloadAppVo> {
         val gamePlatforms = gamePlatformService.all()
 
-        return appDownService.all().filter { it.status == Status.Normal }.filter { platform == null || it.platform == platform }.map {
+        return appDownService.all()
+                .filter { it.status == Status.Normal }
+                .filter { platform == null || it.platform == platform }
+                .map {
             val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
             DownloadAppVo(platform = it.platform, icon = gamePlatform.icon, iosPath = it.iosPath, androidPath = it.androidPath)
         }
