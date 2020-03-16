@@ -19,7 +19,7 @@ enum class Platform(
     Mega(PlatformCategory.Slot, "Mega888", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/mega888.png"),
     Pragmatic(PlatformCategory.Slot, "Pragmatic Play", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/pragmatic.png"),
     SpadeGaming(PlatformCategory.Slot, "Spadegaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/spadegaming.png"),
-    TTG(PlatformCategory.Slot, "Top Trend Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/top.png"),
+    TTG(PlatformCategory.Slot, "Top Trend", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/top.png"),
     MicroGaming(PlatformCategory.Slot,  "Microgaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
     PlaytechSlot(PlatformCategory.Slot, "Playtech", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"), // mac下的chrome有问题 需要用safari启动 启动游戏需要白名单
     PNG(PlatformCategory.Slot, "Play'n GO", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgo.png"),
@@ -30,7 +30,7 @@ enum class Platform(
     // live video
     CT(PlatformCategory.LiveVideo, "ct"),
     DreamGaming(PlatformCategory.LiveVideo, "Dream Gaming"),
-    Evolution(PlatformCategory.LiveVideo, "Evolution Gaming"),
+    Evolution(PlatformCategory.LiveVideo, "Evolution"),
     GoldDeluxe(PlatformCategory.LiveVideo, "Gold Deluxe"),
     SexyGaming(PlatformCategory.LiveVideo, "Sexy Gaming"),
     Fgg(PlatformCategory.LiveVideo, "FGG Gaming"),
