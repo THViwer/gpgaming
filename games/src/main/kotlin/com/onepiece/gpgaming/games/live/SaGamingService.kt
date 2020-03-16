@@ -207,7 +207,7 @@ class SaGamingService : PlatformService() {
                 "mobile=${mobile}",
                 "h5web=true"
         ).joinToString(separator = "&")
-        return "${clientToken.apiPath}/app.aspx?$urlParam"
+        return "${clientToken.gamePath}/app.aspx?$urlParam"
     }
 
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {

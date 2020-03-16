@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.su.controller
 
+import com.onepiece.gpgaming.su.controller.value.LoginValue
 import com.onepiece.gpgaming.su.controller.value.UserValue
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -11,6 +12,15 @@ import java.util.*
 @RequestMapping("/user")
 class UserApiController : UserApi {
 
+    @PostMapping("/login")
+    override fun login(@RequestBody loginReq: LoginValue.LoginReq): LoginValue.LoginResp {
+
+        check(loginReq.username == "su")
+        check(loginReq.password == "GPGaming")
+
+        return LoginValue.LoginResp(id = 1, username = "su", token = UUID.randomUUID().toString())
+
+    }
 
     @PostMapping("/login")
     override fun login(@RequestBody loginReq: UserValue.LoginReq): UserValue.LoginRes {
