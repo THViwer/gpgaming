@@ -55,11 +55,11 @@ class PNGService: PlatformService() {
                     <v1:Username>${registerReq.username}</v1:Username>  
                     <v1:Nickname>${registerReq.name}</v1:Nickname>  
                     <v1:Currency>${clientToken.currency}</v1:Currency>  
-                    <v1:Country>SE</v1:Country>  
+                    <v1:Country>MY</v1:Country>  
                     <v1:Birthdate>1990-01-01</v1:Birthdate>  
                     <v1:Registration>${LocalDate.now()}</v1:Registration>  
                     <v1:BrandId>${clientToken.brandId}</v1:BrandId>
-                    <v1:Language>MYR</v1:Language>  
+                    <v1:Language>en_GB</v1:Language>  
                     <v1:Gender>m</v1:Gender> 
                   </v1:UserInfo> 
                 </v1:RegisterUser> 
