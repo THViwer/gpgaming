@@ -58,7 +58,7 @@ class PNGService: PlatformService() {
                     <v1:Country>SE</v1:Country>  
                     <v1:Birthdate>1990-01-01</v1:Birthdate>  
                     <v1:Registration>${LocalDate.now()}</v1:Registration>  
-                    <v1:BrandId>${registerReq.username}</v1:BrandId>
+                    <v1:BrandId>${clientToken.brandId}</v1:BrandId>
                     <v1:Language>MYR</v1:Language>  
                     <v1:Gender>m</v1:Gender> 
                   </v1:UserInfo> 

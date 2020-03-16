@@ -4,6 +4,8 @@ class PNGClientToken(
 
         val apiPath: String,
 
+        val brandId: String,
+
         val username: String,
 
         val password: String,
