@@ -288,7 +288,10 @@ open class ApiController(
 
                 val clientToken = platformBindService.find(member.clientId, platform).clientToken as PlaytechClientToken
 
-                StartGameResp(path = "-", username = detail.username, password = detail.password, params = hashMapOf("serverName" to clientToken.serverName.toLowerCase()))
+                StartGameResp(path = "-", username = detail.username, password = detail.password, params = hashMapOf(
+                        "serverName" to clientToken.serverName.toLowerCase(),
+                        "loginPath" to clientToken.loginPath)
+                )
             }
             else -> {
                 val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
@@ -327,7 +330,10 @@ open class ApiController(
                 detail.username to detail.password
 
                 val clientToken = platformBindService.find(member.clientId, platform).clientToken as PlaytechClientToken
-                StartGameResp(path = "-", username = detail.username, password = detail.password, params = hashMapOf("serverName" to clientToken.serverName.toLowerCase()))
+                StartGameResp(path = "-", username = detail.username, password = detail.password, params = hashMapOf(
+                        "serverName" to clientToken.serverName.toLowerCase(),
+                        "loginPath" to clientToken.loginPath)
+                )
             }
             else -> {
                 val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,

@@ -3,6 +3,8 @@ package com.onepiece.gpgaming.beans.model.token
 class PlaytechClientToken(
         val apiPath: String,
 
+        val loginPath: String,
+
         val accessToken: String,
 
         val admin: String,
