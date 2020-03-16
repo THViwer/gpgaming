@@ -288,7 +288,7 @@ open class ApiController(
 
                 val clientToken = platformBindService.find(member.clientId, platform).clientToken as PlaytechClientToken
 
-                StartGameResp(path = "-", username = detail.username, password = detail.password, params = hashMapOf("serverName" to clientToken.serverName))
+                StartGameResp(path = "-", username = detail.username, password = detail.password, params = hashMapOf("serverName" to clientToken.serverName.toLowerCase()))
             }
             else -> {
                 val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
