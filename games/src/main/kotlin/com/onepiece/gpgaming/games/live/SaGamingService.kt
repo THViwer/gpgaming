@@ -188,8 +188,6 @@ class SaGamingService : PlatformService() {
         val token = mapUtil.asString("Token")
 
 
-        val domain = "https://www.sai.slgaming.net/app.aspx"
-
         val lang = when (startReq.language) {
             Language.CN -> "zh_CN"
             Language.VI -> "vn"
@@ -209,7 +207,7 @@ class SaGamingService : PlatformService() {
                 "mobile=${mobile}",
                 "h5web=true"
         ).joinToString(separator = "&")
-        return "$domain?$urlParam"
+        return "${clientToken.apiPath}/app.aspx?$urlParam"
     }
 
     override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
