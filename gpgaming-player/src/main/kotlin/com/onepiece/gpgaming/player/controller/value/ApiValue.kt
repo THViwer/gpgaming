@@ -231,7 +231,10 @@ data class StartGameResp(
         val username: String = "-",
 
         @ApiModelProperty("密码")
-        val password: String = "-"
+        val password: String = "-",
+
+        @ApiModelProperty("其它额外参数")
+        val params: Map<String, String> = hashMapOf()
 )
 
 data class DownloadAppVo(
