@@ -12,8 +12,6 @@ interface UserApi {
 
 
     @ApiOperation(tags = ["client"], value = "client -> 登陆")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun login(@RequestBody loginReq: UserValue.LoginReq): UserValue.LoginRes
-
 
 }

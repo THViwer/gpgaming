@@ -162,7 +162,7 @@ open class ApiController(
                     originIconOver = gamePlatform.originIconOver, categoryDetailIcon = gamePlatform.icon, platformDetailIcon = gamePlatform.platformDetailIcon,
                     platformDetailIconOver = gamePlatform.platformDetailIconOver)
             //TODO 设置图标
-        }.filter { it.status != Status.Delete }
+        }.filter { it.status != Status.Delete }.sortedBy { it.name }
     }
 
     @GetMapping("/promotion")
