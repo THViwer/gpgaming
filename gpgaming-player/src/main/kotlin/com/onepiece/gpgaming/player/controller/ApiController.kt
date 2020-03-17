@@ -334,7 +334,7 @@ open class ApiController(
                 val lang = if (language == Language.CN) "zh-cn" else "en"
                 StartGameResp(path = "-", username = detail.username, password = detail.password, params = hashMapOf(
                         "loginPath" to clientToken.loginPath,
-                        "gamePath" to "${clientToken.gamePath}?language=$lang&game=gameId"
+                        "gamePath" to "${clientToken.gamePath}?language=$lang&game=${gameId}"
                 ))
             }
             else -> {
