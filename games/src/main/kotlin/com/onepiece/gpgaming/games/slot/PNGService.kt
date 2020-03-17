@@ -261,7 +261,7 @@ class PNGService: PlatformService() {
 //            else -> "https://bsistage.playngonetwork.com/casino/ContainerLauncher"
 //        }
 
-        return "https://bsistage.playngonetwork.com/casino/ContainerLauncher?$urlParam"
+        return "${clientToken.gamePath}?$urlParam"
     }
 
 }
