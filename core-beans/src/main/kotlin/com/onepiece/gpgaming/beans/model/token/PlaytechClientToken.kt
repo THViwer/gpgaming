@@ -5,6 +5,8 @@ class PlaytechClientToken(
 
         val loginPath: String,
 
+        val gamePath: String,
+
         val accessToken: String,
 
         val admin: String,

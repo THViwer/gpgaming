@@ -288,10 +288,11 @@ open class ApiController(
 
                 val clientToken = platformBindService.find(member.clientId, platform).clientToken as PlaytechClientToken
 
+                val lang = if (language == Language.CN) "zh-cn" else "en"
                 StartGameResp(path = "-", username = detail.username, password = detail.password, params = hashMapOf(
-                        "serverName" to clientToken.serverName.toLowerCase(),
-                        "loginPath" to clientToken.loginPath)
-                )
+                        "loginPath" to clientToken.loginPath,
+                        "gamePath" to "${clientToken.gamePath}?language=$lang&game=7bal"
+                ))
             }
             else -> {
                 val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
@@ -330,10 +331,11 @@ open class ApiController(
                 detail.username to detail.password
 
                 val clientToken = platformBindService.find(member.clientId, platform).clientToken as PlaytechClientToken
+                val lang = if (language == Language.CN) "zh-cn" else "en"
                 StartGameResp(path = "-", username = detail.username, password = detail.password, params = hashMapOf(
-                        "serverName" to clientToken.serverName.toLowerCase(),
-                        "loginPath" to clientToken.loginPath)
-                )
+                        "loginPath" to clientToken.loginPath,
+                        "gamePath" to "${clientToken.gamePath}?language=$lang&game=gameId"
+                ))
             }
             else -> {
                 val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
@@ -363,9 +365,9 @@ open class ApiController(
                 .filter { it.status == Status.Normal }
                 .filter { platform == null || it.platform == platform }
                 .map {
-            val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
-            DownloadAppVo(platform = it.platform, icon = gamePlatform.icon, iosPath = it.iosPath, androidPath = it.androidPath)
-        }
+                    val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
+                    DownloadAppVo(platform = it.platform, icon = gamePlatform.icon, iosPath = it.iosPath, androidPath = it.androidPath)
+                }
     }
 
     @GetMapping("/platform/member")
