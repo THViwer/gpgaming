@@ -85,16 +85,32 @@ data class Promotion (
                 val betRule = this.rule as PromotionRules.BetRule
                 val promotionAmount = getPromotionAmount(amount = amount, platformBalance = platformBalance, overPromotionAmount = overPromotionAmount)
                 val requirementBet = (amount.plus(promotionAmount).plus(platformBalance)).multiply(betRule.betMultiple).setScale(2, 2)
-                "转账:$amount, 平台剩余:${platformBalance},优惠:${promotionAmount}, 实际到账:${amount.plus(promotionAmount).plus(platformBalance)}, 打码量达到${requirementBet}可取出"
+
+
+                when (language) {
+                    Language.CN -> "转账:$amount, 平台剩余:${platformBalance},优惠:${promotionAmount}, 实际到账:${amount.plus(promotionAmount).plus(platformBalance)}, 打码量达到${requirementBet}可取出"
+                    else ->   "Transfer:$amount, Main Wallet:${platformBalance},Promotion Bonus:${promotionAmount}, Total Amount:${amount.plus(promotionAmount).plus(platformBalance)}, Turnover reach ${requirementBet} to transfer out"
+                }
+
             }
             PromotionRuleType.Withdraw -> {
                 val withdrawRule = this.rule as PromotionRules.WithdrawRule
                 val promotionAmount = getPromotionAmount(amount = amount, platformBalance = platformBalance, overPromotionAmount = overPromotionAmount)
                 val requirementTransferOutAmount = (amount.plus(promotionAmount).plus(platformBalance)).multiply(withdrawRule.transferMultiplied).setScale(2,2)
-                "转账:$amount, 平台剩余:${platformBalance},优惠:${promotionAmount}, 实际到账:${amount.plus(promotionAmount).plus(platformBalance)}, 游戏金额${requirementTransferOutAmount}可取出"
+
+
+                when (language) {
+                    Language.CN -> "转账:$amount, 平台剩余:${platformBalance},优惠:${promotionAmount}, 实际到账:${amount.plus(promotionAmount).plus(platformBalance)}, 游戏金额${requirementTransferOutAmount}可取出"
+                    else -> "Transfer:$amount, Main Wallet:${platformBalance},Promotion Bonus:${promotionAmount}, Total Amount:${amount.plus(promotionAmount).plus(platformBalance)}, Game balance reach ${requirementTransferOutAmount} to transfer out"
+                }
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
+
+    }
+
+    private fun getA() {
+
 
     }
 

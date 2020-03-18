@@ -1,6 +1,8 @@
 package com.onepiece.gpgaming.beans.model.pay
 
-class M3pay(
+class M3PayConfig(
+
+        val apiPath: String = "http://payment.m3pay.com/epayment/entry.aspx",
 
         val merchant: String = "merchant.m3pay.com",
 
@@ -10,4 +12,4 @@ class M3pay(
 
         val serialKey: String = "dbb06d88-38ae-4aa5-a49a-2f77ce31efd8"
 
-) : Pay
+) : PayConfig
