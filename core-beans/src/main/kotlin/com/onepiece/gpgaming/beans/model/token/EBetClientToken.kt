@@ -4,7 +4,7 @@ data class EBetClientToken(
 
         val apiPath: String = "http://gpgaming88myr.ebet.im:8888/api",
 
-        val gameUrl: String = "http://47.90.11.101:8882/?infoUrl=h5/59123c"
+        val gameUrl: String = "http://47.90.11.101:8882/?infoUrl=h5/59123c",
 
         val channelId: String = "517",
 
