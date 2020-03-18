@@ -17,7 +17,7 @@
 		<module>gpgaming-player</module>
 		<module>core-beans</module>
 		<module>games</module>
-		<module>deposits</module>
+		<module>payment</module>
 		<module>gpgaming-task</module>
 		<module>gpgaming-su</module>
 	</modules>
