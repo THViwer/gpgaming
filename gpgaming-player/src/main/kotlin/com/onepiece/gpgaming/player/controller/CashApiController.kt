@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
@@ -45,7 +46,6 @@ import com.onepiece.gpgaming.player.controller.value.BalanceAllInVo
 import com.onepiece.gpgaming.player.controller.value.BalanceVo
 import com.onepiece.gpgaming.player.controller.value.CashDepositResp
 import com.onepiece.gpgaming.player.controller.value.CashTransferReq
-import com.onepiece.gpgaming.player.controller.value.CashTransferResp
 import com.onepiece.gpgaming.player.controller.value.CashWithdrawResp
 import com.onepiece.gpgaming.player.controller.value.CheckBankResp
 import com.onepiece.gpgaming.player.controller.value.CheckBetResp
@@ -101,8 +101,11 @@ open class CashApiController(
 
 
     @GetMapping("/bank")
-    override fun banks(): List<BankVo> {
-        return Bank.values().map { BankVo(grayLogo = it.grayLogo, logo = it.logo, name = it.cname, bank = it) }
+    override fun banks(
+            @RequestHeader("launch") launch: LaunchMethod
+    ): List<BankVo> {
+        val mobile = launch == LaunchMethod.Wap
+        return Bank.values().map { BankVo(grayLogo = if (mobile) it.grayLogo else it.mGrayLogo, logo = if (mobile) it.mLogo else it.logo, name = it.cname, bank = it) }
     }
 
     @GetMapping("/bank/my")

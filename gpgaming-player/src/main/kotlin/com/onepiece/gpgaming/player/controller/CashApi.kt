@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.player.controller
 import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.WithdrawState
@@ -14,7 +15,6 @@ import com.onepiece.gpgaming.player.controller.value.BalanceAllInVo
 import com.onepiece.gpgaming.player.controller.value.BalanceVo
 import com.onepiece.gpgaming.player.controller.value.CashDepositResp
 import com.onepiece.gpgaming.player.controller.value.CashTransferReq
-import com.onepiece.gpgaming.player.controller.value.CashTransferResp
 import com.onepiece.gpgaming.player.controller.value.CashWithdrawResp
 import com.onepiece.gpgaming.player.controller.value.CheckBankResp
 import com.onepiece.gpgaming.player.controller.value.CheckBetResp
@@ -36,13 +36,14 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Api(tags = ["cash"], description = " ")
 interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "可支持银行卡列表")
-    fun banks(): List<BankVo>
+    fun banks(
+            @RequestHeader("launch") launch: LaunchMethod
+    ): List<BankVo>
 
     @ApiOperation(tags = ["cash"], value = "我的银行卡")
     fun myBanks(): List<MemberBankVo>
