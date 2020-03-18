@@ -131,8 +131,6 @@ class GameApi(
             Platform.PlaytechSlot -> playtechService
             Platform.PlaytechLive -> playtechService
 
-
-
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
@@ -157,7 +155,11 @@ class GameApi(
                     clientId = clientId, memberId = memberId)
             val platformUsername = getPlatformApi(platform).register(registerReq)
 
-            platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
+            try {
+                platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
+            } catch (e: IllegalStateException) {
+                // NOTHING
+            }
         }
     }
 
