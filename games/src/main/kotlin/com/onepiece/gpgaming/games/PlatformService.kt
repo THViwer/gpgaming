@@ -11,10 +11,15 @@ import com.onepiece.gpgaming.beans.value.internet.web.SlotGame
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.games.http.OkHttpUtil
 import com.onepiece.gpgaming.utils.RedisService
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import java.math.BigDecimal
 
 abstract class PlatformService {
+
+    private val log = LoggerFactory.getLogger(PlatformService::class.java)
 
     @Autowired
     lateinit var okHttpUtil: OkHttpUtil
@@ -127,6 +132,41 @@ abstract class PlatformService {
         redisService.put(redisKey, nextId)
 
         return data
+    }
+
+    open fun getRequestIp(): String {
+        return try {
+            val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
+            var ip = request.getHeader("x-forwarded-for")
+            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
+                ip = request.getHeader("Proxy-Client-IP")
+                log.info("Proxy-Client-IP = $ip")
+            }
+
+            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
+                ip = request.getHeader("WL-Proxy-Client-IP")
+                log.info("WL-Proxy-Client-IP = $ip")
+            }
+
+            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
+                ip = request.getHeader("HTTP_CLIENT_IP")
+                log.info("HTTP_CLIENT_IP = $ip")
+            }
+
+            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
+                ip = request.getHeader("HTTP_X_FORWARDED_FOR")
+                log.info("HTTP_X_FORWARDED_FOR = $ip")
+            }
+
+            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
+                ip = request.remoteAddr
+                log.info("request.remoteAddr = $ip")
+            }
+
+            ip.split(",").first()
+        } catch (e: Exception) {
+            "12.213.1.24"
+        }
     }
 
 }

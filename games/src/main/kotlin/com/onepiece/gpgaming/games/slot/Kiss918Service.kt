@@ -1,16 +1,12 @@
 package com.onepiece.gpgaming.games.slot
 
-import com.google.common.collect.Maps
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.Kiss918ClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
-import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
-import com.onepiece.gpgaming.utils.StringUtil
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -133,41 +129,6 @@ class Kiss918Service (
         return mapUtil.asBigDecimal("MoneyNum")
     }
 
-    private fun getRequestIp(): String {
-        return try {
-            val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
-            var ip = request.getHeader("x-forwarded-for")
-            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
-                ip = request.getHeader("Proxy-Client-IP")
-                log.info("Proxy-Client-IP = $ip")
-            }
-
-            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
-                ip = request.getHeader("WL-Proxy-Client-IP")
-                log.info("WL-Proxy-Client-IP = $ip")
-            }
-
-            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
-                ip = request.getHeader("HTTP_CLIENT_IP")
-                log.info("HTTP_CLIENT_IP = $ip")
-            }
-
-            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
-                ip = request.getHeader("HTTP_X_FORWARDED_FOR")
-                log.info("HTTP_X_FORWARDED_FOR = $ip")
-            }
-
-            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
-                ip = request.remoteAddr
-                log.info("request.remoteAddr = $ip")
-            }
-
-             ip.split(",").first()
-        } catch (e: Exception) {
-            "12.213.1.24"
-        }
-    }
-
     override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as Kiss918ClientToken
 
@@ -239,6 +200,7 @@ class Kiss918Service (
     }
 
 }
+
 
 class FifoMap<K, V>(
         private val maximumSize: Int

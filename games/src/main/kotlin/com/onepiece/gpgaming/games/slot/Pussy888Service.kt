@@ -28,7 +28,9 @@ import java.time.format.DateTimeFormatter
  *  7	印尼
  */
 @Service
-class Pussy888Service : PlatformService() {
+class Pussy888Service(
+        val squece:  FifoMap<String, Long> = FifoMap(100)
+) : PlatformService() {
 
     private val log = LoggerFactory.getLogger(Pussy888Service::class.java)
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -130,6 +132,16 @@ class Pussy888Service : PlatformService() {
 
     override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as Pussy888ClientToken
+
+        log.info("请求ip: ${getRequestIp()}, " +
+                "上次请求时间：${squece[transferReq.username]}, " +
+                "本次请求时间：${System.currentTimeMillis()}, " +
+                "时间相差:${System.currentTimeMillis() - (squece[transferReq.username]?: 0) / 1000}秒")
+        val prev = squece[transferReq.username]?.let {
+            (System.currentTimeMillis() - it) > 15000
+        }?: true
+        check(prev) { OnePieceExceptionCode.TRANSFER_TIME_FAST }
+
         val data = listOf(
                 "action=setServerScore",
                 "orderid=${transferReq.orderId}",
@@ -142,6 +154,9 @@ class Pussy888Service : PlatformService() {
         val url = "${clientToken.apiPath}/ashx/account/setScore.ashx"
         val mapUtil = this.startGetJson(url = url, username = transferReq.username, clientToken = clientToken, data = data)
         val balance = mapUtil.asBigDecimal("money")
+
+        squece[transferReq.username] = System.currentTimeMillis()
+
         return GameValue.TransferResp.successful(balance = balance)
     }
 
