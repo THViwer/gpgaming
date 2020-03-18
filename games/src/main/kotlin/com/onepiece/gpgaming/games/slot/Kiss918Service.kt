@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.games.slot
 
+import com.google.common.collect.Maps
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.ClientToken
@@ -9,9 +10,12 @@ import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
+import com.onepiece.gpgaming.utils.StringUtil
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -29,7 +33,9 @@ import java.time.format.DateTimeFormatter
  *  7	印尼
  */
 @Service
-class Kiss918Service : PlatformService() {
+class Kiss918Service (
+        val squece:  FifoMap<String, Long> = FifoMap(100)
+): PlatformService() {
 
     private val log = LoggerFactory.getLogger(Kiss918Service::class.java)
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -127,20 +133,70 @@ class Kiss918Service : PlatformService() {
         return mapUtil.asBigDecimal("MoneyNum")
     }
 
+    private fun getRequestIp(): String {
+        return try {
+            val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
+            var ip = request.getHeader("x-forwarded-for")
+            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
+                ip = request.getHeader("Proxy-Client-IP")
+                log.info("Proxy-Client-IP = $ip")
+            }
+
+            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
+                ip = request.getHeader("WL-Proxy-Client-IP")
+                log.info("WL-Proxy-Client-IP = $ip")
+            }
+
+            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
+                ip = request.getHeader("HTTP_CLIENT_IP")
+                log.info("HTTP_CLIENT_IP = $ip")
+            }
+
+            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
+                ip = request.getHeader("HTTP_X_FORWARDED_FOR")
+                log.info("HTTP_X_FORWARDED_FOR = $ip")
+            }
+
+            if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
+                ip = request.remoteAddr
+                log.info("request.remoteAddr = $ip")
+            }
+
+             ip.split(",").first()
+        } catch (e: Exception) {
+            "12.213.1.24"
+        }
+    }
+
     override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as Kiss918ClientToken
+
+        log.info("请求ip: ${getRequestIp()}, " +
+                "上次请求时间：${squece[transferReq.username]}, " +
+                "本次请求时间：${System.currentTimeMillis()}, " +
+                "时间相差:${System.currentTimeMillis() - (squece[transferReq.username]?: 0) / 1000}秒")
+
+        val prev = squece[transferReq.username]?.let {
+            (System.currentTimeMillis() - it) > 15000
+        }?: true
+        check(prev) { OnePieceExceptionCode.TRANSFER_TIME_FAST }
+
         val data = listOf(
                 "action=setServerScore",
                 "orderid=${transferReq.orderId}",
                 "scoreNum=${transferReq.amount}",
                 "userName=${transferReq.username}",
                 "ActionUse=system",
-                "ActionIp=12.213.1.24"
+                "ActionIp=${getRequestIp()}"
         )
 
         val url = "${clientToken.apiPath}/ashx/account/setScore.ashx"
         val mapUtil = this.startGetJson(url = url, username = transferReq.username, clientToken = clientToken, data = data)
         val balance = mapUtil.asBigDecimal("money")
+
+
+        squece[transferReq.username] = System.currentTimeMillis()
+
         return GameValue.TransferResp.successful(balance)
     }
 
@@ -182,4 +238,13 @@ class Kiss918Service : PlatformService() {
         }
     }
 
+}
+
+class FifoMap<K, V>(
+        private val maximumSize: Int
+) : LinkedHashMap<K, V>() {
+
+    override fun removeEldestEntry(eldest: MutableMap.MutableEntry<K, V>?): Boolean {
+        return size > maximumSize
+    }
 }
