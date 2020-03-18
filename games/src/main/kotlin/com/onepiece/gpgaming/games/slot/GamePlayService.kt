@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.games.slot
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.GamePlayClientToken
@@ -128,30 +129,11 @@ class GamePlayService: PlatformService() {
         ).joinToString(separator = "&")
 
 
-        return "http://rslots.gpiuat.com/${startSlotReq.gameId}?$urlParam"
-
-//        val urlParam = "token=test&op=${clientToken.merchId}&lang=$lang&homeURL=${startSlotReq.redirectUrl}&sys=CUSTOM"
-//        val url = when (startSlotReq.launchMethod) {
-//            LaunchMethod.Wap -> "http://casino.w88uat.com/v2/html5/mobile"
-//            LaunchMethod.Web -> "http://casino.w88uat.com/v2"
-//            else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-//        }
-//        return "$url?$urlParam"
+        val baseUrl = if (startSlotReq.launchMethod == LaunchMethod.Wap) clientToken.mobileGamePath else clientToken.gamePath
+        return "$baseUrl/${startSlotReq.gameId}?$urlParam"
     }
 
     private fun getTicket(startSlotReq: GameValue.StartSlotReq): String {
-//        val  clientToken = startSlotReq.token as GamePlayClientToken
-//        val data = listOf(
-//                "merch_id=${clientToken.merchId}",
-//                "merch_pwd=${clientToken.merchPwd}",
-//                "cust_id=${startSlotReq.username}",
-//                "cust_name=${startSlotReq.username}",
-//                "currency=${clientToken.currency}"
-//        )
-//
-//        val mapUtil = this.startGetXml(method = "/op/createuser", data = data)
-//        return ""
-
         val key = "${startSlotReq.username}:${startSlotReq.gameId}"
 
         return URLEncoder.encode(Base64.encodeBase64String(key.toByteArray()), "utf-8")
@@ -182,15 +164,8 @@ class GamePlayService: PlatformService() {
                 "fundsURL=${startSlotReq.redirectUrl}"
         ).joinToString(separator = "&")
 
-
-        return "http://rslots.gpiuat.com/${startSlotReq.gameId}?$urlParam"
-//        val urlParam = "token=$ticket&op=${clientToken.merchId}&lang=$lang&homeURL=${startSlotReq.redirectUrl}&sys=CUSTOM"
-//        val url = when (startSlotReq.launchMethod) {
-//            LaunchMethod.Wap -> "http://casino.w88uat.com/v2/html5/mobile"
-//            LaunchMethod.Web -> "http://casino.w88uat.com/v2"
-//            else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
-//        }
-//        return "$url?$urlParam"
+        val baseUrl = if (startSlotReq.launchMethod == LaunchMethod.Wap) clientToken.mobileGamePath else clientToken.gamePath
+        return "$baseUrl/${startSlotReq.gameId}?$urlParam"
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
