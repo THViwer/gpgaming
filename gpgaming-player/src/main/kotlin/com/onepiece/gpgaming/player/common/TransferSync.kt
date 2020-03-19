@@ -24,7 +24,7 @@ open class TransferSyncImpl(
      * TODO 暂时关闭
      * 异步转账
      */
-//    @Async
+    @Async
     override fun asyncTransfer(current: JwtUser, platformMemberVo: PlatformMemberVo) {
 
         val platform = platformMemberVo.platform
