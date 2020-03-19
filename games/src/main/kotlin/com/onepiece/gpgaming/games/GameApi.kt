@@ -363,6 +363,7 @@ class GameApi(
 //            val checkResp = this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
 
             val balance = when {
+                platform == Platform.Kiss918 || platform == Platform.Pussy888 -> originBalance.plus(amount)
                 checkResp.transfer && checkResp.balance.toInt() <= 0 -> originBalance.plus(amount)
                 checkResp.transfer -> checkResp.balance
                 else -> BigDecimal.valueOf(-1)
