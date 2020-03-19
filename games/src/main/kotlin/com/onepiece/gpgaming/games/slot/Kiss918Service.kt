@@ -10,8 +10,6 @@ import com.onepiece.gpgaming.games.bet.MapUtil
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -28,9 +26,11 @@ import java.time.format.DateTimeFormatter
  *  6	越南
  *  7	印尼
  */
+
 @Service
 class Kiss918Service (
-        val squece:  FifoMap<String, Long> = FifoMap(100)
+        val queue:  FifoMap<String, Long> = FifoMap(100),
+        val balanceQueue:  FifoMap<String, String> = FifoMap(100)
 ): PlatformService() {
 
     private val log = LoggerFactory.getLogger(Kiss918Service::class.java)
@@ -47,7 +47,7 @@ class Kiss918Service (
         val sign = this.sign(beforeParam = beforeParam, username = username, time = time, token = clientToken)
 
         val param = data.joinToString(separator = "&")
-        val requestUrl = "$url?$param&sign=${sign}&time=$time&authcode=${clientToken.autoCode}"
+        val requestUrl = "$url?$param&sign=${sign}&time=$time&authcode=${clientToken.autoCode}".replace(" ", "%20")
 
         val result = okHttpUtil.doGet(platform = Platform.Kiss918, url = requestUrl, clz = Kiss918Value.Result::class.java)
         check(result.success) {
@@ -119,6 +119,14 @@ class Kiss918Service (
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
         val clientToken = balanceReq.token as Kiss918ClientToken
 
+        log.info("查询余额. 请求ip: ${getRequestIp()}, " +
+                "上次请求时间：${balanceQueue[balanceReq.username]}, " +
+                "本次请求时间：${System.currentTimeMillis()}")
+        val (balance, time) = (balanceQueue[balanceReq.username]?: "0_0").split("_")
+        if (time != "0" && (time.toLong() - System.currentTimeMillis()) < 16000) {
+            return balance.toBigDecimal()
+        }
+
         val data = listOf(
                 "action=getUserInfo",
                 "userName=${balanceReq.username}"
@@ -126,18 +134,20 @@ class Kiss918Service (
 
         val url = "${clientToken.apiPath}/ashx/account/account.ashx"
         val mapUtil = this.startGetJson(url = url, username = balanceReq.username, clientToken = clientToken, data = data)
-        return mapUtil.asBigDecimal("MoneyNum")
+        val amount =  mapUtil.asBigDecimal("MoneyNum")
+        balanceQueue[balanceReq.username] = "${amount}_${System.currentTimeMillis()}"
+        return amount
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
         val clientToken = transferReq.token as Kiss918ClientToken
 
-        log.info("请求ip: ${getRequestIp()}, " +
-                "上次请求时间：${squece[transferReq.username]}, " +
+        log.info("转账.请求ip: ${getRequestIp()}, " +
+                "上次请求时间：${queue[transferReq.username]}, " +
                 "本次请求时间：${System.currentTimeMillis()}, " +
-                "时间相差:${System.currentTimeMillis() - (squece[transferReq.username]?: 0) / 1000}秒")
+                "时间相差:${System.currentTimeMillis() - (queue[transferReq.username]?: 0) / 1000}秒")
 
-        val prev = squece[transferReq.username]?.let {
+        val prev = queue[transferReq.username]?.let {
             (System.currentTimeMillis() - it) > 15000
         }?: true
         check(prev) { OnePieceExceptionCode.TRANSFER_TIME_FAST }
@@ -156,14 +166,29 @@ class Kiss918Service (
         val balance = mapUtil.asBigDecimal("money")
 
 
-        squece[transferReq.username] = System.currentTimeMillis()
+        queue[transferReq.username] = System.currentTimeMillis()
 
         return GameValue.TransferResp.successful(balance)
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
-        // TODO 暂时不实现
-        return GameValue.TransferResp.failed()
+
+        val clientToken = checkTransferReq.token as Kiss918ClientToken
+
+        val now = LocalDateTime.now()
+        val data = listOf(
+                "pageIndex=1",
+                "userName=${checkTransferReq.username}",
+                "sDate=${now.minusMinutes(2).format(dateTimeFormatter)}",
+                "eDate=${now.format(dateTimeFormatter)}",
+                "authcode=${clientToken.autoCode}"
+        )
+
+        val url = "${clientToken.apiOrderPath}/ashx/UserscoreLog.ashx"
+        val mapUtil = this.startGetJson(url = url, username = checkTransferReq.username, clientToken = clientToken, data = data)
+
+        val flag = mapUtil.asList("results").firstOrNull()?.asBigDecimal("ScoreNum")?.setScale(2, 2) == checkTransferReq.amount.setScale(2, 2)
+        return GameValue.TransferResp.of(successful = flag)
     }
 
     override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {

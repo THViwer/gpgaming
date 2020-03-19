@@ -357,7 +357,7 @@ class GameApi(
 
             //TODO 如果是kiss918和Pussy888 则不能check
             val checkResp = when (platform) {
-                Platform.Kiss918, Platform.Pussy888 -> resp
+                Platform.Kiss918, Platform.Pussy888 -> if (resp.transfer) resp else this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
                 else -> this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
             }
 //            val checkResp = this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)

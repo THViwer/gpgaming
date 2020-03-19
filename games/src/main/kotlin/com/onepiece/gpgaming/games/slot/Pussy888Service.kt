@@ -29,7 +29,8 @@ import java.time.format.DateTimeFormatter
  */
 @Service
 class Pussy888Service(
-        val squece:  FifoMap<String, Long> = FifoMap(100)
+        val queue:  FifoMap<String, Long> = FifoMap(100),
+        val balanceQueue:  FifoMap<String, String> = FifoMap(100)
 ) : PlatformService() {
 
     private val log = LoggerFactory.getLogger(Pussy888Service::class.java)
@@ -134,10 +135,10 @@ class Pussy888Service(
         val clientToken = transferReq.token as Pussy888ClientToken
 
         log.info("请求ip: ${getRequestIp()}, " +
-                "上次请求时间：${squece[transferReq.username]}, " +
+                "上次请求时间：${queue[transferReq.username]}, " +
                 "本次请求时间：${System.currentTimeMillis()}, " +
-                "时间相差:${System.currentTimeMillis() - (squece[transferReq.username]?: 0) / 1000}秒")
-        val prev = squece[transferReq.username]?.let {
+                "时间相差:${System.currentTimeMillis() - (queue[transferReq.username]?: 0) / 1000}秒")
+        val prev = queue[transferReq.username]?.let {
             (System.currentTimeMillis() - it) > 15000
         }?: true
         check(prev) { OnePieceExceptionCode.TRANSFER_TIME_FAST }
@@ -155,30 +156,30 @@ class Pussy888Service(
         val mapUtil = this.startGetJson(url = url, username = transferReq.username, clientToken = clientToken, data = data)
         val balance = mapUtil.asBigDecimal("money")
 
-        squece[transferReq.username] = System.currentTimeMillis()
+        queue[transferReq.username] = System.currentTimeMillis()
 
         return GameValue.TransferResp.successful(balance = balance)
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
-        // TODO 暂时不实现
-        return GameValue.TransferResp.failed()
-    }
 
-//    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
-//        val clientToken = betOrderReq.token as Pussy888ClientToken
-//        val data = listOf(
-//                "pageIndex=1",
-//                "pageSize=1000",
-//                "userName=${betOrderReq.username}",
-//                "sDate=${betOrderReq.startTime.format(dateTimeFormatter)}",
-//                "eDate=${betOrderReq.endTime.format(dateTimeFormatter)}"
-//        )
-//
-//        val url = "${gameConstant.getOrderApiUrl(Platform.Pussy888)}/ashx/GameLog.ashx"
-//        val mapUtils = this.startGetJson(url = url, username = betOrderReq.username, clientToken = clientToken, data = data)
-//        return mapUtils.data
-//    }
+        val clientToken = checkTransferReq.token as Pussy888ClientToken
+
+        val now = LocalDateTime.now()
+        val data = listOf(
+                "pageIndex=1",
+                "userName=${checkTransferReq.username}",
+                "sDate=${now.minusMinutes(2).format(dateTimeFormatter)}",
+                "eDate=${now.format(dateTimeFormatter)}",
+                "authcode=${clientToken.autoCode}"
+        )
+
+        val url = "${clientToken.apiOrderPath}/ashx/UserscoreLog.ashx"
+        val mapUtil = this.startGetJson(url = url, username = checkTransferReq.username, clientToken = clientToken, data = data)
+
+        val flag = mapUtil.asList("results").firstOrNull()?.asBigDecimal("ScoreNum")?.setScale(2, 2) == checkTransferReq.amount.setScale(2, 2)
+        return GameValue.TransferResp.of(successful = flag)
+    }
 
     override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
         val clientToken = betOrderReq.token as Pussy888ClientToken
