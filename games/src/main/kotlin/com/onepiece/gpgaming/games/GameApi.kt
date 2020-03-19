@@ -370,6 +370,11 @@ class GameApi(
             return checkResp.copy(balance = balance)
         } catch (e: Exception) {
             log.error("转账失败第${index}次，请求参数：$transferReq ", e)
+
+            if ((platform == Platform.Kiss918 || platform == Platform.Pussy888) && (e.message == "5013" || e.message == "java.lang.IllegalStateException: 5013")) {
+                return GameValue.TransferResp.failed()
+            }
+
             this.transfer(clientId, memberId, platformUsername, platformPassword, platform, orderId, originBalance, amount, index + 1)
         }
 
