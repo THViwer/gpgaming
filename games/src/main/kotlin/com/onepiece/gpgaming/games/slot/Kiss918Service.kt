@@ -123,7 +123,7 @@ class Kiss918Service (
                 "上次请求时间：${balanceQueue[balanceReq.username]}, " +
                 "本次请求时间：${System.currentTimeMillis()}")
         val (balance, time) = (balanceQueue[balanceReq.username]?: "0_0").split("_")
-        if (time != "0" && (time.toLong() - System.currentTimeMillis()) < 16000) {
+        if (time != "0" && (System.currentTimeMillis() - time.toLong()) < 16000) {
             return balance.toBigDecimal()
         }
 

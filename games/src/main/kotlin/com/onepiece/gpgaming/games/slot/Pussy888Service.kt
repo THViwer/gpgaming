@@ -121,6 +121,14 @@ class Pussy888Service(
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
         val clientToken = balanceReq.token as Pussy888ClientToken
 
+        log.info("查询余额. 请求ip: ${getRequestIp()}, " +
+                "上次请求时间：${balanceQueue[balanceReq.username]}, " +
+                "本次请求时间：${System.currentTimeMillis()}")
+        val (balance, time) = (balanceQueue[balanceReq.username]?: "0_0").split("_")
+        if (time != "0" && (System.currentTimeMillis() - time.toLong()) < 16000) {
+            return balance.toBigDecimal()
+        }
+
         val data = listOf(
                 "action=getUserInfo",
                 "userName=${balanceReq.username}"
