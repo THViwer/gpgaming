@@ -133,7 +133,7 @@ class IndexUtil(
             val hotGameUrl = "${SystemConstant.AWS_SLOT}/hot_sort_20_web_${hotLanguage.name.toLowerCase()}.json"
 
             val index = Index(logo = logo, announcement = announcement, recommendedPlatforms = recommendedPlatforms, lives = recommendLives,
-                    banners = bannerVoList, sports = recommendSports, hotGameUrl = hotGameUrl, recommendedVideos = recommendVideos)
+                    banners = bannerVoList, sports = recommendSports, hotGameUrl = hotGameUrl, recommendedVideos = recommendVideos, name = client.name)
 
             val json = objectMapper.writeValueAsString(index)
             val userHome = System.getProperty("user.home")

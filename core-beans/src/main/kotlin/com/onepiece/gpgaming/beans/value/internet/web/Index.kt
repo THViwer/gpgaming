@@ -13,6 +13,9 @@ data class Index(
         @ApiModelProperty("logo")
         val logo: String,
 
+        @ApiModelProperty("平台名称")
+        val name: String,
+
         @ApiModelProperty("公告")
         val announcement: I18nContent.AnnouncementI18n,
 
