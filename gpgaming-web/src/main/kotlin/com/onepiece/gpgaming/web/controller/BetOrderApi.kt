@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.model.BetOrder
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
@@ -19,5 +20,7 @@ interface BetOrderApi {
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
     ): Any
 
+    @ApiOperation(tags = ["bet"], value = "下注订单最后500条")
+    fun last500(@RequestParam("username") username: String): List<BetOrder>
 
 }

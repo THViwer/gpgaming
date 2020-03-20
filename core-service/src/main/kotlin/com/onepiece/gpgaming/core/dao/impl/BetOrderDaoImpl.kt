@@ -98,6 +98,16 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 .execute(mapper)
     }
 
+    override fun last500(clientId: Int, memberId: Int): List<BetOrder> {
+        val table = this.getRuleTable(clientId, memberId)
+        return query(defaultTable = table)
+                .where("client_id", clientId)
+                .where("member_id", memberId)
+                .sort("bet_time desc")
+                .limit(0, 500)
+                .execute(mapper)
+    }
+
     override fun getNotMarkBets(table: String, startId: Int): List<BetOrderValue.BetMarkVo> {
         return query(returnColumns = "id, client_id, member_id, platform, bet_amount, win_amount", defaultTable = table)
                 .asWhere("id > ?", startId)

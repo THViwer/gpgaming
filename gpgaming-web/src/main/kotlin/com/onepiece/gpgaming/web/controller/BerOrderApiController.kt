@@ -62,7 +62,14 @@ class BerOrderApiController(
             }
             else -> betOrderService.getBets(clientId = clientId, memberId = member.id, platform = platform)
         }
-
     }
 
+    @GetMapping("/last500")
+    override fun last500(@RequestParam("username") username: String): List<BetOrder> {
+
+        val clientId = getClientId()
+        val member = memberService.findByUsername(clientId, username) ?: return emptyList<BetOrder>()
+
+        return betOrderService.last500(clientId = getClientId(), memberId = member.id)
+    }
 }

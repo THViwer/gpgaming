@@ -5,11 +5,13 @@ import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.PromotionDailyReport
 import com.onepiece.gpgaming.beans.model.PromotionPlatformDailyReport
+import com.onepiece.gpgaming.beans.model.TransferOrder
 import com.onepiece.gpgaming.beans.value.database.ClientReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.PromotionDailyReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPlatformReportWebVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberReportWebVo
+import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.core.service.ClientDailyReportService
 import com.onepiece.gpgaming.core.service.ClientPlatformDailyReportService
 import com.onepiece.gpgaming.core.service.MemberDailyReportService
@@ -18,6 +20,7 @@ import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PromotionDailyReportService
 import com.onepiece.gpgaming.core.service.PromotionPlatformDailyReportService
 import com.onepiece.gpgaming.core.service.ReportService
+import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
@@ -37,7 +40,8 @@ class ReportApiController(
         private val memberService: MemberService,
         private val reportService: ReportService,
         private val promotionDailyReportService: PromotionDailyReportService,
-        private val promotionPlatformDailyReportService: PromotionPlatformDailyReportService
+        private val promotionPlatformDailyReportService: PromotionPlatformDailyReportService,
+        private val transferOrderService: TransferOrderService
 ) : BasicController(), ReportApi {
 
     private fun <T> includeToday(endDate: LocalDate, function: () -> List<T>): List<T> {
@@ -167,5 +171,28 @@ class ReportApiController(
     ): List<PromotionPlatformDailyReport> {
         val query = PromotionDailyReportValue.PlatformQuery(clientId = current().clientId, promotionId = promotionId, startDate = startDate, endDate = endDate)
         return promotionPlatformDailyReportService.query(query)
+    }
+
+    @GetMapping("/promotion/detail")
+    override fun promotionDetail(
+            @RequestParam("promotionId") promotionId: Int,
+            @RequestParam("sortBy") sortBy: String,
+            @RequestParam("desc") desc: Boolean
+    ): List<TransferOrder> {
+
+        when (sortBy) {
+            "created_time",
+            "updated_time",
+            "money",
+            "promotion_amount" -> {
+
+            }
+            else -> error(OnePieceExceptionCode.SYSTEM)
+        }
+
+        val dbSort = "$sortBy ${if (desc) "desc" else "asc"}"
+
+        val query = TransferOrderValue.Query(clientId = this.getClientId(), promotionId = promotionId, from = null, sortBy = dbSort)
+        return transferOrderService.query(query)
     }
 }

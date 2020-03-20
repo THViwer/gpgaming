@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.PromotionDailyReport
 import com.onepiece.gpgaming.beans.model.PromotionPlatformDailyReport
+import com.onepiece.gpgaming.beans.model.TransferOrder
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPlatformReportWebVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberReportWebVo
 import io.swagger.annotations.Api
@@ -53,5 +54,12 @@ interface ReportApi {
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
     ): List<PromotionPlatformDailyReport>
+
+    @ApiOperation(tags = ["report"], value = "优惠活动人员详情")
+    fun promotionDetail(
+            @RequestParam("promotionId") promotionId: Int,
+            @RequestParam("sortBy") sortBy: String,
+            @RequestParam("desc") desc: Boolean
+    ): List<TransferOrder>
 
 }

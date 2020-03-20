@@ -44,8 +44,6 @@ class WebSiteServiceImpl(
     }
 
     override fun match(url: String): Int {
-        log.info("url = $url")
-        log.info("client web site list = ${this.all()}")
         return this.all().first { url.contains(it.domain) }.clientId
     }
 }

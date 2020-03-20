@@ -25,6 +25,10 @@ class BetOrderServiceImpl(
         return betOrderDao.getBets(clientId, memberId, platform)
     }
 
+    override fun last500(clientId: Int, memberId: Int): List<BetOrder> {
+        return betOrderDao.last500(clientId, memberId)
+    }
+
     override fun getNotMarkBets(tableSequence: Int): List<BetOrderValue.BetMarkVo> {
 
         val table = "bet_order_$tableSequence"

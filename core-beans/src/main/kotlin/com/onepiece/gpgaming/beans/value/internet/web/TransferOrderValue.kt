@@ -10,9 +10,15 @@ sealed class TransferOrderValue {
     data class Query(
             val clientId: Int,
 
-            val from: Platform,
+            val from: Platform?,
 
-            val promotionId: Int?
+            val promotionId: Int?,
+
+            val sortBy: String = "created_time desc",
+
+            val current: Int = 0,
+
+            val size: Int = 500
     )
 
     data class TransferOrderVo(
