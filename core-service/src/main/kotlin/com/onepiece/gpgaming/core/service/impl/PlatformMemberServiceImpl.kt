@@ -35,8 +35,10 @@ class PlatformMemberServiceImpl(
     @Transactional(rollbackFor = [Exception::class], propagation = Propagation.REQUIRES_NEW)
     override fun create(clientId: Int, memberId: Int, platform: Platform, platformUsername: String, platformPassword: String): PlatformMemberVo {
 
-        //TODO 调用第三方平台创建账号
-        redisService.delete(OnePieceRedisKeyConstant.myPlatformMembers(memberId))
+        log.info("开始创建db用户：$memberId, 平台：${platform}")
+
+        val has = this.find(memberId = memberId, platform = platform)
+        if (has != null ) return has
 
         val platformMemberCo = PlatformMemberCo(platform = platform, memberId = memberId, username = platformUsername,
                 password = platformPassword, clientId = clientId)
