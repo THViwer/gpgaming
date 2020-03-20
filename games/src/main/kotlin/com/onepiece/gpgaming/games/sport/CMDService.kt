@@ -104,6 +104,7 @@ class CMDService : PlatformService() {
 
     override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {
 
+        val clientToken = token as CMDClientToken
         val lang = when (language) {
             Language.CN -> "zh-CN"
             Language.TH -> "th-TH"
@@ -117,7 +118,7 @@ class CMDService : PlatformService() {
 
         return when (launch) {
             LaunchMethod.Wap -> "https://gp8mobile.1win888.net/?lang=$lang&templatename=aliceblue"
-            else -> "https://gp8.1win888.net/?lang=$lang&templatename=aliceblue"
+            else -> "${clientToken.gamePath}/?lang=$lang&templatename=aliceblue"
         }
     }
 
@@ -136,12 +137,10 @@ class CMDService : PlatformService() {
 
         val token = DigestUtils.md5Hex("${startReq.username}:$CMD_HASH")
 
-        val domain = when (startReq.launch) {
-            LaunchMethod.Wap -> "https://gp8mobile.1win888.net"
-            else -> "https://gp8.1win888.net"
-        }
+
+        val path = if (startReq.launch == LaunchMethod.Web) clientToken.gamePath else clientToken.mobileGamePath
         // view: v1 = 传统风格 v2 = 亚洲风格 v3 = 电子竞技风格
-        return "$domain/auth.aspx?lang=$lang&user=${startReq.username}&token=$token&currency=${clientToken.currency}&templatename=aliceblue&view=v1"
+        return "$path/auth.aspx?lang=$lang&user=${startReq.username}&token=$token&currency=${clientToken.currency}&templatename=aliceblue&view=v1"
     }
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
