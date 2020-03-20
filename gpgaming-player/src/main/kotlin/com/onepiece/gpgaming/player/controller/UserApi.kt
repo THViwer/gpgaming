@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
 @Api(tags = ["user"], description = " ")
@@ -25,6 +26,9 @@ interface UserApi {
 
     @ApiOperation(tags = ["user"], value = "检查用户名是否存在")
     fun checkUsername(@PathVariable("username") username: String): CheckUsernameResp
+
+    @ApiOperation(tags = ["user"], value = "检查手机号是否已存在")
+    fun checkPhone(@PathVariable("phone") phone: String): CheckUsernameResp
 
     @ApiOperation(tags = ["user"], value = "修改资料")
     fun changePassword(@RequestBody changePwdReq: ChangePwdReq)

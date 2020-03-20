@@ -46,6 +46,12 @@ class MemberServiceImpl(
         return memberDao.getByUsername(clientId, username)?.copy(password = "", safetyPassword = "")
     }
 
+    override fun findByPhone(clientId: Int, phone: String?): Member? {
+        if (phone.isNullOrBlank()) return null
+
+        return memberDao.getByPhone(clientId, phone)?.copy(password = "", safetyPassword = "")
+    }
+
     override fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member> {
         val total = memberDao.total(query = memberQuery)
         if (total == 0) return Page.empty()

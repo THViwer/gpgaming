@@ -75,6 +75,13 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .executeMaybeOne(mapper)
     }
 
+    override fun getByPhone(clientId: Int, phone: String): Member? {
+        return query()
+                .where("client_id", clientId)
+                .where("phone", phone)
+                .executeMaybeOne(mapper)
+    }
+
     override fun total(query: MemberQuery): Int {
         return query("count(*) as count")
                 .where("client_id", query.clientId)

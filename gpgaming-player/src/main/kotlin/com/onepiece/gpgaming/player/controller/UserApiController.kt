@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -64,6 +65,13 @@ class UserApiController(
     override fun checkUsername(@PathVariable("username") username: String): CheckUsernameResp {
         val clientId = getClientIdByDomain()
         val exist = memberService.findByUsername(clientId, username) != null
+        return CheckUsernameResp(exist)
+    }
+
+    @GetMapping("/check/phone/{phone}")
+    override fun checkPhone(@PathVariable("phone") phone: String): CheckUsernameResp {
+        val clientId = getClientIdByDomain()
+        val exist = memberService.findByPhone(clientId, phone) != null
         return CheckUsernameResp(exist)
     }
 

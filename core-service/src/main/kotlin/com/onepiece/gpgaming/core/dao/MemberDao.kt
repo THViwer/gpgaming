@@ -15,6 +15,8 @@ interface MemberDao: BasicDao<Member> {
 
     fun getByUsername(clientId: Int, username: String): Member?
 
+    fun getByPhone(clientId: Int, phone: String): Member?
+
     fun total(query: MemberQuery): Int
 
     fun query(query: MemberQuery, current: Int, size: Int): List<Member>
