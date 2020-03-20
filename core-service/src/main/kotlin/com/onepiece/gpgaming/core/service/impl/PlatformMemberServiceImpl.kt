@@ -32,7 +32,7 @@ class PlatformMemberServiceImpl(
         return platformMemberDao.get(id)
     }
 
-    @Transactional(rollbackFor = [Exception::class], propagation = Propagation.REQUIRES_NEW)
+//    @Transactional(rollbackFor = [Exception::class], propagation = Propagation.REQUIRES_NEW)
     override fun create(clientId: Int, memberId: Int, platform: Platform, platformUsername: String, platformPassword: String): PlatformMemberVo {
 
         log.info("开始创建db用户：$memberId, 平台：${platform}")
@@ -66,12 +66,15 @@ class PlatformMemberServiceImpl(
     override fun myPlatforms(memberId: Int): List<PlatformMemberVo> {
 
         val redisKey = OnePieceRedisKeyConstant.myPlatformMembers(memberId)
-        return redisService.getList(redisKey, PlatformMemberVo::class.java) {
+        val data = redisService.getList(redisKey, PlatformMemberVo::class.java) {
             this.findPlatformMember(memberId).map {
                 PlatformMemberVo(memberId = it.memberId, platformUsername = it.username, platformPassword = it.password, platform = it.platform,
                         id = it.id)
             }
         }
+        log.info("memberId = $memberId, 平台数据：")
+        log.info("$data")
+        return data
     }
 
     override fun find(memberId: Int, platform: Platform): PlatformMemberVo? {
