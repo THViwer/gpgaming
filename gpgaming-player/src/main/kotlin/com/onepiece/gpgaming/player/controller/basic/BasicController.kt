@@ -90,18 +90,17 @@ abstract class BasicController {
         return (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
     }
 
+    @Synchronized
     fun getPlatformMember(platform: Platform, member: JwtUser): PlatformMemberVo {
-        synchronized(member.id) {
-            val platforms = platformMemberService.myPlatforms(memberId = member.id)
-            val platformMember = platforms.find { platform == it.platform }
+        val platforms = platformMemberService.myPlatforms(memberId = member.id)
+        val platformMember = platforms.find { platform == it.platform }
 
-            if (platformMember == null) {
-                gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
-                return this.getPlatformMember(platform, member)
-            }
-
-            return platformMember
+        if (platformMember == null) {
+            gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
+            return this.getPlatformMember(platform, member)
         }
+
+        return platformMember
     }
 
 

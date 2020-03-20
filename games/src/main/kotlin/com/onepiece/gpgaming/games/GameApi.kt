@@ -144,6 +144,8 @@ class GameApi(
         val has = platformMemberService.find(memberId, platform)
         if (has != null) return
 
+        log.info("用户：$memberId, 开始注册平台:$platform 现在时间：${LocalDateTime.now()}")
+
         // 生成用户名
         val (generatorUsername, generatorPassword) = PlatformUsernameUtil.generatorPlatformUsername(clientId = clientId, memberId = memberId, platform = platform)
 
