@@ -89,7 +89,11 @@ class PullBetTask(
 
         if (!this.canExecutePlatform(startTime = startTime, platform = bind.platform)) return
 
-        val endTime = startTime.plusMinutes(3)
+        // 如果距离现在超过30分钟 则每次取10分钟数据
+        val duration = Duration.between(startTime, LocalDateTime.now()).toMinutes()
+        val addMinus = if (duration > 30) 10L else 3L
+
+        val endTime = startTime.plusMinutes(addMinus)
 
         log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 开始时间任务：${LocalDateTime.now()}, 查询开始时间：$startTime, 查询结束时间${endTime}")
         val orders = pull(startTime, endTime)
@@ -98,7 +102,7 @@ class PullBetTask(
         val v = if (bind.platform == Platform.Pragmatic) {
             LocalDateTime.now().minusMinutes(5)
         } else {
-            startTime.plusMinutes(2)
+            startTime.plusMinutes(addMinus - 1)
         }
 
         redisService.put(key = redisKey, value = v)
