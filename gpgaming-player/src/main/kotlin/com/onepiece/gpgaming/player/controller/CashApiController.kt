@@ -163,6 +163,8 @@ open class CashApiController(
 //        val overBet = betAmount.minus(needBet.toDouble()).toBigDecimal().setScale(2, 2)
         val overBet = needBet.minus(currentBet)
 
+        log.info("用户:${memberId}, 检查打码量，当前打码量：$currentBet, 需要打码量:$needBet, 剩余打码量：$overBet")
+
         return CheckBetResp(currentBet = currentBet, needBet = needBet, overBet = overBet)
     }
 
