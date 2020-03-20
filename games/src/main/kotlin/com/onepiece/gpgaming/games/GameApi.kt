@@ -139,26 +139,32 @@ class GameApi(
     /**
      * 注册账号
      */
+    @Synchronized
     fun register(clientId: Int, memberId: Int, platform: Platform, name: String) {
-        synchronized(memberId) {
-            val has = platformMemberService.find(memberId, platform)
-            if (has != null) return
+        val has = platformMemberService.find(memberId, platform)
+        if (has != null) return
 
-            // 生成用户名
-            val (generatorUsername, generatorPassword) = PlatformUsernameUtil.generatorPlatformUsername(clientId = clientId, memberId = memberId, platform = platform)
+        // 生成用户名
+        val (generatorUsername, generatorPassword) = PlatformUsernameUtil.generatorPlatformUsername(clientId = clientId, memberId = memberId, platform = platform)
 
-            // 获得配置信息
-            val clientToken = this.getClientToken(clientId = clientId, platform = platform)
+        // 获得配置信息
+        val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
-            // 注册账号
-            val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = name,
-                    clientId = clientId, memberId = memberId)
-            val platformUsername = getPlatformApi(platform).register(registerReq)
+        // 注册账号
+        val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = name,
+                clientId = clientId, memberId = memberId)
+        val platformUsername = getPlatformApi(platform).register(registerReq)
 
-            try {
-                platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
-            } catch (e: IllegalStateException) {
-                // NOTHING
+        try {
+            platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
+        } catch (e: Exception) {
+
+            if (platform == Platform.Kiss918 || platform == Platform.Pussy888) {
+                if (e.message != "java.lang.IllegalStateException: 4010" && e.message != "4010") {
+                    throw e
+                } else {
+                    // NOTHING
+                }
             }
         }
     }
