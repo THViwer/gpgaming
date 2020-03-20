@@ -91,13 +91,15 @@ abstract class BasicController {
     }
 
     @Synchronized
-    fun getPlatformMember(platform: Platform, member: JwtUser): PlatformMemberVo {
+    fun getPlatformMember(platform: Platform, member: JwtUser, code: Int = 0): PlatformMemberVo {
         val platforms = platformMemberService.myPlatforms(memberId = member.id)
         val platformMember = platforms.find { platform == it.platform }
 
+        log.info("用户名：${member.username}, 获得平台用户：$platform, code = $code")
         if (platformMember == null) {
+            log.info("用户名：${member.username}, 开始注册平台用户：$platform, code = $code")
             gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
-            return this.getPlatformMember(platform, member)
+            return this.getPlatformMember(platform, member, 1)
         }
 
         return platformMember
