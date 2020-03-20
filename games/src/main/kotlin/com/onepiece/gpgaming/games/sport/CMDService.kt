@@ -117,7 +117,7 @@ class CMDService : PlatformService() {
         // 模板：aliceblue、blue、bluegray、darker、gray、green
 
         return when (launch) {
-            LaunchMethod.Wap -> "https://gp8mobile.1win888.net/?lang=$lang&templatename=aliceblue"
+            LaunchMethod.Wap -> "${clientToken.mobileGamePath}/?lang=$lang&templatename=aliceblue"
             else -> "${clientToken.gamePath}/?lang=$lang&templatename=aliceblue"
         }
     }
