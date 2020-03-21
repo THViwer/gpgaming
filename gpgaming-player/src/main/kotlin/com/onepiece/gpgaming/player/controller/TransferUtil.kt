@@ -208,24 +208,13 @@ class TransferUtil(
         log.info("处理优惠信息,优惠活动Id：$promotionId")
 
 
-        if (promotionId != null) {
+        // 是否有历史优惠活动
+        if (platformMember.joinPromotionId != null) {
             val promotion = promotionService.get(platformMember.joinPromotionId!!)
-
-            // 是否有历史优惠活动
-            if (platformMember.joinPromotionId != null) {
-                // 是否满足清空优惠活动
-                val cleanState = this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
-                check(cleanState) { OnePieceExceptionCode.PLATFORM_HAS_BALANCE_PROMOTION_FAIL }
-            }
-
-            // 如果是首充优惠 更新用户已使用过首充
-            if (promotion.category == PromotionCategory.First) {
-                log.info("用户是首充，更新用户首冲状态")
-                val memberUo = MemberUo(id = platformMember.memberId, firstPromotion = true)
-                memberService.update(memberUo)
-            }
+            // 是否满足清空优惠活动
+            val cleanState = this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
+            check(cleanState) { OnePieceExceptionCode.PLATFORM_HAS_BALANCE_PROMOTION_FAIL }
         }
-
 
         if (promotionId == null) return null
 
@@ -233,6 +222,13 @@ class TransferUtil(
         val promotion = promotionService.get(promotionId)
         check(promotion.status == Status.Normal) { OnePieceExceptionCode.PROMOTION_EXPIRED }
         check(this.checkStopTime(promotion.stopTime)) { OnePieceExceptionCode.PROMOTION_EXPIRED }
+
+        // 如果是首充优惠 更新用户已使用过首充
+        if (promotion.category == PromotionCategory.First) {
+            log.info("用户是首充，更新用户首冲状态")
+            val memberUo = MemberUo(id = platformMember.memberId, firstPromotion = true)
+            memberService.update(memberUo)
+        }
 
         // 剩余优惠金额
         val overPromotionAmountNotNull = if (overPromotionAmount == null) {
