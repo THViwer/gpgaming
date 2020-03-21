@@ -1,8 +1,16 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.WithdrawState
-import com.onepiece.gpgaming.beans.value.internet.web.*
+import com.onepiece.gpgaming.beans.model.ArtificialOrder
+import com.onepiece.gpgaming.beans.value.internet.web.ArtificialCoReq
+import com.onepiece.gpgaming.beans.value.internet.web.CashValue
+import com.onepiece.gpgaming.beans.value.internet.web.DepositUoReq
+import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
+import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
+import com.onepiece.gpgaming.beans.value.internet.web.WithdrawUoReq
+import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
@@ -58,6 +66,14 @@ interface CashOrderApi {
     @ApiOperation(tags = ["cash"], value = "充值 -> 人工提存")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun artificial(@RequestBody artificialCoReq: ArtificialCoReq)
+
+    @ApiOperation(tags = ["cash"], value = "充值 -> 人工提存列表")
+    fun artificialList(
+            @RequestParam("username", required = false) username: String?,
+            @RequestParam("operatorUsername", required = false) operatorUsername: String?,
+            @RequestParam("current") current: Int,
+            @RequestParam("size") size: Int
+    ): Page<ArtificialOrder>
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 审核列表")
     fun withdraw(): List<WithdrawVo>

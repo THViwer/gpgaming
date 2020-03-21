@@ -8,9 +8,11 @@ data class ArtificialOrderQuery(
 
         val clientId: Int,
 
-        val operatorRole: Role,
+        val operatorRole: Role? = null,
 
         val memberId: Int? = null,
+
+        val waiterId: Int? = null,
 
         val current: Int,
 
@@ -29,8 +31,14 @@ data class ArtificialOrderCo(
         // 会员Id
         val memberId: Int,
 
+        // 会员用户名
+        val username: String,
+
         // 操作人Id
         val operatorId: Int,
+
+        // 操作者用户名
+        val operatorUsername: String,
 
         // 操作角色
         val operatorRole: Role,

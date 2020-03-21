@@ -15,6 +15,8 @@ interface WaiterService {
 
     fun create(waiterCo: WaiterCo)
 
+    fun findByUsername(clientId: Int, username: String?): Waiter?
+
     fun update(waiterUo: WaiterUo)
 
 }

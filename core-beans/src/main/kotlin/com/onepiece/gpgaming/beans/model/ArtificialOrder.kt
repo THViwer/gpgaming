@@ -22,8 +22,14 @@ data class ArtificialOrder(
         // 会员Id
         val memberId: Int,
 
+        // 用户名
+        val username: String,
+
         // 操作人Id
         val operatorId: Int,
+
+        // 操作者用户名
+        val operatorUsername: String,
 
         // 操作角色
         val operatorRole: Role,

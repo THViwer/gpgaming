@@ -1,11 +1,14 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.model.ArtificialOrder
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderCo
+import com.onepiece.gpgaming.beans.value.database.ArtificialOrderQuery
 import com.onepiece.gpgaming.beans.value.database.DepositLockUo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
@@ -19,10 +22,12 @@ import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
 import com.onepiece.gpgaming.core.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.ArtificialOrderService
 import com.onepiece.gpgaming.core.service.DepositService
+import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.core.service.WithdrawService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
+import org.springframework.data.repository.support.PageableExecutionUtils
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -40,7 +45,8 @@ class CashOrderApiController(
         private val artificialOrderService: ArtificialOrderService,
         private val orderIdBuilder: OrderIdBuilder,
         private val waiterService: WaiterService,
-        private val transferOrderService: TransferOrderService
+        private val transferOrderService: TransferOrderService,
+        private val memberService: MemberService
 ) : BasicController(), CashOrderApi {
 
 
@@ -190,11 +196,42 @@ class CashOrderApiController(
     override fun artificial(@RequestBody artificialCoReq: ArtificialCoReq) {
         val current = current()
         val orderId = orderIdBuilder.generatorArtificialOrderId()
+
+        check(current.role == Role.Admin || artificialCoReq.money.toDouble() <= 500) { OnePieceExceptionCode.AUTHORITY_FAIL}
+
+        val member = memberService.getMember(artificialCoReq.memberId)
+        check(member.clientId == current.clientId)
+
         val artificialOrderCo = ArtificialOrderCo(orderId = orderId, clientId = current.clientId, memberId = artificialCoReq.memberId, money = artificialCoReq.money,
-                remarks = artificialCoReq.remarks, operatorId = current.id, operatorRole = current.role)
+                remarks = artificialCoReq.remarks, operatorId = current.id, operatorRole = current.role, operatorUsername = current.username, username = member.username)
         artificialOrderService.create(artificialOrderCo)
     }
 
+    @GetMapping("/artificial")
+    override fun artificialList(
+            @RequestParam("username", required = false) username: String?,
+            @RequestParam("operatorUsername", required = false) operatorUsername: String?,
+            @RequestParam("current") current: Int,
+            @RequestParam("size") size: Int
+    ): Page<ArtificialOrder> {
+
+        val currentLogin = this.current()
+        val clientId = currentLogin.clientId
+
+        val memberId = if( username != null) {
+            memberService.findByUsername(clientId = clientId, username = username)?.id ?: return Page.empty()
+        } else null
+
+        val waiterId = if (operatorUsername != null) {
+            waiterService.findByUsername(clientId = clientId, username = operatorUsername)?.id ?: return Page.empty()
+        } else null
+
+        val queryWaiterId = if (currentLogin.role == Role.Waiter) currentLogin.id else waiterId
+        val role = if (currentLogin.role == Role.Waiter) Role.Waiter else null
+
+        val query = ArtificialOrderQuery(clientId = clientId, memberId = memberId, waiterId = queryWaiterId, operatorRole = role, current = current, size = size)
+        return artificialOrderService.query(query)
+    }
 
     @GetMapping("/withdraw")
     override fun withdraw(): List<WithdrawVo> {

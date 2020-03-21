@@ -19,7 +19,9 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
             val orderId = rs.getString("order_id")
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
+            val username = rs.getString("username")
             val operatorId = rs.getInt("operator_id")
+            val operatorUsername = rs.getString("operator_username")
             val operatorRole = rs.getString("operator_role").let { Role.valueOf(it) }
             val balance = rs.getBigDecimal("balance")
             val beforeBalance = rs.getBigDecimal("before_balance")
@@ -28,7 +30,7 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
             val status = rs.getString("status").let { Status.valueOf(it) }
             ArtificialOrder(id = id, clientId = clientId, memberId = memberId, operatorId = operatorId, operatorRole = operatorRole,
                     balance = balance, beforeBalance = beforeBalance, remarks = remarks, createdTime = createdTime, orderId = orderId,
-                    status = status)
+                    status = status, username = username, operatorUsername = operatorUsername)
         }
 
     override fun query(query: ArtificialOrderQuery): List<ArtificialOrder> {
@@ -36,15 +38,17 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
                 .where("client_id", query.clientId)
                 .where("operator_role", query.operatorRole)
                 .where("member_id", query.memberId)
+                .where("operator_id", query.waiterId)
                 .limit(query.current, query.size)
                 .execute(mapper)
     }
 
     override fun total(query: ArtificialOrderQuery): Int {
-        return query()
+        return query("count(*)")
                 .where("client_id", query.clientId)
                 .where("operator_role", query.operatorRole)
                 .where("member_id", query.memberId)
+                .where("operator_id", query.waiterId)
                 .count()
 
     }
@@ -54,7 +58,9 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
                 .set("order_id", artificialOrder.orderId)
                 .set("client_id", artificialOrder.clientId)
                 .set("member_id", artificialOrder.memberId)
+                .set("username", artificialOrder.username)
                 .set("operator_id", artificialOrder.operatorId)
+                .set("operator_username", artificialOrder.operatorUsername)
                 .set("operator_role", artificialOrder.operatorRole)
                 .set("balance", artificialOrder.balance)
                 .set("before_balance", artificialOrder.beforeBalance)

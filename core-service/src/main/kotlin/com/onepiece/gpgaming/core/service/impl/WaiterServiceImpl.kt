@@ -53,6 +53,15 @@ class WaiterServiceImpl(
         permissionService.create(permissionUo)
     }
 
+    override fun findByUsername(clientId: Int, username: String?): Waiter? {
+
+        if (username.isNullOrBlank()) return null
+
+        val waiter = waiterDao.findByUsername(username) ?: return null
+        check(waiter.clientId == clientId)
+        return waiter
+    }
+
     override fun update(waiterUo: WaiterUo) {
         val password = waiterUo.password?.let {
             bCryptPasswordEncoder.encode(it)
