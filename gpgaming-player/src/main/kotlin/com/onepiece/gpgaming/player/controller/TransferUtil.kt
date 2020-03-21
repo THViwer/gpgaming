@@ -137,7 +137,7 @@ class TransferUtil(
 
         // 优惠活动赠送金额
         val platformMemberTransferUo = this.handlerPromotion(platformMember = platformMember, amount = amount, promotionId = promotionId,
-                platformBalance = platformBalance, overPromotionAmount = null)
+                platformBalance = platformBalance, overPromotionAmount = null, check = false)
 //        check(platformMemberTransferUo?.joinPlatform == null || platformMember.platform == platformMemberTransferUo.joinPlatform) { OnePieceExceptionCode.ILLEGAL_OPERATION }
 
         // 检查是否满足首次优惠
@@ -203,7 +203,7 @@ class TransferUtil(
     /**
      * 处理优惠活动
      */
-    fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
+    fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?, check: Boolean = true): PlatformMemberTransferUo? {
 
         log.info("处理优惠信息,优惠活动Id：$promotionId")
 
@@ -224,7 +224,7 @@ class TransferUtil(
         check(this.checkStopTime(promotion.stopTime)) { OnePieceExceptionCode.PROMOTION_EXPIRED }
 
         // 如果是首充优惠 更新用户已使用过首充
-        if (promotion.category == PromotionCategory.First) {
+        if (promotion.category == PromotionCategory.First && !check) {
             log.info("用户是首充，更新用户首冲状态")
             val memberUo = MemberUo(id = platformMember.memberId, firstPromotion = true)
             memberService.update(memberUo)
