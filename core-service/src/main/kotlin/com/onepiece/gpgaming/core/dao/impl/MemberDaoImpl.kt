@@ -58,7 +58,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("phone", memberUo.phone)
                 .set("password", memberUo.password)
                 .set("safety_password", memberUo.safetyPassword)
-                .set("first_promotion", false)
+                .set("first_promotion", memberUo.firstPromotion)
                 .set("status", memberUo.status)
                 .set("level_id", memberUo.levelId)
                 .set("login_ip", memberUo.loginIp)
