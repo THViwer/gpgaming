@@ -206,16 +206,17 @@ class TransferUtil(
     fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
 
         log.info("处理优惠信息,优惠活动Id：$promotionId")
-        // 是否有历史优惠活动
-        if (platformMember.joinPromotionId != null) {
-            // 已存在的优惠活动
+
+
+        if (promotionId != null) {
             val promotion = promotionService.get(platformMember.joinPromotionId!!)
 
-            log.info("优惠活动详情：$promotion")
-
-            // 是否满足清空优惠活动
-            val cleanState = this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
-            check(cleanState) { OnePieceExceptionCode.PLATFORM_HAS_BALANCE_PROMOTION_FAIL }
+            // 是否有历史优惠活动
+            if (platformMember.joinPromotionId != null) {
+                // 是否满足清空优惠活动
+                val cleanState = this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
+                check(cleanState) { OnePieceExceptionCode.PLATFORM_HAS_BALANCE_PROMOTION_FAIL }
+            }
 
             // 如果是首充优惠 更新用户已使用过首充
             if (promotion.category == PromotionCategory.First) {
@@ -223,10 +224,8 @@ class TransferUtil(
                 val memberUo = MemberUo(id = platformMember.memberId, firstPromotion = true)
                 memberService.update(memberUo)
             }
+        }
 
-
-
-        } else BigDecimal.ZERO
 
         if (promotionId == null) return null
 
