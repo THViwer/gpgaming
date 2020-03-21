@@ -205,6 +205,7 @@ class TransferUtil(
      */
     fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
 
+        log.info("处理优惠信息")
         // 是否有历史优惠活动
         if (platformMember.joinPromotionId != null) {
             // 已存在的优惠活动
@@ -216,6 +217,7 @@ class TransferUtil(
 
             // 如果是首充优惠 更新用户已使用过首充
             if (promotion.category == PromotionCategory.First) {
+                log.info("用户是首充，更新用户首冲状态")
                 val memberUo = MemberUo(id = platformMember.memberId, firstPromotion = true)
                 memberService.update(memberUo)
             }
