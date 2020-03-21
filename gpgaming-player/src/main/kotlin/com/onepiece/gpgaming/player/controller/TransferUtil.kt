@@ -205,11 +205,13 @@ class TransferUtil(
      */
     fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
 
-        log.info("处理优惠信息")
+        log.info("处理优惠信息,优惠活动Id：$promotionId")
         // 是否有历史优惠活动
         if (platformMember.joinPromotionId != null) {
             // 已存在的优惠活动
             val promotion = promotionService.get(platformMember.joinPromotionId!!)
+
+            log.info("优惠活动详情：$promotion")
 
             // 是否满足清空优惠活动
             val cleanState = this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
