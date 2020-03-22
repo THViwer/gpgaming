@@ -25,6 +25,7 @@ import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.core.service.WaiterService
+import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.springframework.data.repository.support.PageableExecutionUtils
@@ -46,7 +47,8 @@ class CashOrderApiController(
         private val orderIdBuilder: OrderIdBuilder,
         private val waiterService: WaiterService,
         private val transferOrderService: TransferOrderService,
-        private val memberService: MemberService
+        private val memberService: MemberService,
+        private val walletService: WalletService
 ) : BasicController(), CashOrderApi {
 
 
@@ -202,8 +204,11 @@ class CashOrderApiController(
         val member = memberService.getMember(artificialCoReq.memberId)
         check(member.clientId == current.clientId)
 
+        val wallet = walletService.getMemberWallet(artificialCoReq.memberId)
+
         val artificialOrderCo = ArtificialOrderCo(orderId = orderId, clientId = current.clientId, memberId = artificialCoReq.memberId, money = artificialCoReq.money,
-                remarks = artificialCoReq.remarks, operatorId = current.id, operatorRole = current.role, operatorUsername = current.username, username = member.username)
+                remarks = artificialCoReq.remarks, operatorId = current.id, operatorRole = current.role, operatorUsername = current.username, username = member.username,
+                balance = wallet.balance)
         artificialOrderService.create(artificialOrderCo)
     }
 
