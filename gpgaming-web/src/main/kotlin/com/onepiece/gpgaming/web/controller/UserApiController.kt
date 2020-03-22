@@ -54,7 +54,7 @@ class UserApiController(
 
             val authUser = authService.login(id = waiter.id, role = Role.Waiter, username = waiter.username, mAuthorities = permissions)
 
-            LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = Role.Client,
+            LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = Role.Waiter,
                     token = authUser.token, permissions = permissions)
         }
     }
