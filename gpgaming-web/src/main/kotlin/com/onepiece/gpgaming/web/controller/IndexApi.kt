@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.RecommendedType
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Recommended
+import com.onepiece.gpgaming.beans.model.Seo
 import com.onepiece.gpgaming.beans.value.database.HotGameValue
 import com.onepiece.gpgaming.beans.value.internet.web.BannerCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerUoReq
@@ -15,6 +16,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.PromotionCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionVo
 import com.onepiece.gpgaming.beans.value.internet.web.RecommendedWebValue
+import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
@@ -24,6 +26,16 @@ import org.springframework.web.bind.annotation.ResponseStatus
 
 @Api(tags = ["web setting"], description = "网站设置")
 interface IndexApi {
+
+    @ApiOperation(tags = ["web setting"], value = "seo -> 获取")
+    fun seo(): Seo
+
+    @ApiOperation(tags = ["web setting"], value = "seo -> 更新")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun seo(
+            @RequestParam("keywords") keywords: String,
+            @RequestParam("description") description: String
+    )
 
 
     @ApiOperation(tags = ["web setting"], value = "支持语言列表")

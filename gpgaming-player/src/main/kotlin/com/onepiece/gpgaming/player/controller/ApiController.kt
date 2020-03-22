@@ -15,6 +15,7 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
+import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.BannerService
@@ -23,6 +24,7 @@ import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
+import com.onepiece.gpgaming.core.service.SeoService
 import com.onepiece.gpgaming.core.service.SlotGameService
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
@@ -62,6 +64,7 @@ open class ApiController(
         private val activeConfig: ActiveConfig,
         private val objectMapper: ObjectMapper,
         private val hotGameService: HotGameService,
+        private val seoService: SeoService,
         private val gamePlatformService: GamePlatformService
 ) : BasicController(), Api {
 
@@ -521,9 +524,18 @@ open class ApiController(
         return Contacts(wechatContact = wechatContact, whatsappContact = whatContact)
     }
 
+    @GetMapping("/seo")
+    override fun seo(): SeoValue.SeoVo {
+        val clientId = getClientIdByDomain()
+
+        val seo = seoService.get(clientId)
+        return SeoValue.SeoVo(keywords = seo.keywords, description = seo.description)
+    }
 
     fun <T> getRandom(list: List<T>?) : T? {
         return list?.let { list[Random.nextInt(list.size)] }
     }
+
+
 
 }

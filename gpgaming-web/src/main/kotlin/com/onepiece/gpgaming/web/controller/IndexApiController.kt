@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.PromotionRules
 import com.onepiece.gpgaming.beans.model.Recommended
+import com.onepiece.gpgaming.beans.model.Seo
 import com.onepiece.gpgaming.beans.value.database.BannerCo
 import com.onepiece.gpgaming.beans.value.database.BannerUo
 import com.onepiece.gpgaming.beans.value.database.HotGameValue
@@ -28,12 +29,14 @@ import com.onepiece.gpgaming.beans.value.internet.web.PromotionRuleVo
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionVo
 import com.onepiece.gpgaming.beans.value.internet.web.RecommendedWebValue
+import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.core.service.RecommendedService
+import com.onepiece.gpgaming.core.service.SeoService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
@@ -51,10 +54,29 @@ class IndexApiController(
         private val recommendedService: RecommendedService,
         private val hotGameService: HotGameService,
         private val indexUtil: IndexUtil,
+        private val seoService: SeoService,
         private val objectMapper: ObjectMapper
 ): BasicController(), IndexApi {
 
     private val log = LoggerFactory.getLogger(IndexApiController::class.java)
+
+    @GetMapping("/seo")
+    override fun seo(): Seo {
+
+        val clientId = getClientId()
+        return seoService.get(clientId)
+    }
+
+    @PutMapping("/seo")
+    override fun seo(
+            @RequestParam("keywords") keywords: String,
+            @RequestParam("description") description: String
+    ) {
+        val clientId = getClientId()
+
+        val seoUo = SeoValue.SeoUo(clientId = clientId, keywords = keywords, description = description)
+        seoService.update(seoUo)
+    }
 
     @GetMapping("/i18n/languages")
     override fun languages(): List<Language> {

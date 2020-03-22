@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
+import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.player.controller.value.BannerVo
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.DownloadAppVo
@@ -124,5 +125,8 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "联系我们")
     fun contactUs(): Contacts
+
+    @ApiOperation(tags = ["api"], value = "seo配置")
+    fun seo(): SeoValue.SeoVo
 
 }

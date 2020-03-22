@@ -50,4 +50,6 @@ object OnePieceRedisKeyConstant {
     fun getAllAppDown() = "app:down:all"
 
     fun getHotGames(clientId: Int) = "c:$clientId:hotGames"
+
+    fun getSeo(clientId: Int) = "seo:${clientId}"
 }
