@@ -358,6 +358,7 @@ open class CashApiController(
                 .filter { it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble() }
                 .filter { !member.firstPromotion || it.category != PromotionCategory.First }
                 .filter { promotion -> PromotionPeriod.check(promotion = promotion, historyOrders = historyOrders) }
+                .filter { promotion -> promotion.levelId == null || promotion.levelId == member.levelId }
 
 
         val contentMap = i18nContentService.getConfigType(clientId = current.clientId, configType = I18nConfig.Promotion)
