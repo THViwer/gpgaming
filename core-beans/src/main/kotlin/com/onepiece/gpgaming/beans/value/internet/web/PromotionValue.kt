@@ -83,6 +83,9 @@ data class PromotionCoReq(
         @ApiModelProperty("优惠类型")
         val category: PromotionCategory,
 
+        @ApiModelProperty("层级Id")
+        val levelId: Int?,
+
         @ApiModelProperty("平台")
         val platforms: List<Platform>,
 
