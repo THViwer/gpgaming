@@ -38,6 +38,9 @@ data class PromotionVo(
         @ApiModelProperty("是否置顶")
         val top: Boolean,
 
+        @ApiModelProperty("优惠层级Id 如果为null则是全部")
+        val levelId: Int?,
+
 //        @ApiModelProperty("图标")
 //        val icon: String,
 //
@@ -70,9 +73,6 @@ data class PromotionVo(
 data class PromotionRuleVo(
         @ApiModelProperty("充值送类目")
         val ruleType: PromotionRuleType,
-
-        @ApiModelProperty("优惠层级Id 如果为null则是全部")
-        val levelId: Int?,
 
         @ApiModelProperty("规则")
         val ruleJson: String

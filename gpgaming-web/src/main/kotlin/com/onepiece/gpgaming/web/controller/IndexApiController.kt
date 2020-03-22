@@ -140,11 +140,11 @@ class IndexApiController(
             val i18nContents = i18nContentMap[promotion.id] ?: emptyList()
 //            val defaultContent = i18nContents.first()
 
-            val promotionRuleVo = PromotionRuleVo(ruleType = promotion.ruleType, levelId = promotion.levelId, ruleJson = promotion.ruleJson)
+            val promotionRuleVo = PromotionRuleVo(ruleType = promotion.ruleType, ruleJson = promotion.ruleJson)
 
             PromotionVo(id = promotion.id, clientId = promotion.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
                     status = promotion.status, createdTime = promotion.createdTime, updatedTime = promotion.updatedTime, i18nContents = i18nContents, promotionRuleVo = promotionRuleVo,
-                    platforms = promotion.platforms, period = promotion.period, periodMaxPromotion = promotion.periodMaxPromotion)
+                    platforms = promotion.platforms, period = promotion.period, periodMaxPromotion = promotion.periodMaxPromotion, levelId = promotion.levelId)
         }
     }
 
