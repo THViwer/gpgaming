@@ -204,11 +204,9 @@ class CashOrderApiController(
         val member = memberService.getMember(artificialCoReq.memberId)
         check(member.clientId == current.clientId)
 
-        val wallet = walletService.getMemberWallet(artificialCoReq.memberId)
 
         val artificialOrderCo = ArtificialOrderCo(orderId = orderId, clientId = current.clientId, memberId = artificialCoReq.memberId, money = artificialCoReq.money,
-                remarks = artificialCoReq.remarks, operatorId = current.id, operatorRole = current.role, operatorUsername = current.username, username = member.username,
-                balance = wallet.balance)
+                remarks = artificialCoReq.remarks, operatorId = current.id, operatorRole = current.role, operatorUsername = current.username, username = member.username)
         artificialOrderService.create(artificialOrderCo)
     }
 

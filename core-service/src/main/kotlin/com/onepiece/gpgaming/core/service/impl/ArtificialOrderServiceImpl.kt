@@ -36,7 +36,9 @@ class ArtificialOrderServiceImpl(
                 event = WalletEvent.Artificial, eventId = artificialOrderCo.orderId, remarks = artificialOrderCo.remarks, waiterId = artificialOrderCo.operatorId)
         walletService.update(walletUo)
 
-        val state = artificialOrderDao.create(artificialOrderCo)
+        val wallet = walletService.getMemberWallet(artificialOrderCo.memberId)
+
+        val state = artificialOrderDao.create(artificialOrderCo.copy(balance = wallet.balance))
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 }
