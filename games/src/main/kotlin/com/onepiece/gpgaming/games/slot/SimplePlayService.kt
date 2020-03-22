@@ -150,8 +150,8 @@ class SimplePlayService : PlatformService() {
         }
 
         val mapUtil = this.startGetXml(clientToken = clientToken, data = data, time = time)
-        val balance = mapUtil.asBigDecimal("CreditAmount")
-        return GameValue.TransferResp.successful(balance = balance)
+//        val balance = mapUtil.asBigDecimal("CreditAmount")
+        return GameValue.TransferResp.successful()
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
