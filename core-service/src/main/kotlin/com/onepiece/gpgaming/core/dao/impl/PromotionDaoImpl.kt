@@ -69,7 +69,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("period", promotionUo.period)
                 .set("period_max_promotion", promotionUo.periodMaxPromotion)
                 .set("status", promotionUo.status)
-                .set("level_id", promotionUo.levelId)
+                .setIfNull("level_id", promotionUo.levelId)
                 .set("rule_json", promotionUo.ruleJson)
                 .set("updated_time", LocalDateTime.now())
                 .where("id", promotionUo.id)
