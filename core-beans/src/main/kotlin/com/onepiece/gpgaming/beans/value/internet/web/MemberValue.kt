@@ -81,6 +81,12 @@ data class MemberWalletInfo(
 
         data class BalanceVo(
 
+                // 平台用户名
+                val pusername: String,
+
+                // 平台密码
+                val ppassword: String,
+
                 // 平台
                 val platform: Platform,
 

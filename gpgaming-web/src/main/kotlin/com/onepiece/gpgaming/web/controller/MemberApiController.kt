@@ -102,7 +102,8 @@ class MemberApiController(
             }
 
             MemberWalletInfo.BalanceVo(platform = platformMember.platform, balance = balance, totalWin = platformMember.totalWin, totalBet = platformMember.totalBet,
-                    totalAmount = platformMember.totalAmount, totalPromotionAmount = platformMember.totalPromotionAmount, totalTransferOutAmount = platformMember.totalTransferOutAmount)
+                    totalAmount = platformMember.totalAmount, totalPromotionAmount = platformMember.totalPromotionAmount, totalTransferOutAmount = platformMember.totalTransferOutAmount,
+                    pusername = platformMember.username, ppassword = platformMember.password)
         }.collect(Collectors.toList()).toList().sortedByDescending { it.balance }
 
 
