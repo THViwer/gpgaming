@@ -48,7 +48,7 @@ class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao
                 .set("name", clientBankUo.name)
                 .set("bank_card_number", clientBankUo.bankCardNumber)
                 .set("status", clientBankUo.status)
-                .set("level_id", clientBankUo.levelId)
+                .setIfNull("level_id", clientBankUo.levelId)
                 .where("id", clientBankUo.id)
                 .executeOnlyOne()
     }
