@@ -19,7 +19,7 @@ class MemberBankServiceImpl(
     }
 
     override fun create(memberBankCo: MemberBankCo): Int {
-        check(memberBankCo.bankCardNumber.length > 10) { OnePieceExceptionCode.BANK_CARD_ERROR }
+        check(memberBankCo.bankCardNumber.length >= 8) { OnePieceExceptionCode.BANK_CARD_ERROR }
 
         val id = memberBankDao.create(memberBankCo)
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
