@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.model.PromotionPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.TransferOrder
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPlatformReportWebVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberReportWebVo
+import com.onepiece.gpgaming.beans.value.internet.web.PromotionReportValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
@@ -46,7 +47,7 @@ interface ReportApi {
     fun promotionDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
-    ): List<PromotionDailyReport>
+    ): List<PromotionReportValue.PromotionReportVo>
 
     @ApiOperation(tags = ["report"], value = "优惠活动日报表详情")
     fun promotionPlatformDaily(

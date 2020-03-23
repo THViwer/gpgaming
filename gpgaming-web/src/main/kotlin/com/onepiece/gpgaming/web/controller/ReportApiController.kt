@@ -11,6 +11,7 @@ import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.PromotionDailyReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPlatformReportWebVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberReportWebVo
+import com.onepiece.gpgaming.beans.value.internet.web.PromotionReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.core.service.ClientDailyReportService
 import com.onepiece.gpgaming.core.service.ClientPlatformDailyReportService
@@ -19,6 +20,7 @@ import com.onepiece.gpgaming.core.service.MemberPlatformDailyReportService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PromotionDailyReportService
 import com.onepiece.gpgaming.core.service.PromotionPlatformDailyReportService
+import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
@@ -41,7 +43,8 @@ class ReportApiController(
         private val reportService: ReportService,
         private val promotionDailyReportService: PromotionDailyReportService,
         private val promotionPlatformDailyReportService: PromotionPlatformDailyReportService,
-        private val transferOrderService: TransferOrderService
+        private val transferOrderService: TransferOrderService,
+        private val promotionService: PromotionService
 ) : BasicController(), ReportApi {
 
     private fun <T> includeToday(endDate: LocalDate, function: () -> List<T>): List<T> {
@@ -158,9 +161,23 @@ class ReportApiController(
     override fun promotionDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
-    ): List<PromotionDailyReport> {
+    ): List<PromotionReportValue.PromotionReportVo> {
         val query = PromotionDailyReportValue.Query(clientId = current().clientId, startDate = startDate, endDate = endDate)
-        return promotionDailyReportService.query(query)
+        val list =  promotionDailyReportService.query(query)
+
+        if (list.isEmpty()) return emptyList()
+
+        val promotions = promotionService.all(clientId = getClientId()).map { it.id to it }.toMap()
+
+        return list.map {
+            with(it) {
+                PromotionReportValue.PromotionReportVo(clientId = clientId, day = day, promotionId = promotionId,
+                        promotionAmount = promotionAmount, createdTime = createdTime, status = status,
+                        promotionPlatforms = promotions[promotionId]?.platforms?.joinToString(separator = ",")?: "")
+            }
+        }
+
+
     }
 
     @GetMapping("/promotion/platform")

@@ -57,6 +57,7 @@ class PromotionDailyReportDaoImpl : BasicDaoImpl<PromotionDailyReport>("promotio
                 .where("client_id", query.clientId)
                 .asWhere("day >= ?", query.startDate)
                 .asWhere("day < ?", query.endDate)
+                .asWhere("promotion_id != 100")
                 .execute(mapper)
     }
 
