@@ -165,6 +165,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .where("member_id", memberId)
                 .asWhere("created_time >= ?", startTime)
                 .asWhere("join_promotion_id is not null")
+                .asWhere("join_promotion_id != 100")
                 .execute(mapper)
     }
 
