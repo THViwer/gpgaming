@@ -35,6 +35,8 @@ object DepositValueFactory {
 
 data class DepositVo(
 
+        val id: Int,
+
         @ApiModelProperty("订单Id")
         val orderId: String,
 

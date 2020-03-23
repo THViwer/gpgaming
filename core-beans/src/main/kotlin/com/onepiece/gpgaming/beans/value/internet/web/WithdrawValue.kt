@@ -32,6 +32,8 @@ object WithdrawValueFactory {
 
 data class WithdrawVo(
 
+        val id: Int,
+
         @ApiModelProperty("订单Id")
         val orderId: String,
 
