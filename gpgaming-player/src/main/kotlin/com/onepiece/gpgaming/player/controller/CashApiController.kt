@@ -324,11 +324,13 @@ open class CashApiController(
         // check safety password
 //        memberService.checkSafetyPassword(id = memberId, safetyPassword = withdrawCoReq.safetyPassword)
 
+        val member = memberService.getMember(memberId)
+
         // create order
         val orderId = orderIdBuilder.generatorWithdrawOrderId()
         val withdrawCo = WithdrawCo(orderId = orderId, clientId = clientId, memberId = memberId,
                 memberBank = memberBank.bank, memberBankCardNumber = memberBank.bankCardNumber, memberBankId = memberBank.id,
-                money = withdrawCoReq.money, remarks = null, username = currentUsername())
+                money = withdrawCoReq.money, remarks = null, username = member.username, memberName = member.name)
         withdrawService.create(withdrawCo)
 
         watch.stop()

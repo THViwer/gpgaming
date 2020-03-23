@@ -37,6 +37,9 @@ data class WithdrawCo(
         // 会员Id
         val memberId: Int,
 
+        // 会员明
+        val memberName: String,
+
         // 用户名
         val username: String,
 

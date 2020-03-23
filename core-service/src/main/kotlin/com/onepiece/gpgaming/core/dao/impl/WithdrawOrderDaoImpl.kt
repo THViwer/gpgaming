@@ -99,7 +99,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
                 .set("member_id", orderCo.memberId)
                 .set("username", orderCo.username)
                 .set("member_bank_id", orderCo.memberBankId)
-                .set("member_name", orderCo.memberBankId)
+                .set("member_name", orderCo.memberName)
                 .set("member_bank", orderCo.memberBank)
                 .set("member_bank_card_number", orderCo.memberBankCardNumber)
                 .set("money", orderCo.money)
