@@ -1,5 +1,7 @@
 package com.onepiece.gpgaming.payment
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.model.pay.M3PayConfig
 import com.onepiece.gpgaming.beans.model.pay.PayConfig
@@ -56,4 +58,15 @@ fun main() {
     val v = "orangeM01TRANS0000112001"
     val sign = DigestUtils.sha256Hex(v)
     println(sign)
+
+    val mapper = jacksonObjectMapper()
+    val xmlMapper = XmlMapper()
+    val okHttpUtil = OkHttpUtil(mapper, xmlMapper)
+
+    val m3PayService = M3PayService(okHttpUtil)
+
+    val payConfig = M3PayConfig()
+
+    m3PayService.start(payConfig)
+
 }

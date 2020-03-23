@@ -228,7 +228,7 @@ open class CashApiController(
 
         val data = page.data.map {
             with(it) {
-                DepositVo(orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
+                DepositVo(id = it.id, orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
                         imgPath = imgPath, memberId = memberId, bankOrderId = null, clientBankCardNumber = clientBankCardNumber,
                         clientBankName = clientBankName, clientBankId = clientBankId, lockWaiterId = it.lockWaiterId, depositTime = it.depositTime,
@@ -276,7 +276,7 @@ open class CashApiController(
 
         val data = page.data.map {
             with(it) {
-                WithdrawVo(orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
+                WithdrawVo(id = it.id, orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
                         memberId = it.memberId, memberBankId = it.memberBankId, lockWaiterId = it.lockWaiterId, username = username,
                         lockWaiterUsername = null)
