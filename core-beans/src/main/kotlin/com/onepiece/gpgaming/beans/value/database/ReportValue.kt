@@ -153,5 +153,8 @@ data class ClientTransferReportVo(
 
         val transferIn: BigDecimal,
 
-        val transferOut: BigDecimal
+        val transferOut: BigDecimal,
+
+        val promotionAmount: BigDecimal
+
 )

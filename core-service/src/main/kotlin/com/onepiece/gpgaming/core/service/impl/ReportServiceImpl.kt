@@ -169,12 +169,12 @@ class ReportServiceImpl(
 
         // 查询转入订单
         val transferInQuery = TransferReportQuery(clientId = clientId, memberId = null, from = Platform.Center, to = null, startDate = startDate, endDate = endDate)
-        val transferInReports = transferOrderDao.memberReport(transferInQuery)
+        val transferInReports = transferOrderDao.clientReport(transferInQuery)
         val transferInMap = transferInReports.map { it.clientId to it }.toMap()
 
         // 查询转出订单
         val transferOutQuery = TransferReportQuery(clientId = clientId, memberId = null, from = null, to = Platform.Center, startDate = startDate, endDate = endDate)
-        val transferOutReports = transferOrderDao.memberReport(transferOutQuery)
+        val transferOutReports = transferOrderDao.clientReport(transferOutQuery)
         val transferOutMap = transferOutReports.map { it.clientId to it }.toMap()
 
 
@@ -205,8 +205,8 @@ class ReportServiceImpl(
 
             val promotionAmount = transferOutReport?.promotionAmount?: BigDecimal.ZERO
 
-            ClientDailyReport(id = -1, day = startDate, clientId = it, transferIn = transferInReport?.money ?: BigDecimal.ZERO,
-                    transferOut = transferOutReport?.money ?: BigDecimal.ZERO, depositMoney = depositReport?.money ?: BigDecimal.ZERO,
+            ClientDailyReport(id = -1, day = startDate, clientId = it, transferIn = transferInReport?.transferIn ?: BigDecimal.ZERO,
+                    transferOut = transferOutReport?.transferOut ?: BigDecimal.ZERO, depositMoney = depositReport?.money ?: BigDecimal.ZERO,
                     depositCount = depositReport?.count ?: 0, withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO,
                     withdrawCount = withdrawReport?.count ?: 0, newMemberCount = newMemberCount, createdTime = now,
                     promotionAmount = promotionAmount, status = Status.Normal)

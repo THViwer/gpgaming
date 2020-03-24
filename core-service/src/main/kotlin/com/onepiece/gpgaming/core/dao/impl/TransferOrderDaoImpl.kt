@@ -130,7 +130,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
 
     override fun clientReport(query: TransferReportQuery): List<ClientTransferReportVo> {
 
-        return query("client_id, member_id, sum(money) as money")
+        return query("client_id, member_id, sum(money) as money, sum(promotion_amount) as promotion_amount")
                 .asWhere("created_time >= ?", query.startDate)
                 .asWhere("created_time < ?", query.endDate)
                 .where("state", TransferState.Successful)
@@ -155,7 +155,9 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                         transferOut = money
                     }
 
-                    ClientTransferReportVo(clientId = clientId, transferIn = transferIn, transferOut = transferOut)
+                    val promotionAmount = rs.getBigDecimal("promotion_amount")
+
+                    ClientTransferReportVo(clientId = clientId, transferIn = transferIn, transferOut = transferOut, promotionAmount = promotionAmount)
                 }
     }
 
@@ -174,6 +176,8 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .where("client_id", query.clientId)
                 .where("from", query.from)
                 .where("join_promotion_id", query.promotionId)
+                .asWhere("join_promotion_id is not null")
+                .asWhere("join_promotion_id != -100")
                 .where("username", query.username)
                 .sort(query.sortBy)
                 .limit(query.current, query.size)
