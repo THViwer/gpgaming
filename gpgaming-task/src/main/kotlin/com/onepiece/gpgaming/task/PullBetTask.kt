@@ -93,7 +93,7 @@ class PullBetTask(
 
         val startTime = redisService.get(key = redisKey, clz = String::class.java) {
             //TODO 暂时10分钟 线上用30分钟
-            "${LocalDateTime.now().minusMinutes(10)}"
+            "${LocalDateTime.now().minusMinutes(30)}"
         }!!.let { LocalDateTime.parse(it) }
 
         if (!this.canExecutePlatform(startTime = startTime, platform = bind.platform)) return
@@ -111,7 +111,7 @@ class PullBetTask(
         val v = if (bind.platform == Platform.Pragmatic) {
             LocalDateTime.now().minusMinutes(5)
         } else {
-            startTime.plusMinutes(addMinus - 1)
+            startTime.plusMinutes(addMinus - 1).minusMinutes(10)
         }
 
         redisService.put(key = redisKey, value = v)
