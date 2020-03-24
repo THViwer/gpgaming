@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
+import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberUo
@@ -91,6 +92,11 @@ class UserApiController(
     override fun platformUsers(): List<PlatformMemberVo> {
         val current = this.currentUser()
         val platformMembers = platformMemberService.findPlatformMember(memberId =  current.id)
+
+
+        val bind = platformBindService.findClientPlatforms(clientId = current.clientId).first { it.platform == Platform.PlaytechSlot }
+        val clientToken = bind.clientToken as PlaytechClientToken
+
         return platformMembers.map {
 
             val sort = when (it.platform) {
@@ -102,7 +108,14 @@ class UserApiController(
                 else -> 100
             }
 
-            PlatformMemberVo(id = it.id, platform = it.platform, username = it.username, password = it.password, sort = sort)
+            val username = when (it.platform) {
+                Platform.PlaytechLive, Platform.PlaytechSlot -> {
+                    "${clientToken.prefix}_${it.username}".toUpperCase()
+                }
+                else -> it.username
+            }
+
+            PlatformMemberVo(id = it.id, platform = it.platform, username = username, password = it.password, sort = sort)
         }.sortedBy { it.sort }
     }
 
