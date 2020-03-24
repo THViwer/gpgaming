@@ -252,7 +252,11 @@ class IndexApiController(
         val contentMap = i18nContentService.getConfigType(clientId = client.id, configType = I18nConfig.HotGame)
                 .groupBy { it.configId }
 
+        log.info("国际化内容: ${contentMap}")
+
         val games = hotGameService.all(clientId = client.clientId).filter { it.type == type }
+
+        log.info("热门游戏列表: ${games}")
 
         return games.map {
             val contents = contentMap[it.id] ?: emptyList()
