@@ -265,6 +265,7 @@ class TransferUtil(
 
 
         if (state) {
+            //TODO 记录clean事件 本次优惠使用多少打码量等
             platformMemberService.cleanTransferIn(memberId = platformMember.memberId, platform = platformMember.platform)
         }
 

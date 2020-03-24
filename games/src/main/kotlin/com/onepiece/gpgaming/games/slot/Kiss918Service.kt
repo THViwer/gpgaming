@@ -105,6 +105,7 @@ class Kiss918Service (
                 "agent=${agentName}",
                 "PassWd=${updatePasswordReq.password}",
                 "userName=${updatePasswordReq.username}",
+                "Flag=1",
                 "Name=${updatePasswordReq.username}",
                 "tel=1234124141241",
                 "Memo=-",
