@@ -61,7 +61,7 @@ class PullBetTask(
 //                .filter { it.clientId == 1  }
 //                .filter { it.platform == Platform.Pragmatic }
 
-            val list = binds.parallelStream().map { bind ->
+            val list = binds.filter { it.platform != Platform.PlaytechLive }.parallelStream().map { bind ->
                     this.executePlatform(bind)
             }.collect(Collectors.toList())
 
