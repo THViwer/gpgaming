@@ -47,9 +47,7 @@ class PullBetTask(
     fun execute() {
 
         val redisKey = "pull:task:running"
-        val running = redisService.get(redisKey, Boolean::class.java) {
-            false
-        }!!
+        val running = redisService.get(redisKey, Boolean::class.java) ?: false
         if (running) return else redisService.put(redisKey, true, 5 * 60)
 
         log.info("定时任务执行中，现在时间：${LocalDateTime.now()}")
