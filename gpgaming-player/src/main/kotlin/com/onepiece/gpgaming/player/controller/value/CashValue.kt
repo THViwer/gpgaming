@@ -224,7 +224,10 @@ data class BalanceVo(
         val transfer: Boolean,
 
         @ApiModelProperty("提示信息(一般参加活动时无法提款才会有)")
-        val tips: String?
+        val tips: String?,
+
+        @ApiModelProperty("总打码量")
+        val totalBet: BigDecimal
 
 //        @ApiModelProperty("是否可以转入 中心 -> 平台")
 //        val transferIn: Boolean
