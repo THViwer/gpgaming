@@ -192,7 +192,8 @@ class ReportApiController(
 
     @GetMapping("/promotion/detail")
     override fun promotionDetail(
-            @RequestParam("promotionId") promotionId: Int,
+            @RequestParam("promotionId", required = false) promotionId: Int?,
+            @RequestParam("username", required = false) username: String?,
             @RequestParam("sortBy") sortBy: String,
             @RequestParam("desc") desc: Boolean
     ): List<TransferOrder> {
@@ -209,7 +210,7 @@ class ReportApiController(
 
         val dbSort = "$sortBy ${if (desc) "desc" else "asc"}"
 
-        val query = TransferOrderValue.Query(clientId = this.getClientId(), promotionId = promotionId, from = null, sortBy = dbSort)
+        val query = TransferOrderValue.Query(clientId = this.getClientId(), promotionId = promotionId, from = null, sortBy = dbSort, username = username)
         return transferOrderService.query(query)
     }
 }

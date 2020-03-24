@@ -174,6 +174,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .where("client_id", query.clientId)
                 .where("from", query.from)
                 .where("join_promotion_id", query.promotionId)
+                .where("username", query.username)
                 .sort(query.sortBy)
                 .limit(query.current, query.size)
                 .execute(mapper)

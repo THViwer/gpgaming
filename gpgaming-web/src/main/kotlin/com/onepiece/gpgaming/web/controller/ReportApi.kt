@@ -58,7 +58,8 @@ interface ReportApi {
 
     @ApiOperation(tags = ["report"], value = "优惠活动人员详情")
     fun promotionDetail(
-            @RequestParam("promotionId") promotionId: Int,
+            @RequestParam("promotionId", required = false) promotionId: Int?,
+            @RequestParam("username", required = false) username: String?,
             @RequestParam("sortBy") sortBy: String,
             @RequestParam("desc") desc: Boolean
     ): List<TransferOrder>

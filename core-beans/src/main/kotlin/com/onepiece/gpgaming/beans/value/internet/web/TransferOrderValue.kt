@@ -14,6 +14,8 @@ sealed class TransferOrderValue {
 
             val promotionId: Int?,
 
+            val username: String?,
+
             val sortBy: String = "created_time desc",
 
             val current: Int = 0,
