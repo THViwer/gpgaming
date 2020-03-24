@@ -147,7 +147,7 @@ class PlaytechService(
                     "game_server=${clientToken.serverName}",
                     "date_from=${pullBetOrderReq.startTime.format(dateTimeFormat)}",
                     "date_to=${pullBetOrderReq.endTime.format(dateTimeFormat)}",
-                    "page=1"
+                    "page=${page}"
             )
 
             val urlParam = data.joinToString(separator = "&")
