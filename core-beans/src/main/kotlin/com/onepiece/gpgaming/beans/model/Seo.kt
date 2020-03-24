@@ -10,6 +10,9 @@ data class Seo (
         // 厅主
         val clientId: Int,
 
+        // 标题
+        val title: String,
+
         // 关键字
         val keywords: String,
 

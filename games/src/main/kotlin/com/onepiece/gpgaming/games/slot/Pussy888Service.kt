@@ -85,6 +85,7 @@ class Pussy888Service(
                 "agent=${agentName}",
                 "PassWd=${registerReq.password}",
                 "userName=${username}",
+                "Flag=1",
                 "Name=$username",
                 "tel=1234124141241",
                 "Memo=-",
