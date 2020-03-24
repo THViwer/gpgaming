@@ -47,6 +47,8 @@ class PullBetTask(
         if (running.get()) return
         running.set(true)
 
+        log.info("定时任务执行中，现在时间：${LocalDateTime.now()}")
+
 
         try {
             //TODO 暂时过滤其它厅主的
