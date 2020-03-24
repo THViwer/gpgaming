@@ -13,7 +13,9 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.time.LocalDateTime
+import java.util.concurrent.FutureTask
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.stream.Collectors
 
 
 @Component
@@ -58,22 +60,26 @@ class PullBetTask(
 //                .filter { it.clientId == 1  }
 //                .filter { it.platform == Platform.Pragmatic }
 
-            binds.filter { it.platform != Platform.PlaytechLive }.map { bind ->
-                this.executePlatform(bind)
-            }
+            val list = binds.filter { it.platform != Platform.PlaytechLive }.parallelStream().map { bind ->
+                    this.executePlatform(bind)
+            }.collect(Collectors.toList())
+
+            log.info("执行成功个数：${list.filter { it }.size}个")
+
         } finally {
             running.set(false)
         }
     }
 
-    private fun executePlatform(bind: PlatformBind) {
-
-        try {
+    private fun executePlatform(bind: PlatformBind): Boolean {
+        return try {
             this.handler(bind = bind) { startTime, endTime ->
                 gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
             }
+            true
         } catch (e: Exception) {
             log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 执行任务失败", e)
+            false
         }
     }
 
