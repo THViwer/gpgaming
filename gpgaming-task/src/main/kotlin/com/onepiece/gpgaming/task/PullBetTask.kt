@@ -27,7 +27,6 @@ class PullBetTask(
 ) {
 
     private val log = LoggerFactory.getLogger(PullBetTask::class.java)
-    private val running = AtomicBoolean(false)
 
 //    private fun startTask(platform: Platform, startTime: LocalDateTime, endTime: LocalDateTime) {
 //        val binds = platformBindService.find(platform)
@@ -46,8 +45,12 @@ class PullBetTask(
 
     @Scheduled(cron="0/20 * *  * * ? ")
     fun execute() {
-        if (running.get()) return
-        running.set(true)
+
+        val redisKey = "pull:task:running"
+        val running = redisService.get(redisKey, Boolean::class.java) {
+            false
+        }!!
+        if (running) return else redisService.put(redisKey, true, 5 * 60)
 
         log.info("定时任务执行中，现在时间：${LocalDateTime.now()}")
 
@@ -67,7 +70,7 @@ class PullBetTask(
             log.info("执行成功个数：${list.filter { it }.size}个")
 
         } finally {
-            running.set(false)
+            redisService.put(redisKey, false)
         }
     }
 
