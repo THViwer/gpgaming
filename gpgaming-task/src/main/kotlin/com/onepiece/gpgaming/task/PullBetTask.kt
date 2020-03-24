@@ -102,16 +102,17 @@ class PullBetTask(
         val duration = Duration.between(startTime, LocalDateTime.now()).toMinutes()
         val addMinus = if (duration > 30) 10L else 3L
 
-        val endTime = startTime.plusMinutes(addMinus)
+        val pqStartTime = startTime.minusMinutes(10)
+        val pqEndTime = pqStartTime.plusMinutes(addMinus)
 
-        log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 开始时间任务：${LocalDateTime.now()}, 查询开始时间：$startTime, 查询结束时间${endTime}")
-        val orders = pull(startTime, endTime)
+        log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 开始时间任务：${LocalDateTime.now()}, 查询开始时间：$pqStartTime, 查询结束时间${pqEndTime}")
+        val orders = pull(pqStartTime, pqEndTime)
         this.asyncBatch(orders)
 
         val v = if (bind.platform == Platform.Pragmatic) {
             LocalDateTime.now().minusMinutes(5)
         } else {
-            startTime.plusMinutes(addMinus - 1).minusMinutes(10)
+            startTime.plusMinutes(addMinus - 1)
         }
 
         redisService.put(key = redisKey, value = v)
