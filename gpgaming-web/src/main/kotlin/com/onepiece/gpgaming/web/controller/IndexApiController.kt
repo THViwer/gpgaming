@@ -69,12 +69,13 @@ class IndexApiController(
 
     @PutMapping("/seo")
     override fun seo(
+            @RequestParam("title") title: String,
             @RequestParam("keywords") keywords: String,
             @RequestParam("description") description: String
     ) {
         val clientId = getClientId()
 
-        val seoUo = SeoValue.SeoUo(clientId = clientId, keywords = keywords, description = description)
+        val seoUo = SeoValue.SeoUo(clientId = clientId, title = title, keywords = keywords, description = description)
         seoService.update(seoUo)
     }
 

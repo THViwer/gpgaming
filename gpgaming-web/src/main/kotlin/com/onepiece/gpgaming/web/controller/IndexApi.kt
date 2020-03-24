@@ -33,6 +33,7 @@ interface IndexApi {
     @ApiOperation(tags = ["web setting"], value = "seo -> 更新")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun seo(
+            @RequestParam("title") title: String,
             @RequestParam("keywords") keywords: String,
             @RequestParam("description") description: String
     )
