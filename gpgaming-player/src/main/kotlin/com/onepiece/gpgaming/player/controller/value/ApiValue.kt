@@ -35,7 +35,10 @@ data class HotGameVo(
         val img2: String?,
 
         @ApiModelProperty("图片3")
-        val img3: String?
+        val img3: String?,
+
+        @ApiModelProperty("是否试玩")
+        val demo: Boolean = false
 )
 
 data class ConfigVo(
