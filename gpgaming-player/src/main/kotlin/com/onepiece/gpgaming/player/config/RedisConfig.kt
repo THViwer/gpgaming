@@ -15,12 +15,14 @@ import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.core.task.AsyncTaskExecutor
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer
 import org.springframework.data.redis.serializer.RedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 
 @Configuration
 open class RedisConfig {
@@ -99,5 +101,18 @@ open class RedisConfig {
     private fun valueSerializer(): RedisSerializer<String> {
         return StringRedisSerializer()
     }
+
+
+    @Bean
+    open fun taskExecutor(): AsyncTaskExecutor {
+
+        val executor = ThreadPoolTaskExecutor()
+        executor.setThreadNamePrefix("Anno-Executor")
+        executor.maxPoolSize = 20
+        executor.corePoolSize = 10
+
+        return executor
+    }
+
 
 }
