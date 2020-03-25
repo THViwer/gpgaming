@@ -14,6 +14,7 @@ import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.lang.Exception
 import java.math.BigDecimal
@@ -39,7 +40,7 @@ class PlatformMemberServiceImpl(
     }
 
     //    @Transactional(rollbackFor = [Exception::class], propagation = Propagation.REQUIRES_NEW)
-    @Transactional(rollbackFor = [NoRollbackException::class])
+    @Transactional(rollbackFor = [NoRollbackException::class], propagation = Propagation.REQUIRES_NEW)
     override fun create(clientId: Int, memberId: Int, platform: Platform, platformUsername: String, platformPassword: String): PlatformMemberVo {
 
         log.info("开始创建db用户：$memberId, 平台：${platform}")
@@ -62,7 +63,7 @@ class PlatformMemberServiceImpl(
 
     override fun updatePassword(id: Int, password: String) {
 
-        val platformMember = this.get(id)
+        val platformMember = platformMemberDao.get(id)
 
         val state = platformMemberDao.updatePassword(id = id, password = password)
         check(state) { OnePieceExceptionCode.DATA_FAIL }
