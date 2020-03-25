@@ -32,6 +32,7 @@ class PlatformMemberServiceImpl(
         try {
             return platformMemberDao.get(id)
         } catch (e: Exception) {
+            log.info("platformMember, id = $id, 无法查询到该平台用户，进行请理")
             redisService.delete(OnePieceRedisKeyConstant.myPlatformMembers(id))
             throw e
         }
