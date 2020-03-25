@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
+import java.util.stream.Collectors
 import javax.servlet.http.HttpServletRequest
 
 
@@ -97,9 +98,12 @@ abstract class BasicController {
 
         log.info("用户名：${member.username}, 获得平台用户：$platform, code = $code")
         if (platformMember == null) {
-            log.info("用户名：${member.username}, 开始注册平台用户：$platform, code = $code" +
-                    "")
-            gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
+            log.info("用户名：${member.username}, 开始注册平台用户：$platform, code = $code" + "")
+
+            listOf(1).parallelStream().map {
+                gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
+            }.collect(Collectors.toList())
+
             return this.getPlatformMember(platform, member, 1)
         }
 
