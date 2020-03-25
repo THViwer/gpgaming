@@ -35,6 +35,14 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.stream.Collectors
 
+interface ITransferUtil {
+
+    fun transferInAll(clientId: Int, memberId: Int, username: String, exceptPlatform: Platform? = null): List<BalanceAllInVo>
+
+    fun transfer(clientId: Int, username: String, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp
+}
+
+
 @Component
 open class TransferUtil(
         private val walletService: WalletService,
@@ -45,7 +53,7 @@ open class TransferUtil(
         private val gameApi: GameApi,
         private val promotionService: PromotionService,
         private val memberService: MemberService
-)  {
+) : ITransferUtil {
 
     private val log = LoggerFactory.getLogger(TransferUtil::class.java)
 
@@ -53,7 +61,7 @@ open class TransferUtil(
     /**
      * 如果轩心账金额为-1 则是转全部
      */
-    fun transferInAll(clientId: Int, memberId: Int, username: String, exceptPlatform: Platform? = null): List<BalanceAllInVo> {
+    override fun transferInAll(clientId: Int, memberId: Int, username: String, exceptPlatform: Platform?): List<BalanceAllInVo> {
 
         val amount = BigDecimal.valueOf(-1)
 
@@ -102,7 +110,7 @@ open class TransferUtil(
      * 如果轩心账金额为-1 则是转全部
      */
     @Transactional(rollbackFor = [Exception::class], propagation = Propagation.REQUIRES_NEW)
-    open fun transfer(clientId: Int, username: String, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp {
+    override fun transfer(clientId: Int, username: String, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp {
         val (type, platform) = if (cashTransferReq.from == Platform.Center) "out" to cashTransferReq.to else "in" to cashTransferReq.from
         return singleTransfer(clientId = clientId, platform =  platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo, username = username)
     }
