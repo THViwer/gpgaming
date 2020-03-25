@@ -40,6 +40,10 @@ interface ITransferUtil {
     fun transferInAll(clientId: Int, memberId: Int, username: String, exceptPlatform: Platform? = null): List<BalanceAllInVo>
 
     fun transfer(clientId: Int, username: String, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp
+
+    fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo?
+
+    fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal): Boolean
 }
 
 
@@ -228,7 +232,7 @@ open class TransferUtil(
     /**
      * 处理优惠活动
      */
-    fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
+    override fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
 
         log.info("处理优惠信息,优惠活动Id")
 
@@ -264,7 +268,7 @@ open class TransferUtil(
     /**
      * 检查是否清空优惠活动信息
      */
-    fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal): Boolean {
+    override fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal): Boolean {
 
         val state = when{
             platformBalance.toDouble() <= promotion.rule.ignoreTransferOutAmount.toDouble() -> true
