@@ -359,11 +359,29 @@ open class CashApiController(
 
 
         val joinPromotions = promotions
-                .filter { promotionId == null || it.id == promotionId }
-                .filter { it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble() }
-                .filter { !member.firstPromotion || it.category != PromotionCategory.First }
-                .filter { promotion -> PromotionPeriod.check(promotion = promotion, historyOrders = historyOrders) }
-                .filter { promotion -> promotion.levelId == null || promotion.levelId == member.levelId }
+                .filter {
+                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果1：${promotionId == null || it.id == promotionId} ")
+                    promotionId == null || it.id == promotionId
+                }
+                .filter {
+                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果2：${it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble()} ")
+
+                    it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble()
+                }
+                .filter {
+                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果3：${!member.firstPromotion || it.category != PromotionCategory.First} ")
+                    !member.firstPromotion || it.category != PromotionCategory.First
+                }
+                .filter { promotion ->
+                    log.info("用户：${current.username}, 优惠Id：${promotion.id}, 过滤结果4：${PromotionPeriod.check(promotion = promotion, historyOrders = historyOrders)} ")
+
+                    PromotionPeriod.check(promotion = promotion, historyOrders = historyOrders)
+                }
+                .filter { promotion ->
+                    log.info("用户：${current.username}, 优惠Id：${promotion.id}, 过滤结果5：${promotion.levelId == null || promotion.levelId == member.levelId} ")
+
+                    promotion.levelId == null || promotion.levelId == member.levelId
+                }
 
         log.info("用户：${current.username}, 可参加优惠列表：$joinPromotions")
 
