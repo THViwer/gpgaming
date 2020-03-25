@@ -29,12 +29,14 @@ import com.onepiece.gpgaming.player.controller.value.BalanceAllInVo
 import com.onepiece.gpgaming.player.controller.value.CashTransferReq
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.stream.Collectors
 
 @Component
-class TransferUtil(
+open class TransferUtil(
         private val walletService: WalletService,
         private val platformBindService: PlatformBindService,
         private val orderIdBuilder: OrderIdBuilder,
@@ -86,7 +88,8 @@ class TransferUtil(
     /**
      * 如果轩心账金额为-1 则是转全部
      */
-    fun transfer(clientId: Int, username: String, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp {
+    @Transactional(rollbackFor = [Exception::class], propagation = Propagation.REQUIRES_NEW)
+    open fun transfer(clientId: Int, username: String, cashTransferReq: CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp {
         val (type, platform) = if (cashTransferReq.from == Platform.Center) "out" to cashTransferReq.to else "in" to cashTransferReq.from
         return singleTransfer(clientId = clientId, platform =  platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo, username = username)
     }
