@@ -64,7 +64,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
     }
 
     override fun create(platformMemberCo: PlatformMemberCo): Int {
-        val flag = insert()
+        return insert()
                 .set("platform", platformMemberCo.platform)
                 .set("client_id", platformMemberCo.clientId)
                 .set("member_id", platformMemberCo.memberId)
@@ -84,14 +84,6 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                 .set("ignore_transfer_out_amount", BigDecimal.ZERO)
 
                 .executeGeneratedKey()
-
-        try {
-            jdbcTemplate.dataSource!!.connection.commit()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return flag
 
     }
 
