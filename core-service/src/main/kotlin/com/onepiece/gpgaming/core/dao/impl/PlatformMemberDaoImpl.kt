@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.core.dao.PlatformMemberDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import com.onepiece.gpgaming.core.dao.basic.getIntOrNull
 import org.springframework.stereotype.Repository
+import java.lang.Exception
 import java.math.BigDecimal
 import java.sql.ResultSet
 
@@ -63,7 +64,7 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
     }
 
     override fun create(platformMemberCo: PlatformMemberCo): Int {
-        return insert()
+        val flag = insert()
                 .set("platform", platformMemberCo.platform)
                 .set("client_id", platformMemberCo.clientId)
                 .set("member_id", platformMemberCo.memberId)
@@ -83,6 +84,15 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
                 .set("ignore_transfer_out_amount", BigDecimal.ZERO)
 
                 .executeGeneratedKey()
+
+        try {
+            jdbcTemplate.dataSource!!.connection.commit()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return flag
+
     }
 
     override fun updatePassword(id: Int, password: String): Boolean {
