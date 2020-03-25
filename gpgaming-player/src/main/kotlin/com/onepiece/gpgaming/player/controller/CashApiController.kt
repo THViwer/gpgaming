@@ -352,8 +352,11 @@ open class CashApiController(
         val member = memberService.getMember(current.id)
         val promotions = promotionService.find(clientId = current.clientId, platform = platform)
 
+        log.info("用户：${current.username}, 优惠列表：$promotions")
+
         val historyOrders = transferOrderService.queryLastPromotion(clientId = current.clientId, memberId = current.id,
                 startTime = LocalDateTime.now().minusDays(30))
+
 
         val joinPromotions = promotions
                 .filter { promotionId == null || it.id == promotionId }
@@ -361,6 +364,8 @@ open class CashApiController(
                 .filter { !member.firstPromotion || it.category != PromotionCategory.First }
                 .filter { promotion -> PromotionPeriod.check(promotion = promotion, historyOrders = historyOrders) }
                 .filter { promotion -> promotion.levelId == null || promotion.levelId == member.levelId }
+
+        log.info("用户：${current.username}, 可参加优惠列表：$joinPromotions")
 
 
         val contentMap = i18nContentService.getConfigType(clientId = current.clientId, configType = I18nConfig.Promotion)
