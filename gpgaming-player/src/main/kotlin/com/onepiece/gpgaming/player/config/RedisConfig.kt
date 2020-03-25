@@ -104,6 +104,7 @@ open class RedisConfig {
 
 
     @Bean
+    @Primary
     open fun taskExecutor(): AsyncTaskExecutor {
 
         val executor = ThreadPoolTaskExecutor()

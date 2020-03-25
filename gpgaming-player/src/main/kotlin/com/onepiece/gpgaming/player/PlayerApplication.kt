@@ -29,15 +29,15 @@ open class PlayerApplication: SpringBootServletInitializer() {
         tomcat.addConnectorCustomizers(gracefulShutdownTomcat)
         return tomcat
     }
-
-    @Bean
-    open fun cookieProcessorCustomizer(): WebServerFactoryCustomizer1<TomcatServletWebServerFactory> {
-        return WebServerFactoryCustomizer1{ factory ->
-            factory.addContextCustomizers(TomcatContextCustomizer { content ->
-                content.cookieProcessor = LegacyCookieProcessor()
-            })
-        }
-    }
+//
+//    @Bean
+//    open fun cookieProcessorCustomizer(): WebServerFactoryCustomizer1<TomcatServletWebServerFactory> {
+//        return WebServerFactoryCustomizer1{ factory ->
+//            factory.addContextCustomizers(TomcatContextCustomizer { content ->
+//                content.cookieProcessor = LegacyCookieProcessor()
+//            })
+//        }
+//    }
 
 }
 
