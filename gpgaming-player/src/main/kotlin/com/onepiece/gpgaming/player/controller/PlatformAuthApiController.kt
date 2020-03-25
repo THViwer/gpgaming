@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.lang.Exception
 import java.math.BigDecimal
 import java.util.*
 
@@ -86,7 +87,12 @@ class PlatformAuthApiController(
         val password = mapUtil.asMap("params").asString("password")
 
 
-        val successful = platformMemberService.login(platform = Platform.Mega, username = username, password = password)
+        val successful = try {
+            platformMemberService.login(platform = Platform.Mega, username = username, password = password)
+        } catch (e: Exception) {
+            log.error("Mega请求登陆失败， username=$username, password = $password")
+            false
+        }
         log.info("登陆mega,用户名：${username}是否成功:$successful")
 
         val successCode = if (successful) 1 else 0

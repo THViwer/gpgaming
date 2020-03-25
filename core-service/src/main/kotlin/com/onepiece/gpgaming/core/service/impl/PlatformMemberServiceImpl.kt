@@ -103,7 +103,7 @@ class PlatformMemberServiceImpl(
 
     override fun login(platform: Platform, username: String, password: String): Boolean {
         val platformMember = platformMemberDao.findByUsername(platform = platform, username = username)
-        return platformMember.password == password
+        return platformMember?.password == password
     }
 
     override fun transferIn(platformMemberTransferUo: PlatformMemberTransferUo) {

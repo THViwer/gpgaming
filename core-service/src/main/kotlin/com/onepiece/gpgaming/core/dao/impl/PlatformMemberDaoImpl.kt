@@ -56,11 +56,11 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
 
     }
 
-    override fun findByUsername(platform: Platform, username: String): PlatformMember {
+    override fun findByUsername(platform: Platform, username: String): PlatformMember? {
         return query()
                 .where("platform", platform)
                 .where("username", username)
-                .executeOnlyOne(mapper)
+                .executeMaybeOne(mapper)
     }
 
     override fun create(platformMemberCo: PlatformMemberCo): Int {
