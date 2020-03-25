@@ -65,16 +65,6 @@ open class TransferUtil(
 
         val amount = BigDecimal.valueOf(-1)
 
-        log.info("--------")
-        log.info("--------")
-        log.info("--------")
-        log.info("transfer test : platformMemberService = ${platformMemberService}")
-        log.info("transfer test : memberId = ${memberId}")
-        log.info("transfer test : members = ${platformMemberService.myPlatforms(memberId = memberId)}")
-        log.info("--------")
-        log.info("--------")
-        log.info("--------")
-
         val platformMembers = this.platformMemberService.myPlatforms(memberId = memberId)
         if (platformMembers.isEmpty()) return emptyList()
 
