@@ -21,6 +21,8 @@ server:
   servlet:
     context-path: /api/v1/player
   port: 8002
+  max-http-header-size: 102400
+  
 
 jwt:
   header: Authorization
