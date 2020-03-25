@@ -230,8 +230,6 @@ open class TransferUtil(
      */
     fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
 
-        log.info("处理优惠信息,优惠活动Id：$promotionId")
-
         // 是否有历史优惠活动
         if (platformMember.joinPromotionId != null) {
             val promotion = promotionService.get(platformMember.joinPromotionId!!)
