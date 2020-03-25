@@ -415,6 +415,7 @@ open class CashApiController(
                     CheckPromotionVo(promotionId = promotion.id, promotionIntroduction = promotionIntroduction, title = mContent.title)
                 }
             } catch (e: Exception) {
+                log.error("处理优惠信息错误:", e)
                 null
             }
         }.toList().filterNotNull()
