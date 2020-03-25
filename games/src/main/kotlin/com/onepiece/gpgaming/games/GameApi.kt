@@ -9,6 +9,7 @@ import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.MegaClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.SlotGame
+import com.onepiece.gpgaming.core.NoRollbackException
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.core.service.PlatformBindService
@@ -41,8 +42,11 @@ import com.onepiece.gpgaming.games.sport.LbcService
 import com.onepiece.gpgaming.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.util.stream.Collector
+import java.util.stream.Collectors
 
 @Component
 class GameApi(
@@ -140,6 +144,7 @@ class GameApi(
      * 注册账号
      */
     @Synchronized
+    @Transactional(rollbackFor = [NoRollbackException::class])
     fun register(clientId: Int, memberId: Int, platform: Platform, name: String) {
         val has = platformMemberService.find(memberId, platform)
         if (has != null) return
@@ -158,7 +163,9 @@ class GameApi(
         val platformUsername = getPlatformApi(platform).register(registerReq)
 
         try {
-            platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
+            listOf(1).parallelStream().map {
+                platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
+            }.collect(Collectors.toList())
         } catch (e: Exception) {
 
             if (platform == Platform.Kiss918 || platform == Platform.Pussy888) {

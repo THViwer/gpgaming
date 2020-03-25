@@ -45,7 +45,7 @@ class PlatformMemberServiceImpl(
         log.info("开始创建db用户：$memberId, 平台：${platform}")
 
         val has = this.find(memberId = memberId, platform = platform)
-        log.info("\"开始创建db用户：是否已存在已有用户：$has")
+        log.info("开始创建db用户：是否已存在已有用户：$has")
         if (has != null ) return has
 
         val platformMemberCo = PlatformMemberCo(platform = platform, memberId = memberId, username = platformUsername,
