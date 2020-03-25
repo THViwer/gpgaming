@@ -57,6 +57,8 @@ open class TransferUtil(
 
         val amount = BigDecimal.valueOf(-1)
         val platformMembers = this.platformMemberService.myPlatforms(memberId = memberId)
+        if (platformMembers.isEmpty()) return emptyList()
+
         val list = platformMembers.parallelStream().filter { exceptPlatform == null || exceptPlatform != it.platform }.map{ platformMember ->
             val req = CashTransferReq(from = platformMember.platform, to = Platform.Center, amount = amount, promotionId = null)
             try {

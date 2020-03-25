@@ -7,16 +7,12 @@ import com.onepiece.gpgaming.beans.value.database.PlatformMemberCo
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberTransferUo
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.beans.value.order.BetCacheVo
-import com.onepiece.gpgaming.core.NoRollbackException
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.PlatformMemberDao
 import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.utils.RedisService
 import org.slf4j.LoggerFactory
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
 @Service
@@ -32,7 +28,7 @@ class PlatformMemberServiceImpl(
         return platformMemberDao.get(id)
     }
 
-//    @Transactional(rollbackFor = [Exception::class], propagation = Propagation.REQUIRES_NEW)
+    //    @Transactional(rollbackFor = [Exception::class], propagation = Propagation.REQUIRES_NEW)
     override fun create(clientId: Int, memberId: Int, platform: Platform, platformUsername: String, platformPassword: String): PlatformMemberVo {
 
         log.info("开始创建db用户：$memberId, 平台：${platform}")
@@ -66,15 +62,18 @@ class PlatformMemberServiceImpl(
     override fun myPlatforms(memberId: Int): List<PlatformMemberVo> {
 
         val redisKey = OnePieceRedisKeyConstant.myPlatformMembers(memberId)
-        val data = redisService.getList(redisKey, PlatformMemberVo::class.java) {
-            this.findPlatformMember(memberId).map {
-                PlatformMemberVo(memberId = it.memberId, platformUsername = it.username, platformPassword = it.password, platform = it.platform,
-                        id = it.id)
+        return redisService.getList(redisKey, PlatformMemberVo::class.java) {
+            val list = this.findPlatformMember(memberId)
+
+            if (list.isEmpty()) {
+                emptyList<PlatformMemberVo>()
+            } else {
+                list.map {
+                    PlatformMemberVo(memberId = it.memberId, platformUsername = it.username, platformPassword = it.password, platform = it.platform,
+                            id = it.id)
+                }
             }
         }
-        log.info("memberId = $memberId, 平台数据：")
-        log.info("$data")
-        return data
     }
 
     override fun find(memberId: Int, platform: Platform): PlatformMemberVo? {
