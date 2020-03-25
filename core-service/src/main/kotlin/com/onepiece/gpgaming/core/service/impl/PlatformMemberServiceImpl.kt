@@ -15,6 +15,7 @@ import com.onepiece.gpgaming.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.lang.Exception
 import java.math.BigDecimal
 
 @Service
@@ -27,7 +28,13 @@ class PlatformMemberServiceImpl(
 
     override fun get(id: Int): PlatformMember {
         log.info("platformMember, id = $id")
-        return platformMemberDao.get(id)
+
+        try {
+            return platformMemberDao.get(id)
+        } catch (e: Exception) {
+            redisService.delete(OnePieceRedisKeyConstant.myPlatformMembers(id))
+            throw e
+        }
     }
 
     //    @Transactional(rollbackFor = [Exception::class], propagation = Propagation.REQUIRES_NEW)
