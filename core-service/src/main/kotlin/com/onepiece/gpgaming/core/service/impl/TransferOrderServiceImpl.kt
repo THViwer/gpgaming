@@ -9,6 +9,8 @@ import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
 import com.onepiece.gpgaming.core.service.TransferOrderService
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -18,6 +20,7 @@ class TransferOrderServiceImpl(
         private val transferOrderDao: TransferOrderDao
 ) : TransferOrderService {
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     override fun create(transferOrderCo: TransferOrderCo) {
         val state = transferOrderDao.create(transferOrderCo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }

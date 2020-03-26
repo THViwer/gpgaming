@@ -212,10 +212,15 @@ open class TransferUtil(
             this.transferRollBack(clientId = clientId, memberId = memberId, money = amount, from = from, to = to, transferOrderId = transferOrderId)
         }
 
+
         // 更新转账订单
-        val state = if (transferResp.transfer) TransferState.Successful else TransferState.Fail
-        val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = state)
-        transferOrderService.update(transferOrderUo)
+        try {
+            val state = if (transferResp.transfer) TransferState.Successful else TransferState.Fail
+            val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = state)
+            transferOrderService.update(transferOrderUo)
+        } catch (e: Exception) {
+            log.error("可能造成死锁， Center => ${platformMember.platform}, 用户: username, 订单Id：$transferOrderId")
+        }
 
         return transferResp
     }
@@ -337,13 +342,17 @@ open class TransferUtil(
         }
 
         // 更新转账订单
-        val transferState = if (transferResp.transfer) TransferState.Successful else TransferState.Fail
-        val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = transferState)
-        transferOrderService.update(transferOrderUo)
+        try {
+            val transferState = if (transferResp.transfer) TransferState.Successful else TransferState.Fail
+            val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = transferState)
+            transferOrderService.update(transferOrderUo)
 
-        // 清空平台用户优惠信息
-        if (transferResp.transfer)
-            platformMemberService.cleanTransferIn(memberId = memberId, platform = platform, transferOutAmount = amount)
+            // 清空平台用户优惠信息
+            if (transferResp.transfer)
+                platformMemberService.cleanTransferIn(memberId = memberId, platform = platform, transferOutAmount = amount)
+        } catch (e: Exception) {
+            log.error("可能造成死锁，${platformMember.platform} => Center, 用户: username, 订单Id：$transferOrderId")
+        }
 
         return transferResp
     }
