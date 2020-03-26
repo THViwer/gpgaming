@@ -179,11 +179,11 @@ class ReportServiceImpl(
 
 
         // 充值报表
-        val depositReports = depositDao.report(startDate = startDate, endDate = endDate)
+        val depositReports = depositDao.reportByClient(startDate = startDate, endDate = endDate)
         val depositReportMap = depositReports.map { it.clientId to it }.toMap()
 
         // 取款报表
-        val withdrawReports = withdrawDao.report(startDate = startDate, endDate = endDate)
+        val withdrawReports = withdrawDao.reportByClient(startDate = startDate, endDate = endDate)
         val withdrawReportMap = withdrawReports.map { it.clientId to it }.toMap()
 
         // 会员报表
