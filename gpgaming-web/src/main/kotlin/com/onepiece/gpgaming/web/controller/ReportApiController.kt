@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.beans.value.database.PromotionDailyReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPlatformReportWebVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberReportWebVo
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionReportValue
+import com.onepiece.gpgaming.beans.value.internet.web.ReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.core.service.ClientDailyReportService
 import com.onepiece.gpgaming.core.service.ClientPlatformDailyReportService
@@ -60,7 +61,7 @@ class ReportApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "memberId") memberId: Int
-    ): List<MemberPlatformReportWebVo> {
+    ): ReportValue.MemberTotalReport {
 
         val clientId = getClientId()
 //        val memberId = memberService.findByUsername(username)?.id?: return emptyList()
@@ -74,18 +75,20 @@ class ReportApiController(
         }
 
         val data = history.plus(todayData)
-        if (data.isEmpty()) return emptyList()
+        if (data.isEmpty()) return ReportValue.MemberTotalReport.empty()
 
         val ids = data.map { it.memberId }.toList()
         val members = memberService.findByIds(ids).map { it.id to it }.toMap()
 
-        return data.map {
+        val list = data.map {
             val member = members[it.memberId] ?: error(OnePieceExceptionCode.DATA_FAIL)
             with(it) {
                 MemberPlatformReportWebVo(day = day, clientId = clientId, memberId = member.id, username = member.username, platform = platform,
                         transferIn = transferIn, transferOut = transferOut)
             }
         }.sortedByDescending { it.day }
+
+        return ReportValue.MemberTotalReport(list)
     }
 
     @GetMapping("/member")
@@ -93,7 +96,7 @@ class ReportApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "username", required = false) username: String?
-    ): List<MemberReportWebVo> {
+    ): ReportValue.MemberTotalDetailReport {
         val clientId = getClientId()
 
         val memberId = memberService.findByUsername(clientId, username)?.id
@@ -107,12 +110,12 @@ class ReportApiController(
         }
 
         val data = history.plus(todayData)
-        if (data.isEmpty()) return emptyList()
+        if (data.isEmpty()) return ReportValue.MemberTotalDetailReport(emptyList())
 
         val ids = data.map { it.memberId }.toList()
         val members = memberService.findByIds(ids).map { it.id to it }.toMap()
 
-        return data.map {
+        val list =  data.map {
             val member = members[it.memberId] ?: error(OnePieceExceptionCode.DATA_FAIL)
             with(it) {
                 MemberReportWebVo(day = day, clientId = clientId, memberId = member.id, username = member.username,
@@ -121,13 +124,15 @@ class ReportApiController(
             }
         }.sortedByDescending { it.day }
 
+        return ReportValue.MemberTotalDetailReport(list)
+
     }
 
     @GetMapping("/client/platform")
     override fun clientPlatformDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
-    ): List<ClientPlatformDailyReport> {
+    ): ReportValue.CPTotalReport {
         val clientId = getClientId()
 
         val query = ClientReportQuery(clientId = clientId, startDate = startDate, endDate = endDate)
@@ -137,14 +142,15 @@ class ReportApiController(
             reportService.startClientPlatformReport(clientId = clientId, startDate = LocalDate.now())
         }
 
-        return clientPlatformDailyReportService.query(query).plus(todayData).sortedByDescending { it.day }
+        val data = clientPlatformDailyReportService.query(query).plus(todayData).sortedByDescending { it.day }
+        return ReportValue.CPTotalReport(data)
     }
 
     @GetMapping("/client")
     override fun clientDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
-    ): List<ClientDailyReport> {
+    ): ReportValue.CTotalReport {
         val clientId = getClientId()
 
         val query = ClientReportQuery(clientId = clientId, startDate = startDate, endDate = endDate)
@@ -154,22 +160,23 @@ class ReportApiController(
             reportService.startClientReport(clientId = clientId, startDate = LocalDate.now())
         }
 
-        return clientDailyReportService.query(query).plus(todayData).sortedByDescending { it.day }
+        val data = clientDailyReportService.query(query).plus(todayData).sortedByDescending { it.day }
+        return ReportValue.CTotalReport(data)
     }
 
     @GetMapping("/promotion")
     override fun promotionDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
-    ): List<PromotionReportValue.PromotionReportVo> {
+    ): ReportValue.PromotionTotalReport {
         val query = PromotionDailyReportValue.Query(clientId = current().clientId, startDate = startDate, endDate = endDate)
         val list =  promotionDailyReportService.query(query)
 
-        if (list.isEmpty()) return emptyList()
+        if (list.isEmpty()) return ReportValue.PromotionTotalReport(emptyList())
 
         val promotions = promotionService.all(clientId = getClientId()).map { it.id to it }.toMap()
 
-        return list.map {
+        val data = list.map {
             with(it) {
                 PromotionReportValue.PromotionReportVo(clientId = clientId, day = day, promotionId = promotionId,
                         promotionAmount = promotionAmount, createdTime = createdTime, status = status,
@@ -177,6 +184,7 @@ class ReportApiController(
             }
         }
 
+        return ReportValue.PromotionTotalReport(data)
 
     }
 
@@ -185,9 +193,10 @@ class ReportApiController(
             @RequestParam("promotionId") promotionId: Int,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
-    ): List<PromotionPlatformDailyReport> {
+    ): ReportValue.PromotionCTotalReport {
         val query = PromotionDailyReportValue.PlatformQuery(clientId = current().clientId, promotionId = promotionId, startDate = startDate, endDate = endDate)
-        return promotionPlatformDailyReportService.query(query)
+        val data = promotionPlatformDailyReportService.query(query)
+        return ReportValue.PromotionCTotalReport(data)
     }
 
     @GetMapping("/promotion/detail")
@@ -196,7 +205,7 @@ class ReportApiController(
             @RequestParam("username", required = false) username: String?,
             @RequestParam("sortBy") sortBy: String,
             @RequestParam("desc") desc: Boolean
-    ): List<TransferOrder> {
+    ): ReportValue.PromotionMTotalReport {
 
         when (sortBy) {
             "created_time",
@@ -211,6 +220,8 @@ class ReportApiController(
         val dbSort = "$sortBy ${if (desc) "desc" else "asc"}"
 
         val query = TransferOrderValue.Query(clientId = this.getClientId(), promotionId = promotionId, from = null, sortBy = dbSort, username = username)
-        return transferOrderService.query(query)
+        val data =  transferOrderService.query(query)
+
+        return ReportValue.PromotionMTotalReport(data)
     }
 }

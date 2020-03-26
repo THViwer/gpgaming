@@ -2,12 +2,11 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
-import com.onepiece.gpgaming.beans.model.PromotionDailyReport
 import com.onepiece.gpgaming.beans.model.PromotionPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.TransferOrder
-import com.onepiece.gpgaming.beans.value.internet.web.MemberPlatformReportWebVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberReportWebVo
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionReportValue
+import com.onepiece.gpgaming.beans.value.internet.web.ReportValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
@@ -22,39 +21,39 @@ interface ReportApi {
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "memberId") memberId: Int
-    ): List<MemberPlatformReportWebVo>
+    ): ReportValue.MemberTotalReport
 
     @ApiOperation(tags = ["report"], value = "会员报表")
     fun memberDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "username", required = false) username: String?
-    ): List<MemberReportWebVo>
+    ): ReportValue.MemberTotalDetailReport
 
     @ApiOperation(tags = ["report"], value = "厅主平台报表")
     fun clientPlatformDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
-    ): List<ClientPlatformDailyReport>
+    ): ReportValue.CPTotalReport
 
     @ApiOperation(tags = ["report"], value = "厅主报表")
     fun clientDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
-    ): List<ClientDailyReport>
+    ): ReportValue.CTotalReport
 
     @ApiOperation(tags = ["report"], value = "优惠活动日报表")
     fun promotionDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
-    ): List<PromotionReportValue.PromotionReportVo>
+    ): ReportValue.PromotionTotalReport
 
     @ApiOperation(tags = ["report"], value = "优惠活动日报表详情")
     fun promotionPlatformDaily(
             @RequestParam("promotionId") promotionId: Int,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
-    ): List<PromotionPlatformDailyReport>
+    ): ReportValue.PromotionCTotalReport
 
     @ApiOperation(tags = ["report"], value = "优惠活动人员详情")
     fun promotionDetail(
@@ -62,6 +61,6 @@ interface ReportApi {
             @RequestParam("username", required = false) username: String?,
             @RequestParam("sortBy") sortBy: String,
             @RequestParam("desc") desc: Boolean
-    ): List<TransferOrder>
+    ): ReportValue.PromotionMTotalReport
 
 }

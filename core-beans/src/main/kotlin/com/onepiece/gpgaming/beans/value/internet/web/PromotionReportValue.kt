@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
-import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
 import java.time.LocalDate
