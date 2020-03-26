@@ -48,7 +48,7 @@ class ReportApiController(
 ) : BasicController(), ReportApi {
 
     private fun <T> includeToday(endDate: LocalDate, function: () -> List<T>): List<T> {
-        val isToday = LocalDate.now().until(endDate, ChronoUnit.DAYS) >= 0
+        val isToday = LocalDate.now().plusDays(1).until(endDate, ChronoUnit.DAYS) >= 0
         return if (isToday) {
             function()
         } else emptyList()
