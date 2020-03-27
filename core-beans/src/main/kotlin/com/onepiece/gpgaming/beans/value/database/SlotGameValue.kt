@@ -40,6 +40,9 @@ sealed class SlotGameValue {
             // 英文logo
             val elogo: String,
 
+            // 序列
+            val sequence: Int,
+
             // 状态
             val status: Status
     )
@@ -79,6 +82,9 @@ sealed class SlotGameValue {
 
             // 英文logo
             val elogo: String?,
+
+            // 序列
+            val sequence: Int,
 
             // 状态
             val status: Status?

@@ -31,13 +31,15 @@ class SlotGameDaoImpl : BasicDaoImpl<SlotGame>("slot_game"), SlotGameDao {
             val elogo = rs.getString("elogo")
 
             val status = rs.getString("status").let{ Status.valueOf(it) }
+            val sequence = rs.getInt("sequence")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             SlotGame(id = id, platform = platform, gameId = gameId, status = status, createdTime = createdTime, category = category,
-                    hot = hot, new = new, cname = cname, ename = ename, clogo = clogo, elogo = elogo, launchs = launchs)
+                    hot = hot, new = new, cname = cname, ename = ename, clogo = clogo, elogo = elogo, launchs = launchs, sequence = sequence)
         }
 
     override fun findByPlatform(platform: Platform): List<SlotGame> {
         return query().where("platform", platform)
+                .sort("sequence asc")
                 .execute(mapper)
     }
 
@@ -53,6 +55,7 @@ class SlotGameDaoImpl : BasicDaoImpl<SlotGame>("slot_game"), SlotGameDao {
                 .set("ename", slotGameCo.ename)
                 .set("clogo", slotGameCo.clogo)
                 .set("elogo", slotGameCo.elogo)
+                .set("sequence", slotGameCo.sequence)
                 .set("status", slotGameCo.status)
                 .executeOnlyOne()
     }
@@ -69,6 +72,7 @@ class SlotGameDaoImpl : BasicDaoImpl<SlotGame>("slot_game"), SlotGameDao {
                 .set("ename", slotGameUo.ename)
                 .set("clogo", slotGameUo.clogo)
                 .set("elogo", slotGameUo.elogo)
+                .set("sequence", slotGameUo.sequence)
                 .set("status", slotGameUo.status)
                 .where("id", slotGameUo.id)
                 .executeOnlyOne()
