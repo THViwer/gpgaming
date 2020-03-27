@@ -74,14 +74,14 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
     override fun mReport(startDate: LocalDate): List<ArtificialReportVo> {
 
         return query("client_id, member_id, sum(balance) as total_amount, count(id) as count")
-                .asWhere("create_time >= ?", startDate)
-                .asWhere("create_time < ?", startDate.plusDays(1))
+                .asWhere("created_time >= ?", startDate)
+                .asWhere("created_time < ?", startDate.plusDays(1))
                 .group("client_id, member_id")
                 .execute { rs ->
 
                     val clientId = rs.getInt("client_id")
                     val memberId = rs.getInt("member_id")
-                    val totalAmount = rs.getBigDecimal("amount")
+                    val totalAmount = rs.getBigDecimal("total_amount")
                     val count = rs.getInt("count")
 
                     ArtificialReportVo(clientId = clientId, memberId = memberId, totalAmount = totalAmount, count = count)
@@ -90,13 +90,13 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
 
     override fun cReport(startDate: LocalDate): List<ArtificialCReportVo> {
         return query("client_id, sum(balance) as total_amount, count(id) as count")
-                .asWhere("create_time >= ?", startDate)
-                .asWhere("create_time < ?", startDate.plusDays(1))
+                .asWhere("created_time >= ?", startDate)
+                .asWhere("created_time < ?", startDate.plusDays(1))
                 .group("client_id")
                 .execute { rs ->
 
                     val clientId = rs.getInt("client_id")
-                    val totalAmount = rs.getBigDecimal("amount")
+                    val totalAmount = rs.getBigDecimal("total_amount")
                     val count = rs.getInt("count")
 
                     ArtificialCReportVo(clientId = clientId, totalAmount = totalAmount, count = count)

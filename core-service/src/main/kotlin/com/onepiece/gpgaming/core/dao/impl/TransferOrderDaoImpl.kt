@@ -130,7 +130,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
 
     override fun clientReport(query: TransferReportQuery): List<ClientTransferReportVo> {
 
-        return query("client_id, member_id, sum(money) as money, sum(promotion_amount) as promotion_amount")
+        return query("client_id, sum(money) as money, sum(promotion_amount) as promotion_amount")
                 .asWhere("created_time >= ?", query.startDate)
                 .asWhere("created_time < ?", query.endDate)
                 .where("state", TransferState.Successful)
