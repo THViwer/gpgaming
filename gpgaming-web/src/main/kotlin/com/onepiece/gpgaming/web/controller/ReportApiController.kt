@@ -1,11 +1,10 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.onepiece.gpgaming.beans.enums.I18nConfig
+import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.gpgaming.beans.model.ClientDailyReport
-import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
-import com.onepiece.gpgaming.beans.model.PromotionDailyReport
-import com.onepiece.gpgaming.beans.model.PromotionPlatformDailyReport
-import com.onepiece.gpgaming.beans.model.TransferOrder
+import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.value.database.ClientReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.PromotionDailyReportValue
@@ -16,6 +15,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.ReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.core.service.ClientDailyReportService
 import com.onepiece.gpgaming.core.service.ClientPlatformDailyReportService
+import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.MemberDailyReportService
 import com.onepiece.gpgaming.core.service.MemberPlatformDailyReportService
 import com.onepiece.gpgaming.core.service.MemberService
@@ -45,7 +45,9 @@ class ReportApiController(
         private val promotionDailyReportService: PromotionDailyReportService,
         private val promotionPlatformDailyReportService: PromotionPlatformDailyReportService,
         private val transferOrderService: TransferOrderService,
-        private val promotionService: PromotionService
+        private val promotionService: PromotionService,
+        private val i18nContentService: I18nContentService,
+        private val objectMapper: ObjectMapper
 ) : BasicController(), ReportApi {
 
     private fun <T> includeToday(endDate: LocalDate, function: () -> List<T>): List<T> {
@@ -176,11 +178,20 @@ class ReportApiController(
 
         val promotions = promotionService.all(clientId = getClientId()).map { it.id to it }.toMap()
 
+        val i18nMap = i18nContentService.getConfigType(clientId = getClientId(), configType = I18nConfig.Promotion)
+                .filter { it.language == Language.EN }
+                .map { it.configId to it }
+                .toMap()
+
         val data = list.map {
             with(it) {
+                val promotionTitle = if (i18nMap[promotionId] != null) {
+                    (i18nMap[promotionId]?.getII18nContent(objectMapper = objectMapper) as I18nContent.PromotionI18n).title
+                } else ""
                 PromotionReportValue.PromotionReportVo(clientId = clientId, day = day, promotionId = promotionId,
                         promotionAmount = promotionAmount, createdTime = createdTime, status = status,
-                        promotionPlatforms = promotions[promotionId]?.platforms?.joinToString(separator = ",")?: "")
+                        promotionPlatforms = promotions[promotionId]?.platforms?.joinToString(separator = ",")?: "",
+                        promotionTitle = promotionTitle)
             }
         }
 
