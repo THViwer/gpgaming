@@ -14,6 +14,9 @@ sealed class PromotionReportValue {
             // 日期
             val day: LocalDate,
 
+            // 优惠标题
+            val promotionTitle: String,
+
             // 优惠Id
             val promotionId: Int,
 
