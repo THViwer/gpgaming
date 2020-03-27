@@ -54,7 +54,7 @@ data class SlotGame(
         val status: Status,
 
         // 排序字段
-        val sequence: Int,
+        val sequence: Int = 100,
 
         // 创建时间
         val createdTime: LocalDateTime
