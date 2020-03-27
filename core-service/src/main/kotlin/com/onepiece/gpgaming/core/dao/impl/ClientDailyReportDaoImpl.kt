@@ -24,13 +24,15 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
             val withdrawMoney = rs.getBigDecimal("withdraw_money")
             val withdrawCount = rs.getInt("withdraw_count")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
+            val artificialMoney = rs.getBigDecimal("artificial_money")
+            val artificialCount = rs.getInt("artificial_count")
             val newMemberCount = rs.getInt("new_member_count")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val status = rs.getString("status").let { Status.valueOf(it) }
             ClientDailyReport(id = id, day = day, clientId = clientId, transferIn = transferIn, transferOut = transferOut,
                     depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
                     withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
-                    promotionAmount = promotionAmount, status = status)
+                    promotionAmount = promotionAmount, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount)
         }
 
     override fun create(reports: List<ClientDailyReport>) {
@@ -44,6 +46,8 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                 .set("withdraw_money")
                 .set("withdraw_count")
                 .set("promotion_amount")
+                .set("artificial_money")
+                .set("artificial_count")
                 .set("new_member_count")
                 .execute { ps, entity ->
                     var x = 0
@@ -56,6 +60,8 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     ps.setBigDecimal(++x, entity.withdrawMoney)
                     ps.setInt(++x, entity.withdrawCount)
                     ps.setBigDecimal(++x, entity.promotionAmount)
+                    ps.setBigDecimal(++x, entity.artificialMoney)
+                    ps.setInt(++x, entity.artificialCount)
                     ps.setInt(++x, entity.newMemberCount)
                 }
     }

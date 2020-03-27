@@ -173,3 +173,15 @@ data class ArtificialReportVo(
         // 总次数
         val count: Int
 )
+
+data class ArtificialCReportVo(
+
+        // 业主Id
+        val clientId: Int,
+
+        // 总金额
+        val totalAmount: BigDecimal,
+
+        // 总次数
+        val count: Int
+)

@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.core.dao.impl
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
+import com.onepiece.gpgaming.beans.value.database.ArtificialCReportVo
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderCo
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderQuery
 import com.onepiece.gpgaming.beans.value.database.ArtificialReportVo
@@ -84,10 +85,21 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
                     val count = rs.getInt("count")
 
                     ArtificialReportVo(clientId = clientId, memberId = memberId, totalAmount = totalAmount, count = count)
-
                 }
-
     }
 
+    override fun cReport(startDate: LocalDate): List<ArtificialCReportVo> {
+        return query("client_id, sum(balance) as total_amount, count(id) as count")
+                .asWhere("create_time >= ?", startDate)
+                .asWhere("create_time < ?", startDate.plusDays(1))
+                .group("client_id")
+                .execute { rs ->
 
+                    val clientId = rs.getInt("client_id")
+                    val totalAmount = rs.getBigDecimal("amount")
+                    val count = rs.getInt("count")
+
+                    ArtificialCReportVo(clientId = clientId, totalAmount = totalAmount, count = count)
+                }
+    }
 }

@@ -42,6 +42,12 @@ data class ClientDailyReport(
         // 取款次数
         val withdrawCount: Int,
 
+        // 人工提存金锭
+        val artificialMoney: BigDecimal,
+
+        // 人工提存次数
+        val artificialCount: Int,
+
         // 今日新增用户
         val newMemberCount: Int,
 

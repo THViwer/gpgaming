@@ -21,13 +21,18 @@ class MemberDailyReportDaoImpl : BasicDaoImpl<MemberDailyReport>("member_daily_r
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
             val depositMoney = rs.getBigDecimal("deposit_money")
+            val depositCount = rs.getInt("deposit_count")
             val withdrawMoney = rs.getBigDecimal("withdraw_money")
+            val withdrawCount = rs.getInt("withdraw_count")
+            val artificialMoney = rs.getBigDecimal("artificial_money")
+            val artificialCount = rs.getInt("artificial_count")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val status = rs.getString("status").let { Status.valueOf(it) }
 
             MemberDailyReport(id = id, day = day, clientId = clientId, memberId = memberId,
                     transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney,
-                    createdTime = createdTime, status = status)
+                    createdTime = createdTime, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
+                    depositCount = depositCount, withdrawCount = withdrawCount)
         }
 
     override fun create(reports: List<MemberDailyReport>) {
@@ -39,7 +44,11 @@ class MemberDailyReportDaoImpl : BasicDaoImpl<MemberDailyReport>("member_daily_r
                 .set("transfer_in")
                 .set("transfer_out")
                 .set("deposit_money")
+                .set("deposit_count")
                 .set("withdraw_money")
+                .set("withdraw_count")
+                .set("artificial_money")
+                .set("artificial_count")
                 .execute { ps, entity ->
                     var index = 0
                     ps.setDate(++index, Date.valueOf(entity.day))
@@ -48,7 +57,11 @@ class MemberDailyReportDaoImpl : BasicDaoImpl<MemberDailyReport>("member_daily_r
                     ps.setBigDecimal(++index, entity.transferIn)
                     ps.setBigDecimal(++index, entity.transferOut)
                     ps.setBigDecimal(++index, entity.depositMoney)
+                    ps.setInt(++index, entity.depositCount)
                     ps.setBigDecimal(++index, entity.withdrawMoney)
+                    ps.setInt(++index, entity.withdrawCount)
+                    ps.setBigDecimal(++index, entity.artificialMoney)
+                    ps.setInt(++index, entity.artificialCount)
                 }
 
     }

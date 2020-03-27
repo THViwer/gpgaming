@@ -77,13 +77,14 @@ class ReportServiceImpl(
         val withdrawReportMap = withdrawReports.map { it.memberId to it }.toMap()
 
         // 人工提存
-        //TODO
-        artificialOrderDao.create()
+        val mArtificialReports = artificialOrderDao.mReport(startDate = startDate)
+        val mArtificialReportMap = mArtificialReports.map { it.memberId to it }.toMap()
 
         val memberIdSet = transferInReports.asSequence().map { it.memberId }
                 .plus(transferOutReports.map { it.memberId })
                 .plus(depositReports.map { it.memberId })
                 .plus(withdrawReports.map { it.memberId })
+                .plus(mArtificialReports.map { it.memberId })
                 .toSet()
 
         return memberIdSet.map {
@@ -92,6 +93,7 @@ class ReportServiceImpl(
             val transferOutReport = transferOutMap[it]
             val depositReport = depositReportMap[it]
             val withdrawReport = withdrawReportMap[it]
+            val artificialReport = mArtificialReportMap[it]
 
 
             val clientId = when {
@@ -104,7 +106,7 @@ class ReportServiceImpl(
             MemberDailyReport(id = -1, day = startDate, clientId = clientId, memberId = it, transferIn = transferInReport?.money ?: BigDecimal.ZERO,
                     transferOut = transferOutReport?.money ?: BigDecimal.ZERO, depositMoney = depositReport?.money ?: BigDecimal.ZERO,
                     withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO, createdTime = now, status = Status.Normal, depositCount = depositReport?.count?:0,
-                    withdrawCount = withdrawReport?.count?: 0)
+                    withdrawCount = withdrawReport?.count?: 0, artificialMoney = artificialReport?.totalAmount?: BigDecimal.ZERO, artificialCount = artificialReport?.count?: 0)
         }
     }
 
@@ -195,10 +197,15 @@ class ReportServiceImpl(
         // 会员报表
         val memberReportMap = memberDao.report(clientId = clientId, startDate = startDate, endDate = endDate)
 
+        // 人工提存报表
+        val artificialReports = artificialOrderDao.mReport(startDate = startDate)
+        val artificialReportMap = artificialReports.map { it.clientId to it }.toMap()
+
         val clientIds = transferInReports.asSequence().map { it.clientId }
                 .plus(transferOutReports.map { it.clientId })
                 .plus(depositReports.map { it.clientId })
                 .plus(withdrawReports.map { it.clientId })
+                .plus(artificialReports.map { it.clientId })
                 .toSet()
 
         return clientIds.map {
@@ -208,6 +215,7 @@ class ReportServiceImpl(
             val depositReport = depositReportMap[it]
             val withdrawReport = withdrawReportMap[it]
             val newMemberCount = memberReportMap[it]?: 0
+            val artificialReport = artificialReportMap[it]
 
             val promotionAmount = transferOutReport?.promotionAmount?: BigDecimal.ZERO
 
@@ -215,6 +223,7 @@ class ReportServiceImpl(
                     transferOut = transferOutReport?.transferOut ?: BigDecimal.ZERO, depositMoney = depositReport?.money ?: BigDecimal.ZERO,
                     depositCount = depositReport?.count ?: 0, withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO,
                     withdrawCount = withdrawReport?.count ?: 0, newMemberCount = newMemberCount, createdTime = now,
+                    artificialMoney = artificialReport?.totalAmount?: BigDecimal.ZERO, artificialCount = artificialReport?.count?: 0,
                     promotionAmount = promotionAmount, status = Status.Normal)
         }
     }

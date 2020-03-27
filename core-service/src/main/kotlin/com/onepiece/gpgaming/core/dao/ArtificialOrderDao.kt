@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao
 
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
+import com.onepiece.gpgaming.beans.value.database.ArtificialCReportVo
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderCo
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderQuery
 import com.onepiece.gpgaming.beans.value.database.ArtificialReportVo
@@ -16,5 +17,7 @@ interface ArtificialOrderDao: BasicDao<ArtificialOrder> {
     fun create(artificialOrder: ArtificialOrderCo): Boolean
 
     fun mReport(startDate: LocalDate): List<ArtificialReportVo>
+
+    fun cReport(startDate: LocalDate): List<ArtificialCReportVo>
 
 }
