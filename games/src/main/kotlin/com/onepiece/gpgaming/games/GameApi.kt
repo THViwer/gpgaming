@@ -177,6 +177,7 @@ class GameApi(
                         throw e
                     } else {
                         // NOTHING
+                        throw e
                     }
                 }
             }
