@@ -73,7 +73,7 @@ class DefaultRedisService(
     }
 
     override fun lock(key: String, error: (() -> Unit)?, function: () -> Unit) {
-        val flag = redisTemplate.opsForValue().getAndSet(key, "true") == "true"
+        val flag = redisTemplate.opsForValue().getAndSet(key, "true") != "true"
 
         try {
             redisTemplate.expire(key, 60, TimeUnit.SECONDS)

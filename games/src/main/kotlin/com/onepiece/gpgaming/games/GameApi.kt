@@ -143,9 +143,8 @@ class GameApi(
     /**
      * 注册账号
      */
-    @Synchronized
-    @Transactional(rollbackFor = [NoRollbackException::class])
     fun register(clientId: Int, memberId: Int, platform: Platform, name: String) {
+        log.info("lock redis key = ${clientId}:$memberId:$platform}")
         redisService.lock(key = "register:${clientId}:$memberId:$platform", error = {
             log.error("注册账号：register:${clientId}:$memberId:$platform, 已被锁定")
             Thread.sleep(2000)
