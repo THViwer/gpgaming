@@ -48,6 +48,8 @@ class PlatformMemberServiceImpl(
         val has = this.findPlatformMember(memberId = memberId).firstOrNull{ it.platform == platform }
         log.info("开始创建db用户：是否已存在已有用户：$has")
         if (has != null ) {
+            redisService.delete(OnePieceRedisKeyConstant.myPlatformMembers(memberId))
+
             return with(has) {
                 PlatformMemberVo(id = id, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = platformPassword)
             }
