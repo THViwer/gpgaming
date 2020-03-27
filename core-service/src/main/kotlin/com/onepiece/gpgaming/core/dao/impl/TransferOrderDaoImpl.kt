@@ -34,6 +34,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
             val promotionAmount = rs.getBigDecimal("promotion_amount")
             val joinPromotionId = rs.getInt("join_promotion_id")
             val promotionJson = rs.getString("promotion_json")
+            val transferOutAmount = rs.getBigDecimal("transfer_out_amount")
             val from = rs.getString("from").let { Platform.valueOf(it) }
             val to = rs.getString("to").let { Platform.valueOf(it) }
             val state = rs.getString("state").let { TransferState.valueOf(it) }
@@ -43,7 +44,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
 
             TransferOrder(orderId = orderId, clientId = clientId, memberId = memberId, money = money, promotionAmount = promotionAmount,
                     from = from, to = to, state = state, createdTime = createdTime, updatedTime = updatedTime, joinPromotionId = joinPromotionId,
-                    promotionJson = promotionJson, username = username, status = status)
+                    promotionJson = promotionJson, username = username, status = status, transferOutAmount = transferOutAmount)
         }
 
     override fun create(transferOrderCo: TransferOrderCo): Boolean {
@@ -65,6 +66,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
     override fun update(transferOrderUo: TransferOrderUo): Boolean {
         return update()
                 .set("state", transferOrderUo.state)
+                .set("transfer_out_amount", transferOrderUo.transferOutAmount)
                 .where("order_id", transferOrderUo.orderId)
                 .executeOnlyOne()
     }

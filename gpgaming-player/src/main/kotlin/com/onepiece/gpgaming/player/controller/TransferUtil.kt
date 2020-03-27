@@ -43,7 +43,7 @@ interface ITransferUtil {
 
     fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo?
 
-    fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal): Boolean
+    fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal, transferOutAmount: BigDecimal): Boolean
 }
 
 
@@ -216,7 +216,7 @@ open class TransferUtil(
         // 更新转账订单
         try {
             val state = if (transferResp.transfer) TransferState.Successful else TransferState.Fail
-            val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = state)
+            val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = state, transferOutAmount = null)
             transferOrderService.update(transferOrderUo)
         } catch (e: Exception) {
             log.error("可能造成死锁， Center => ${platformMember.platform}, 用户: username, 订单Id：$transferOrderId")
@@ -245,7 +245,7 @@ open class TransferUtil(
         if (platformMember.joinPromotionId != null) {
             val promotion = promotionService.get(platformMember.joinPromotionId!!)
             // 是否满足清空优惠活动
-            val cleanState = this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember)
+            val cleanState = this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember, transferOutAmount = BigDecimal.ZERO)
             check(cleanState) { OnePieceExceptionCode.PLATFORM_HAS_BALANCE_PROMOTION_FAIL }
         }
 
@@ -273,7 +273,7 @@ open class TransferUtil(
     /**
      * 检查是否清空优惠活动信息
      */
-    override fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal): Boolean {
+    override fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal, transferOutAmount: BigDecimal): Boolean {
 
         val state = when{
             platformBalance.toDouble() <= promotion.rule.ignoreTransferOutAmount.toDouble() -> true
@@ -289,6 +289,11 @@ open class TransferUtil(
 
         if (state) {
             //TODO 记录clean事件 本次优惠使用多少打码量等
+
+            // 记录本次优惠内转出多少钱
+            transferOrderService.logPromotionEnd(clientId =  promotion.clientId, memberId = platformMember.memberId, promotionId = promotion.id, transferOutAmount = transferOutAmount)
+
+            // 清理平台会员优惠信息
             platformMemberService.cleanTransferIn(memberId = platformMember.memberId, platform = platformMember.platform)
         }
 
@@ -312,7 +317,7 @@ open class TransferUtil(
         // 判断是否满足转出条件
         if (platformMember.joinPromotionId != null) {
             val promotion = promotionService.get(platformMember.joinPromotionId!!)
-            val checkState = this.checkCleanPromotion(promotion = promotion, platformMember = platformMember, platformBalance = platformBalance)
+            val checkState = this.checkCleanPromotion(promotion = promotion, platformMember = platformMember, platformBalance = platformBalance, transferOutAmount = amount)
             check(checkState) { OnePieceExceptionCode.PLATFORM_TO_CENTER_FAIL }
         }
 
@@ -344,7 +349,7 @@ open class TransferUtil(
         // 更新转账订单
         try {
             val transferState = if (transferResp.transfer) TransferState.Successful else TransferState.Fail
-            val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = transferState)
+            val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = transferState, transferOutAmount = null)
             transferOrderService.update(transferOrderUo)
 
             // 清空平台用户优惠信息
