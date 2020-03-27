@@ -30,8 +30,14 @@ data class MemberDailyReport(
         // 转出金额
         val transferOut: BigDecimal,
 
+        // 存款次数
+        val depositCount: Int,
+
         // 充值金额
         val depositMoney: BigDecimal,
+
+        // 取款次数
+        val withdrawCount: Int,
 
         // 取款金额
         val withdrawMoney: BigDecimal,

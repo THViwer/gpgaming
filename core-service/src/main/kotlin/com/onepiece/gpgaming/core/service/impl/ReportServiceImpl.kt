@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
+import com.onepiece.gpgaming.core.dao.ArtificialOrderDao
 import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
@@ -25,7 +26,8 @@ class ReportServiceImpl(
         private val depositDao: DepositDao,
         private val withdrawDao: WithdrawDao,
         private val memberDao: MemberDao,
-        private val betOrderService: BetOrderService
+        private val betOrderService: BetOrderService,
+        private val artificialOrderDao: ArtificialOrderDao
 ) : ReportService {
 
     override fun startMemberPlatformDailyReport(memberId: Int?, startDate: LocalDate): List<MemberPlatformDailyReport> {
@@ -66,7 +68,6 @@ class ReportServiceImpl(
         val transferOutReports = transferOrderDao.memberReport(transferOutQuery)
         val transferOutMap = transferOutReports.map { it.memberId to it }.toMap()
 
-
         // 充值报表
         val depositReports = depositDao.report(startDate = startDate, endDate = endDate)
         val depositReportMap = depositReports.map { it.memberId to it }.toMap()
@@ -74,6 +75,10 @@ class ReportServiceImpl(
         // 取款报表
         val withdrawReports = withdrawDao.report(startDate = startDate, endDate = endDate)
         val withdrawReportMap = withdrawReports.map { it.memberId to it }.toMap()
+
+        // 人工提存
+        //TODO
+        artificialOrderDao.create()
 
         val memberIdSet = transferInReports.asSequence().map { it.memberId }
                 .plus(transferOutReports.map { it.memberId })
@@ -98,7 +103,8 @@ class ReportServiceImpl(
             }
             MemberDailyReport(id = -1, day = startDate, clientId = clientId, memberId = it, transferIn = transferInReport?.money ?: BigDecimal.ZERO,
                     transferOut = transferOutReport?.money ?: BigDecimal.ZERO, depositMoney = depositReport?.money ?: BigDecimal.ZERO,
-                    withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO, createdTime = now, status = Status.Normal)
+                    withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO, createdTime = now, status = Status.Normal, depositCount = depositReport?.count?:0,
+                    withdrawCount = withdrawReport?.count?: 0)
         }
     }
 
