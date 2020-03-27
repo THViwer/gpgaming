@@ -5,10 +5,12 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderCo
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderQuery
+import com.onepiece.gpgaming.beans.value.database.ArtificialReportVo
 import com.onepiece.gpgaming.core.dao.ArtificialOrderDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
+import java.time.LocalDate
 
 @Repository
 class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order"), ArtificialOrderDao {
@@ -67,4 +69,25 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
                 .set("remarks", artificialOrder.remarks)
                 .executeOnlyOne()
     }
+
+    override fun mReport(startDate: LocalDate): List<ArtificialReportVo> {
+
+        return query("client_id, member_id, sum(balance) as total_amount, count(id) as count")
+                .asWhere("create_time >= ?", startDate)
+                .asWhere("create_time < ?", startDate.plusDays(1))
+                .group("client_id, member_id")
+                .execute { rs ->
+
+                    val clientId = rs.getInt("client_id")
+                    val memberId = rs.getInt("member_id")
+                    val totalAmount = rs.getBigDecimal("amount")
+                    val count = rs.getInt("count")
+
+                    ArtificialReportVo(clientId = clientId, memberId = memberId, totalAmount = totalAmount, count = count)
+
+                }
+
+    }
+
+
 }

@@ -158,3 +158,18 @@ data class ClientTransferReportVo(
         val promotionAmount: BigDecimal
 
 )
+
+data class ArtificialReportVo(
+
+        // 业主Id
+        val clientId: Int,
+
+        // 会员Id
+        val memberId: Int,
+
+        // 总金额
+        val totalAmount: BigDecimal,
+
+        // 总次数
+        val count: Int
+)
