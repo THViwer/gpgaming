@@ -1,7 +1,9 @@
 package com.onepiece.gpgaming.player.controller.basic
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
+import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.core.service.WebSiteService
@@ -96,6 +98,8 @@ abstract class BasicController {
         val platforms = platformMemberService.myPlatforms(memberId = member.id)
         val platformMember = platforms.find { platform == it.platform }
 
+        if (code > 3) error(OnePieceExceptionCode.SYSTEM)
+
         log.info("用户名：${member.username}, 获得平台用户：$platform, code = $code")
         if (platformMember == null) {
             log.info("用户名：${member.username}, 开始注册平台用户：$platform, code = $code" + "")
@@ -104,7 +108,7 @@ abstract class BasicController {
                 gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
             }.collect(Collectors.toList())
 
-            return this.getPlatformMember(platform, member, 1)
+            return this.getPlatformMember(platform, member, code + 1)
         }
 
         return platformMember

@@ -76,7 +76,7 @@ class DefaultRedisService(
         val flag = redisTemplate.opsForValue().getAndSet(key, "true") == "true"
 
         try {
-            redisTemplate.expire(key, 60, TimeUnit.MINUTES)
+            redisTemplate.expire(key, 60, TimeUnit.SECONDS)
 
             if (flag) {
                 function()
@@ -84,7 +84,7 @@ class DefaultRedisService(
                 if (error != null) error()
             }
         } finally {
-            redisTemplate.opsForValue().set(key, "false")
+            redisTemplate.delete(key)
         }
     }
 }
