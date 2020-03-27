@@ -104,9 +104,7 @@ abstract class BasicController {
         if (platformMember == null) {
             log.info("用户名：${member.username}, 开始注册平台用户：$platform, code = $code" + "")
 
-            listOf(1).parallelStream().map {
-                gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
-            }.collect(Collectors.toList())
+            gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
 
             return this.getPlatformMember(platform, member, code + 1)
         }
