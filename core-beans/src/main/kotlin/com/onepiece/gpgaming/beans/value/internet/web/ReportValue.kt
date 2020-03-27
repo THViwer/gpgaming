@@ -64,6 +64,18 @@ sealed class ReportValue {
             get() {
                 return data.sumByDouble { it.withdrawMoney.toDouble() }.toBigDecimal().setScale(2, 2)
             }
+
+        val totalArtificialMoney: BigDecimal
+            @ApiModelProperty("总人工提存金额")
+            get() {
+                return data.sumByDouble { it.artificialMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+            }
+
+        val totalArtificialCount: Int
+            @ApiModelProperty("总人工提存次数")
+            get() {
+                return data.sumBy { it.artificialCount }
+            }
     }
 
     data class CTotalReport(
@@ -121,6 +133,17 @@ sealed class ReportValue {
                 return data.sumBy { it.newMemberCount }
             }
 
+        val totalArtificialMoney: BigDecimal
+            @ApiModelProperty("总人工提存金额")
+            get() {
+                return data.sumByDouble { it.artificialMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+            }
+
+        val totalArtificialCount: Int
+            @ApiModelProperty("总人工提存次数")
+            get() {
+                return data.sumBy { it.artificialCount }
+            }
     }
 
     data class CPTotalReport (

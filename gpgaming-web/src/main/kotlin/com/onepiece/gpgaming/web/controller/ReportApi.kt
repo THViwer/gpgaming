@@ -1,11 +1,5 @@
 package com.onepiece.gpgaming.web.controller
 
-import com.onepiece.gpgaming.beans.model.ClientDailyReport
-import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
-import com.onepiece.gpgaming.beans.model.PromotionPlatformDailyReport
-import com.onepiece.gpgaming.beans.model.TransferOrder
-import com.onepiece.gpgaming.beans.value.internet.web.MemberReportWebVo
-import com.onepiece.gpgaming.beans.value.internet.web.PromotionReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.ReportValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation

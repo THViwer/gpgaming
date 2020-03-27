@@ -54,6 +54,12 @@ data class MemberReportWebVo(
         val depositMoney: BigDecimal,
 
         // 取款金额
-        val withdrawMoney: BigDecimal
+        val withdrawMoney: BigDecimal,
+
+        // 人工提存金额
+        val artificialMoney: BigDecimal,
+
+        // 人工提存次数
+        val artificialCount: Int
 
 )
