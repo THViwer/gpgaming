@@ -41,7 +41,9 @@ data class TransferOrderCo(
 data class TransferOrderUo(
         val orderId: String,
 
-        val state: TransferState
+        val state: TransferState?,
+
+        val transferOutAmount: BigDecimal?
 )
 
 data class TransferOrderReportQuery(

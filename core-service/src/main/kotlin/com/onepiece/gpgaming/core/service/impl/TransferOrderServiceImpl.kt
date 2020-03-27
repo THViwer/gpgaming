@@ -11,6 +11,7 @@ import com.onepiece.gpgaming.core.service.TransferOrderService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -29,6 +30,18 @@ class TransferOrderServiceImpl(
     override fun update(transferOrderUo: TransferOrderUo) {
         val state = transferOrderDao.update(transferOrderUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+    }
+
+    override fun logPromotionEnd(clientId: Int, memberId: Int, promotionId: Int, transferOutAmount: BigDecimal) {
+
+        val query = TransferOrderValue.Query(clientId = clientId, memberId = memberId, promotionId = promotionId, current = 0, size = 1, from = null, username = null)
+        val order = this.query(query).firstOrNull()
+
+        if (order !=  null) {
+            val transferOrderUo = TransferOrderUo(orderId = order.orderId, state = null, transferOutAmount = transferOutAmount)
+            transferOrderDao.update(transferOrderUo)
+        }
+
     }
 
     override fun query(query: TransferOrderValue.Query): List<TransferOrder> {

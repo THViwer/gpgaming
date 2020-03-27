@@ -32,6 +32,9 @@ data class TransferOrder(
         // 优惠信息
         val promotionJson: String?,
 
+        // 转出金额 如果为-1 则还没有转出
+        val transferOutAmount: BigDecimal = BigDecimal.valueOf(-1),
+
         // 转出平台
         val from: Platform,
 
