@@ -71,4 +71,20 @@ class DefaultRedisService(
         redisTemplate.delete(keys.toList())
 
     }
+
+    override fun lock(key: String, error: (() -> Unit)?, function: () -> Unit) {
+        val flag = redisTemplate.opsForValue().getAndSet(key, "true") == "true"
+
+        try {
+            redisTemplate.expire(key, 60, TimeUnit.MINUTES)
+
+            if (flag) {
+                function()
+            } else {
+                if (error != null) error()
+            }
+        } finally {
+            redisTemplate.opsForValue().set(key, "false")
+        }
+    }
 }

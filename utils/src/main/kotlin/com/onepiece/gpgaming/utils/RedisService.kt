@@ -16,4 +16,6 @@ interface RedisService {
 
     fun delete(vararg keys: String)
 
+    fun lock(key: String, error: (() -> Unit)? = null, function: () -> Unit)
+
 }

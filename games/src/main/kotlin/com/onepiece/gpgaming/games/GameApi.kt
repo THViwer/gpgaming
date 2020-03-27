@@ -40,6 +40,7 @@ import com.onepiece.gpgaming.games.sport.BcsService
 import com.onepiece.gpgaming.games.sport.CMDService
 import com.onepiece.gpgaming.games.sport.LbcService
 import com.onepiece.gpgaming.utils.RedisService
+import okhttp3.internal.lockAndWaitNanos
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -137,7 +138,6 @@ class GameApi(
 
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
-
     }
 
     /**
@@ -146,35 +146,41 @@ class GameApi(
     @Synchronized
     @Transactional(rollbackFor = [NoRollbackException::class])
     fun register(clientId: Int, memberId: Int, platform: Platform, name: String) {
-        val has = platformMemberService.find(memberId, platform)
-        if (has != null) return
+        redisService.lock(key = "register:${clientId}:$memberId:$platform", error = {
+            Thread.sleep(2000)
+        }) {
 
-        log.info("用户：$memberId, 开始注册平台:$platform 现在时间：${LocalDateTime.now()}")
+            val has = platformMemberService.find(memberId, platform)
+            if (has != null) return@lock
 
-        // 生成用户名
-        val (generatorUsername, generatorPassword) = PlatformUsernameUtil.generatorPlatformUsername(clientId = clientId, memberId = memberId, platform = platform)
+            log.info("用户：$memberId, 开始注册平台:$platform 现在时间：${LocalDateTime.now()}")
 
-        // 获得配置信息
-        val clientToken = this.getClientToken(clientId = clientId, platform = platform)
+            // 生成用户名
+            val (generatorUsername, generatorPassword) = PlatformUsernameUtil.generatorPlatformUsername(clientId = clientId, memberId = memberId, platform = platform)
 
-        // 注册账号
-        val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = name,
-                clientId = clientId, memberId = memberId)
-        val platformUsername = getPlatformApi(platform).register(registerReq)
+            // 获得配置信息
+            val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
-        try {
-            listOf(1).parallelStream().map {
-                platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
-            }.collect(Collectors.toList())
-        } catch (e: Exception) {
+            // 注册账号
+            val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = name,
+                    clientId = clientId, memberId = memberId)
+            val platformUsername = getPlatformApi(platform).register(registerReq)
 
-            if (platform == Platform.Kiss918 || platform == Platform.Pussy888) {
-                if (e.message != "java.lang.IllegalStateException: 4010" && e.message != "4010") {
-                    throw e
-                } else {
-                    // NOTHING
+            try {
+                listOf(1).parallelStream().map {
+                    platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
+                }.collect(Collectors.toList())
+            } catch (e: Exception) {
+
+                if (platform == Platform.Kiss918 || platform == Platform.Pussy888) {
+                    if (e.message != "java.lang.IllegalStateException: 4010" && e.message != "4010") {
+                        throw e
+                    } else {
+                        // NOTHING
+                    }
                 }
             }
+
         }
     }
 

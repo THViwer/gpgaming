@@ -27,4 +27,8 @@ class EmptyRedisService : RedisService {
 
     override fun delete(vararg keys: String) {
     }
+
+    override fun lock(key: String, error: (() -> Unit)?, function: () -> Unit) {
+
+    }
 }
