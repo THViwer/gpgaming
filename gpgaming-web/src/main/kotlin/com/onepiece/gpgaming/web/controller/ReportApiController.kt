@@ -122,7 +122,8 @@ class ReportApiController(
             with(it) {
                 MemberReportWebVo(day = day, clientId = clientId, memberId = member.id, username = member.username,
                         transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney,
-                        withdrawMoney = withdrawMoney, artificialMoney = artificialMoney, artificialCount = artificialCount)
+                        withdrawMoney = withdrawMoney, artificialMoney = artificialMoney, artificialCount = artificialCount,
+                        settles = it.settles, totalMWin = it.totalMWin, totalBet = it.totalBet)
             }
         }.sortedByDescending { it.day }
 

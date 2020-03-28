@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.model.BetOrder
 import com.onepiece.gpgaming.beans.value.database.BetOrderReport
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
+import com.onepiece.gpgaming.beans.value.database.BetReportValue
 import com.onepiece.gpgaming.core.dao.basic.BasicDao
 import java.time.LocalDate
 import kotlin.math.absoluteValue
@@ -37,5 +38,9 @@ interface BetOrderDao: BasicDao<BetOrder> {
     fun getLastNotMarkId(table: String): Int
 
     fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderReport>
+
+    fun mreport(startDate: LocalDate): List<BetReportValue.MBetReport>
+
+    fun creport(startDate: LocalDate): List<BetReportValue.CBetReport>
 
 }

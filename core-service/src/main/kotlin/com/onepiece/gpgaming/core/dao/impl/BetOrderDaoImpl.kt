@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.BetOrder
 import com.onepiece.gpgaming.beans.value.database.BetOrderReport
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
+import com.onepiece.gpgaming.beans.value.database.BetReportValue
 import com.onepiece.gpgaming.core.dao.BetOrderDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import org.springframework.jdbc.core.BatchPreparedStatementSetter
@@ -165,6 +166,46 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                     val totalWin = it.value.sumByDouble { it.totalWin.toDouble() }.toBigDecimal().setScale(2, 2)
                     it.value.first().copy(totalBet = totalBet, totalWin = totalWin)
                 }
+    }
 
+    override fun mreport(startDate: LocalDate): List<BetReportValue.MBetReport> {
+        return (0 until 8).map { x ->
+            query(returnColumns = "client_id, member_id, platform, sum(bet_amount) as bet, sum(win_amount) as win", defaultTable = "bet_order_$x")
+                    .asWhere("created_time >= ?", startDate)
+                    .asWhere("created_time < ?", startDate.plusDays(1))
+                    .group("client_id, member_id, platform")
+                    .execute { rs ->
+                        val clientId = rs.getInt("client_id")
+                        val memberId = rs.getInt("member_id")
+                        val platform = rs.getString("platform").let { Platform.valueOf(it) }
+                        val totalBet = rs.getBigDecimal("bet")
+                        val totalWin = rs.getBigDecimal("win")
+
+                        BetReportValue.MBetReport(clientId = clientId, memberId = memberId, platform = platform, totalBet = totalBet, totalWin = totalWin)
+                    }
+        }.reduce{ a, b -> a.plus(b) }
+    }
+
+
+    override fun creport(startDate: LocalDate): List<BetReportValue.CBetReport> {
+        return (0 until 8).map { x ->
+            query(returnColumns = "client_id, sum(bet_amount) as bet, sum(win_amount) as win", defaultTable = "bet_order_$x")
+                    .asWhere("created_time >= ?", startDate)
+                    .asWhere("created_time < ?", startDate.plusDays(1))
+                    .group("client_id")
+                    .execute { rs ->
+                        val clientId = rs.getInt("client_id")
+                        val totalBet = rs.getBigDecimal("bet")
+                        val totalWin = rs.getBigDecimal("win")
+
+                        BetReportValue.CBetReport(clientId = clientId, totalBet = totalBet, totalWin = totalWin)
+                    }
+        }.reduce{ a, b -> a.plus(b) }.groupBy { it.clientId }.values.map {
+            val clientId = it.first().clientId
+            val totalBet = it.sumByDouble { it.totalBet.toDouble() }.toBigDecimal()
+            val totalWin = it.sumByDouble { it.totalWin.toDouble() }.toBigDecimal()
+
+            BetReportValue.CBetReport(clientId = clientId, totalBet = totalBet, totalWin = totalWin)
+        }
     }
 }

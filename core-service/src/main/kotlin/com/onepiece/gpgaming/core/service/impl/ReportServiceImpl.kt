@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
 import com.onepiece.gpgaming.core.dao.ArtificialOrderDao
+import com.onepiece.gpgaming.core.dao.BetOrderDao
 import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
@@ -16,6 +17,7 @@ import com.onepiece.gpgaming.core.dao.WithdrawDao
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ReportService
 import org.springframework.stereotype.Service
+import java.lang.Exception
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -27,7 +29,8 @@ class ReportServiceImpl(
         private val withdrawDao: WithdrawDao,
         private val memberDao: MemberDao,
         private val betOrderService: BetOrderService,
-        private val artificialOrderDao: ArtificialOrderDao
+        private val artificialOrderDao: ArtificialOrderDao,
+        private val betOrderDao: BetOrderDao
 ) : ReportService {
 
     override fun startMemberPlatformDailyReport(memberId: Int?, startDate: LocalDate): List<MemberPlatformDailyReport> {
@@ -80,11 +83,17 @@ class ReportServiceImpl(
         val mArtificialReports = artificialOrderDao.mReport(startDate = startDate)
         val mArtificialReportMap = mArtificialReports.map { it.memberId to it }.toMap()
 
+        // 平台报表
+        val betReports = betOrderDao.mreport(startDate = startDate)
+        val betMap = betReports.groupBy { it.memberId }
+
+
         val memberIdSet = transferInReports.asSequence().map { it.memberId }
                 .plus(transferOutReports.map { it.memberId })
                 .plus(depositReports.map { it.memberId })
                 .plus(withdrawReports.map { it.memberId })
                 .plus(mArtificialReports.map { it.memberId })
+                .plus(betReports.map { it.memberId })
                 .toSet()
 
         return memberIdSet.map {
@@ -95,18 +104,24 @@ class ReportServiceImpl(
             val withdrawReport = withdrawReportMap[it]
             val artificialReport = mArtificialReportMap[it]
 
+            val settles = betMap[it]?.map {
+                    MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, mwin = it.totalWin)
+            }?: emptyList()
 
             val clientId = when {
                 transferInReport != null -> transferInReport.clientId
                 transferOutReport != null -> transferOutReport.clientId
                 depositReport != null -> depositReport.clientId
                 withdrawReport != null -> withdrawReport.clientId
+                betMap.isNotEmpty() -> betMap[it]!!.first().clientId
                 else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
             MemberDailyReport(id = -1, day = startDate, clientId = clientId, memberId = it, transferIn = transferInReport?.money ?: BigDecimal.ZERO,
                     transferOut = transferOutReport?.money ?: BigDecimal.ZERO, depositMoney = depositReport?.money ?: BigDecimal.ZERO,
                     withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO, createdTime = now, status = Status.Normal, depositCount = depositReport?.count?:0,
-                    withdrawCount = withdrawReport?.count?: 0, artificialMoney = artificialReport?.totalAmount?: BigDecimal.ZERO, artificialCount = artificialReport?.count?: 0)
+                    withdrawCount = withdrawReport?.count?: 0, artificialMoney = artificialReport?.totalAmount?: BigDecimal.ZERO, artificialCount = artificialReport?.count?: 0,
+                    settles = settles, totalMWin = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2),
+                    totalBet = settles.sumByDouble { it.cwin.toDouble() }.toBigDecimal().setScale(2, 2))
         }
     }
 
@@ -201,11 +216,17 @@ class ReportServiceImpl(
         val artificialReports = artificialOrderDao.mReport(startDate = startDate)
         val artificialReportMap = artificialReports.map { it.clientId to it }.toMap()
 
+        // 查询输赢
+        val betReports  = betOrderDao.creport(startDate = startDate)
+        val betMap = betReports.map { it.clientId to it }
+                .toMap()
+
         val clientIds = transferInReports.asSequence().map { it.clientId }
                 .plus(transferOutReports.map { it.clientId })
                 .plus(depositReports.map { it.clientId })
                 .plus(withdrawReports.map { it.clientId })
                 .plus(artificialReports.map { it.clientId })
+                .plus(betReports.map { it.clientId })
                 .toSet()
 
         return clientIds.map {
@@ -224,7 +245,8 @@ class ReportServiceImpl(
                     depositCount = depositReport?.count ?: 0, withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO,
                     withdrawCount = withdrawReport?.count ?: 0, newMemberCount = newMemberCount, createdTime = now,
                     artificialMoney = artificialReport?.totalAmount?: BigDecimal.ZERO, artificialCount = artificialReport?.count?: 0,
-                    promotionAmount = promotionAmount, status = Status.Normal)
+                    promotionAmount = promotionAmount, status = Status.Normal, totalBet = betMap[it]?.totalBet?: BigDecimal.ZERO,
+                    totalMWin = betMap[it]?.totalWin?: BigDecimal.ZERO)
         }
     }
 }

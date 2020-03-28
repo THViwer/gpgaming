@@ -1,5 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
@@ -10,7 +12,9 @@ import java.sql.Date
 import java.sql.ResultSet
 
 @Repository
-class MemberDailyReportDaoImpl : BasicDaoImpl<MemberDailyReport>("member_daily_report"), MemberDailyReportDao {
+class MemberDailyReportDaoImpl(
+        private val objectMapper: ObjectMapper
+) : BasicDaoImpl<MemberDailyReport>("member_daily_report"), MemberDailyReportDao {
 
     override val mapper: (rs: ResultSet) -> MemberDailyReport
         get() = { rs ->
@@ -28,11 +32,14 @@ class MemberDailyReportDaoImpl : BasicDaoImpl<MemberDailyReport>("member_daily_r
             val artificialCount = rs.getInt("artificial_count")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val status = rs.getString("status").let { Status.valueOf(it) }
+            val totalBet = rs.getBigDecimal("total_bet")
+            val totalMWin = rs.getBigDecimal("total_m_win")
+            val settles = rs.getString("settles").let { objectMapper.readValue<List<MemberDailyReport.PlatformSettle>>(it) }
 
             MemberDailyReport(id = id, day = day, clientId = clientId, memberId = memberId,
                     transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney,
                     createdTime = createdTime, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
-                    depositCount = depositCount, withdrawCount = withdrawCount)
+                    depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, totalMWin = totalMWin)
         }
 
     override fun create(reports: List<MemberDailyReport>) {
@@ -49,6 +56,9 @@ class MemberDailyReportDaoImpl : BasicDaoImpl<MemberDailyReport>("member_daily_r
                 .set("withdraw_count")
                 .set("artificial_money")
                 .set("artificial_count")
+                .set("total_bet")
+                .set("total_m_win")
+                .set("settles")
                 .execute { ps, entity ->
                     var index = 0
                     ps.setDate(++index, Date.valueOf(entity.day))
@@ -62,6 +72,9 @@ class MemberDailyReportDaoImpl : BasicDaoImpl<MemberDailyReport>("member_daily_r
                     ps.setInt(++index, entity.withdrawCount)
                     ps.setBigDecimal(++index, entity.artificialMoney)
                     ps.setInt(++index, entity.artificialCount)
+                    ps.setBigDecimal(++index, entity.totalBet)
+                    ps.setBigDecimal(++index, entity.totalMWin)
+                    ps.setString(++index, objectMapper.writeValueAsString(entity.settles))
                 }
 
     }

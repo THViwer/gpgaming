@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -60,6 +61,23 @@ data class MemberReportWebVo(
         val artificialMoney: BigDecimal,
 
         // 人工提存次数
-        val artificialCount: Int
+        val artificialCount: Int,
 
-)
+        // 下注金额
+        val totalBet: BigDecimal,
+
+        // 盈利金额
+        val totalMWin: BigDecimal,
+
+        // 平台结算列表
+        val settles: List<MemberDailyReport.PlatformSettle>
+
+) {
+
+    // 业主盈利
+    val totalCWin: BigDecimal
+        get() {
+            return totalBet.minus(totalMWin)
+        }
+
+}

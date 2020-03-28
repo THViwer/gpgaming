@@ -24,16 +24,17 @@ class DemoController(
     }
 
     @GetMapping("/report")
-    fun start(@DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate): Any {
+    fun start(
+            @RequestParam("type") type: String,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate): Any {
 
-//        reportTask.startMemberPlatformDailyReport(startDate)
-//        reportTask.startMemberReport(startDate)
-//        reportTask.startClientPlatformReport(startDate)
-//        reportTask.startClientReport(startDate)
-
-//        return reportService.startClientPlatformReport(clientId = null, startDate= startDate)
-        return reportService.startClientReport(clientId = null, startDate = startDate)
-
+        return when (type) {
+            "1" -> reportService.startMemberPlatformDailyReport(memberId = null, startDate = startDate)
+            "2" -> reportService.startMemberReport(memberId = null, startDate = startDate)
+            "3" -> reportService.startClientPlatformReport(clientId = null, startDate = startDate)
+            "4" -> reportService.startClientReport(clientId = null, startDate = startDate)
+            else -> error("参数error")
+        }
     }
 
     @GetMapping("/promotion")

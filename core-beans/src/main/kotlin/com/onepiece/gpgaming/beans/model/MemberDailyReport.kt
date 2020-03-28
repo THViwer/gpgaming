@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -18,11 +19,14 @@ data class MemberDailyReport(
         // 会员Id
         val memberId: Int,
 
-//        // 下注金额
-//        val bet: BigDecimal,
-//
-//        // 金额  正数: 会员赢钱、厅主输钱 负数：会员输钱、厅主赢钱
-//        val win: BigDecimal,
+        // 平台结算列表
+        val settles: List<PlatformSettle>,
+
+        // 顾客盈利
+        val totalMWin: BigDecimal,
+
+        // 顾客下注
+        val totalBet: BigDecimal,
 
         // 转入金额
         val transferIn: BigDecimal,
@@ -54,4 +58,41 @@ data class MemberDailyReport(
         // 状态
         val status: Status
 
-)
+) {
+
+    // 下注金额
+//    val totalBet: BigDecimal
+//        get() {
+//            return settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2)
+//        }
+
+    // 金额  正数: 会员赢钱、厅主输钱 负数：会员输钱、厅主赢钱
+//    val totalMWin: BigDecimal
+//        get() {
+//            return settles.sumByDouble { it.cwin.toDouble() }.toBigDecimal().setScale(2, 2)
+//        }
+
+    // 业主盈利金额
+    val totalCWin = totalBet.minus(totalMWin)
+
+    data class PlatformSettle(
+
+            // 平台
+            val platform: Platform,
+
+            // 下注
+            val bet: BigDecimal = BigDecimal.ZERO,
+
+            // 顾客盈利
+            val mwin: BigDecimal = BigDecimal.ZERO
+    ) {
+
+        // 业主盈利
+        val cwin: BigDecimal
+            get() {
+                return bet?: BigDecimal.ZERO.minus(cwin?: BigDecimal.ZERO)
+            }
+
+    }
+
+}

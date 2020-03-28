@@ -29,10 +29,14 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
             val newMemberCount = rs.getInt("new_member_count")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val status = rs.getString("status").let { Status.valueOf(it) }
+            val totalBet = rs.getBigDecimal("total_bet")
+            val totalMWin = rs.getBigDecimal("total_m_win")
+
             ClientDailyReport(id = id, day = day, clientId = clientId, transferIn = transferIn, transferOut = transferOut,
                     depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
                     withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
-                    promotionAmount = promotionAmount, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount)
+                    promotionAmount = promotionAmount, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
+                    totalBet = totalBet, totalMWin = totalMWin)
         }
 
     override fun create(reports: List<ClientDailyReport>) {
@@ -49,6 +53,8 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                 .set("artificial_money")
                 .set("artificial_count")
                 .set("new_member_count")
+                .set("total_bet")
+                .set("total_m_win")
                 .execute { ps, entity ->
                     var x = 0
                     ps.setDate(++x, Date.valueOf(entity.day))
@@ -63,6 +69,8 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     ps.setBigDecimal(++x, entity.artificialMoney)
                     ps.setInt(++x, entity.artificialCount)
                     ps.setInt(++x, entity.newMemberCount)
+                    ps.setBigDecimal(++x, entity.totalBet)
+                    ps.setBigDecimal(++x, entity.totalMWin)
                 }
     }
 
