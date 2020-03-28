@@ -43,7 +43,7 @@ class PullBetTask(
     }
 
 
-//    @Scheduled(cron="0/20 * *  * * ? ")
+    @Scheduled(cron="0/20 * *  * * ? ")
     fun execute() {
 
         val redisKey = "pull:task:running"
