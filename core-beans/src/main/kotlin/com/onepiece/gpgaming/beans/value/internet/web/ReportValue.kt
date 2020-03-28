@@ -33,7 +33,6 @@ sealed class ReportValue {
             get() {
                 return data.sumByDouble { it.transferOut.toDouble() }.toBigDecimal().setScale(2, 2)
             }
-
     }
 
     data class MemberTotalDetailReport(
@@ -76,6 +75,25 @@ sealed class ReportValue {
             get() {
                 return data.sumBy { it.artificialCount }
             }
+
+        val totalBet: BigDecimal
+            @ApiModelProperty("下注金额")
+            get() {
+                return data.sumByDouble { it.totalBet.toDouble() }.toBigDecimal().setScale(2, 2)
+            }
+
+        val totalMWin: BigDecimal
+            @ApiModelProperty("盈利金额")
+            get() {
+                return data.sumByDouble { it.totalMWin.toDouble() }.toBigDecimal().setScale(2, 2)
+            }
+
+        val totalCWin: BigDecimal
+            @ApiModelProperty("业主盈利金额")
+            get() {
+                return totalBet.minus(totalMWin)
+            }
+
     }
 
     data class CTotalReport(
@@ -144,6 +162,26 @@ sealed class ReportValue {
             get() {
                 return data.sumBy { it.artificialCount }
             }
+
+        val totalBet: BigDecimal
+            @ApiModelProperty("下注金额")
+            get() {
+                return data.sumByDouble { it.totalBet.toDouble() }.toBigDecimal().setScale(2, 2)
+            }
+
+        val totalMWin: BigDecimal
+            @ApiModelProperty("盈利金额")
+            get() {
+                return data.sumByDouble { it.totalMWin.toDouble() }.toBigDecimal().setScale(2, 2)
+            }
+
+        val totalCWin: BigDecimal
+            @ApiModelProperty("业主盈利金额")
+            get() {
+                return totalBet.minus(totalMWin)
+            }
+
+
     }
 
     data class CPTotalReport (
