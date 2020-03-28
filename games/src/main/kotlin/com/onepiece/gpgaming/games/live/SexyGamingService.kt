@@ -28,7 +28,7 @@ class SexyGamingService: PlatformService() {
 
         log.info("sexyGaming 请求数据：$data")
 
-        val url = "${clientToken.apiPath}/$method"
+        val url = "${clientToken.apiPath}$method"
 
         val body = FormBody.Builder()
         data.forEach {
