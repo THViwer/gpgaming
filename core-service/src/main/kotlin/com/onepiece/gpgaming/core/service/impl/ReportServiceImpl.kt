@@ -112,15 +112,13 @@ class ReportServiceImpl(
             }?: emptyList()
 
             val clientId = when {
+                memberId != null -> memberDao.get(memberId).clientId
                 transferInReport != null -> transferInReport.clientId
                 transferOutReport != null -> transferOutReport.clientId
                 depositReport != null -> depositReport.clientId
                 withdrawReport != null -> withdrawReport.clientId
-                betMap[it] != null-> (betMap[it] ?: error("id = ${it}, betMap = $betMap")).first().clientId
-                else -> {
-                    log.info("memberId =  ${it}, betMap = $betMap")
-                    error(OnePieceExceptionCode.DATA_FAIL)
-                }
+                betMap[it] != null-> (betMap[it] ?: error("betMap error")).first().clientId
+                else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
             MemberDailyReport(id = -1, day = startDate, clientId = clientId, memberId = it, transferIn = transferInReport?.money ?: BigDecimal.ZERO,
                     transferOut = transferOutReport?.money ?: BigDecimal.ZERO, depositMoney = depositReport?.money ?: BigDecimal.ZERO,
