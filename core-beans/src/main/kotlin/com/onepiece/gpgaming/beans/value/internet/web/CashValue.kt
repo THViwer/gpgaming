@@ -2,6 +2,8 @@ package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.DepositChannel
+import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.model.Deposit
 import com.onepiece.gpgaming.beans.model.Withdraw
 import io.swagger.annotations.ApiModelProperty
@@ -131,8 +133,38 @@ sealed class CashValue {
             }
 
         }
+    }
 
+    data class BalanceAllInVo(
+            @ApiModelProperty("平台名称")
+            val platform: Platform,
+
+            @ApiModelProperty("余额")
+            val balance: BigDecimal
+    ) {
+
+        val category: PlatformCategory
+            @ApiModelProperty("平台类型")
+            get() {
+                return platform.category
+            }
 
     }
+
+    data class CashTransferReq(
+
+            @ApiModelProperty("转出钱包")
+            val from: Platform,
+
+            @ApiModelProperty("转入的钱包")
+            val to: Platform,
+
+            @ApiModelProperty("金额")
+            val amount: BigDecimal,
+
+            @ApiModelProperty("参加优惠活动Id")
+            var promotionId: Int?
+
+    )
 
 }

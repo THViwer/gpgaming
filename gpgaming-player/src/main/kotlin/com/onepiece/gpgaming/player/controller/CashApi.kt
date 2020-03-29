@@ -8,13 +8,12 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.value.internet.web.BankVo
+import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientBankVo
 import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
-import com.onepiece.gpgaming.player.controller.value.BalanceAllInVo
 import com.onepiece.gpgaming.player.controller.value.BalanceVo
 import com.onepiece.gpgaming.player.controller.value.CashDepositResp
-import com.onepiece.gpgaming.player.controller.value.CashTransferReq
 import com.onepiece.gpgaming.player.controller.value.CashWithdrawResp
 import com.onepiece.gpgaming.player.controller.value.CheckBankResp
 import com.onepiece.gpgaming.player.controller.value.CheckBetResp
@@ -101,11 +100,11 @@ interface CashApi {
     @ApiOperation(tags = ["cash"], value = "转账")
     fun transfer(
             @RequestHeader("language", defaultValue = "EN") language: Language,
-            @RequestBody cashTransferReq: CashTransferReq
+            @RequestBody cashTransferReq: CashValue.CashTransferReq
     ): List<BalanceVo>
 
     @ApiOperation(tags = ["cash"], value = "转账所有平台到中心")
-    fun transferToCenter(): List<BalanceAllInVo>
+    fun transferToCenter(): List<CashValue.BalanceAllInVo>
 
     @ApiOperation(tags = ["cash"], value = "钱包明细")
     fun walletNote(

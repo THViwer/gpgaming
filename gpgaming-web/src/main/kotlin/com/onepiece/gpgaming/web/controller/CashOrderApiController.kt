@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
+import com.onepiece.gpgaming.beans.model.Wallet
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderCo
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderQuery
 import com.onepiece.gpgaming.beans.value.database.DepositLockUo
@@ -28,7 +29,6 @@ import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
-import org.springframework.data.repository.support.PageableExecutionUtils
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -48,7 +48,8 @@ class CashOrderApiController(
         private val waiterService: WaiterService,
         private val transferOrderService: TransferOrderService,
         private val memberService: MemberService,
-        private val walletService: WalletService
+        private val walletService: WalletService,
+        private val transferUtil: TransferUtil
 ) : BasicController(), CashOrderApi {
 
 
@@ -317,5 +318,11 @@ class CashOrderApiController(
                     promotionJson = order.promotionJson, joinPromotionId = order.joinPromotionId, from = order.from, to = order.to,
                     state = order.state, createdTime = order.createdTime, promotionAmount = order.promotionAmount)
         }
+    }
+
+    @GetMapping("/retrieve")
+    override fun retrieve(@RequestParam("memberId") memberId: Int): List<CashValue.BalanceAllInVo> {
+        val member = memberService.getMember(memberId)
+        return transferUtil.transferInAll(clientId = member.clientId, memberId = memberId, username = member.username)
     }
 }

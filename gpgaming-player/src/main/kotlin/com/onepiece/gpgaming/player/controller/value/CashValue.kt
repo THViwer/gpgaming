@@ -183,23 +183,6 @@ data class CheckPromotinResp(
 
 }
 
-
-data class CashTransferReq(
-
-        @ApiModelProperty("转出钱包")
-        val from: Platform,
-
-        @ApiModelProperty("转入的钱包")
-        val to: Platform,
-
-        @ApiModelProperty("金额")
-        val amount: BigDecimal,
-
-        @ApiModelProperty("参加优惠活动Id")
-        var promotionId: Int?
-
-)
-
 data class CashTransferResp(
 
         @ApiModelProperty("转出平台的余额")
@@ -247,21 +230,6 @@ data class BalanceVo(
 
 }
 
-data class BalanceAllInVo(
-        @ApiModelProperty("平台名称")
-        val platform: Platform,
-
-        @ApiModelProperty("余额")
-        val balance: BigDecimal
-) {
-
-        val category: PlatformCategory
-                @ApiModelProperty("平台类型")
-                get() {
-                        return platform.category
-                }
-
-}
 
 data class WalletNoteVo(
 

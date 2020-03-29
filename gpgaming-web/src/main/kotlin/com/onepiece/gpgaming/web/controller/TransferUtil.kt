@@ -1,4 +1,4 @@
-package com.onepiece.gpgaming.player.controller
+package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.stream.Collectors
+
 
 interface ITransferUtil {
 
@@ -74,7 +75,8 @@ open class TransferUtil(
         val list = platformMembers.parallelStream().filter { exceptPlatform == null || exceptPlatform != it.platform }.map{ platformMember ->
             val req = CashValue.CashTransferReq(from = platformMember.platform, to = Platform.Center, amount = amount, promotionId = null)
             try {
-                val resp = this.singleTransfer(clientId = clientId, platform = platformMember.platform, cashTransferReq = req, type = "in", platformMemberVo = platformMember, username = username)
+                val resp = this.singleTransfer(clientId = clientId, platform = platformMember.platform, cashTransferReq = req, type = "in",
+                        platformMemberVo = platformMember, username = username)
                 val balance = if (resp.balance.toInt() <= 0) BigDecimal.ZERO else resp.balance
 
                 CashValue.BalanceAllInVo(platform = platformMember.platform, balance = balance)

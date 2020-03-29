@@ -20,13 +20,13 @@ class M3PayService(
     fun start(payConfig: PayConfig) {
 
         val amount = BigDecimal.valueOf(10)
-        val orderId = UUID.randomUUID().toString()
+        val orderId = UUID.randomUUID().toString().replace("-", "").substring(0, 10)
 
         val config = payConfig as M3PayConfig
 
         val body = FormBody.Builder()
         body.add("MerchantCode", config.memberCode)
-        body.add("RefNo", UUID.randomUUID().toString().replace("-", ""))
+        body.add("RefNo", orderId)
         body.add("Amount", "10.00")
 
         // (MerchantKey & MerchantCode & RefNo & Amount)
@@ -36,7 +36,9 @@ class M3PayService(
                 orderId,
                 amount.setScale(2, 2).toString().replace(".", "")
         )
-        val sign = DigestUtils.sha256Hex(data.joinToString())
+        val signStr = data.joinToString(separator = "")
+        println("签名串：$signStr")
+        val sign = DigestUtils.sha256Hex(signStr)
 
         body.add("Username", "cabb")
         body.add("UserEmail", "cabb@gmail.com")
@@ -45,7 +47,8 @@ class M3PayService(
         body.add("ResponseURL", "http://www.google.com")
         body.add("BackendURL", "http://www.google.com")
 
-        val response = okHttpUtil.doPostForm(pay = PayType.M3Pay, url = "http://payment.m3pay.com/epayment/entry.aspx",
+        println("success")
+        val response = okHttpUtil.doPostForm(pay = PayType.M3Pay, url = "https://payment.m3pay.com/epayment/entry.aspx",
                 body = body.build(), clz = M3PayValue.M3PayResponse::class.java)
         println("$response")
     }
@@ -55,9 +58,9 @@ class M3PayService(
 }
 
 fun main() {
-    val v = "orangeM01TRANS0000112001"
-    val sign = DigestUtils.sha256Hex(v)
-    println(sign)
+//    val v = "orangeM01TRANS0000112001"
+//    val sign = DigestUtils.sha256Hex(v)
+//    println(sign)
 
     val mapper = jacksonObjectMapper()
     val xmlMapper = XmlMapper()

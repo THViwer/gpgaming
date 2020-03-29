@@ -2,9 +2,9 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.DepositState
-import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
+import com.onepiece.gpgaming.beans.model.Wallet
 import com.onepiece.gpgaming.beans.value.internet.web.ArtificialCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.DepositUoReq
@@ -38,10 +38,6 @@ interface CashOrderApi {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Deprecated(message = "请使用出入款接口")
     fun check(@RequestBody req: CashValue.CheckOrderReq)
-
-
-
-
 
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 审核列表")
@@ -102,5 +98,9 @@ interface CashOrderApi {
             @RequestParam("memberId", required = false) memberId: Int?,
             @RequestParam("username", required = false) username: String?
     ): List<TransferOrderValue.TransferOrderVo>
+
+
+    @ApiOperation(tags = ["cash"], value = "用户 -> 回收金额")
+    fun retrieve(@RequestParam("memberId") memberId: Int): List<CashValue.BalanceAllInVo>
 
 }

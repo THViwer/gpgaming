@@ -26,6 +26,7 @@ import com.onepiece.gpgaming.beans.value.database.WalletNoteQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawCo
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
 import com.onepiece.gpgaming.beans.value.internet.web.BankVo
+import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientBankVo
 import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
@@ -42,10 +43,8 @@ import com.onepiece.gpgaming.core.service.WalletNoteService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
-import com.onepiece.gpgaming.player.controller.value.BalanceAllInVo
 import com.onepiece.gpgaming.player.controller.value.BalanceVo
 import com.onepiece.gpgaming.player.controller.value.CashDepositResp
-import com.onepiece.gpgaming.player.controller.value.CashTransferReq
 import com.onepiece.gpgaming.player.controller.value.CashWithdrawResp
 import com.onepiece.gpgaming.player.controller.value.CheckBankResp
 import com.onepiece.gpgaming.player.controller.value.CheckBetResp
@@ -433,7 +432,7 @@ open class CashApiController(
     @Transactional(rollbackFor = [Exception::class])
     override fun transfer(
             @RequestHeader("language") language: Language,
-            @RequestBody cashTransferReq: CashTransferReq
+            @RequestBody cashTransferReq: CashValue.CashTransferReq
     ): List<BalanceVo> {
         val watch = StopWatch()
         watch.start()
@@ -494,7 +493,7 @@ open class CashApiController(
     }
 
     @PutMapping("/transfer/in/all")
-    override fun transferToCenter(): List<BalanceAllInVo> {
+    override fun transferToCenter(): List<CashValue.BalanceAllInVo> {
         val watch = StopWatch()
         watch.start()
 

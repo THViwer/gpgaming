@@ -4,7 +4,7 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.player.controller.TransferUtil
-import com.onepiece.gpgaming.player.controller.value.CashTransferReq
+import com.onepiece.gpgaming.beans.value.internet.web.CashTransferReq
 import com.onepiece.gpgaming.player.jwt.JwtUser
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
