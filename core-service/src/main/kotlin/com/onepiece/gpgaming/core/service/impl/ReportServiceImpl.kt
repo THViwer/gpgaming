@@ -16,6 +16,7 @@ import com.onepiece.gpgaming.core.dao.TransferReportQuery
 import com.onepiece.gpgaming.core.dao.WithdrawDao
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ReportService
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.lang.Exception
 import java.math.BigDecimal
@@ -32,6 +33,8 @@ class ReportServiceImpl(
         private val artificialOrderDao: ArtificialOrderDao,
         private val betOrderDao: BetOrderDao
 ) : ReportService {
+
+    private val log = LoggerFactory.getLogger(ReportServiceImpl::class.java)
 
     override fun startMemberPlatformDailyReport(memberId: Int?, startDate: LocalDate): List<MemberPlatformDailyReport> {
 
@@ -114,7 +117,10 @@ class ReportServiceImpl(
                 depositReport != null -> depositReport.clientId
                 withdrawReport != null -> withdrawReport.clientId
                 betMap[it] != null-> (betMap[it] ?: error("id = ${it}, betMap = $betMap")).first().clientId
-                else -> error(OnePieceExceptionCode.DATA_FAIL)
+                else -> {
+                    log.info("memberId =  ${it}, betMap = $betMap")
+                    error(OnePieceExceptionCode.DATA_FAIL)
+                }
             }
             MemberDailyReport(id = -1, day = startDate, clientId = clientId, memberId = it, transferIn = transferInReport?.money ?: BigDecimal.ZERO,
                     transferOut = transferOutReport?.money ?: BigDecimal.ZERO, depositMoney = depositReport?.money ?: BigDecimal.ZERO,
