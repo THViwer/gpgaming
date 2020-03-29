@@ -234,26 +234,22 @@ class PragmaticService: PlatformService() {
                     if (s.isBlank()) return@forEachIndexed
                     val data = s.split(",")
 
-                    // playerID,extPlayerID,gameID,playSessionID,timestamp,referenceID,type,amount,currency
+                    // playerID,extPlayerID,gameID,playSessionID,parentSessionID,startDate,endDate,status,type,bet,win,currency,jackpot
                     val map = hashMapOf(
                             "playerID" to data[0],
                             "extPlayerID" to data[1],
                             "gameID" to data[2],
                             "playSessionID" to data[3],
-                            "timestamp" to data[4],
-                            "referenceID" to data[5],
-                            "type" to data[6],
-                            "amount" to data[7],
-                            "currency" to data[8]
+                            "parentSessionID" to data[4],
+                            "startDate" to data[5],
+                            "endDate" to data[6],
+                            "status" to data[7],
+                            "type" to data[8],
+                            "bet" to data[9],
+                            "win" to data[10],
+                            "currency" to data[11],
+                            "jackpot" to data[12]
                     )
-
-                    if (map["type"] == "B") {
-                        map["betAmount"] = map["amount"]!!
-                        map["winAmount"] = "0"
-                    } else {
-                        map["betAmount"] = "0"
-                        map["winAmount"] = map["amount"]!!
-                    }
 
                     val mapUtil = MapUtil.instance(map)
                     list.add(mapUtil)
@@ -267,22 +263,14 @@ class PragmaticService: PlatformService() {
             val username = bet.asString("extPlayerID")
             val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(Platform.Pragmatic, username)
             val orderId = bet.asString("referenceID")
-            val betTime = try {
-                bet.asLocalDateTime("startDate", dateTimeFormat)
-            } catch(e: Exception) {
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(bet.asLong("timestamp")), ZoneId.of("Asia/Shanghai"))
-            }
-            val settleTime = try {
-                bet.asLocalDateTime("endDate", dateTimeFormat)
-            } catch (e: Exception) {
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(bet.asLong("timestamp")), ZoneId.of("Asia/Shanghai"))
-            }
-            val betAmount = bet.asBigDecimal("betAmount")
-            val winAmount = bet.asBigDecimal("winAmount")
+            val betTime = bet.asLocalDateTime("startDate", dateTimeFormat)
+            val settleTime = bet.asLocalDateTime("endDate", dateTimeFormat)
+            val betAmount = bet.asBigDecimal("bet")
+            val winAmount = bet.asBigDecimal("win")
 
             val originData = objectMapper.writeValueAsString(bet.data)
             BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, platform = Platform.Pragmatic,
-                    betTime = betTime, settleTime = betTime, orderId = orderId, originData = originData)
+                    betTime = betTime, settleTime = settleTime, orderId = orderId, originData = originData)
         }
 
     }
