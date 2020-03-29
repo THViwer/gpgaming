@@ -92,7 +92,7 @@ class WithdrawServiceImpl(
     }
 
     override fun report(startDate: LocalDate, endDate: LocalDate): List<WithdrawReportVo> {
-         return withdrawDao.report(startDate, endDate)
+         return withdrawDao.report(clientId = null, memberId = null, startDate = startDate, endDate = endDate)
     }
 
     override fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientWithdrawReportVo> {

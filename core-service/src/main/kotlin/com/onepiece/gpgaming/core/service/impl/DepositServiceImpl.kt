@@ -71,7 +71,7 @@ class DepositServiceImpl(
     }
 
     override fun report(startDate: LocalDate, endDate: LocalDate): List<DepositReportVo> {
-        return depositDao.report(startDate, endDate)
+        return depositDao.report(clientId = null, memberId = null, startDate = startDate, endDate = endDate)
     }
 
     override fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo> {
