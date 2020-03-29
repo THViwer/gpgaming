@@ -301,15 +301,21 @@ class CashOrderApiController(
     }
 
     @GetMapping("/transfer")
-    override fun query(@RequestParam("promotionId") promotionId: Int): List<TransferOrderValue.TransferOrderVo> {
+    override fun query(
+            @RequestParam("promotionId", required = false) promotionId: Int?,
+            @RequestParam("memberId", required = false) memberId: Int?,
+            @RequestParam("username", required = false) username: String?
+    ): List<TransferOrderValue.TransferOrderVo> {
         val user = current()
 
-        val query = TransferOrderValue.Query(clientId = user.clientId, from = Platform.Center, promotionId = promotionId, username = null, memberId = null, startDate = null, endDate = null)
+        val query = TransferOrderValue.Query(clientId = user.clientId, from = Platform.Center, promotionId = promotionId,
+                username = username, memberId = memberId, startDate = null, endDate = null)
         val list = transferOrderService.query(query)
 
         return list.map { order ->
-            TransferOrderValue.TransferOrderVo(orderId = order.orderId, memberId = order.memberId, money = order.money, promotionJson = order.promotionJson, joinPromotionId = order.joinPromotionId,
-                    from = order.from, to = order.to, state = order.state, createdTime = order.createdTime, promotionAmount = order.promotionAmount)
+            TransferOrderValue.TransferOrderVo(orderId = order.orderId, memberId = order.memberId, money = order.money,
+                    promotionJson = order.promotionJson, joinPromotionId = order.joinPromotionId, from = order.from, to = order.to,
+                    state = order.state, createdTime = order.createdTime, promotionAmount = order.promotionAmount)
         }
     }
 }

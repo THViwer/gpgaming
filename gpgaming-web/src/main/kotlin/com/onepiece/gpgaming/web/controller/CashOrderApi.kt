@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.DepositState
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
 import com.onepiece.gpgaming.beans.value.internet.web.ArtificialCoReq
@@ -95,9 +96,11 @@ interface CashOrderApi {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawUoReq)
 
-    @ApiOperation(tags = ["cash"], value = "转账 -> 查询优惠转账")
+    @ApiOperation(tags = ["cash"], value = "转账 -> 订单查询")
     fun query(
-            @RequestParam("promotionId") promotionId: Int
+            @RequestParam("promotionId", required = false) promotionId: Int?,
+            @RequestParam("memberId", required = false) memberId: Int?,
+            @RequestParam("username", required = false) username: String?
     ): List<TransferOrderValue.TransferOrderVo>
 
 }
