@@ -33,6 +33,9 @@ data class Member(
         // 是否已有首充值
         val firstPromotion: Boolean,
 
+        // 启动游戏自动转账
+        val autoTransfer: Boolean,
+
         // 状态
         val status: Status,
 

@@ -25,6 +25,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val safetyPassword = rs.getString("safety_password")
             val firstPromotion = rs.getBoolean("first_promotion")
             val levelId = rs.getInt("level_id")
+            val autoTransfer = rs.getBoolean("auto_transfer")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val loginIp = rs.getString("login_ip")
@@ -34,7 +35,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
                     safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion,
-                    promoteSource = promoteSource)
+                    promoteSource = promoteSource, autoTransfer = autoTransfer)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -63,6 +64,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("level_id", memberUo.levelId)
                 .set("login_ip", memberUo.loginIp)
                 .set("login_time", memberUo.loginTime)
+                .set("auto_transfer", memberUo.autoTransfer)
                 .where("id", memberUo.id)
                 .execute() == 1
 
@@ -127,9 +129,9 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .asWhere("created_time < ?", endDate)
                 .group("client_id")
                 .execute { rs ->
-                    val clientId = rs.getInt("client_id")
+                    val xClientId = rs.getInt("client_id")
                     val count = rs.getInt("count")
-                    clientId to count
+                    xClientId to count
                 }.toMap()
     }
 

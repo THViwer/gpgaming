@@ -21,6 +21,10 @@ interface UserApi {
     @ApiOperation(tags = ["user"], value = "登陆")
     fun login(@RequestBody loginReq: LoginReq): LoginResp
 
+    @ApiOperation(tags = ["user"], value = "更新自动转账配置")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun upAutoTransfer(@RequestParam("autoTransfer") autoTransfer: Boolean)
+
     @ApiOperation(tags = ["user"], value = "注册")
     fun register(@RequestBody registerReq: RegisterReq): LoginResp
 

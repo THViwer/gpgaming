@@ -44,8 +44,13 @@ class UserApiController(
         val member = memberService.login(loginValue)
 
         val token = authService.login(clientId, loginReq.username)
-        return LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name)
+        return LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name, autoTransfer = member.autoTransfer)
+    }
 
+    @PutMapping("/config")
+    override fun upAutoTransfer(@RequestParam("autoTransfer") autoTransfer: Boolean) {
+        val uo = MemberUo(id = current().id, autoTransfer = autoTransfer)
+        memberService.update(uo)
     }
 
     @PutMapping
