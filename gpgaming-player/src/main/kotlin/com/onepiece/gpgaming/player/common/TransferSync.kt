@@ -1,10 +1,10 @@
 package com.onepiece.gpgaming.player.common
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.player.controller.TransferUtil
-import com.onepiece.gpgaming.beans.value.internet.web.CashTransferReq
 import com.onepiece.gpgaming.player.jwt.JwtUser
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
@@ -42,7 +42,7 @@ open class TransferSyncImpl(
         transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = platform, username = current.username.split("@")[1])
 
         // 从中心钱包转到
-        val cashTransferReq = CashTransferReq(from = Platform.Center, to = platform, amount = BigDecimal.valueOf(-1), promotionId = null)
+        val cashTransferReq = CashValue.CashTransferReq(from = Platform.Center, to = platform, amount = BigDecimal.valueOf(-1), promotionId = null)
         transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = cashTransferReq, username = current.username)
     }
 
