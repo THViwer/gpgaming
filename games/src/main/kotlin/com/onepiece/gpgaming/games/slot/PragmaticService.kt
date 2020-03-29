@@ -21,11 +21,13 @@ import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Service
 class PragmaticService: PlatformService() {
 
     private val log = LoggerFactory.getLogger(PragmaticService::class.java)
+    private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     fun startDoPostForm(method: String, clientToken: PragmaticClientToken, data: Map<String, Any>): MapUtil {
 
@@ -265,7 +267,16 @@ class PragmaticService: PlatformService() {
             val username = bet.asString("extPlayerID")
             val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(Platform.Pragmatic, username)
             val orderId = bet.asString("referenceID")
-            val betTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(bet.asLong("timestamp")), ZoneId.of("Asia/Shanghai"))
+            val betTime = try {
+                bet.asLocalDateTime("startDate", dateTimeFormat)
+            } catch(e: Exception) {
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(bet.asLong("timestamp")), ZoneId.of("Asia/Shanghai"))
+            }
+            val settleTime = try {
+                bet.asLocalDateTime("endDate", dateTimeFormat)
+            } catch (e: Exception) {
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(bet.asLong("timestamp")), ZoneId.of("Asia/Shanghai"))
+            }
             val betAmount = bet.asBigDecimal("betAmount")
             val winAmount = bet.asBigDecimal("winAmount")
 
