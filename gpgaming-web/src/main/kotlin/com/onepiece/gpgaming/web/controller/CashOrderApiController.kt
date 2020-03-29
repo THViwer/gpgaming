@@ -304,7 +304,7 @@ class CashOrderApiController(
     override fun query(@RequestParam("promotionId") promotionId: Int): List<TransferOrderValue.TransferOrderVo> {
         val user = current()
 
-        val query = TransferOrderValue.Query(clientId = user.clientId, from = Platform.Center, promotionId = promotionId, username = null, memberId = null)
+        val query = TransferOrderValue.Query(clientId = user.clientId, from = Platform.Center, promotionId = promotionId, username = null, memberId = null, startDate = null, endDate = null)
         val list = transferOrderService.query(query)
 
         return list.map { order ->
