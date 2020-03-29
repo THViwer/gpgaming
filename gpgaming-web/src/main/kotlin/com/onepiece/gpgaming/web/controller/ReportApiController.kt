@@ -215,6 +215,8 @@ class ReportApiController(
     override fun promotionDetail(
             @RequestParam("promotionId", required = false) promotionId: Int?,
             @RequestParam("username", required = false) username: String?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam("sortBy") sortBy: String,
             @RequestParam("desc") desc: Boolean
     ): ReportValue.PromotionMTotalReport {
@@ -232,7 +234,7 @@ class ReportApiController(
         val dbSort = "$sortBy ${if (desc) "desc" else "asc"}"
 
         val query = TransferOrderValue.Query(clientId = this.getClientId(), promotionId = promotionId, from = null, sortBy = dbSort, username = username,
-                memberId = null)
+                memberId = null, startDate = startDate, endDate = endDate)
         val data =  transferOrderService.query(query)
 
         return ReportValue.PromotionMTotalReport(data)

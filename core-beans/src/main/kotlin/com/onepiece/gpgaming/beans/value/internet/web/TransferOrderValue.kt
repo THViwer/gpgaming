@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.beans.value.internet.web
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.TransferState
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 sealed class TransferOrderValue {
@@ -19,6 +20,10 @@ sealed class TransferOrderValue {
             val username: String?,
 
             val sortBy: String = "created_time desc",
+
+            val startDate: LocalDate?,
+
+            val endDate: LocalDate?,
 
             val current: Int = 0,
 

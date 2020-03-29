@@ -176,6 +176,8 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
     override fun query(query: TransferOrderValue.Query): List<TransferOrder> {
         return query()
                 .where("client_id", query.clientId)
+                .asWhere("created_time >= ?", query.startDate)
+                .asWhere("created_time < ?", query.endDate)
                 .where("from", query.from)
                 .where("join_promotion_id", query.promotionId)
                 .asWhere("join_promotion_id is not null")

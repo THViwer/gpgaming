@@ -53,6 +53,8 @@ interface ReportApi {
     fun promotionDetail(
             @RequestParam("promotionId", required = false) promotionId: Int?,
             @RequestParam("username", required = false) username: String?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam("sortBy") sortBy: String,
             @RequestParam("desc") desc: Boolean
     ): ReportValue.PromotionMTotalReport

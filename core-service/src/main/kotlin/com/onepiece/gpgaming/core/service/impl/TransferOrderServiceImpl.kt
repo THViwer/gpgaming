@@ -34,7 +34,8 @@ class TransferOrderServiceImpl(
 
     override fun logPromotionEnd(clientId: Int, memberId: Int, promotionId: Int, transferOutAmount: BigDecimal) {
 
-        val query = TransferOrderValue.Query(clientId = clientId, memberId = memberId, promotionId = promotionId, current = 0, size = 1, from = null, username = null)
+        val query = TransferOrderValue.Query(clientId = clientId, memberId = memberId, promotionId = promotionId, current = 0, size = 1, from = null, username = null,
+                startDate = null, endDate = null)
         val order = this.query(query).firstOrNull()
 
         if (order !=  null) {

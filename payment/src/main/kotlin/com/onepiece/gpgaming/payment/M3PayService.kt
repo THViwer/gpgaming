@@ -26,7 +26,7 @@ class M3PayService(
 
         val body = FormBody.Builder()
         body.add("MerchantCode", config.memberCode)
-        body.add("RefNo", UUID.randomUUID().toString())
+        body.add("RefNo", UUID.randomUUID().toString().replace("-", ""))
         body.add("Amount", "10.00")
 
         // (MerchantKey & MerchantCode & RefNo & Amount)
@@ -64,9 +64,7 @@ fun main() {
     val okHttpUtil = OkHttpUtil(mapper, xmlMapper)
 
     val m3PayService = M3PayService(okHttpUtil)
-
     val payConfig = M3PayConfig()
-
     m3PayService.start(payConfig)
 
 }
