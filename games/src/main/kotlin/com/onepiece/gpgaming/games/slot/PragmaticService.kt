@@ -262,7 +262,7 @@ class PragmaticService: PlatformService() {
 
             val username = bet.asString("extPlayerID")
             val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(Platform.Pragmatic, username)
-            val orderId = bet.asString("referenceID")
+            val orderId = bet.asString("playSessionID")
             val betTime = bet.asLocalDateTime("startDate", dateTimeFormat)
             val settleTime = bet.asLocalDateTime("endDate", dateTimeFormat)
             val betAmount = bet.asBigDecimal("bet")
