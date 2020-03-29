@@ -113,7 +113,7 @@ class ReportServiceImpl(
                 transferOutReport != null -> transferOutReport.clientId
                 depositReport != null -> depositReport.clientId
                 withdrawReport != null -> withdrawReport.clientId
-                !betMap.isNullOrEmpty() -> (betMap[it] ?: error("id = ${it}, betMap = $betMap")).first().clientId
+                betMap[it] != null-> (betMap[it] ?: error("id = ${it}, betMap = $betMap")).first().clientId
                 else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
             MemberDailyReport(id = -1, day = startDate, clientId = clientId, memberId = it, transferIn = transferInReport?.money ?: BigDecimal.ZERO,
