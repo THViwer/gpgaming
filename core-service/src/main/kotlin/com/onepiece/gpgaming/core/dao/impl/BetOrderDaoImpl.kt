@@ -168,20 +168,22 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 }
     }
 
-    override fun mreport(startDate: LocalDate): List<BetReportValue.MBetReport> {
+    override fun mreport(clientId: Int?, memberId: Int?, startDate: LocalDate): List<BetReportValue.MBetReport> {
         return (0 until 8).map { x ->
             query(returnColumns = "client_id, member_id, platform, sum(bet_amount) as bet, sum(win_amount) as win", defaultTable = "bet_order_$x")
+                    .where("client_id", clientId)
+                    .where("member_id", memberId)
                     .asWhere("created_time >= ?", startDate)
                     .asWhere("created_time < ?", startDate.plusDays(1))
                     .group("client_id, member_id, platform")
                     .execute { rs ->
-                        val clientId = rs.getInt("client_id")
-                        val memberId = rs.getInt("member_id")
+                        val xClientId = rs.getInt("client_id")
+                        val xMemberId = rs.getInt("member_id")
                         val platform = rs.getString("platform").let { Platform.valueOf(it) }
                         val totalBet = rs.getBigDecimal("bet")
                         val totalWin = rs.getBigDecimal("win")
 
-                        BetReportValue.MBetReport(clientId = clientId, memberId = memberId, platform = platform, totalBet = totalBet, totalWin = totalWin)
+                        BetReportValue.MBetReport(clientId = xClientId, memberId = xMemberId, platform = platform, totalBet = totalBet, totalWin = totalWin)
                     }
         }.reduce{ a, b -> a.plus(b) }
     }

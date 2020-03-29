@@ -24,7 +24,7 @@ interface DepositDao: BasicDao<Deposit> {
 
     fun update(depositUo: DepositUo): Boolean
 
-    fun report(startDate: LocalDate, endDate: LocalDate): List<DepositReportVo>
+    fun report(clientId: Int?, memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<DepositReportVo>
 
     fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo>
 

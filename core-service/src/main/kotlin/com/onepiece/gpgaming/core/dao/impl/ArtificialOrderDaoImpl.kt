@@ -71,9 +71,11 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
                 .executeOnlyOne()
     }
 
-    override fun mReport(startDate: LocalDate): List<ArtificialReportVo> {
+    override fun mReport(clientId: Int?, memberId: Int?, startDate: LocalDate): List<ArtificialReportVo> {
 
         return query("client_id, member_id, sum(balance) as total_amount, count(id) as count")
+                .where("client_id", clientId)
+                .where("member_id", memberId)
                 .asWhere("created_time >= ?", startDate)
                 .asWhere("created_time < ?", startDate.plusDays(1))
                 .group("client_id, member_id")

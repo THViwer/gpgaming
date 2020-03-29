@@ -16,7 +16,7 @@ interface ArtificialOrderDao: BasicDao<ArtificialOrder> {
 
     fun create(artificialOrder: ArtificialOrderCo): Boolean
 
-    fun mReport(startDate: LocalDate): List<ArtificialReportVo>
+    fun mReport(clientId: Int?, memberId: Int?, startDate: LocalDate): List<ArtificialReportVo>
 
     fun cReport(startDate: LocalDate): List<ArtificialCReportVo>
 

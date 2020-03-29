@@ -121,18 +121,20 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
                 .executeOnlyOne()
     }
 
-    override fun report(startDate: LocalDate, endDate: LocalDate): List<WithdrawReportVo> {
+    override fun report(clientId: Int?, memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<WithdrawReportVo> {
         return query("client_id, member_id, sum(money) as money, count(id) as count")
+                .where("client_id", clientId)
+                .where("member_id", memberId)
                 .where("state", WithdrawState.Successful)
                 .asWhere("end_time >= ?", startDate)
                 .asWhere("end_time < ?", endDate)
                 .group("client_id, member_id")
                 .execute { rs ->
-                    val clientId = rs.getInt("client_id")
-                    val memberId = rs.getInt("member_id")
+                    val xClientId = rs.getInt("client_id")
+                    val xMemberId = rs.getInt("member_id")
                     val money = rs.getBigDecimal("money")
                     val count = rs.getInt("count")
-                    WithdrawReportVo(clientId = clientId, memberId = memberId, money = money, count = count)
+                    WithdrawReportVo(clientId = xClientId, memberId = xMemberId, money = money, count = count)
                 }
     }
 

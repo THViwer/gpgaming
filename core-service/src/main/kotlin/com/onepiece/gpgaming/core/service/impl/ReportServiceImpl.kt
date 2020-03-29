@@ -64,30 +64,32 @@ class ReportServiceImpl(
         val endDate = startDate.plusDays(1)
         val now = LocalDateTime.now()
 
+        val queryClientId = if (memberId != null) memberDao.get(memberId).clientId else  null
+
         // 查询转入订单
-        val transferInQuery = TransferReportQuery(clientId = null, memberId = memberId, from = Platform.Center, to = null, startDate = startDate, endDate = endDate)
+        val transferInQuery = TransferReportQuery(clientId = queryClientId, memberId = memberId, from = Platform.Center, to = null, startDate = startDate, endDate = endDate)
         val transferInReports = transferOrderDao.memberReport(transferInQuery)
         val transferInMap = transferInReports.map { it.memberId to it }.toMap()
 
         // 查询转出订单
-        val transferOutQuery = TransferReportQuery(clientId = null, memberId = memberId, from = null, to = Platform.Center, startDate = startDate, endDate = endDate)
+        val transferOutQuery = TransferReportQuery(clientId = queryClientId, memberId = memberId, from = null, to = Platform.Center, startDate = startDate, endDate = endDate)
         val transferOutReports = transferOrderDao.memberReport(transferOutQuery)
         val transferOutMap = transferOutReports.map { it.memberId to it }.toMap()
 
         // 充值报表
-        val depositReports = depositDao.report(startDate = startDate, endDate = endDate)
+        val depositReports = depositDao.report(clientId = queryClientId, memberId = memberId, startDate = startDate, endDate = endDate)
         val depositReportMap = depositReports.map { it.memberId to it }.toMap()
 
         // 取款报表
-        val withdrawReports = withdrawDao.report(startDate = startDate, endDate = endDate)
+        val withdrawReports = withdrawDao.report(clientId = queryClientId, memberId = memberId, startDate = startDate, endDate = endDate)
         val withdrawReportMap = withdrawReports.map { it.memberId to it }.toMap()
 
         // 人工提存
-        val mArtificialReports = artificialOrderDao.mReport(startDate = startDate)
+        val mArtificialReports = artificialOrderDao.mReport(clientId = queryClientId, memberId = memberId, startDate = startDate)
         val mArtificialReportMap = mArtificialReports.map { it.memberId to it }.toMap()
 
         // 平台报表
-        val betReports = betOrderDao.mreport(startDate = startDate)
+        val betReports = betOrderDao.mreport(clientId = queryClientId, memberId = memberId, startDate = startDate)
         val betMap = betReports.groupBy { it.memberId }
 
 
@@ -112,7 +114,7 @@ class ReportServiceImpl(
             }?: emptyList()
 
             val clientId = when {
-                memberId != null -> memberDao.get(memberId).clientId
+                memberId != null -> queryClientId!!
                 transferInReport != null -> transferInReport.clientId
                 transferOutReport != null -> transferOutReport.clientId
                 depositReport != null -> depositReport.clientId
@@ -217,7 +219,7 @@ class ReportServiceImpl(
         val memberReportMap = memberDao.report(clientId = clientId, startDate = startDate, endDate = endDate)
 
         // 人工提存报表
-        val artificialReports = artificialOrderDao.mReport(startDate = startDate)
+        val artificialReports = artificialOrderDao.cReport(startDate = startDate)
         val artificialReportMap = artificialReports.map { it.clientId to it }.toMap()
 
         // 查询输赢

@@ -24,7 +24,7 @@ interface WithdrawDao: BasicDao<Withdraw> {
 
     fun check(orderUo: WithdrawUo): Boolean
 
-    fun report(startDate: LocalDate, endDate: LocalDate): List<WithdrawReportVo>
+    fun report(clientId: Int?, memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<WithdrawReportVo>
 
     fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientWithdrawReportVo>
 

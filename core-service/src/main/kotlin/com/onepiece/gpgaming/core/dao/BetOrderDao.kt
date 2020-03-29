@@ -39,7 +39,7 @@ interface BetOrderDao: BasicDao<BetOrder> {
 
     fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderReport>
 
-    fun mreport(startDate: LocalDate): List<BetReportValue.MBetReport>
+    fun mreport(clientId: Int?, memberId: Int?, startDate: LocalDate): List<BetReportValue.MBetReport>
 
     fun creport(startDate: LocalDate): List<BetReportValue.CBetReport>
 
