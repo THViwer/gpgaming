@@ -132,7 +132,9 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/png/order",
                         "/png/order/",
                         "/api/auth",
-                        "/api/auth/"
+                        "/api/auth/",
+
+                        "/pay/**"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, "/order").permitAll()
                 // 对于获取token的rest api要允许匿名访问
