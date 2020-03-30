@@ -48,6 +48,12 @@ data class ClientDailyReport(
         // 人工提存次数
         val artificialCount: Int,
 
+        // 第三方充值金额
+        val thirdPayMoney: BigDecimal,
+
+        // 第三方充值总数
+        val thirdPayCount: Int,
+
         // 今日新增用户
         val newMemberCount: Int,
 

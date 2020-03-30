@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
+import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.WithdrawState
@@ -11,6 +12,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.BankVo
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientBankVo
 import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
+import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
 import com.onepiece.gpgaming.player.controller.value.BalanceVo
 import com.onepiece.gpgaming.player.controller.value.CashDepositResp
@@ -63,6 +65,24 @@ interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "厅主银行卡列表")
     fun clientBanks(): List<ClientBankVo>
+
+    @ApiOperation(tags = ["cash"], value = "第三方充值 -> 列表")
+    fun thirdPay(): List<ThirdPayValue.SupportPay>
+
+    @ApiOperation(tags = ["cash"], value = "第三方充值 -> 选择支付")
+    fun selectPay(
+            @RequestParam("payId") payId: Int,
+            @RequestParam("amount") amount: BigDecimal,
+            @RequestParam("responseUrl") responseUrl: String
+    ): ThirdPayValue.SelectPayResult
+
+    @ApiOperation(tags = ["cash"], value = "第三方充值 -> 列表")
+    fun pays(
+            @RequestParam(value = "orderId", required = false) orderId: String?,
+            @RequestParam(value = "state", required = false) state: PayState?,
+            @RequestParam(value = "current", defaultValue = "0") current: Int,
+            @RequestParam(value = "size", defaultValue = "10") size: Int
+    ): Page<ThirdPayValue.OrderVo>
 
     @ApiOperation(tags = ["cash"], value = "充值列表")
     fun deposit(
@@ -137,5 +157,6 @@ interface CashApi {
             @RequestHeader("language") language: Language,
             @RequestParam("category", required = false) category: PlatformCategory?
     ): List<BalanceVo>
+
 
 }

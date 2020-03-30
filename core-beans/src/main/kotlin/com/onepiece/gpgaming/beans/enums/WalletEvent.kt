@@ -2,6 +2,9 @@ package com.onepiece.gpgaming.beans.enums
 
 enum class WalletEvent {
 
+    // 第三方支付
+    ThirdPay,
+
     // 充值
     DEPOSIT,
 

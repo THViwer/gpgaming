@@ -39,6 +39,7 @@ class WalletServiceImpl(
 
         val state = when (walletUo.event) {
 
+            WalletEvent.ThirdPay,
             WalletEvent.DEPOSIT -> {
                 val walletDepositUo = WalletDepositUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
                 walletDao.deposit(walletDepositUo)
@@ -82,6 +83,7 @@ class WalletServiceImpl(
                 money = BigDecimal.ZERO
                 afterMoney = wallet.balance
             }
+            WalletEvent.ThirdPay,
             WalletEvent.DEPOSIT,
             WalletEvent.WITHDRAW_FAIL,
             WalletEvent.TRANSFER_IN,

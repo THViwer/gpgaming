@@ -1,17 +1,21 @@
 package com.onepiece.gpgaming.core
 
+import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.TTGClientToken
 import com.onepiece.gpgaming.core.service.PlatformBindService
+import com.onepiece.gpgaming.utils.RedisService
 import com.onepiece.gpgaming.utils.StringUtil
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Component
 class OrderIdBuilder(
-        private val platformBindService: PlatformBindService
+        private val platformBindService: PlatformBindService,
+        private val redisService: RedisService
 ) {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")
@@ -61,6 +65,30 @@ class OrderIdBuilder(
 
     fun generatorArtificialOrderId(): String {
         return "AB${getCurrentTime()}${StringUtil.generateNumNonce(2)}"
+    }
+
+    private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+
+    fun generatorPayOrderId(clientId: Int): String {
+        val redisKey = "payId:${LocalDate.now()}:$clientId"
+        val id = redisService.increase(key = redisKey, timeout = 30 * 3600)
+
+        val now = LocalDateTime.now()
+
+        val autoId = when ("$id".length) {
+            1 -> "0000$id"
+            2 -> "000$id"
+            3 -> "00$id"
+            4 -> "0$id"
+            else -> "$id"
+        }
+
+        val autoClientId = when {
+            clientId < 10 -> "0$clientId"
+            else -> "$clientId"
+        }
+
+        return "P${autoClientId}${now.format(dateTimeFormatter)}$autoId"
     }
 
 

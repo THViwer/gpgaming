@@ -52,4 +52,6 @@ object OnePieceRedisKeyConstant {
     fun getHotGames(clientId: Int) = "c:$clientId:hotGames"
 
     fun getSeo(clientId: Int) = "seo:${clientId}"
+
+    fun getPayBinds(clientId: Int) = "pay:bind:$clientId"
 }

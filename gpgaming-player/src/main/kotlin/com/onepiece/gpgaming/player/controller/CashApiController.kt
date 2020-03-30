@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
+import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
@@ -22,6 +23,7 @@ import com.onepiece.gpgaming.beans.value.database.DepositCo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.MemberBankCo
 import com.onepiece.gpgaming.beans.value.database.MemberBankUo
+import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.beans.value.database.WalletNoteQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawCo
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
@@ -30,6 +32,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientBankVo
 import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
+import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
 import com.onepiece.gpgaming.core.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.ClientBankService
@@ -37,11 +40,15 @@ import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.MemberBankService
 import com.onepiece.gpgaming.core.service.MemberService
+import com.onepiece.gpgaming.core.service.PayBindService
+import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.core.service.WalletNoteService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
+import com.onepiece.gpgaming.payment.PayRequest
+import com.onepiece.gpgaming.payment.PayService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.BalanceVo
 import com.onepiece.gpgaming.player.controller.value.CashDepositResp
@@ -93,7 +100,10 @@ open class CashApiController(
         private val transferUtil: TransferUtil,
         private val i18nContentService: I18nContentService,
         private val objectMapper: ObjectMapper,
-        private val transferOrderService: TransferOrderService
+        private val transferOrderService: TransferOrderService,
+        private val payBindService: PayBindService,
+        private val payOrderService: PayOrderService,
+        private val payService: PayService
 ) : BasicController(), CashApi {
 
     private val log = LoggerFactory.getLogger(CashApiController::class.java)
@@ -199,6 +209,63 @@ open class CashApiController(
                                 grayLogo = bank.grayLogo)
                     }
                 }
+    }
+
+    @GetMapping("/thirdpay/pay")
+    override fun thirdPay(): List<ThirdPayValue.SupportPay> {
+
+        val current = this.current()
+        val member = memberService.getMember(current.id)
+
+        return payBindService.list(clientId = member.clientId).filter { it.levelId == null || it.levelId == member.levelId }
+                .map {
+                    ThirdPayValue.SupportPay(payId = it.id, payType = it.payType)
+                }
+    }
+
+    @PostMapping("/thirdpay/select")
+    override fun selectPay(
+            @RequestParam("payId") payId: Int,
+            @RequestParam("amount") amount: BigDecimal,
+            @RequestParam("responseUrl") responseUrl: String
+    ): ThirdPayValue.SelectPayResult {
+
+        val current = current()
+        val orderId = orderIdBuilder.generatorPayOrderId(clientId = current.clientId)
+
+        // 第三方支付
+        val bind = payBindService.get(clientId = current.clientId, id = payId)
+        val req = PayRequest(orderId = orderId, amount = amount, clientId = current.clientId, memberId = current.id, username = this.currentUsername(),
+                payConfig = bind.getConfig(objectMapper), responseUrl = responseUrl)
+        val map = payService.start(req)
+
+        // 生成订单
+        val payCo = PayOrderValue.PayOrderCo(clientId = current.clientId, memberId = current.id, username = this.currentUsername(), orderId = orderId,
+                amount = amount, payType = bind.payType)
+        payOrderService.create(payCo)
+
+        return ThirdPayValue.SelectPayResult(data = map)
+    }
+
+    @PostMapping("/thirdpay/order")
+    override fun pays(
+            @RequestParam(value = "orderId", required = false) orderId: String?,
+            @RequestParam(value = "state", required = false) state: PayState?,
+            @RequestParam(value = "current", defaultValue = "0") current: Int,
+            @RequestParam(value = "size", defaultValue = "10") size: Int
+    ): Page<ThirdPayValue.OrderVo> {
+
+        val member = current()
+
+        val query = PayOrderValue.PayOrderQuery(clientId = member.clientId, memberId = member.clientId, state = state, orderId = orderId,
+                username = null, current = current, size = size, payType = null, startDate = null, endDate = null)
+        val page = payOrderService.page(query = query)
+        if (page.total == 0) return Page.empty()
+
+        val list = page.data.map {
+            ThirdPayValue.OrderVo(orderId = it.orderId, payType = it.payType, state = it.state, createdTime = it.createdTime)
+        }
+        return Page.of(total = page.total, data = list)
     }
 
     @PostMapping("/upload/proof")

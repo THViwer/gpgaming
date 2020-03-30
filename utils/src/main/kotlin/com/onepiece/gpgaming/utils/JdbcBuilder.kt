@@ -194,6 +194,15 @@ class Query(
         return this
     }
 
+    fun asWhere(k: String, execute: Boolean): Query {
+
+        if (execute) {
+            columns.add(k)
+        }
+        return this
+
+    }
+
     fun group(groupBy: String): Query {
         this.groupBy = groupBy
         return this

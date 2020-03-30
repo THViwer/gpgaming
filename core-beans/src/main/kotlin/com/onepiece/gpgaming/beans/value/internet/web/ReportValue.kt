@@ -70,6 +70,18 @@ sealed class ReportValue {
                 return data.sumByDouble { it.artificialMoney.toDouble() }.toBigDecimal().setScale(2, 2)
             }
 
+        val totalThirdPayMoney: BigDecimal
+            @ApiModelProperty("总三方充值金额")
+            get() {
+                return data.sumByDouble { it.thirdPayMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+            }
+
+        val totalThirdPayCount: Int
+            @ApiModelProperty("总三方充值次数")
+            get() {
+                return data.sumBy { it.thirdPayCount }
+            }
+
         val totalArtificialCount: Int
             @ApiModelProperty("总人工提存次数")
             get() {
@@ -149,6 +161,18 @@ sealed class ReportValue {
             @ApiModelProperty("总新增人数")
             get() {
                 return data.sumBy { it.newMemberCount }
+            }
+
+        val totalThirdPayMoney: BigDecimal
+            @ApiModelProperty("总三方充值金额")
+            get() {
+                return data.sumByDouble { it.thirdPayMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+            }
+
+        val totalThirdPayCount: Int
+            @ApiModelProperty("总新增人数")
+            get() {
+                return data.sumBy { it.thirdPayCount }
             }
 
         val totalArtificialMoney: BigDecimal

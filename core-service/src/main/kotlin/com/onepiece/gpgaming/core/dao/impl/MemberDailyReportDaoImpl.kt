@@ -35,11 +35,14 @@ class MemberDailyReportDaoImpl(
             val totalBet = rs.getBigDecimal("total_bet")
             val totalMWin = rs.getBigDecimal("total_m_win")
             val settles = rs.getString("settles").let { objectMapper.readValue<List<MemberDailyReport.PlatformSettle>>(it) }
+            val thirdPayMoney = rs.getBigDecimal("third_pay_money")
+            val thirdPayCount = rs.getInt("third_pay_count")
 
             MemberDailyReport(id = id, day = day, clientId = clientId, memberId = memberId,
                     transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney,
                     createdTime = createdTime, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
-                    depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, totalMWin = totalMWin)
+                    depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, totalMWin = totalMWin,
+                    thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount)
         }
 
     override fun create(reports: List<MemberDailyReport>) {
@@ -59,6 +62,8 @@ class MemberDailyReportDaoImpl(
                 .set("total_bet")
                 .set("total_m_win")
                 .set("settles")
+                .set("third_pay_money")
+                .set("third_pay_count")
                 .execute { ps, entity ->
                     var index = 0
                     ps.setDate(++index, Date.valueOf(entity.day))
@@ -75,6 +80,8 @@ class MemberDailyReportDaoImpl(
                     ps.setBigDecimal(++index, entity.totalBet)
                     ps.setBigDecimal(++index, entity.totalMWin)
                     ps.setString(++index, objectMapper.writeValueAsString(entity.settles))
+                    ps.setBigDecimal(++index, entity.thirdPayMoney)
+                    ps.setInt(++index, entity.thirdPayCount)
                 }
 
     }

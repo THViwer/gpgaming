@@ -1,7 +1,21 @@
 package com.onepiece.gpgaming.beans.enums
 
-enum class PayType {
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.onepiece.gpgaming.beans.model.pay.M3PayConfig
+import com.onepiece.gpgaming.beans.model.pay.PayConfig
 
-    M3Pay
+enum class PayType(val logo: String){
+
+    M3Pay("http");
+
+    fun readConfig(data: String, objectMapper: ObjectMapper): PayConfig {
+        return when  (this) {
+            M3Pay -> objectMapper.readValue<M3PayConfig>(data)
+            else -> error("不支持类型")
+        }
+
+
+    }
 
 }

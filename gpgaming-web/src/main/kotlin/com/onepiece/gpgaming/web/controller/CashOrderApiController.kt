@@ -2,16 +2,21 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.DepositState
+import com.onepiece.gpgaming.beans.enums.PayState
+import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
-import com.onepiece.gpgaming.beans.model.Wallet
+import com.onepiece.gpgaming.beans.model.PayBind
+import com.onepiece.gpgaming.beans.model.PayOrder
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderCo
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderQuery
 import com.onepiece.gpgaming.beans.value.database.DepositLockUo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
+import com.onepiece.gpgaming.beans.value.database.PayBindValue
+import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
 import com.onepiece.gpgaming.beans.value.internet.web.ArtificialCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
@@ -24,6 +29,8 @@ import com.onepiece.gpgaming.core.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.ArtificialOrderService
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.MemberService
+import com.onepiece.gpgaming.core.service.PayBindService
+import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.core.service.WalletService
@@ -31,11 +38,13 @@ import com.onepiece.gpgaming.core.service.WithdrawService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @RestController
@@ -49,7 +58,9 @@ class CashOrderApiController(
         private val transferOrderService: TransferOrderService,
         private val memberService: MemberService,
         private val walletService: WalletService,
-        private val transferUtil: TransferUtil
+        private val transferUtil: TransferUtil,
+        private val payOrderService: PayOrderService,
+        private val payBindService: PayBindService
 ) : BasicController(), CashOrderApi {
 
 
@@ -324,5 +335,50 @@ class CashOrderApiController(
     override fun retrieve(@RequestParam("memberId") memberId: Int): List<CashValue.BalanceAllInVo> {
         val member = memberService.getMember(memberId)
         return transferUtil.transferInAll(clientId = member.clientId, memberId = memberId, username = member.username)
+    }
+
+
+    @GetMapping("/payBind")
+    override fun payBind(): List<PayBind> {
+        return payBindService.list(clientId = this.getClientId())
+    }
+
+    @PostMapping("/payBind")
+    override fun payBindCreate(@RequestBody req: PayBindValue.PayBindCo) {
+        payBindService.create(req.copy(clientId = this.getClientId()))
+    }
+
+    @PutMapping("/payBind")
+    override fun payBindUpdate(@RequestBody req: PayBindValue.PayBindUo) {
+        payBindService.update(req.copy(clientId = this.getClientId()))
+    }
+
+    @GetMapping("/thirdpay")
+    override fun payOrder(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
+            @RequestParam("payType", required = false) payType: PayType?,
+            @RequestParam("orderId", required = false) orderId: String?,
+            @RequestParam("username", required = false) username: String?,
+            @RequestParam("state", required = false) state: PayState?
+    ): List<PayOrder> {
+        val user = this.current()
+
+        val query = PayOrderValue.PayOrderQuery(clientId = user.clientId, memberId = null, username = username,
+                state = state, startDate = startDate, endDate = endDate, current = 0, size = 500, orderId = orderId,
+                payType = payType)
+        return payOrderService.query(query)
+    }
+
+    @PutMapping("/thirdpay")
+    override fun thirdPayCheck(
+            @RequestParam("orderId") orderId: String,
+            @RequestParam("remark") remark: String
+    ) {
+
+        val user = this.current()
+
+        val uo = PayOrderValue.ConstraintUo(orderId = orderId, operatorId = user.id, operatorUsername = user.username, remark = remark)
+        payOrderService.check(uo)
     }
 }

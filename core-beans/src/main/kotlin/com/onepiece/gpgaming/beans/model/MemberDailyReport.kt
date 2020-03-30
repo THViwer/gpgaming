@@ -49,6 +49,12 @@ data class MemberDailyReport(
         // 人工提存次数
         val artificialCount: Int,
 
+        // 自动入款金额
+        val thirdPayMoney: BigDecimal,
+
+        // 自动入款次数
+        val thirdPayCount: Int,
+
         // 取款金额
         val withdrawMoney: BigDecimal,
 

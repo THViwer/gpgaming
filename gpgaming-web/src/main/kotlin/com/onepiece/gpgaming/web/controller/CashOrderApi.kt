@@ -2,13 +2,18 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.DepositState
+import com.onepiece.gpgaming.beans.enums.PayState
+import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
-import com.onepiece.gpgaming.beans.model.Wallet
+import com.onepiece.gpgaming.beans.model.PayBind
+import com.onepiece.gpgaming.beans.model.PayOrder
+import com.onepiece.gpgaming.beans.value.database.PayBindValue
 import com.onepiece.gpgaming.beans.value.internet.web.ArtificialCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.DepositUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
+import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
@@ -19,6 +24,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Api(tags = ["cash"], description = "现金管理")
@@ -102,5 +108,37 @@ interface CashOrderApi {
 
     @ApiOperation(tags = ["cash"], value = "用户 -> 回收金额")
     fun retrieve(@RequestParam("memberId") memberId: Int): List<CashValue.BalanceAllInVo>
+
+
+    @ApiOperation(tags = ["cash"], value = "支付平台 -> 列表")
+    fun payBind(): List<PayBind>
+
+    @ApiOperation(tags = ["cash"], value = "支付平台 -> 创建")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun payBindCreate(@RequestBody req: PayBindValue.PayBindCo)
+
+    @ApiOperation(tags = ["cash"], value = "支付平台 -> 更新")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun payBindUpdate(@RequestBody req: PayBindValue.PayBindUo)
+
+
+
+
+    @ApiOperation(tags = ["cash"], value = "第三方订单 -> 列表")
+    fun payOrder(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
+            @RequestParam("payType", required = false) payType: PayType?,
+            @RequestParam("orderId", required = false) orderId: String?,
+            @RequestParam("username", required = false) username: String?,
+            @RequestParam("state", required = false) state: PayState?
+    ): List<PayOrder>
+
+    @ApiOperation(tags = ["cash"], value = "第三方订单 -> 入款")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun thirdPayCheck(
+            @RequestParam("orderId") orderId: String,
+            @RequestParam("remark") remark: String
+    )
 
 }

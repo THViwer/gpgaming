@@ -31,12 +31,14 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
             val status = rs.getString("status").let { Status.valueOf(it) }
             val totalBet = rs.getBigDecimal("total_bet")
             val totalMWin = rs.getBigDecimal("total_m_win")
+            val thirdPayMoney = rs.getBigDecimal("third_pay_money")
+            val thirdPayCount = rs.getInt("third_pay_count")
 
             ClientDailyReport(id = id, day = day, clientId = clientId, transferIn = transferIn, transferOut = transferOut,
                     depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
                     withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
                     promotionAmount = promotionAmount, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
-                    totalBet = totalBet, totalMWin = totalMWin)
+                    totalBet = totalBet, totalMWin = totalMWin, thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount)
         }
 
     override fun create(reports: List<ClientDailyReport>) {
@@ -55,6 +57,8 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                 .set("new_member_count")
                 .set("total_bet")
                 .set("total_m_win")
+                .set("third_pay_money")
+                .set("third_pay_count")
                 .execute { ps, entity ->
                     var x = 0
                     ps.setDate(++x, Date.valueOf(entity.day))
@@ -71,6 +75,8 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     ps.setInt(++x, entity.newMemberCount)
                     ps.setBigDecimal(++x, entity.totalBet)
                     ps.setBigDecimal(++x, entity.totalMWin)
+                    ps.setBigDecimal(++x, entity.thirdPayMoney)
+                    ps.setInt(++x, entity.thirdPayCount)
                 }
     }
 

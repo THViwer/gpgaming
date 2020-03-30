@@ -54,6 +54,12 @@ data class MemberReportWebVo(
         // 充值金额
         val depositMoney: BigDecimal,
 
+        // 第三方充值金额
+        val thirdPayMoney: BigDecimal,
+
+        // 第三方充值总数
+        val thirdPayCount: Int,
+
         // 取款金额
         val withdrawMoney: BigDecimal,
 
