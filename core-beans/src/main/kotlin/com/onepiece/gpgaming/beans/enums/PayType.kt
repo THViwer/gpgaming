@@ -7,7 +7,7 @@ import com.onepiece.gpgaming.beans.model.pay.PayConfig
 
 enum class PayType(val logo: String){
 
-    M3Pay("http");
+    M3Pay("https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/pussy888.png");
 
     fun readConfig(data: String, objectMapper: ObjectMapper): PayConfig {
         return when  (this) {
