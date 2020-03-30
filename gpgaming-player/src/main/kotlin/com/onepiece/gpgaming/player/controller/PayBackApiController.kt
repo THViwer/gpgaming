@@ -15,10 +15,11 @@ class PayBackApiController : PayBackApi {
 
     val log = LoggerFactory.getLogger(PayBackApiController::class.java)
 
-    @PostMapping("/m3pay")
+    @RequestMapping("/m3pay")
     override fun m3pay() {
         val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
 
+        log.info("请求方式：${request.method}")
         log.info("m3pay 开始解析")
 
         log.info("url param: ")
