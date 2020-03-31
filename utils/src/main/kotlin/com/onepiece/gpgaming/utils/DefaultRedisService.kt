@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.data.redis.core.RedisTemplate
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
 class DefaultRedisService(
@@ -28,8 +29,14 @@ class DefaultRedisService(
             if (data.isNotEmpty()) this.put(key, data, timeout)
             data
         } else {
-            val javaType = objectMapper.typeFactory.constructCollectionType(List::class.java, clz)
-            objectMapper.readValue(json, javaType)
+            try {
+                val javaType = objectMapper.typeFactory.constructCollectionType(List::class.java, clz)
+                return objectMapper.readValue(json, javaType)
+            } catch (e: Exception) {
+                val data = function()
+                if (data.isNotEmpty()) this.put(key, data, timeout)
+                data
+            }
         }
 
     }
@@ -53,8 +60,15 @@ class DefaultRedisService(
             }
             data
         } else {
-            objectMapper.readValue(json, clz)
-
+            try {
+                objectMapper.readValue(json, clz)
+            } catch (e: Exception) {
+                val data = function()
+                if (data != null) {
+                    this.put(key = key, value = data as Any, timeout = timeout)
+                }
+                data
+            }
         }
     }
 

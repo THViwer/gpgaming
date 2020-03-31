@@ -32,7 +32,10 @@ data class LevelUoReq(
         val name: String?,
 
         @ApiModelProperty("状态")
-        val status: Status?
+        val status: Status?,
+
+        @ApiModelProperty("返水比例")
+        val backwater: BigDecimal?
 )
 
 data class LevelMemberQuery(
@@ -100,7 +103,10 @@ data class LevelMemberVo(
 data class LevelCoReq(
 
         @ApiModelProperty("名称")
-        val name: String
+        val name: String,
+
+        @ApiModelProperty("返水比例")
+        val backwater: BigDecimal
 
 )
 

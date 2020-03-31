@@ -18,14 +18,17 @@ class LevelDaoImpl: BasicDaoImpl<Level>("level"), LevelDao {
             val clientId = rs.getInt("client_id")
             val name = rs.getString("name")
             val status = rs.getString("status").let { Status.valueOf(it) }
+            val backwater = rs.getBigDecimal("backwater")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            Level(id = id, clientId = clientId, name = name, status = status, createdTime = createdTime)
+            Level(id = id, clientId = clientId, name = name, status = status, createdTime = createdTime,
+                    backwater = backwater)
         }
 
     override fun create(levelCo: LevelCo): Boolean {
         return insert()
                 .set("client_id", levelCo.clientId)
                 .set("name", levelCo.name)
+                .set("backwater", levelCo.backwater)
                 .executeOnlyOne()
     }
 
@@ -33,6 +36,7 @@ class LevelDaoImpl: BasicDaoImpl<Level>("level"), LevelDao {
         return update()
                 .set("name", levelUo.name)
                 .set("status", levelUo.status)
+                .set("backwater", levelUo.backwater)
                 .where("id", levelUo.id)
                 .executeOnlyOne()
     }

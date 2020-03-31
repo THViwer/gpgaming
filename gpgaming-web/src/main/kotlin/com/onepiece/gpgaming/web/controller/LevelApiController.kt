@@ -51,13 +51,13 @@ class LevelApiController(
     @PostMapping
     override fun create(@RequestBody levelCoReq: LevelCoReq) {
         val clientId = getClientId()
-        val levelCo = LevelCo(clientId = clientId, name = levelCoReq.name)
+        val levelCo = LevelCo(clientId = clientId, name = levelCoReq.name, backwater = levelCoReq.backwater)
         levelService.create(levelCo)
     }
 
     @PutMapping
     override fun update(@RequestBody levelUoReq: LevelUoReq) {
-        val levelUo = LevelUo(id = levelUoReq.id, name = levelUoReq.name, status = levelUoReq.status)
+        val levelUo = LevelUo(id = levelUoReq.id, name = levelUoReq.name, status = levelUoReq.status, backwater = levelUoReq.backwater)
         levelService.update(levelUo)
     }
 
