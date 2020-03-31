@@ -35,7 +35,7 @@ class PayBindDaoImpl(
         return insert()
                 .set("client_id", co.clientId)
                 .set("level_id", co.levelId)
-                .set("payType", co.payType)
+                .set("pay_type", co.payType)
                 .set("config", co.configJson)
                 .set("status", co.status)
                 .executeOnlyOne()
