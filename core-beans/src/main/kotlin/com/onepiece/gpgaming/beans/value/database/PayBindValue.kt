@@ -3,7 +3,6 @@ package com.onepiece.gpgaming.beans.value.database
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.enums.Status
-import com.onepiece.gpgaming.beans.model.pay.PayConfig
 
 sealed class PayBindValue {
 
@@ -20,7 +19,7 @@ sealed class PayBindValue {
             val payType: PayType,
 
             // 支付配置
-            val config: PayConfig,
+            val configJson: String,
 
             // 状态
             val status: Status
@@ -40,11 +39,12 @@ sealed class PayBindValue {
             val levelId: Int?,
 
             // 支付配置
-            val config: PayConfig?,
+            val configJson: String?,
 
             // 状态
             val status: Status?
     )
+
 
 
 }

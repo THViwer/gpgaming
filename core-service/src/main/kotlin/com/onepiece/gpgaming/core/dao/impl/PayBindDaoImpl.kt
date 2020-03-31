@@ -36,7 +36,7 @@ class PayBindDaoImpl(
                 .set("client_id", co.clientId)
                 .set("level_id", co.levelId)
                 .set("payType", co.payType)
-                .set("config", objectMapper.writeValueAsString(co.config))
+                .set("config", co.configJson)
                 .set("status", co.status)
                 .executeOnlyOne()
     }
@@ -44,7 +44,7 @@ class PayBindDaoImpl(
     override fun update(uo: PayBindValue.PayBindUo): Boolean {
         return update()
                 .set("level_id", uo.levelId)
-                .set("config", objectMapper.writeValueAsString(uo.config))
+                .set("config", uo.configJson)
                 .set("status", uo.status)
                 .where("id", uo.id)
                 .executeOnlyOne()
