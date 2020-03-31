@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.BankVo
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientBankVo
 import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
+import com.onepiece.gpgaming.beans.value.internet.web.SelectPayVo
 import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
 import com.onepiece.gpgaming.player.controller.value.BalanceVo
@@ -62,6 +63,9 @@ interface CashApi {
     @ApiOperation(tags = ["cash"], value = "银行修改")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun bankUpdate(@RequestBody memberBankUoReq: MemberBankUoReq)
+
+    @ApiOperation(tags = ["cash"], value = "支付银行和第三方支付列表")
+    fun payList(): SelectPayVo
 
     @ApiOperation(tags = ["cash"], value = "厅主银行卡列表")
     fun clientBanks(): List<ClientBankVo>

@@ -18,6 +18,8 @@ sealed class ThirdPayValue {
 
         // 支付logo
         val logo: String = payType.logo
+
+        val greyLogo: String = payType.greyLogo
     }
 
     data class SelectPayResult(

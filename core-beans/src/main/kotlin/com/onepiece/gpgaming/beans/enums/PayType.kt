@@ -5,9 +5,14 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.model.pay.M3PayConfig
 import com.onepiece.gpgaming.beans.model.pay.PayConfig
 
-enum class PayType(val logo: String){
+enum class PayType(
+        val greyLogo: String,
+        val logo: String
+){
 
-    M3Pay("https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/pussy888.png");
+    M3Pay(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/m3pay_gray.png",
+            logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/m3pay_ori.png"
+    );
 
     fun readConfig(data: String, objectMapper: ObjectMapper): PayConfig {
         return when  (this) {

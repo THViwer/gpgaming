@@ -149,7 +149,7 @@ fun main() {
 //    val path = AwsS3Util.uploadLocalFile(file, "client/1/sport/s2.png")
 //    println(path)
 
-    val file = File("/Users/cabbage/Downloads/mobile")
+    val file = File("/Users/cabbage/Downloads/paylogo")
     val list = file.listFiles().map { file ->
         val url = AwsS3Util.uploadLocalFile(file, "bank/logo/${file.name.replace(" ", "")}")
         file.name to url

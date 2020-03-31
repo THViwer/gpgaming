@@ -32,6 +32,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientBankVo
 import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
+import com.onepiece.gpgaming.beans.value.internet.web.SelectPayVo
 import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
 import com.onepiece.gpgaming.core.OrderIdBuilder
@@ -191,6 +192,15 @@ open class CashApiController(
         val memberBankUo = MemberBankUo(id = memberBankUoReq.id, bank = memberBankUoReq.bank, bankCardNumber = memberBankUoReq.bankCardNumber,
                 status = memberBankUoReq.status)
         memberBankService.update(memberBankUo)
+    }
+
+    @GetMapping("/pays")
+    override fun payList(): SelectPayVo {
+
+        val banks = this.clientBanks()
+        val thirdPays  = this.thirdPay()
+
+        return SelectPayVo(banks = banks, thirdPays = thirdPays)
     }
 
     @GetMapping("/bank/client")
