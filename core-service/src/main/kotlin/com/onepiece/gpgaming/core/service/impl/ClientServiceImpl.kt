@@ -33,6 +33,7 @@ import org.springframework.context.annotation.Lazy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Service
@@ -93,7 +94,7 @@ class ClientServiceImpl(
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // create default level
-        val levelCo = LevelCo(clientId = id, name = "default")
+        val levelCo = LevelCo(clientId = id, name = "default", backwater = BigDecimal.ZERO)
         levelService.create(levelCo)
 
         // create own balance
