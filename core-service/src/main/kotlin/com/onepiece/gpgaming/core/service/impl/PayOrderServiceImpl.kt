@@ -55,17 +55,21 @@ class PayOrderServiceImpl(
 
         // 查询订单
         val order = payOrderDao.find(orderId = orderId)
-        if (order.state == PayState.Process) return
+        if (order.state == PayState.Successful) return
 
         // 更新支付订单
         val flag = payOrderDao.successful(orderId, thirdOrderId)
         check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
-        // 更新饭钱
+        // 更新钱包
         val walletUo = WalletUo(clientId = order.clientId, waiterId = null, memberId = order.memberId, money = order.amount, giftBalance = null,
                 event = WalletEvent.ThirdPay, eventId = order.orderId, remarks = "system auto pay")
         walletService.update(walletUo = walletUo)
 
+    }
+
+    override fun failed(orderId: String) {
+        payOrderDao.failed(orderId)
     }
 
     override fun close(closeTime: LocalDateTime) {
