@@ -20,8 +20,8 @@ enum class PermissionType(
     CASH_DEPOSIT_HISTORY("2000", "2300", "充值审核", "充值审核"),
     CASH_WITHDRAW_HISTORY("2000", "2400", "提款审核", "提款审核"),
     CASH_ARTIFICIAL("2000", "2500", "人工提存", "人工提存"),
-    CASH_BANK_MANAGER("2000", "2688", "银行卡管理", "银行卡管理"),
-    CASH_TRANSFER_ORDER("2000", "2688", "转账单订单", "转账单订单"),
+    CASH_BANK_MANAGER("2000", "2600", "银行卡管理", "银行卡管理"),
+    CASH_TRANSFER_ORDER("2000", "2700", "转账单订单", "转账单订单"),
 
     // 注单管理
     BET_MANAGE("-1", "3000", "注单管理", "注单管理"),
