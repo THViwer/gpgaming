@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.PayType
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 sealed class ThirdPayValue {
@@ -35,6 +36,9 @@ sealed class ThirdPayValue {
 
             // 充值平台
             val payType: PayType,
+
+            // 金额
+            val amount: BigDecimal,
 
             // 支付张台
             val state: PayState,
