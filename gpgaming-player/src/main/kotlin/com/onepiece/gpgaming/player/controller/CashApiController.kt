@@ -267,7 +267,7 @@ open class CashApiController(
 
         val member = current()
 
-        val query = PayOrderValue.PayOrderQuery(clientId = member.clientId, memberId = member.clientId, state = state, orderId = orderId,
+        val query = PayOrderValue.PayOrderQuery(clientId = member.clientId, memberId = member.id, state = state, orderId = orderId,
                 username = null, current = current, size = size, payType = null, startDate = null, endDate = null)
         val page = payOrderService.page(query = query)
         if (page.total == 0) return Page.empty()
