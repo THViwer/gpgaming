@@ -28,7 +28,7 @@ class M3PayService(
                 "MerchantCode" to config.memberCode,
                 "RefNo" to req.orderId,
                 "Amount" to req.amount.setScale(2, 2),
-                "Username" to req.username,
+                "UserName" to req.username,
                 "UserContact" to req.username,
                 "UseEmail" to "${req.username}@gmail.com",
                 "Signature" to sign,
