@@ -6,6 +6,8 @@ enum class PayState {
 
     Close,
 
-    Successful
+    Successful,
+
+    Failed
 
 }
