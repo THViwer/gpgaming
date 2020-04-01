@@ -43,7 +43,6 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
                 .where("member_id", query.memberId)
                 .where("username", query.username)
                 .where("state", query.state)
-                .sort(query.sortBy)
                 .count()
     }
 
