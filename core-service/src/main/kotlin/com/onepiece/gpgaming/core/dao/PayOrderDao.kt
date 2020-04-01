@@ -19,6 +19,8 @@ interface PayOrderDao {
 
     fun successful(orderId: String, thirdOrderId: String): Boolean
 
+    fun failed(orderId: String): Boolean
+
     fun close(closeTime: LocalDateTime)
 
     // 会员报表
