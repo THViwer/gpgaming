@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
+import java.lang.Exception
 
 
 @RestController
@@ -19,17 +20,6 @@ class PayBackApiController(
     @RequestMapping("/m3pay")
     override fun m3pay() {
         val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
-
-        /**
-         *
-         *  2020-03-30 18:36:48.536  INFO 22412 --- [nio-8002-exec-3] c.o.g.p.controller.PayBackApiController  : MerchantCode=T004
-        2020-03-30 18:36:48.536  INFO 22412 --- [nio-8002-exec-3] c.o.g.p.controller.PayBackApiController  : RefNo=fcf8ad055e
-        2020-03-30 18:36:48.537  INFO 22412 --- [nio-8002-exec-3] c.o.g.p.controller.PayBackApiController  : Amount=10.00
-        2020-03-30 18:36:48.537  INFO 22412 --- [nio-8002-exec-3] c.o.g.p.controller.PayBackApiController  : TransID=902644
-        2020-03-30 18:36:48.537  INFO 22412 --- [nio-8002-exec-3] c.o.g.p.controller.PayBackApiController  : Status=1
-        2020-03-30 18:36:48.537  INFO 22412 --- [nio-8002-exec-3] c.o.g.p.controller.PayBackApiController  : ErrDesc=
-        2020-03-30 18:36:48.537  INFO 22412 --- [nio-8002-exec-3] c.o.g.p.controller.PayBackApiController  : Signature=cc312120acae5a2605869e78149479b2dccedeb7bb65f24d20edf0e76330514b
-         */
 
         log.info("请求方式：${request.method}")
         log.info("m3pay 开始解析")
@@ -53,6 +43,16 @@ class PayBackApiController(
         val signature = request.getParameter("Signature")
 
         // check sign
-        payOrderService.successful(orderId = orderId, thirdOrderId = thirdOrderId)
+
+        try {
+            if (status == "0") {
+                payOrderService.failed(orderId = orderId)
+            } else {
+                payOrderService.successful(orderId = orderId, thirdOrderId = thirdOrderId)
+            }
+        } catch (e: Exception) {
+            log.info("支付请求失败", e)
+        }
+
     }
 }
