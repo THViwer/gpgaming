@@ -17,6 +17,9 @@ data class LevelVo(
         @ApiModelProperty("总人数")
         val total: Int,
 
+        @ApiModelProperty("反水比例")
+        val backwater: BigDecimal,
+
         @ApiModelProperty("状态")
         val status: Status,
 
