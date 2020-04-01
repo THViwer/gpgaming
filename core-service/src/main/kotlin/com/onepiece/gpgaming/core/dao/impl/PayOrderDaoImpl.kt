@@ -99,7 +99,14 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
                 .where("order_id", orderId)
                 .asWhere("state != ?", PayState.Successful)
                 .executeOnlyOne()
+    }
 
+    override fun failed(orderId: String): Boolean {
+        return update()
+                .set("state", PayState.Failed)
+                .where("order_id", orderId)
+                .asWhere("state != '${PayState.Successful.name}'")
+                .executeOnlyOne()
     }
 
     override fun close(closeTime: LocalDateTime) {
