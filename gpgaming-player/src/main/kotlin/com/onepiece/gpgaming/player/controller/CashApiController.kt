@@ -273,7 +273,8 @@ open class CashApiController(
         if (page.total == 0) return Page.empty()
 
         val list = page.data.map {
-            ThirdPayValue.OrderVo(orderId = it.orderId, payType = it.payType, state = it.state, createdTime = it.createdTime)
+            ThirdPayValue.OrderVo(orderId = it.orderId, payType = it.payType, state = it.state, createdTime = it.createdTime,
+                    amount = it.amount)
         }
         return Page.of(total = page.total, data = list)
     }
