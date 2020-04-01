@@ -30,7 +30,7 @@ class M3PayService(
                 "Amount" to req.amount.setScale(2, 2),
                 "UserName" to req.username,
                 "UserContact" to req.username,
-                "UseEmail" to "${req.username}@gmail.com",
+                "UserEmail" to "${req.username}@gmail.com",
                 "Signature" to sign,
                 "ResponseURL" to req.responseUrl,
                 "BackendURL" to config.backendURL
