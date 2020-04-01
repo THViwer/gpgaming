@@ -29,7 +29,8 @@ class M3PayService(
                 "RefNo" to req.orderId,
                 "Amount" to req.amount.setScale(2, 2),
                 "Username" to req.username,
-                "UserContact" to "${req.username}@gmail.com",
+                "UserContact" to req.username,
+                "UseEmail" to "${req.username}@gmail.com",
                 "Signature" to sign,
                 "ResponseURL" to req.responseUrl,
                 "BackendURL" to config.backendURL

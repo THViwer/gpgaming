@@ -27,6 +27,7 @@ interface LevelApi {
     fun create(@RequestBody levelCoReq: LevelCoReq)
 
     @ApiOperation(tags = ["user"], value = "层级 -> 更新")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody levelUoReq: LevelUoReq)
 
     @ApiOperation(tags = ["user"], value = "层级 -> 条件查询会员")
