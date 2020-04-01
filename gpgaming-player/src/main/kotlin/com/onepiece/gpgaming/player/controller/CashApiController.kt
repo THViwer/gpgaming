@@ -279,7 +279,7 @@ open class CashApiController(
 //        return Page.of(total = page.total, data = list)
 //    }
 
-    @GetMapping("/thirdpay/order")
+    @GetMapping("/topup")
     override fun pays(
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: PayState?
