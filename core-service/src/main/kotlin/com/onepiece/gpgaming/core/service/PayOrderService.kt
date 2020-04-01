@@ -17,6 +17,8 @@ interface PayOrderService  {
 
     fun successful(orderId: String, thirdOrderId: String)
 
+    fun failed(orderId: String)
+
     fun close(closeTime: LocalDateTime)
 
 }
