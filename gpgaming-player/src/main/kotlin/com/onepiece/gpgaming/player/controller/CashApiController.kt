@@ -257,7 +257,7 @@ open class CashApiController(
         return ThirdPayValue.SelectPayResult(data = map)
     }
 
-    @PostMapping("/thirdpay/order")
+    @GetMapping("/thirdpay/order")
     override fun pays(
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: PayState?,
