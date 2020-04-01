@@ -80,13 +80,19 @@ interface CashApi {
             @RequestParam("responseUrl") responseUrl: String
     ): ThirdPayValue.SelectPayResult
 
-    @ApiOperation(tags = ["cash"], value = "第三方充值 -> 列表")
+//    @ApiOperation(tags = ["cash"], value = "第三方充值 -> 列表")
+//    fun pays(
+//            @RequestParam(value = "orderId", required = false) orderId: String?,
+//            @RequestParam(value = "state", required = false) state: PayState?,
+//            @RequestParam(value = "current", defaultValue = "0") current: Int,
+//            @RequestParam(value = "size", defaultValue = "10") size: Int
+//    ): Page<ThirdPayValue.OrderVo>
+
+    @ApiOperation(tags = ["cash"], value = "充值列表 -> 第三方+转账")
     fun pays(
             @RequestParam(value = "orderId", required = false) orderId: String?,
-            @RequestParam(value = "state", required = false) state: PayState?,
-            @RequestParam(value = "current", defaultValue = "0") current: Int,
-            @RequestParam(value = "size", defaultValue = "10") size: Int
-    ): Page<ThirdPayValue.OrderVo>
+            @RequestParam(value = "state", required = false) state: PayState?
+    ): List<ThirdPayValue.OrderVo>
 
     @ApiOperation(tags = ["cash"], value = "充值列表")
     fun deposit(

@@ -257,26 +257,58 @@ open class CashApiController(
         return ThirdPayValue.SelectPayResult(data = map)
     }
 
+//    @GetMapping("/thirdpay/order")
+//    override fun pays(
+//            @RequestParam(value = "orderId", required = false) orderId: String?,
+//            @RequestParam(value = "state", required = false) state: PayState?,
+//            @RequestParam(value = "current", defaultValue = "0") current: Int,
+//            @RequestParam(value = "size", defaultValue = "10") size: Int
+//    ): Page<ThirdPayValue.OrderVo> {
+//
+//        val member = current()
+//
+//        val query = PayOrderValue.PayOrderQuery(clientId = member.clientId, memberId = member.id, state = state, orderId = orderId,
+//                username = null, current = current, size = size, payType = null, startDate = null, endDate = null)
+//        val page = payOrderService.page(query = query)
+//        if (page.total == 0) return Page.empty()
+//
+//        val list = page.data.map {
+//            ThirdPayValue.OrderVo(orderId = it.orderId, payType = it.payType, state = it.state, createdTime = it.createdTime,
+//                    amount = it.amount)
+//        }
+//        return Page.of(total = page.total, data = list)
+//    }
+
     @GetMapping("/thirdpay/order")
     override fun pays(
             @RequestParam(value = "orderId", required = false) orderId: String?,
-            @RequestParam(value = "state", required = false) state: PayState?,
-            @RequestParam(value = "current", defaultValue = "0") current: Int,
-            @RequestParam(value = "size", defaultValue = "10") size: Int
-    ): Page<ThirdPayValue.OrderVo> {
+            @RequestParam(value = "state", required = false) state: PayState?
+    ): List<ThirdPayValue.OrderVo> {
 
         val member = current()
 
         val query = PayOrderValue.PayOrderQuery(clientId = member.clientId, memberId = member.id, state = state, orderId = orderId,
-                username = null, current = current, size = size, payType = null, startDate = null, endDate = null)
+                username = null, current = 0, size = 200, payType = null, startDate = null, endDate = null)
         val page = payOrderService.page(query = query)
-        if (page.total == 0) return Page.empty()
-
-        val list = page.data.map {
-            ThirdPayValue.OrderVo(orderId = it.orderId, payType = it.payType, state = it.state, createdTime = it.createdTime,
+        val list1 = page.data.map {
+            ThirdPayValue.OrderVo(orderId = it.orderId, payType = it.payType.name, state = it.state.name, createdTime = it.createdTime,
                     amount = it.amount)
         }
-        return Page.of(total = page.total, data = list)
+
+        val depositState = when (state) {
+            PayState.Successful -> DepositState.Successful
+            PayState.Process -> DepositState.Process
+            PayState.Failed -> DepositState.Fail
+            PayState.Close -> DepositState.Close
+            else -> null
+        }
+        val deposits = this.deposit(orderId = orderId, state = depositState, current = 0, size = 200)
+        val list2 = deposits.data.map {
+            ThirdPayValue.OrderVo(orderId = it.orderId, payType = "Transfer", state = it.state.name, createdTime = it.createdTime,
+                    amount = it.money)
+        }
+
+        return list1.plus(list2).sortedByDescending { it.createdTime }
     }
 
     @PostMapping("/upload/proof")

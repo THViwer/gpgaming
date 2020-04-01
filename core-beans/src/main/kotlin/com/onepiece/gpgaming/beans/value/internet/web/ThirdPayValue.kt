@@ -35,13 +35,13 @@ sealed class ThirdPayValue {
             val orderId: String,
 
             // 充值平台
-            val payType: PayType,
+            val payType: String,
 
             // 金额
             val amount: BigDecimal,
 
             // 支付张台
-            val state: PayState,
+            val state: String,
 
             // 创建日期
             val createdTime: LocalDateTime
