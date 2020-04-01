@@ -20,6 +20,8 @@ enum class PermissionType(
     CASH_DEPOSIT_HISTORY("2000", "2300", "充值审核", "充值审核"),
     CASH_WITHDRAW_HISTORY("2000", "2400", "提款审核", "提款审核"),
     CASH_ARTIFICIAL("2000", "2500", "人工提存", "人工提存"),
+    CASH_BANK_MANAGER("2000", "2688", "银行卡管理", "银行卡管理"),
+    CASH_TRANSFER_ORDER("2000", "2688", "转账单订单", "转账单订单"),
 
     // 注单管理
     BET_MANAGE("-1", "3000", "注单管理", "注单管理"),
@@ -33,6 +35,7 @@ enum class PermissionType(
     WEBSITE_INDEX_VIDEO("4000", "4500", "首页视频", "首页视频"),
     WEBSITE_INDEX_SPORT("4000", "4600", "首页体育", "首页体育"),
     WEBSITE_INDEX_LIVE("4000", "4700", "首页真人", "首页真人"),
+    WEBSITE_SEO("4000", "4800", "搜索优化", "搜索优化"),
 
     // 报表
     REPORT_MANAGE("-1", "5000", "报表", "报表"),
