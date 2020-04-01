@@ -27,7 +27,7 @@ class M3PayService(
         return mapOf(
                 "MerchantCode" to config.memberCode,
                 "RefNo" to req.orderId,
-                "Amount" to req.amount.setScale(2, 2),
+                "Amount" to "${req.amount.setScale(2, 2)}",
                 "UserName" to req.username,
                 "UserContact" to req.username,
                 "UserEmail" to "${req.username}@gmail.com",
