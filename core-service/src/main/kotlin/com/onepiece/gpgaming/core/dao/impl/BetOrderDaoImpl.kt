@@ -146,10 +146,12 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 }?: 0
     }
 
-    override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderReport> {
+    override fun report(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<BetOrderReport> {
         return (0 until 8).map { index ->
             query(returnColumns = "client_id, platform, sum(bet_amount) as totalBet, sum(win_amount) as totalWin" ,defaultTable = "bet_order_$index")
                     .asWhere("settle_time > ?", startDate)
+                    .asWhere("settle_time < ?", endDate)
+                    .where("member_id", memberId)
                     .group("client_id, platform")
                     .execute { rs ->
 

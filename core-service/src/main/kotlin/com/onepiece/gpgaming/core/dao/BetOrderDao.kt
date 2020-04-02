@@ -37,7 +37,7 @@ interface BetOrderDao: BasicDao<BetOrder> {
 
     fun getLastNotMarkId(table: String): Int
 
-    fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderReport>
+    fun report(memberId: Int? = null, startDate: LocalDate, endDate: LocalDate): List<BetOrderReport>
 
     fun mreport(clientId: Int?, memberId: Int?, startDate: LocalDate): List<BetReportValue.MBetReport>
 

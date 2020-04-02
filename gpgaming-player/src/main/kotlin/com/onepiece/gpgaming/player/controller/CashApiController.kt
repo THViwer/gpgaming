@@ -23,6 +23,7 @@ import com.onepiece.gpgaming.beans.value.database.DepositCo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.MemberBankCo
 import com.onepiece.gpgaming.beans.value.database.MemberBankUo
+import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.beans.value.database.WalletNoteQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawCo
@@ -36,10 +37,12 @@ import com.onepiece.gpgaming.beans.value.internet.web.SelectPayVo
 import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
 import com.onepiece.gpgaming.core.OrderIdBuilder
+import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ClientBankService
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.MemberBankService
+import com.onepiece.gpgaming.core.service.MemberDailyReportService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PayBindService
 import com.onepiece.gpgaming.core.service.PayOrderService
@@ -66,6 +69,7 @@ import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
 import com.onepiece.gpgaming.player.controller.value.WithdrawCoReq
 import com.onepiece.gpgaming.player.jwt.JwtUser
 import com.onepiece.gpgaming.utils.AwsS3Util
+import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.transaction.annotation.Transactional
@@ -80,6 +84,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.stream.Collectors
@@ -104,7 +109,9 @@ open class CashApiController(
         private val transferOrderService: TransferOrderService,
         private val payBindService: PayBindService,
         private val payOrderService: PayOrderService,
-        private val payService: PayService
+        private val payService: PayService,
+        private val memberDailyReportService: MemberDailyReportService,
+        private val betOrderService: BetOrderService
 ) : BasicController(), CashApi {
 
     private val log = LoggerFactory.getLogger(CashApiController::class.java)
@@ -725,12 +732,22 @@ open class CashApiController(
         // 查询用户开通的平台列表
         val platformMemberMap = platformMemberService.findPlatformMember(memberId = memberId).map { it.platform to it }.toMap()
 
+        // 查询周打码量
+        val today = LocalDate.now()
+        val startDate = today.with(DayOfWeek.MONDAY)
+        val endDate = today.with(DayOfWeek.SUNDAY).plusDays(1)
+        val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
+        val reports = memberDailyReportService.query(query)
+        val todayReport = betOrderService.report(memberId = memberId, startDate = today, endDate = today.plusDays(1))
+                .map { it.platform to it.totalBet }.toMap()
+        val reportMap = reports.map { it.settles }.reduce { acc, list ->  acc.plus(list)}.groupBy { it.platform }
+                .map { it.key to (it.value.sumByDouble { a -> a.bet.toDouble() }.toBigDecimal().setScale(2, 2)) }.toMap()
+
 
         // 查询余额 //TODO 暂时用简单的异步去处理
         val balances = platforms.filter { category == null || it.platform.category == category }.parallelStream().map {
 
             val watch = System.currentTimeMillis()
-
             val platformMember = platformMemberMap[it.platform]
 
             when (platformMember == null) {
@@ -743,13 +760,20 @@ open class CashApiController(
                         BigDecimal.valueOf(-1)
                     }
 
+                    // 查询总下注金额
                     val totalBet = when (it.platform) {
                         Platform.Kiss918, Platform.Pussy888, Platform.Mega -> BigDecimal.valueOf(-1)
                         else -> platformMember.totalBet
                     }
 
+                    // 查询本周下注金额
+                    val historyBet = reportMap[it.platform] ?: BigDecimal.ZERO
+                    val todayBet = todayReport[it.platform] ?: BigDecimal.ZERO
+
+
                     val (transfer, tips) = this.checkCanTransferOutAndTips(platformMember = platformMember, platformBalance = platformBalance, language = language)
-                    BalanceVo(platform = it.platform, balance = platformBalance, transfer = transfer, tips = tips, centerBalance = wallet.balance, totalBet = totalBet)
+                    BalanceVo(platform = it.platform, balance = platformBalance, transfer = transfer, tips = tips, centerBalance = wallet.balance, totalBet = totalBet,
+                            weekBet = historyBet.plus(todayBet))
                 }
             }.let {
                 log.info("平台：${it.platform}, 查询余额耗时：${System.currentTimeMillis() - watch}ms")
@@ -783,6 +807,7 @@ open class CashApiController(
     }
 
 }
+
 
 
 

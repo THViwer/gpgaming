@@ -210,7 +210,10 @@ data class BalanceVo(
         val tips: String?,
 
         @ApiModelProperty("总打码量")
-        val totalBet: BigDecimal
+        val totalBet: BigDecimal,
+
+        @ApiModelProperty("周打码量")
+        val weekBet: BigDecimal = BigDecimal.ZERO
 
 //        @ApiModelProperty("是否可以转入 中心 -> 平台")
 //        val transferIn: Boolean

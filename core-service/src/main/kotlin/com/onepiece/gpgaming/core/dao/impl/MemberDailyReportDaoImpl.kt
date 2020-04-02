@@ -37,12 +37,16 @@ class MemberDailyReportDaoImpl(
             val settles = rs.getString("settles").let { objectMapper.readValue<List<MemberDailyReport.PlatformSettle>>(it) }
             val thirdPayMoney = rs.getBigDecimal("third_pay_money")
             val thirdPayCount = rs.getInt("third_pay_count")
+            val backwater = rs.getBigDecimal("backwater")
+            val backwaterMoney = rs.getBigDecimal("backwater_money")
+            val backwaterExecution = rs.getBoolean("backwater_execution")
 
             MemberDailyReport(id = id, day = day, clientId = clientId, memberId = memberId,
                     transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney,
                     createdTime = createdTime, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
                     depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, totalMWin = totalMWin,
-                    thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount)
+                    thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, backwater = backwater, backwaterMoney = backwaterMoney,
+                    backwaterExecution = backwaterExecution)
         }
 
     override fun create(reports: List<MemberDailyReport>) {
@@ -64,6 +68,9 @@ class MemberDailyReportDaoImpl(
                 .set("settles")
                 .set("third_pay_money")
                 .set("third_pay_count")
+                .set("backwater")
+                .set("backwater_money")
+                .set("backwater_execution")
                 .execute { ps, entity ->
                     var index = 0
                     ps.setDate(++index, Date.valueOf(entity.day))
@@ -82,6 +89,9 @@ class MemberDailyReportDaoImpl(
                     ps.setString(++index, objectMapper.writeValueAsString(entity.settles))
                     ps.setBigDecimal(++index, entity.thirdPayMoney)
                     ps.setInt(++index, entity.thirdPayCount)
+                    ps.setBigDecimal(++index, entity.backwater)
+                    ps.setBigDecimal(++index, entity.backwaterMoney)
+                    ps.setBoolean(++index, entity.backwaterExecution)
                 }
 
     }
@@ -94,5 +104,20 @@ class MemberDailyReportDaoImpl(
                 .asWhere("day <= ?", query.endDate)
                 .where("member_id", query.memberId)
                 .execute(mapper)
+    }
+
+    override fun queryBackwater(current: Int, size: Int): List<MemberDailyReport> {
+        return query()
+                .where("backwater_execution", false)
+                .asWhere("backwater_money != 0")
+                .limit(current, size)
+                .execute(mapper)
+    }
+
+    override fun updateBackwater(ids: List<Int>) {
+        update()
+                .set("backwater_execution", true)
+                .asWhere("id in (${ids.joinToString(",")})")
+                .execute()
     }
 }

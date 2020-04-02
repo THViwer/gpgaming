@@ -58,6 +58,15 @@ data class MemberDailyReport(
         // 取款金额
         val withdrawMoney: BigDecimal,
 
+        // 返水比例
+        val backwater: BigDecimal,
+
+        // 近水金额
+        val backwaterMoney: BigDecimal,
+
+        // 反水金额是否已进行
+        val backwaterExecution: Boolean,
+
         // 创建时间
         val createdTime: LocalDateTime,
 
@@ -96,7 +105,7 @@ data class MemberDailyReport(
         // 业主盈利
         val cwin: BigDecimal
             get() {
-                return bet?: BigDecimal.ZERO.minus(cwin?: BigDecimal.ZERO)
+                return bet.minus(mwin)
             }
 
     }

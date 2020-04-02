@@ -7,9 +7,11 @@ import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
+import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.core.dao.ArtificialOrderDao
 import com.onepiece.gpgaming.core.dao.BetOrderDao
 import com.onepiece.gpgaming.core.dao.DepositDao
+import com.onepiece.gpgaming.core.dao.LevelDao
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.dao.PayOrderDao
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
@@ -19,7 +21,6 @@ import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ReportService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.lang.Exception
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -33,7 +34,8 @@ class ReportServiceImpl(
         private val betOrderService: BetOrderService,
         private val artificialOrderDao: ArtificialOrderDao,
         private val betOrderDao: BetOrderDao,
-        private val payOrderDao: PayOrderDao
+        private val payOrderDao: PayOrderDao,
+        private val levelDao: LevelDao
 ) : ReportService {
 
     private val log = LoggerFactory.getLogger(ReportServiceImpl::class.java)
@@ -98,8 +100,6 @@ class ReportServiceImpl(
         val payOrders = payOrderDao.mReport(startDate = startDate)
         val payOrderMap = payOrders.map { it.memberId to it }.toMap()
 
-
-
         val memberIdSet = transferInReports.asSequence().map { it.memberId }
                 .plus(transferOutReports.map { it.memberId })
                 .plus(depositReports.map { it.memberId })
@@ -109,18 +109,53 @@ class ReportServiceImpl(
                 .plus(payOrders.map { it.memberId })
                 .toSet()
 
+        // 会员对应返水比例
+        val levelIds = levelDao.all().map { it.id to it }.toMap()
+        val query = MemberQuery(clientId = null, ids = memberIdSet.toList(), status = null, startTime = null, endTime = null,
+                levelId = null, promoteCode = null, username =  null)
+        val members = memberDao.query(query, 0, 999999)
+        val backwaterMap = members.map {
+            val backwater = levelIds[it.levelId]?.backwater?: BigDecimal.ZERO
+            it.id to backwater
+        }.toMap()
+
+
         return memberIdSet.map {
 
             val transferInReport = transferInMap[it]
-            val transferOutReport = transferOutMap[it]
-            val depositReport = depositReportMap[it]
-            val withdrawReport = withdrawReportMap[it]
-            val artificialReport = mArtificialReportMap[it]
-            val payOrder = payOrderMap[it]
+            val transferIn = transferInReport?.money ?: BigDecimal.ZERO // 转入金额
 
+            val transferOutReport = transferOutMap[it]
+            val transferOut = transferOutReport?.money ?: BigDecimal.ZERO // 转出金额
+
+            val depositReport = depositReportMap[it]
+            val depositMoney = depositReport?.money ?: BigDecimal.ZERO // 存款金额
+            val depositCount = depositReport?.count?:0 // 存款次数
+
+
+            val withdrawReport = withdrawReportMap[it]
+            val withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO // 取款金额
+            val withdrawCount = withdrawReport?.count?: 0 // 取款次数
+
+
+            val artificialReport = mArtificialReportMap[it]
+            val artificialMoney = artificialReport?.totalAmount?: BigDecimal.ZERO // 人工提存金额
+            val artificialCount = artificialReport?.count?: 0 // 人工提存次数
+
+            val payOrder = payOrderMap[it]
+            val thirdPayMoney = payOrder?.totalAmount ?: BigDecimal.ZERO // 第三方充值金额
+            val thirdPayCount = payOrder?.count?: 0 // 第三方充值次数
+
+            // 平台下注金额
             val settles = betMap[it]?.map {
-                    MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, mwin = it.totalWin)
+                MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, mwin = it.totalWin)
             }?: emptyList()
+            val totalBet = settles.sumByDouble { it.cwin.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额
+            val totalMWin = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
+
+            // 返水比例和金额
+            val backwater = backwaterMap[it] ?: BigDecimal.ZERO
+            val backwaterMoney = totalBet.multiply(backwater)
 
             val clientId = when {
                 memberId != null -> queryClientId!!
@@ -132,13 +167,11 @@ class ReportServiceImpl(
                 payOrder != null -> payOrder.clientId
                 else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
-            MemberDailyReport(id = -1, day = startDate, clientId = clientId, memberId = it, transferIn = transferInReport?.money ?: BigDecimal.ZERO,
-                    transferOut = transferOutReport?.money ?: BigDecimal.ZERO, depositMoney = depositReport?.money ?: BigDecimal.ZERO,
-                    withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO, createdTime = now, status = Status.Normal, depositCount = depositReport?.count?:0,
-                    withdrawCount = withdrawReport?.count?: 0, artificialMoney = artificialReport?.totalAmount?: BigDecimal.ZERO, artificialCount = artificialReport?.count?: 0,
-                    settles = settles, totalMWin = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2),
-                    totalBet = settles.sumByDouble { it.cwin.toDouble() }.toBigDecimal().setScale(2, 2),
-                    thirdPayMoney = payOrder?.totalAmount ?: BigDecimal.ZERO, thirdPayCount = payOrder?.count?: 0)
+            MemberDailyReport(id = -1, day = startDate, clientId = clientId, memberId = it, transferIn = transferIn, transferOut = transferOut,
+                    depositMoney = depositMoney, withdrawMoney = withdrawMoney, depositCount = depositCount, withdrawCount = withdrawCount,
+                    artificialMoney = artificialMoney,  artificialCount = artificialCount, settles = settles, totalMWin = totalMWin,
+                    totalBet = totalBet , thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, backwater = backwater, backwaterMoney = backwaterMoney,
+                    createdTime = now, status = Status.Normal, backwaterExecution = false)
         }
     }
 

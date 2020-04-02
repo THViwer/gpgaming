@@ -30,7 +30,10 @@ enum class WalletEvent {
     TRANSFER_OUT_ROLLBACK,
 
     // 人工出入款
-    Artificial
+    Artificial,
+
+    // 返水
+    Backwater,
 
     // 补偿
 //    REPARATION

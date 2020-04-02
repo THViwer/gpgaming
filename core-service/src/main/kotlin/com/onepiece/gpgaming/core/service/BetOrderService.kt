@@ -16,6 +16,6 @@ interface BetOrderService {
 
     fun getNotMarkBets(tableSequence: Int): List<BetOrderValue.BetMarkVo>
 
-    fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderReport>
+    fun report(memberId: Int? = null, startDate: LocalDate, endDate: LocalDate): List<BetOrderReport>
 
 }

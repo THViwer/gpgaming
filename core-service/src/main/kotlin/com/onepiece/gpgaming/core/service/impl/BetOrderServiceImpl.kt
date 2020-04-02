@@ -65,7 +65,7 @@ class BetOrderServiceImpl(
         return mergeOrders
     }
 
-    override fun report(startDate: LocalDate, endDate: LocalDate): List<BetOrderReport> {
-        return betOrderDao.report(startDate = startDate, endDate = endDate)
+    override fun report(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<BetOrderReport> {
+        return betOrderDao.report(memberId = memberId, startDate = startDate, endDate = endDate)
     }
 }

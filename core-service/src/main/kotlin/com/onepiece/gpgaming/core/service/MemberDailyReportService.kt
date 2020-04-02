@@ -9,4 +9,8 @@ interface MemberDailyReportService  {
 
     fun query(query: MemberReportQuery): List<MemberDailyReport>
 
+    fun queryBackwater(current: Int, size: Int): List<MemberDailyReport>
+
+    fun updateBackwater(ids: List<Int>)
+
 }
