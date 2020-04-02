@@ -141,5 +141,5 @@ data class PromotionUoReq(
         val levelId: Int?,
 
         @ApiModelProperty("优惠规则")
-        val ruleJson: String?
+        val promotionRuleVo: PromotionRuleVo?
 )
