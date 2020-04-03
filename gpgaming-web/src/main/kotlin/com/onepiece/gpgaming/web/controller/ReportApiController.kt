@@ -235,7 +235,7 @@ class ReportApiController(
         val dbSort = "$sortBy ${if (desc) "desc" else "asc"}"
 
         val query = TransferOrderValue.Query(clientId = this.getClientId(), promotionId = promotionId, from = null, sortBy = dbSort, username = username,
-                memberId = null, startDate = startDate, endDate = endDate)
+                memberId = null, startDate = startDate, endDate = endDate, filterPromotion = true)
         val data =  transferOrderService.query(query)
 
         return ReportValue.PromotionMTotalReport(data)

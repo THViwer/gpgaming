@@ -27,6 +27,8 @@ sealed class TransferOrderValue {
 
             val current: Int = 0,
 
+            val filterPromotion: Boolean = false,
+
             val size: Int = 500
     )
 
