@@ -740,8 +740,12 @@ open class CashApiController(
         val reports = memberDailyReportService.query(query)
         val todayReport = betOrderService.report(memberId = memberId, startDate = today, endDate = today.plusDays(1))
                 .map { it.platform to it.totalBet }.toMap()
-        val reportMap = reports.map { it.settles }.reduce { acc, list ->  acc.plus(list)}.groupBy { it.platform }
-                .map { it.key to (it.value.sumByDouble { a -> a.bet.toDouble() }.toBigDecimal().setScale(2, 2)) }.toMap()
+        val reportMap = if (reports.isNotEmpty()) {
+            reports.map { it.settles }.reduce { acc, list ->  acc.plus(list)}.groupBy { it.platform }
+                    .map { it.key to (it.value.sumByDouble { a -> a.bet.toDouble() }.toBigDecimal().setScale(2, 2)) }.toMap()
+        } else {
+            emptyMap()
+        }
 
 
         // 查询余额 //TODO 暂时用简单的异步去处理
