@@ -19,6 +19,12 @@ data class Seo (
         // 描述
         val description: String,
 
+        // 在线聊天Id
+        val liveChatId: String,
+
+        // google统计Id
+        val googleStatisticsId: String,
+
         // 黄建时间
         val createdTime: LocalDateTime
 )
