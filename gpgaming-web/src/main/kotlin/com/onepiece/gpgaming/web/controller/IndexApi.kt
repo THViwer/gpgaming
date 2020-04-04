@@ -35,7 +35,9 @@ interface IndexApi {
     fun seo(
             @RequestParam("title") title: String,
             @RequestParam("keywords") keywords: String,
-            @RequestParam("description") description: String
+            @RequestParam("description") description: String,
+            @RequestParam("liveChatId") liveChatId: String,
+            @RequestParam("googleStatisticsId") googleStatisticsId: String
     )
 
 

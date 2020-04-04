@@ -71,11 +71,14 @@ class IndexApiController(
     override fun seo(
             @RequestParam("title") title: String,
             @RequestParam("keywords") keywords: String,
-            @RequestParam("description") description: String
+            @RequestParam("description") description: String,
+            @RequestParam("liveChatId") liveChatId: String,
+            @RequestParam("googleStatisticsId") googleStatisticsId: String
     ) {
         val clientId = getClientId()
 
-        val seoUo = SeoValue.SeoUo(clientId = clientId, title = title, keywords = keywords, description = description)
+        val seoUo = SeoValue.SeoUo(clientId = clientId, title = title, keywords = keywords, description = description,
+                liveChatId = liveChatId, googleStatisticsId = googleStatisticsId)
         seoService.update(seoUo)
     }
 
