@@ -320,7 +320,7 @@ class CashOrderApiController(
     ): List<TransferOrderValue.TransferOrderVo> {
         val user = current()
 
-        val query = TransferOrderValue.Query(clientId = user.clientId, from = Platform.Center, promotionId = promotionId,
+        val query = TransferOrderValue.Query(clientId = user.clientId, from = null, promotionId = promotionId,
                 username = username, memberId = memberId, startDate = null, endDate = null)
         val list = transferOrderService.query(query)
 
