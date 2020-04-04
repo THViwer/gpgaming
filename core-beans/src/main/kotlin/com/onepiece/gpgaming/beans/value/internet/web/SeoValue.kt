@@ -24,7 +24,13 @@ sealed class SeoValue {
 
             val keywords: String,
 
-            val description: String
+            val description: String,
+
+            // 在线聊天Id
+            val liveChatId: String,
+
+            // google统计Id
+            val googleStatisticsId: String
     )
 
 }

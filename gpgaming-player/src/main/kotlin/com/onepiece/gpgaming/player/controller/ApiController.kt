@@ -529,7 +529,8 @@ open class ApiController(
         val clientId = getClientIdByDomain()
 
         val seo = seoService.get(clientId)
-        return SeoValue.SeoVo(title = seo.title, keywords = seo.keywords, description = seo.description)
+        return SeoValue.SeoVo(title = seo.title, keywords = seo.keywords, description = seo.description, liveChatId = seo.liveChatId,
+                googleStatisticsId = seo.googleStatisticsId)
     }
 
     fun <T> getRandom(list: List<T>?) : T? {
