@@ -31,6 +31,7 @@ import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PayBindService
 import com.onepiece.gpgaming.core.service.PayOrderService
+import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.core.service.WalletService
@@ -60,7 +61,8 @@ class CashOrderApiController(
         private val walletService: WalletService,
         private val transferUtil: TransferUtil,
         private val payOrderService: PayOrderService,
-        private val payBindService: PayBindService
+        private val payBindService: PayBindService,
+        private val platformMemberService: PlatformMemberService
 ) : BasicController(), CashOrderApi {
 
 
@@ -287,7 +289,7 @@ class CashOrderApiController(
         return withdrawService.query(withdrawQuery).map {
             with(it) {
                 WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberId = memberId,
-                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime, lockWaiterId = it.lockWaiterId, username = it.username,
+                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = it.endTime, lockWaiterId = it.lockWaiterId, username = it.username,
                         lockWaiterUsername = waiters[it.lockWaiterId?:0]?.username, id = it.id)
             }
         }
@@ -337,6 +339,14 @@ class CashOrderApiController(
         return transferUtil.transferInAll(clientId = member.clientId, memberId = memberId, username = member.username)
     }
 
+    @PutMapping("/clean/promotion")
+    override fun constraintCleanPromotion(
+            @RequestParam("memberId") memberId: Int,
+            @RequestParam("platform") platform: Platform
+    ) {
+        // 清理平台会员优惠信息
+        platformMemberService.cleanTransferIn(memberId = memberId, platform = platform)
+    }
 
     @GetMapping("/payBind")
     override fun payBind(): List<PayBind> {

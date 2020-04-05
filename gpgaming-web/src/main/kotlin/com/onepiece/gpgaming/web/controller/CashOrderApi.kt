@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.PayType
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
 import com.onepiece.gpgaming.beans.model.PayBind
@@ -109,6 +110,12 @@ interface CashOrderApi {
     @ApiOperation(tags = ["cash"], value = "用户 -> 回收金额")
     fun retrieve(@RequestParam("memberId") memberId: Int): List<CashValue.BalanceAllInVo>
 
+    @ApiOperation(tags = ["cash"], value = "用户 -> 强制清空平台优惠")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun constraintCleanPromotion(
+            @RequestParam("memberId") memberId: Int,
+            @RequestParam("platform") platform: Platform
+    )
 
     @ApiOperation(tags = ["cash"], value = "支付平台 -> 列表")
     fun payBind(): List<PayBind>
