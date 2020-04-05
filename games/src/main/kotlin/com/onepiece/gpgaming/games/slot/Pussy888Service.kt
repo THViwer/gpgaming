@@ -2,7 +2,6 @@ package com.onepiece.gpgaming.games.slot
 
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.gpgaming.beans.model.token.Kiss918ClientToken
 import com.onepiece.gpgaming.beans.model.token.Pussy888ClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.games.GameValue
@@ -162,13 +161,21 @@ class Pussy888Service(
                 "ActionIp=12.213.1.24"
         )
 
-        val url = "${clientToken.apiPath}/ashx/account/setScore.ashx"
-        val mapUtil = this.startGetJson(url = url, username = transferReq.username, clientToken = clientToken, data = data)
-        val balance = mapUtil.asBigDecimal("money")
+        return try {
+            val url = "${clientToken.apiPath}/ashx/account/setScore.ashx"
+            val mapUtil = this.startGetJson(url = url, username = transferReq.username, clientToken = clientToken, data = data)
+            val balance = mapUtil.asBigDecimal("money")
 
-        queue[transferReq.username] = System.currentTimeMillis()
+            queue[transferReq.username] = System.currentTimeMillis()
 
-        return GameValue.TransferResp.successful(balance = balance)
+            GameValue.TransferResp.successful(balance = balance)
+        } catch (e: Exception) {
+            if (e.message?.contains("fail,money not enough,") != null) {
+                GameValue.TransferResp.failed()
+            } else {
+                throw e
+            }
+        }
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {

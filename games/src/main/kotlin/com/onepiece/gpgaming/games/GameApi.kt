@@ -407,13 +407,12 @@ class GameApi(
 
     private fun checkTransfer(platform: Platform, checkTransferReq: GameValue.CheckTransferReq, index: Int = 0): GameValue.TransferResp {
 
-        if (platform == Platform.Kiss918 || platform == Platform.Pussy888) {
-
-            val balanceReq = GameValue.BalanceReq(token = checkTransferReq.token, username = checkTransferReq.username, password = "-")
-            val balance = this.getPlatformApi(platform).balance(balanceReq)
-            GameValue.TransferResp(transfer = true, platformOrderId = "-", balance = balance)
-        }
-
+//        if (platform == Platform.Kiss918 || platform == Platform.Pussy888) {
+//
+//            val balanceReq = GameValue.BalanceReq(token = checkTransferReq.token, username = checkTransferReq.username, password = "-")
+//            val balance = this.getPlatformApi(platform).balance(balanceReq)
+//            GameValue.TransferResp(transfer = true, platformOrderId = "-", balance = balance)
+//        }
         try {
             if (index > 2) return GameValue.TransferResp.Companion.failed()
 
