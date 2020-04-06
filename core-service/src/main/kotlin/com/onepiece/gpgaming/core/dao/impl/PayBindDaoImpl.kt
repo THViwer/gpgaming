@@ -25,10 +25,12 @@ class PayBindDaoImpl(
             val payType = rs.getString("pay_type").let { PayType.valueOf(it) }
             val configJson = rs.getString("config_json")
             val status = rs.getString("status").let { Status.valueOf(it) }
+            val minAmount = rs.getBigDecimal("min_amount")
+            val maxAmount = rs.getBigDecimal("max_amount")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             PayBind(id = id, clientId = clientId, levelId = levelId, payType = payType, configJson = configJson, status = status,
-                    createdTime = createdTime)
+                    createdTime = createdTime, minAmount = minAmount, maxAmount = maxAmount)
         }
 
     override fun create(co: PayBindValue.PayBindCo): Boolean {
@@ -38,6 +40,8 @@ class PayBindDaoImpl(
                 .set("pay_type", co.payType)
                 .set("config_json", co.configJson)
                 .set("status", co.status)
+                .set("min_amount", co.minAmount)
+                .set("max_amount", co.maxAmount)
                 .executeOnlyOne()
     }
 
@@ -46,6 +50,8 @@ class PayBindDaoImpl(
                 .set("level_id", uo.levelId)
                 .set("config_json", uo.configJson)
                 .set("status", uo.status)
+                .set("min_amount", uo.minAmount)
+                .set("max_amount", uo.maxAmount)
                 .where("id", uo.id)
                 .executeOnlyOne()
     }

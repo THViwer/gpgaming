@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.Status
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 /**
@@ -23,6 +24,12 @@ data class ClientBank(
 
         // 层级Id
         val levelId: Int?,
+
+        // 最小转账金额
+        val minAmount: BigDecimal,
+
+        // 最大转账金额
+        val maxAmount: BigDecimal,
 
         // 银行名称
         val name: String,

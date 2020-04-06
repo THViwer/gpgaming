@@ -88,6 +88,8 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.stream.Collectors
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.streams.toList
 
 @Suppress("CAST_NEVER_SUCCEEDS")
@@ -223,7 +225,7 @@ open class CashApiController(
                     with(it) {
                         ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
                                 status = status, createdTime = createdTime, levelId = null, levelName = null, logo = bank.logo,
-                                grayLogo = bank.grayLogo)
+                                grayLogo = bank.grayLogo, minAmount = minAmount, maxAmount = maxAmount)
                     }
                 }
     }
@@ -236,7 +238,7 @@ open class CashApiController(
 
         return payBindService.list(clientId = member.clientId).filter { it.levelId == null || it.levelId == member.levelId }
                 .map {
-                    ThirdPayValue.SupportPay(payId = it.id, payType = it.payType)
+                    ThirdPayValue.SupportPay(payId = it.id, payType = it.payType, minAmount = it.minAmount, maxAmount = it.maxAmount)
                 }
     }
 

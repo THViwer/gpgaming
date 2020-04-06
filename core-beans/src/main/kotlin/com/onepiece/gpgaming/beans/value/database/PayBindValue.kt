@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.beans.value.database
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.enums.Status
+import java.math.BigDecimal
 
 sealed class PayBindValue {
 
@@ -22,7 +23,13 @@ sealed class PayBindValue {
             val configJson: String,
 
             // 状态
-            val status: Status
+            val status: Status,
+
+            // 最小充值金额
+            val minAmount: BigDecimal,
+
+            // 最大充值金额
+            val maxAmount: BigDecimal
 
     )
 
@@ -42,7 +49,13 @@ sealed class PayBindValue {
             val configJson: String?,
 
             // 状态
-            val status: Status?
+            val status: Status?,
+
+            // 最小充值金额
+            val minAmount: BigDecimal,
+
+            // 最大充值金额
+            val maxAmount: BigDecimal
     )
 
 

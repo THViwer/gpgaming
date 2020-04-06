@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.beans.value.database
 
 import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.Status
+import java.math.BigDecimal
 
 data class ClientBankCo(
 
@@ -18,7 +19,13 @@ data class ClientBankCo(
         val name: String,
 
         // 层级
-        val levelId: Int?
+        val levelId: Int?,
+
+        // 最小转账金额
+        val minAmount: BigDecimal,
+
+        // 最大转账金额
+        val maxAmount: BigDecimal
 )
 
 data class ClientBankUo(
@@ -39,6 +46,12 @@ data class ClientBankUo(
         val status: Status? = null,
 
         // 层级
-        val levelId: Int? = null
+        val levelId: Int? = null,
+
+        // 最小转账金额
+        val minAmount: BigDecimal? = null,
+
+        // 最大转账金额
+        val maxAmount: BigDecimal? = null
 
 )

@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
-import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.PayType
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -13,7 +12,13 @@ sealed class ThirdPayValue {
             val payId: Int,
 
             // 支付平台
-            val payType: PayType
+            val payType: PayType,
+
+            // 最小金额
+            val minAmount: BigDecimal,
+
+            // 最大金额
+            val maxAmount: BigDecimal
 
     ) {
 

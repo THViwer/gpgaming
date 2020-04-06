@@ -9,6 +9,7 @@ import com.onepiece.gpgaming.core.dao.ClientBankDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
+import kotlin.math.max
 
 @Repository
 class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao {
@@ -22,9 +23,11 @@ class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao
             val name = rs.getString("name")
             val levelId = rs.getInt("level_id")
             val status = rs.getString("status").let { Status.valueOf(it) }
+            val minAmount = rs.getBigDecimal("min_amount")
+            val maxAmount = rs.getBigDecimal("max_amount")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             ClientBank(id = id, clientId = clientId, bank = bank, bankCardNumber = bankCardNumber, name = name, status = status,
-                    createdTime = createdTime, levelId = levelId)
+                    createdTime = createdTime, levelId = levelId, minAmount = minAmount, maxAmount = maxAmount)
         }
 
     override fun findClientBank(clientId: Int): List<ClientBank> {
@@ -39,6 +42,8 @@ class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao
                 .set("name", clientBankCo.name)
                 .set("level_id", clientBankCo.levelId)
                 .set("status", Status.Normal)
+                .set("min_amount", clientBankCo.minAmount)
+                .set("max_amount", clientBankCo.maxAmount)
                 .executeOnlyOne()
     }
 
@@ -49,6 +54,8 @@ class ClientBankDaoImpl : BasicDaoImpl<ClientBank>("client_bank"), ClientBankDao
                 .set("bank_card_number", clientBankUo.bankCardNumber)
                 .set("status", clientBankUo.status)
                 .setIfNull("level_id", clientBankUo.levelId)
+                .set("min_amount", clientBankUo.minAmount)
+                .set("max_amount", clientBankUo.maxAmount)
                 .where("id", clientBankUo.id)
                 .executeOnlyOne()
     }

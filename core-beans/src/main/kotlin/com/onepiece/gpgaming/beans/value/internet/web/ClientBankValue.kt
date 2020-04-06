@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.beans.value.internet.web
 import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 object ClientBankValueFactory {
@@ -64,6 +65,12 @@ data class ClientBankVo(
         @ApiModelProperty("层级名称")
         val levelName: String?,
 
+        @ApiModelProperty("最小充值金额")
+        val minAmount: BigDecimal,
+
+        @ApiModelProperty("最大充值金额")
+        val maxAmount: BigDecimal,
+
         @ApiModelProperty("创建时间")
         val createdTime: LocalDateTime
 
@@ -84,7 +91,13 @@ data class ClientBankCoReq(
         val bankCardNumber: String,
 
         @ApiModelProperty("状态")
-        val status: Status
+        val status: Status,
+
+        @ApiModelProperty("最小充值金额")
+        val minAmount: BigDecimal,
+
+        @ApiModelProperty("最大充值金额")
+        val maxAmount: BigDecimal
 
 )
 
@@ -106,6 +119,12 @@ data class ClientBankUoReq(
         val bankCardNumber: String?,
 
         @ApiModelProperty("状态")
-        val status: Status?
+        val status: Status?,
+
+        @ApiModelProperty("最小充值金额")
+        val minAmount: BigDecimal?,
+
+        @ApiModelProperty("最大充值金额")
+        val maxAmount: BigDecimal?
 
 )

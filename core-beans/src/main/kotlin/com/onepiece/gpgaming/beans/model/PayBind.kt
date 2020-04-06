@@ -1,12 +1,12 @@
 package com.onepiece.gpgaming.beans.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.pay.M3PayConfig
 import com.onepiece.gpgaming.beans.model.pay.PayConfig
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class PayBind (
@@ -19,6 +19,12 @@ data class PayBind (
 
         // 层级Id 如果为Null 则是全部
         val levelId: Int?,
+
+        // 最小充值金额
+        val minAmount: BigDecimal,
+
+        // 最大充值金额
+        val maxAmount: BigDecimal,
 
         // 支付平台
         val payType: PayType,

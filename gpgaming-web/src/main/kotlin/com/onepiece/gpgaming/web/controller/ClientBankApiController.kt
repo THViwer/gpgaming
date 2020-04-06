@@ -44,7 +44,7 @@ class ClientBankApiController(
 
                 ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
                         status = status, createdTime = createdTime, levelId = levelId, levelName = levelName, logo = bank.logo,
-                        grayLogo = bank.grayLogo)
+                        grayLogo = bank.grayLogo, minAmount = minAmount, maxAmount = maxAmount)
             }
         }
     }
@@ -53,7 +53,7 @@ class ClientBankApiController(
     override fun create(@RequestBody clientBankCoReq: ClientBankCoReq) {
         val clientId = getClientId()
         val clientBankCo = ClientBankCo(clientId = clientId, bank = clientBankCoReq.bank, bankCardNumber = clientBankCoReq.bankCardNumber,
-                name = clientBankCoReq.name, levelId = clientBankCoReq.levelId)
+                name = clientBankCoReq.name, levelId = clientBankCoReq.levelId, minAmount = clientBankCoReq.minAmount, maxAmount = clientBankCoReq.maxAmount)
         clientBankService.create(clientBankCo)
 
     }
@@ -61,7 +61,8 @@ class ClientBankApiController(
     @PutMapping
     override fun update(@RequestBody clientBankUoReq: ClientBankUoReq) {
         val clientBankUo = ClientBankUo(id = clientBankUoReq.id, bank = clientBankUoReq.bank, bankCardNumber = clientBankUoReq.bankCardNumber,
-                status = clientBankUoReq.status, name = clientBankUoReq.name, levelId = clientBankUoReq.levelId)
+                status = clientBankUoReq.status, name = clientBankUoReq.name, levelId = clientBankUoReq.levelId, minAmount = clientBankUoReq.minAmount,
+                maxAmount = clientBankUoReq.maxAmount)
         clientBankService.update(clientBankUo)
     }
 }
