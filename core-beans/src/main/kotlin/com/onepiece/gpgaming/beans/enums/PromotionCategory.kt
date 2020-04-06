@@ -15,6 +15,8 @@ enum class PromotionCategory(
 
     Sport("sport", "体育"),
 
-    Fishing("fishing", "捕鱼")
+    Fishing("fishing", "捕鱼"),
+
+    Backwater("backwater", "返水")
 
 }
