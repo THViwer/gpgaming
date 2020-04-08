@@ -170,7 +170,7 @@ enum class PromotionPeriod {
         }
 
         fun checkPeriodOnce(history: List<TransferOrder>, startDate: LocalDate, endDate: LocalDate): Boolean {
-            return history.firstOrNull { startDate >= it.createdTime.toLocalDate() && it.createdTime.toLocalDate() <= endDate } == null
+            return history.firstOrNull { startDate <= it.createdTime.toLocalDate() || it.createdTime.toLocalDate() >= endDate } == null
         }
 
     }
