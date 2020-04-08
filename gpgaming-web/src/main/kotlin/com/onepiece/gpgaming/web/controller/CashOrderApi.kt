@@ -16,6 +16,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.DepositUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
 import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
+import com.onepiece.gpgaming.beans.value.internet.web.WalletNoteValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
 import io.swagger.annotations.Api
@@ -105,6 +106,11 @@ interface CashOrderApi {
             @RequestParam("memberId", required = false) memberId: Int?,
             @RequestParam("username", required = false) username: String?
     ): List<TransferOrderValue.TransferOrderVo>
+
+    @ApiOperation(tags = ["cash"], value = "资金 -> 钱包操作列表")
+    fun walletNoteList(
+            @RequestParam("memberId") memberId: Int
+    ): List<WalletNoteValue.WalletNoteVo>
 
 
     @ApiOperation(tags = ["cash"], value = "用户 -> 回收金额")

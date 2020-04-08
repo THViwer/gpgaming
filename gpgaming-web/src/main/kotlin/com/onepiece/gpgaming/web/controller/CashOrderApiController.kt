@@ -17,12 +17,14 @@ import com.onepiece.gpgaming.beans.value.database.DepositLockUo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.PayBindValue
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
+import com.onepiece.gpgaming.beans.value.database.WalletNoteQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
 import com.onepiece.gpgaming.beans.value.internet.web.ArtificialCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.DepositUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
+import com.onepiece.gpgaming.beans.value.internet.web.WalletNoteValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
 import com.onepiece.gpgaming.core.OrderIdBuilder
@@ -34,6 +36,7 @@ import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.core.service.WaiterService
+import com.onepiece.gpgaming.core.service.WalletNoteService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
@@ -62,7 +65,8 @@ class CashOrderApiController(
         private val transferUtil: TransferUtil,
         private val payOrderService: PayOrderService,
         private val payBindService: PayBindService,
-        private val platformMemberService: PlatformMemberService
+        private val platformMemberService: PlatformMemberService,
+        private val walletNoteService: WalletNoteService
 ) : BasicController(), CashOrderApi {
 
 
@@ -330,6 +334,27 @@ class CashOrderApiController(
             TransferOrderValue.TransferOrderVo(orderId = order.orderId, memberId = order.memberId, money = order.money,
                     promotionJson = order.promotionJson, joinPromotionId = order.joinPromotionId, from = order.from, to = order.to,
                     state = order.state, createdTime = order.createdTime, promotionAmount = order.promotionAmount)
+        }
+    }
+
+    @GetMapping("/wallet/note")
+    override fun walletNoteList(
+            @RequestParam("memberId") memberId: Int
+    ): List<WalletNoteValue.WalletNoteVo> {
+
+        val clientId = getClientId()
+
+//        val memberId = memberService.findByUsername(clientId = clientId, username = username)?.id ?: return
+
+        val query = WalletNoteQuery(clientId = clientId, memberId = memberId, event = null, events = null, startDate = null,
+                endDate = null, onlyPromotion = true, current = 0, size = 500)
+        val list = walletNoteService.query(query)
+
+        return list.map {
+            with(it) {
+                WalletNoteValue.WalletNoteVo(eventId = eventId, event = event, money = money, originMoney = originMoney,
+                        afterMoney = afterMoney, promotionMoney = promotionMoney, remarks = remarks)
+            }
         }
     }
 
