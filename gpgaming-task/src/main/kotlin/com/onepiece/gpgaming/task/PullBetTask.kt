@@ -42,27 +42,29 @@ class PullBetTask(
         betOrderService.batch(orders)
     }
 
-
     @Scheduled(cron="0/20 * *  * * ? ")
-    fun execute() {
-
+    fun start20Second() {
         val redisKey = "pull:task:running"
+        this.execute(redisKey = redisKey, time = "")
+    }
+
+    @Scheduled(cron="0 0/2 *  * * ? ")
+    fun startOneHour() {
+        val redisKey = "pull:task:running:hour"
+        this.execute(redisKey = redisKey, time = ":hour")
+    }
+
+    fun execute(redisKey: String, time: String) {
         val running = redisService.get(redisKey, Boolean::class.java) ?: false
         if (running) return else redisService.put(redisKey, true, 5 * 60)
 
         log.info("定时任务执行中，现在时间：${LocalDateTime.now()}")
-
-
         try {
-            //TODO 暂时过滤其它厅主的
-//        val binds = platformBindService.all().filter { it.platform == Platform.AsiaGamingSlot || it.platform == Platform.AsiaGamingLive }.filter { it.clientId == 1 } // && it.platform == Platform.MicroGaming
             val binds = platformBindService.all()
                     .filter { it.status != Status.Delete }
-//                .filter { it.clientId == 1  }
-//                .filter { it.platform == Platform.Pragmatic }
 
             val list = binds.filter { it.platform != Platform.PlaytechLive }.parallelStream().map { bind ->
-                    this.executePlatform(bind)
+                    this.executePlatform(bind, time)
             }.collect(Collectors.toList())
 
             log.info("执行成功个数：${list.filter { it }.size}个")
@@ -72,9 +74,9 @@ class PullBetTask(
         }
     }
 
-    private fun executePlatform(bind: PlatformBind): Boolean {
+    private fun executePlatform(bind: PlatformBind, time: String): Boolean {
         return try {
-            this.handler(bind = bind) { startTime, endTime ->
+            this.handler(bind = bind, time = time) { startTime, endTime ->
                 gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
             }
             true
@@ -86,17 +88,22 @@ class PullBetTask(
 
     private fun handler(
             bind: PlatformBind,
+            time: String,
             pull: (startTime: LocalDateTime, endTime: LocalDateTime) -> List<BetOrderValue.BetOrderCo>
     ) {
 
-        val redisKey = "pull:task:${bind.clientId}:${bind.platform}"
+        val redisKey = "pull:task:${bind.clientId}:${bind.platform}${time}"
 
         val startTime = redisService.get(key = redisKey, clz = String::class.java) {
             //TODO 暂时10分钟 线上用30分钟
-            "${LocalDateTime.now().minusMinutes(30)}"
+            if (time == ":hour") {
+                "${LocalDateTime.now().minusMinutes(90)}"
+            } else {
+                "${LocalDateTime.now().minusMinutes(30)}"
+            }
         }!!.let { LocalDateTime.parse(it) }
 
-        if (!this.canExecutePlatform(startTime = startTime, platform = bind.platform)) return
+        if (!this.canExecutePlatform(startTime = startTime, platform = bind.platform, time = time)) return
 
         // 如果距离现在超过30分钟 则每次取10分钟数据
         val duration = Duration.between(startTime, LocalDateTime.now()).toMinutes()
@@ -118,7 +125,7 @@ class PullBetTask(
         redisService.put(key = redisKey, value = v)
     }
 
-    private fun canExecutePlatform(startTime: LocalDateTime, platform: Platform): Boolean {
+    private fun canExecutePlatform(startTime: LocalDateTime, platform: Platform, time: String): Boolean {
         return when (platform) {
             Platform.Evolution,
             Platform.Joker,
@@ -140,7 +147,9 @@ class PullBetTask(
             Platform.PlaytechLive -> {
                 val duration = Duration.between(startTime, LocalDateTime.now())
                 val minutes: Long = duration.toMinutes() //相差的分钟数
-                minutes > 2
+
+                val v = if (time == ":hour") 60 else 2
+                minutes > v
             }
             Platform.Pragmatic -> {
                 val duration = Duration.between(startTime, LocalDateTime.now())
@@ -153,8 +162,9 @@ class PullBetTask(
             Platform.Bcs,
             Platform.CMD,
             Platform.Lbc,
-            Platform.Fgg  -> true
-
+            Platform.Fgg  -> {
+                time != ":hour"
+            }
             else -> {
                 log.warn("该平台不支持同步订单:${platform}")
                 false
