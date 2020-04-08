@@ -112,7 +112,7 @@ class ReportServiceImpl(
         // 会员对应返水比例
         val levelIds = levelDao.all().map { it.id to it }.toMap()
         val query = MemberQuery(clientId = null, ids = memberIdSet.toList(), status = null, startTime = null, endTime = null,
-                levelId = null, promoteCode = null, username =  null)
+                levelId = null, promoteCode = null, username =  null, name = null, phone = null)
         val members = memberDao.query(query, 0, 999999)
         val backwaterMap = members.map {
             val backwater = levelIds[it.levelId]?.backwater?: BigDecimal.ZERO

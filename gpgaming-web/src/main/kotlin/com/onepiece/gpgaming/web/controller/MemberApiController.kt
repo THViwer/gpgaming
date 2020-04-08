@@ -49,6 +49,8 @@ class MemberApiController(
     @GetMapping
     override fun query(
             @RequestParam(value = "username", required = false) username: String?,
+            @RequestParam(value = "name", required = false) name: String?,
+            @RequestParam(value = "phone", required = false) phone: String?,
             @RequestParam(value = "levelId", required = false) levelId: Int?,
             @RequestParam(value = "status", required = false) status: Status?,
             @RequestParam(value = "promoteSource", required = false) promoteSource: String?,
@@ -58,7 +60,7 @@ class MemberApiController(
         val clientId = getClientId()
 
         val query = MemberQuery(clientId = clientId, startTime = null, endTime = null, username = username,
-                levelId = levelId, status = status, promoteCode = promoteSource)
+                levelId = levelId, status = status, promoteCode = promoteSource, name = name, phone = phone)
         val page = memberService.query(query, current, size)
         if (page.total == 0) return MemberPage(total = 0, data = emptyList())
 

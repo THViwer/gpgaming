@@ -20,6 +20,8 @@ interface MemberApi {
     @ApiOperation(tags = ["user"], value = "会员 -> 列表")
     fun query(
             @RequestParam(value = "username", required = false) username: String?,
+            @RequestParam(value = "name", required = false) name: String?,
+            @RequestParam(value = "phone", required = false) phone: String?,
             @RequestParam(value = "levelId", required = false) levelId: Int?,
             @RequestParam(value = "status", required = false) status: Status?,
             @RequestParam(value = "promoteSource", required = false) promoteSource: String?,

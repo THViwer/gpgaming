@@ -9,6 +9,10 @@ data class MemberQuery(
 
         val username: String?,
 
+        val name: String?,
+
+        val phone: String?,
+
         val status: Status?,
 
         val levelId: Int?,
