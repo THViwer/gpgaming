@@ -54,5 +54,6 @@ object OnePieceExceptionCode {
     const val PLATFORM_TRANSFER_ORDERID_EXIST = "6002" // 转账订单已存在
     const val PLATFORM_AEGIS = "6003" // 平台维护
     const val PLATFORM_REQUEST_ERROR = "6004" // 平台调用接口错误
+    const val PLATFORM_MAINTAIN = "6005" // 游戏平台维护
 
 }

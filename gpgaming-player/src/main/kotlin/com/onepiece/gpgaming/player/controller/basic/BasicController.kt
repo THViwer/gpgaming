@@ -1,9 +1,11 @@
 package com.onepiece.gpgaming.player.controller.basic
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
+import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.core.service.WebSiteService
@@ -34,6 +36,9 @@ abstract class BasicController {
 
     @Autowired
     lateinit var webSiteService: WebSiteService
+
+    @Autowired
+    lateinit var gamePlatformService: GamePlatformService
 
     /**
      * 获得请求ip
@@ -97,6 +102,10 @@ abstract class BasicController {
     fun getPlatformMember(platform: Platform, member: JwtUser, code: Int = 0): PlatformMemberVo {
         val platforms = platformMemberService.myPlatforms(memberId = member.id)
         val platformMember = platforms.find { platform == it.platform }
+
+        // 判断平台是否维护
+        check(gamePlatformService.all().first { it.platform == platform }.status == Status.Normal) { OnePieceExceptionCode.PLATFORM_MAINTAIN }
+
 
         if (code > 3) error(OnePieceExceptionCode.SYSTEM)
 

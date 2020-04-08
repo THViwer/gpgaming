@@ -64,8 +64,7 @@ open class ApiController(
         private val activeConfig: ActiveConfig,
         private val objectMapper: ObjectMapper,
         private val hotGameService: HotGameService,
-        private val seoService: SeoService,
-        private val gamePlatformService: GamePlatformService
+        private val seoService: SeoService
 ) : BasicController(), Api {
 
     private val log = LoggerFactory.getLogger(ApiController::class.java)

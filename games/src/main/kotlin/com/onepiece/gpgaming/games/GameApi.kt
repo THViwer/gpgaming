@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.games
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.PlatformBind
 import com.onepiece.gpgaming.beans.model.token.ClientToken
@@ -12,6 +13,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.SlotGame
 import com.onepiece.gpgaming.core.NoRollbackException
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.PlatformUsernameUtil
+import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.games.combination.AsiaGamingService
@@ -54,6 +56,7 @@ class GameApi(
         private val platformBindService: PlatformBindService,
         private val platformMemberService: PlatformMemberService,
         private val redisService: RedisService,
+        private val gamePlatformService: GamePlatformService,
 
         // slot
         private val jokerService: JokerService,
@@ -144,6 +147,8 @@ class GameApi(
      * 注册账号
      */
     fun register(clientId: Int, memberId: Int, platform: Platform, name: String) {
+        check(gamePlatformService.all().first { it.platform == platform }.status == Status.Normal) { OnePieceExceptionCode.PLATFORM_MAINTAIN }
+
         log.info("lock redis key = ${clientId}:$memberId:$platform}")
         redisService.lock(key = "register:${clientId}:$memberId:$platform", error = {
             log.error("注册账号：register:${clientId}:$memberId:$platform, 已被锁定")
@@ -191,6 +196,7 @@ class GameApi(
      * 修改密码
      */
     fun updatePassword(clientId: Int, platform: Platform, username: String, password: String) {
+        check(gamePlatformService.all().first { it.platform == platform }.status == Status.Normal) { OnePieceExceptionCode.PLATFORM_MAINTAIN }
 
         when (platform) {
             Platform.Joker,
@@ -237,8 +243,9 @@ class GameApi(
      */
     fun start(clientId: Int, platformUsername: String, platformPassword: String, platform: Platform, launch: LaunchMethod = LaunchMethod.Web, language: Language): String {
 
-        val clientToken = this.getClientToken(clientId = clientId, platform = platform)
+        check(gamePlatformService.all().first { it.platform == platform }.status == Status.Normal) { OnePieceExceptionCode.PLATFORM_MAINTAIN }
 
+        val clientToken = this.getClientToken(clientId = clientId, platform = platform)
         return when (platform) {
             Platform.Evolution,
             Platform.Lbc,
@@ -331,6 +338,8 @@ class GameApi(
      * 查询会员余额
      */
     fun balance(clientId: Int, platformUsername: String, platformPassword: String, platform: Platform): BigDecimal {
+        check(gamePlatformService.all().first { it.platform == platform }.status == Status.Normal) { OnePieceExceptionCode.PLATFORM_MAINTAIN }
+
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername, password = platformPassword)
@@ -351,6 +360,8 @@ class GameApi(
                  amount: BigDecimal,
                  index: Int = 0
     ): GameValue.TransferResp {
+
+        check(gamePlatformService.all().first { it.platform == platform }.status == Status.Normal) { OnePieceExceptionCode.PLATFORM_MAINTAIN }
 
         val msg = if (amount.toDouble() > 0) {
             "中心 => $platform"
