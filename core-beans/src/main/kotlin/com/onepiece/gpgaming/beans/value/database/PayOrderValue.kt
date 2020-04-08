@@ -117,7 +117,10 @@ sealed class PayOrderValue {
             val totalAmount: BigDecimal,
 
             // 总数
-            val count: Int
+            val count: Int,
+
+            // 三方充值人数
+            val thirdPaySequence: Int
 
     )
 }

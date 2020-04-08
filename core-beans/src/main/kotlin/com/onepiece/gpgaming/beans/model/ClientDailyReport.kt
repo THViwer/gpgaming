@@ -15,10 +15,10 @@ data class ClientDailyReport(
         // 厅主Id
         val clientId: Int,
 
-//        // 下注金额
+        // 下注金额
         val totalBet: BigDecimal,
-//
-//        // 盈利金额
+
+        // 盈利金额
         val totalMWin: BigDecimal,
 
         // 转入金额
@@ -30,11 +30,14 @@ data class ClientDailyReport(
         // 充值金额
         val depositMoney: BigDecimal,
 
-        // 优惠金额
-        val promotionAmount: BigDecimal,
-
         // 充值次数
         val depositCount: Int,
+
+        // 充值人数
+        val depositSequence: Int,
+
+        // 优惠金额
+        val promotionAmount: BigDecimal,
 
         // 取款金额
         val withdrawMoney: BigDecimal,
@@ -53,6 +56,9 @@ data class ClientDailyReport(
 
         // 第三方充值总数
         val thirdPayCount: Int,
+
+        // 三方充值人数
+        val thirdPaySequence: Int,
 
         // 今日新增用户
         val newMemberCount: Int,

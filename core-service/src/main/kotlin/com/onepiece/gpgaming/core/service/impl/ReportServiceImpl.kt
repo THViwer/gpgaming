@@ -288,23 +288,47 @@ class ReportServiceImpl(
         return clientIds.map {
 
             val transferInReport = transferInMap[it]
+            val transferIn = transferInReport?.transferIn ?: BigDecimal.ZERO
+
             val transferOutReport = transferOutMap[it]
+            val transferOut = transferOutReport?.transferOut ?: BigDecimal.ZERO
+
             val depositReport = depositReportMap[it]
+            val depositMoney = depositReport?.money ?: BigDecimal.ZERO
+            val depositCount = depositReport?.count ?: 0
+            val depositSequence = depositReport?.depositSequence?: 0
+
             val withdrawReport = withdrawReportMap[it]
+            val withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO
+            val withdrawCount = withdrawReport?.count ?: 0
+
             val newMemberCount = memberReportMap[it]?: 0
+
             val artificialReport = artificialReportMap[it]
+            val artificialMoney = artificialReport?.totalAmount?: BigDecimal.ZERO
+            val artificialCount = artificialReport?.count?: 0
+
             val payOrder = payOrderMap[it]
+            val thirdPayMoney = payOrder?.totalAmount?: BigDecimal.ZERO
+            val thirdPayCount = payOrder?.count?: 0
+            val thirdPaySequence = payOrder?.thirdPaySequence?: 0
 
             val promotionAmount = transferOutReport?.promotionAmount?: BigDecimal.ZERO
 
-            ClientDailyReport(id = -1, day = startDate, clientId = it, transferIn = transferInReport?.transferIn ?: BigDecimal.ZERO,
-                    transferOut = transferOutReport?.transferOut ?: BigDecimal.ZERO, depositMoney = depositReport?.money ?: BigDecimal.ZERO,
-                    depositCount = depositReport?.count ?: 0, withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO,
-                    withdrawCount = withdrawReport?.count ?: 0, newMemberCount = newMemberCount, createdTime = now,
-                    artificialMoney = artificialReport?.totalAmount?: BigDecimal.ZERO, artificialCount = artificialReport?.count?: 0,
-                    promotionAmount = promotionAmount, status = Status.Normal, totalBet = betMap[it]?.totalBet?: BigDecimal.ZERO,
-                    totalMWin = betMap[it]?.totalWin?: BigDecimal.ZERO, thirdPayMoney = payOrder?.totalAmount?: BigDecimal.ZERO,
-                    thirdPayCount = payOrder?.count?: 0)
+            val totalBet = betMap[it]?.totalBet?: BigDecimal.ZERO
+            val totalMWin = betMap[it]?.totalWin?: BigDecimal.ZERO
+
+
+
+            ClientDailyReport(id = -1, day = startDate, clientId = it, transferIn = transferIn,
+                    transferOut = transferOut, depositMoney = depositMoney,
+                    depositCount = depositCount, withdrawMoney = withdrawMoney,
+                    withdrawCount = withdrawCount, newMemberCount = newMemberCount, createdTime = now,
+                    artificialMoney = artificialMoney, artificialCount = artificialCount,
+                    promotionAmount = promotionAmount, status = Status.Normal, totalBet = totalBet,
+                    totalMWin = totalMWin, thirdPayMoney = thirdPayMoney,
+                    thirdPayCount = thirdPayCount, depositSequence = depositSequence,
+                    thirdPaySequence = thirdPaySequence)
         }
     }
 }

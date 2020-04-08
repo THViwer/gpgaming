@@ -21,6 +21,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
             val transferOut = rs.getBigDecimal("transfer_out")
             val depositMoney = rs.getBigDecimal("deposit_money")
             val depositCount = rs.getInt("deposit_count")
+            val depositSequence = rs.getInt("deposit_sequence")
             val withdrawMoney = rs.getBigDecimal("withdraw_money")
             val withdrawCount = rs.getInt("withdraw_count")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
@@ -33,12 +34,14 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
             val totalMWin = rs.getBigDecimal("total_m_win")
             val thirdPayMoney = rs.getBigDecimal("third_pay_money")
             val thirdPayCount = rs.getInt("third_pay_count")
+            val thirdPaySequence = rs.getInt("third_pay_sequence")
 
             ClientDailyReport(id = id, day = day, clientId = clientId, transferIn = transferIn, transferOut = transferOut,
                     depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
                     withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
                     promotionAmount = promotionAmount, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
-                    totalBet = totalBet, totalMWin = totalMWin, thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount)
+                    totalBet = totalBet, totalMWin = totalMWin, thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount,
+                    thirdPaySequence = thirdPaySequence, depositSequence = depositSequence)
         }
 
     override fun create(reports: List<ClientDailyReport>) {
@@ -49,6 +52,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                 .set("transfer_out")
                 .set("deposit_money")
                 .set("deposit_count")
+                .set("deposit_sequence")
                 .set("withdraw_money")
                 .set("withdraw_count")
                 .set("promotion_amount")
@@ -59,6 +63,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                 .set("total_m_win")
                 .set("third_pay_money")
                 .set("third_pay_count")
+                .set("third_pay_sequence")
                 .execute { ps, entity ->
                     var x = 0
                     ps.setDate(++x, Date.valueOf(entity.day))
@@ -67,6 +72,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     ps.setBigDecimal(++x, entity.transferOut)
                     ps.setBigDecimal(++x, entity.depositMoney)
                     ps.setInt(++x, entity.depositCount)
+                    ps.setInt(++x, entity.depositSequence)
                     ps.setBigDecimal(++x, entity.withdrawMoney)
                     ps.setInt(++x, entity.withdrawCount)
                     ps.setBigDecimal(++x, entity.promotionAmount)
@@ -77,6 +83,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     ps.setBigDecimal(++x, entity.totalMWin)
                     ps.setBigDecimal(++x, entity.thirdPayMoney)
                     ps.setInt(++x, entity.thirdPayCount)
+                    ps.setInt(++x, entity.thirdPaySequence)
                 }
     }
 

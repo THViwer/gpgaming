@@ -155,7 +155,7 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
     }
 
     override fun cReport(startDate: LocalDate, constraint: Boolean): List<PayOrderValue.PayOrderCReport> {
-        return query("client_id, sum(amount) as amount, count(*) as count")
+        return query("client_id, sum(amount) as amount, count(*) as count, count(distinct member_id) as thirdPaySequence")
                 .asWhere("updated_time >= ?", startDate)
                 .asWhere("updated_time < ?", startDate.plusDays(1))
                 .asWhere("operator_id != null", constraint)
@@ -166,8 +166,9 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
 //                    val payType  =  rs.getString("pay_type").let { PayType.valueOf(it) }
                     val amount = rs.getBigDecimal("amount")
                     val count = rs.getInt("count")
+                    val thirdPaySequence = rs.getInt("thirdPaySequence")
 
-                    PayOrderValue.PayOrderCReport(clientId = clientId, totalAmount = amount, count = count)
+                    PayOrderValue.PayOrderCReport(clientId = clientId, totalAmount = amount, count = count, thirdPaySequence = thirdPaySequence)
 
                 }
     }

@@ -49,7 +49,6 @@ data class DepositReportVo(
         val count: Int,
 
         val money: BigDecimal
-
 )
 
 
@@ -59,7 +58,9 @@ data class ClientDepositReportVo(
 
         val money: BigDecimal,
 
-        val count: Int
+        val count: Int,
+
+        val depositSequence: Int
 
 )
 
@@ -184,4 +185,5 @@ data class ArtificialCReportVo(
 
         // 总次数
         val count: Int
+
 )
