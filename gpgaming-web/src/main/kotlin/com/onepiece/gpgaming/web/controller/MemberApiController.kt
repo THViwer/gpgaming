@@ -163,7 +163,7 @@ class MemberApiController(
 //        }
     }
 
-    @GetMapping("/bank")
+    @GetMapping("/bank/{memberId}")
     override fun banks(@PathVariable(value = "memberId") memberId: Int): List<MemberBank> {
         return memberBankService.query(memberId = memberId)
     }
