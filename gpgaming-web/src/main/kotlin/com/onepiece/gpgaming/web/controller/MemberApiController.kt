@@ -2,12 +2,15 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.model.MemberBank
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
+import com.onepiece.gpgaming.beans.value.database.MemberBankUo
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.database.WalletQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
+import com.onepiece.gpgaming.beans.value.internet.web.MemberBankValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPage
 import com.onepiece.gpgaming.beans.value.internet.web.MemberUoReq
@@ -16,6 +19,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.MemberWalletInfo
 import com.onepiece.gpgaming.beans.value.internet.web.WalletVo
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.LevelService
+import com.onepiece.gpgaming.core.service.MemberBankService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.core.service.WalletService
@@ -43,7 +47,8 @@ class MemberApiController(
         private val depositService: DepositService,
         private val withdrawService: WithdrawService,
         private val platformMemberService: PlatformMemberService,
-        private val gameApi: GameApi
+        private val gameApi: GameApi,
+        private val memberBankService: MemberBankService
 ) : BasicController(), MemberApi {
 
     @GetMapping
@@ -156,5 +161,21 @@ class MemberApiController(
 //            }
 
 //        }
+    }
+
+    @GetMapping("/bank")
+    override fun banks(@PathVariable(value = "memberId") memberId: Int): List<MemberBank> {
+        return memberBankService.query(memberId = memberId)
+    }
+
+    @PutMapping("/bank")
+    override fun bankUo(@RequestBody req: MemberBankValue.MemberBankUo) {
+
+        val banks = memberBankService.query(memberId = req.memberId)
+        val existBank = banks.firstOrNull{ it.bank == req.bank && it.id != req.id }
+        check(existBank == null) { OnePieceExceptionCode.MEMBER_BANK_EXIST }
+
+        val uo = MemberBankUo(id = req.id, bank = req.bank, bankCardNumber = req.bankCardNo, status = null)
+        memberBankService.update(uo)
     }
 }

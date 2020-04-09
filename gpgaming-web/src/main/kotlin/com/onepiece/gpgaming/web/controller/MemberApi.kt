@@ -1,6 +1,8 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Status
+import com.onepiece.gpgaming.beans.model.MemberBank
+import com.onepiece.gpgaming.beans.value.internet.web.MemberBankValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPage
 import com.onepiece.gpgaming.beans.value.internet.web.MemberUoReq
@@ -41,8 +43,13 @@ interface MemberApi {
     fun create(@RequestBody memberCoReq: MemberCoReq)
 
     @ApiOperation(tags = ["user"], value = "会员 -> 金额详情")
-    fun balance(
-            @PathVariable(value = "memberId") memberId: Int
-    ): WalletVo
+    fun balance(@PathVariable(value = "memberId") memberId: Int): WalletVo
+
+    @ApiOperation(tags = ["user"], value = "会员 -> 银行卡")
+    fun banks(@PathVariable(value = "memberId") memberId: Int): List<MemberBank>
+
+    @ApiOperation(tags = ["user"], value = "会员 -> 银行卡修改")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    fun bankUo(@RequestBody req: MemberBankValue.MemberBankUo)
 
 }
