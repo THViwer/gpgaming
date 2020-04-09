@@ -353,7 +353,7 @@ class CashOrderApiController(
         return list.map {
             with(it) {
                 WalletNoteValue.WalletNoteVo(eventId = eventId, event = event, money = money, originMoney = originMoney,
-                        afterMoney = afterMoney, promotionMoney = promotionMoney, remarks = remarks)
+                        afterMoney = afterMoney, promotionMoney = promotionMoney, remarks = remarks, createdTime = createdTime)
             }
         }
     }

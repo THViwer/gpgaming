@@ -3,6 +3,8 @@ package com.onepiece.gpgaming.beans.value.internet.web
 import com.onepiece.gpgaming.beans.enums.WalletEvent
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 sealed class WalletNoteValue {
 
@@ -27,7 +29,10 @@ sealed class WalletNoteValue {
             val promotionMoney: BigDecimal?,
 
             @ApiModelProperty("备注")
-            val remarks: String
+            val remarks: String,
+
+            @ApiModelProperty("创建时间")
+            val createdTime: LocalDateTime
 
     )
 
