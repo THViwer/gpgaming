@@ -12,7 +12,7 @@ sealed class MemberBankValue {
 
             val bank: Bank?,
 
-            val bankCardNo: String?
+            val bankCardNumber: String?
 
     )
 

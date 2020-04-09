@@ -175,7 +175,7 @@ class MemberApiController(
         val existBank = banks.firstOrNull{ it.bank == req.bank && it.id != req.id }
         check(existBank == null) { OnePieceExceptionCode.MEMBER_BANK_EXIST }
 
-        val uo = MemberBankUo(id = req.id, bank = req.bank, bankCardNumber = req.bankCardNo, status = null)
+        val uo = MemberBankUo(id = req.id, bank = req.bank, bankCardNumber = req.bankCardNumber, status = null)
         memberBankService.update(uo)
     }
 }
