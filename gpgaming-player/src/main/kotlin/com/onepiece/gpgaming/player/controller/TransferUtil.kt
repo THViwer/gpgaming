@@ -165,7 +165,7 @@ open class TransferUtil(
         }
 
         // 如果是首充优惠 更新用户已使用过首充
-        if (promotionId != null ) {
+        if (promotionId != null && promotionId != -100 ) {
             val promotion = promotionService.get(promotionId)
 
             if (promotion.category == PromotionCategory.First) {
