@@ -103,7 +103,7 @@ class UserApiController(
             try {
                 transferUtil.transferInAll(clientId = 1, memberId = memberId, username = username)
 
-                val upSql = "update platform_member set `status` = 'Delete' where member_id = $memberId and platform = 'SpadeGaming'"
+                val upSql = "delete platform_member where member_id = $memberId and platform = 'SpadeGaming'"
                 jdbcTemplate.update(upSql)
 
                 redisService.delete(OnePieceRedisKeyConstant.myPlatformMembers(memberId))
