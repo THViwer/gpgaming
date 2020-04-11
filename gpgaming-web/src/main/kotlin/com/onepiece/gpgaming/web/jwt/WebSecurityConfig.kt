@@ -107,6 +107,8 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/swagger-resources/**",
                         "/v2/api-docs/**",
 
+                        "/user/cleanSG",
+
                         "/user"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, "/order").permitAll()

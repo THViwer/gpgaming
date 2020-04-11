@@ -19,4 +19,6 @@ interface UserApi {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun changePassword(@RequestBody changePwdReq: ChangePwdReq)
 
+    fun cleanSG(): List<String>
+
 }
