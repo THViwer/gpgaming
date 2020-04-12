@@ -282,7 +282,7 @@ class ReportServiceImpl(
         val backwaterMap = memberDailyReportDao.backwater(startDate = startDate)
 
         //TODO 第三方充值强制入款
-        val clients = clientService.all()
+        val clients = clientService.all().filter { clientId == null || it.id == clientId }
 
 //        val clientIds = transferInReports.asSequence().map { it.clientId }
 //                .plus(transferOutReports.map { it.clientId })
