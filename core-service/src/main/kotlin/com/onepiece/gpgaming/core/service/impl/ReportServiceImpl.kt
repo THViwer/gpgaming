@@ -321,7 +321,7 @@ class ReportServiceImpl(
             val thirdPayCount = payOrder?.count?: 0
             val thirdPaySequence = payOrder?.thirdPaySequence?: 0
 
-            val promotionAmount = transferOutReport?.promotionAmount?: BigDecimal.ZERO
+            val promotionAmount = transferInReport?.promotionAmount?: BigDecimal.ZERO
 
             val totalBet = betMap[it]?.totalBet?: BigDecimal.ZERO
             val totalMWin = betMap[it]?.totalWin?: BigDecimal.ZERO
