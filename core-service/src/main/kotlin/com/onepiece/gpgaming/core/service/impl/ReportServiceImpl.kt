@@ -165,7 +165,7 @@ class ReportServiceImpl(
                 withdrawReport != null -> withdrawReport.clientId
                 betMap[it] != null-> (betMap[it] ?: error("betMap error")).first().clientId
                 payOrder != null -> payOrder.clientId
-                else -> error(OnePieceExceptionCode.DATA_FAIL)
+                else -> 1
             }
             MemberDailyReport(id = -1, day = startDate, clientId = clientId, memberId = it, transferIn = transferIn, transferOut = transferOut,
                     depositMoney = depositMoney, withdrawMoney = withdrawMoney, depositCount = depositCount, withdrawCount = withdrawCount,
