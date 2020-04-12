@@ -2,6 +2,8 @@ package com.onepiece.gpgaming.core.dao
 
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
+import java.math.BigDecimal
+import java.time.LocalDate
 
 interface MemberDailyReportDao  {
 
@@ -13,5 +15,6 @@ interface MemberDailyReportDao  {
 
     fun updateBackwater(ids: List<Int>)
 
+    fun backwater(startDate: LocalDate): Map<Int, BigDecimal>
 
 }

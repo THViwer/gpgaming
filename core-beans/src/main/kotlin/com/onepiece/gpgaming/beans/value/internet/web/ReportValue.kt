@@ -205,6 +205,12 @@ sealed class ReportValue {
                 return totalBet.minus(totalMWin)
             }
 
+        val totalBackwaterMoney: BigDecimal
+            @ApiModelProperty("总返水金额")
+            get() {
+                return data.sumByDouble { it.backwaterMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+            }
+
 
     }
 

@@ -60,6 +60,9 @@ data class ClientDailyReport(
         // 三方充值人数
         val thirdPaySequence: Int,
 
+        // 返水金额
+        val backwaterMoney: BigDecimal,
+
         // 今日新增用户
         val newMemberCount: Int,
 

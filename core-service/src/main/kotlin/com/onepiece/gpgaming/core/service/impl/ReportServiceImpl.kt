@@ -12,12 +12,14 @@ import com.onepiece.gpgaming.core.dao.ArtificialOrderDao
 import com.onepiece.gpgaming.core.dao.BetOrderDao
 import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.dao.LevelDao
+import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.dao.PayOrderDao
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
 import com.onepiece.gpgaming.core.dao.TransferReportQuery
 import com.onepiece.gpgaming.core.dao.WithdrawDao
 import com.onepiece.gpgaming.core.service.BetOrderService
+import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.ReportService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -35,6 +37,8 @@ class ReportServiceImpl(
         private val artificialOrderDao: ArtificialOrderDao,
         private val betOrderDao: BetOrderDao,
         private val payOrderDao: PayOrderDao,
+        private val memberDailyReportDao: MemberDailyReportDao,
+        private val clientService: ClientService,
         private val levelDao: LevelDao
 ) : ReportService {
 
@@ -274,18 +278,22 @@ class ReportServiceImpl(
         val payOrders = payOrderDao.cReport(startDate = startDate, constraint = false)
         val payOrderMap = payOrders.map { it.clientId to it }.toMap()
 
+        // 返水金额
+        val backwaterMap = memberDailyReportDao.backwater(startDate = startDate)
+
         //TODO 第三方充值强制入款
+        val clients = clientService.all()
 
-        val clientIds = transferInReports.asSequence().map { it.clientId }
-                .plus(transferOutReports.map { it.clientId })
-                .plus(depositReports.map { it.clientId })
-                .plus(withdrawReports.map { it.clientId })
-                .plus(artificialReports.map { it.clientId })
-                .plus(betReports.map { it.clientId })
-                .plus(payOrders.map { it.clientId })
-                .toSet()
+//        val clientIds = transferInReports.asSequence().map { it.clientId }
+//                .plus(transferOutReports.map { it.clientId })
+//                .plus(depositReports.map { it.clientId })
+//                .plus(withdrawReports.map { it.clientId })
+//                .plus(artificialReports.map { it.clientId })
+//                .plus(betReports.map { it.clientId })
+//                .plus(payOrders.map { it.clientId })
+//                .toSet()
 
-        return clientIds.map {
+        return clients.map { it.id }.map {
 
             val transferInReport = transferInMap[it]
             val transferIn = transferInReport?.transferIn ?: BigDecimal.ZERO
@@ -318,6 +326,8 @@ class ReportServiceImpl(
             val totalBet = betMap[it]?.totalBet?: BigDecimal.ZERO
             val totalMWin = betMap[it]?.totalWin?: BigDecimal.ZERO
 
+            val backwater = backwaterMap[it] ?: BigDecimal.ZERO
+
 
 
             ClientDailyReport(id = -1, day = startDate, clientId = it, transferIn = transferIn,
@@ -328,7 +338,7 @@ class ReportServiceImpl(
                     promotionAmount = promotionAmount, status = Status.Normal, totalBet = totalBet,
                     totalMWin = totalMWin, thirdPayMoney = thirdPayMoney,
                     thirdPayCount = thirdPayCount, depositSequence = depositSequence,
-                    thirdPaySequence = thirdPaySequence)
+                    thirdPaySequence = thirdPaySequence, backwaterMoney = backwater)
         }
     }
 }

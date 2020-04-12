@@ -35,13 +35,14 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
             val thirdPayMoney = rs.getBigDecimal("third_pay_money")
             val thirdPayCount = rs.getInt("third_pay_count")
             val thirdPaySequence = rs.getInt("third_pay_sequence")
+            val backwaterMoney = rs.getBigDecimal("backwater_money")
 
             ClientDailyReport(id = id, day = day, clientId = clientId, transferIn = transferIn, transferOut = transferOut,
                     depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
                     withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
                     promotionAmount = promotionAmount, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
                     totalBet = totalBet, totalMWin = totalMWin, thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount,
-                    thirdPaySequence = thirdPaySequence, depositSequence = depositSequence)
+                    thirdPaySequence = thirdPaySequence, depositSequence = depositSequence, backwaterMoney = backwaterMoney)
         }
 
     override fun create(reports: List<ClientDailyReport>) {
@@ -64,6 +65,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                 .set("third_pay_money")
                 .set("third_pay_count")
                 .set("third_pay_sequence")
+                .set("backwater_money")
                 .execute { ps, entity ->
                     var x = 0
                     ps.setDate(++x, Date.valueOf(entity.day))
@@ -84,6 +86,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     ps.setBigDecimal(++x, entity.thirdPayMoney)
                     ps.setInt(++x, entity.thirdPayCount)
                     ps.setInt(++x, entity.thirdPaySequence)
+                    ps.setBigDecimal(++x, entity.backwaterMoney)
                 }
     }
 

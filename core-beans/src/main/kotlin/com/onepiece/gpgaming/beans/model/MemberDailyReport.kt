@@ -61,7 +61,7 @@ data class MemberDailyReport(
         // 返水比例
         val backwater: BigDecimal,
 
-        // 近水金额
+        // 返水金额
         val backwaterMoney: BigDecimal,
 
         // 反水金额是否已进行

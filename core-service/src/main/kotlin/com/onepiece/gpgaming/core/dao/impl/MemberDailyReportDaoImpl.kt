@@ -8,8 +8,10 @@ import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
 import java.sql.Date
 import java.sql.ResultSet
+import java.time.LocalDate
 
 @Repository
 class MemberDailyReportDaoImpl(
@@ -119,5 +121,17 @@ class MemberDailyReportDaoImpl(
                 .set("backwater_execution", true)
                 .asWhere("id in (${ids.joinToString(",")})")
                 .execute()
+    }
+
+    override fun backwater(startDate: LocalDate): Map<Int, BigDecimal> {
+        return query("client_id, sum(backwater_money) as total_backwater_money")
+                .asWhere("created_time > ?", startDate)
+                .group("client_id")
+                .execute { rs ->
+                    val clientId = rs.getInt("client_id")
+                    val totalBackwaterMoney = rs.getBigDecimal("total_backwater_money")
+
+                    clientId to totalBackwaterMoney
+                }.toMap()
     }
 }
