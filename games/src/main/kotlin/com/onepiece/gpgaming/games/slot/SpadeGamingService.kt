@@ -9,6 +9,7 @@ import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.SpadeGamingClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.SlotGame
+import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
@@ -21,7 +22,9 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Service
-class SpadeGamingService : PlatformService() {
+class SpadeGamingService(
+        private val activeConfig: ActiveConfig
+) : PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss")
     private val log = LoggerFactory.getLogger(SpadeGamingService::class.java)
@@ -218,7 +221,12 @@ class SpadeGamingService : PlatformService() {
                 "menumode=on"
         ).joinToString(separator = "&")
 
-        return "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth?$urlParam"
+        return if (activeConfig.profile == "prod") {
+            "http://lobby.silverkirinplay.com/${clientToken.memberCode}/auth?$urlParam"
+        } else {
+            "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth?$urlParam"
+        }
+
     }
 
 
