@@ -38,7 +38,10 @@ data class PromotionCo(
         val ruleType: PromotionRuleType,
 
         // 路由规则json
-        val ruleJson: String
+        val ruleJson: String,
+
+        // 排序
+        val sequence: Int
 
 )
 
@@ -71,6 +74,9 @@ data class PromotionUo(
         val levelId: Int?,
 
         // 路由规则json
-        val ruleJson: String?
+        val ruleJson: String?,
+
+        // 排序字段
+        val sequence: Int?
 
 )

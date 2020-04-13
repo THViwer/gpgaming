@@ -51,6 +51,9 @@ data class Promotion (
         // 活动状态
         val status: Status,
 
+        // 序列
+        val sequence: Int,
+
         // 创建时间
         val createdTime: LocalDateTime,
 

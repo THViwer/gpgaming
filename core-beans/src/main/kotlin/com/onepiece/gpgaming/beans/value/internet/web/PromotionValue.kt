@@ -103,7 +103,10 @@ data class PromotionCoReq(
         val top: Boolean,
 
         @ApiModelProperty("优惠规则")
-        val promotionRuleVo: PromotionRuleVo
+        val promotionRuleVo: PromotionRuleVo,
+
+        @ApiModelProperty("排序字段")
+        val sequence: Int
 )
 
 
@@ -141,5 +144,8 @@ data class PromotionUoReq(
         val levelId: Int?,
 
         @ApiModelProperty("优惠规则")
-        val promotionRuleVo: PromotionRuleVo?
+        val promotionRuleVo: PromotionRuleVo?,
+
+        @ApiModelProperty("排序字段")
+        val sequence: Int
 )

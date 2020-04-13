@@ -33,13 +33,15 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val levelId = rs.getInt("level_id")
             val ruleType = rs.getString("rule_type").let { PromotionRuleType.valueOf(it) }
             val ruleJson = rs.getString("rule_json")
+            val sequence = rs.getInt("sequence")
 
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
 
             Promotion(id = id, category = category, stopTime = stopTime, status = status, createdTime = createdTime,
                     clientId = clientId, top = top, updatedTime = updatedTime, platforms = platforms, levelId = levelId,
-                    ruleJson = ruleJson, ruleType = ruleType, period = period, periodMaxPromotion = periodMaxPromotion)
+                    ruleJson = ruleJson, ruleType = ruleType, period = period, periodMaxPromotion = periodMaxPromotion,
+                    sequence = sequence)
         }
 
     override fun create(promotionCo: PromotionCo): Int {
@@ -55,6 +57,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("level_id", promotionCo.levelId)
                 .set("rule_json", promotionCo.ruleJson)
                 .set("rule_type", promotionCo.ruleType)
+                .set("sequence", promotionCo.sequence)
                 .set("status", Status.Stop)
                 .executeGeneratedKey()
     }
@@ -72,6 +75,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .setIfNull("level_id", promotionUo.levelId)
                 .set("rule_json", promotionUo.ruleJson)
                 .set("updated_time", LocalDateTime.now())
+                .set("sequence", promotionUo.sequence)
                 .where("id", promotionUo.id)
                 .executeOnlyOne()
     }

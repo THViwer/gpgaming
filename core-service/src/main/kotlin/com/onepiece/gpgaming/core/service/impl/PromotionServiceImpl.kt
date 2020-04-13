@@ -43,7 +43,7 @@ class PromotionServiceImpl(
         // 创建优惠记录
         val promotionCo = PromotionCo(clientId = clientId, category = promotionCoReq.category, stopTime = promotionCoReq.stopTime, top = promotionCoReq.top,
                 levelId = promotionCoReq.levelId, ruleType = promotionCoReq.promotionRuleVo.ruleType, periodMaxPromotion = promotionCoReq.periodMaxPromotion,
-                ruleJson = promotionCoReq.promotionRuleVo.ruleJson, platforms = promotionCoReq.platforms, period = promotionCoReq.period)
+                ruleJson = promotionCoReq.promotionRuleVo.ruleJson, platforms = promotionCoReq.platforms, period = promotionCoReq.period, sequence = promotionCoReq.sequence)
         val promotionId = promotionDao.create(promotionCo)
         check(promotionId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
@@ -72,7 +72,7 @@ class PromotionServiceImpl(
         // 更新优惠记录
         val promotionUo = PromotionUo(id = promotionUoReq.id, category = promotionUoReq.category, stopTime = promotionUoReq.stopTime,
                 top = promotionUoReq.top, status = promotionUoReq.status, levelId = promotionUoReq.levelId, periodMaxPromotion = promotionUoReq.periodMaxPromotion,
-                ruleJson = promotionUoReq.promotionRuleVo?.ruleJson, platforms = promotionUoReq.platforms, period = promotionUoReq.period)
+                ruleJson = promotionUoReq.promotionRuleVo?.ruleJson, platforms = promotionUoReq.platforms, period = promotionUoReq.period, sequence = promotion.sequence)
         val state = promotionDao.update(promotionUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
@@ -97,7 +97,7 @@ class PromotionServiceImpl(
 
             return Promotion(id = -100, clientId = 0, category = PromotionCategory.Special, platforms = listOf(Platform.Kiss918, Platform.Pussy888, Platform.Mega),
                     stopTime = null, ruleType = PromotionRuleType.Withdraw, levelId = null, period = PromotionPeriod.Daily, periodMaxPromotion = BigDecimal(99999999),
-                    ruleJson = ruleJson, top = true, status = Status.Normal, createdTime = now, updatedTime = now )
+                    ruleJson = ruleJson, top = true, status = Status.Normal, createdTime = now, updatedTime = now, sequence = 100)
         } else {
             promotionDao.get(id)
         }
@@ -105,16 +105,6 @@ class PromotionServiceImpl(
 
     override fun find(clientId: Int, platform: Platform): List<Promotion> {
         return this.all(clientId).filter { it.status == Status.Normal }.filter { it.platforms.contains(platform) }
-//        return promotionDao.find(clientId = clientId, platform = platform)
     }
 
-    //    override fun getCurrentPromotion(clientId: Int, platform: Platform): PromotionRule? {
-//
-//        val promotion = this.all(clientId).firstOrNull{ it.platform == platform }
-//        if (promotion == null || promotion.status != Status.Normal) {
-//            return nul
-//        }
-//
-//        return promotionRoleDao.getByPromotionId(promotion.id)
-//    }
 }
