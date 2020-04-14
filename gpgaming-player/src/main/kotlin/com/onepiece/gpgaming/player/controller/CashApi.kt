@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.base.Page
+import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
@@ -75,9 +76,11 @@ interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "第三方充值 -> 选择支付")
     fun selectPay(
+            @RequestHeader("language") language: Language,
             @RequestParam("payId") payId: Int,
             @RequestParam("amount") amount: BigDecimal,
-            @RequestParam("responseUrl") responseUrl: String
+            @RequestParam("responseUrl") responseUrl: String,
+            @RequestParam("selectBank",  required = false) selectBank: Bank?
     ): ThirdPayValue.SelectPayResult
 
 //    @ApiOperation(tags = ["cash"], value = "第三方充值 -> 列表")

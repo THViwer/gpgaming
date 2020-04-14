@@ -18,7 +18,10 @@ sealed class ThirdPayValue {
             val minAmount: BigDecimal,
 
             // 最大金额
-            val maxAmount: BigDecimal
+            val maxAmount: BigDecimal,
+
+            // 支持的转账银行
+            val banks:  List<BankVo>?
 
     ) {
 

@@ -1,6 +1,8 @@
 package com.onepiece.gpgaming.payment
 
+import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.model.pay.PayConfig
 import java.math.BigDecimal
 
@@ -20,6 +22,12 @@ data class PayRequest(
 
         // 用户名
         val username: String,
+
+        // 用户选择的银行
+        val selectBank: Bank?,
+
+        // 支付类型
+        val payType: PayType,
 
         // 支付配置
         val payConfig: PayConfig,

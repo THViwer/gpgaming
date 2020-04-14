@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.payment
 
+import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.model.pay.SurePayConfig
 import org.apache.commons.codec.digest.DigestUtils
@@ -14,6 +15,7 @@ class SurePayService: PayService {
 
         val config = req.payConfig as SurePayConfig
 
+        val supportBank = config.supportBanks.first { it.bank  == req.selectBank }
         val amount = req.amount.setScale(2, 2)
         val customer  = "${req.clientId}_${req.memberId}"
         val lang = when (req.language) {
@@ -36,7 +38,7 @@ class SurePayService: PayService {
                 "customer" to customer,
                 "currency"  to config.currency,
                 "Language" to lang,
-                "bankcode" to  config.bankCode,
+                "bankcode" to supportBank.bankCode,
                 "clientip" to config.clientIp,
                 "post_url" to config.backendURL,
                 "failed_return_url" to req.failResponseUrl,
@@ -49,7 +51,12 @@ fun main() {
 
     val orderId  = UUID.randomUUID().toString().replace("-", "")
     val amount = BigDecimal.valueOf(10).setScale(2, 2)
-    val config = SurePayConfig()
+
+    val supportBanks = listOf(
+            SurePayConfig.SupportBank(bank = Bank.MBB, bankCode = "10000628")
+    )
+
+    val config = SurePayConfig(supportBanks = supportBanks)
 
     val customer =  "1_1"
 

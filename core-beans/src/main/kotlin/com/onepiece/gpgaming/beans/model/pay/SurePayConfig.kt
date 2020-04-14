@@ -1,5 +1,7 @@
 package com.onepiece.gpgaming.beans.model.pay
 
+import com.onepiece.gpgaming.beans.enums.Bank
+
 data class SurePayConfig(
 
         // api地址
@@ -15,7 +17,10 @@ data class SurePayConfig(
         val currency: String = "MYR",
 
         // 银行code
-        val bankCode: String = "10000628",
+//        val bankCode: String = "10000628",
+
+        // 支持的银行列表
+        val supportBanks:  List<SupportBank>,
 
         // 服务器请求ip
         val clientIp: String = "94.237.64.70",
@@ -23,4 +28,16 @@ data class SurePayConfig(
         // 支付通知地址
         val backendURL: String  = "https://open.gpgaming88.com/api/v1/player/pay/surepay"
 
-): PayConfig
+): PayConfig {
+
+
+    data class SupportBank(
+
+            val bank:  Bank,
+
+            val bankCode: String
+
+    )
+
+
+}

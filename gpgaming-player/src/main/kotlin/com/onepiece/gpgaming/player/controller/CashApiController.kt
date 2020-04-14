@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.PayState
+import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
@@ -19,6 +20,7 @@ import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.PlatformMember
+import com.onepiece.gpgaming.beans.model.pay.SurePayConfig
 import com.onepiece.gpgaming.beans.value.database.DepositCo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.MemberBankCo
@@ -111,7 +113,7 @@ open class CashApiController(
         private val transferOrderService: TransferOrderService,
         private val payBindService: PayBindService,
         private val payOrderService: PayOrderService,
-        private val payService: PayService,
+        private val payGateway: PayService,
         private val memberDailyReportService: MemberDailyReportService,
         private val betOrderService: BetOrderService
 ) : BasicController(), CashApi {
@@ -238,15 +240,31 @@ open class CashApiController(
 
         return payBindService.list(clientId = member.clientId).filter { it.levelId == null || it.levelId == member.levelId }
                 .map {
-                    ThirdPayValue.SupportPay(payId = it.id, payType = it.payType, minAmount = it.minAmount, maxAmount = it.maxAmount)
+
+                    // 支持的银行列表
+                    val banks = when (it.payType) {
+                        PayType.SurePay -> {
+                            val config =  it.getConfig(objectMapper) as SurePayConfig
+
+                            config.supportBanks.map { sb ->
+                                val bank =  sb.bank
+                                BankVo(bank = bank, name = bank.name, logo = bank.logo,  grayLogo = bank.grayLogo)
+                            }
+                        }
+                        else -> null
+                    }
+                    ThirdPayValue.SupportPay(payId = it.id, payType = it.payType, minAmount = it.minAmount, maxAmount = it.maxAmount,
+                            banks = banks)
                 }
     }
 
     @PostMapping("/thirdpay/select")
     override fun selectPay(
+            @RequestHeader("language") language: Language,
             @RequestParam("payId") payId: Int,
             @RequestParam("amount") amount: BigDecimal,
-            @RequestParam("responseUrl") responseUrl: String
+            @RequestParam("responseUrl") responseUrl: String,
+            @RequestParam("selectBank",  required = false) selectBank: Bank?
     ): ThirdPayValue.SelectPayResult {
 
         val current = current()
@@ -254,9 +272,11 @@ open class CashApiController(
 
         // 第三方支付
         val bind = payBindService.get(clientId = current.clientId, id = payId)
+
         val req = PayRequest(orderId = orderId, amount = amount, clientId = current.clientId, memberId = current.id, username = this.currentUsername(),
-                payConfig = bind.getConfig(objectMapper), responseUrl = responseUrl)
-        val map = payService.start(req)
+                payConfig = bind.getConfig(objectMapper), responseUrl = responseUrl, failResponseUrl = responseUrl, language = language,
+                payType = bind.payType, selectBank = selectBank)
+        val map = payGateway.start(req)
 
         // 生成订单
         val payCo = PayOrderValue.PayOrderCo(clientId = current.clientId, memberId = current.id, username = this.currentUsername(), orderId = orderId,

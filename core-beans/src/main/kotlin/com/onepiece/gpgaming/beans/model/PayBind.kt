@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.pay.M3PayConfig
 import com.onepiece.gpgaming.beans.model.pay.PayConfig
+import com.onepiece.gpgaming.beans.model.pay.SurePayConfig
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -43,6 +44,7 @@ data class PayBind (
     fun getConfig(objectMapper: ObjectMapper): PayConfig {
         return when (payType) {
             PayType.M3Pay -> objectMapper.readValue<M3PayConfig>(configJson)
+            PayType.SurePay -> objectMapper.readValue<SurePayConfig>(configJson)
         }
     }
 
