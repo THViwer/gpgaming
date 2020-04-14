@@ -23,10 +23,3 @@ class M3PayConfig(
         val backendURL: String  = "https://open.gpgaming88.com/api/v1/player/pay/m3pay"
 
 ) : PayConfig
-
-fun main() {
-
-    val json = jacksonObjectMapper().writeValueAsString(M3PayConfig())
-
-    println(json)
-}

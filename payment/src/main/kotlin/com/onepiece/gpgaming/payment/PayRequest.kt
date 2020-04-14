@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.payment
 
+import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.model.pay.PayConfig
 import java.math.BigDecimal
 
@@ -24,5 +25,11 @@ data class PayRequest(
         val payConfig: PayConfig,
 
         // 支付成功跳转url
-        val responseUrl: String
+        val responseUrl: String,
+
+        // 失败的跳转Url
+        val failResponseUrl: String,
+
+        // 语言
+        val language: Language
 )

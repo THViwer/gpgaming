@@ -53,6 +53,29 @@ class PayBackApiController(
         } catch (e: Exception) {
             log.info("支付请求失败", e)
         }
+    }
 
+    @RequestMapping("/surepay")
+    override fun surepay() {
+        val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
+
+        log.info("--------------------------------")
+        log.info("--------------------------------")
+        log.info("请求方式：${request.method}")
+        log.info("surepay 开始解析")
+
+        log.info("url param: ")
+        log.info("merchant=${request.getParameter("merchant")}")
+        log.info("amount=${request.getParameter("amount")}")
+        log.info("refid=${request.getParameter("refid")}")
+        log.info("customer=${request.getParameter("customer")}")
+        log.info("clientip=${request.getParameter("clientip")}")
+        log.info("token=${request.getParameter("token")}")
+        log.info("trxno=${request.getParameter("trxno")}")
+        log.info("status=${request.getParameter("status")}")
+        log.info("status_message=${request.getParameter("status_message")}")
+        log.info("surepay 解析结束")
+        log.info("--------------------------------")
+        log.info("--------------------------------")
     }
 }

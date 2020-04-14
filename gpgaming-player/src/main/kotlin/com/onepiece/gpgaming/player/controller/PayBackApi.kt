@@ -9,4 +9,7 @@ interface PayBackApi  {
     @ApiOperation(tags = ["payment"], value = "m3pay")
     fun m3pay()
 
+    @ApiOperation(tags = ["payment"], value = "surepay")
+    fun surepay()
+
 }
