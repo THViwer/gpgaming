@@ -15,8 +15,8 @@ enum class PayType(
             logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/m3pay_ori.png"
     ),
 
-    SurePay(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/m3pay_gray.png",
-            logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/m3pay_ori.png"
+    SurePay(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/SurePay_gray.png",
+            logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/SurePay_ori.png"
     )
 
     ;
