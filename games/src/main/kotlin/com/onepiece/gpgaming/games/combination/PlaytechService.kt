@@ -67,7 +67,7 @@ class PlaytechService(
                 "server_name=${clientToken.serverName}"
         )
         val result = this.startGetJson(clientToken = clientToken, path = "/backoffice/player/serverBalance", data = data)
-        check(result.code == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
+        check(result.code == 200) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
         val mapUtil = result.mapUtil
 
         val wallet = clientToken.serverName
