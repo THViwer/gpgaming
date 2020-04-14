@@ -64,6 +64,9 @@ data class MemberDailyReport(
         // 返水金额
         val backwaterMoney: BigDecimal,
 
+        //  优惠金额
+        val promotionMoney: BigDecimal,
+
         // 反水金额是否已进行
         val backwaterExecution: Boolean,
 

@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.PromotionPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.TransferOrder
+import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 
@@ -36,75 +37,79 @@ sealed class ReportValue {
     }
 
     data class MemberTotalDetailReport(
+
+            @ApiModelProperty("汇总详情 ")
+            val memberReportTotal: MemberReportValue.MemberReportTotal,
+
             @ApiModelProperty("数据列表")
             val data: List<MemberReportWebVo>
     ) {
 
-        val totalTransferIn: BigDecimal
-            @ApiModelProperty("总转入金额")
-            get() {
-                return data.sumByDouble { it.transferIn.toDouble() }.toBigDecimal().setScale(2, 2)
-            }
-
-        val totalTransferOut: BigDecimal
-            @ApiModelProperty("总转出金额")
-            get() {
-                return data.sumByDouble { it.transferOut.toDouble() }.toBigDecimal().setScale(2, 2)
-            }
-
-        val totalDepositMoney: BigDecimal
-            @ApiModelProperty("总充值金额")
-            get() {
-                return data.sumByDouble { it.depositMoney.toDouble() }.toBigDecimal().setScale(2, 2)
-            }
-
-        val totalWithdrawMoney: BigDecimal
-            @ApiModelProperty("总取款金额")
-            get() {
-                return data.sumByDouble { it.withdrawMoney.toDouble() }.toBigDecimal().setScale(2, 2)
-            }
-
-        val totalArtificialMoney: BigDecimal
-            @ApiModelProperty("总人工提存金额")
-            get() {
-                return data.sumByDouble { it.artificialMoney.toDouble() }.toBigDecimal().setScale(2, 2)
-            }
-
-        val totalThirdPayMoney: BigDecimal
-            @ApiModelProperty("总三方充值金额")
-            get() {
-                return data.sumByDouble { it.thirdPayMoney.toDouble() }.toBigDecimal().setScale(2, 2)
-            }
-
-        val totalThirdPayCount: Int
-            @ApiModelProperty("总三方充值次数")
-            get() {
-                return data.sumBy { it.thirdPayCount }
-            }
-
-        val totalArtificialCount: Int
-            @ApiModelProperty("总人工提存次数")
-            get() {
-                return data.sumBy { it.artificialCount }
-            }
-
-        val totalBet: BigDecimal
-            @ApiModelProperty("下注金额")
-            get() {
-                return data.sumByDouble { it.totalBet.toDouble() }.toBigDecimal().setScale(2, 2)
-            }
-
-        val totalMWin: BigDecimal
-            @ApiModelProperty("盈利金额")
-            get() {
-                return data.sumByDouble { it.totalMWin.toDouble() }.toBigDecimal().setScale(2, 2)
-            }
-
-        val totalCWin: BigDecimal
-            @ApiModelProperty("业主盈利金额")
-            get() {
-                return totalBet.minus(totalMWin)
-            }
+//        val totalTransferIn: BigDecimal
+//            @ApiModelProperty("总转入金额")
+//            get() {
+//                return data.sumByDouble { it.transferIn.toDouble() }.toBigDecimal().setScale(2, 2)
+//            }
+//
+//        val totalTransferOut: BigDecimal
+//            @ApiModelProperty("总转出金额")
+//            get() {
+//                return data.sumByDouble { it.transferOut.toDouble() }.toBigDecimal().setScale(2, 2)
+//            }
+//
+//        val totalDepositMoney: BigDecimal
+//            @ApiModelProperty("总充值金额")
+//            get() {
+//                return data.sumByDouble { it.depositMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+//            }
+//
+//        val totalWithdrawMoney: BigDecimal
+//            @ApiModelProperty("总取款金额")
+//            get() {
+//                return data.sumByDouble { it.withdrawMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+//            }
+//
+//        val totalArtificialMoney: BigDecimal
+//            @ApiModelProperty("总人工提存金额")
+//            get() {
+//                return data.sumByDouble { it.artificialMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+//            }
+//
+//        val totalThirdPayMoney: BigDecimal
+//            @ApiModelProperty("总三方充值金额")
+//            get() {
+//                return data.sumByDouble { it.thirdPayMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+//            }
+//
+//        val totalThirdPayCount: Int
+//            @ApiModelProperty("总三方充值次数")
+//            get() {
+//                return data.sumBy { it.thirdPayCount }
+//            }
+//
+//        val totalArtificialCount: Int
+//            @ApiModelProperty("总人工提存次数")
+//            get() {
+//                return data.sumBy { it.artificialCount }
+//            }
+//
+//        val totalBet: BigDecimal
+//            @ApiModelProperty("下注金额")
+//            get() {
+//                return data.sumByDouble { it.totalBet.toDouble() }.toBigDecimal().setScale(2, 2)
+//            }
+//
+//        val totalMWin: BigDecimal
+//            @ApiModelProperty("盈利金额")
+//            get() {
+//                return data.sumByDouble { it.totalMWin.toDouble() }.toBigDecimal().setScale(2, 2)
+//            }
+//
+//        val totalCWin: BigDecimal
+//            @ApiModelProperty("业主盈利金额")
+//            get() {
+//                return totalBet.minus(totalMWin)
+//            }
 
     }
 

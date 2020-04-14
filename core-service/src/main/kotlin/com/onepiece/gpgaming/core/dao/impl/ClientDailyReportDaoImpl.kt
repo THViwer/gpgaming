@@ -10,7 +10,7 @@ import java.sql.Date
 import java.sql.ResultSet
 
 @Repository
-class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_report"), ClientDailyReportDao {
+class fClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_report"), ClientDailyReportDao {
 
     override val mapper: (rs: ResultSet) -> ClientDailyReport
         get() = { rs ->

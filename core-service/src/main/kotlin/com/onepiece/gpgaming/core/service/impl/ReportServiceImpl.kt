@@ -101,82 +101,66 @@ class ReportServiceImpl(
         val betMap = betReports.groupBy { it.memberId }
 
         // 第三方充值
-        val payOrders = payOrderDao.mReport(startDate = startDate)
+        val payOrders = payOrderDao.mReport(startDate = startDate, memberId = memberId)
         val payOrderMap = payOrders.map { it.memberId to it }.toMap()
-
-        val memberIdSet = transferInReports.asSequence().map { it.memberId }
-                .plus(transferOutReports.map { it.memberId })
-                .plus(depositReports.map { it.memberId })
-                .plus(withdrawReports.map { it.memberId })
-                .plus(mArtificialReports.map { it.memberId })
-                .plus(betReports.map { it.memberId })
-                .plus(payOrders.map { it.memberId })
-                .toSet()
 
         // 会员对应返水比例
         val levelIds = levelDao.all().map { it.id to it }.toMap()
-        val query = MemberQuery(clientId = null, ids = memberIdSet.toList(), status = null, startTime = null, endTime = null,
-                levelId = null, promoteCode = null, username =  null, name = null, phone = null)
-        val members = memberDao.query(query, 0, 999999)
-        val backwaterMap = members.map {
-            val backwater = levelIds[it.levelId]?.backwater?: BigDecimal.ZERO
-            it.id to backwater
-        }.toMap()
 
+        val members = memberId?.let { listOf(memberDao.get(it)) } ?: memberDao.all()
+        return members.map { member ->
+            val mid = member.id
 
-        return memberIdSet.map {
-
-            val transferInReport = transferInMap[it]
+            val transferInReport = transferInMap[mid]
             val transferIn = transferInReport?.money ?: BigDecimal.ZERO // 转入金额
+            val promotionMoney = transferInReport?.promotionAmount ?: BigDecimal.ZERO // 优惠金额
 
-            val transferOutReport = transferOutMap[it]
+            val transferOutReport = transferOutMap[mid]
             val transferOut = transferOutReport?.money ?: BigDecimal.ZERO // 转出金额
 
-            val depositReport = depositReportMap[it]
+            val depositReport = depositReportMap[mid]
             val depositMoney = depositReport?.money ?: BigDecimal.ZERO // 存款金额
             val depositCount = depositReport?.count?:0 // 存款次数
 
 
-            val withdrawReport = withdrawReportMap[it]
+            val withdrawReport = withdrawReportMap[mid]
             val withdrawMoney = withdrawReport?.money ?: BigDecimal.ZERO // 取款金额
             val withdrawCount = withdrawReport?.count?: 0 // 取款次数
 
 
-            val artificialReport = mArtificialReportMap[it]
+            val artificialReport = mArtificialReportMap[mid]
             val artificialMoney = artificialReport?.totalAmount?: BigDecimal.ZERO // 人工提存金额
             val artificialCount = artificialReport?.count?: 0 // 人工提存次数
 
-            val payOrder = payOrderMap[it]
+            val payOrder = payOrderMap[mid]
             val thirdPayMoney = payOrder?.totalAmount ?: BigDecimal.ZERO // 第三方充值金额
             val thirdPayCount = payOrder?.count?: 0 // 第三方充值次数
 
             // 平台下注金额
-            val settles = betMap[it]?.map {
+            val settles = betMap[mid]?.map {
                 MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, mwin = it.totalWin)
             }?: emptyList()
             val totalBet = settles.sumByDouble { it.cwin.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额
             val totalMWin = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
 
             // 返水比例和金额
-            val backwater = backwaterMap[it] ?: BigDecimal.ZERO
+            val backwater = levelIds[member.levelId]?.backwater?: BigDecimal.ZERO
             val backwaterMoney = totalBet.multiply(backwater)
 
-            val clientId = when {
-                memberId != null -> queryClientId!!
-                transferInReport != null -> transferInReport.clientId
-                transferOutReport != null -> transferOutReport.clientId
-                depositReport != null -> depositReport.clientId
-                withdrawReport != null -> withdrawReport.clientId
-                betMap[it] != null-> (betMap[it] ?: error("betMap error")).first().clientId
-                payOrder != null -> payOrder.clientId
-                else -> 1
+            val empty = transferIn.plus(transferOut).plus(depositMoney).plus(withdrawMoney).plus(artificialMoney).plus(thirdPayMoney)
+                    .plus(totalBet)
+
+            if (empty == BigDecimal.ZERO) {
+                null
+            } else {
+                MemberDailyReport(id = -1, day = startDate, clientId = member.clientId, memberId = mid, transferIn = transferIn,
+                        transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney, depositCount = depositCount, withdrawCount = withdrawCount,
+                        artificialMoney = artificialMoney,  artificialCount = artificialCount, settles = settles, totalMWin = totalMWin, totalBet = totalBet ,
+                        thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, backwater = backwater, backwaterMoney = backwaterMoney, createdTime = now,
+                        status = Status.Normal, backwaterExecution = false, promotionMoney = promotionMoney)
             }
-            MemberDailyReport(id = -1, day = startDate, clientId = clientId, memberId = it, transferIn = transferIn, transferOut = transferOut,
-                    depositMoney = depositMoney, withdrawMoney = withdrawMoney, depositCount = depositCount, withdrawCount = withdrawCount,
-                    artificialMoney = artificialMoney,  artificialCount = artificialCount, settles = settles, totalMWin = totalMWin,
-                    totalBet = totalBet , thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, backwater = backwater, backwaterMoney = backwaterMoney,
-                    createdTime = now, status = Status.Normal, backwaterExecution = false)
-        }
+        }.filterNotNull()
+
     }
 
     override fun startClientPlatformReport(clientId: Int?, startDate: LocalDate): List<ClientPlatformDailyReport> {

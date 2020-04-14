@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
+import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
@@ -42,13 +43,14 @@ class MemberDailyReportDaoImpl(
             val backwater = rs.getBigDecimal("backwater")
             val backwaterMoney = rs.getBigDecimal("backwater_money")
             val backwaterExecution = rs.getBoolean("backwater_execution")
+            val promotionMoney = rs.getBigDecimal("promotion_money")
 
             MemberDailyReport(id = id, day = day, clientId = clientId, memberId = memberId,
                     transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney,
                     createdTime = createdTime, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
                     depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, totalMWin = totalMWin,
                     thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, backwater = backwater, backwaterMoney = backwaterMoney,
-                    backwaterExecution = backwaterExecution)
+                    backwaterExecution = backwaterExecution, promotionMoney = promotionMoney)
         }
 
     override fun create(reports: List<MemberDailyReport>) {
@@ -73,6 +75,7 @@ class MemberDailyReportDaoImpl(
                 .set("backwater")
                 .set("backwater_money")
                 .set("backwater_execution")
+                .set("promotion_money")
                 .execute { ps, entity ->
                     var index = 0
                     ps.setDate(++index, Date.valueOf(entity.day))
@@ -94,8 +97,62 @@ class MemberDailyReportDaoImpl(
                     ps.setBigDecimal(++index, entity.backwater)
                     ps.setBigDecimal(++index, entity.backwaterMoney)
                     ps.setBoolean(++index, entity.backwaterExecution)
+                    ps.setBigDecimal(++index, entity.promotionMoney)
                 }
 
+    }
+
+    override fun total(query: MemberReportQuery): MemberReportValue.MemberReportTotal {
+
+        val columns = """
+            count(*) as count,
+            sum(total_m_win) as totalMWin,
+            sum(total_bet) as totalBet,
+            sum(transfer_in) as transferIn,
+            sum(transfer_out) as transferOut,
+            sum(deposit_count) as totalDepositCount,
+            sum(deposit_money) as totalDepositMoney,
+            sum(withdraw_count) as totalWithdrawCount,
+            sum(artificial_money) as totalArtificialMoney,
+            sum(artificial_count) as totalArtificialCount,
+            sum(third_pay_money) as totalThirdPayMoney,
+            sum(third_pay_count) as totalThirdPayCount,
+            sum(withdraw_money) as totalWithdrawMoney,
+            sum(backwater_money) as totalBackwaterMoney,
+            sum(promotion_money)as totalPromotionMoney
+        """.trimIndent()
+
+        return query(columns)
+                .where("client_id", query.clientId)
+                .asWhere("day > ?", query.startDate)
+                .asWhere("day <= ?", query.endDate)
+                .where("member_id", query.memberId)
+                .asWhere("backwater_money >= ?", query.minBackwaterMoney)
+                .asWhere("promotion_money >= ?", query.minPromotionMoney)
+                .executeOnlyOne { rs ->
+                    val count = rs.getInt("count")
+                    val totalMWin  = rs.getBigDecimal("totalMWin") ?: BigDecimal.ZERO
+                    val totalBet  = rs.getBigDecimal("totalBet") ?: BigDecimal.ZERO
+                    val transferIn = rs.getBigDecimal("transferIn") ?: BigDecimal.ZERO
+                    val transferOut = rs.getBigDecimal("transferOut") ?: BigDecimal.ZERO
+                    val totalDepositCount = rs.getInt("totalDepositCount")
+                    val totalDepositMoney  = rs.getBigDecimal("totalDepositMoney")?: BigDecimal.ZERO
+                    val totalWithdrawCount = rs.getInt("totalWithdrawCount")
+                    val  totalArtificialMoney  =  rs.getBigDecimal("totalArtificialMoney")?: BigDecimal.ZERO
+                    val totalArtificialCount = rs.getInt("totalArtificialCount")
+                    val totalThirdPayMoney = rs.getBigDecimal("totalThirdPayMoney")?: BigDecimal.ZERO
+                    val totalThirdPayCount = rs.getInt("totalThirdPayCount")
+                    val totalWithdrawMoney = rs.getBigDecimal("totalWithdrawMoney")?: BigDecimal.ZERO
+                    val totalBackwaterMoney = rs.getBigDecimal("totalBackwaterMoney")?: BigDecimal.ZERO
+                    val totalPromotionMoney = rs.getBigDecimal("totalPromotionMoney")?: BigDecimal.ZERO
+
+                    MemberReportValue.MemberReportTotal(count = count, totalMWin = totalMWin, totalBet = totalBet, transferIn = transferIn,
+                            transferOut = transferOut, totalDepositCount = totalDepositCount, totalDepositMoney = totalDepositMoney,
+                            totalWithdrawCount = totalWithdrawCount, totalWithdrawMoney = totalWithdrawMoney,
+                            totalArtificialCount = totalArtificialCount,  totalArtificialMoney = totalArtificialMoney,
+                            totalThirdPayCount = totalThirdPayCount, totalThirdPayMoney = totalThirdPayMoney,
+                            totalBackwaterMoney = totalBackwaterMoney, totalPromotionMoney = totalPromotionMoney)
+                }
     }
 
     override fun query(query: MemberReportQuery): List<MemberDailyReport> {
@@ -105,6 +162,10 @@ class MemberDailyReportDaoImpl(
                 .asWhere("day > ?", query.startDate)
                 .asWhere("day <= ?", query.endDate)
                 .where("member_id", query.memberId)
+                .asWhere("backwater_money >= ?", query.minBackwaterMoney)
+                .asWhere("promotion_money >= ?", query.minPromotionMoney)
+                .sort("day desc")
+                .limit(query.current, query.size)
                 .execute(mapper)
     }
 

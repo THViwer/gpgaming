@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.value.database.ClientReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
+import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.beans.value.database.PromotionDailyReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPlatformReportWebVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberReportWebVo
@@ -25,11 +26,13 @@ import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
+import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -50,6 +53,8 @@ class ReportApiController(
         private val objectMapper: ObjectMapper
 ) : BasicController(), ReportApi {
 
+    private val log = LoggerFactory.getLogger(ReportApiController::class.java)
+
     private fun <T> includeToday(endDate: LocalDate, function: () -> List<T>): List<T> {
         val isToday = LocalDate.now().plusDays(1).until(endDate, ChronoUnit.DAYS) >= 0
         return if (isToday) {
@@ -68,7 +73,8 @@ class ReportApiController(
         val clientId = getClientId()
 //        val memberId = memberService.findByUsername(username)?.id?: return emptyList()
 
-        val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
+        val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate, minPromotionMoney = null,
+                minBackwaterMoney = null, current = 0, size = 10000)
         val history = memberPlatformDailyReportService.query(query)
 
         //查询今天的
@@ -97,38 +103,62 @@ class ReportApiController(
     override fun memberDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
-            @RequestParam(value = "username", required = false) username: String?
+            @RequestParam(value = "username", required = false) username: String?,
+            @RequestParam("minBackwaterMoney",  required = false) minBackwaterMoney: BigDecimal?,
+            @RequestParam("minPromotionMoney",  required = false) minPromotionMoney: BigDecimal?,
+            @RequestParam("current") current: Int,
+            @RequestParam("size") size: Int
     ): ReportValue.MemberTotalDetailReport {
         val clientId = getClientId()
 
         val memberId = memberService.findByUsername(clientId, username)?.id
 
-        val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
+        val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate,
+                minBackwaterMoney = minBackwaterMoney, minPromotionMoney = minPromotionMoney, current = current, size = size)
+
+        val total  = memberDailyReportService.total(query)
         val history = memberDailyReportService.query(query)
 
         //查询今天的
-        val todayData = this.includeToday(endDate) {
-            reportService.startMemberReport(memberId = memberId, startDate = LocalDate.now())
+//        val todayData = this.includeToday(endDate) {
+//            reportService.startMemberReport(memberId = memberId, startDate = LocalDate.now())
+//        }.filter {
+//            it.backwaterMoney >= minBackwaterMoney ?: BigDecimal.ZERO
+//                    && it.promotionMoney >= minPromotionMoney ?:  BigDecimal.ZERO
+//        }
+//
+//        val data = history.plus(todayData)
+        val data = history
+        if (data.isEmpty()) {
+            val emptyTotal = MemberReportValue.MemberReportTotal(count = 0,  totalMWin = BigDecimal.ZERO, totalBet = BigDecimal.ZERO, transferIn = BigDecimal.ZERO,
+                    transferOut = BigDecimal.ZERO, totalDepositCount = 0, totalDepositMoney = BigDecimal.ZERO, totalWithdrawCount = 0, totalWithdrawMoney = BigDecimal.ZERO,
+                    totalArtificialCount = 0, totalArtificialMoney = BigDecimal.ZERO, totalThirdPayCount = 0, totalThirdPayMoney = BigDecimal.ZERO, totalBackwaterMoney = BigDecimal.ZERO,
+                    totalPromotionMoney = BigDecimal.ZERO)
+            return ReportValue.MemberTotalDetailReport(data = emptyList(), memberReportTotal = emptyTotal)
         }
-
-        val data = history.plus(todayData)
-        if (data.isEmpty()) return ReportValue.MemberTotalDetailReport(emptyList())
-
+//
         val ids = data.map { it.memberId }.toList()
         val members = memberService.findByIds(ids).map { it.id to it }.toMap()
 
-        val list =  data.map {
-            val member = members[it.memberId] ?: error(OnePieceExceptionCode.DATA_FAIL)
-            with(it) {
-                MemberReportWebVo(day = day, clientId = clientId, memberId = member.id, username = member.username,
-                        transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney,
-                        withdrawMoney = withdrawMoney, artificialMoney = artificialMoney, artificialCount = artificialCount,
-                        settles = it.settles, totalMWin = it.totalMWin, totalBet = it.totalBet, thirdPayCount = thirdPayCount,
-                        thirdPayMoney = thirdPayMoney)
+        val list = history.mapNotNull {
+
+            try {
+                val member = members[it.memberId] ?: error(OnePieceExceptionCode.DATA_FAIL)
+                with(it) {
+                    MemberReportWebVo(day = day, clientId = clientId, memberId = member.id, username = member.username,
+                            transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney,
+                            withdrawMoney = withdrawMoney, artificialMoney = artificialMoney, artificialCount = artificialCount,
+                            settles = it.settles, totalMWin = it.totalMWin, totalBet = it.totalBet, thirdPayCount = thirdPayCount,
+                            thirdPayMoney = thirdPayMoney, backwater = it.backwater,  backwaterMoney = it.backwaterMoney,
+                            promotionMoney = it.promotionMoney)
+                }
+            } catch (e: Exception) {
+                log.error("", e)
+                null
             }
         }.sortedByDescending { it.day }
 
-        return ReportValue.MemberTotalDetailReport(list)
+        return ReportValue.MemberTotalDetailReport(data = list,  memberReportTotal = total)
 
     }
 

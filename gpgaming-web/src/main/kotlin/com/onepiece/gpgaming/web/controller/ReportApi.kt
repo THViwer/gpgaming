@@ -5,6 +5,7 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.RequestParam
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @Api(tags = ["report"], description = "报表管理")
@@ -21,7 +22,11 @@ interface ReportApi {
     fun memberDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
-            @RequestParam(value = "username", required = false) username: String?
+            @RequestParam(value = "username", required = false) username: String?,
+            @RequestParam("minBackwaterMoney",  required = false) minBackwaterMoney: BigDecimal?,
+            @RequestParam("minPromotionMoney",  required = false) minPromotionMoney: BigDecimal?,
+            @RequestParam("current") current: Int,
+            @RequestParam("size") size: Int
     ): ReportValue.MemberTotalDetailReport
 
     @ApiOperation(tags = ["report"], value = "厅主平台报表")

@@ -75,6 +75,15 @@ data class MemberReportWebVo(
         // 盈利金额
         val totalMWin: BigDecimal,
 
+        // 返水比例
+        val backwater: BigDecimal,
+
+        // 返水金额
+        val backwaterMoney: BigDecimal,
+
+        //  优惠金额
+        val promotionMoney: BigDecimal,
+
         // 平台结算列表
         val settles: List<MemberDailyReport.PlatformSettle>
 

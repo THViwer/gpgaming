@@ -2,12 +2,15 @@ package com.onepiece.gpgaming.core.dao
 
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
+import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import java.math.BigDecimal
 import java.time.LocalDate
 
 interface MemberDailyReportDao  {
 
     fun create(reports: List<MemberDailyReport>)
+
+    fun total(query: MemberReportQuery): MemberReportValue.MemberReportTotal
 
     fun query(query: MemberReportQuery): List<MemberDailyReport>
 

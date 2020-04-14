@@ -119,20 +119,21 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
         println(num)
     }
 
-    override fun mReport(startDate: LocalDate): List<PayOrderValue.PayOrderMReport> {
+    override fun mReport(startDate: LocalDate, memberId: Int?): List<PayOrderValue.PayOrderMReport> {
         return query("client_id, member_id, sum(amount) as amount, count(*) as count")
                 .asWhere("updated_time >= ?", startDate)
                 .asWhere("updated_time < ?", startDate.plusDays(1))
                 .where("state", PayState.Successful)
+                .where("member_id", memberId)
                 .group("client_id, member_id")
                 .execute { rs ->
 
                     val clientId = rs.getInt("client_id")
-                    val memberId = rs.getInt("member_id")
+                    val mMemberId = rs.getInt("member_id")
                     val amount = rs.getBigDecimal("amount")
                     val count = rs.getInt("count")
 
-                    PayOrderValue.PayOrderMReport(clientId = clientId, memberId = memberId, totalAmount = amount, count = count)
+                    PayOrderValue.PayOrderMReport(clientId = clientId, memberId = mMemberId, totalAmount = amount, count = count)
                 }
     }
 
