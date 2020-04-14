@@ -248,7 +248,7 @@ open class CashApiController(
 
                             config.supportBanks.map { sb ->
                                 val bank =  sb.bank
-                                BankVo(bank = bank, name = bank.name, logo = bank.logo,  grayLogo = bank.grayLogo)
+                                BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo)
                             }
                         }
                         else -> null

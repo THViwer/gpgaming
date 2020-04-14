@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.model.pay
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.beans.enums.Bank
 
 data class SurePayConfig(
@@ -41,3 +42,13 @@ data class SurePayConfig(
 
 
 }
+
+//fun main() {
+//
+//    val banks = SurePayConfig.SupportBank(bank = Bank.MBB,  bankCode = "10000628")
+//    val config = SurePayConfig(supportBanks = listOf(banks))
+//
+//    println(jacksonObjectMapper().writeValueAsString(config))
+//
+//
+//}
