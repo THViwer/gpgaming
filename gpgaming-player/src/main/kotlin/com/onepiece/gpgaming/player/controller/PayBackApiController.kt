@@ -89,9 +89,9 @@ class PayBackApiController(
 
         try {
             if (status == "1") {
-                payOrderService.failed(orderId = refid)
-            } else {
                 payOrderService.successful(orderId = refid, thirdOrderId = trxno)
+            } else {
+                payOrderService.failed(orderId = refid)
             }
         } catch (e: Exception) {
             log.info("支付请求失败", e)
