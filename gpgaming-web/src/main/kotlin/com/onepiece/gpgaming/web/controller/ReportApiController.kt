@@ -190,11 +190,11 @@ class ReportApiController(
         val query = ClientReportQuery(clientId = clientId, startDate = startDate, endDate = endDate)
 
         //查询今天的
-        val todayData = this.includeToday(endDate) {
-            reportService.startClientReport(clientId = clientId, startDate = LocalDate.now())
-        }
+//        val todayData = this.includeToday(endDate) {
+//            reportService.startClientReport(clientId = clientId, startDate = LocalDate.now())
+//        }
 
-        val data = clientDailyReportService.query(query).plus(todayData).sortedByDescending { it.day }
+        val data = clientDailyReportService.query(query)//.plus(todayData).sortedByDescending { it.day }
         return ReportValue.CTotalReport(data)
     }
 
