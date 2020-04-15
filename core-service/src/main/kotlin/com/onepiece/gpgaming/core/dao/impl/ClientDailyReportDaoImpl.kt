@@ -95,6 +95,7 @@ class fClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_
                 .where("client_id", query.clientId)
                 .asWhere("day >= ?", query.startDate)
                 .asWhere("day < ?", query.endDate)
+                .sort("day desc")
                 .execute(mapper)
     }
 }

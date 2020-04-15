@@ -58,6 +58,7 @@ class PromotionDailyReportDaoImpl : BasicDaoImpl<PromotionDailyReport>("promotio
                 .asWhere("day >= ?", query.startDate)
                 .asWhere("day < ?", query.endDate)
                 .asWhere("promotion_id != -100")
+                .sort("day desc")
                 .execute(mapper)
     }
 
