@@ -46,6 +46,12 @@ class DemoController(
         return promotionTask.execute()
     }
 
+    @GetMapping("/reportTask")
+    fun report(): String {
+        reportTask.start()
+        return "success"
+    }
+
     @GetMapping("/kiss918")
     fun kiss918() {
 
