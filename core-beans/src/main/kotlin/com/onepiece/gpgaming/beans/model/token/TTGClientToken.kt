@@ -6,6 +6,8 @@ class TTGClientToken(
 
         val apiOrderPath: String,
 
+        val gamePath: String,
+
         val agentName: String,
 
         val affiliateLogin: String

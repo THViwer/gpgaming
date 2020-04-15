@@ -172,7 +172,7 @@ class TTGService(
                 "lang=$lang"
         ).joinToString(separator = "&")
 
-        return "http://ams-games.stg.ttms.co/casino/default/game/game.html?$data"
+        return "${tokenClient.gamePath}?$data"
     }
 
     override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
