@@ -36,42 +36,42 @@ object TTGUtil {
 
     }
 }
-
-fun main() {
-
-    listOf(LaunchMethod.Web, LaunchMethod.Wap).forEach { launch ->
-
-        listOf(Language.EN, Language.CN).forEach { language ->
-
-            val hots = hashSetOf<String>()
-            val news = hashSetOf<String>()
-            val games = TTGUtil.handle(launch, language).map {
-                if (it.category == GameCategory.Hot) {
-                    hots.add(it.gameId)
-                }
-                if (it.category == GameCategory.New) {
-                    news.add(it.gameId)
-                }
-
-                it.copy(hot = hots.contains(it.gameId), new = news.contains(it.gameId))
-            }
-
-            val categories = games.groupBy { it.category }.map {
-                SlotCategory(gameCategory = it.key, games = it.value)
-            }
-
-            val json = jacksonObjectMapper().writeValueAsString(categories)
-            val file = File("/Users/cabbage/Desktop/${UUID.randomUUID()}.json")
-            file.writeBytes(json.toByteArray())
-
-            AwsS3Util.uploadLocalFile(file, "slot/ttg_${launch}_$language.json".toLowerCase())
-
-            file.delete()
-        }
-    }
-
-
-}
+//
+//fun main() {
+//
+//    listOf(LaunchMethod.Web, LaunchMethod.Wap).forEach { launch ->
+//
+//        listOf(Language.EN, Language.CN).forEach { language ->
+//
+//            val hots = hashSetOf<String>()
+//            val news = hashSetOf<String>()
+//            val games = TTGUtil.handle(launch, language).map {
+//                if (it.category == GameCategory.Hot) {
+//                    hots.add(it.gameId)
+//                }
+//                if (it.category == GameCategory.New) {
+//                    news.add(it.gameId)
+//                }
+//
+//                it.copy(hot = hots.contains(it.gameId), new = news.contains(it.gameId))
+//            }
+//
+//            val categories = games.groupBy { it.category }.map {
+//                SlotCategory(gameCategory = it.key, games = it.value)
+//            }
+//
+//            val json = jacksonObjectMapper().writeValueAsString(categories)
+//            val file = File("/Users/cabbage/Desktop/${UUID.randomUUID()}.json")
+//            file.writeBytes(json.toByteArray())
+//
+//            AwsS3Util.uploadLocalFile(file, "slot/ttg_${launch}_$language.json".toLowerCase())
+//
+//            file.delete()
+//        }
+//    }
+//
+//
+//}
 
 
 //fun main() {

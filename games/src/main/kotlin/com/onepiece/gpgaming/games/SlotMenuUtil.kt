@@ -50,20 +50,20 @@ object SlotMenuUtil {
 
 }
 
-fun main() {
-
-    val name = "ttg_web.Done.csv"
-
-    val file = File("/Users/cabbage/workspace/onepiece/treasure/gamefile/${name}")
-
-    val data = file.readLines().filter { it.trim() != "," && it.trim() != "" }.map {
-        val (name, category) = it.split(",")
-        name to category
-    }.groupBy { it.second }.map {
-        it.key to it.value.map { it.first }
-    }.toMap()
-
-    val json = jacksonObjectMapper().writeValueAsString(data)
-
-    println(json)
-}
+//fun main() {
+//
+//    val name = "ttg_web.Done.csv"
+//
+//    val file = File("/Users/cabbage/workspace/onepiece/treasure/gamefile/${name}")
+//
+//    val data = file.readLines().filter { it.trim() != "," && it.trim() != "" }.map {
+//        val (name, category) = it.split(",")
+//        name to category
+//    }.groupBy { it.second }.map {
+//        it.key to it.value.map { it.first }
+//    }.toMap()
+//
+//    val json = jacksonObjectMapper().writeValueAsString(data)
+//
+//    println(json)
+//}

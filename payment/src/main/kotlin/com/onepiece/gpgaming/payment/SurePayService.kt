@@ -46,23 +46,23 @@ class SurePayService: PayService {
         )
     }
 }
-
-fun main() {
-
-    val orderId  = UUID.randomUUID().toString().replace("-", "")
-    val amount = BigDecimal.valueOf(10).setScale(2, 2)
-
-    val supportBanks = listOf(
-            SurePayConfig.SupportBank(bank = Bank.MBB, bankCode = "10000628")
-    )
-
-    val config = SurePayConfig(supportBanks = supportBanks)
-
-    val customer =  "1_1"
-
-    val signParam = "${config.merchantId}${amount}${orderId}${customer}${config.apiKey}${config.currency}${config.clientIp}"
-    val token =  DigestUtils.md5Hex(signParam)
-
-    println("orderId=$orderId")
-    println("token=$token")
-}
+//
+//fun main() {
+//
+//    val orderId  = UUID.randomUUID().toString().replace("-", "")
+//    val amount = BigDecimal.valueOf(10).setScale(2, 2)
+//
+//    val supportBanks = listOf(
+//            SurePayConfig.SupportBank(bank = Bank.MBB, bankCode = "10000628")
+//    )
+//
+//    val config = SurePayConfig(supportBanks = supportBanks)
+//
+//    val customer =  "1_1"
+//
+//    val signParam = "${config.merchantId}${amount}${orderId}${customer}${config.apiKey}${config.currency}${config.clientIp}"
+//    val token =  DigestUtils.md5Hex(signParam)
+//
+//    println("orderId=$orderId")
+//    println("token=$token")
+//}

@@ -158,22 +158,22 @@ object MicroGamingUtil {
 }
 
 
-fun main() {
-//    val path = "/Users/cabbage/Downloads/MG__GameButtons__ALL/"
-//    MicroGamingUtil.cutImage(path = path)
-
-//     上传图片
-//    val local = "/Users/cabbage/Downloads/MG__GameButtons__ALL/123"
-//    MicroGamingUtil.uploadImages(local)
-
-    // 上传json
-    listOf(Language.EN, Language.CN).forEach { language ->
-        val csvLocal = "/Users/cabbage/Desktop/MG_Game_List_November_2019_Dashur.csv"
-        val iconPath = "/Users/cabbage/Downloads/MG__GameButtons__ALL"
-        MicroGamingUtil.uploadJson(language, csvLocal, iconPath)
-    }
-
-
-//    val x = File("/Users/cabbage/Downloads/MG__GameButtons__ALL/").listFiles().firstOrNull { it.name.contains("BTN_DoubleJoker") }
-//    println(x)
-}
+//fun main() {
+////    val path = "/Users/cabbage/Downloads/MG__GameButtons__ALL/"
+////    MicroGamingUtil.cutImage(path = path)
+//
+////     上传图片
+////    val local = "/Users/cabbage/Downloads/MG__GameButtons__ALL/123"
+////    MicroGamingUtil.uploadImages(local)
+//
+//    // 上传json
+//    listOf(Language.EN, Language.CN).forEach { language ->
+//        val csvLocal = "/Users/cabbage/Desktop/MG_Game_List_November_2019_Dashur.csv"
+//        val iconPath = "/Users/cabbage/Downloads/MG__GameButtons__ALL"
+//        MicroGamingUtil.uploadJson(language, csvLocal, iconPath)
+//    }
+//
+//
+////    val x = File("/Users/cabbage/Downloads/MG__GameButtons__ALL/").listFiles().firstOrNull { it.name.contains("BTN_DoubleJoker") }
+////    println(x)
+//}

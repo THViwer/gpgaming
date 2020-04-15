@@ -82,38 +82,38 @@ object GamePlayUtil {
     }
 
 }
-
-fun main() {
-
-    listOf(Language.EN, Language.CN).forEach { language ->
-//        val file = File("/Users/cabbage/Downloads/game_play_done.csv")
-        val file = File("/Users/cabbage/Desktop/gameplay_done.csv")
-
-        val hots = hashSetOf<String>()
-        val news = hashSetOf<String>()
-        val games = GamePlayUtil.handle(file, language).map {
-            if (it.category == GameCategory.Hot) {
-                hots.add(it.gameId)
-            }
-            if (it.category == GameCategory.New) {
-                news.add(it.gameId)
-            }
-            it.copy(hot = hots.contains(it.gameId), new = news.contains(it.gameId))
-        }
-
-        val categories = games.groupBy { it.category }.map {
-            SlotCategory(gameCategory = it.key, games = it.value)
-        }
-
-        val objectMapper = jacksonObjectMapper()
-        val json = objectMapper.writeValueAsString(categories)
-
-        val jsonFile = File("/Users/cabbage/Desktop/gameplay_${language.toString().toLowerCase()}.json")
-        jsonFile.delete()
-        jsonFile.writeBytes(json.toByteArray())
-
-        AwsS3Util.uploadLocalFile(jsonFile, "slot/gameplay_${language.toString().toLowerCase()}.json")
-    }
-    //
-}
+//
+//fun main() {
+//
+//    listOf(Language.EN, Language.CN).forEach { language ->
+////        val file = File("/Users/cabbage/Downloads/game_play_done.csv")
+//        val file = File("/Users/cabbage/Desktop/gameplay_done.csv")
+//
+//        val hots = hashSetOf<String>()
+//        val news = hashSetOf<String>()
+//        val games = GamePlayUtil.handle(file, language).map {
+//            if (it.category == GameCategory.Hot) {
+//                hots.add(it.gameId)
+//            }
+//            if (it.category == GameCategory.New) {
+//                news.add(it.gameId)
+//            }
+//            it.copy(hot = hots.contains(it.gameId), new = news.contains(it.gameId))
+//        }
+//
+//        val categories = games.groupBy { it.category }.map {
+//            SlotCategory(gameCategory = it.key, games = it.value)
+//        }
+//
+//        val objectMapper = jacksonObjectMapper()
+//        val json = objectMapper.writeValueAsString(categories)
+//
+//        val jsonFile = File("/Users/cabbage/Desktop/gameplay_${language.toString().toLowerCase()}.json")
+//        jsonFile.delete()
+//        jsonFile.writeBytes(json.toByteArray())
+//
+//        AwsS3Util.uploadLocalFile(jsonFile, "slot/gameplay_${language.toString().toLowerCase()}.json")
+//    }
+//    //
+//}
 

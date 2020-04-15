@@ -33,15 +33,15 @@ sealed class PNGValue {
 
 }
 
-fun main() {
-
-    val xml = """
-        <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-            <s:Body>
-                <RegisterUserResponse xmlns="http://playngo.com/v1"/>
-            </s:Body>
-        </s:Envelope>
-    """.trimIndent()
-
-
-}
+//fun main() {
+//
+//    val xml = """
+//        <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+//            <s:Body>
+//                <RegisterUserResponse xmlns="http://playngo.com/v1"/>
+//            </s:Body>
+//        </s:Envelope>
+//    """.trimIndent()
+//
+//
+//}

@@ -80,43 +80,43 @@ object AsiaGamingUtil {
     )
 }
 
-fun main() {
-
-    // asia_gaming_done.xlsx
-
-    listOf(Language.CN, Language.EN)
-            .forEach { language ->
-
-                listOf(LaunchMethod.Wap, LaunchMethod.Web).forEach { launch ->
-
-                    val games = AsiaGamingUtil.upload(LaunchMethod.Web, Language.CN)
-
-                    val hots = hashSetOf<String>()
-                    val news = hashSetOf<String>()
-
-                    val categories = games.map {
-                        if (it.category == GameCategory.Hot) {
-                            hots.add(it.gameId)
-                        }
-                        if (it.category == GameCategory.New) {
-                            news.add(it.gameId)
-                        }
-
-                        val hot = hots.contains(it.gameId)
-                        val new = news.contains(it.gameId)
-
-                        it.copy(hot = hot, new = new)
-                    }.groupBy { it.category }
-                            .map { SlotCategory(gameCategory = it.key, games = it.value) }
-
-                    val json = jacksonObjectMapper().writeValueAsString(categories)
-                    val jsonFile = File("/Users/cabbage/Desktop/${UUID.randomUUID()}.json")
-                    jsonFile.writeBytes(json.toByteArray())
-
-                    AwsS3Util.uploadLocalFile(jsonFile, "slot/asia_gaming_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json")
-
-                    jsonFile.delete()
-                }
-            }
-
-}
+//fun main() {
+//
+//    // asia_gaming_done.xlsx
+//
+//    listOf(Language.CN, Language.EN)
+//            .forEach { language ->
+//
+//                listOf(LaunchMethod.Wap, LaunchMethod.Web).forEach { launch ->
+//
+//                    val games = AsiaGamingUtil.upload(LaunchMethod.Web, Language.CN)
+//
+//                    val hots = hashSetOf<String>()
+//                    val news = hashSetOf<String>()
+//
+//                    val categories = games.map {
+//                        if (it.category == GameCategory.Hot) {
+//                            hots.add(it.gameId)
+//                        }
+//                        if (it.category == GameCategory.New) {
+//                            news.add(it.gameId)
+//                        }
+//
+//                        val hot = hots.contains(it.gameId)
+//                        val new = news.contains(it.gameId)
+//
+//                        it.copy(hot = hot, new = new)
+//                    }.groupBy { it.category }
+//                            .map { SlotCategory(gameCategory = it.key, games = it.value) }
+//
+//                    val json = jacksonObjectMapper().writeValueAsString(categories)
+//                    val jsonFile = File("/Users/cabbage/Desktop/${UUID.randomUUID()}.json")
+//                    jsonFile.writeBytes(json.toByteArray())
+//
+//                    AwsS3Util.uploadLocalFile(jsonFile, "slot/asia_gaming_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json")
+//
+//                    jsonFile.delete()
+//                }
+//            }
+//
+//}

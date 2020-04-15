@@ -114,49 +114,49 @@ object AwsS3Util {
 
 
 }
-
-fun main() {
-//    val fileList = File("/Users/cabbage/Desktop/logo/logo1225")
 //
-//    fileList.listFiles().map {  file ->
-//        AwsS3Util.uploadLocalFile(file, "logo/${file.name}")
+//fun main() {
+////    val fileList = File("/Users/cabbage/Desktop/logo/logo1225")
+////
+////    fileList.listFiles().map {  file ->
+////        AwsS3Util.uploadLocalFile(file, "logo/${file.name}")
+////    }
+////
+////    val fileList = File("/Users/cabbage/Downloads/live_re")
+////
+////    fileList.listFiles().map {  file ->
+////        AwsS3Util.uploadLocalFile(file, "client/1/live/${file.name.replace(" ", "")}")
+////    }
+//
+////    val fileList = File("/Users/cabbage/Downloads/apk")
+////
+////    fileList.listFiles().map {  file ->
+////        AwsS3Util.uploadLocalFile(file, "apk/${file.name}")
+////    }
+////    val fileList = File("/Users/cabbage/Desktop/logo/logo")
+////
+////    fileList.listFiles().filter { it.name.contains(".jpeg") }.map {  file ->
+////        AwsS3Util.uploadLocalFile(file, "origin_logo/${file.name}")
+////    }
+////
+////    val fileList = File("/Users/cabbage/Desktop/origin_logo")
+////
+////    fileList.listFiles().map {  file ->
+////        AwsS3Util.uploadLocalFile(file, "origin_logo/${file.name}")
+////    }
+//
+////    val file = File("/Users/cabbage/Downloads/upcoming-matches-2-en.png")
+////    val path = AwsS3Util.uploadLocalFile(file, "client/1/sport/s2.png")
+////    println(path)
+//
+//    val file = File("/Users/cabbage/Downloads/paylogo")
+//    val list = file.listFiles().map { file ->
+//        val url = AwsS3Util.uploadLocalFile(file, "bank/logo/${file.name.replace(" ", "")}")
+//        file.name to url
 //    }
 //
-//    val fileList = File("/Users/cabbage/Downloads/live_re")
-//
-//    fileList.listFiles().map {  file ->
-//        AwsS3Util.uploadLocalFile(file, "client/1/live/${file.name.replace(" ", "")}")
-//    }
-
-//    val fileList = File("/Users/cabbage/Downloads/apk")
-//
-//    fileList.listFiles().map {  file ->
-//        AwsS3Util.uploadLocalFile(file, "apk/${file.name}")
-//    }
-//    val fileList = File("/Users/cabbage/Desktop/logo/logo")
-//
-//    fileList.listFiles().filter { it.name.contains(".jpeg") }.map {  file ->
-//        AwsS3Util.uploadLocalFile(file, "origin_logo/${file.name}")
+//    list.forEach {
+//        println("${it.first} -- ${it.second}")
 //    }
 //
-//    val fileList = File("/Users/cabbage/Desktop/origin_logo")
-//
-//    fileList.listFiles().map {  file ->
-//        AwsS3Util.uploadLocalFile(file, "origin_logo/${file.name}")
-//    }
-
-//    val file = File("/Users/cabbage/Downloads/upcoming-matches-2-en.png")
-//    val path = AwsS3Util.uploadLocalFile(file, "client/1/sport/s2.png")
-//    println(path)
-
-    val file = File("/Users/cabbage/Downloads/paylogo")
-    val list = file.listFiles().map { file ->
-        val url = AwsS3Util.uploadLocalFile(file, "bank/logo/${file.name.replace(" ", "")}")
-        file.name to url
-    }
-
-    list.forEach {
-        println("${it.first} -- ${it.second}")
-    }
-
-}
+//}

@@ -79,49 +79,49 @@ object PNGUtil {
 
 
 }
-
-fun main() {
-
-    val objectMapper = jacksonObjectMapper()
-
-    listOf(LaunchMethod.Wap, LaunchMethod.Web).forEach { launch ->
-
-        listOf(Language.EN, Language.CN).forEach { language ->
-
-            val tmpGames = PNGUtil.execute(launch = launch, language = language)
-
-            val hots = arrayListOf<String>()
-            val news = arrayListOf<String>()
-            val categories = tmpGames.map {
-
-                if (it.category == GameCategory.Hot) {
-                    hots.add(it.gameId)
-                } else if (it.category == GameCategory.New) {
-                    news.add(it.gameId)
-                }
-
-                val hot = hots.contains(it.gameId)
-                val new = news.contains(it.gameId)
-
-                it.copy(hot = hot, new = new)
-
-            }.groupBy { it.category }.map {
-                SlotCategory(gameCategory = it.key, games = it.value)
-            }
-
-            val json = objectMapper.writeValueAsString(categories)
-
-            val file = File("/Users/cabbage/Desktop/${UUID.randomUUID()}.json")
-            file.writeBytes(json.toByteArray())
-
-            AwsS3Util.uploadLocalFile(file, "slot/png_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json")
-
-            file.delete()
-        }
-
-    }
-
-
-
-//    PNGUtil.uploadIcon(tmpGames)
-}
+//
+//fun main() {
+//
+//    val objectMapper = jacksonObjectMapper()
+//
+//    listOf(LaunchMethod.Wap, LaunchMethod.Web).forEach { launch ->
+//
+//        listOf(Language.EN, Language.CN).forEach { language ->
+//
+//            val tmpGames = PNGUtil.execute(launch = launch, language = language)
+//
+//            val hots = arrayListOf<String>()
+//            val news = arrayListOf<String>()
+//            val categories = tmpGames.map {
+//
+//                if (it.category == GameCategory.Hot) {
+//                    hots.add(it.gameId)
+//                } else if (it.category == GameCategory.New) {
+//                    news.add(it.gameId)
+//                }
+//
+//                val hot = hots.contains(it.gameId)
+//                val new = news.contains(it.gameId)
+//
+//                it.copy(hot = hot, new = new)
+//
+//            }.groupBy { it.category }.map {
+//                SlotCategory(gameCategory = it.key, games = it.value)
+//            }
+//
+//            val json = objectMapper.writeValueAsString(categories)
+//
+//            val file = File("/Users/cabbage/Desktop/${UUID.randomUUID()}.json")
+//            file.writeBytes(json.toByteArray())
+//
+//            AwsS3Util.uploadLocalFile(file, "slot/png_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json")
+//
+//            file.delete()
+//        }
+//
+//    }
+//
+//
+//
+////    PNGUtil.uploadIcon(tmpGames)
+//}

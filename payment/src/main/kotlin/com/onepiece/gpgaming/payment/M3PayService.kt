@@ -53,18 +53,18 @@ class M3PayService(
 
 
 }
-
-fun main() {
-    val orderId = UUID.randomUUID().toString().replace("-", "").substring(0, 10)
-    val data = listOf(
-            "dbb06d88-38ae-4aa5-a49a-2f77ce31efd8",
-            "T004",
-            orderId,
-            "1000"
-    )
-    val signStr = data.joinToString(separator = "")
-    val sign = DigestUtils.sha256Hex(signStr)
-
-    println("orderId: $orderId")
-    println("sign: $sign")
-}
+//
+//fun main() {
+//    val orderId = UUID.randomUUID().toString().replace("-", "").substring(0, 10)
+//    val data = listOf(
+//            "dbb06d88-38ae-4aa5-a49a-2f77ce31efd8",
+//            "T004",
+//            orderId,
+//            "1000"
+//    )
+//    val signStr = data.joinToString(separator = "")
+//    val sign = DigestUtils.sha256Hex(signStr)
+//
+//    println("orderId: $orderId")
+//    println("sign: $sign")
+//}
