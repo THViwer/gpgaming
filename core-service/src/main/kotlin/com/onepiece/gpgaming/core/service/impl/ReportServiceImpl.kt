@@ -145,7 +145,7 @@ class ReportServiceImpl(
 
             // 返水比例和金额
             val backwater = levelIds[member.levelId]?.backwater?: BigDecimal.ZERO
-            val backwaterMoney = totalBet.multiply(backwater)
+            val backwaterMoney = totalBet.multiply(backwater).divide(BigDecimal.valueOf(100)).setScale(2, 2)
 
             val empty = transferIn.plus(transferOut).plus(depositMoney).plus(withdrawMoney).plus(artificialMoney).plus(thirdPayMoney)
                     .plus(totalBet)

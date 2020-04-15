@@ -52,6 +52,12 @@ class DemoController(
         return "success"
     }
 
+    @GetMapping("/backwater")
+    fun backwaterTask(): String {
+        backwaterTask.start()
+        return "success"
+    }
+
     @GetMapping("/kiss918")
     fun kiss918() {
 
