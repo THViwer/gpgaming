@@ -4,6 +4,12 @@ enum class ContactType {
 
     Wechat,
 
-    Whatsapp
+    Whatsapp,
+
+    Facebook,
+
+    YouTuBe,
+
+    Instagram
 
 }

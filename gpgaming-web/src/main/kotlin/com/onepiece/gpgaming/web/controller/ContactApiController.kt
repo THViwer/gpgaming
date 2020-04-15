@@ -1,5 +1,8 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.onepiece.gpgaming.beans.enums.ContactType
+import com.onepiece.gpgaming.beans.enums.Status
+import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Contact
 import com.onepiece.gpgaming.beans.value.internet.web.ContactValue
 import com.onepiece.gpgaming.core.service.ContactService
@@ -24,6 +27,20 @@ class ContactApiController(
 
     @PostMapping
     override fun create(@RequestBody create: ContactValue.Create) {
+
+        val clientId = getClientId()
+
+        when (create.type) {
+            ContactType.Facebook,
+            ContactType.Instagram,
+            ContactType.YouTuBe  -> {
+                val  has = contactService.list(clientId).filter { it.status  != Status.Delete }.firstOrNull { it.type == create.type }
+                check(has == null ) { OnePieceExceptionCode.DATA_FAIL }
+            }
+            else  -> {}
+        }
+
+
         contactService.create(clientId = getClientId(), type = create.type, number = create.number, qrCode = create.qrCode)
     }
 
