@@ -20,7 +20,6 @@ import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.ContactService
-import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
@@ -518,10 +517,19 @@ open class ApiController(
 
     @GetMapping("/contactUs")
     override fun contactUs(): Contacts {
-        val contacts = contactService.list(clientId = getClientIdByDomain()).groupBy { it.type }
+
+        val list = contactService.list(clientId = getClientIdByDomain()).filter { it.status == Status.Normal }
+
+        val contacts = list.groupBy { it.type }
         val wechatContact = contacts[ContactType.Wechat]?.let { getRandom(it) }
         val whatContact = contacts[ContactType.Whatsapp]?.let { getRandom(it) }
-        return Contacts(wechatContact = wechatContact, whatsappContact = whatContact)
+
+        val  facebook = list.firstOrNull { it.type == ContactType.Facebook }
+        val  youTuBe = list.firstOrNull { it.type == ContactType.YouTuBe }
+        val  instagram = list.firstOrNull { it.type == ContactType.Instagram }
+
+        return Contacts(wechatContact = wechatContact, whatsappContact = whatContact, facebook = facebook, youtube = youTuBe,
+                instagram = instagram)
     }
 
     @GetMapping("/seo")

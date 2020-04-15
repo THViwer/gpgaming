@@ -9,6 +9,15 @@ data class Contacts(
         val wechatContact: Contact?,
 
         @ApiModelProperty("whatsapp")
-        val whatsappContact: Contact?
+        val whatsappContact: Contact?,
+
+        @ApiModelProperty("facebook")
+        val facebook: Contact?,
+
+        @ApiModelProperty("youTuBe")
+        val youtube: Contact?,
+
+        @ApiModelProperty("instagram")
+        val instagram: Contact?
 
 )
