@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.PlatformBind
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.service.BetOrderService
+import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.games.GameApi
 import com.onepiece.gpgaming.utils.RedisService
@@ -23,7 +24,8 @@ class PullBetTask(
         private val platformBindService: PlatformBindService,
         private val gameApi: GameApi,
         private val betOrderService: BetOrderService,
-        private val redisService: RedisService
+        private val redisService: RedisService,
+        private val gamePlatformService: GamePlatformService
 ) {
 
     private val log = LoggerFactory.getLogger(PullBetTask::class.java)
@@ -60,8 +62,12 @@ class PullBetTask(
 
         log.info("定时任务执行中，现在时间：${LocalDateTime.now()}")
         try {
+
+            val gps = gamePlatformService.all().map { it.platform to  it }.toMap()
+
             val binds = platformBindService.all()
                     .filter { it.status != Status.Delete }
+                    .filter { gps[it.platform]?.status == Status.Normal }
 
             val list = binds.filter { it.platform != Platform.PlaytechLive }.parallelStream().map { bind ->
                     this.executePlatform(bind, time)
