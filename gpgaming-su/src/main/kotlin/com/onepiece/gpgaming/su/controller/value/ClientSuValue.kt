@@ -27,7 +27,10 @@ sealed class ClientSuValue {
             val status: Status,
 
             @ApiModelProperty("创建时间")
-            val createdTime: LocalDateTime
+            val createdTime: LocalDateTime,
+
+            @ApiModelProperty("ip白名单s")
+            val whitelists: List<String>
 
     )
 

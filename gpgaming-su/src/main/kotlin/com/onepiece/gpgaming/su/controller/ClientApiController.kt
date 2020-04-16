@@ -45,7 +45,7 @@ open class ClientApiController(
     override fun list(): List<ClientSuValue.ClientVo> {
         return clientService.all().map {
             ClientSuValue.ClientVo(id = it.id, username = it.username, name = it.name, openNumber = 100, createdTime = it.createdTime,
-                    logo = it.logo, status = it.status)
+                    logo = it.logo, status = it.status, whitelists = it.whitelists)
         }
     }
 
