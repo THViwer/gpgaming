@@ -48,7 +48,7 @@ class UserApiController(
         // 校验ip是否准确
         val ip = getIpAddress()
         val client = clientService.get(clientId)
-        check(client.whitelists.isEmpty() || client.whitelists.firstOrNull { it == ip } != null) {  OnePieceExceptionCode.IP_ILLEGAL }
+        check(client.whitelists.isEmpty() || client.whitelists.firstOrNull { it == ip || it.isBlank() } != null) {  OnePieceExceptionCode.IP_ILLEGAL }
 
         val loginValue = LoginValue(clientId = clientId, username = loginReq.username, password = loginReq.password, ip = ip)
 
