@@ -16,6 +16,7 @@ object OnePieceExceptionCode {
     const val QUERY_COUNT_TOO_SMALL = "1004" // 请增加查询条件
     const val PROMOTION_JSON_DATA_FAIL = "1005" //优惠活动json格式错误
     const val ILLEGAL_OPERATION = "1006" // 非法操作
+    const val IP_ILLEGAL = "1008" // ip非法
 
     // 2000 verification error
 

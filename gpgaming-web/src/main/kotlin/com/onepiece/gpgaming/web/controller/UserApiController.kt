@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.sql.ResultSet
 
 @RestController
 @RequestMapping("/user")
@@ -45,7 +44,13 @@ class UserApiController(
     @PostMapping
     override fun login(@RequestBody loginReq: LoginReq): LoginResp {
         val clientId = getClientIdByDomain()
-        val loginValue = LoginValue(clientId = clientId, username = loginReq.username, password = loginReq.password, ip = getIpAddress())
+
+        // 校验ip是否准确
+        val ip = getIpAddress()
+        val client = clientService.get(clientId)
+        check(client.whitelists.isEmpty() || client.whitelists.firstOrNull { it == ip } != null) {  OnePieceExceptionCode.IP_ILLEGAL }
+
+        val loginValue = LoginValue(clientId = clientId, username = loginReq.username, password = loginReq.password, ip = ip)
 
         log.info("admin login, username = ${loginReq.username}, password = ${loginReq.password}")
         return try {

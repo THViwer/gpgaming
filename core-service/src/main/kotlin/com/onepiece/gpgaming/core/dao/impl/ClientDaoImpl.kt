@@ -24,9 +24,10 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val loginIp = rs.getString("login_ip")
+            val whitelists = rs.getString("whitelists")?.let { it.split(",") }?: emptyList()
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
             Client(id = id, username = username, password = password, createdTime = createdTime, loginTime = loginTime,
-                    status = status, loginIp = loginIp, name = name, logo = logo)
+                    status = status, loginIp = loginIp, name = name, logo = logo, whitelists = whitelists)
         }
 
     override fun findByUsername(username: String): Client? {
@@ -41,6 +42,7 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
                 .set("password", clientCo.password)
                 .set("name", clientCo.name)
                 .set("status", Status.Normal)
+                .set("whitelists", clientCo.whitelists.joinToString(separator = ","))
                 .executeGeneratedKey()
     }
 
@@ -51,6 +53,7 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
                 .set("status", clientUo.status)
                 .set("login_ip", clientUo.ip)
                 .set("login_time", clientUo.loginTime)
+                .set("whitelists", clientUo.whitelists?.joinToString(separator = ","))
                 .where("id", clientUo.id)
                 .executeOnlyOne()
     }

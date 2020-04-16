@@ -28,14 +28,14 @@ open class ClientApiController(
     @PostMapping
     override fun create(@RequestBody clientCoReq: ClientSuValue.ClientCoReq) {
         val clientCo = ClientCo(username = clientCoReq.username, password = clientCoReq.password, name = clientCoReq.name,
-                logo = clientCoReq.logo)
+                logo = clientCoReq.logo, whitelists = clientCoReq.whitelists)
         clientService.create(clientCo)
     }
 
     @PutMapping
     override fun update(@RequestBody clientUoReq: ClientSuValue.ClientUoReq) {
         val clientUo = ClientUo(id = clientUoReq.id, password = clientUoReq.password, status = clientUoReq.status,
-                name = clientUoReq.name, logo = clientUoReq.logo)
+                name = clientUoReq.name, logo = clientUoReq.logo, whitelists = clientUoReq.whitelists)
         clientService.update(clientUo)
 
         indexUtil.generatorIndexPage(clientUoReq.id)

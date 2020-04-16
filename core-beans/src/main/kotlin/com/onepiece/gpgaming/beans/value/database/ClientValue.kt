@@ -15,7 +15,10 @@ data class ClientCo(
         val username: String,
 
         // 用户密码
-        val password: String
+        val password: String,
+
+        // 白名单
+        val whitelists: List<String>
 
 )
 
@@ -43,5 +46,8 @@ data class ClientUo(
         val ip: String? = null,
 
         // 登陆时间
-        val loginTime: LocalDateTime? = null
+        val loginTime: LocalDateTime? = null,
+
+        // ip 白名单
+        val whitelists: List<String>? = null
 )

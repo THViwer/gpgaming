@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.su.controller
 
-import com.onepiece.gpgaming.su.controller.value.LoginValue
 import com.onepiece.gpgaming.su.controller.value.UserValue
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

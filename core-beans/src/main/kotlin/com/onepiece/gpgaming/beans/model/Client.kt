@@ -36,6 +36,9 @@ data class Client(
         val loginIp: String?,
 
         // 登陆时间
-        val loginTime: LocalDateTime?
+        val loginTime: LocalDateTime?,
+
+        // 白敏感
+        val whitelists: List<String>
 
 )

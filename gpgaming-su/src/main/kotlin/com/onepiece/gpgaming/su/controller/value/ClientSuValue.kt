@@ -43,7 +43,10 @@ sealed class ClientSuValue {
             val name: String,
 
             @ApiModelProperty("密码")
-            val password: String
+            val password: String,
+
+            @ApiModelProperty("ip白名单")
+            val whitelists: List<String>
 
     )
 
@@ -62,7 +65,10 @@ sealed class ClientSuValue {
             val password: String?,
 
             @ApiModelProperty("状态")
-            val status: Status?
+            val status: Status?,
+
+            @ApiModelProperty("ip白名单")
+            val whitelists: List<String>?
 
     )
 
