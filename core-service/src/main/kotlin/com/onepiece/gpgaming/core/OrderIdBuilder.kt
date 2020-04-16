@@ -67,7 +67,7 @@ class OrderIdBuilder(
         return "AB${getCurrentTime()}${StringUtil.generateNumNonce(2)}"
     }
 
-    private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+    private val dateTimeFormatter = DateTimeFormatter.ofPattern("MMdd")
 
     fun generatorPayOrderId(clientId: Int): String {
         val redisKey = "payId:${LocalDate.now()}:$clientId"
