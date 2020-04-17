@@ -147,6 +147,7 @@ class ReportServiceImpl(
             val backwater = levelIds[member.levelId]?.backwater?: BigDecimal.ZERO
             val backwaterMoney = totalBet.multiply(backwater).divide(BigDecimal.valueOf(100)).setScale(2, 2)
                     .abs()
+            val backwaterExecution = backwaterMoney.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
             val empty = transferIn.plus(transferOut).plus(depositMoney).plus(withdrawMoney).plus(artificialMoney).plus(thirdPayMoney)
                     .plus(totalBet)
@@ -158,7 +159,7 @@ class ReportServiceImpl(
                         transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney, depositCount = depositCount, withdrawCount = withdrawCount,
                         artificialMoney = artificialMoney,  artificialCount = artificialCount, settles = settles, totalMWin = totalMWin, totalBet = totalBet ,
                         thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, backwater = backwater, backwaterMoney = backwaterMoney, createdTime = now,
-                        status = Status.Normal, backwaterExecution = false, promotionMoney = promotionMoney)
+                        status = Status.Normal, backwaterExecution = backwaterExecution, promotionMoney = promotionMoney)
             }
         }.filterNotNull()
 
