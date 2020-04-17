@@ -166,7 +166,7 @@ class LbcService : PlatformService() {
             val orders = d.asList("BetDetails").filter {
                 val ticketStatus = it.asString("ticket_status")
 
-                ticketStatus != "waiting" && ticketStatus != "running" && ticketStatus != "reject" && ticketStatus != "refund" && ticketStatus != "oid"
+                ticketStatus != "waiting" && ticketStatus != "running" && ticketStatus != "reject" && ticketStatus != "refund"
                 // ticketStatus == "half won" || ticketStatus == "half lose" || ticketStatus == "won"
             }.map { bet ->
                 val orderId = bet.asString("trans_id")
@@ -185,7 +185,7 @@ class LbcService : PlatformService() {
             val virtualSportDetails = d.asList("BetVirtualSportDetails").filter {
                 val ticketStatus = it.asString("ticket_status")
                 // ticketStatus == "half won" || ticketStatus == "half lose" || ticketStatus == "won"
-                ticketStatus != "waiting" && ticketStatus != "running" && ticketStatus != "reject" && ticketStatus != "refund" && ticketStatus != "oid"
+                ticketStatus != "waiting" && ticketStatus != "running" && ticketStatus != "reject" && ticketStatus != "refund"
             }.map { bet ->
                 val orderId = bet.asString("trans_id")
                 val username = bet.asString("vendor_member_id")
