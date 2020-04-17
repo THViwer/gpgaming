@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.core.service.impl
 
-import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
