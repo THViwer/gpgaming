@@ -140,8 +140,8 @@ class ReportServiceImpl(
             val settles = betMap[mid]?.map {
                 MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, mwin = it.totalWin)
             }?: emptyList()
-            val totalBet = settles.sumByDouble { it.cwin.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额
-            val totalMWin = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
+            val totalBet = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额
+            val totalMWin = settles.sumByDouble { it.cwin.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
 
             // 返水比例和金额
             val backwater = levelIds[member.levelId]?.backwater?: BigDecimal.ZERO
