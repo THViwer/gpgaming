@@ -49,6 +49,7 @@ class UserApiController(
         val ip = getIpAddress()
         val client = clientService.get(clientId)
         log.info("client whitelists: ${client.whitelists}")
+        log.info("current ip: ${ip}")
         check(client.whitelists.isEmpty() || client.whitelists.firstOrNull { it == ip || it.isBlank() } != null) {  OnePieceExceptionCode.IP_ILLEGAL }
 
         val loginValue = LoginValue(clientId = clientId, username = loginReq.username, password = loginReq.password, ip = ip)
