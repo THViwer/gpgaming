@@ -10,6 +10,10 @@ class AllBetClientToken(
 
         val desKey: String,
 
-        val md5Key: String
+        val md5Key: String,
+
+        val orHandicapNames: String,
+
+        val vipHandicapNames: String
 
 ) : ClientToken

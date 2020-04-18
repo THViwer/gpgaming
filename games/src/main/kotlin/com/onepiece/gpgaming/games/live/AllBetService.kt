@@ -40,37 +40,37 @@ class AllBetService : PlatformService() {
         return result.mapUtil
     }
 
-    private fun queryHandicap(allBetClientToken: AllBetClientToken): Pair<String, String> {
-
-        val urlParam = "agent=${allBetClientToken.agentName}&random=${UUID.randomUUID()}"
-        val mapUtil = this.startDoGet(method = "/query_handicap", urlParam = urlParam, allBetClientToken = allBetClientToken)
-        val handicaps = mapUtil.asList("handicaps")
-
-        var orHandicapNames = ""
-        var vipHandicapNames = ""
-        handicaps.forEach {
-
-            when (it.asInt("handicapType")) {
-                0 -> orHandicapNames = it.asString("name")
-                1 -> vipHandicapNames = it.asString("name")
-            }
-        }
-        return orHandicapNames to vipHandicapNames
-
-    }
+//    private fun queryHandicap(allBetClientToken: AllBetClientToken): Pair<String, String> {
+//
+//        val urlParam = "agent=${allBetClientToken.agentName}&random=${UUID.randomUUID()}"
+//        val mapUtil = this.startDoGet(method = "/query_handicap", urlParam = urlParam, allBetClientToken = allBetClientToken)
+//        val handicaps = mapUtil.asList("handicaps")
+//
+//        var orHandicapNames = ""
+//        var vipHandicapNames = ""
+//        handicaps.forEach {
+//
+//            when (it.asInt("handicapType")) {
+//                0 -> orHandicapNames = it.asString("name")
+//                1 -> vipHandicapNames = it.asString("name")
+//            }
+//        }
+//        return orHandicapNames to vipHandicapNames
+//
+//    }
 
     override fun register(registerReq: GameValue.RegisterReq): String {
         val allBetClientToken = registerReq.token as AllBetClientToken
 
         // 查询盘口
-        val (orHallRebate, vipHandicapNames) = this.queryHandicap(allBetClientToken)
+//        val (orHallRebate, vipHandicapNames) = this.queryHandicap(allBetClientToken)
 
         val data = listOf(
                 "agent=${allBetClientToken.agentName}",
                 "client=${registerReq.username}",
                 "password=${registerReq.password}",
-                "orHandicapNames=${orHallRebate}",
-                "vipHandicapNames=${vipHandicapNames}",
+                "orHandicapNames=${allBetClientToken.orHandicapNames}",
+                "vipHandicapNames=${allBetClientToken.vipHandicapNames}",
                 "orHallRebate=0",
 //                "vipHandicaps=12",
 //                "orHandicaps=1",
