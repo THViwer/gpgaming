@@ -25,7 +25,7 @@ class DreamGamingService : PlatformService() {
 
     fun doStartPostJson(clientToken: DreamGamingClientToken, method: String, data: String): MapUtil {
 
-        val url = "${clientToken.apiPath}/$method"
+        val url = "${clientToken.apiPath}$method"
         val result = okHttpUtil.doPostJson(platform = Platform.DreamGaming, url = url, data = data, clz = DreamGamingValue.Result::class.java)
 
         check(result.codeId == 0) {
