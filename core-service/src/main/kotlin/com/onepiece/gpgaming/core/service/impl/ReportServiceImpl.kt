@@ -152,7 +152,7 @@ class ReportServiceImpl(
             val empty = transferIn.plus(transferOut).plus(depositMoney).plus(withdrawMoney).plus(artificialMoney).plus(thirdPayMoney)
                     .plus(totalBet)
 
-            if (empty == BigDecimal.ZERO) {
+            if (empty.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)) {
                 null
             } else {
                 MemberDailyReport(id = -1, day = startDate, clientId = member.clientId, memberId = mid, transferIn = transferIn,
