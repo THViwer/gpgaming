@@ -13,7 +13,7 @@ sealed class MicroGamingValue {
 
         val expires_in: Int,
 
-        val scope: String,
+        val scope: String?,
 
         val jti: String
     )
