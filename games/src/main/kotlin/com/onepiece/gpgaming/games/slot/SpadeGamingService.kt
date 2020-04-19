@@ -46,21 +46,38 @@ class SpadeGamingService(
     }
 
     override fun register(registerReq: GameValue.RegisterReq): String {
-        val clientToken = registerReq.token as SpadeGamingClientToken
+//        val clientToken = registerReq.token as SpadeGamingClientToken
+//
+//        val data = """
+//            {
+//                "acctId": "${registerReq.username}",
+//                "userName": "${registerReq.name}",
+//                "currency": "${clientToken.currency}",
+//                "siteId": "${clientToken.siteId}",
+//                "merchantCode": "${clientToken.memberCode}",
+//                "serialNo": "${UUID.randomUUID()}"
+//            }
+//        """.trimIndent()
+//
+//        this.startPostJson(clientToken = clientToken, method = "createAcct", data = data)
+//        return registerReq.username
 
-        val data = """
-            {
-                "acctId": "${registerReq.username}",
-                "userName": "${registerReq.name}",
-                "currency": "${clientToken.currency}",
-                "siteId": "${clientToken.siteId}",
-                "merchantCode": "${clientToken.memberCode}",
-                "serialNo": "${UUID.randomUUID()}"
-            }
-        """.trimIndent()
+        fun newRegister(amount: BigDecimal) {
+            val orderId = UUID.randomUUID().toString().replace("-", "")
+            val transferReq = GameValue.TransferReq(token = registerReq.token, orderId = orderId, amount = amount,
+                    password = registerReq.password, username = registerReq.username)
+            this.transfer(transferReq)
+        }
 
-        this.startPostJson(clientToken = clientToken, method = "createAcct", data = data)
+        // deposit
+        newRegister(BigDecimal.valueOf(0.01))
+
+        // withdraw
+        newRegister(BigDecimal.valueOf(-0.01))
+
         return registerReq.username
+
+
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
