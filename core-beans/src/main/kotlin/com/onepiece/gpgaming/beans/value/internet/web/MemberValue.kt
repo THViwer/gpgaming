@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.beans.value.internet.web
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Deposit
+import com.onepiece.gpgaming.beans.model.PayOrder
 import com.onepiece.gpgaming.beans.model.Wallet
 import com.onepiece.gpgaming.beans.model.Withdraw
 import io.swagger.annotations.ApiModelProperty
@@ -73,6 +74,9 @@ data class MemberWalletInfo(
 
         // 最后5个充值信息
         val lastFiveDeposit: List<Deposit>,
+
+        // 三方充值列表
+        val lastPayOrders: List<PayOrder>,
 
         // 最后5个取款信息
         val lastFiveWithdraw: List<Withdraw>

@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.beans.value.database.MemberBankUo
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberUo
+import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.beans.value.database.WalletQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
 import com.onepiece.gpgaming.beans.value.internet.web.MemberBankValue
@@ -21,6 +22,7 @@ import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberBankService
 import com.onepiece.gpgaming.core.service.MemberService
+import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
@@ -35,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigDecimal
-import java.util.stream.Collector
 import java.util.stream.Collectors
 
 @RestController
@@ -48,7 +49,8 @@ class MemberApiController(
         private val withdrawService: WithdrawService,
         private val platformMemberService: PlatformMemberService,
         private val gameApi: GameApi,
-        private val memberBankService: MemberBankService
+        private val memberBankService: MemberBankService,
+        private val payOrderService: PayOrderService
 ) : BasicController(), MemberApi {
 
     @GetMapping
@@ -90,6 +92,8 @@ class MemberApiController(
     @GetMapping("/info")
     override fun getWalletInfo(@RequestParam("memberId") memberId: Int): MemberWalletInfo {
 
+        val clientId = getClientId()
+
         val wallet = walletService.getMemberWallet(memberId = memberId)
 
         val depositQuery = DepositQuery(clientId = wallet.clientId, memberId = memberId, size = 5)
@@ -97,6 +101,11 @@ class MemberApiController(
 
         val withdrawQuery = WithdrawQuery(clientId = wallet.clientId, memberId = memberId, size = 5)
         val withdrawHistory = withdrawService.query(withdrawQuery)
+
+
+        val thirdQuery = PayOrderValue.PayOrderQuery(clientId = clientId, memberId = memberId, current = 0, size = 5,
+                startDate = null, endDate = null, orderId = null, payType = null, state = null, username = null)
+        val lastPayOrders = payOrderService.query(thirdQuery)
 
         val platformMembers = platformMemberService.findPlatformMember(memberId)
         val balances = platformMembers.stream().map { platformMember ->
@@ -115,7 +124,7 @@ class MemberApiController(
 
 
         return MemberWalletInfo(memberId = memberId, wallet = wallet, lastFiveDeposit = depositHistory, lastFiveWithdraw = withdrawHistory,
-                balances = balances)
+                balances = balances, lastPayOrders = lastPayOrders)
 
     }
 
