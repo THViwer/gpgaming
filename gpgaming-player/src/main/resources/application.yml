@@ -5,7 +5,7 @@ spring:
     druid:
       driver-class-name: com.mysql.jdbc.Driver
       username: gp
-      password: Onepiece123!@#!
+      password: OnePiece123!@#
       url: jdbc:mysql://154.91.197.124:3306/gpgaming?useUnicode=true&characterEncoding=UTF-8
   profiles:
     active: dev
