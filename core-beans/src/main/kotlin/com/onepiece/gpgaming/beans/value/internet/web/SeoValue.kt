@@ -15,7 +15,10 @@ sealed class SeoValue {
             val liveChatId: String,
 
             // google统计Id
-            val googleStatisticsId: String
+            val googleStatisticsId: String,
+
+            //面子书广告
+            val facebookTr: String
 
             )
 
@@ -30,7 +33,10 @@ sealed class SeoValue {
             val liveChatId: String,
 
             // google统计Id
-            val googleStatisticsId: String
+            val googleStatisticsId: String,
+
+            //面子书广告
+            val facebookTr: String
     )
 
 }

@@ -2,7 +2,7 @@ package com.onepiece.gpgaming.beans.model
 
 import java.time.LocalDateTime
 
-data class Seo (
+data class Seo(
 
         // id
         val id: Int,
@@ -26,5 +26,8 @@ data class Seo (
         val googleStatisticsId: String,
 
         // 黄建时间
-        val createdTime: LocalDateTime
+        val createdTime: LocalDateTime,
+
+        //面子书广告
+        val facebookTr: String
 )

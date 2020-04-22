@@ -21,8 +21,9 @@ class SeoDaoImpl: BasicDaoImpl<Seo>("seo"), SeoDao {
             val liveChatId = rs.getString("live_chat_id")
             val googleStatisticsId = rs.getString("google_statistics_id")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val facebookTr = rs.getString("facebookTr")
             Seo(id = id, clientId = clientId, keywords = keywords, description = description, createdTime = createdTime,
-                    title = title, liveChatId = liveChatId, googleStatisticsId = googleStatisticsId)
+                    title = title, liveChatId = liveChatId, googleStatisticsId = googleStatisticsId, facebookTr = facebookTr)
 
         }
 
@@ -34,6 +35,7 @@ class SeoDaoImpl: BasicDaoImpl<Seo>("seo"), SeoDao {
                 .set("description", seoUo.description)
                 .set("live_chat_id", seoUo.liveChatId)
                 .set("google_statistics_id", seoUo.googleStatisticsId)
+                .set("facebookTr", seoUo.facebookTr)
                 .executeOnlyOne()
     }
 
@@ -44,6 +46,7 @@ class SeoDaoImpl: BasicDaoImpl<Seo>("seo"), SeoDao {
                 .set("description", seoUo.description)
                 .set("live_chat_id", seoUo.liveChatId)
                 .set("google_statistics_id", seoUo.googleStatisticsId)
+                .set("facebookTr", seoUo.facebookTr)
                 .where("client_id", seoUo.clientId)
                 .executeOnlyOne()
     }
