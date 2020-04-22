@@ -239,33 +239,44 @@ class TTGService(
 
     private fun handlerBetResult(result: TTGValue.BetResult): List<BetOrderValue.BetOrderCo> {
         return result.orders.map {
-            val player = it.asMap("player")
-            val username = player.asString("playerId")
-            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.TTG, platformUsername = username)
 
-            val detail = it.asMap("detail")
-            val orderId = detail.asString("transactionId")
-            val betTime = detail.asLocalDateTime("transactionDate", dateTimeFormat)
-            val transactionSubType = detail.asString("transactionSubType")
+                val player = it.asMap("player")
+                val username = player.asString("playerId")
 
-            val betAmount: BigDecimal
-            val winAmount: BigDecimal
-            when (transactionSubType) {
-                "Wager" -> {
-                    betAmount = detail.asBigDecimal("amount")
-                    winAmount = BigDecimal.ZERO
+            try {
+                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.TTG, platformUsername = username)
+
+                val detail = it.asMap("detail")
+                val orderId = detail.asString("transactionId")
+                val betTime = detail.asLocalDateTime("transactionDate", dateTimeFormat)
+                val transactionSubType = detail.asString("transactionSubType")
+
+                val betAmount: BigDecimal
+                val winAmount: BigDecimal
+                when (transactionSubType) {
+                    "Wager" -> {
+                        betAmount = detail.asBigDecimal("amount")
+                        winAmount = BigDecimal.ZERO
+                    }
+                    else -> {
+                        betAmount = BigDecimal.ZERO
+                        winAmount = detail.asBigDecimal("amount").abs()
+                    }
                 }
-                else -> {
-                    betAmount = BigDecimal.ZERO
-                    winAmount = detail.asBigDecimal("amount").abs()
-                }
-            }
 //            val handId = detail.asString("handId")
 
-            val originData = objectMapper.writeValueAsString(it.data)
-            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, betTime = betTime, betAmount = betAmount,
-                    winAmount = winAmount, originData = originData, platform = Platform.TTG, settleTime = betTime)
-        }
+                val originData = objectMapper.writeValueAsString(it.data)
+                BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, betTime = betTime, betAmount = betAmount,
+                        winAmount = winAmount, originData = originData, platform = Platform.TTG, settleTime = betTime)
+            } catch (e: Exception) {
+
+                if (e is java.lang.NumberFormatException) {
+                    null
+                } else {
+                    throw e
+                }
+            }
+        }.filterNotNull()
 //                .groupBy { it.first }.map {
 //            it.value.reduce { acc, pair ->
 //                val betAmount = acc.second.betAmount.plus(pair.second.betAmount)
