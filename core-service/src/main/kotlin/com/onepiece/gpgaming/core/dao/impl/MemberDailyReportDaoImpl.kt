@@ -124,8 +124,8 @@ class MemberDailyReportDaoImpl(
 
         return query(columns)
                 .where("client_id", query.clientId)
-                .asWhere("day > ?", query.startDate)
-                .asWhere("day <= ?", query.endDate)
+                .asWhere("day >= ?", query.startDate)
+                .asWhere("day < ?", query.endDate)
                 .where("member_id", query.memberId)
                 .asWhere("backwater_money >= ?", query.minBackwaterMoney)
                 .asWhere("promotion_money >= ?", query.minPromotionMoney)
