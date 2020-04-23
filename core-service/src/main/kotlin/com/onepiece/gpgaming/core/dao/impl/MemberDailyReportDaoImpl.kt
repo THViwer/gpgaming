@@ -159,8 +159,8 @@ class MemberDailyReportDaoImpl(
 
         return query()
                 .where("client_id", query.clientId)
-                .asWhere("day > ?", query.startDate)
-                .asWhere("day <= ?", query.endDate)
+                .asWhere("day >= ?", query.startDate)
+                .asWhere("day < ?", query.endDate)
                 .where("member_id", query.memberId)
                 .asWhere("backwater_money >= ?", query.minBackwaterMoney)
                 .asWhere("promotion_money >= ?", query.minPromotionMoney)
@@ -186,7 +186,8 @@ class MemberDailyReportDaoImpl(
 
     override fun backwater(startDate: LocalDate): Map<Int, BigDecimal> {
         return query("client_id, sum(backwater_money) as total_backwater_money")
-                .asWhere("created_time > ?", startDate)
+                .asWhere("day >= ?", startDate)
+                .asWhere("day < >", startDate.plusDays(1))
                 .group("client_id")
                 .execute { rs ->
                     val clientId = rs.getInt("client_id")
