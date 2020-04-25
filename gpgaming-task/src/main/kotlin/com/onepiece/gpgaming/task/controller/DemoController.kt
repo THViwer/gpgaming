@@ -52,6 +52,12 @@ class DemoController(
         return "success"
     }
 
+    @GetMapping("/clientReport")
+    fun reportClient(@RequestParam("startDate") startDate: String): String {
+        reportTask.startClientReport(startDate = LocalDate.parse(startDate))
+        return "success"
+    }
+
     @GetMapping("/backwater")
     fun backwaterTask(): String {
         backwaterTask.start()
