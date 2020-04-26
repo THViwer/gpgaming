@@ -117,7 +117,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
 
-        // 添加JWT filter
+        // 添加JWT filter1 
         httpSecurity
                 .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter::class.java)
 
