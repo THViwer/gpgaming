@@ -51,11 +51,7 @@ class MemberApiController(
         private val platformMemberService: PlatformMemberService,
         private val gameApi: GameApi,
         private val memberBankService: MemberBankService,
-        private val payOrderService: PayOrderService,
-
-        private  val memberDailyReportDao: MemberDailyReportDao
-
-
+        private val payOrderService: PayOrderService
 ) : BasicController(), MemberApi {
 
 
