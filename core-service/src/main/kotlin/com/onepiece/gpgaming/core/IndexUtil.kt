@@ -64,6 +64,7 @@ class IndexUtil(
 
         // banner
         val banners = bannerService.findByType(clientId = clientId, type = BannerType.Banner).filter { it.status == Status.Normal }
+                .sortedBy { it.order }
 
 
         // 推荐列表
@@ -86,14 +87,14 @@ class IndexUtil(
                     .let { it.getII18nContent(objectMapper) as I18nContent.AnnouncementI18n }
 
             // banner
-            val bannerVoList = banners.mapNotNull {
+            val bannerVoList = banners.mapNotNull { banner ->
 
-                val data = contentMap["${it.id}:${I18nConfig.Banner}:${language}"]
-                        ?: contentMap["${it.id}:${I18nConfig.Banner}:${Language.EN}"]
+                val data = contentMap["${banner.id}:${I18nConfig.Banner}:${language}"]
+                        ?: contentMap["${banner.id}:${I18nConfig.Banner}:${Language.EN}"]
 
                 data?.let {
                     val content = data.getII18nContent(objectMapper) as I18nContent.BannerI18n
-                    Index.BannerVo(icon = content.imagePath)
+                    Index.BannerVo(icon = content.imagePath, link = banner.link)
                 }
             }
 
