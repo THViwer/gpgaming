@@ -18,6 +18,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.MemberUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.MemberVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberWalletInfo
 import com.onepiece.gpgaming.beans.value.internet.web.WalletVo
+import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberBankService
@@ -50,8 +51,13 @@ class MemberApiController(
         private val platformMemberService: PlatformMemberService,
         private val gameApi: GameApi,
         private val memberBankService: MemberBankService,
-        private val payOrderService: PayOrderService
+        private val payOrderService: PayOrderService,
+
+        private  val memberDailyReportDao: MemberDailyReportDao
+
+
 ) : BasicController(), MemberApi {
+
 
     @GetMapping
     override fun query(

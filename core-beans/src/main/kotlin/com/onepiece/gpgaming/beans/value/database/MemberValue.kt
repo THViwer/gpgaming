@@ -4,6 +4,21 @@ import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
 import java.util.*
 
+
+sealed class MemberValue {
+
+    data  class AnalysisData(
+
+            val id: Int,
+
+            val v: String
+
+    )
+
+
+}
+
+
 data class MemberQuery(
         val clientId: Int?,
 

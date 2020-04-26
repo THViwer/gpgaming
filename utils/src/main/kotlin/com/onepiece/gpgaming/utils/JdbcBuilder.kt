@@ -149,7 +149,7 @@ class Insert(
 
 }
 
-class Query(
+open class Query(
         private val jdbcTemplate: JdbcTemplate,
         private val table: String,
         private val returnColumns: String? = null

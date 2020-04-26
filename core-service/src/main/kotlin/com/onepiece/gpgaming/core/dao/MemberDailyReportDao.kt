@@ -20,4 +20,6 @@ interface MemberDailyReportDao  {
 
     fun backwater(startDate: LocalDate): Map<Int, BigDecimal>
 
+    fun analysis(query: MemberReportValue.AnalysisQuery): List<MemberReportValue.AnalysisVo>
+
 }

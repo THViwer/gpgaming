@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.core.dao.impl
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
@@ -195,5 +196,57 @@ class MemberDailyReportDaoImpl(
 
                     clientId to totalBackwaterMoney
                 }.toMap()
+    }
+
+    override fun analysis(query: MemberReportValue.AnalysisQuery): List<MemberReportValue.AnalysisVo> {
+
+        val sortBy = when (query.sort) {
+            MemberAnalysisSort.WithdrawMax -> "withdraw_money"
+            MemberAnalysisSort.WithdrawSeqMax -> "withdraw_count"
+            MemberAnalysisSort.DepositMax -> "deposit_money"
+            MemberAnalysisSort.DepositSeqMax -> "deposit_count"
+            MemberAnalysisSort.WinMax -> "total_m_win"
+            MemberAnalysisSort.LossMax -> "total_m_loss"
+            MemberAnalysisSort.PromotionMax -> "promotion_money"
+        }
+
+        val sql = """
+            select * from (
+            	select 
+            		member_id,
+            		sum(total_bet) total_bet,
+            		sum(total_m_win) total_m_win,
+            		sum(total_bet-total_m_win) total_m_loss,
+            		sum(deposit_money+third_pay_money) deposit_money,
+            		count(deposit_count+third_pay_count) deposit_count,
+            		sum(withdraw_money) withdraw_money,
+            		count(withdraw_count) withdraw_count,
+            		sum(artificial_money) artificial_money,
+            		count(artificial_count) artificial_count,
+            		sum(backwater_money) backwater_money,
+            		sum(promotion_money) promotion_money
+            	from member_daily_report 
+            	where day >= '${query.startDate}' and day < '${query.endDate}' and client_id = ${query.clientId} group by member_id
+            ) as t order by t.${sortBy} desc limit ${query.size};
+        """.trimIndent()
+        return jdbcTemplate.query(sql) { rs, _ ->
+            val memberId = rs.getInt("member_id")
+            val totalBet = rs.getBigDecimal("total_bet")
+            val totalMWin = rs.getBigDecimal("total_m_win")
+            val totalMLoss = rs.getBigDecimal("total_m_loss")
+            val depositMoney = rs.getBigDecimal("deposit_money")
+            val depositCount = rs.getInt("deposit_count")
+            val withdrawMoney = rs.getBigDecimal("withdraw_money")
+            val withdrawCount = rs.getInt("withdraw_count")
+            val artificialMoney = rs.getBigDecimal("artificial_money")
+            val artificialCount = rs.getInt("artificial_count")
+            val backwaterMoney = rs.getBigDecimal("backwater_money")
+            val promotionMoney = rs.getBigDecimal("promotion_money")
+
+            MemberReportValue.AnalysisVo(memberId = memberId, totalBet = totalBet, totalMWin = totalMWin, totalMLoss = totalMLoss,
+                    depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney, withdrawCount = withdrawCount,
+                    artificialMoney = artificialMoney, artificialCount = artificialCount, backwaterMoney = backwaterMoney,
+                    promotionMoney = promotionMoney, clientId = query.clientId)
+        }
     }
 }

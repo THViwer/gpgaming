@@ -1,5 +1,7 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
+import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.ReportValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -28,6 +30,14 @@ interface ReportApi {
             @RequestParam("current") current: Int,
             @RequestParam("size") size: Int
     ): ReportValue.MemberTotalDetailReport
+
+    @ApiOperation(tags = ["user"], value = "会员 -> 分析查询")
+    fun analysis(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = true) startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = true) endDate: LocalDate,
+            @RequestParam(value = "sort", required = true) sort: MemberAnalysisSort,
+            @RequestParam(value = "size", required = true) size: Int
+    ): List<MemberReportValue.AnalysisVo>
 
     @ApiOperation(tags = ["report"], value = "厅主平台报表")
     fun clientPlatformDaily(

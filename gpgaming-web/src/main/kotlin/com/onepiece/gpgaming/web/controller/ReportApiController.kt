@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.web.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.value.database.ClientReportQuery
@@ -14,6 +15,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.MemberReportWebVo
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.ReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
+import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.service.ClientDailyReportService
 import com.onepiece.gpgaming.core.service.ClientPlatformDailyReportService
 import com.onepiece.gpgaming.core.service.I18nContentService
@@ -50,7 +52,8 @@ class ReportApiController(
         private val transferOrderService: TransferOrderService,
         private val promotionService: PromotionService,
         private val i18nContentService: I18nContentService,
-        private val objectMapper: ObjectMapper
+        private val objectMapper: ObjectMapper,
+        private val memberDailyReportDao: MemberDailyReportDao
 ) : BasicController(), ReportApi {
 
     private val log = LoggerFactory.getLogger(ReportApiController::class.java)
@@ -97,6 +100,29 @@ class ReportApiController(
         }.sortedByDescending { it.day }
 
         return ReportValue.MemberTotalReport(list)
+    }
+
+    @GetMapping("/analysis")
+    override fun analysis(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = true) startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = true) endDate: LocalDate,
+            @RequestParam(value = "sort", required = true) sort: MemberAnalysisSort,
+            @RequestParam(value = "size", required = true) size: Int
+    ): List<MemberReportValue.AnalysisVo> {
+
+
+        val query = MemberReportValue.AnalysisQuery(clientId = this.getClientId(), startDate = startDate, endDate = endDate,
+                sort = sort, size = size)
+        val list = memberDailyReportDao.analysis(query)
+        if (list.isEmpty()) return emptyList()
+
+        val ids = list.map { it.memberId }.toList()
+        val members = memberService.findByIds(ids = ids).map { it.id to it }.toMap()
+
+        return list.map {
+            it.copy(username = members[it.memberId]?.username?: "")
+        }
+
     }
 
     @GetMapping("/member")
