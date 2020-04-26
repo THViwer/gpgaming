@@ -161,6 +161,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- excel  -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+
 
     </dependencies>
 

@@ -1,5 +1,13 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
+import com.alibaba.excel.annotation.ExcelIgnore
+import com.alibaba.excel.annotation.ExcelProperty
+import com.alibaba.excel.converters.Converter
+import com.alibaba.excel.enums.CellDataTypeEnum
+import com.alibaba.excel.metadata.CellData
+import com.alibaba.excel.metadata.GlobalConfiguration
+import com.alibaba.excel.metadata.property.ExcelContentProperty
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Deposit
@@ -8,7 +16,142 @@ import com.onepiece.gpgaming.beans.model.Wallet
 import com.onepiece.gpgaming.beans.model.Withdraw
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
+import java.time.Duration
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.*
+
+
+sealed class MemberValue {
+
+        data class FollowVo(
+
+                @ExcelProperty("会员Id")
+                @ApiModelProperty("会员Id")
+                val memberId: Int,
+
+                @ExcelProperty("用户名")
+                @ApiModelProperty("用户名")
+                val username: String,
+
+                @ExcelProperty("电话")
+                @ApiModelProperty("电话")
+                val phone: String,
+
+
+
+
+
+
+
+                @ExcelProperty("充值金额")
+                @ApiModelProperty("充值金额")
+                val depositMoney: BigDecimal,
+
+                @ExcelProperty("充值次数")
+                @ApiModelProperty("充值次数")
+                val depositCount: Int,
+
+//                @ExcelIgnore
+                @ExcelProperty("最后登陆时间", converter = LocalDateTimeConverter::class)
+                @ApiModelProperty("最后一次充值时间")
+                val lastDepositTime: LocalDateTime?,
+
+//                @ExcelProperty("最后一次充值时间")
+//                @JsonIgnore
+//                val dLastDepositTime: Date? = lastDepositTime?.let { Date.from(it.atZone(ZoneId.of("Asia/Shanghai")).toInstant()) },
+
+                @ApiModelProperty("几天未存款)")
+                @ExcelProperty("几天未存款")
+                val depositDay: Int? = lastDepositTime?.let {
+                        Duration.between(it, LocalDateTime.now()).toDays()
+                }?.toInt(),
+
+
+
+
+
+
+
+                @ExcelProperty("取款金额")
+                @ApiModelProperty("取款金额")
+                val withdrawMoney:  BigDecimal,
+
+                @ExcelProperty("取款次数")
+                @ApiModelProperty("取款次数")
+                val withdrawCount: Int,
+
+//                @ExcelIgnore
+                @ExcelProperty("最后一次取款时间", converter = LocalDateTimeConverter::class)
+                @ApiModelProperty("最后一次取款时间")
+                val lastWithdrawTime:  LocalDateTime?,
+
+//                @ExcelProperty("最后一次取款时间")
+//                @JsonIgnore
+//                val dLastWithdrawTime: Date? = lastWithdrawTime?.let { Date.from(it.atZone(ZoneId.of("Asia/Shanghai")).toInstant()) },
+
+                @ApiModelProperty("几天未取款)")
+                @ExcelProperty("几天未取款")
+                val withdrawDays: Int? = lastWithdrawTime?.let {
+                        Duration.between(it, LocalDateTime.now()).toDays()
+                }?.toInt(),
+
+
+
+
+//                @ExcelIgnore
+                @ExcelProperty("注册时间", converter = LocalDateTimeConverter::class)
+                @ApiModelProperty("注册时间")
+                val registerTime: LocalDateTime,
+
+//                @ExcelProperty("注册时间")
+//                @JsonIgnore
+//                val dRegisterTime: Date? = registerTime.let {
+//                        Date.from(it.atZone(ZoneId.of("Asia/Shanghai")).toInstant())
+//                },
+
+
+
+//                @ExcelIgnore
+                @ExcelProperty("最后登陆时间", converter = LocalDateTimeConverter::class)
+                @ApiModelProperty("最后登陆时间")
+                val lastLoginTime:  LocalDateTime?,
+
+//                @ExcelProperty("最后登陆时间")
+//                @JsonIgnore
+//                val dLastLoginTime: Date? = lastLoginTime?.let { Date.from(it.atZone(ZoneId.of("Asia/Shanghai")).toInstant()) },
+
+                @ExcelProperty("几天未登陆")
+                @ApiModelProperty("几天未登陆)")
+                val neverLoginDays: Int? = lastLoginTime?.let {
+                        Duration.between(it, LocalDateTime.now()).toDays()
+                }?.toInt()
+
+        )
+
+}
+
+open class LocalDateTimeConverter: Converter<LocalDateTime> {
+
+        override fun supportJavaTypeKey(): Class<*> {
+                return LocalDateTime::class.java
+        }
+
+        override fun supportExcelTypeKey(): CellDataTypeEnum {
+                return CellDataTypeEnum.STRING
+        }
+
+        override fun convertToExcelData(p0: LocalDateTime?, p1: ExcelContentProperty?, p2: GlobalConfiguration?): CellData<*> {
+//                val date = p0?.let {
+//                        Date.from(it.atZone(ZoneId.of("Asia/Shanghai")).toInstant())
+//                }
+                return CellData<Date>(p0?.toString())
+        }
+
+        override fun convertToJavaData(p0: CellData<*>?, p1: ExcelContentProperty?, p2: GlobalConfiguration?): LocalDateTime {
+                return LocalDateTime.now()
+        }
+}
 
 
 data class MemberPage(

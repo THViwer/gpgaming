@@ -6,15 +6,18 @@ import com.onepiece.gpgaming.beans.value.internet.web.MemberBankValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPage
 import com.onepiece.gpgaming.beans.value.internet.web.MemberUoReq
+import com.onepiece.gpgaming.beans.value.internet.web.MemberValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberWalletInfo
 import com.onepiece.gpgaming.beans.value.internet.web.WalletVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
+import java.time.LocalDate
 
 @Api(tags = ["user"], description = " ")
 interface MemberApi {
@@ -31,6 +34,20 @@ interface MemberApi {
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): MemberPage
+
+
+    @ApiOperation(tags = ["user"], value = "会员 -> 跟踪")
+    fun follow(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
+    ): List<MemberValue.FollowVo>
+
+    @ApiOperation(tags = ["user"], value = "会员 -> 跟踪excel导出")
+    fun followExcel(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
+    )
+
 
     @ApiOperation(tags = ["user"], value = "会员 -> 详细信息")
     fun getWalletInfo(@RequestParam("memberId") memberId: Int): MemberWalletInfo

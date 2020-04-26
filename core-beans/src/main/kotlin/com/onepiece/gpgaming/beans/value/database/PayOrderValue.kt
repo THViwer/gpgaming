@@ -15,6 +15,9 @@ sealed class PayOrderValue {
             // 会员Id
             val memberId: Int?,
 
+            // 会员Id列表
+            val memberIds: List<Int>?,
+
             // 用户名
             val username: String?,
 

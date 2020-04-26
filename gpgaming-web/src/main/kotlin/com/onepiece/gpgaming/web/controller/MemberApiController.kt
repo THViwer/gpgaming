@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.alibaba.excel.EasyExcel
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.MemberBank
@@ -15,10 +16,13 @@ import com.onepiece.gpgaming.beans.value.internet.web.MemberBankValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPage
 import com.onepiece.gpgaming.beans.value.internet.web.MemberUoReq
+import com.onepiece.gpgaming.beans.value.internet.web.MemberValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberWalletInfo
 import com.onepiece.gpgaming.beans.value.internet.web.WalletVo
-import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
+import com.onepiece.gpgaming.core.dao.DepositDao
+import com.onepiece.gpgaming.core.dao.PayOrderDao
+import com.onepiece.gpgaming.core.dao.WithdrawDao
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberBankService
@@ -29,6 +33,7 @@ import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
 import com.onepiece.gpgaming.games.GameApi
 import com.onepiece.gpgaming.web.controller.basic.BasicController
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -36,9 +41,14 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.util.stream.Collectors
+
 
 @RestController
 @RequestMapping("/member")
@@ -51,7 +61,12 @@ class MemberApiController(
         private val platformMemberService: PlatformMemberService,
         private val gameApi: GameApi,
         private val memberBankService: MemberBankService,
-        private val payOrderService: PayOrderService
+        private val payOrderService: PayOrderService,
+
+        private val depositDao: DepositDao,
+        private val withdrawDao: WithdrawDao,
+        private val payOrderDao: PayOrderDao
+
 ) : BasicController(), MemberApi {
 
 
@@ -91,6 +106,89 @@ class MemberApiController(
     }
 
 
+    @GetMapping("/follow")
+    override fun follow(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
+    ): List<MemberValue.FollowVo> {
+
+        val clientId = getClientId()
+        val startTime = startDate.atStartOfDay()
+        val endTime = endDate.atStartOfDay()
+
+        // 会员查询
+        val query = MemberQuery(clientId = clientId, startTime = startTime, endTime = endTime, status = Status.Normal,
+                levelId = null, name = null, username = null, phone = null, promoteCode = null)
+        val members = memberService.query(query, current = 0, size = 999999).data
+        if (members.isEmpty()) return emptyList()
+        val memberIds = members.map { it.id }.toList()
+
+        // 充值
+        val depositQuery = DepositQuery(clientId = clientId, startTime = startTime, endTime = endTime, memberIds = memberIds)
+        val deposits = depositDao.query(depositQuery, 0, 9999)
+                .groupBy { it.memberId }
+
+        val payQuery  = PayOrderValue.PayOrderQuery(clientId = clientId, memberId = null, startDate = startDate, endDate = endDate, current = 0,
+                size = 99999, orderId = null, payType = null, state = null, username = null, memberIds = memberIds)
+        val pays = payOrderDao.query(payQuery)
+                .groupBy { it.memberId }
+
+        // 取款
+        val withdrawQuery = WithdrawQuery(clientId = clientId, memberId = null, startTime = startTime, endTime = endTime, memberIds = memberIds)
+        val withdraws = withdrawDao.query(query = withdrawQuery, current = 0, size = 999999)
+                .groupBy { it.memberId }
+
+
+        return members.map { member ->
+
+            val mDeposits = deposits[member.id]?: emptyList()
+            val mPays = pays[member.id]?: emptyList()
+
+            val depositCount = mDeposits.count().plus(mPays.count())
+            val depositMoney = mDeposits.sumByDouble { it.money.toDouble() }.plus(mPays.sumByDouble { it.amount.toDouble() })
+                    .toBigDecimal().setScale(2, 2)
+            val lastDepositTime = mDeposits.maxBy { it.createdTime }.let { a ->
+
+                val b = mPays.maxBy { it.createdTime }
+                when {
+                    a == null -> b?.createdTime
+                    b == null -> a.createdTime
+                    else -> if (a.createdTime > b.createdTime) a.createdTime else b.createdTime
+                }
+            }
+
+
+            val mWithdraws = withdraws[member.id]?: emptyList()
+            val withdrawCount = mWithdraws.count()
+            val withdrawMoney = mWithdraws.sumByDouble { it.money.toDouble() }
+                    .toBigDecimal().setScale(2, 2)
+            val lastWithdrawTime = mWithdraws.maxBy { it.createdTime }?.createdTime
+
+
+            MemberValue.FollowVo(memberId = member.id, username = member.username, phone = member.phone, registerTime = member.createdTime,
+                    lastLoginTime = member.loginTime, depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
+                    withdrawCount = withdrawCount, lastDepositTime = lastDepositTime, lastWithdrawTime = lastWithdrawTime)
+        }
+    }
+
+    @GetMapping("/follow/excel")
+    override fun followExcel(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
+    ) {
+
+        val response = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).response!!
+        val name = "follow_${startDate.toString().replace("-", "")}_${endDate.toString().replace("_", "")}"
+
+        response.contentType = "application/vnd.ms-excel";
+        response.characterEncoding = "utf-8";
+        response.setHeader("Content-disposition", "attachment;filename=$name.xlsx")
+
+        val data = this.follow(startDate = startDate, endDate = endDate)
+
+        EasyExcel.write(response.outputStream, MemberValue.FollowVo::class.java).autoCloseStream(false).sheet("member").doWrite(data)
+    }
+
     @GetMapping("/info")
     override fun getWalletInfo(@RequestParam("memberId") memberId: Int): MemberWalletInfo {
 
@@ -106,7 +204,7 @@ class MemberApiController(
 
 
         val thirdQuery = PayOrderValue.PayOrderQuery(clientId = clientId, memberId = memberId, current = 0, size = 5,
-                startDate = null, endDate = null, orderId = null, payType = null, state = null, username = null)
+                startDate = null, endDate = null, orderId = null, payType = null, state = null, username = null, memberIds = null)
         val lastPayOrders = payOrderService.query(thirdQuery)
 
         val platformMembers = platformMemberService.findPlatformMember(memberId)

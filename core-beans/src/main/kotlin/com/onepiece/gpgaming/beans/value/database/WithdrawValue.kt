@@ -20,6 +20,8 @@ data class WithdrawQuery(
 
         val memberId: Int? = null,
 
+        val memberIds: List<Int>? = null,
+
         val state: WithdrawState? = null,
 
         val size: Int = 500

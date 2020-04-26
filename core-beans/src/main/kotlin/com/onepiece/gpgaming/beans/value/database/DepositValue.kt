@@ -21,6 +21,8 @@ data class DepositQuery(
 
         val memberId: Int? = null,
 
+        val memberIds: List<Int>? = null,
+
         val clientBankIdList: List<Int>? = null,
 
         val state: DepositState? = null,

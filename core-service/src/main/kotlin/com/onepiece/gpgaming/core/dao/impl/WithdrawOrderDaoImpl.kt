@@ -61,6 +61,7 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
                 .asWhere("created_time <= ?", query.endTime)
                 .where("order_id", query.orderId)
                 .where("member_id", query.memberId)
+                .whereIn("member_id", query.memberIds)
         if (query.lockWaiterId != null) {
             builder.asWhere("(lock_waiter_id is null || lock_waiter_id = ${query.lockWaiterId})")
         }

@@ -53,6 +53,7 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
                 .asWhere("created_time < ?", query.endDate)
                 .where("pay_type", query.payType)
                 .where("member_id", query.memberId)
+                .whereIn("member_id", query.memberIds)
                 .where("username", query.username)
                 .where("state", query.state)
                 .sort(query.sortBy)
@@ -119,12 +120,14 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
         println(num)
     }
 
-    override fun mReport(startDate: LocalDate, memberId: Int?): List<PayOrderValue.PayOrderMReport> {
+    override fun mReport(clientId: Int?, startDate: LocalDate, endDate: LocalDate, memberId: Int?, memberIds: List<Int>?): List<PayOrderValue.PayOrderMReport> {
         return query("client_id, member_id, sum(amount) as amount, count(*) as count")
                 .asWhere("updated_time >= ?", startDate)
-                .asWhere("updated_time < ?", startDate.plusDays(1))
+                .asWhere("updated_time < ?", endDate)
+                .where("client_id", clientId)
                 .where("state", PayState.Successful)
                 .where("member_id", memberId)
+                .whereIn("member", memberIds)
                 .group("client_id, member_id")
                 .execute { rs ->
 

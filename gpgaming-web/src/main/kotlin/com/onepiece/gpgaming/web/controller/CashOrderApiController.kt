@@ -176,7 +176,13 @@ class CashOrderApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
     ): List<DepositVo> {
         val clientId = getClientId()
-        val depositQuery = DepositQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state,
+
+
+        val qMemberId = username?.let {
+            memberService.findByUsername(clientId = clientId, username = it)?.id
+        }
+
+        val depositQuery = DepositQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = qMemberId, state = state,
                 lockWaiterId = null, clientBankIdList = null)
 
         val waiters = waiterService.findClientWaiters(clientId = clientId).map {
@@ -401,7 +407,7 @@ class CashOrderApiController(
 
         val query = PayOrderValue.PayOrderQuery(clientId = user.clientId, memberId = null, username = username,
                 state = state, startDate = startDate, endDate = endDate, current = 0, size = 500, orderId = orderId,
-                payType = payType)
+                payType = payType, memberIds = null)
         return payOrderService.query(query)
     }
 

@@ -101,7 +101,7 @@ class ReportServiceImpl(
         val betMap = betReports.groupBy { it.memberId }
 
         // 第三方充值
-        val payOrders = payOrderDao.mReport(startDate = startDate, memberId = memberId)
+        val payOrders = payOrderDao.mReport(clientId = queryClientId, startDate = startDate, endDate = endDate, memberId = memberId)
         val payOrderMap = payOrders.map { it.memberId to it }.toMap()
 
         // 会员对应返水比例

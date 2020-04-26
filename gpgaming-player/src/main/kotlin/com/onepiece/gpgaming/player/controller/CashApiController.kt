@@ -317,7 +317,7 @@ open class CashApiController(
         val member = current()
 
         val query = PayOrderValue.PayOrderQuery(clientId = member.clientId, memberId = member.id, state = state, orderId = orderId,
-                username = null, current = 0, size = 200, payType = null, startDate = null, endDate = null)
+                username = null, current = 0, size = 200, payType = null, startDate = null, endDate = null, memberIds = null)
         val page = payOrderService.page(query = query)
         val list1 = page.data.map {
             ThirdPayValue.OrderVo(orderId = it.orderId, payType = it.payType.name, state = it.state.name, createdTime = it.createdTime,

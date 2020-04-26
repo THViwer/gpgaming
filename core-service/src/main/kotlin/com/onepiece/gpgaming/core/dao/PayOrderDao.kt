@@ -24,7 +24,7 @@ interface PayOrderDao {
     fun close(closeTime: LocalDateTime)
 
     // 会员报表
-    fun mReport(startDate: LocalDate, memberId: Int?): List<PayOrderValue.PayOrderMReport>
+    fun mReport(clientId: Int?, startDate: LocalDate, endDate: LocalDate, memberId: Int?, memberIds: List<Int>? = null): List<PayOrderValue.PayOrderMReport>
 
     // 业主平台报表 constraint: 是否强制入款
     fun cpReport(startDate: LocalDate, constraint: Boolean): List<PayOrderValue.PayOrderCPReport>
