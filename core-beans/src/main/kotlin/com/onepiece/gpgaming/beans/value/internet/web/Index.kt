@@ -67,7 +67,10 @@ data class Index(
 
         data class BannerVo(
                 @ApiModelProperty("图标")
-                val icon: String
+                val icon: String,
+
+                @ApiModelProperty("link")
+                val link: String
         )
 
         data class PlatformVo(
