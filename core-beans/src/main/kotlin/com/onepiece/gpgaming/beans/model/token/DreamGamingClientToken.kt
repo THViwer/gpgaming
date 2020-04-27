@@ -6,5 +6,8 @@ data class DreamGamingClientToken(
 
         val key: String,
 
+        // 限红
+        val data: String,
+
         val currency: String
 ): ClientToken

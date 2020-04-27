@@ -51,7 +51,7 @@ class DreamGamingService : PlatformService() {
             {
                 "token":"$sign",
                 "random":"$random",
-                "data":"G",
+                "data":"${clientToken.data}",
                 "member":{
                     "username":"${registerReq.username}",
                     "password":"$md5Password",
