@@ -12,6 +12,8 @@ enum class PermissionType(
     USER_MEMBER("1000", "1100","会员管理", "会员管理"),
     USER_WAITER("1000", "1200","客服管理", "客服管理"),
     USER_MEMBER_LEVEL("1000", "1300","层级管理", "层级管理"),
+    USER_FOLLOW("1000", "1400","会员追踪", "会员追踪"),
+
 
     // 现金系统
     CASH("-1", "2000", "现金系统", "现金系统"),
@@ -41,6 +43,10 @@ enum class PermissionType(
     REPORT_MANAGE("-1", "5000", "报表", "报表"),
     REPORT_SYSTEM("5000", "5100", "系统报表", "系统报表"),
     REPORT_MEMBER("5000", "5200", "会员报表", "会员报表"),
-    REPORT_PROMOTION("5000", "5300", "优惠报表", "优惠报表");
+    REPORT_PROMOTION("5000", "5300", "优惠报表", "优惠报表"),
+    REPORT_ANALYSIS("5000", "5400", "会员分析", "会员分析"),
+
+
+    ;
 
 }
