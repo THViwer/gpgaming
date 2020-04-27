@@ -37,6 +37,7 @@ interface IndexApi {
             @RequestParam("keywords") keywords: String,
             @RequestParam("description") description: String,
             @RequestParam("liveChatId") liveChatId: String,
+            @RequestParam("liveChatTab") liveChatTab: Boolean,
             @RequestParam("googleStatisticsId") googleStatisticsId: String,
             @RequestParam("facebookTr") facebookTr:String
     )

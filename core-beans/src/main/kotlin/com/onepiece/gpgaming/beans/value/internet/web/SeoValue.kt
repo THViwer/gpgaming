@@ -14,13 +14,16 @@ sealed class SeoValue {
             // 在线聊天Id
             val liveChatId: String,
 
+            // 是否打开新的窗口
+            val liveChatTab: Boolean,
+
             // google统计Id
             val googleStatisticsId: String,
 
             //面子书广告
             val facebookTr: String
 
-            )
+    )
 
     data class SeoVo(
             val title: String,
@@ -31,6 +34,9 @@ sealed class SeoValue {
 
             // 在线聊天Id
             val liveChatId: String,
+
+            // 是否打开新的窗口
+            val liveChatTab: Boolean,
 
             // google统计Id
             val googleStatisticsId: String,

@@ -22,6 +22,9 @@ data class Seo(
         // 在线聊天Id
         val liveChatId: String,
 
+        // 是否打开新的页面
+        val liveChatTab: Boolean,
+
         // google统计Id
         val googleStatisticsId: String,
 
