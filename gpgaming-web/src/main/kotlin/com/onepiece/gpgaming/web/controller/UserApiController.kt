@@ -83,7 +83,7 @@ class UserApiController(
 
         when (current.role) {
             Role.Client -> {
-                val clientUo = ClientUo(id = current.id, oldPassword = changePwdReq.oldPassword, password = changePwdReq.password, name = null, logo = null)
+                val clientUo = ClientUo(id = current.id, oldPassword = changePwdReq.oldPassword, password = changePwdReq.password, name = null, logo = null, shortcutLogo = null)
                 clientService.update(clientUo)
             }
             Role.Waiter -> {
