@@ -42,6 +42,9 @@ sealed class ClientSuValue {
             @ApiModelProperty("logo")
             val logo: String,
 
+            @ApiModelProperty("tab logo")
+            val shortcutLogo: String,
+
             @ApiModelProperty("昵称")
             val name: String,
 
@@ -63,6 +66,9 @@ sealed class ClientSuValue {
 
             @ApiModelProperty("logo")
             val logo: String?,
+
+            @ApiModelProperty("tab logo")
+            val shortcutLogo: String?,
 
             @ApiModelProperty("用户密码")
             val password: String?,

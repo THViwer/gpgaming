@@ -20,6 +20,7 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
             val username = rs.getString("username")
             val password = rs.getString("password")
             val logo = rs.getString("logo")
+            val shortcutLogo = rs.getString("shortcut_logo")
             val name = rs.getString("name")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
@@ -27,7 +28,7 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
             val whitelists = rs.getString("whitelists")?.let { it.split(",") }?: emptyList()
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
             Client(id = id, username = username, password = password, createdTime = createdTime, loginTime = loginTime,
-                    status = status, loginIp = loginIp, name = name, logo = logo, whitelists = whitelists)
+                    status = status, loginIp = loginIp, name = name, logo = logo, whitelists = whitelists, shortcutLogo = shortcutLogo)
         }
 
     override fun findByUsername(username: String): Client? {
@@ -38,6 +39,7 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
     override fun create(clientCo: ClientCo): Int {
         return insert()
                 .set("logo", clientCo.logo)
+                .set("shortcut_logo", clientCo.logo)
                 .set("username", clientCo.username)
                 .set("password", clientCo.password)
                 .set("name", clientCo.name)
@@ -50,6 +52,7 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
         return update().set("password", clientUo.password)
                 .set("name", clientUo.name)
                 .set("logo", clientUo.logo)
+                .set("shortcut_logo", clientUo.shortcutLogo)
                 .set("status", clientUo.status)
                 .set("login_ip", clientUo.ip)
                 .set("login_time", clientUo.loginTime)

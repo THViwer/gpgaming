@@ -11,6 +11,9 @@ data class ClientCo(
         // 平台logo
         val logo: String,
 
+        // tab logo
+        val shortcutLogo: String,
+
         // 用户名
         val username: String,
 
@@ -32,6 +35,9 @@ data class ClientUo(
 
         // 平台logo
         val logo: String?,
+
+        // tab logo
+        val shortcutLogo: String?,
 
         // 旧密码
         val oldPassword: String? = null,

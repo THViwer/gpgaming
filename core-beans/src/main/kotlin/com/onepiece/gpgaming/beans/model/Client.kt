@@ -14,6 +14,9 @@ data class Client(
         // logo
         val logo: String,
 
+        // tab logo
+        val shortcutLogo: String,
+
         // 昵称
         val name: String,
 

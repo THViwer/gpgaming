@@ -13,6 +13,9 @@ data class Index(
         @ApiModelProperty("logo")
         val logo: String,
 
+        @ApiModelProperty("shortcutLogo")
+        val shortcutLogo: String,
+
         @ApiModelProperty("平台名称")
         val name: String,
 
