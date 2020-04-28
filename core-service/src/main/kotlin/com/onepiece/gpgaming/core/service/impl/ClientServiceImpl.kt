@@ -75,7 +75,7 @@ class ClientServiceImpl(
         check(client.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
 
         // update client
-        val clientUo = ClientUo(id = client.id, ip = loginValue.ip, loginTime = LocalDateTime.now(), name = null, logo = null)
+        val clientUo = ClientUo(id = client.id, ip = loginValue.ip, loginTime = LocalDateTime.now(), name = null, logo = null, shortcutLogo = null)
         this.update(clientUo)
 
         return client.copy(password = "")
