@@ -86,7 +86,7 @@ interface CashOrderApi {
             @RequestParam(value = "username", required = false) username: String?,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
-    ): List<WithdrawValue.WithdrawVo>
+    ): WithdrawValue.WithdrawTotal
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 锁定")
     @ResponseStatus(HttpStatus.NO_CONTENT)

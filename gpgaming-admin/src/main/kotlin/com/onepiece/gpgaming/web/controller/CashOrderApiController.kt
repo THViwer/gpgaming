@@ -289,7 +289,7 @@ class CashOrderApiController(
             @RequestParam(value = "username", required = false) username: String?,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
-    ): List<WithdrawValue.WithdrawVo> {
+    ): WithdrawValue.WithdrawTotal {
 
         val clientId = getClientId()
         val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state, lockWaiterId = null)
@@ -298,13 +298,17 @@ class CashOrderApiController(
             it.id to it
         }.toMap()
 
-        return withdrawService.query(withdrawQuery).map {
+        val data = withdrawService.query(withdrawQuery).map {
             with(it) {
                 WithdrawValue.WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber,
                         memberId = memberId, memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = it.endTime,
                         lockWaiterId = it.lockWaiterId, username = it.username, lockWaiterUsername = waiters[it.lockWaiterId ?: 0]?.username, id = it.id)
             }
         }
+
+        return WithdrawValue.WithdrawTotal(data = data)
+
+
     }
 
     @PutMapping("/withdraw/lock")
