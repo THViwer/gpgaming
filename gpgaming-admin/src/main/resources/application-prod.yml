@@ -19,7 +19,7 @@ spring:
 
 server:
   servlet:
-    context-path: /api/v1/web
+    context-path: /api/v1/admin
   port: 8001
 
 jwt:
