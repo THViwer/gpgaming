@@ -25,12 +25,15 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
             val earnestBalance = rs.getBigDecimal("earnest_balance")
             val processId = rs.getString("process_id")
             val status = rs.getString("status").let { Status.valueOf(it) }
+            val hot = rs.getBoolean("hot")
+            val new = rs.getBoolean("new")
+
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             val tokenJson = rs.getString("token_json")
             PlatformBind(id = id, clientId = clientId, platform = platform, status = status, createdTime = createdTime,
                     username = username, password = password, processId = processId, earnestBalance = earnestBalance,
-                    tokenJson = tokenJson)
+                    tokenJson = tokenJson, hot = hot, new = new)
         }
 
     override fun get(id: Int): PlatformBind {
@@ -57,6 +60,8 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
                 .set("password", platformBindCo.password)
                 .set("token_json", platformBindCo.tokenJson)
                 .set("earnest_balance", platformBindCo.earnestBalance)
+                .set("hot", false)
+                .set("new", false)
                 .set("process_id", UUID.randomUUID().toString())
                 .executeOnlyOne()
     }
@@ -67,6 +72,8 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
                 .set("password", platformBindUo.password)
                 .set("token_json", platformBindUo.tokenJson)
                 .set("earnest_balance", platformBindUo.earnestBalance)
+                .set("hot", platformBindUo.hot)
+                .set("new", platformBindUo.new)
                 .where("id", platformBindUo.id)
                 .executeOnlyOne()
     }

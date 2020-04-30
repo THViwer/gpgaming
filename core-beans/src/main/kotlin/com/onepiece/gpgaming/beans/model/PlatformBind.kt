@@ -45,6 +45,12 @@ data class PlatformBind(
         // 平台
         val platform: Platform,
 
+        // 是否是热门平台
+        val hot: Boolean,
+
+        // 是否是新平台
+        val new: Boolean,
+
         // 用户名
         val username: String,
 

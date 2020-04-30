@@ -188,6 +188,12 @@ data class PlatformVo(
         @ApiModelProperty("平台")
         val platform: Platform,
 
+        @ApiModelProperty("是否热门")
+        val hot: Boolean,
+
+        @ApiModelProperty("是否新平台")
+        val new: Boolean,
+
         @ApiModelProperty("名称")
         val name: String,
 

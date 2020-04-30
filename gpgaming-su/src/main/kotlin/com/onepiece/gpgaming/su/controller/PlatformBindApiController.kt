@@ -38,7 +38,8 @@ class PlatformBindApiController(
     @PutMapping
     override fun update(@RequestBody platformBindUoReq: PlatformBindSuValue.PlatformBindUoReq) {
         val platformBindUo = PlatformBindUo(id = platformBindUoReq.id, username = platformBindUoReq.username, password = platformBindUoReq.password,
-                earnestBalance = platformBindUoReq.earnestBalance, status = platformBindUoReq.status, tokenJson = platformBindUoReq.tokenJson)
+                earnestBalance = platformBindUoReq.earnestBalance, status = platformBindUoReq.status, tokenJson = platformBindUoReq.tokenJson, hot = null,
+                new = null)
         platformBindService.update(platformBindUo)
 
     }

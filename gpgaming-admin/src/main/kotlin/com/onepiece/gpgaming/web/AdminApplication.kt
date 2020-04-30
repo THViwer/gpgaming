@@ -13,7 +13,7 @@ import java.util.*
 @SpringBootApplication
 @ComponentScan("com.onepiece.gpgaming")
 @EnableWebSecurity
-open class WebApplication {
+open class AdminApplication {
 
     @Autowired
     private lateinit var gracefulShutdownTomcat: GracefulShutdownTomcat
@@ -28,7 +28,7 @@ open class WebApplication {
 }
 
 fun main() {
-    runApplication<WebApplication>()
+    runApplication<AdminApplication>()
 
     TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"))
 

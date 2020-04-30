@@ -34,6 +34,12 @@ data class PlatformBindUo(
         // 用户名
         val username: String?,
 
+        // 是否热门
+        val hot: Boolean?,
+
+        // 是否新游戏
+        val new: Boolean?,
+
         // 密码
         val password: String?,
 

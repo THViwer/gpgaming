@@ -21,6 +21,23 @@ object PlatformValueFactory {
 
 }
 
+sealed class PlatformValue {
+
+        data class PlatformBindUo(
+
+                // id
+                val id: Int,
+
+                // 是否热门
+                val hot: Boolean?,
+
+                // 是否最新
+                val new: Boolean?
+        )
+
+
+}
+
 data class PlatformVo(
 
         @ApiModelProperty("id")
@@ -31,6 +48,12 @@ data class PlatformVo(
 
         @JsonIgnore
         val gamePlatform: GamePlatform,
+
+        @ApiModelProperty("是否热门")
+        val hot: Boolean,
+
+        @ApiModelProperty("是否最新")
+        val new: Boolean,
 
         @ApiModelProperty("是否启用")
         val status: Status,
@@ -52,6 +75,7 @@ data class PlatformVo(
                 get() = gamePlatform.name
 
 }
+
 
 data class PlatformUoReq(
 

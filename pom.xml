@@ -13,7 +13,7 @@
 		<!--<module>treasure-web</module>-->
 		<module>utils</module>
 		<module>core-service</module>
-		<module>gpgaming-web</module>
+		<module>gpgaming-admin</module>
 		<module>gpgaming-player</module>
 		<module>core-beans</module>
 		<module>games</module>
