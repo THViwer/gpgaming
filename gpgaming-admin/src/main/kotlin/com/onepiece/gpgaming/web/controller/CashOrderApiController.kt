@@ -19,14 +19,11 @@ import com.onepiece.gpgaming.beans.value.database.PayBindValue
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.beans.value.database.WalletNoteQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
-import com.onepiece.gpgaming.beans.value.internet.web.ArtificialCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
-import com.onepiece.gpgaming.beans.value.internet.web.DepositUoReq
-import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
+import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.WalletNoteValue
-import com.onepiece.gpgaming.beans.value.internet.web.WithdrawUoReq
-import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
+import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
 import com.onepiece.gpgaming.core.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.ArtificialOrderService
 import com.onepiece.gpgaming.core.service.DepositService
@@ -120,11 +117,13 @@ class CashOrderApiController(
 
         when (req.type) {
             CashValue.Type.Deposit -> {
-                val depositReq = DepositUoReq(orderId = req.orderId, state = DepositState.valueOf(req.state.toString()), remarks = req.remark, clientId = current.clientId, waiterId = current.id)
+                val depositReq = DepositValue.DepositUoReq(orderId = req.orderId, state = DepositState.valueOf(req.state.toString()),
+                        remarks = req.remark, clientId = current.clientId, waiterId = current.id)
                 depositService.check(depositReq)
             }
             CashValue.Type.Withdraw -> {
-                val withdrawReq = WithdrawUoReq(orderId = req.orderId, state = WithdrawState.valueOf(req.state.toString()), remarks = req.remark, clientId = current.clientId, waiterId = current.id)
+                val withdrawReq = WithdrawValue.WithdrawUoReq(orderId = req.orderId, state = WithdrawState.valueOf(req.state.toString()),
+                        remarks = req.remark, clientId = current.clientId, waiterId = current.id)
                 withdrawService.check(withdrawReq)
             }
         }
@@ -132,7 +131,7 @@ class CashOrderApiController(
     }
 
     @GetMapping("/deposit")
-    override fun deposit(): List<DepositVo> {
+    override fun deposit(): List<DepositValue.DepositVo> {
 
         val user = current()
 
@@ -158,11 +157,11 @@ class CashOrderApiController(
                 state = DepositState.Process, lockWaiterId = getCurrentWaiterId(), clientBankIdList = clientBankIdList)
         return depositService.query(query).map{
             with(it) {
-                DepositVo(id = it.id, orderId = it.orderId, money = money, memberName = memberName, memberBankCardNumber = memberBankCardNumber,
+                DepositValue.DepositVo(id = it.id, orderId = it.orderId, money = money, memberName = memberName, memberBankCardNumber = memberBankCardNumber,
                         memberBank = memberBank, imgPath = imgPath, createdTime = createdTime, remark = remarks, endTime = it.endTime,
                         clientBankId = clientBankId, clientBankCardNumber = clientBankCardNumber, clientBankName = clientBankName,
                         bankOrderId = null, memberId = memberId, state = it.state, lockWaiterId = it.lockWaiterId, depositTime = depositTime,
-                        channel = it.channel, username = username, clientBank = it.clientBank, lockWaiterUsername = waiters[it.lockWaiterId?: 0]?.username)
+                        channel = it.channel, username = username, clientBank = it.clientBank, lockWaiterUsername = waiters[it.lockWaiterId ?: 0]?.username)
             }
         }
     }
@@ -174,7 +173,7 @@ class CashOrderApiController(
             @RequestParam(value = "username", required = false) username: String?,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
-    ): List<DepositVo> {
+    ): DepositValue.DepositTotal {
         val clientId = getClientId()
 
 
@@ -189,15 +188,18 @@ class CashOrderApiController(
             it.id to it
         }.toMap()
 
-        return depositService.query(depositQuery).map {
+        val data = depositService.query(depositQuery).map {
             with(it) {
-                DepositVo(id = it.id, orderId = it.orderId, money = money, memberName = memberName, memberBankCardNumber = memberBankCardNumber,
+                DepositValue.DepositVo(id = it.id, orderId = it.orderId, money = money, memberName = memberName, memberBankCardNumber = memberBankCardNumber,
                         memberBank = memberBank, imgPath = imgPath, createdTime = createdTime, remark = remarks, endTime = it.endTime,
                         clientBankId = clientBankId, clientBankCardNumber = clientBankCardNumber, clientBankName = clientBankName,
                         bankOrderId = null, memberId = memberId, state = it.state, lockWaiterId = it.lockWaiterId, depositTime = depositTime,
-                        channel = it.channel, username = it.username, clientBank = it.clientBank, lockWaiterUsername = waiters[it.lockWaiterId?: 0]?.username)
+                        channel = it.channel, username = it.username, clientBank = it.clientBank, lockWaiterUsername = waiters[it.lockWaiterId ?: 0]?.username)
             }
         }
+
+        return DepositValue.DepositTotal(data = data)
+
     }
 
     @PutMapping("/deposit/lock")
@@ -212,14 +214,14 @@ class CashOrderApiController(
     }
 
     @PutMapping("/deposit")
-    override fun check(@RequestBody depositUoReq: DepositUoReq) {
+    override fun check(@RequestBody depositUoReq: DepositValue.DepositUoReq) {
         val current = this.current()
         val req = depositUoReq.copy(clientId = current.clientId, waiterId = current.id)
         depositService.check(req)
     }
 
     @PutMapping("/artificial")
-    override fun artificial(@RequestBody artificialCoReq: ArtificialCoReq) {
+    override fun artificial(@RequestBody artificialCoReq: DepositValue.ArtificialCoReq) {
         val current = current()
         val orderId = orderIdBuilder.generatorArtificialOrderId()
 
@@ -261,7 +263,7 @@ class CashOrderApiController(
     }
 
     @GetMapping("/withdraw")
-    override fun withdraw(): List<WithdrawVo> {
+    override fun withdraw(): List<WithdrawValue.WithdrawVo> {
         val clientId = getClientId()
         val withdrawQuery = WithdrawQuery(clientId = clientId, lockWaiterId = this.getCurrentWaiterId(), startTime = null, endTime = null,
                 orderId = null, memberId = null, state = WithdrawState.Process)
@@ -272,9 +274,9 @@ class CashOrderApiController(
 
         return withdrawService.query(withdrawQuery).map {
             with(it) {
-                WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberId = memberId,
-                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime, lockWaiterId = it.lockWaiterId, username = username,
-                        lockWaiterUsername = waiters[it.lockWaiterId?:0]?.username, id = it.id)
+                WithdrawValue.WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber,
+                        memberId = memberId, memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime, lockWaiterId = it.lockWaiterId,
+                        username = username, lockWaiterUsername = waiters[it.lockWaiterId ?: 0]?.username, id = it.id)
             }
         }
 
@@ -287,7 +289,7 @@ class CashOrderApiController(
             @RequestParam(value = "username", required = false) username: String?,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
-    ): List<WithdrawVo> {
+    ): List<WithdrawValue.WithdrawVo> {
 
         val clientId = getClientId()
         val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = startTime, endTime = endTime, orderId = orderId, memberId = null, state = state, lockWaiterId = null)
@@ -298,9 +300,9 @@ class CashOrderApiController(
 
         return withdrawService.query(withdrawQuery).map {
             with(it) {
-                WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberId = memberId,
-                        memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = it.endTime, lockWaiterId = it.lockWaiterId, username = it.username,
-                        lockWaiterUsername = waiters[it.lockWaiterId?:0]?.username, id = it.id)
+                WithdrawValue.WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber,
+                        memberId = memberId, memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = it.endTime,
+                        lockWaiterId = it.lockWaiterId, username = it.username, lockWaiterUsername = waiters[it.lockWaiterId ?: 0]?.username, id = it.id)
             }
         }
     }
@@ -317,7 +319,7 @@ class CashOrderApiController(
     }
 
     @PutMapping("/withdraw")
-    override fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawUoReq) {
+    override fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawValue.WithdrawUoReq) {
         val current = this.current()
         val req = withdrawUoReq.copy(clientId = current.clientId, waiterId = current.id)
         withdrawService.check(req)

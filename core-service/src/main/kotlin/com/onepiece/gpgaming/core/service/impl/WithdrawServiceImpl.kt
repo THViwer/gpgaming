@@ -12,7 +12,7 @@ import com.onepiece.gpgaming.beans.value.database.WithdrawCo
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawReportVo
 import com.onepiece.gpgaming.beans.value.database.WithdrawUo
-import com.onepiece.gpgaming.beans.value.internet.web.WithdrawUoReq
+import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
 import com.onepiece.gpgaming.core.dao.WithdrawDao
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
@@ -60,7 +60,7 @@ class WithdrawServiceImpl(
         check(state) { OnePieceExceptionCode.ORDER_EXPIRED }
     }
 
-    override fun check(withdrawUoReq: WithdrawUoReq) {
+    override fun check(withdrawUoReq: WithdrawValue.WithdrawUoReq) {
 
         val order = withdrawDao.findWithdraw(withdrawUoReq.clientId, withdrawUoReq.orderId)
         check( order.state == WithdrawState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }

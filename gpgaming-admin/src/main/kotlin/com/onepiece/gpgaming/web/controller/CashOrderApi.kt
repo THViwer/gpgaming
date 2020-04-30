@@ -10,15 +10,11 @@ import com.onepiece.gpgaming.beans.model.ArtificialOrder
 import com.onepiece.gpgaming.beans.model.PayBind
 import com.onepiece.gpgaming.beans.model.PayOrder
 import com.onepiece.gpgaming.beans.value.database.PayBindValue
-import com.onepiece.gpgaming.beans.value.internet.web.ArtificialCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
-import com.onepiece.gpgaming.beans.value.internet.web.DepositUoReq
-import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
-import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
+import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.WalletNoteValue
-import com.onepiece.gpgaming.beans.value.internet.web.WithdrawUoReq
-import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
+import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
@@ -49,7 +45,7 @@ interface CashOrderApi {
 
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 审核列表")
-    fun deposit(): List<DepositVo>
+    fun deposit(): List<DepositValue.DepositVo>
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 历史")
     fun deposit(
@@ -58,7 +54,7 @@ interface CashOrderApi {
             @RequestParam(value = "username", required = false) username: String?,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
-    ): List<DepositVo>
+    ): DepositValue.DepositTotal
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 锁定")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -66,11 +62,11 @@ interface CashOrderApi {
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 审核")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun check(@RequestBody depositUoReq: DepositUoReq)
+    fun check(@RequestBody depositUoReq: DepositValue.DepositUoReq)
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 人工提存")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun artificial(@RequestBody artificialCoReq: ArtificialCoReq)
+    fun artificial(@RequestBody artificialCoReq: DepositValue.ArtificialCoReq)
 
     @ApiOperation(tags = ["cash"], value = "充值 -> 人工提存列表")
     fun artificialList(
@@ -81,7 +77,7 @@ interface CashOrderApi {
     ): Page<ArtificialOrder>
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 审核列表")
-    fun withdraw(): List<WithdrawVo>
+    fun withdraw(): List<WithdrawValue.WithdrawVo>
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 历史")
     fun withdraw(
@@ -90,7 +86,7 @@ interface CashOrderApi {
             @RequestParam(value = "username", required = false) username: String?,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
-    ): List<WithdrawVo>
+    ): List<WithdrawValue.WithdrawVo>
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 锁定")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -98,7 +94,7 @@ interface CashOrderApi {
 
     @ApiOperation(tags = ["cash"], value = "取款 -> 审核")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawUoReq)
+    fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawValue.WithdrawUoReq)
 
     @ApiOperation(tags = ["cash"], value = "转账 -> 订单查询")
     fun query(

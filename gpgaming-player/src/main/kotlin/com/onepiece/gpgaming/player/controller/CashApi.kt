@@ -12,10 +12,10 @@ import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.value.internet.web.BankVo
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientBankVo
-import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
+import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
 import com.onepiece.gpgaming.beans.value.internet.web.SelectPayVo
 import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
-import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
+import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
 import com.onepiece.gpgaming.player.controller.value.BalanceVo
 import com.onepiece.gpgaming.player.controller.value.CashDepositResp
 import com.onepiece.gpgaming.player.controller.value.CashWithdrawResp
@@ -103,7 +103,7 @@ interface CashApi {
             @RequestParam(value = "state", required = false) state: DepositState?,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
-    ): Page<DepositVo>
+    ): Page<DepositValue.DepositVo>
 
     @ApiOperation(tags = ["cash"], value = "上传图片")
     fun uploadProof(@RequestParam("file") file: MultipartFile): Map<String, String>
@@ -117,7 +117,7 @@ interface CashApi {
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
-    ): Page<WithdrawVo>
+    ): Page<WithdrawValue.WithdrawVo>
 
     @ApiOperation(tags = ["cash"], value = "取款")
     fun withdraw(@RequestBody withdrawCoReq: WithdrawCoReq): CashWithdrawResp

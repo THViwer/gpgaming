@@ -12,7 +12,7 @@ import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.DepositReportVo
 import com.onepiece.gpgaming.beans.value.database.DepositUo
 import com.onepiece.gpgaming.beans.value.database.WalletUo
-import com.onepiece.gpgaming.beans.value.internet.web.DepositUoReq
+import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
 import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.WalletService
@@ -52,7 +52,7 @@ class DepositServiceImpl(
         check(state) { OnePieceExceptionCode.ORDER_EXPIRED }
     }
 
-    override fun check(depositUoReq: DepositUoReq) {
+    override fun check(depositUoReq: DepositValue.DepositUoReq) {
         val order = depositDao.findDeposit(depositUoReq.clientId, depositUoReq.orderId)
         check(order.state ==  DepositState.Close || order.state == DepositState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
 

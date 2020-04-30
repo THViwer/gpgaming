@@ -33,11 +33,11 @@ import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
 import com.onepiece.gpgaming.beans.value.internet.web.BankVo
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientBankVo
-import com.onepiece.gpgaming.beans.value.internet.web.DepositVo
+import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.beans.value.internet.web.SelectPayVo
 import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
-import com.onepiece.gpgaming.beans.value.internet.web.WithdrawVo
+import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
 import com.onepiece.gpgaming.core.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ClientBankService
@@ -71,7 +71,6 @@ import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
 import com.onepiece.gpgaming.player.controller.value.WithdrawCoReq
 import com.onepiece.gpgaming.player.jwt.JwtUser
 import com.onepiece.gpgaming.utils.AwsS3Util
-import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.transaction.annotation.Transactional
@@ -90,8 +89,6 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.stream.Collectors
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.streams.toList
 
 @Suppress("CAST_NEVER_SUCCEEDS")
@@ -354,7 +351,7 @@ open class CashApiController(
             @RequestParam(value = "state", required = false) state: DepositState?,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
-    ): Page<DepositVo> {
+    ): Page<DepositValue.DepositVo> {
 
         val (clientId, memberId) = this.currentClientIdAndMemberId()
 
@@ -366,7 +363,7 @@ open class CashApiController(
 
         val data = page.data.map {
             with(it) {
-                DepositVo(id = it.id, orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
+                DepositValue.DepositVo(id = it.id, orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
                         imgPath = imgPath, memberId = memberId, bankOrderId = null, clientBankCardNumber = clientBankCardNumber,
                         clientBankName = clientBankName, clientBankId = clientBankId, lockWaiterId = it.lockWaiterId, depositTime = it.depositTime,
@@ -402,7 +399,7 @@ open class CashApiController(
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
-    ): Page<WithdrawVo> {
+    ): Page<WithdrawValue.WithdrawVo> {
 
         val (clientId, memberId) = this.currentClientIdAndMemberId()
 
@@ -414,7 +411,7 @@ open class CashApiController(
 
         val data = page.data.map {
             with(it) {
-                WithdrawVo(id = it.id, orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
+                WithdrawValue.WithdrawVo(id = it.id, orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
                         memberId = it.memberId, memberBankId = it.memberBankId, lockWaiterId = it.lockWaiterId, username = username,
                         lockWaiterUsername = null)

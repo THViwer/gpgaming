@@ -2,12 +2,12 @@ package com.onepiece.gpgaming.core.service
 
 import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.model.Deposit
+import com.onepiece.gpgaming.beans.value.database.ClientDepositReportVo
 import com.onepiece.gpgaming.beans.value.database.DepositCo
 import com.onepiece.gpgaming.beans.value.database.DepositLockUo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
-import com.onepiece.gpgaming.beans.value.database.ClientDepositReportVo
 import com.onepiece.gpgaming.beans.value.database.DepositReportVo
-import com.onepiece.gpgaming.beans.value.internet.web.DepositUoReq
+import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
 import java.time.LocalDate
 
 interface DepositService {
@@ -22,7 +22,7 @@ interface DepositService {
 
     fun lock(depositLockUo: DepositLockUo)
 
-    fun check(depositUoReq: DepositUoReq)
+    fun check(depositUoReq: DepositValue.DepositUoReq)
 
     fun report(startDate: LocalDate, endDate: LocalDate): List<DepositReportVo>
 
