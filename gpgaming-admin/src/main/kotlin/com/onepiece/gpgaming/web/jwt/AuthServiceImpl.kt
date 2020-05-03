@@ -42,7 +42,7 @@ class AuthServiceImpl(
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
-        val authUsername = "$clientId:$id:$username:$role"
+        val authUsername = "$bossId:$clientId:$id:$username:$role"
 
         val upToken = UsernamePasswordAuthenticationToken(authUsername, username)
         val authentication = authenticationManager.authenticate(upToken)
