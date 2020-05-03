@@ -45,11 +45,18 @@ interface ReportApi {
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
     ): ReportValue.CPTotalReport
 
+
     @ApiOperation(tags = ["report"], value = "厅主报表")
     fun clientDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
     ): ReportValue.CTotalReport
+
+    @ApiOperation(tags = ["user"], value = "厅主平台报表 -> 导出excel")
+    fun clientDailyExcel(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
+    )
 
     @ApiOperation(tags = ["report"], value = "优惠活动日报表")
     fun promotionDaily(

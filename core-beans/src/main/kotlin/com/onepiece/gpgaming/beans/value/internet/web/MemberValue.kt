@@ -1,13 +1,11 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
-import com.alibaba.excel.annotation.ExcelIgnore
 import com.alibaba.excel.annotation.ExcelProperty
 import com.alibaba.excel.converters.Converter
 import com.alibaba.excel.enums.CellDataTypeEnum
 import com.alibaba.excel.metadata.CellData
 import com.alibaba.excel.metadata.GlobalConfiguration
 import com.alibaba.excel.metadata.property.ExcelContentProperty
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Deposit
@@ -18,7 +16,6 @@ import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 import java.time.Duration
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.*
 
 

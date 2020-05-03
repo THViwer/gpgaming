@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.alibaba.excel.EasyExcel
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
@@ -10,8 +11,10 @@ import com.onepiece.gpgaming.beans.value.database.ClientReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.beans.value.database.PromotionDailyReportValue
+import com.onepiece.gpgaming.beans.value.internet.web.ClientReportExcelVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPlatformReportWebVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberReportWebVo
+import com.onepiece.gpgaming.beans.value.internet.web.MemberValue
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.ReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
@@ -34,6 +37,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -222,6 +227,33 @@ class ReportApiController(
 
         val data = clientDailyReportService.query(query)//.plus(todayData).sortedByDescending { it.day }
         return ReportValue.CTotalReport(data)
+    }
+
+
+    @GetMapping("/client/excel")
+    override fun clientDailyExcel(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
+    ) {
+
+        val response = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).response!!
+        val name = "client_report_${startDate.toString().replace("-", "")}_${endDate.toString().replace("_", "")}"
+
+        response.contentType = "application/vnd.ms-excel";
+        response.characterEncoding = "utf-8";
+        response.setHeader("Content-disposition", "attachment;filename=$name.xlsx")
+
+        val data = this.clientDaily(startDate = startDate, endDate = endDate).data.map {
+            with(it) {
+                ClientReportExcelVo(day = day.toString(),totalBet = totalBet, totalMWin = totalMWin, transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney,
+                depositCount = depositCount, depositSequence = depositSequence, thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, thirdPaySequence = thirdPaySequence,
+                promotionAmount = promotionAmount, withdrawMoney = withdrawMoney, withdrawCount = withdrawCount, artificialMoney = artificialMoney, artificialCount = artificialCount,
+                backwaterMoney = backwaterMoney, newMemberCount = newMemberCount)
+            }
+        }
+
+        EasyExcel.write(response.outputStream, ClientReportExcelVo::class.java).autoCloseStream(false).sheet("member").doWrite(data)
+
     }
 
     @GetMapping("/promotion")
