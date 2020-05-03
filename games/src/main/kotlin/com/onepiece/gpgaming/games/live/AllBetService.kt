@@ -32,7 +32,8 @@ class AllBetService : PlatformService() {
         val md5Data = Base64.encodeBase64String(DigestUtils.md5("$desData${allBetClientToken.md5Key}"))
         val param = "propertyId=${allBetClientToken.propertyId}&data=${URLEncoder.encode(desData, "UTF-8")}&sign=${URLEncoder.encode(md5Data, "UTF-8")}&${urlParam}"
 
-        val result = okHttpUtil.doGet(platform = Platform.AllBet, url = "${allBetClientToken.apiPath}${method}?$param", clz = AllBetValue.Result::class.java)
+        val result = okHttpUtil.doGet(platform = Platform.AllBet, url = "http://193.200.134.198:1001${method}?$param", clz = AllBetValue.Result::class.java)
+//        val result = okHttpUtil.doGet(platform = Platform.AllBet, url = "${allBetClientToken.apiPath}${method}?$param", clz = AllBetValue.Result::class.java)
         check(result.errorCode == "OK") {
             log.error("allBet network error: ${result.errorCode}, ${result.message}")
             OnePieceExceptionCode.PLATFORM_DATA_FAIL

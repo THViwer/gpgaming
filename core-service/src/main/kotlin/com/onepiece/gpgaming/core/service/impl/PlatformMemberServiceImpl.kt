@@ -27,6 +27,7 @@ class PlatformMemberServiceImpl(
 
     private val log = LoggerFactory.getLogger(PlatformMemberServiceImpl::class.java)
 
+    @Transactional(readOnly = true, propagation = Propagation.NOT_SUPPORTED)
     override fun get(id: Int): PlatformMember {
         log.info("platformMember, id = $id")
 
@@ -40,7 +41,8 @@ class PlatformMemberServiceImpl(
     }
 
     //    @Transactional(rollbackFor = [Exception::class], propagation = Propagation.REQUIRES_NEW)
-    @Transactional(rollbackFor = [NoRollbackException::class], propagation = Propagation.REQUIRES_NEW)
+//    @Transactional(rollbackFor = [NoRollbackException::class], propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     override fun create(clientId: Int, memberId: Int, platform: Platform, platformUsername: String, platformPassword: String): PlatformMemberVo {
 
         log.info("开始创建db用户：$memberId, 平台：${platform}")
@@ -78,6 +80,7 @@ class PlatformMemberServiceImpl(
         redisService.delete(OnePieceRedisKeyConstant.myPlatformMembers(platformMember.memberId))
     }
 
+    @Transactional(readOnly = true, propagation = Propagation.NOT_SUPPORTED)
     override fun myPlatforms(memberId: Int): List<PlatformMemberVo> {
 
         val redisKey = OnePieceRedisKeyConstant.myPlatformMembers(memberId)
@@ -99,6 +102,7 @@ class PlatformMemberServiceImpl(
         return this.myPlatforms(memberId = memberId).find { it.platform == platform }
     }
 
+    @Transactional(readOnly = true, propagation = Propagation.NOT_SUPPORTED)
     override fun findPlatformMember(memberId: Int): List<PlatformMember> {
         return platformMemberDao.findPlatformMember(memberId)
     }

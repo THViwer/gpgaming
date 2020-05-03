@@ -4,7 +4,6 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
-import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
@@ -12,12 +11,13 @@ import com.onepiece.gpgaming.core.service.WebSiteService
 import com.onepiece.gpgaming.games.GameApi
 import com.onepiece.gpgaming.games.value.ClientAuthVo
 import com.onepiece.gpgaming.player.jwt.JwtUser
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
-import java.util.stream.Collectors
 import javax.servlet.http.HttpServletRequest
 
 
@@ -113,12 +113,21 @@ abstract class BasicController {
         if (platformMember == null) {
             log.info("用户名：${member.username}, 开始注册平台用户：$platform, code = $code" + "")
 
-            gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
+
+//            gameApi(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
+            gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.username)
 
             return this.getPlatformMember(platform, member, code + 1)
         }
 
         return platformMember
+    }
+
+    fun startRegister(clientId: Int, memberId: Int, platform: Platform, name: String) = runBlocking {
+        val x = launch {
+            gameApi.register(clientId = clientId, memberId = memberId, platform = platform, name = name)
+        }
+        x.join()
     }
 
 

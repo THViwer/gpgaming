@@ -10,7 +10,6 @@ import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.MegaClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.SlotGame
-import com.onepiece.gpgaming.core.NoRollbackException
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.core.service.GamePlatformService
@@ -42,14 +41,10 @@ import com.onepiece.gpgaming.games.sport.BcsService
 import com.onepiece.gpgaming.games.sport.CMDService
 import com.onepiece.gpgaming.games.sport.LbcService
 import com.onepiece.gpgaming.utils.RedisService
-import okhttp3.internal.lockAndWaitNanos
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.stream.Collector
-import java.util.stream.Collectors
 
 @Component
 class GameApi(
@@ -173,9 +168,7 @@ class GameApi(
             val platformUsername = getPlatformApi(platform).register(registerReq)
 
             try {
-                listOf(1).parallelStream().map {
-                    platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
-                }.collect(Collectors.toList())
+                platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
             } catch (e: Exception) {
 
                 if (platform == Platform.Kiss918 || platform == Platform.Pussy888) {
