@@ -21,25 +21,25 @@ sealed class WithdrawValue {
                 val totalSuccessMoney: BigDecimal
                         @ApiModelProperty("总成功金额")
                         get() {
-                                return data.filter { it.state == CashValue.State.Successful }.sumByDouble { it.money.toDouble() }.toBigDecimal().setScale(2, 2)
+                                return data.filter { it.state == WithdrawState.Successful }.sumByDouble { it.money.toDouble() }.toBigDecimal().setScale(2, 2)
                         }
 
                 val totalSuccessCount: Int
                         @ApiModelProperty("总成功次数")
                         get() {
-                                return data.filter { it.state == CashValue.State.Successful }.count()
+                                return data.filter { it.state == WithdrawState.Successful }.count()
                         }
 
                 val totalFailMoney: BigDecimal
                         @ApiModelProperty("总失败金额")
                         get() {
-                                return data.filter { it.state == CashValue.State.Fail }.sumByDouble { it.money.toDouble() }.toBigDecimal().setScale(2, 2)
+                                return data.filter { it.state == WithdrawState.Fail }.sumByDouble { it.money.toDouble() }.toBigDecimal().setScale(2, 2)
                         }
 
                 val totalFailCount: Int
                         @ApiModelProperty("总失败次数")
                         get() {
-                                return data.filter { it.state == CashValue.State.Fail }.count()
+                                return data.filter { it.state == WithdrawState.Fail }.count()
                         }
 
 
