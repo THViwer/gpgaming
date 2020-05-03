@@ -17,7 +17,7 @@ class JwtUserDetailsServiceImpl(
 
     override fun loadUserByUsername(username: String): UserDetails {
 
-        val (clientId, currentUserId, mUsername, role) = username.split(":")
+        val (bossId, clientId, currentUserId, mUsername, role) = username.split(":")
 //        val user = userDao.getByUsername(username)!!
 
         val permissions = if (role == Role.Admin.name) {
@@ -27,7 +27,8 @@ class JwtUserDetailsServiceImpl(
         }
 
         return JwtUser(id = currentUserId.toInt(), musername = mUsername, mpassword = passwordEncoder.encode(mUsername),
-                lastPasswordResetDate = Date(), clientId = clientId.toInt(), role = Role.valueOf(role), mauthorities = permissions
+                lastPasswordResetDate = Date(), clientId = clientId.toInt(), role = Role.valueOf(role), mauthorities = permissions,
+                bossId = bossId.toInt()
         )
     }
 }

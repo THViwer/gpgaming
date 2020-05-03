@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.dao.impl
 
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Client
 import com.onepiece.gpgaming.beans.value.database.ClientCo
@@ -7,9 +8,7 @@ import com.onepiece.gpgaming.beans.value.database.ClientUo
 import com.onepiece.gpgaming.core.dao.ClientDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
-import java.math.BigDecimal
 import java.sql.ResultSet
-import java.util.*
 
 @Repository
 class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
@@ -17,6 +16,8 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
     override val mapper: (rs: ResultSet) -> Client
         get() = { rs ->
             val id = rs.getInt("id")
+            val bossId = rs.getInt("boss_id")
+            val country = rs.getString("country").let { Country.valueOf(it) }
             val username = rs.getString("username")
             val password = rs.getString("password")
             val logo = rs.getString("logo")
@@ -28,7 +29,8 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
             val whitelists = rs.getString("whitelists")?.let { it.split(",") }?: emptyList()
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
             Client(id = id, username = username, password = password, createdTime = createdTime, loginTime = loginTime,
-                    status = status, loginIp = loginIp, name = name, logo = logo, whitelists = whitelists, shortcutLogo = shortcutLogo)
+                    status = status, loginIp = loginIp, name = name, logo = logo, whitelists = whitelists, shortcutLogo = shortcutLogo,
+                    bossId = bossId, country = country)
         }
 
     override fun findByUsername(username: String): Client? {
@@ -38,6 +40,8 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
 
     override fun create(clientCo: ClientCo): Int {
         return insert()
+                .set("boss_id", clientCo.bossId)
+                .set("country", clientCo.country)
                 .set("logo", clientCo.logo)
                 .set("shortcut_logo", clientCo.logo)
                 .set("username", clientCo.username)

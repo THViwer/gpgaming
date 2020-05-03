@@ -1,5 +1,7 @@
 package com.onepiece.gpgaming.su.controller
 
+import com.onepiece.gpgaming.beans.enums.Country
+import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.WebSite
 import com.onepiece.gpgaming.beans.value.database.ClientCo
 import com.onepiece.gpgaming.beans.value.database.ClientUo
@@ -27,8 +29,22 @@ open class ClientApiController(
 
     @PostMapping
     override fun create(@RequestBody clientCoReq: ClientSuValue.ClientCoReq) {
+
+        if (clientCoReq.bossId == -1) {
+            check(clientCoReq.country == Country.Default)
+        } else {
+            check(clientCoReq.country != Country.Default)
+
+            val clients = clientService.all()
+            val has = clients.filter { it.bossId == clientCoReq.bossId }.firstOrNull { it.country == clientCoReq.country }
+
+            check(has == null) { OnePieceExceptionCode.DATA_EXIST }
+        }
+
+
         val clientCo = ClientCo(username = clientCoReq.username, password = clientCoReq.password, name = clientCoReq.name,
-                logo = clientCoReq.logo, whitelists = clientCoReq.whitelists, shortcutLogo = clientCoReq.shortcutLogo)
+                logo = clientCoReq.logo, whitelists = clientCoReq.whitelists, shortcutLogo = clientCoReq.shortcutLogo,
+                bossId = clientCoReq.bossId, country = clientCoReq.country)
         clientService.create(clientCo)
     }
 

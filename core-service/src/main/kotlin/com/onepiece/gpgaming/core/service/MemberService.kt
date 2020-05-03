@@ -15,7 +15,11 @@ interface MemberService {
 
     fun findByUsername(clientId: Int, username: String?): Member?
 
+    fun findByBossIdAndUsername(bossId: Int, username: String?): Member?
+
     fun findByPhone(clientId: Int, phone: String?): Member?
+
+    fun findByBossIdAndPhone(bossId: Int, phone: String?): Member?
 
     fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member>
 

@@ -1,11 +1,9 @@
 package com.onepiece.gpgaming.core.dao
 
-import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
 import com.onepiece.gpgaming.beans.model.Member
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberUo
-import com.onepiece.gpgaming.beans.value.database.MemberValue
 import com.onepiece.gpgaming.core.dao.basic.BasicDao
 import java.time.LocalDate
 
@@ -17,7 +15,11 @@ interface MemberDao: BasicDao<Member> {
 
     fun getByUsername(clientId: Int, username: String): Member?
 
+    fun getByBossIdAndUsername(bossId: Int, username: String): Member?
+
     fun getByPhone(clientId: Int, phone: String): Member?
+
+    fun getByBossIdAndPhone(bossId: Int, phone: String): Member?
 
     fun total(query: MemberQuery): Int
 

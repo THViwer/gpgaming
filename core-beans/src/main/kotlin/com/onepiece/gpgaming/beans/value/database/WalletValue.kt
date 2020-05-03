@@ -7,7 +7,7 @@ import java.math.BigDecimal
 data class WalletQuery(
 
         // 厅主Id
-        val clientId: Int,
+        val clientId: Int? = null,
 
         // 用户Id
         val memberId: Int? = null,

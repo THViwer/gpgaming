@@ -9,6 +9,8 @@ import java.util.*
 data class JwtUser(
         val id: Int,
 
+        val bossId: Int,
+
         val clientId: Int,
 
         val role: Role,

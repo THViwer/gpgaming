@@ -8,6 +8,9 @@ data class WebSite(
         // id
         val id: Int,
 
+        // bossId
+        val bossId: Int,
+
         // 厅主
         val clientId: Int,
 

@@ -13,10 +13,10 @@ import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Recommended
 import com.onepiece.gpgaming.beans.value.database.BannerCo
 import com.onepiece.gpgaming.beans.value.database.ClientCo
+import com.onepiece.gpgaming.beans.value.database.ClientLoginValue
 import com.onepiece.gpgaming.beans.value.database.ClientUo
 import com.onepiece.gpgaming.beans.value.database.I18nContentCo
 import com.onepiece.gpgaming.beans.value.database.LevelCo
-import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.RecommendedValue
 import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
@@ -68,7 +68,7 @@ class ClientServiceImpl(
         return clientDao.all()
     }
 
-    override fun login(loginValue: LoginValue): Client {
+    override fun login(loginValue: ClientLoginValue): Client {
         val client = clientDao.findByUsername(loginValue.username)
         checkNotNull(client) { OnePieceExceptionCode.LOGIN_FAIL }
         check(bCryptPasswordEncoder.matches(loginValue.password, client.password))

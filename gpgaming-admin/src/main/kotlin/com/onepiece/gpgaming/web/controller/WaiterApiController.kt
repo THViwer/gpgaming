@@ -56,10 +56,12 @@ class WaiterApiController(
 
     @PostMapping
     override fun create(@RequestBody waiterCoReq: WaiterCoReq) {
+        val bossId = getBossId()
         val clientId = getClientId()
 
         val waiterCo = WaiterCo(clientId = clientId, username = waiterCoReq.username, name = waiterCoReq.name,
-                password = waiterCoReq.password, clientBankData = waiterCoReq.clientBanks?.joinToString(","))
+                password = waiterCoReq.password, clientBankData = waiterCoReq.clientBanks?.joinToString(","),
+                bossId = bossId)
         waiterService.create(waiterCo)
     }
 

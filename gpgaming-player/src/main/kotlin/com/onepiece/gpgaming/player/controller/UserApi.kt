@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.player.controller
 
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.player.controller.value.ChangePwdReq
 import com.onepiece.gpgaming.player.controller.value.CheckUsernameResp
 import com.onepiece.gpgaming.player.controller.value.LoginReq
@@ -8,6 +9,7 @@ import com.onepiece.gpgaming.player.controller.value.PlatformMemberUo
 import com.onepiece.gpgaming.player.controller.value.PlatformMemberVo
 import com.onepiece.gpgaming.player.controller.value.RegisterReq
 import io.swagger.annotations.Api
+import io.swagger.annotations.ApiModelProperty
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
@@ -27,6 +29,9 @@ interface UserApi {
 
     @ApiOperation(tags = ["user"], value = "注册")
     fun register(@RequestBody registerReq: RegisterReq): LoginResp
+
+    @ApiOperation(tags = ["user"], value = "可选国家列表")
+    fun countries(): List<Country>
 
     @ApiOperation(tags = ["user"], value = "检查用户名是否存在")
     fun checkUsername(@PathVariable("username") username: String): CheckUsernameResp

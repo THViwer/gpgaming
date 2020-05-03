@@ -46,4 +46,8 @@ class WebSiteServiceImpl(
     override fun match(url: String): Int {
         return this.all().first { url.contains(it.domain) }.clientId
     }
+
+    override fun matchReturnBossId(url: String): Int {
+        return this.all().first { url.contains(it.domain) }.bossId
+    }
 }

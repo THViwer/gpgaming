@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.player.controller.value
 
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
 import io.swagger.annotations.ApiModelProperty
@@ -23,7 +24,10 @@ data class LoginResp(
         val token: String,
 
         @ApiModelProperty("是否开启自动转账")
-        val autoTransfer: Boolean
+        val autoTransfer: Boolean,
+
+        @ApiModelProperty("域名")
+        val domain: String
 )
 
 data class CheckUsernameResp(
@@ -40,6 +44,9 @@ data class LoginReq(
         val password: String
 )
 data class RegisterReq(
+
+        @ApiModelProperty("国家")
+        val country: Country,
 
         @ApiModelProperty("用户名")
         val username: String,

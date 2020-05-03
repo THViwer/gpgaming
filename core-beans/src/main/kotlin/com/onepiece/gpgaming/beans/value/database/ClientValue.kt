@@ -1,9 +1,16 @@
 package com.onepiece.gpgaming.beans.value.database
 
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
 
 data class ClientCo(
+
+        // bossId
+        val bossId: Int,
+
+        // 国家
+        val country: Country,
 
         // 昵称
         val name: String,

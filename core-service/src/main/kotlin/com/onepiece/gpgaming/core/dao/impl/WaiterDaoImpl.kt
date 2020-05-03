@@ -15,6 +15,7 @@ class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
     override val mapper: (rs: ResultSet) -> Waiter
         get() = { rs ->
             val id = rs.getInt("id")
+            val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val username = rs.getString("username")
             val password = rs.getString("password")
@@ -26,7 +27,8 @@ class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
 
             Waiter(id = id, clientId = clientId, username = username, password = password, name = name, status = status,
-                    createdTime = createdTime, loginIp = loginIp, loginTime = loginTime, clientBankData = clientBankData)
+                    createdTime = createdTime, loginIp = loginIp, loginTime = loginTime, clientBankData = clientBankData,
+                    bossId = bossId)
         }
 
     override fun findByUsername(username: String): Waiter? {
@@ -35,6 +37,7 @@ class WaiterDaoImpl : BasicDaoImpl<Waiter>("waiter"), WaiterDao {
 
     override fun create(waiterCo: WaiterCo): Int {
         return insert()
+                .set("boss_id", waiterCo.bossId)
                 .set("client_id", waiterCo.clientId)
                 .set("username", waiterCo.username)
                 .set("password", waiterCo.password)

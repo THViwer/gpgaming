@@ -14,7 +14,6 @@ import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.utils.RedisService
-import org.springframework.scheduling.annotation.Async
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -46,10 +45,20 @@ class MemberServiceImpl(
         return memberDao.getByUsername(clientId, username)?.copy(password = "", safetyPassword = "")
     }
 
+    override fun findByBossIdAndUsername(bossId: Int, username: String?): Member? {
+        if (username.isNullOrBlank()) return null
+        return memberDao.getByUsername(bossId, username)?.copy(password = "", safetyPassword = "")    }
+
     override fun findByPhone(clientId: Int, phone: String?): Member? {
         if (phone.isNullOrBlank()) return null
 
         return memberDao.getByPhone(clientId, phone)?.copy(password = "", safetyPassword = "")
+    }
+
+    override fun findByBossIdAndPhone(bossId: Int, phone: String?): Member? {
+        if (phone.isNullOrBlank()) return null
+
+        return memberDao.getByPhone(bossId, phone)?.copy(password = "", safetyPassword = "")
     }
 
     override fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member> {
@@ -63,7 +72,7 @@ class MemberServiceImpl(
     override fun login(loginValue: LoginValue): Member {
 
         // check username and password
-        val member  = memberDao.getByUsername(loginValue.clientId, loginValue.username)
+        val member  = memberDao.getByBossIdAndUsername(loginValue.bossId, loginValue.username)
         checkNotNull(member) { OnePieceExceptionCode.LOGIN_FAIL}
         check(bCryptPasswordEncoder.matches(loginValue.password, member.password)) { OnePieceExceptionCode.LOGIN_FAIL }
         check(member.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
