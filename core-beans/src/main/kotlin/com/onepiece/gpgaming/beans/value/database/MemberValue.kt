@@ -20,6 +20,7 @@ sealed class MemberValue {
 
 
 data class MemberQuery(
+
         val clientId: Int?,
 
         val username: String?,
@@ -42,6 +43,9 @@ data class MemberQuery(
 )
 
 data class MemberCo(
+
+        // bossId
+        val bossId: Int,
 
         // 厅主Id
         val clientId: Int,

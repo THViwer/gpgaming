@@ -4,6 +4,9 @@ import com.onepiece.gpgaming.beans.enums.Status
 
 data class WebSiteCo(
 
+        // bossId
+        val bossId: Int,
+
         // 厅主
         val clientId: Int,
 

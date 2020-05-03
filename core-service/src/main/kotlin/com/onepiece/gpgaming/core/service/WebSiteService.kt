@@ -14,4 +14,5 @@ interface WebSiteService {
 
     fun match(url: String): Int
 
+    fun matchReturnBossId(url: String): Int
 }

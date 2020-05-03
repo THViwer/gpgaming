@@ -81,6 +81,12 @@ abstract class BasicController {
         return webSiteService.match(url)
     }
 
+    fun getBossIdByDomain(): Int {
+        val request = this.getRequest()
+        val url = request.requestURL.toString()
+        return webSiteService.matchReturnBossId(url)
+    }
+
     fun current(): JwtUser {
         try {
             return SecurityContextHolder.getContext().authentication.principal as JwtUser

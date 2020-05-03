@@ -3,7 +3,7 @@ package com.onepiece.gpgaming.core.service.impl
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Waiter
-import com.onepiece.gpgaming.beans.value.database.LoginValue
+import com.onepiece.gpgaming.beans.value.database.ClientLoginValue
 import com.onepiece.gpgaming.beans.value.database.PermissionUo
 import com.onepiece.gpgaming.beans.value.database.WaiterCo
 import com.onepiece.gpgaming.beans.value.database.WaiterUo
@@ -29,7 +29,7 @@ class WaiterServiceImpl(
         return waiterDao.all(clientId)
     }
 
-    override fun login(loginValue: LoginValue): Waiter {
+    override fun login(loginValue: ClientLoginValue): Waiter {
 
         val waiter = waiterDao.findByUsername(loginValue.username)
         checkNotNull(waiter) { OnePieceExceptionCode.LOGIN_FAIL }

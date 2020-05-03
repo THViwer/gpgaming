@@ -7,7 +7,12 @@ import java.time.LocalDateTime
  * 会员信息表
  */
 data class Member(
+
+        // id
         val id: Int,
+
+        // bossId
+        val bossId: Int,
 
         // 厅主Id
         val clientId: Int,

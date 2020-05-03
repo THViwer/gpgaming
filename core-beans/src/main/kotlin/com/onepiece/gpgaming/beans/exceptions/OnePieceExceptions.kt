@@ -17,6 +17,7 @@ object OnePieceExceptionCode {
     const val PROMOTION_JSON_DATA_FAIL = "1005" //优惠活动json格式错误
     const val ILLEGAL_OPERATION = "1006" // 非法操作
     const val IP_ILLEGAL = "1008" // ip非法
+    const val DATA_EXIST = "1009" // 数据已存在
 
     // 2000 verification error
 

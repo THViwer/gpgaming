@@ -4,6 +4,9 @@ import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
 
 data class WaiterCo(
+
+        val bossId: Int,
+
         // 厅主Id
         val clientId: Int,
 

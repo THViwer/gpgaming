@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.su.controller.value
 
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
@@ -38,6 +39,12 @@ sealed class ClientSuValue {
     )
 
     data class ClientCoReq(
+
+            @ApiModelProperty("bossId")
+            val bossId: Int,
+
+            @ApiModelProperty("国家")
+            val country: Country,
 
             @ApiModelProperty("用户名")
             val username: String,

@@ -17,6 +17,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
     override val mapper: (rs: ResultSet) -> Member
         get() = { rs ->
             val id = rs.getInt("id")
+            val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val username = rs.getString("username")
             val name = rs.getString("name")
@@ -35,11 +36,12 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
                     safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion,
-                    promoteSource = promoteSource, autoTransfer = autoTransfer)
+                    promoteSource = promoteSource, autoTransfer = autoTransfer, bossId = bossId)
         }
 
     override fun create(memberCo: MemberCo): Int {
         return insert()
+                .set("boss_id", memberCo.bossId)
                 .set("client_id", memberCo.clientId)
                 .set("username", memberCo.username)
                 .set("name", memberCo.name)
@@ -77,9 +79,23 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .executeMaybeOne(mapper)
     }
 
+    override fun getByBossIdAndUsername(bossId: Int, username: String): Member? {
+        return query()
+                .where("boss_id", bossId)
+                .where("username", username)
+                .executeMaybeOne(mapper)
+    }
+
     override fun getByPhone(clientId: Int, phone: String): Member? {
         return query()
                 .where("client_id", clientId)
+                .where("phone", phone)
+                .executeMaybeOne(mapper)
+    }
+
+    override fun getByBossIdAndPhone(bossId: Int, phone: String): Member? {
+        return query()
+                .where("boss_id", bossId)
                 .where("phone", phone)
                 .executeMaybeOne(mapper)
     }

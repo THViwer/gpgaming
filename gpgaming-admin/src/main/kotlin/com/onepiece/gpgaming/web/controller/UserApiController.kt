@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.web.controller
 import com.onepiece.gpgaming.beans.enums.PermissionType
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.value.database.ClientLoginValue
 import com.onepiece.gpgaming.beans.value.database.ClientUo
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.WaiterUo
@@ -49,17 +50,17 @@ class UserApiController(
         val ip = getIpAddress()
         val client = clientService.get(clientId)
         log.info("client whitelists: ${client.whitelists}")
-        log.info("current ip: ${ip}")
+        log.info("current ip: $ip")
         check(client.whitelists.isEmpty() || client.whitelists.firstOrNull { it == ip || it.isBlank() } != null) {  OnePieceExceptionCode.IP_ILLEGAL }
 
-        val loginValue = LoginValue(clientId = clientId, username = loginReq.username, password = loginReq.password, ip = ip)
+        val loginValue = ClientLoginValue(clientId = clientId, username = loginReq.username, password = loginReq.password, ip = ip)
 
         log.info("admin login, username = ${loginReq.username}, password = ${loginReq.password}")
         return try {
             val client = clientService.login(loginValue)
             val permissions = PermissionType.values().map { it.resourceId }.plus("-1")
 
-            val authUser = authService.login(id = client.id, role = Role.Client, username = client.username, mAuthorities = permissions)
+            val authUser = authService.login(bossId = client.bossId, id = client.id, role = Role.Client, username = client.username, mAuthorities = permissions)
 
             LoginResp(id = client.id, clientId = client.id, username = client.username, role = Role.Client,
                     token = authUser.token, permissions = permissions)
@@ -69,7 +70,7 @@ class UserApiController(
 
             val permissions = permissionService.findWaiterPermissions(waiterId = waiter.id).permissions.filter { it.effective }.map { it.resourceId }
 
-            val authUser = authService.login(id = waiter.id, role = Role.Waiter, username = waiter.username, mAuthorities = permissions)
+            val authUser = authService.login(bossId = waiter.bossId, id = waiter.id, role = Role.Waiter, username = waiter.username, mAuthorities = permissions)
 
             LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = Role.Waiter,
                     token = authUser.token, permissions = permissions)

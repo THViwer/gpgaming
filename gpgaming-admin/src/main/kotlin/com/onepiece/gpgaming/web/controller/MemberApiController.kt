@@ -81,7 +81,16 @@ class MemberApiController(
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): MemberPage {
-        val clientId = getClientId()
+
+
+        val clientId = if (username != null) {
+            val bossId = getBossId()
+            val member = memberService.findByBossIdAndUsername(bossId = bossId, username = username)
+                    ?: return MemberPage(data = emptyList(), total = 0)
+            member.clientId
+        } else {
+            getClientId()
+        }
 
         val query = MemberQuery(clientId = clientId, startTime = null, endTime = null, username = username,
                 levelId = levelId, status = status, promoteCode = promoteSource, name = name, phone = phone)
@@ -243,10 +252,12 @@ class MemberApiController(
     @PostMapping
     override fun create(@RequestBody memberCoReq: MemberCoReq) {
         val clientId = getClientId()
+        val bossId = getBossId()
+
         check(memberCoReq.levelId > 0) { OnePieceExceptionCode.DATA_FAIL }
 
         val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password, promoteSource = memberCoReq.promoteSource,
-                safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId, name = memberCoReq.name, phone = memberCoReq.phone)
+                safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId, name = memberCoReq.name, phone = memberCoReq.phone, bossId = bossId)
         memberService.create(memberCo)
     }
 

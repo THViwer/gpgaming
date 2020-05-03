@@ -15,15 +15,19 @@ class WebSiteDaoImpl : BasicDaoImpl<WebSite>("web_site"), WebSiteDao {
     override val mapper: (rs: ResultSet) -> WebSite
         get() = { rs ->
             val id = rs.getInt("id")
+            val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val domain = rs.getString("domain")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            WebSite(id = id, clientId = clientId, domain = domain, status = status, createdTime = createdTime)
+            WebSite(id = id, clientId = clientId, domain = domain, status = status, createdTime = createdTime,
+                    bossId = bossId)
         }
 
     override fun create(webSiteCo: WebSiteCo): Boolean {
-        return insert().set("client_id", webSiteCo.clientId)
+        return insert()
+                .set("boss_id", webSiteCo.bossId)
+                .set("client_id", webSiteCo.clientId)
                 .set("domain", webSiteCo.domain)
                 .executeOnlyOne()
 

@@ -11,6 +11,9 @@ data class Waiter (
         // id
         val id: Int,
 
+        // bossId
+        val bossId: Int,
+
         // 厅主Id
         val clientId: Int,
 

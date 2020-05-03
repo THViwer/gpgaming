@@ -13,7 +13,7 @@ import java.util.*
 
 interface AuthService {
 
-    fun login(id: Int, role: Role, username: String, mAuthorities: List<String>): MobileUser
+    fun login(bossId: Int, id: Int, role: Role, username: String, mAuthorities: List<String>): MobileUser
 
     fun refresh(id: Int)
 
@@ -30,7 +30,7 @@ class AuthServiceImpl(
 //        private val userService: UserService
 ) : AuthService {
 
-    override fun login(id: Int, role: Role, username: String, mAuthorities: List<String>): MobileUser {
+    override fun login(bossId: Int, id: Int, role: Role, username: String, mAuthorities: List<String>): MobileUser {
         val password = "123456"
 
         val clientId = when (role) {
@@ -53,7 +53,7 @@ class AuthServiceImpl(
         tokenStore.storeAccessToken(username = username, token = token, jwtUser = userDetails)
 
 
-        val jwtUser = JwtUser(id = id, musername = username, mpassword = password, lastPasswordResetDate = Date(),
+        val jwtUser = JwtUser(id = id, bossId = bossId, musername = username, mpassword = password, lastPasswordResetDate = Date(),
                 clientId = clientId, role = role, mauthorities = mAuthorities)
         tokenStore.storeAccessToken(username = username, token = token, jwtUser = jwtUser)
 

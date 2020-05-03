@@ -1,8 +1,8 @@
 package com.onepiece.gpgaming.beans.value.database
 
-data class LoginValue(
+data class ClientLoginValue(
 
-        val bossId: Int,
+        val clientId: Int,
 
         val username: String,
 

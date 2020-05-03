@@ -1,11 +1,13 @@
 package com.onepiece.gpgaming.player.controller
 
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberUo
+import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
@@ -32,19 +34,24 @@ import org.springframework.web.bind.annotation.RestController
 class UserApiController(
         private val memberService: MemberService,
         private val authService: AuthService,
-        private val levelService: LevelService
+        private val levelService: LevelService,
+        private val clientService: ClientService
 ) : BasicController(), UserApi {
 
     @PostMapping
     override fun login(@RequestBody loginReq: LoginReq): LoginResp {
         //TODO 判断域名来选择厅主
-        val clientId = getClientIdByDomain()
+        val bossId = getBossIdByDomain()
 
-        val loginValue = LoginValue(clientId = clientId, username = loginReq.username, password = loginReq.password, ip = getIpAddress())
+        val loginValue = LoginValue(bossId = bossId, username = loginReq.username, password = loginReq.password, ip = getIpAddress())
         val member = memberService.login(loginValue)
 
-        val token = authService.login(clientId, loginReq.username)
-        return LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name, autoTransfer = member.autoTransfer)
+
+        val webSite = webSiteService.all().first { it.clientId == member.clientId }
+
+        val token = authService.login(clientId = member.clientId, username = loginReq.username)
+        return LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name, autoTransfer = member.autoTransfer,
+                domain = webSite.domain)
     }
 
     @PutMapping("/config")
@@ -56,28 +63,42 @@ class UserApiController(
     @PutMapping
     override fun register(@RequestBody registerReq: RegisterReq): LoginResp {
 
-        val clientId = getClientIdByDomain()
-        val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
+        check(registerReq.country != Country.Default)
 
+        val bossId = getBossIdByDomain()
+        val client = clientService.all().filter { it.bossId == bossId }.first { it.country == registerReq.country }
+        val clientId = client.id
+
+        val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
         val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
-                levelId = defaultLevel.id, name = registerReq.name, phone = registerReq.phone, promoteSource = registerReq.promoteSource)
+                levelId = defaultLevel.id, name = registerReq.name, phone = registerReq.phone, promoteSource = registerReq.promoteSource, bossId = bossId)
         memberService.create(memberCo)
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)
         return this.login(loginReq)
     }
 
+    @GetMapping("/country")
+    override fun countries(): List<Country> {
+
+        val bossId = getBossIdByDomain()
+        val clients = clientService.all().filter { it.bossId == bossId }
+
+        return clients.map { it.country }
+    }
+
     @GetMapping("/check/{username}")
     override fun checkUsername(@PathVariable("username") username: String): CheckUsernameResp {
-        val clientId = getClientIdByDomain()
-        val exist = memberService.findByUsername(clientId, username) != null
+        val bossId = getBossIdByDomain()
+
+        val exist = memberService.findByBossIdAndUsername(bossId, username) != null
         return CheckUsernameResp(exist)
     }
 
     @GetMapping("/check/phone/{phone}")
     override fun checkPhone(@PathVariable("phone") phone: String): CheckUsernameResp {
-        val clientId = getClientIdByDomain()
-        val exist = memberService.findByPhone(clientId, phone) != null
+        val bossId = getBossIdByDomain()
+        val exist = memberService.findByBossIdAndPhone(bossId, phone) != null
         return CheckUsernameResp(exist)
     }
 
