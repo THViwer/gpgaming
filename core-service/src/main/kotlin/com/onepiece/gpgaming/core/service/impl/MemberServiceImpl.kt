@@ -47,7 +47,7 @@ class MemberServiceImpl(
 
     override fun findByBossIdAndUsername(bossId: Int, username: String?): Member? {
         if (username.isNullOrBlank()) return null
-        return memberDao.getByUsername(bossId, username)?.copy(password = "", safetyPassword = "")    }
+        return memberDao.getByBossIdAndUsername(bossId, username)?.copy(password = "", safetyPassword = "")    }
 
     override fun findByPhone(clientId: Int, phone: String?): Member? {
         if (phone.isNullOrBlank()) return null
