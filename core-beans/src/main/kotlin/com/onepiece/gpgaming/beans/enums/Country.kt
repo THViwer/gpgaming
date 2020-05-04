@@ -15,6 +15,9 @@ enum class Country {
     Thailand,
 
     // 越南
-    Vietnam
+    Vietnam,
+
+    // 印尼
+    Indonesia
 
 }
