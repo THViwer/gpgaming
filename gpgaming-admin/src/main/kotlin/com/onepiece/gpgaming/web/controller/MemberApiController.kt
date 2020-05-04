@@ -23,6 +23,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.WalletVo
 import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.dao.PayOrderDao
 import com.onepiece.gpgaming.core.dao.WithdrawDao
+import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberBankService
@@ -41,7 +42,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
@@ -62,6 +62,7 @@ class MemberApiController(
         private val gameApi: GameApi,
         private val memberBankService: MemberBankService,
         private val payOrderService: PayOrderService,
+        private val clientService: ClientService,
 
         private val depositDao: DepositDao,
         private val withdrawDao: WithdrawDao,
@@ -92,6 +93,9 @@ class MemberApiController(
             getClientId()
         }
 
+        val client = clientService.get(clientId)
+
+
         val query = MemberQuery(clientId = clientId, startTime = null, endTime = null, username = username,
                 levelId = levelId, status = status, promoteCode = promoteSource, name = name, phone = phone)
         val page = memberService.query(query, current, size)
@@ -107,7 +111,8 @@ class MemberApiController(
             with(it) {
                 MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name ?: "error level",
                         balance = memberMap[it.id]?.balance ?: BigDecimal.valueOf(-1), status = it.status, createdTime = createdTime,
-                        loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteSource = it.promoteSource)
+                        loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteSource = it.promoteSource,
+                        country = client.country)
             }
         }
 

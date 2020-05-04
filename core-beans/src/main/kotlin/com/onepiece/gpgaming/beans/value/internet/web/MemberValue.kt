@@ -6,6 +6,7 @@ import com.alibaba.excel.enums.CellDataTypeEnum
 import com.alibaba.excel.metadata.CellData
 import com.alibaba.excel.metadata.GlobalConfiguration
 import com.alibaba.excel.metadata.property.ExcelContentProperty
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Deposit
@@ -162,6 +163,9 @@ data class MemberVo(
 
         @ApiModelProperty("id")
         val id: Int,
+
+        @ApiModelProperty("国家")
+        val country: Country,
 
         @ApiModelProperty("推广码")
         val promoteSource: String?,

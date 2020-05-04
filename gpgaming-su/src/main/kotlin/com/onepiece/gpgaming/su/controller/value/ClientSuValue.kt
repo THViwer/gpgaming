@@ -12,6 +12,12 @@ sealed class ClientSuValue {
             @ApiModelProperty("厅主Id")
             val id: Int,
 
+            @ApiModelProperty("bossId")
+            val bossId: Int,
+
+            @ApiModelProperty("国家")
+            val country: Country,
+
             @ApiModelProperty("用户名")
             val username: String,
 
