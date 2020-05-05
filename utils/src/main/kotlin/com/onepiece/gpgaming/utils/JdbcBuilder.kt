@@ -284,7 +284,7 @@ class Update(
     fun set(k: String, v: Any?): Update {
         if (v == null) return this
 
-        columns.add("$k = ?")
+        columns.add("`$k` = ?")
 
         val value = if (v is Enum<*>) v.name else v
         param.add(value)
@@ -293,7 +293,7 @@ class Update(
 
     fun setIfNull(k: String, v: Any?): Update {
         if (v == null) {
-            columns.add("$k = null")
+            columns.add("`$k` = null")
         } else {
             this.set(k, v)
         }
@@ -311,7 +311,7 @@ class Update(
     fun where(k: String, v: Any?): Update {
         if (v == null) return this
 
-        whereColumns.add("$k = ?")
+        whereColumns.add("`$k` = ?")
 
         val value = if (v is Enum<*>) v.name else v
         param.add(value)
