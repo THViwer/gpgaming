@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.beans.value.database.PromotionCo
 import com.onepiece.gpgaming.beans.value.database.PromotionUo
 import com.onepiece.gpgaming.core.dao.PromotionDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
+import com.onepiece.gpgaming.core.dao.basic.getIntOrNull
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.time.LocalDateTime
@@ -30,10 +31,11 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val periodMaxPromotion = rs.getBigDecimal("period_max_promotion")
             val status = rs.getString("status").let { Status.valueOf(it) }
 
-            val levelId = rs.getInt("level_id")
+            val levelId = rs.getIntOrNull("level_id")
             val ruleType = rs.getString("rule_type").let { PromotionRuleType.valueOf(it) }
             val ruleJson = rs.getString("rule_json")
             val sequence = rs.getInt("sequence")
+            val show = rs.getBoolean("show")
 
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
@@ -41,7 +43,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             Promotion(id = id, category = category, stopTime = stopTime, status = status, createdTime = createdTime,
                     clientId = clientId, top = top, updatedTime = updatedTime, platforms = platforms, levelId = levelId,
                     ruleJson = ruleJson, ruleType = ruleType, period = period, periodMaxPromotion = periodMaxPromotion,
-                    sequence = sequence)
+                    sequence = sequence, show = show)
         }
 
     override fun create(promotionCo: PromotionCo): Int {
@@ -59,6 +61,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("rule_type", promotionCo.ruleType)
                 .set("sequence", promotionCo.sequence)
                 .set("status", Status.Stop)
+                .set("show", promotionCo.show)
                 .executeGeneratedKey()
     }
 
@@ -76,6 +79,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("rule_json", promotionUo.ruleJson)
                 .set("updated_time", LocalDateTime.now())
                 .set("sequence", promotionUo.sequence)
+                .set("show", promotionUo.show)
                 .where("id", promotionUo.id)
                 .executeOnlyOne()
     }

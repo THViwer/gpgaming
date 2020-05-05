@@ -53,6 +53,9 @@ data class PromotionVo(
 //        @ApiModelProperty("内容")
 //        val content: String,
 
+        @ApiModelProperty("排序字段")
+        val sequence: Int,
+
         @ApiModelProperty("状态")
         val status: Status,
 
@@ -106,7 +109,10 @@ data class PromotionCoReq(
         val promotionRuleVo: PromotionRuleVo,
 
         @ApiModelProperty("排序字段")
-        val sequence: Int
+        val sequence: Int,
+
+        @ApiModelProperty("是否前台显示")
+        val show: Boolean
 )
 
 
@@ -147,5 +153,8 @@ data class PromotionUoReq(
         val promotionRuleVo: PromotionRuleVo?,
 
         @ApiModelProperty("排序字段")
-        val sequence: Int
+        val sequence: Int,
+
+        @ApiModelProperty("是否前台显示")
+        val show: Boolean
 )

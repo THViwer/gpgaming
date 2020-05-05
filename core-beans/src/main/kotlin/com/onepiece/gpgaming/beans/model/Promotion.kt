@@ -54,6 +54,9 @@ data class Promotion (
         // 序列
         val sequence: Int,
 
+        // 是否前台显示
+        val show: Boolean,
+
         // 创建时间
         val createdTime: LocalDateTime,
 

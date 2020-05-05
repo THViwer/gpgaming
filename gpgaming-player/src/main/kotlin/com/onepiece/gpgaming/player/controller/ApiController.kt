@@ -176,6 +176,7 @@ open class ApiController(
 
         val allPromotion = promotionService.all(clientId).filter { it.status == Status.Normal }
                 .sortedBy { it.sequence }
+                .filter { it.show }
 
         val promotions = arrayListOf<Promotion>()
 

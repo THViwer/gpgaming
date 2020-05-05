@@ -40,6 +40,9 @@ data class PromotionCo(
         // 路由规则json
         val ruleJson: String,
 
+        // 是否前台显示
+        val show: Boolean,
+
         // 排序
         val sequence: Int
 
@@ -77,6 +80,9 @@ data class PromotionUo(
         val ruleJson: String?,
 
         // 排序字段
-        val sequence: Int?
+        val sequence: Int?,
+
+        // 是否前台显示
+        val show: Boolean?
 
 )
