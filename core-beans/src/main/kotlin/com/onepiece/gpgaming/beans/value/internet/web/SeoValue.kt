@@ -21,7 +21,10 @@ sealed class SeoValue {
             val googleStatisticsId: String,
 
             //面子书广告
-            val facebookTr: String
+            val facebookTr: String,
+
+            // asg content
+            val asgContent: String
 
     )
 
@@ -42,7 +45,10 @@ sealed class SeoValue {
             val googleStatisticsId: String,
 
             //面子书广告
-            val facebookTr: String
+            val facebookTr: String,
+
+            // asg content
+            val asgContent: String
     )
 
 }

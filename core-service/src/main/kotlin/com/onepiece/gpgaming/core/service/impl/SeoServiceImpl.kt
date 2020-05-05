@@ -23,7 +23,7 @@ class SeoServiceImpl(
 
             if (list.isEmpty()) {
                 val seoUo = SeoValue.SeoUo(clientId = clientId, title = "", keywords = "", description = "", googleStatisticsId = "", liveChatId = "", facebookTr = "",
-                        liveChatTab = true)
+                        liveChatTab = true, asgContent = "")
                 seoDao.create(seoUo)
                 seoDao.all(clientId).first()
             } else {

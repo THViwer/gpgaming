@@ -75,12 +75,14 @@ class IndexApiController(
             @RequestParam("liveChatId") liveChatId: String,
             @RequestParam("liveChatTab") liveChatTab: Boolean,
             @RequestParam("googleStatisticsId") googleStatisticsId: String,
-            @RequestParam("facebookTr") facebookTr: String
+            @RequestParam("facebookTr") facebookTr: String,
+            @RequestParam("asgContent") asgContent: String
     ) {
         val clientId = getClientId()
 
         val seoUo = SeoValue.SeoUo(clientId = clientId, title = title, keywords = keywords, description = description,
-                liveChatId = liveChatId, googleStatisticsId = googleStatisticsId, facebookTr = facebookTr, liveChatTab = liveChatTab)
+                liveChatId = liveChatId, googleStatisticsId = googleStatisticsId, facebookTr = facebookTr, liveChatTab = liveChatTab,
+                asgContent = asgContent)
         seoService.update(seoUo)
     }
 

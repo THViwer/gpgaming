@@ -28,9 +28,12 @@ data class Seo(
         // google统计Id
         val googleStatisticsId: String,
 
-        // 黄建时间
-        val createdTime: LocalDateTime,
-
         //面子书广告
-        val facebookTr: String
+        val facebookTr: String,
+
+        // asg 广告内容
+        val asgContent: String,
+
+        // 创建时间
+        val createdTime: LocalDateTime
 )

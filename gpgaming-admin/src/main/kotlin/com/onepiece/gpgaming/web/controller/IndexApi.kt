@@ -39,7 +39,8 @@ interface IndexApi {
             @RequestParam("liveChatId") liveChatId: String,
             @RequestParam("liveChatTab") liveChatTab: Boolean,
             @RequestParam("googleStatisticsId") googleStatisticsId: String,
-            @RequestParam("facebookTr") facebookTr:String
+            @RequestParam("facebookTr") facebookTr:String,
+            @RequestParam("asgContent") asgContent: String
     )
 
 
