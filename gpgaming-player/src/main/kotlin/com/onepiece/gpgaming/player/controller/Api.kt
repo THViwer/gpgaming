@@ -1,11 +1,13 @@
 package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.enums.BannerType
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.GameCategory
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
+import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.player.controller.value.BannerVo
 import com.onepiece.gpgaming.player.controller.value.Contacts
@@ -111,7 +113,7 @@ interface Api {
     ): List<BannerVo>
 
     @ApiOperation(tags = ["api"], value = "获得平台类目页信息")
-    fun categorys(
+    fun categories(
             @RequestHeader("language") language: Language,
             @RequestHeader("launch") launch: LaunchMethod,
             @PathVariable(value =  "category") category: PlatformCategory
@@ -128,5 +130,12 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "seo配置")
     fun seo(): SeoValue.SeoVo
+
+
+    @ApiOperation(tags = ["api"], value = "改变国家")
+    fun selectCountry(
+            @RequestParam("country") country: Country,
+            @RequestParam("language") language: Language
+    ): SelectCountryResult
 
 }

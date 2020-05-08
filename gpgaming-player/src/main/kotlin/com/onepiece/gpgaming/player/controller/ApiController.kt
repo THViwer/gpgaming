@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.SystemConstant
 import com.onepiece.gpgaming.beans.enums.BannerType
 import com.onepiece.gpgaming.beans.enums.ContactType
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.GameCategory
 import com.onepiece.gpgaming.beans.enums.HotGameType
 import com.onepiece.gpgaming.beans.enums.I18nConfig
@@ -15,10 +16,12 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
+import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.BannerService
+import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
@@ -63,6 +66,7 @@ open class ApiController(
         private val activeConfig: ActiveConfig,
         private val objectMapper: ObjectMapper,
         private val hotGameService: HotGameService,
+        private val clientService: ClientService,
         private val seoService: SeoService
 ) : BasicController(), Api {
 
@@ -461,7 +465,7 @@ open class ApiController(
     }
 
     @GetMapping("/{category}")
-    override fun categorys(
+    override fun categories(
             @RequestHeader("language") language: Language,
             @RequestHeader("launch") launch: LaunchMethod,
             @PathVariable(value =  "category") category: PlatformCategory
@@ -542,10 +546,23 @@ open class ApiController(
                 googleStatisticsId = seo.googleStatisticsId, facebookTr = seo.facebookTr, liveChatTab = seo.liveChatTab, asgContent = seo.asgContent)
     }
 
+    @GetMapping("/select/country")
+    override fun selectCountry(
+            @RequestParam("country") country: Country,
+            @RequestParam("language") language: Language
+    ): SelectCountryResult {
+
+        val bossId = getBossIdByDomain()
+        val clients = clientService.all().filter { it.bossId == bossId }
+        val client = clients.firstOrNull { it.country == country } ?: clients.first()
+
+        val webSites = webSiteService.all().filter { it.status == Status.Normal }.first { it.clientId == client.id }
+        return SelectCountryResult(domain = webSites.domain, language = language)
+    }
+
     fun <T> getRandom(list: List<T>?) : T? {
         return list?.let { list[Random.nextInt(list.size)] }
     }
-
 
 
 }

@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
+import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
@@ -31,6 +32,16 @@ data class WebSiteVo(
 
         @ApiModelProperty("创建时间")
         val createdTime: LocalDateTime
+)
+
+data class SelectCountryResult(
+
+        @ApiModelProperty("域名")
+        val domain: String,
+
+        @ApiModelProperty("语言")
+        val language: Language
+
 )
 
 data class WebSiteCoReq(
