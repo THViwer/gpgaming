@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapResultUtil
+import com.onepiece.gpgaming.utils.RequestUtil
 import org.apache.commons.codec.binary.Base64
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -34,7 +35,7 @@ class EvolutionService : PlatformService() {
 
 
     override fun register(registerReq: GameValue.RegisterReq): String {
-        val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, launch = LaunchMethod.Web, language = Language.EN, password = "-")
+        val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, launch = LaunchMethod.Web, language = Language.EN, password = "-", redirectUrl = RequestUtil.getRequest().requestURI)
         this.start(startReq)
 
         return registerReq.username

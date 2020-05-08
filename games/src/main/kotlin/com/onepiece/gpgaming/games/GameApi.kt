@@ -41,8 +41,11 @@ import com.onepiece.gpgaming.games.sport.BcsService
 import com.onepiece.gpgaming.games.sport.CMDService
 import com.onepiece.gpgaming.games.sport.LbcService
 import com.onepiece.gpgaming.utils.RedisService
+import com.onepiece.gpgaming.utils.RequestUtil
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -230,6 +233,10 @@ class GameApi(
 //        }
     }
 
+    private fun getRequestDomain(): String {
+        val request = RequestUtil.getRequest()
+        return request.requestURI
+    }
 
     /**
      * 开始游戏(平台)
@@ -255,7 +262,7 @@ class GameApi(
             Platform.AsiaGamingLive,
             Platform.EBet,
             Platform.Bcs -> {
-                val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, launch = launch, language = language, password = platformPassword)
+                val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, launch = launch, language = language, password = platformPassword, redirectUrl = getRequestDomain())
                 this.getPlatformApi(platform).start(startReq)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
@@ -286,7 +293,7 @@ class GameApi(
 
         //TODO 跳转url
         val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId, language = language,
-                launchMethod = launchMethod, password = platformPassword)
+                launchMethod = launchMethod, password = platformPassword, redirectUrl = getRequestDomain())
         return when (platform) {
             Platform.Joker,
             Platform.Pragmatic,
@@ -311,7 +318,7 @@ class GameApi(
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
         val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = "", gameId = gameId, language = language,
-                launchMethod = launchMethod, password = "-")
+                launchMethod = launchMethod, password = "-", redirectUrl = getRequestDomain())
 
         return when (platform) {
             Platform.SpadeGaming,
