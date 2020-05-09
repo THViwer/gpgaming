@@ -9,6 +9,7 @@ import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.player.controller.value.BannerVo
+import com.onepiece.gpgaming.player.controller.value.CompileValue
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.DownloadAppVo
 import com.onepiece.gpgaming.player.controller.value.HotGameVo
@@ -33,6 +34,9 @@ interface Api {
             @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("language") language: Language
     ): IndexConfig
+
+    @ApiOperation(tags = ["api"], value = "域名配置")
+    fun getConfig(): CompileValue.Config
 
     @ApiOperation(tags = ["api"], value = "热门游戏")
     fun hotGames(

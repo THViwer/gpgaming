@@ -31,6 +31,7 @@ import com.onepiece.gpgaming.core.service.SlotGameService
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.BannerVo
+import com.onepiece.gpgaming.player.controller.value.CompileValue
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.DownloadAppVo
 import com.onepiece.gpgaming.player.controller.value.HotGameVo
@@ -80,6 +81,15 @@ open class ApiController(
         val clientId = this.getClientIdByDomain()
         val url = SystemConstant.getClientResourcePath(clientId = clientId, profile = activeConfig.profile)
         return IndexConfig(url = "$url/index_${language.name.toLowerCase()}.json?${UUID.randomUUID()}")
+    }
+
+    @GetMapping("/compile")
+    override fun getConfig(): CompileValue.Config {
+
+        val clientId = getClientIdByDomain()
+        val client = clientService.get(clientId)
+
+        return CompileValue.Config(logo = client.logo, shortcutLogo = client.shortcutLogo)
     }
 
     @GetMapping("/hotGames")
