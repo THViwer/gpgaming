@@ -51,13 +51,13 @@ class UserApiController(
         val loginValue = LoginValue(bossId = bossId, username = loginReq.username, password = loginReq.password, ip = getIpAddress())
         val member = memberService.login(loginValue)
 
-
         val webSite = webSiteService.all().first { it.clientId == member.clientId }
+        val client = clientService.get(member.clientId)
 
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
         val token = authService.login(clientId = member.clientId, username = loginReq.username)
         return LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name, autoTransfer = member.autoTransfer,
-                domain = "https://www.${webSite.domain}${isMobile}")
+                domain = "https://www.${webSite.domain}${isMobile}", country = client.country)
     }
 
 
@@ -76,11 +76,12 @@ class UserApiController(
 
 
         val webSite = webSiteService.all().first { it.clientId == member.clientId }
+        val client = clientService.get(member.clientId)
 
 
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
         return LoginResp(id = member.id, role = Role.Member, username = member.username, token = authToken, name = member.name, autoTransfer = member.autoTransfer,
-                domain = "https://www.${webSite.domain}${isMobile}")
+                domain = "https://www.${webSite.domain}${isMobile}", country = client.country)
 
     }
 

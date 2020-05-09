@@ -27,7 +27,10 @@ data class LoginResp(
         val autoTransfer: Boolean,
 
         @ApiModelProperty("域名")
-        val domain: String
+        val domain: String,
+
+        @ApiModelProperty("当前用户国家")
+        val country: Country
 )
 
 data class CheckUsernameResp(
