@@ -549,15 +549,18 @@ open class ApiController(
     @GetMapping("/select/country")
     override fun selectCountry(
             @RequestParam("country") country: Country,
-            @RequestParam("language") language: Language
+            @RequestHeader("language") language: Language,
+            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
     ): SelectCountryResult {
 
         val bossId = getBossIdByDomain()
         val clients = clientService.all().filter { it.bossId == bossId }
         val client = clients.firstOrNull { it.country == country } ?: clients.first()
 
+        val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
+
         val webSites = webSiteService.all().filter { it.status == Status.Normal }.first { it.clientId == client.id }
-        return SelectCountryResult(domain = webSites.domain, language = language)
+        return SelectCountryResult(domain = "https://www.${webSites.domain}${isMobile}", language = language)
     }
 
     fun <T> getRandom(list: List<T>?) : T? {
