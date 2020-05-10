@@ -51,13 +51,20 @@ class UserApiController(
         val loginValue = LoginValue(bossId = bossId, username = loginReq.username, password = loginReq.password, ip = getIpAddress())
         val member = memberService.login(loginValue)
 
-        val webSite = webSiteService.all().first { it.clientId == member.clientId }
+        val webSites = webSiteService.all()
+        val webSite = webSites.first { getRequest().requestURL.contains(it.domain) }
         val client = clientService.get(member.clientId)
 
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
-        val token = authService.login(clientId = member.clientId, username = loginReq.username)
-        return LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name, autoTransfer = member.autoTransfer,
-                domain = "https://www.${webSite.domain}${isMobile}", country = client.country)
+
+        return if (webSite.clientId == member.clientId) {
+            val token = authService.login(clientId = member.clientId, username = loginReq.username)
+            LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name, autoTransfer = member.autoTransfer,
+                    domain = "https://www.${webSite.domain}${isMobile}", country = client.country, successful = true)
+        } else {
+            LoginResp(id = member.id, role = Role.Member, username = member.username, token = "", name = member.name, autoTransfer = member.autoTransfer,
+                    domain = "https://www.${webSite.domain}${isMobile}", country = client.country, successful = false)
+        }
     }
 
 
@@ -81,7 +88,7 @@ class UserApiController(
 
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
         return LoginResp(id = member.id, role = Role.Member, username = member.username, token = authToken, name = member.name, autoTransfer = member.autoTransfer,
-                domain = "https://www.${webSite.domain}${isMobile}", country = client.country)
+                domain = "https://www.${webSite.domain}${isMobile}", country = client.country, successful = true)
 
     }
 

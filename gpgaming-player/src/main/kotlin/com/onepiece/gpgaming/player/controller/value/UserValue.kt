@@ -30,7 +30,11 @@ data class LoginResp(
         val domain: String,
 
         @ApiModelProperty("当前用户国家")
-        val country: Country
+        val country: Country,
+
+        @ApiModelProperty("是否需要国家跳转")
+        val successful: Boolean
+
 )
 
 data class CheckUsernameResp(
