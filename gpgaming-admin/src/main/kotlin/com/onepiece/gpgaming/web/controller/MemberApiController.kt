@@ -250,7 +250,7 @@ class MemberApiController(
         check(member.clientId == clientId) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
         val memberUo = MemberUo(id = memberUoReq.id, levelId = memberUoReq.levelId, password = memberUoReq.password,
-                status = memberUoReq.status, name = memberUoReq.name)
+                status = memberUoReq.status, name = memberUoReq.name, phone = memberUoReq.phone)
         memberService.update(memberUo)
     }
 

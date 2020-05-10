@@ -266,6 +266,9 @@ data class MemberUoReq(
         @ApiModelProperty("姓名")
         val name: String?,
 
+        @ApiModelProperty("修改手机号")
+        val phone: String?,
+
         @ApiModelProperty("层级Id")
         val levelId: Int?,
 
