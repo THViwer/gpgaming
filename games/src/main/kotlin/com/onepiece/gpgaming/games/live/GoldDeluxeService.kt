@@ -209,6 +209,7 @@ class GoldDeluxeService: PlatformService() {
                 <SearchByBalanceTime>1</SearchByBalanceTime>
                 <ShowRefID>1</ShowRefID>
                 <ShowOdds>1</ShowOdds>
+                <ShowValidBetAmount>1</ShowValidBetAmount>
               </Param>
             </Request>
         """.trimIndent()
@@ -228,11 +229,12 @@ class GoldDeluxeService: PlatformService() {
             val settleTime = bet.asLocalDateTime("BalanceTime", betDateTimeFormat)
             val betAmount = bet.asBigDecimal("BetAmount")
             val winAmount = bet.asBigDecimal("WinLoss")
+            val validBetAmount = bet.asBigDecimal("ValidBetAmount")
 
             val originData = objectMapper.writeValueAsString(bet.data)
 
             BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.GoldDeluxe, orderId = orderId, betAmount = betAmount,
-                    winAmount = winAmount, originData = originData, betTime = betTime, settleTime = settleTime)
+                    winAmount = winAmount, originData = originData, betTime = betTime, settleTime = settleTime, validAmount = validBetAmount)
 
         }
     }

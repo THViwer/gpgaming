@@ -228,13 +228,14 @@ class AsiaGamingService : PlatformService() {
                     val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = platform, platformUsername = username)
                     val betTime = bet.asLocalDateTime("betTime", dateTimeFormatter)
                     val betAmount = bet.asBigDecimal("betAmount")
+                    val validBetAmount = bet.asBigDecimal("validBetAmount")
 
                     val netAmount = bet.asBigDecimal("netAmount")
                     val winAmount = betAmount.plus(netAmount)
 
                     val originData = objectMapper.writeValueAsString(bet.data)
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform, betAmount = betAmount, winAmount = winAmount,
-                            betTime = betTime, settleTime = betTime, orderId = orderId, originData = originData)
+                            betTime = betTime, settleTime = betTime, orderId = orderId, originData = originData, validAmount = validBetAmount)
                 }
                 Platform.AsiaGamingSlot -> {
 
@@ -244,11 +245,12 @@ class AsiaGamingService : PlatformService() {
                     val betTime = bet.asLocalDateTime("billtime", dateTimeFormatter)
                     val settleTime = bet.asLocalDateTime("reckontime", dateTimeFormatter)
                     val betAmount = bet.asBigDecimal("account")
+                    val validAccount = bet.asBigDecimal("valid_account")
                     val winAmount = bet.asBigDecimal("cus_account")
 
                     val originData = objectMapper.writeValueAsString(bet.data)
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform, betAmount = betAmount, winAmount = winAmount,
-                            betTime = betTime, settleTime = betTime, orderId = orderId, originData = originData)
+                            betTime = betTime, settleTime = betTime, orderId = orderId, originData = originData, validAmount = validAccount)
 
                 }
                 else -> error("错误的平台: $platform")

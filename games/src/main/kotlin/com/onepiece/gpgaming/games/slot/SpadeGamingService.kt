@@ -288,7 +288,7 @@ class SpadeGamingService(
 
             val originData = objectMapper.writeValueAsString(bet.data)
             BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, platform = Platform.SpadeGaming, betTime = betTime,
-                    settleTime = betTime, betAmount = betAmount, winAmount = winAmount, originData = originData)
+                    settleTime = betTime, betAmount = betAmount, winAmount = winAmount, originData = originData, validAmount = betAmount)
         }
         val pageCount =  mapUtil.asInt("pageCount")
         return pageCount to orders

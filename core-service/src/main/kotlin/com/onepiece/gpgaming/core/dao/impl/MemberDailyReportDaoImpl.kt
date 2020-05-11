@@ -50,7 +50,7 @@ class MemberDailyReportDaoImpl(
                     transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney,
                     createdTime = createdTime, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
                     depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, totalMWin = totalMWin,
-                    thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, backwater = backwater, backwaterMoney = backwaterMoney,
+                    thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount,backwaterMoney = backwaterMoney,
                     backwaterExecution = backwaterExecution, promotionMoney = promotionMoney)
         }
 
@@ -73,7 +73,6 @@ class MemberDailyReportDaoImpl(
                 .set("settles")
                 .set("third_pay_money")
                 .set("third_pay_count")
-                .set("backwater")
                 .set("backwater_money")
                 .set("backwater_execution")
                 .set("promotion_money")
@@ -95,7 +94,6 @@ class MemberDailyReportDaoImpl(
                     ps.setString(++index, objectMapper.writeValueAsString(entity.settles))
                     ps.setBigDecimal(++index, entity.thirdPayMoney)
                     ps.setInt(++index, entity.thirdPayCount)
-                    ps.setBigDecimal(++index, entity.backwater)
                     ps.setBigDecimal(++index, entity.backwaterMoney)
                     ps.setBoolean(++index, entity.backwaterExecution)
                     ps.setBigDecimal(++index, entity.promotionMoney)

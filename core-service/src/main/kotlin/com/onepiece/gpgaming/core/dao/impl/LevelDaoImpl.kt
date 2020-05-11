@@ -20,9 +20,10 @@ class LevelDaoImpl: BasicDaoImpl<Level>("level"), LevelDao {
             val sportRebate = rs.getBigDecimal("sport_rebate")
             val liveRebate = rs.getBigDecimal("live_rebate")
             val slotRebate = rs.getBigDecimal("slot_rebate")
+            val flshRebate = rs.getBigDecimal("flsh_rebate")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             Level(id = id, clientId = clientId, name = name, status = status, createdTime = createdTime,
-                    sportRebate = sportRebate, liveRebate = liveRebate, slotRebate = slotRebate)
+                    sportRebate = sportRebate, liveRebate = liveRebate, slotRebate = slotRebate, flshRebate = flshRebate)
         }
 
     override fun create(levelCo: LevelValue.LevelCo): Boolean {

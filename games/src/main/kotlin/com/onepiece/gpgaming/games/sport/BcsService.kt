@@ -234,6 +234,7 @@ class BcsService : PlatformService() {
                     val username = bet.asString("Account")
                     val (clientId, memberId) = prefixPlatformUsername(platform = Platform.Bcs, platformUsername = username)
                     val betAmount = bet.asBigDecimal("BetAmount")
+                    val turnover = bet.asBigDecimal("Turnover")
                     val winAmount = bet.asBigDecimal("Win")
                     val betTime = bet.asLocalDateTime("BetDate", DEFAULT_DATETIMEFORMATTER)
                     val settleTime = bet.asLocalDateTime("UpdateTime", DEFAULT_DATETIMEFORMATTER)
@@ -243,7 +244,7 @@ class BcsService : PlatformService() {
 
                     val originData = objectMapper.writeValueAsString(bet.data)
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Bcs, orderId = orderId, betAmount = betAmount,
-                            winAmount = winAmount, betTime = betTime, settleTime = settleTime, originData = originData)
+                            winAmount = winAmount, betTime = betTime, settleTime = settleTime, originData = originData, validAmount = turnover)
                 }
 
                 nextId to orders

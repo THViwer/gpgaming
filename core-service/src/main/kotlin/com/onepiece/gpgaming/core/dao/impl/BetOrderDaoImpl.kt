@@ -27,6 +27,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
             val orderId = rs.getString("order_id")
             val betAmount = rs.getBigDecimal("bet_amount")
+            val validAmount = rs.getBigDecimal("valid_amount")
             val winAmount = rs.getBigDecimal("win_amount")
             val mark = rs.getBoolean("mark")
             val originData = rs.getString("origin_data")
@@ -37,7 +38,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
 
             BetOrder(id = id, clientId = clientId, memberId = memberId, platform = platform, orderId = orderId, betAmount = betAmount,
                     winAmount = winAmount, mark = mark, originData = originData, betTime = betTime, settleTime = settleTime,
-                    createdTime = createdTime, status = status)
+                    createdTime = createdTime, status = status, validAmount = validAmount)
         }
 
     override fun batch(orders: List<BetOrderValue.BetOrderCo>) {

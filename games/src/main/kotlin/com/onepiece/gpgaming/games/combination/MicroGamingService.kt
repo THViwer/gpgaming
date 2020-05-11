@@ -294,7 +294,7 @@ class MicroGamingService : PlatformService() {
 
             val originData = objectMapper.writeValueAsString(bet.data)
             BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, platform = platform, betAmount = betAmount,
-                    winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData)
+                    winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
         }
     }
 }

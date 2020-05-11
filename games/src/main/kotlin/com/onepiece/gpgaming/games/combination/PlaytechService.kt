@@ -173,7 +173,7 @@ class PlaytechService(
                     val platform = if (gameType.toLowerCase().contains("slot")) Platform.PlaytechSlot else Platform.PlaytechLive
 
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform, orderId = orderId, betAmount = betAmount,
-                            winAmount = winAmount, originData = originData, betTime = betTime, settleTime = betTime)
+                            winAmount = winAmount, originData = originData, betTime = betTime, settleTime = betTime, validAmount = betAmount)
                 }
 
                 orders.addAll(list)

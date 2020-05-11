@@ -267,7 +267,7 @@ class TTGService(
 
                 val originData = objectMapper.writeValueAsString(it.data)
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, betTime = betTime, betAmount = betAmount,
-                        winAmount = winAmount, originData = originData, platform = Platform.TTG, settleTime = betTime)
+                        winAmount = winAmount, originData = originData, platform = Platform.TTG, settleTime = betTime, validAmount = betAmount)
             } catch (e: Exception) {
 
                 if (e is java.lang.NumberFormatException) {

@@ -228,7 +228,7 @@ class EvolutionService : PlatformService() {
 
                     val originData = objectMapper.writeValueAsString(bet)
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Evolution, orderId = orderId, betTime = betTime,
-                            settleTime = settleTime, betAmount = betAmount, winAmount = winAmount, originData = originData)
+                            settleTime = settleTime, betAmount = betAmount, winAmount = winAmount, originData = originData, validAmount = betAmount)
                 }
 
             }.reduce { acc, list -> acc.plus(list) }

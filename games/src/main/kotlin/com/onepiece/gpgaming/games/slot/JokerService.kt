@@ -229,7 +229,7 @@ class JokerService : PlatformService() {
                 val originData = objectMapper.writeValueAsString(bet
                 )
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = member, orderId = orderId, platform = Platform.Joker, betAmount = betAmount,
-                        winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData)
+                        winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
             }
 
             result.nextId to orders

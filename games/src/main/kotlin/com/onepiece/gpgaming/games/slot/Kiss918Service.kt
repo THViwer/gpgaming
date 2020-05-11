@@ -228,7 +228,7 @@ class Kiss918Service (
             val originData = objectMapper.writeValueAsString(bet.data)
 
             BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Kiss918, orderId = orderId, betAmount = betAmount,
-                    winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData)
+                    winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
         }
     }
 
