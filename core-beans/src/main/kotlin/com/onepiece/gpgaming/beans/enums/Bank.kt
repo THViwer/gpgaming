@@ -7,16 +7,20 @@ enum class Bank(
         val logo: String,
         val grayLogo: String,
 
+        val country: Country,
         val mLogo: String,
         val mGrayLogo: String
 ) {
+
+    // 马来西亚
 
     MBB(
             cname = "MAYBANK",
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/MBB_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/MBB_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0006_MBB_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/MBB_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/MBB_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     CIMB(
@@ -24,15 +28,18 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/CIMB_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/CIMB_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0010_CIMB_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/CIMB_withdrawGray.png"
-            ),
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/CIMB_withdrawGray.png",
+            country = Country.Malaysia
+
+    ),
 
     HLB(
             cname = "HONG LEONG",
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/HLB_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/HLB_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0008_HLB_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/HLB_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/HLB_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     PBB(
@@ -40,7 +47,8 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/PBB_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/PBB_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0003_PBB_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/PBB_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/PBB_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     RHB(
@@ -48,7 +56,8 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/RHB_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/RHB_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0002_RHB_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/RHB_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/RHB_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     AMB(
@@ -56,7 +65,8 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/AMB_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/AMB_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0014_AMB_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/AMB_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/AMB_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     UOB(
@@ -64,7 +74,8 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/UOB_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/UOB_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0000_UOB_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/UOB_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/UOB_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     RAKYAT(
@@ -72,7 +83,8 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/BR_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/BR_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0012_BR_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/BR_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/BR_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     OCBC(
@@ -80,7 +92,8 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/OCBC_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/OCBC_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0005_OCBC_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/OCBC_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/OCBC_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     HSBC(
@@ -88,7 +101,8 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/HSBC_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/HSBC_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0007_HSBC_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/HSBC_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/HSBC_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     ISLAM(
@@ -96,7 +110,8 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/BIMB_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/BIMB_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0013_BIMB_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/BIMB_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/BIMB_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     AFFIN(
@@ -104,7 +119,8 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/AFFIN_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/AFFIN_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0016_AFFIN_withdraw.pngg",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/AFFIN_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/AFFIN_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     ALLIANCE(
@@ -112,7 +128,8 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/ALLIANCE_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/ALLIANCE_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0015_ALLIANCE_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/ALLIANCE_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/ALLIANCE_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     BSN(
@@ -120,7 +137,8 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/BSN_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/BSN_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0011_BSN_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/BSN_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/BSN_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     CITI(
@@ -128,7 +146,8 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/CITI_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/CITI_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0009_CITI_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/CITI_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/CITI_withdrawGray.png",
+            country = Country.Malaysia
     ),
 
     SCB(
@@ -136,8 +155,12 @@ enum class Bank(
             logo = "${SystemConstant.AWS_BANK_LOGO_URL}/SCB_withdraw.png",
             grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/SCB_withdrawGray.png",
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0001_SCB_withdraw.png",
-            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/SCB_withdrawGray.png"
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/SCB_withdrawGray.png",
+            country = Country.Malaysia
     ),
+
+
+    // 新加坡
 
 
 

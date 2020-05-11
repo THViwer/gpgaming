@@ -93,12 +93,16 @@ interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "充值列表 -> 第三方+转账")
     fun pays(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: PayState?
     ): List<ThirdPayValue.OrderVo>
 
     @ApiOperation(tags = ["cash"], value = "充值列表")
     fun deposit(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: DepositState?,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
@@ -113,6 +117,8 @@ interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "取款列表")
     fun withdraw(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
@@ -151,10 +157,10 @@ interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "钱包明细(分页)")
     fun walletNotePage(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate,
             @RequestParam(value = "onlyPromotion", defaultValue = "false") onlyPromotion: Boolean,
             @RequestParam(value = "events", required = false) events: String?,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = false) startDate: LocalDate?,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate?,
             @RequestParam("current") current: Int,
             @RequestParam("size") size: Int
     ): Page<WalletNoteVo>

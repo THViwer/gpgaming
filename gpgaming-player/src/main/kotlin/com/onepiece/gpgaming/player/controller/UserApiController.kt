@@ -23,6 +23,7 @@ import com.onepiece.gpgaming.player.controller.value.PlatformMemberVo
 import com.onepiece.gpgaming.player.controller.value.RegisterReq
 import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.player.jwt.JwtUser
+import com.onepiece.gpgaming.utils.RequestUtil
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -53,7 +54,7 @@ class UserApiController(
 
         val bossId = getBossIdByDomain()
 
-        val loginValue = LoginValue(bossId = bossId, username = loginReq.username, password = loginReq.password, ip = getIpAddress())
+        val loginValue = LoginValue(bossId = bossId, username = loginReq.username, password = loginReq.password, ip = RequestUtil.getIpAddress())
         val member = memberService.login(loginValue)
 
         val webSites = webSiteService.all()

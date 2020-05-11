@@ -307,6 +307,8 @@ open class CashApiController(
 
     @GetMapping("/topup")
     override fun pays(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: PayState?
     ): List<ThirdPayValue.OrderVo> {
@@ -314,7 +316,7 @@ open class CashApiController(
         val member = current()
 
         val query = PayOrderValue.PayOrderQuery(clientId = member.clientId, memberId = member.id, state = state, orderId = orderId,
-                username = null, current = 0, size = 200, payType = null, startDate = null, endDate = null, memberIds = null)
+                username = null, current = 0, size = 200, payType = null, startDate = startDate, endDate = endDate.plusDays(1), memberIds = null)
         val page = payOrderService.page(query = query)
         val list1 = page.data.map {
             ThirdPayValue.OrderVo(orderId = it.orderId, payType = it.payType.name, state = it.state.name, createdTime = it.createdTime,
@@ -328,7 +330,7 @@ open class CashApiController(
             PayState.Close -> DepositState.Close
             else -> null
         }
-        val deposits = this.deposit(orderId = orderId, state = depositState, current = 0, size = 200)
+        val deposits = this.deposit(orderId = orderId, state = depositState, current = 0, size = 200, startDate = startDate, endDate = endDate)
         val list2 = deposits.data.map {
             ThirdPayValue.OrderVo(orderId = it.orderId, payType = "Transfer", state = it.state.name, createdTime = it.createdTime,
                     amount = it.money)
@@ -347,6 +349,8 @@ open class CashApiController(
 
     @GetMapping("/deposit")
     override fun deposit(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: DepositState?,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
@@ -355,7 +359,7 @@ open class CashApiController(
 
         val (clientId, memberId) = this.currentClientIdAndMemberId()
 
-        val depositQuery = DepositQuery(clientId = clientId, startTime = null, endTime = null, orderId = orderId,
+        val depositQuery = DepositQuery(clientId = clientId, startTime = startDate.atStartOfDay(), endTime = endDate.plusDays(1).atStartOfDay(), orderId = orderId,
                 memberId = memberId, state = state, lockWaiterId = null, clientBankIdList = null)
 
         val page = depositService.query(depositQuery, current, size)
@@ -395,6 +399,8 @@ open class CashApiController(
 
     @GetMapping("/withdraw")
     override fun withdraw(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate,
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
@@ -403,7 +409,7 @@ open class CashApiController(
 
         val (clientId, memberId) = this.currentClientIdAndMemberId()
 
-        val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = null, endTime = null, orderId = orderId,
+        val withdrawQuery = WithdrawQuery(clientId = clientId, startTime = startDate.atStartOfDay(), endTime = endDate.plusDays(1).atStartOfDay(), orderId = orderId,
                 memberId = memberId, state = state, lockWaiterId = null)
 
         val page = withdrawService.query(withdrawQuery, current, size)
@@ -670,10 +676,10 @@ open class CashApiController(
 
     @GetMapping("/wallet/note/page")
     override fun walletNotePage(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate,
             @RequestParam(value = "onlyPromotion", defaultValue = "false") onlyPromotion: Boolean,
             @RequestParam(value = "events", required = false) events: String?,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = false) startDate: LocalDate?,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate?,
             @RequestParam("current") current: Int,
             @RequestParam("size") size: Int
     ): Page<WalletNoteVo> {
@@ -685,7 +691,7 @@ open class CashApiController(
         }
 
         val walletNoteQuery = WalletNoteQuery(clientId = member.clientId, memberId = member.id, current = current, size = size, event = null,
-                events = eventList, onlyPromotion = onlyPromotion, startDate = startDate, endDate = endDate?.plusDays(1))
+                events = eventList, onlyPromotion = onlyPromotion, startDate = startDate, endDate = endDate.plusDays(1))
 
         val total = walletNoteService.total(walletNoteQuery)
         if (total <= 0) return Page.empty()

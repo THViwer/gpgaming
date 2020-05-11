@@ -35,7 +35,8 @@ class EvolutionService : PlatformService() {
 
 
     override fun register(registerReq: GameValue.RegisterReq): String {
-        val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, launch = LaunchMethod.Web, language = Language.EN, password = "-", redirectUrl = RequestUtil.getRequest().requestURI)
+        val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, launch = LaunchMethod.Web,
+                language = Language.EN, password = "-", redirectUrl = RequestUtil.getRequest().requestURI)
         this.start(startReq)
 
         return registerReq.username
@@ -97,6 +98,8 @@ class EvolutionService : PlatformService() {
     override fun start(startReq: GameValue.StartReq): String {
         val token = startReq.token as EvolutionClientToken
 
+        val ip = RequestUtil.getIpAddress()
+
         val uuid = UUID.randomUUID().toString()
         val lang = when (startReq.language) {
             Language.EN -> "en"
@@ -106,50 +109,6 @@ class EvolutionService : PlatformService() {
             Language.MY -> "ms"
             else -> "en"
         }
-//        val json = """
-//            {
-//               "uuid":"$uuid",
-//               "player":{
-//                  "id":"${startReq.username}",
-//                  "update":true,
-//                  "firstName":"firstName",
-//                  "lastName":"lastName",
-//                  "nickname":"nickname",
-//                  "country":"MY",
-//                  "language":"$lang",
-//                  "currency":"${token.currency}",
-//                  "session":{
-//                     "id":"$uuid",
-//                     "ip":"192.168.0.1"
-//                  }
-//               },
-//               "config":{
-//                  "brand":{
-//                     "id":"1",
-//                     "skin":"1"
-//                  },
-//                  "game":{
-//                     "category":"TopGames",
-//                     "interface":"view1",
-//                     "table":{
-//                        "id":"leqhceumaq6qfoug"
-//                     }
-//                  },
-//                  "channel":{
-//                     "wrapped":false,
-//                     "mobile":false
-//                  },
-//                  "urls":{
-//                     "cashier":"http://www.chs.ee",
-//                     "responsibleGaming":"http://www.RGam.ee",
-//                     "lobby":"http://www.lobb.ee",
-//                     "sessionTimeout":"http://www.sesstm.ee"
-//                  }
-//               }
-//            }
-//
-//        """.trimIndent()
-
         val json = """
             {
                "uuid":"$uuid",
@@ -164,7 +123,7 @@ class EvolutionService : PlatformService() {
                   "currency":"${token.currency}",
                   "session":{
                      "id":"$uuid",
-                     "ip":"192.168.0.1"
+                     "ip":"$ip"
                   }
                },
                "config":{

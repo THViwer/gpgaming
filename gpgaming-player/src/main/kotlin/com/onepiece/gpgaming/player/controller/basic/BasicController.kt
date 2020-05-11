@@ -40,40 +40,7 @@ abstract class BasicController {
     @Autowired
     lateinit var gamePlatformService: GamePlatformService
 
-    /**
-     * 获得请求ip
-     */
-    fun getIpAddress(): String {
-        val request = this.getRequest()
 
-        var ip = request.getHeader("x-forwarded-for")
-        if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
-            ip = request.getHeader("Proxy-Client-IP")
-            log.info("Proxy-Client-IP = $ip")
-        }
-
-        if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
-            ip = request.getHeader("WL-Proxy-Client-IP")
-            log.info("WL-Proxy-Client-IP = $ip")
-        }
-
-        if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
-            ip = request.getHeader("HTTP_CLIENT_IP")
-            log.info("HTTP_CLIENT_IP = $ip")
-        }
-
-        if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR")
-            log.info("HTTP_X_FORWARDED_FOR = $ip")
-        }
-
-        if (ip.isNullOrBlank() || "unknown" == ip.toLowerCase()) {
-            ip = request.remoteAddr
-            log.info("request.remoteAddr = $ip")
-        }
-
-        return ip.split(",").first()
-    }
 
     fun getClientIdByDomain(): Int {
         val request = this.getRequest()
