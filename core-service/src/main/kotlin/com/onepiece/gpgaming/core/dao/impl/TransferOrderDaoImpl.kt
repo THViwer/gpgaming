@@ -32,6 +32,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
             val username = rs.getString("username")
             val money = rs.getBigDecimal("money")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
+            val requirementBet = rs.getBigDecimal("requirement_bet")
             val joinPromotionId = rs.getInt("join_promotion_id")
             val promotionJson = rs.getString("promotion_json")
             val transferOutAmount = rs.getBigDecimal("transfer_out_amount")
@@ -44,7 +45,8 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
 
             TransferOrder(orderId = orderId, clientId = clientId, memberId = memberId, money = money, promotionAmount = promotionAmount,
                     from = from, to = to, state = state, createdTime = createdTime, updatedTime = updatedTime, joinPromotionId = joinPromotionId,
-                    promotionJson = promotionJson, username = username, status = status, transferOutAmount = transferOutAmount)
+                    promotionJson = promotionJson, username = username, status = status, transferOutAmount = transferOutAmount,
+                    requirementBet = requirementBet)
         }
 
     override fun create(transferOrderCo: TransferOrderCo): Boolean {
@@ -55,6 +57,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .set("username", transferOrderCo.username)
                 .set("money", transferOrderCo.money)
                 .set("promotion_amount", transferOrderCo.promotionAmount)
+                .set("requirement_bet", transferOrderCo.requirementBet)
                 .set("from", transferOrderCo.from)
                 .set("to", transferOrderCo.to)
                 .set("join_promotion_id", transferOrderCo.joinPromotionId)
@@ -72,7 +75,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
     }
 
     override fun memberPlatformReport(query: TransferReportQuery): List<MemberTransferPlatformReportVo> {
-        return query("client_id, member_id, `from`, `to`, sum(money) as money")
+        return query("client_id, member_id, `from`, `to`, sum(money) as money, sum(promotion_amount) as promotion_amount, sum(requirement_bet) as requirement_bet")
                 .asWhere("created_time >= ?", query.startDate)
                 .asWhere("created_time < ?", query.endDate)
                 .where("state", TransferState.Successful)
@@ -85,7 +88,11 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                     val from = rs.getString("from").let { Platform.valueOf(it) }
                     val to = rs.getString("to").let{ Platform.valueOf(it) }
                     val money = rs.getBigDecimal("money")
-                    MemberTransferPlatformReportVo(clientId = clientId, memberId = memberId, from = from, to = to, money = money)
+                    val promotionAmount = rs.getBigDecimal("promotion_amount")
+                    val requirementBet = rs.getBigDecimal("requirement_bet")
+
+                    MemberTransferPlatformReportVo(clientId = clientId, memberId = memberId, from = from, to = to, money = money, promotionAmount = promotionAmount,
+                            requirementBet = requirementBet)
                 }
     }
 

@@ -16,7 +16,7 @@ import com.onepiece.gpgaming.beans.value.database.ClientCo
 import com.onepiece.gpgaming.beans.value.database.ClientLoginValue
 import com.onepiece.gpgaming.beans.value.database.ClientUo
 import com.onepiece.gpgaming.beans.value.database.I18nContentCo
-import com.onepiece.gpgaming.beans.value.database.LevelCo
+import com.onepiece.gpgaming.beans.value.database.LevelValue
 import com.onepiece.gpgaming.beans.value.database.RecommendedValue
 import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
@@ -94,7 +94,8 @@ class ClientServiceImpl(
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // create default level
-        val levelCo = LevelCo(clientId = id, name = "default", backwater = BigDecimal.ZERO)
+        val levelCo = LevelValue.LevelCo(clientId = id, name = "default", slotRebate = BigDecimal.ZERO, liveRebate = BigDecimal.ZERO,
+                sportRebate = BigDecimal.ZERO)
         levelService.create(levelCo)
 
         // create own balance

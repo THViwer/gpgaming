@@ -1,13 +1,13 @@
 package com.onepiece.gpgaming.core.service.impl
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
-import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
+import com.onepiece.gpgaming.beans.model.Level
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
-import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.core.dao.ArtificialOrderDao
 import com.onepiece.gpgaming.core.dao.BetOrderDao
 import com.onepiece.gpgaming.core.dao.DepositDao
@@ -76,8 +76,8 @@ class ReportServiceImpl(
 
         // 查询转入订单
         val transferInQuery = TransferReportQuery(clientId = queryClientId, memberId = memberId, from = Platform.Center, to = null, startDate = startDate, endDate = endDate)
-        val transferInReports = transferOrderDao.memberReport(transferInQuery)
-        val transferInMap = transferInReports.map { it.memberId to it }.toMap()
+        val transferInReports = transferOrderDao.memberPlatformReport(transferInQuery)
+        val transferInMap = transferInReports.groupBy { it.memberId }.toMap()
 
         // 查询转出订单
         val transferOutQuery = TransferReportQuery(clientId = queryClientId, memberId = memberId, from = null, to = Platform.Center, startDate = startDate, endDate = endDate)
@@ -111,9 +111,13 @@ class ReportServiceImpl(
         return members.map { member ->
             val mid = member.id
 
-            val transferInReport = transferInMap[mid]
-            val transferIn = transferInReport?.money ?: BigDecimal.ZERO // 转入金额
-            val promotionMoney = transferInReport?.promotionAmount ?: BigDecimal.ZERO // 优惠金额
+
+//            val transferInReport = transferInMap[mid]
+//            val transferIn = transferInReport?.money ?: BigDecimal.ZERO // 转入金额
+//            val promotionMoney = transferInReport?.promotionAmount ?: BigDecimal.ZERO // 优惠金额
+            val transferIns = transferInMap[mid]?: emptyList()
+            val transferIn = transferIns.sumByDouble { it.money.toDouble() }.toBigDecimal().setScale(2, 2)
+            val promotionMoney = transferIns.sumByDouble { it.promotionAmount.toDouble() }.toBigDecimal().setScale(2, 2)
 
             val transferOutReport = transferOutMap[mid]
             val transferOut = transferOutReport?.money ?: BigDecimal.ZERO // 转出金额
@@ -143,11 +147,26 @@ class ReportServiceImpl(
             val totalBet = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额
             val totalMWin = settles.sumByDouble { it.cwin.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
 
-            // 返水比例和金额
-            val backwater = levelIds[member.levelId]?.backwater?: BigDecimal.ZERO
-            val backwaterMoney = totalBet.multiply(backwater).divide(BigDecimal.valueOf(100)).setScale(2, 2)
-                    .abs()
-            val backwaterExecution = backwaterMoney.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
+            //TODO 返水比例和金额
+            val level = levelIds[member.levelId]
+                    ?: Level(id = -1, clientId = -1, sportRebate = BigDecimal.ZERO, name = "", liveRebate = BigDecimal.ZERO, slotRebate = BigDecimal.ZERO,
+                            flshRebate = BigDecimal.ZERO, status = Status.Normal, createdTime = LocalDateTime.now())
+            val rebate = settles.sumByDouble {
+
+                // 公式 (有效打码-优惠金额需要打码) * 游戏平台返水比例
+                val requirementBet = transferIns.firstOrNull{ x -> it.platform == x.platform}?.requirementBet?: BigDecimal.ZERO
+                val validBet = it.validBet.minus(requirementBet)
+                when (it.platform.category) {
+                    PlatformCategory.Fishing -> validBet.divide(level.flshRebate).divide(BigDecimal.valueOf(100))
+                    PlatformCategory.Slot -> validBet.divide(level.slotRebate).divide(BigDecimal.valueOf(100))
+                    PlatformCategory.LiveVideo -> validBet.divide(level.liveRebate).divide(BigDecimal.valueOf(100))
+                    PlatformCategory.Sport -> validBet.divide(level.sportRebate).divide(BigDecimal.valueOf(100))
+                }.toDouble()
+            }.toBigDecimal().setScale(2, 2).let {
+                if (it.toDouble() <= 0) BigDecimal.ZERO else it
+            }
+
+            val rebateExecution = rebate.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
             val empty = transferIn.plus(transferOut).plus(depositMoney).plus(withdrawMoney).plus(artificialMoney).plus(thirdPayMoney)
                     .plus(totalBet)
@@ -158,8 +177,8 @@ class ReportServiceImpl(
                 MemberDailyReport(id = -1, day = startDate, clientId = member.clientId, memberId = mid, transferIn = transferIn,
                         transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney, depositCount = depositCount, withdrawCount = withdrawCount,
                         artificialMoney = artificialMoney,  artificialCount = artificialCount, settles = settles, totalMWin = totalMWin, totalBet = totalBet ,
-                        thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, backwater = backwater, backwaterMoney = backwaterMoney, createdTime = now,
-                        status = Status.Normal, backwaterExecution = backwaterExecution, promotionMoney = promotionMoney)
+                        thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, backwaterMoney = rebate, createdTime = now,
+                        status = Status.Normal, backwaterExecution = rebateExecution, promotionMoney = promotionMoney)
             }
         }.filterNotNull()
 

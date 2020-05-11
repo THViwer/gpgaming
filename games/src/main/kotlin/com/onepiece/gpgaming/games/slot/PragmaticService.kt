@@ -270,7 +270,7 @@ class PragmaticService: PlatformService() {
 
             val originData = objectMapper.writeValueAsString(bet.data)
             BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, platform = Platform.Pragmatic,
-                    betTime = betTime, settleTime = settleTime, orderId = orderId, originData = originData)
+                    betTime = betTime, settleTime = settleTime, orderId = orderId, originData = originData, validAmount = betAmount)
         }
 
     }

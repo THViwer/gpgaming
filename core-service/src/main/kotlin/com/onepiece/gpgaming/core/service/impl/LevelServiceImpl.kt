@@ -3,8 +3,7 @@ package com.onepiece.gpgaming.core.service.impl
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Level
-import com.onepiece.gpgaming.beans.value.database.LevelCo
-import com.onepiece.gpgaming.beans.value.database.LevelUo
+import com.onepiece.gpgaming.beans.value.database.LevelValue
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.LevelDao
 import com.onepiece.gpgaming.core.service.LevelService
@@ -28,14 +27,14 @@ class LevelServiceImpl(
         }
     }
 
-    override fun create(levelCo: LevelCo) {
+    override fun create(levelCo: LevelValue.LevelCo) {
         val state = levelDao.create(levelCo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         redisService.delete(OnePieceRedisKeyConstant.level(levelCo.clientId))
     }
 
-    override fun update(levelUo: LevelUo) {
+    override fun update(levelUo: LevelValue.LevelUo) {
 
         val level = levelDao.get(levelUo.id)
 //        check(level.name != "default") { OnePieceExceptionCode.DEFAULT_LEVEL_FAIL }

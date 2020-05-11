@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Service
-class DreamGamingService : PlatformService() {
+class   DreamGamingService : PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     private val log = LoggerFactory.getLogger(DreamGamingService::class.java)
@@ -217,6 +217,7 @@ class DreamGamingService : PlatformService() {
                     .set("orderId", "id")
                     .set("username", "userName")
                     .set("betAmount", "betPoints")
+                    .set("availableBet", "availableBet")
                     .set("winAmount", "winOrLoss")
                     .set("betTime", "betTime", dateTimeFormat)
                     .set("settleTime", "calTime", dateTimeFormat)

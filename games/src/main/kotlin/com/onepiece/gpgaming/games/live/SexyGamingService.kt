@@ -170,11 +170,14 @@ class SexyGamingService: PlatformService() {
             } catch (e: Exception) {
                 bet.asBigDecimal("betAmount")
             }
+
+            val realBetAmount = bet.asBigDecimal("realBetAmount")
             val winAmount = try {
                 bet.asBigDecimal("winAmt")
             } catch (e: Exception) {
                 bet.asBigDecimal("winAmount")
             }
+
 
             val settleTime = bet.asString("updateTime").substring(0, 19).let { LocalDateTime.parse(it) }
 
@@ -187,7 +190,7 @@ class SexyGamingService: PlatformService() {
             val originData = objectMapper.writeValueAsString(bet.data)
 
             BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, betTime = betTime,
-                    settleTime = settleTime, originData = originData, platform = Platform.SexyGaming)
+                    settleTime = settleTime, originData = originData, platform = Platform.SexyGaming, validAmount = realBetAmount)
         }
     }
 

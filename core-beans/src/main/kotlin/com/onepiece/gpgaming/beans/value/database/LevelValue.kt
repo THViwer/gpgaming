@@ -3,29 +3,45 @@ package com.onepiece.gpgaming.beans.value.database
 import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
 
-data class LevelUo(
 
-        // id
-        val id: Int,
+sealed class LevelValue {
 
-        // 名称
-        val name: String?,
+    data class LevelUo(
 
-        // 状态
-        val status: Status?,
+            // id
+            val id: Int,
 
-        // 返水比例
-        val backwater: BigDecimal?
-)
+            // 名称
+            val name: String?,
 
-data class LevelCo(
+            // 状态
+            val status: Status?,
 
-        // 厅主Id
-        val clientId: Int,
+            // 体育返水
+            val sportRebate: BigDecimal?,
 
-        // 名称
-        val name: String,
+            // 真人返水
+            val liveRebate: BigDecimal?,
 
-        // 返水比例
-        val backwater: BigDecimal
-)
+            // 老虎机返水
+            val slotRebate: BigDecimal?
+    )
+
+    data class LevelCo(
+
+            // 厅主Id
+            val clientId: Int,
+
+            // 名称
+            val name: String,
+
+            // 体育返水
+            val sportRebate: BigDecimal,
+
+            // 真人返水
+            val liveRebate: BigDecimal,
+
+            // 老虎机返水
+            val slotRebate: BigDecimal
+    )
+}

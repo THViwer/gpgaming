@@ -98,7 +98,11 @@ data class MemberTransferPlatformReportVo(
 
         val to: Platform,
 
-        val money: BigDecimal
+        val money: BigDecimal,
+
+        val promotionAmount: BigDecimal,
+
+        val requirementBet: BigDecimal
 ) {
 
     val platform: Platform

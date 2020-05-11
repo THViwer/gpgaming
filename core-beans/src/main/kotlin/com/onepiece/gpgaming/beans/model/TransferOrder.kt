@@ -23,6 +23,9 @@ data class TransferOrder(
         // 转账金额
         val money: BigDecimal,
 
+        // 需要打码金额
+        val requirementBet: BigDecimal,
+
         // 优惠活动金额
         val promotionAmount: BigDecimal,
 

@@ -2,8 +2,7 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.gpgaming.beans.value.database.LevelCo
-import com.onepiece.gpgaming.beans.value.database.LevelUo
+import com.onepiece.gpgaming.beans.value.database.LevelValue
 import com.onepiece.gpgaming.beans.value.database.WalletQuery
 import com.onepiece.gpgaming.beans.value.internet.web.LevelCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.LevelMemberVo
@@ -39,7 +38,8 @@ class LevelApiController(
 
         return levelService.all(clientId).map {
             val count = levelCountMap[it.id] ?: 0
-            LevelVo(id = it.id, name = it.name, status = it.status, createdTime = it.createdTime, total = count, backwater = it.backwater)
+            LevelVo(id = it.id, name = it.name, status = it.status, createdTime = it.createdTime, total = count, sportRebate = it.sportRebate,
+                    liveRebate = it.liveRebate, slotRebate = it.slotRebate)
         }
     }
 
@@ -51,13 +51,15 @@ class LevelApiController(
     @PostMapping
     override fun create(@RequestBody levelCoReq: LevelCoReq) {
         val clientId = getClientId()
-        val levelCo = LevelCo(clientId = clientId, name = levelCoReq.name, backwater = levelCoReq.backwater)
+        val levelCo = LevelValue.LevelCo(clientId = clientId, name = levelCoReq.name, sportRebate = levelCoReq.sportRebate, liveRebate = levelCoReq.liveRebate,
+                slotRebate = levelCoReq.slotRebate)
         levelService.create(levelCo)
     }
 
     @PutMapping
     override fun update(@RequestBody levelUoReq: LevelUoReq) {
-        val levelUo = LevelUo(id = levelUoReq.id, name = levelUoReq.name, status = levelUoReq.status, backwater = levelUoReq.backwater)
+        val levelUo = LevelValue.LevelUo(id = levelUoReq.id, name = levelUoReq.name, status = levelUoReq.status, sportRebate = levelUoReq.sportRebate,
+                liveRebate = levelUoReq.liveRebate, slotRebate = levelUoReq.slotRebate)
         levelService.update(levelUo)
     }
 

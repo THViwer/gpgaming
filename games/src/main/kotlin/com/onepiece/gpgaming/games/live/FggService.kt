@@ -167,14 +167,15 @@ class FggService: PlatformService() {
                 val orderId = bet.asString("BetID")
                 val username = bet.asString("Account")
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Fgg, platformUsername = username)
-                val betAmount = bet.asBigDecimal("Turnover")
+                val betAmount = bet.asBigDecimal("TotalBet")
+                val turnover = bet.asBigDecimal("Turnover") // TODO 有效投注
                 val winAmount = bet.asBigDecimal("TotalPay")
 
                 val betTime = bet.asLong("BetTime").let { LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.of("Asia/Shanghai"))  }
 
                 val originData = objectMapper.writeValueAsString(bet.data)
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, betAmount = betAmount, winAmount = winAmount,
-                        betTime = betTime, settleTime = betTime, platform = Platform.Fgg, originData = originData)
+                        betTime = betTime, settleTime = betTime, platform = Platform.Fgg, originData = originData, validAmount = turnover)
             }
 
             nextSortNo to orders

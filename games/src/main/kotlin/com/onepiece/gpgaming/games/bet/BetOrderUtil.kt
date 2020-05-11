@@ -21,6 +21,7 @@ class BetOrderUtil private constructor(
     var memberId: Int = 0
     var orderId: String = ""
     var betAmount: BigDecimal = BigDecimal.ZERO
+    var validAmount: BigDecimal = BigDecimal.ZERO
     var winAmount: BigDecimal = BigDecimal.ZERO
     var betTime: LocalDateTime = LocalDateTime.now()
     var settleTime: LocalDateTime = LocalDateTime.now()
@@ -87,12 +88,9 @@ class BetOrderUtil private constructor(
                 clientId = pair.first
                 memberId = pair.second
             }
-            "orderId" -> {
-                orderId = mapUtil.asString(key)
-            }
-            "betAmount" -> {
-                betAmount = mapUtil.asBigDecimal(key)
-            }
+            "orderId" -> orderId = mapUtil.asString(key)
+            "betAmount" -> betAmount = mapUtil.asBigDecimal(key)
+            "validAmount" -> validAmount = mapUtil.asBigDecimal(key)
             "winAmount" -> winAmount = mapUtil.asBigDecimal(key)
             "betTime" -> betTime = mapUtil.asLocalDateTime(key, dateTimeFormatter)
             "settleTime" -> settleTime = mapUtil.asLocalDateTime(key, dateTimeFormatter)
@@ -106,7 +104,7 @@ class BetOrderUtil private constructor(
 
         val originData = objectMapper.writeValueAsString(mapUtil.data)
         return BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform,  orderId = orderId, betAmount = betAmount,
-                winAmount = winAmount, betTime = betTime, settleTime = settleTime, originData = originData)
+                winAmount = winAmount, betTime = betTime, settleTime = settleTime, originData = originData, validAmount = validAmount)
     }
 
 

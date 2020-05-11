@@ -29,6 +29,9 @@ data class BetOrder(
         // 下注金额
         val betAmount: BigDecimal,
 
+        // 有效投注金额
+        val validAmount: BigDecimal,
+
         // 获得金额
         val winAmount: BigDecimal,
 

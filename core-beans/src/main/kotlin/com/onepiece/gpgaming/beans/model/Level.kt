@@ -18,8 +18,17 @@ data class Level(
         // 名称
         val name: String,
 
-        // 反水比例
-        val backwater: BigDecimal,
+        // 体育返水
+        val sportRebate: BigDecimal,
+
+        // 真人返水
+        val liveRebate: BigDecimal,
+
+        // 老虎机返水
+        val slotRebate: BigDecimal,
+
+        // 捕鱼返水
+        val flshRebate: BigDecimal,
 
         // 状态
         val status: Status,

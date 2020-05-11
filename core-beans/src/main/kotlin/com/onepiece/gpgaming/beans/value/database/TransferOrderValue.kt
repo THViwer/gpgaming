@@ -25,6 +25,9 @@ data class TransferOrderCo(
         // 赠送金额
         val promotionAmount: BigDecimal,
 
+        // 需要打码金额
+        val requirementBet: BigDecimal,
+
         // 参加优惠活动Id
         val joinPromotionId: Int?,
 

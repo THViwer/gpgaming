@@ -197,7 +197,7 @@ class LbcService : PlatformService() {
 
                 val originData = objectMapper.writeValueAsString(bet.data)
                 BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount,
-                        platform = Platform.Lbc, betTime = betTime, settleTime = settleTime, originData = originData)
+                        platform = Platform.Lbc, betTime = betTime, settleTime = settleTime, originData = originData, validAmount = betAmount)
             }
 
             lastVersionKey to orders.plus(virtualSportDetails)

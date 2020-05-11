@@ -226,7 +226,8 @@ class JokerService : PlatformService() {
                 val winAmount = bet.asBigDecimal("Result")
                 val betTime = bet.asString("Time").substring(0, 19).let { LocalDateTime.parse(it) }
 
-                val originData = objectMapper.writeValueAsString(betTime)
+                val originData = objectMapper.writeValueAsString(bet
+                )
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = member, orderId = orderId, platform = Platform.Joker, betAmount = betAmount,
                         winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData)
             }

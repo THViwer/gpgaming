@@ -58,9 +58,6 @@ data class MemberDailyReport(
         // 取款金额
         val withdrawMoney: BigDecimal,
 
-        // 返水比例
-        val backwater: BigDecimal,
-
         // 返水金额
         val backwaterMoney: BigDecimal,
 
@@ -100,6 +97,9 @@ data class MemberDailyReport(
 
             // 下注
             val bet: BigDecimal = BigDecimal.ZERO,
+
+            // 有效投注
+            val validBet: BigDecimal = BigDecimal.ZERO,
 
             // 顾客盈利
             val mwin: BigDecimal = BigDecimal.ZERO

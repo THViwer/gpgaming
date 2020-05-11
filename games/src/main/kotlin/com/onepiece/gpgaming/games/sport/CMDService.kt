@@ -170,7 +170,7 @@ class CMDService : PlatformService() {
                 if (nextId < orderId) nextId = orderId
 
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, platform = Platform.CMD, betAmount = betAmount, winAmount = winAmount,
-                        betTime = betTime, settleTime = settleTime, originData = originData)
+                        betTime = betTime, settleTime = settleTime, originData = originData, validAmount = betAmount)
             }
 
             nextId to orders

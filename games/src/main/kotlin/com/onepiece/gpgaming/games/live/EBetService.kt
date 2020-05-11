@@ -1,7 +1,6 @@
 package com.onepiece.gpgaming.games.live
 
 import com.onepiece.gpgaming.beans.enums.Language
-import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.EBetClientToken
@@ -52,7 +51,7 @@ class EBetService(
 
     override fun register(registerReq: GameValue.RegisterReq): String {
         val clientToken = registerReq.token as EBetClientToken
-        val data = hashMapOf(
+        val data = hashMapOf<String, Any>(
                 "channelId" to clientToken.channelId,
                 "username" to registerReq.username,
                 "subChannelId" to 0,
@@ -79,7 +78,7 @@ class EBetService(
 
         val clientToken = transferReq.token as EBetClientToken
 
-        val data = hashMapOf(
+        val data = hashMapOf<String, Any>(
                 "channelId" to clientToken.channelId,
                 "username" to transferReq.username,
                 "timestamp" to System.currentTimeMillis(),
@@ -142,6 +141,7 @@ class EBetService(
 
         return result.mapUtil.asList("betHistories").map { mapUtil ->
             val bet = mapUtil.asBigDecimal("bet")
+            val validBet = mapUtil.asBigDecimal("validBet")
             val win = mapUtil.asBigDecimal("payout")
             val orderId = mapUtil.asString("roundNo")
             val username = mapUtil.asString("username")
@@ -161,7 +161,7 @@ class EBetService(
 
             val originData = objectMapper.writeValueAsString(mapUtil.data)
             BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = bet, winAmount = win, orderId = orderId, betTime = betTime, settleTime = settleTime,
-                    originData = originData, platform = Platform.EBet)
+                    originData = originData, platform = Platform.EBet, validAmount = validBet)
         }
     }
 

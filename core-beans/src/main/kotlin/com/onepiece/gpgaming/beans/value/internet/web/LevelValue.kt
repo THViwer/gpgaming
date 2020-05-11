@@ -17,8 +17,14 @@ data class LevelVo(
         @ApiModelProperty("总人数")
         val total: Int,
 
-        @ApiModelProperty("反水比例")
-        val backwater: BigDecimal,
+        @ApiModelProperty("体育返水")
+        val sportRebate: BigDecimal,
+
+        @ApiModelProperty("真人返水")
+        val liveRebate: BigDecimal,
+
+        @ApiModelProperty("老虎机返水")
+        val slotRebate: BigDecimal,
 
         @ApiModelProperty("状态")
         val status: Status,
@@ -37,8 +43,15 @@ data class LevelUoReq(
         @ApiModelProperty("状态")
         val status: Status?,
 
-        @ApiModelProperty("返水比例")
-        val backwater: BigDecimal?
+        @ApiModelProperty("体育返水")
+        val sportRebate: BigDecimal,
+
+        @ApiModelProperty("真人返水")
+        val liveRebate: BigDecimal,
+
+        @ApiModelProperty("老虎机返水")
+        val slotRebate: BigDecimal
+
 )
 
 data class LevelMemberQuery(
@@ -108,8 +121,14 @@ data class LevelCoReq(
         @ApiModelProperty("名称")
         val name: String,
 
-        @ApiModelProperty("返水比例")
-        val backwater: BigDecimal
+        @ApiModelProperty("体育返水")
+        val sportRebate: BigDecimal,
+
+        @ApiModelProperty("真人返水")
+        val liveRebate: BigDecimal,
+
+        @ApiModelProperty("老虎机返水")
+        val slotRebate: BigDecimal
 
 )
 
