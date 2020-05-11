@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.player.controller
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
@@ -22,6 +23,7 @@ import com.onepiece.gpgaming.player.controller.value.PlatformMemberVo
 import com.onepiece.gpgaming.player.controller.value.RegisterReq
 import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.player.jwt.JwtUser
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -40,6 +42,8 @@ class UserApiController(
         private val levelService: LevelService,
         private val clientService: ClientService
 ) : BasicController(), UserApi {
+
+    private val log = LoggerFactory.getLogger(UserApiController::class.java)
 
     @PostMapping
     override fun login(
@@ -108,6 +112,8 @@ class UserApiController(
         check(registerReq.country != Country.Default)
 
         val bossId = getBossIdByDomain()
+        log.info("bossId = $bossId")
+        log.info("clients = ${clientService.all()}")
         val client = clientService.all().filter { it.bossId == bossId }.first { it.country == registerReq.country }
         val clientId = client.id
 
