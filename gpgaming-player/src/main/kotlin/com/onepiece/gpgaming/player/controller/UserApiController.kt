@@ -122,10 +122,21 @@ class UserApiController(
     @GetMapping("/country")
     override fun countries(): List<Country> {
 
-        val bossId = getBossIdByDomain()
+        val clientId = getClientIdByDomain()
+        val client = clientService.get(clientId)
+
+        val bossId = client.bossId
         val clients = clientService.all().filter { it.bossId == bossId }
 
-        return clients.map { it.country }
+        return clients.filter { it.country != Country.Default }.map {
+
+            if (it.id == clientId) {
+                0 to it.country
+            } else {
+                1 to it.country
+            }
+        }.sortedBy { it.first }
+                .map { it.second }
     }
 
     @GetMapping("/check/{username}")
