@@ -75,9 +75,6 @@ data class MemberReportWebVo(
         // 盈利金额
         val totalMWin: BigDecimal,
 
-        // 返水比例
-        val backwater: BigDecimal,
-
         // 返水金额
         val backwaterMoney: BigDecimal,
 

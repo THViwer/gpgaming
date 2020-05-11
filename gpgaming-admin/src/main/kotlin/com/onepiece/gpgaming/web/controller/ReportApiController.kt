@@ -180,7 +180,7 @@ class ReportApiController(
                             transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney,
                             withdrawMoney = withdrawMoney, artificialMoney = artificialMoney, artificialCount = artificialCount,
                             settles = it.settles, totalMWin = it.totalMWin, totalBet = it.totalBet, thirdPayCount = thirdPayCount,
-                            thirdPayMoney = thirdPayMoney, backwater = it.backwater,  backwaterMoney = it.backwaterMoney,
+                            thirdPayMoney = thirdPayMoney,  backwaterMoney = it.backwaterMoney,
                             promotionMoney = it.promotionMoney)
                 }
             } catch (e: Exception) {

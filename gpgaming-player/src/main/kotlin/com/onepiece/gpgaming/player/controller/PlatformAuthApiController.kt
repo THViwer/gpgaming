@@ -257,7 +257,7 @@ class PlatformAuthApiController(
 
             val originData = objectMapper.writeValueAsString(bet)
             BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, platform = Platform.PNG, betAmount = betAmount, winAmount = winAmount,
-                    originData = originData, betTime = betTime, settleTime = betTime)
+                    originData = originData, betTime = betTime, settleTime = betTime, validAmount = betAmount)
         }
 
         betOrderService.batch(orders)

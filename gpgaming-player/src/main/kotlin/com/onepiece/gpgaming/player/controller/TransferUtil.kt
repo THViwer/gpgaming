@@ -189,7 +189,8 @@ open class TransferUtil(
         // 生成转账订单
         val promotionAmount = platformMemberTransferUo?.promotionAmount?: BigDecimal.ZERO
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = promotionAmount,
-                from = from, to = to, joinPromotionId = platformMemberTransferUo?.joinPromotionId, promotionJson = platformMemberTransferUo?.promotionJson, username = username)
+                from = from, to = to, joinPromotionId = platformMemberTransferUo?.joinPromotionId, promotionJson = platformMemberTransferUo?.promotionJson, username = username,
+                requirementBet = platformMemberTransferUo?.requirementBet?: BigDecimal.ZERO)
         transferOrderService.create(transferOrderCo)
 
         // 平台钱包更改信息
@@ -329,7 +330,7 @@ open class TransferUtil(
         // 生成转账订单
         val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "in", platformUsername = platformMember.username)
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = BigDecimal.ZERO,
-                from = from, to = to, joinPromotionId = null, promotionJson = null, username = username)
+                from = from, to = to, joinPromotionId = null, promotionJson = null, username = username, requirementBet = BigDecimal.ZERO)
         transferOrderService.create(transferOrderCo)
 
 
