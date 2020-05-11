@@ -39,6 +39,7 @@ class ClientBankServiceImpl(
 
         val hasClientBank = clientBankDao.get(clientBankUo.id)
 
+
         val state = clientBankDao.update(clientBankUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 

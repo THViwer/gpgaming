@@ -42,7 +42,7 @@ class WaiterApiController(
 
         return waiterService.findClientWaiters(clientId).map {
             with(it) {
-                val clientBankVoList = it.clientBanks?.map {  bankId ->
+                val clientBankVoList = it.clientBanks?.filter { bid -> clientBanks.containsKey(bid) }?.map {  bankId ->
                     val clientBank = clientBanks[bankId]!!
 
                     WaiterVo.ClientBankVo(bankId = bankId, clientCardNumber = clientBank.bankCardNumber, clientCardName = clientBank.name,
