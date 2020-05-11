@@ -69,7 +69,10 @@ data class PromotionVo(
         val i18nContents: List<I18nContent>,
 
         @ApiModelProperty("优惠规则")
-        val promotionRuleVo: PromotionRuleVo
+        val promotionRuleVo: PromotionRuleVo,
+
+        @ApiModelProperty("是否显示")
+        val show: Boolean
 
 )
 

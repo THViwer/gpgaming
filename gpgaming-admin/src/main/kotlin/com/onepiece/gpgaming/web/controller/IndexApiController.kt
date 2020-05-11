@@ -175,7 +175,7 @@ class IndexApiController(
             PromotionVo(id = promotion.id, clientId = promotion.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
                     status = promotion.status, createdTime = promotion.createdTime, updatedTime = promotion.updatedTime, i18nContents = i18nContents,
                     promotionRuleVo = promotionRuleVo, platforms = promotion.platforms, period = promotion.period, periodMaxPromotion = promotion.periodMaxPromotion,
-                    levelId = promotion.levelId, sequence = promotion.sequence)
+                    levelId = promotion.levelId, sequence = promotion.sequence, show = promotion.show)
         }
     }
 
