@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.enums.Country
+import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
@@ -120,7 +121,9 @@ class UserApiController(
     }
 
     @GetMapping("/country")
-    override fun countries(): List<Country> {
+    override fun countries(
+            @RequestHeader("language", defaultValue = "EN") language: Language
+    ): List<Country> {
 
         val clientId = getClientIdByDomain()
         val client = clientService.get(clientId)

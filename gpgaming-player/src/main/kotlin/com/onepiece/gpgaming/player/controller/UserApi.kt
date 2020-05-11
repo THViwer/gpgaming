@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.enums.Country
+import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.player.controller.value.ChangePwdReq
 import com.onepiece.gpgaming.player.controller.value.CheckUsernameResp
@@ -42,7 +43,9 @@ interface UserApi {
     ): LoginResp
 
     @ApiOperation(tags = ["user"], value = "可选国家列表")
-    fun countries(): List<Country>
+    fun countries(
+            @RequestHeader("language", defaultValue = "EN") language: Language
+    ): List<Country>
 
     @ApiOperation(tags = ["user"], value = "检查用户名是否存在")
     fun checkUsername(@PathVariable("username") username: String): CheckUsernameResp
