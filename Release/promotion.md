@@ -1,4 +1,4 @@
-live 新增：sport_rebate、live_rebate、slot_rebate、flsh_rebate 字段 移除backwater字段
+level 新增：sport_rebate、live_rebate、slot_rebate、flsh_rebate 字段 移除backwater字段
 BetOrder 新增: valid_amount(有效投注)字段
 TransferOrder 新增：requirement_bet (需要打码金额)
 

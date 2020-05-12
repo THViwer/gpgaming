@@ -142,7 +142,7 @@ class ReportServiceImpl(
 
             // 平台下注金额
             val settles = betMap[mid]?.map {
-                MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, mwin = it.totalWin)
+                MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, mwin = it.totalWin, validBet = it.validBet)
             }?: emptyList()
             val totalBet = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额
             val totalMWin = settles.sumByDouble { it.cwin.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
@@ -157,10 +157,10 @@ class ReportServiceImpl(
                 val requirementBet = transferIns.firstOrNull{ x -> it.platform == x.platform}?.requirementBet?: BigDecimal.ZERO
                 val validBet = it.validBet.minus(requirementBet)
                 when (it.platform.category) {
-                    PlatformCategory.Fishing -> validBet.divide(level.flshRebate).divide(BigDecimal.valueOf(100))
-                    PlatformCategory.Slot -> validBet.divide(level.slotRebate).divide(BigDecimal.valueOf(100))
-                    PlatformCategory.LiveVideo -> validBet.divide(level.liveRebate).divide(BigDecimal.valueOf(100))
-                    PlatformCategory.Sport -> validBet.divide(level.sportRebate).divide(BigDecimal.valueOf(100))
+                    PlatformCategory.Fishing -> validBet.multiply(level.flshRebate).divide(BigDecimal.valueOf(100))
+                    PlatformCategory.Slot -> validBet.multiply(level.slotRebate).divide(BigDecimal.valueOf(100))
+                    PlatformCategory.LiveVideo -> validBet.multiply(level.liveRebate).divide(BigDecimal.valueOf(100))
+                    PlatformCategory.Sport -> validBet.multiply(level.sportRebate).divide(BigDecimal.valueOf(100))
                 }.toDouble()
             }.toBigDecimal().setScale(2, 2).let {
                 if (it.toDouble() <= 0) BigDecimal.ZERO else it

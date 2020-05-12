@@ -19,6 +19,9 @@ sealed class BetReportValue {
             // 下注金额
             val totalBet: BigDecimal,
 
+            // 有效投注
+            val validBet: BigDecimal,
+
             // 玩家盈利金额s
             val totalWin: BigDecimal
     )

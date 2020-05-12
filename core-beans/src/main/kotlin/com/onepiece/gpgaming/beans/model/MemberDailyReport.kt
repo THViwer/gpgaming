@@ -57,6 +57,18 @@ data class MemberDailyReport(
 
         // 取款金额
         val withdrawMoney: BigDecimal,
+//
+//        // 老虎机返水金额
+//        val slotRebate: BigDecimal,
+//
+//        // 捕鱼返水金额
+//        val flshRebate: BigDecimal,
+//
+//        // 真人返水金额
+//        val liveRebate: BigDecimal,
+//
+//        // 体育返水金额
+//        val sportRebate: BigDecimal,
 
         // 返水金额
         val backwaterMoney: BigDecimal,
