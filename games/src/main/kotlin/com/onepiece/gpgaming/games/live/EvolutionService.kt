@@ -119,7 +119,7 @@ class EvolutionService : PlatformService() {
                   "firstName":"firstName",
                   "lastName":"lastName",
                   "nickname":"nickname",
-                  "country":"MY",
+                  "country":"${token.betLimit}",
                   "language":"$lang",
                   "currency":"${token.currency}",
                   "session":{
@@ -142,51 +142,14 @@ class EvolutionService : PlatformService() {
                      "lobby":"http://www.lobb.ee",
                      "sessionTimeout":"http://www.sesstm.ee"
                   }
+               },
+               "group": {
+                  id: "${token.betLimit}",
+                  action: "assign"
                }
             }
 
         """.trimIndent()
-//
-//        val json = """
-//            {
-//               "uuid":"$uuid",
-//               "player":{
-//                  "id":"${startReq.username}",
-//                  "update":true,
-//                  "firstName":"firstName",
-//                  "lastName":"lastName",
-//                  "nickname":"nickname",
-//                  "country":"${token.betLimit}",
-//                  "language":"$lang",
-//                  "currency":"${token.currency}",
-//                  "session":{
-//                     "id":"$uuid",
-//                     "ip":"$ip"
-//                  }
-//               },
-//               "config":{
-//                  "brand":{
-//                     "id":"1",
-//                     "skin":"1"
-//                  },
-//                  "channel":{
-//                     "wrapped":false,
-//                     "mobile":false
-//                  },
-//                  "urls":{
-//                     "cashier":"http://www.chs.ee",
-//                     "responsibleGaming":"http://www.RGam.ee",
-//                     "lobby":"http://www.lobb.ee",
-//                     "sessionTimeout":"http://www.sesstm.ee"
-//                  }
-//               },
-//               "group": {
-//                  id: "${token.betLimit}",
-//                  action: "assign"
-//               }
-//            }
-//
-//        """.trimIndent()
 
         val url = "${token.apiPath}/ua/v1/${token.appId}/${token.key}"
         val result= okHttpUtil.doPostJson(platform = Platform.Evolution, url = url, data = json, clz = EvolutionValue.Result::class.java)
