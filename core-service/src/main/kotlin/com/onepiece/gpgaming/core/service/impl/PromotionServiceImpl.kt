@@ -73,7 +73,7 @@ class PromotionServiceImpl(
         // 更新优惠记录
         val promotionUo = PromotionUo(id = promotionUoReq.id, category = promotionUoReq.category, stopTime = promotionUoReq.stopTime,
                 top = promotionUoReq.top, status = promotionUoReq.status, levelId = promotionUoReq.levelId, periodMaxPromotion = promotionUoReq.periodMaxPromotion,
-                ruleJson = promotionUoReq.promotionRuleVo?.ruleJson, platforms = promotionUoReq.platforms, period = promotionUoReq.period, sequence = promotion.sequence,
+                ruleJson = promotionUoReq.promotionRuleVo?.ruleJson, platforms = promotionUoReq.platforms, period = promotionUoReq.period, sequence = promotionUoReq.sequence,
                 show = promotionUoReq.show)
         val state = promotionDao.update(promotionUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
