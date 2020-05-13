@@ -118,7 +118,7 @@ class EvolutionService : PlatformService() {
                   "firstName":"firstName",
                   "lastName":"lastName",
                   "nickname":"nickname",
-                  "country":"MY",
+                  "country":"${token.betLimit}",
                   "language":"$lang",
                   "currency":"${token.currency}",
                   "session":{
@@ -141,6 +141,10 @@ class EvolutionService : PlatformService() {
                      "lobby":"http://www.lobb.ee",
                      "sessionTimeout":"http://www.sesstm.ee"
                   }
+               },
+               "group": {
+                  id: "${token.betLimit}",
+                  action: "assign"
                }
             }
 

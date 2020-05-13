@@ -14,6 +14,10 @@ class EvolutionClientToken(
 
         val password: String,
 
-        val currency: String
+        val currency: String,
+
+        val country: String,
+
+        val betLimit: String
 
 ) : ClientToken
