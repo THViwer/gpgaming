@@ -492,6 +492,7 @@ open class CashApiController(
 
         val member = memberService.getMember(current.id)
         val promotions = promotionService.find(clientId = current.clientId, platform = platform).filter { it.category != PromotionCategory.Backwater }
+                .filter { it.category != PromotionCategory.Other }
 
         log.info("用户：${current.username}, 优惠列表：$promotions")
 
