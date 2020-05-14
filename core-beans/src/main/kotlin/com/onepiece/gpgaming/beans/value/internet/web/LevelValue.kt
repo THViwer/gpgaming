@@ -27,7 +27,7 @@ data class LevelVo(
         val slotRebate: BigDecimal,
 
         @ApiModelProperty("捕鱼返水")
-        val flshRebate: BigDecimal,
+        val fishRebate: BigDecimal,
 
         @ApiModelProperty("状态")
         val status: Status,
@@ -53,7 +53,10 @@ data class LevelUoReq(
         val liveRebate: BigDecimal,
 
         @ApiModelProperty("老虎机返水")
-        val slotRebate: BigDecimal
+        val slotRebate: BigDecimal,
+
+        @ApiModelProperty("老虎机返水")
+        val fishRebate: BigDecimal
 
 )
 
@@ -131,7 +134,10 @@ data class LevelCoReq(
         val liveRebate: BigDecimal,
 
         @ApiModelProperty("老虎机返水")
-        val slotRebate: BigDecimal
+        val slotRebate: BigDecimal,
+
+        @ApiModelProperty("老虎机返水")
+        val fishRebate: BigDecimal
 
 )
 

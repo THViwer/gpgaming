@@ -39,7 +39,7 @@ class LevelApiController(
         return levelService.all(clientId).map {
             val count = levelCountMap[it.id] ?: 0
             LevelVo(id = it.id, name = it.name, status = it.status, createdTime = it.createdTime, total = count, sportRebate = it.sportRebate,
-                    liveRebate = it.liveRebate, slotRebate = it.slotRebate, flshRebate = it.flshRebate)
+                    liveRebate = it.liveRebate, slotRebate = it.slotRebate, fishRebate = it.fishRebate)
         }
     }
 
@@ -52,14 +52,14 @@ class LevelApiController(
     override fun create(@RequestBody levelCoReq: LevelCoReq) {
         val clientId = getClientId()
         val levelCo = LevelValue.LevelCo(clientId = clientId, name = levelCoReq.name, sportRebate = levelCoReq.sportRebate, liveRebate = levelCoReq.liveRebate,
-                slotRebate = levelCoReq.slotRebate)
+                slotRebate = levelCoReq.slotRebate, fishRebate = levelCoReq.fishRebate)
         levelService.create(levelCo)
     }
 
     @PutMapping
     override fun update(@RequestBody levelUoReq: LevelUoReq) {
         val levelUo = LevelValue.LevelUo(id = levelUoReq.id, name = levelUoReq.name, status = levelUoReq.status, sportRebate = levelUoReq.sportRebate,
-                liveRebate = levelUoReq.liveRebate, slotRebate = levelUoReq.slotRebate)
+                liveRebate = levelUoReq.liveRebate, slotRebate = levelUoReq.slotRebate, fishRebate = levelUoReq.fishRebate)
         levelService.update(levelUo)
     }
 

@@ -95,7 +95,7 @@ class ClientServiceImpl(
 
         // create default level
         val levelCo = LevelValue.LevelCo(clientId = id, name = "default", slotRebate = BigDecimal.ZERO, liveRebate = BigDecimal.ZERO,
-                sportRebate = BigDecimal.ZERO)
+                sportRebate = BigDecimal.ZERO, fishRebate = BigDecimal.ZERO)
         levelService.create(levelCo)
 
         // create own balance

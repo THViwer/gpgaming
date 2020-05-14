@@ -24,7 +24,10 @@ sealed class LevelValue {
             val liveRebate: BigDecimal?,
 
             // 老虎机返水
-            val slotRebate: BigDecimal?
+            val slotRebate: BigDecimal?,
+
+            // 捕鱼返水
+            val fishRebate: BigDecimal?
     )
 
     data class LevelCo(
@@ -42,6 +45,10 @@ sealed class LevelValue {
             val liveRebate: BigDecimal,
 
             // 老虎机返水
-            val slotRebate: BigDecimal
+            val slotRebate: BigDecimal,
+
+            // 捕鱼返水
+            val fishRebate: BigDecimal
+
     )
 }

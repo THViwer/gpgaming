@@ -28,7 +28,7 @@ data class Level(
         val slotRebate: BigDecimal,
 
         // 捕鱼返水
-        val flshRebate: BigDecimal,
+        val fishRebate: BigDecimal,
 
         // 状态
         val status: Status,

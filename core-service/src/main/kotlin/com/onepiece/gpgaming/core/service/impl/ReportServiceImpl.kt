@@ -150,14 +150,14 @@ class ReportServiceImpl(
             //TODO 返水比例和金额
             val level = levelIds[member.levelId]
                     ?: Level(id = -1, clientId = -1, sportRebate = BigDecimal.ZERO, name = "", liveRebate = BigDecimal.ZERO, slotRebate = BigDecimal.ZERO,
-                            flshRebate = BigDecimal.ZERO, status = Status.Normal, createdTime = LocalDateTime.now())
+                            fishRebate = BigDecimal.ZERO, status = Status.Normal, createdTime = LocalDateTime.now())
             val rebate = settles.sumByDouble {
 
                 // 公式 (有效打码-优惠金额需要打码) * 游戏平台返水比例
                 val requirementBet = transferIns.firstOrNull{ x -> it.platform == x.platform}?.requirementBet?: BigDecimal.ZERO
                 val validBet = it.validBet.minus(requirementBet)
                 when (it.platform.category) {
-                    PlatformCategory.Fishing -> validBet.multiply(level.flshRebate).divide(BigDecimal.valueOf(100))
+                    PlatformCategory.Fishing -> validBet.multiply(level.fishRebate).divide(BigDecimal.valueOf(100))
                     PlatformCategory.Slot -> validBet.multiply(level.slotRebate).divide(BigDecimal.valueOf(100))
                     PlatformCategory.LiveVideo -> validBet.multiply(level.liveRebate).divide(BigDecimal.valueOf(100))
                     PlatformCategory.Sport -> validBet.multiply(level.sportRebate).divide(BigDecimal.valueOf(100))

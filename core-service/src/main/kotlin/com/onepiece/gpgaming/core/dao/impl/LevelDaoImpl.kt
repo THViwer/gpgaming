@@ -20,10 +20,10 @@ class LevelDaoImpl: BasicDaoImpl<Level>("level"), LevelDao {
             val sportRebate = rs.getBigDecimal("sport_rebate")
             val liveRebate = rs.getBigDecimal("live_rebate")
             val slotRebate = rs.getBigDecimal("slot_rebate")
-            val flshRebate = rs.getBigDecimal("flsh_rebate")
+            val fishRebate = rs.getBigDecimal("fish_rebate")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             Level(id = id, clientId = clientId, name = name, status = status, createdTime = createdTime,
-                    sportRebate = sportRebate, liveRebate = liveRebate, slotRebate = slotRebate, flshRebate = flshRebate)
+                    sportRebate = sportRebate, liveRebate = liveRebate, slotRebate = slotRebate, fishRebate = fishRebate)
         }
 
     override fun create(levelCo: LevelValue.LevelCo): Boolean {
@@ -33,6 +33,7 @@ class LevelDaoImpl: BasicDaoImpl<Level>("level"), LevelDao {
                 .set("sport_rebate", levelCo.sportRebate)
                 .set("live_rebate", levelCo.liveRebate)
                 .set("slot_rebate", levelCo.slotRebate)
+                .set("fish_rebate", levelCo.fishRebate)
                 .executeOnlyOne()
     }
 
@@ -43,6 +44,7 @@ class LevelDaoImpl: BasicDaoImpl<Level>("level"), LevelDao {
                 .set("sport_rebate", levelUo.sportRebate)
                 .set("live_rebate", levelUo.liveRebate)
                 .set("slot_rebate", levelUo.slotRebate)
+                .set("fish_rebate", levelUo.fishRebate)
                 .where("id", levelUo.id)
                 .executeOnlyOne()
     }
