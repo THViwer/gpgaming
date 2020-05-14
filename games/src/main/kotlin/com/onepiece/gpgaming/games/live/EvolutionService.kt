@@ -170,6 +170,10 @@ class EvolutionService : PlatformService() {
                   "session":{
                      "id":"$uuid",
                      "ip":"$ip"
+                  },
+                  "group": {
+                     "id": "${token.betLimit}",
+                     "action": "assign"
                   }
                },
                "config":{
@@ -187,13 +191,8 @@ class EvolutionService : PlatformService() {
                      "lobby":"http://www.lobb.ee",
                      "sessionTimeout":"http://www.sesstm.ee"
                   }
-               },
-               "group": {
-                  "id": "${token.betLimit}",
-                  "action": "assign"
                }
             }
-
         """.trimIndent()
 
         val url = "${token.apiPath}/ua/v1/${token.appId}/${token.key}"
