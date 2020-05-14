@@ -99,6 +99,14 @@ class EvolutionService : PlatformService() {
         val token = startReq.token as EvolutionClientToken
 
         val ip = RequestUtil.getIpAddress()
+                .let {
+                    if (it.length > 15) {
+                        // 如果是ip6 暂时用固定的
+                        "192.168.0.1"
+                    } else {
+                        it
+                    }
+                }
 
         val uuid = UUID.randomUUID().toString()
         val lang = when (startReq.language) {
