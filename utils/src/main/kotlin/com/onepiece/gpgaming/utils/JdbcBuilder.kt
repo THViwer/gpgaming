@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.jdbc.support.KeyHolder
 import java.sql.PreparedStatement
 import java.sql.ResultSet
+import java.time.LocalDate
 
 
 object JdbcBuilder {
@@ -166,7 +167,11 @@ open class Query(
 
         columns.add("`$k` = ?")
 
-        val value = if (v is Enum<*>) v.name else v
+        val value = when (v) {
+                    is Enum<*> -> v.name
+                    is LocalDate -> "$v"
+                    else -> v
+                }
         param.add(value)
         return this
     }
@@ -189,7 +194,11 @@ open class Query(
 
         columns.add(k)
 
-        val value = if (v is Enum<*>) v.name else v
+        val value = when (v) {
+            is Enum<*> -> v.name
+            is LocalDate -> "$v"
+            else -> v
+        }
         param.add(value)
         return this
     }
