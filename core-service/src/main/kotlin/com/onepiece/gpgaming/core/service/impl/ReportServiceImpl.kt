@@ -96,7 +96,7 @@ class ReportServiceImpl(
         val mArtificialReports = artificialOrderDao.mReport(clientId = queryClientId, memberId = memberId, startDate = startDate)
         val mArtificialReportMap = mArtificialReports.map { it.memberId to it }.toMap()
 
-        // 平台报表
+        // 平台报表 输赢
         val betReports = betOrderDao.mreport(clientId = queryClientId, memberId = memberId, startDate = startDate)
         val betMap = betReports.groupBy { it.memberId }
 
@@ -145,7 +145,7 @@ class ReportServiceImpl(
                 MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, mwin = it.totalWin, validBet = it.validBet)
             }?: emptyList()
             val totalBet = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额
-            val totalMWin = settles.sumByDouble { it.cwin.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
+            val totalMWin = settles.sumByDouble { it.mwin.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
 
             //TODO 返水比例和金额
             val level = levelIds[member.levelId]
