@@ -58,7 +58,7 @@ class MemberServiceImpl(
     override fun findByBossIdAndPhone(bossId: Int, phone: String?): Member? {
         if (phone.isNullOrBlank()) return null
 
-        return memberDao.getByPhone(bossId, phone)?.copy(password = "", safetyPassword = "")
+        return memberDao.getByBossIdAndPhone(bossId, phone)?.copy(password = "", safetyPassword = "")
     }
 
     override fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member> {
