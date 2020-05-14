@@ -8,6 +8,8 @@ class SexyGamingClientToken(
 
         val cert: String,
 
+        val platform: String,
+
         val currency: String,
 
         val betLimit: String
