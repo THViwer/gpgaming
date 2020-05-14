@@ -181,8 +181,8 @@ class EvolutionService : PlatformService() {
                   }
                },
                "group": {
-                  id: "${token.betLimit}",
-                  action: "assign"
+                  "id": "${token.betLimit}",
+                  "action": "assign"
                }
             }
 
