@@ -155,6 +155,7 @@ class SexyGamingService: PlatformService() {
                 "cert" to clientToken.cert,
                 "agentId" to clientToken.agentId,
                 "timeFrom" to "${pullBetOrderReq.startTime.toString().substring(0, 19)}+08:00",
+                "platform" to clientToken.platform,
                 "status" to "1" //已结算
         )
 
