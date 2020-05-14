@@ -156,7 +156,7 @@ class EvolutionService : PlatformService() {
                   "firstName":"firstName",
                   "lastName":"lastName",
                   "nickname":"nickname",
-                  "country":"${token.betLimit}",
+                  "country":"${token.country}",
                   "language":"$lang",
                   "currency":"${token.currency}",
                   "session":{
