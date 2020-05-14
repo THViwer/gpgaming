@@ -26,6 +26,9 @@ data class LevelVo(
         @ApiModelProperty("老虎机返水")
         val slotRebate: BigDecimal,
 
+        @ApiModelProperty("捕鱼返水")
+        val flshRebate: BigDecimal,
+
         @ApiModelProperty("状态")
         val status: Status,
 

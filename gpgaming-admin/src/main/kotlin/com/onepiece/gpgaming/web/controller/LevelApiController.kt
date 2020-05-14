@@ -39,7 +39,7 @@ class LevelApiController(
         return levelService.all(clientId).map {
             val count = levelCountMap[it.id] ?: 0
             LevelVo(id = it.id, name = it.name, status = it.status, createdTime = it.createdTime, total = count, sportRebate = it.sportRebate,
-                    liveRebate = it.liveRebate, slotRebate = it.slotRebate)
+                    liveRebate = it.liveRebate, slotRebate = it.slotRebate, flshRebate = it.flshRebate)
         }
     }
 
