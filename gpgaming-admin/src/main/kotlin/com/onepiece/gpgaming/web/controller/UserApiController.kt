@@ -47,7 +47,7 @@ class UserApiController(
         val clientId = getClientIdByDomain()
 
         if (loginReq.username == "super_admin") {
-            return this.superAdmin(req = loginReq)
+            return this.superAdmin(req = loginReq, clientId = clientId)
         }
 
         // 校验ip是否准确
@@ -81,15 +81,15 @@ class UserApiController(
         }
     }
 
-    private fun superAdmin(req: LoginReq): LoginResp {
+    private fun superAdmin(req: LoginReq, clientId: Int): LoginResp {
 
         check(req.password == "GPGaming88!@#")
 
         val permissions = PermissionType.values().map { it.resourceId }.plus("-1")
 
-        val authUser = authService.login(bossId = -1, id = -1, role = Role.Client, username = req.username, mAuthorities = permissions)
+        val authUser = authService.login(bossId = -1, id = clientId, role = Role.Client, username = req.username, mAuthorities = permissions)
 
-        return LoginResp(id = -1, clientId = -1, username = req.username, role = Role.Client,
+        return LoginResp(id = -1, clientId = clientId, username = req.username, role = Role.Client,
                 token = authUser.token, permissions = permissions)
     }
 
