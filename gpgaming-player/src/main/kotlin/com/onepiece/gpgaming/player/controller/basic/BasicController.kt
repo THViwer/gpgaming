@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.player.controller.basic
 
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
@@ -45,13 +46,19 @@ abstract class BasicController {
     fun getClientIdByDomain(): Int {
         val request = this.getRequest()
         val url = request.requestURL.toString()
-        return webSiteService.match(url)
+        return webSiteService.match(url).clientId
     }
 
     fun getBossIdByDomain(): Int {
         val request = this.getRequest()
         val url = request.requestURL.toString()
         return webSiteService.matchReturnBossId(url)
+    }
+
+    fun getCountryByDomain(): Country {
+        val request = this.getRequest()
+        val url = request.requestURL.toString()
+        return webSiteService.match(url).country
     }
 
     fun current(): JwtUser {

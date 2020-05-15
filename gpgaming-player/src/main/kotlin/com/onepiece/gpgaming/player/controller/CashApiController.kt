@@ -122,8 +122,19 @@ open class CashApiController(
     override fun banks(
             @RequestHeader("launch") launch: LaunchMethod
     ): List<BankVo> {
+
+        val country = this.getCountryByDomain()
+
         val mobile = launch == LaunchMethod.Wap
-        return Bank.values().map { BankVo(grayLogo = if (mobile) it.grayLogo else it.mGrayLogo, logo = if (mobile) it.mLogo else it.logo, name = it.cname, bank = it) }
+        return Bank.of(country = country)
+                .map {
+                    BankVo(
+                            grayLogo = if (mobile) it.grayLogo else it.mGrayLogo,
+                            logo = if (mobile) it.mLogo else it.logo,
+                            name = it.cname,
+                            bank = it
+                    )
+                }
     }
 
     @GetMapping("/bank/my")

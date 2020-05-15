@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.web.controller.basic
 
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.core.service.PlatformBindService
@@ -39,7 +40,7 @@ abstract class BasicController {
     fun getClientIdByDomain(): Int {
         val request = this.getRequest()
         val url = request.requestURL.toString()
-        return webSiteService.match(url)
+        return webSiteService.match(url).clientId
     }
 
 
@@ -47,6 +48,12 @@ abstract class BasicController {
         val request = this.getRequest()
         val url = request.requestURL.toString()
         return webSiteService.matchReturnBossId(url)
+    }
+
+    fun getCountryByDomain(): Country {
+        val request = this.getRequest()
+        val url = request.requestURL.toString()
+        return webSiteService.match(url).country
     }
 
     fun current(): JwtUser {

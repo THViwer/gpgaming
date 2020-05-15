@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.Language
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -17,6 +18,9 @@ interface ConfigApi {
             @PathVariable("type") type: EnumTypes.EnumType,
             @RequestHeader("language") language: Language
     ): List<EnumTypes.EnumVo>
+
+    @ApiOperation(tags = ["config"], value = "获得银行列表")
+    fun getBank(): List<Bank>
 
 }
 

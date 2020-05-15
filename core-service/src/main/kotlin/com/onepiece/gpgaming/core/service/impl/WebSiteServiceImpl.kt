@@ -43,8 +43,8 @@ class WebSiteServiceImpl(
         redisService.delete(OnePieceRedisKeyConstant.getAllWebSite())
     }
 
-    override fun match(url: String): Int {
-        return this.all().first { url.contains(it.domain) }.clientId
+    override fun match(url: String): WebSite {
+        return this.all().first { url.contains(it.domain) }
     }
 
     override fun matchReturnBossId(url: String): Int {

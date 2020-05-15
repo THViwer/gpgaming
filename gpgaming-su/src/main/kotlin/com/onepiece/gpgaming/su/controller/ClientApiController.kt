@@ -75,8 +75,7 @@ open class ClientApiController(
     override fun create(@RequestBody webSiteCo: WebSiteCo) {
 
         val client = clientService.get(webSiteCo.clientId)
-
-        webSiteService.create(webSiteCo = webSiteCo.copy(bossId = client.bossId))
+        webSiteService.create(webSiteCo = webSiteCo.copy(bossId = client.bossId, country = client.country))
     }
 
     @PutMapping("/webSite")

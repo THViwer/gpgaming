@@ -12,7 +12,7 @@ interface WebSiteService {
 
     fun update(webSiteUo: WebSiteUo)
 
-    fun match(url: String): Int
+    fun match(url: String): WebSite
 
     fun matchReturnBossId(url: String): Int
 }

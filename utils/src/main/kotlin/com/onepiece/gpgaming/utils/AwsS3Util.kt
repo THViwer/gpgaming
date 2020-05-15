@@ -114,6 +114,21 @@ object AwsS3Util {
 
 
 }
+
+
+fun main() {
+    val file = File("/Users/cabbage/Downloads/sg_bank")
+    val list = file.listFiles().map { file ->
+        val url = AwsS3Util.uploadLocalFile(file, "bank/logo/${file.name.replace(" ", "")}")
+        file.name to url
+    }
+
+    list.forEach {
+        println("${it.first} -- ${it.second}")
+    }
+
+}
+
 //
 //fun main() {
 ////    val fileList = File("/Users/cabbage/Desktop/logo/logo1225")
