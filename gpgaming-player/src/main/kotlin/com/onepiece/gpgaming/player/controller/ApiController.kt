@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
+import com.onepiece.gpgaming.beans.enums.PromotionCategory
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
@@ -188,7 +189,8 @@ open class ApiController(
 
         val clientId = getClientIdByDomain()
 
-        val allPromotion = promotionService.all(clientId).filter { it.status == Status.Normal }
+        val allPromotion = promotionService.all(clientId)
+                .filter { it.status == Status.Normal }
                 .sortedBy { it.sequence }
                 .filter { it.show }
 
@@ -198,7 +200,7 @@ open class ApiController(
             // 添加默认优惠
             promotions.add(promotion)
             // 添加平台
-            promotion.platforms.map { it.category }.toSet().map {
+            promotion.platforms.filter { it.category != PromotionCategory.Other }.map { it.category }.toSet().map {
                 promotions.add(promotion.copy(category = it.getPromotionCategory()))
             }
         }
