@@ -199,9 +199,12 @@ open class ApiController(
         allPromotion.forEach { promotion ->
             // 添加默认优惠
             promotions.add(promotion)
-            // 添加平台
-            promotion.platforms.filter { it.category != PromotionCategory.Other }.map { it.category }.toSet().map {
-                promotions.add(promotion.copy(category = it.getPromotionCategory()))
+
+            if (promotion.category != PromotionCategory.Other) {
+                // 添加平台
+                promotion.platforms.map { it.category }.toSet().map {
+                    promotions.add(promotion.copy(category = it.getPromotionCategory()))
+                }
             }
         }
 
