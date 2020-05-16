@@ -20,6 +20,7 @@
 		<module>payment</module>
 		<module>gpgaming-task</module>
 		<module>gpgaming-su</module>
+		<module>gpgaming-agent</module>
 	</modules>
 
 </project>
