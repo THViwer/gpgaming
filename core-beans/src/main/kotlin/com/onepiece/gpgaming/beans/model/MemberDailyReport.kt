@@ -16,6 +16,9 @@ data class MemberDailyReport(
         // 厅主Id
         val clientId: Int,
 
+        // 代理
+        val agentId: Int,
+
         // 会员Id
         val memberId: Int,
 

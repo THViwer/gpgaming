@@ -1,6 +1,21 @@
-1. webSite新增boss_id字段 修改数据
-2. Member新增boss_id字段 修改历史数据
-3. 维护client 新增country字段 增加层级关系boss角色 
+创建默认代理
+
+1. 新增表
+    Agent 代理表
+    Commission 佣金配置表
+    MemberRelation 会员关系表
+    AgentReportDaily 代理日报表
+    
+2. 新增、修改字段
+    Member 新增 role、PromotionCode、agentId
+    Withdraw 新增 role
+    MemberDailyReport 新增 agentId
+    
+    
+2. 添加默认代理
+    
 
 
-清理缓存
+
+
+

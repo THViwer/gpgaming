@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.player.jwt
 
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.service.PlatformMemberService
 import org.springframework.security.core.userdetails.UserDetails
@@ -19,10 +20,10 @@ class JwtUserDetailsServiceImpl(
 
 //        val user = userDao.getByUsername(username)!!
 
-        val (clientId, platformUsername) = username.split("@")
+        val (clientId, role, platformUsername) = username.split("@")
         val member = memberDao.getByUsername(clientId.toInt(), platformUsername)!!
 
         return JwtUser(clientId = member.clientId, id = member.id, musername = username, mpassword = passwordEncoder.encode("123456"),
-                lastPasswordResetDate = Date(), name = member.name)
+                lastPasswordResetDate = Date(), name = member.name, role = Role.valueOf(role))
     }
 }

@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.dao.impl
 
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Member
 import com.onepiece.gpgaming.beans.value.database.MemberCo
@@ -19,6 +20,9 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val id = rs.getInt("id")
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
+            val role = rs.getString("role").let { Role.valueOf(it) }
+            val promotionCode = rs.getString("promotion_code")
+            val agentId = rs.getInt("agent_id")
             val username = rs.getString("username")
             val name = rs.getString("name")
             val phone= rs.getString("phone")
@@ -31,18 +35,19 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val loginIp = rs.getString("login_ip")
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
-            val promoteSource = rs.getString("promote_source")
+            val promoteCode = rs.getString("promote_code")
 
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
                     safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion,
-                    promoteSource = promoteSource, autoTransfer = autoTransfer, bossId = bossId)
+                    autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = promoteCode)
         }
 
     override fun create(memberCo: MemberCo): Int {
         return insert()
                 .set("boss_id", memberCo.bossId)
                 .set("client_id", memberCo.clientId)
+                .set("agent_id", memberCo.agentId)
                 .set("username", memberCo.username)
                 .set("name", memberCo.name)
                 .set("phone", memberCo.phone)
@@ -51,7 +56,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("safety_password", memberCo.safetyPassword)
                 .set("level_id", memberCo.levelId)
                 .set("status", Status.Normal)
-                .set("promote_source", memberCo.promoteSource)
+                .set("promote_code", memberCo.promoteCode)
                 .executeGeneratedKey()
     }
 
@@ -100,9 +105,17 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .executeMaybeOne(mapper)
     }
 
+    override fun findByBossIdAndSource(bossId: Int, promoteCode: String): Member? {
+        return query()
+                .where("boss_id", bossId)
+                .where("promote_code", promoteCode)
+                .executeMaybeOne(mapper)
+    }
+
     override fun total(query: MemberQuery): Int {
         return query("count(*) as count")
                 .where("client_id", query.clientId)
+                .where("role", query.role)
                 .where("username", query.username)
                 .where("name", query.name)
                 .where("phone", query.phone)
@@ -116,6 +129,8 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
     override fun query(query: MemberQuery, current: Int, size: Int): List<Member> {
         return query()
                 .where("client_id", query.clientId)
+                .where("agent_id", query.agentId)
+                .where("role", query.role)
                 .where("username", query.username)
                 .where("name", query.name)
                 .where("phone", query.phone)
@@ -132,6 +147,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
     override fun list(query: MemberQuery): List<Member> {
         return query()
                 .where("client_id", query.clientId)
+                .where("agent_id", query.agentId)
                 .whereIn("id", query.ids)
                 .where("username", query.username)
                 .where("status", query.status)

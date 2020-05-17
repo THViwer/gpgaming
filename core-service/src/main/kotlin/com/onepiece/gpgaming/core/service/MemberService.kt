@@ -9,6 +9,8 @@ import com.onepiece.gpgaming.beans.value.database.MemberUo
 
 interface MemberService {
 
+    fun getDefaultAgent(bossId: Int): Member
+
     fun getMember(id: Int): Member
 
     fun findByIds(ids: List<Int>, levelId: Int? = null): List<Member>
@@ -20,6 +22,8 @@ interface MemberService {
     fun findByPhone(clientId: Int, phone: String?): Member?
 
     fun findByBossIdAndPhone(bossId: Int, phone: String?): Member?
+
+    fun findByBossIdAndCode(bossId: Int, promoteCode: String): Member?
 
     fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member>
 

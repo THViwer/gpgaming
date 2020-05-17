@@ -1,11 +1,11 @@
 package com.onepiece.gpgaming.player.controller
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
+import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
@@ -56,6 +56,7 @@ class UserApiController(
 
         val loginValue = LoginValue(bossId = bossId, username = loginReq.username, password = loginReq.password, ip = RequestUtil.getIpAddress())
         val member = memberService.login(loginValue)
+        check(member.role == Role.Member) { OnePieceExceptionCode.LOGIN_FAIL }
 
         val webSites = webSiteService.all()
         val currentWebSite = webSites.first { getRequest().requestURL.contains(it.domain) }
@@ -67,7 +68,7 @@ class UserApiController(
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
 
         return if (currentWebSite.clientId == member.clientId) {
-            val token = authService.login(clientId = member.clientId, username = loginReq.username)
+            val token = authService.login(clientId = member.clientId, username = loginReq.username, role = member.role)
             LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name, autoTransfer = member.autoTransfer,
                     domain = "https://www.${clientWebSite.domain}${isMobile}", country = client.country, successful = true)
         } else {
@@ -121,9 +122,15 @@ class UserApiController(
         val client = clientService.all().filter { it.bossId == bossId }.first { it.country == registerReq.country }
         val clientId = client.id
 
+        // 代理
+        val agent = registerReq.promoteCode?.let {
+            memberService.findByBossIdAndCode(bossId = bossId, promoteCode = registerReq.promoteCode)
+        } ?: memberService.getDefaultAgent(bossId = bossId)
+
         val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
         val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
-                levelId = defaultLevel.id, name = registerReq.name, phone = registerReq.phone, promoteSource = registerReq.promoteSource, bossId = bossId)
+                levelId = defaultLevel.id, name = registerReq.name, phone = registerReq.phone, promoteCode = registerReq.promoteCode, bossId = bossId, agentId = agent.id,
+                role = Role.Member)
         memberService.create(memberCo)
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)

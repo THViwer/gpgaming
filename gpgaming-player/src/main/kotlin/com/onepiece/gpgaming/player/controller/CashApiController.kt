@@ -490,7 +490,7 @@ open class CashApiController(
         val orderId = orderIdBuilder.generatorWithdrawOrderId()
         val withdrawCo = WithdrawCo(orderId = orderId, clientId = clientId, memberId = memberId,
                 memberBank = memberBank.bank, memberBankCardNumber = memberBank.bankCardNumber, memberBankId = memberBank.id,
-                money = withdrawCoReq.money, remarks = null, username = member.username, memberName = member.name)
+                money = withdrawCoReq.money, remarks = null, username = member.username, memberName = member.name, role = member.role)
         withdrawService.create(withdrawCo)
 
         watch.stop()

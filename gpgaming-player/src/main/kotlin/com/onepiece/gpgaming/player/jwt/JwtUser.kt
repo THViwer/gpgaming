@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.player.jwt
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Role
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.util.*
@@ -11,11 +12,14 @@ data class JwtUser(
 
         val clientId: Int,
 
+        val role: Role,
+
         val id: Int,
 
         val name: String,
 //        val level: String,
 //        val memberEndTime: LocalDateTime?,
+
         val musername: String,
 
         val mpassword: String,

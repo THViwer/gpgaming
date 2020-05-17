@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.core.service.impl
 
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
@@ -165,20 +166,21 @@ class ReportServiceImpl(
             }.toBigDecimal().setScale(2, 2).let {
                 if (it.toDouble() <= 0) BigDecimal.ZERO else it
             }
-
             val rebateExecution = rebate.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
             val empty = transferIn.plus(transferOut).plus(depositMoney).plus(withdrawMoney).plus(artificialMoney).plus(thirdPayMoney)
                     .plus(totalBet)
 
-            if (empty.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)) {
-                null
-            } else {
-                MemberDailyReport(id = -1, day = startDate, clientId = member.clientId, memberId = mid, transferIn = transferIn,
-                        transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney, depositCount = depositCount, withdrawCount = withdrawCount,
-                        artificialMoney = artificialMoney,  artificialCount = artificialCount, settles = settles, totalMWin = totalMWin, totalBet = totalBet ,
-                        thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, backwaterMoney = rebate, createdTime = now,
-                        status = Status.Normal, backwaterExecution = rebateExecution, promotionMoney = promotionMoney)
+            when {
+                empty.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2) -> null
+                member.role == Role.Agent -> null
+                else -> {
+                    MemberDailyReport(id = -1, day = startDate, clientId = member.clientId, memberId = mid, agentId = member.agentId, transferIn = transferIn,
+                            transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney, depositCount = depositCount, withdrawCount = withdrawCount,
+                            artificialMoney = artificialMoney,  artificialCount = artificialCount, settles = settles, totalMWin = totalMWin, totalBet = totalBet ,
+                            thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, backwaterMoney = rebate, createdTime = now,
+                            status = Status.Normal, backwaterExecution = rebateExecution, promotionMoney = promotionMoney)
+                }
             }
         }.filterNotNull()
 

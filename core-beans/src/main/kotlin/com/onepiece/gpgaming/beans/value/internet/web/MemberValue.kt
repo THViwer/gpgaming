@@ -8,6 +8,7 @@ import com.alibaba.excel.metadata.GlobalConfiguration
 import com.alibaba.excel.metadata.property.ExcelContentProperty
 import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Deposit
 import com.onepiece.gpgaming.beans.model.PayOrder
@@ -38,10 +39,6 @@ sealed class MemberValue {
 
 
 
-
-
-
-
                 @ExcelProperty("充值金额")
                 @ApiModelProperty("充值金额")
                 val depositMoney: BigDecimal,
@@ -64,10 +61,6 @@ sealed class MemberValue {
                 val depositDay: Int? = lastDepositTime?.let {
                         Duration.between(it, LocalDateTime.now()).toDays()
                 }?.toInt(),
-
-
-
-
 
 
 
@@ -127,6 +120,40 @@ sealed class MemberValue {
 
         )
 
+
+        data class Agent(
+                // id
+                val id: Int,
+
+                // 代理Id
+                val agentId: Int,
+
+                // 用户名
+                val username: String,
+
+                // 姓名
+                val name: String,
+
+                // 手机号
+                val phone: String,
+
+                // 状态
+                val status: Status,
+
+                // 创建时间
+                val createdTime: LocalDateTime,
+
+                // 登陆Ip
+                val loginIp: String?,
+
+                // 推广码
+                val promoteCode: String,
+
+                // 登陆时间
+                val loginTime: LocalDateTime?
+
+        )
+
 }
 
 open class LocalDateTimeConverter: Converter<LocalDateTime> {
@@ -168,7 +195,7 @@ data class MemberVo(
         val country: Country,
 
         @ApiModelProperty("推广码")
-        val promoteSource: String?,
+        val promoteCode: String?,
 
         @ApiModelProperty("用户名")
         val username: String,
@@ -281,6 +308,12 @@ data class MemberUoReq(
 
 data class MemberCoReq(
 
+        @ApiModelProperty("代理Id")
+        val agentId: Int?,
+
+        @ApiModelProperty("角色")
+        val role: Role = Role.Member,
+
         @ApiModelProperty("用户名")
         val username: String,
 
@@ -300,6 +333,6 @@ data class MemberCoReq(
         val levelId: Int,
 
         @ApiModelProperty("推广码")
-        val promoteSource: String?
+        val promoteCode: String?
 
 )

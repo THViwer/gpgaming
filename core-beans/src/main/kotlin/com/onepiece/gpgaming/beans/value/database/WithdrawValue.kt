@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.value.database
 
 import com.onepiece.gpgaming.beans.enums.Bank
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -38,6 +39,9 @@ data class WithdrawCo(
 
         // 会员Id
         val memberId: Int,
+
+        // 角色
+        val role: Role,
 
         // 会员明
         val memberName: String,

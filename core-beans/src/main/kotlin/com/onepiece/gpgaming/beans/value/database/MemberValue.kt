@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.database
 
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
 import java.util.*
@@ -21,7 +22,13 @@ sealed class MemberValue {
 
 data class MemberQuery(
 
+        val bossId: Int?,
+
         val clientId: Int?,
+
+        val agentId: Int?,
+
+        val role: Role?,
 
         val username: String?,
 
@@ -50,6 +57,12 @@ data class MemberCo(
         // 厅主Id
         val clientId: Int,
 
+        // 代理Id
+        val agentId: Int,
+
+        // 角色
+        val role: Role,
+
         // 用户名
         val username: String,
 
@@ -69,7 +82,7 @@ data class MemberCo(
         val levelId: Int,
 
         // 推广来源
-        val promoteSource: String?
+        val promoteCode: String?
 )
 
 data class MemberUo(

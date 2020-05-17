@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.Bank
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import java.math.BigDecimal
@@ -24,6 +25,9 @@ data class Withdraw(
 
         // 会员Id
         val memberId: Int,
+
+        // 用户角色
+        val role: Role,
 
         // 用户名
         val username: String,

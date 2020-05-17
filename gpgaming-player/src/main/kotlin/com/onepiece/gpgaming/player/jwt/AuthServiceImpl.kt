@@ -1,15 +1,15 @@
 package com.onepiece.gpgaming.player.jwt
 
+import com.onepiece.gpgaming.beans.enums.Role
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
-import java.util.*
 
 interface AuthService {
 
-    fun  login(clientId: Int, username: String): String
+    fun  login(clientId: Int, role: Role, username: String): String
 
     fun refresh(id: Int)
 
@@ -23,8 +23,8 @@ class AuthServiceImpl(
         private val tokenStore: TokenStore
 ) : AuthService {
 
-    override fun login(clientId: Int, username: String): String {
-        val upToken = UsernamePasswordAuthenticationToken("${clientId}@${username}", "123456")
+    override fun login(clientId: Int, role: Role, username: String): String {
+        val upToken = UsernamePasswordAuthenticationToken("${clientId}@${role}@${username}", "123456")
         val authentication = authenticationManager.authenticate(upToken)
         SecurityContextHolder.getContext().authentication = authentication
 

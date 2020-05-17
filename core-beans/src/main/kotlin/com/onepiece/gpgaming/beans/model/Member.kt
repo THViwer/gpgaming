@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
 
@@ -16,6 +17,9 @@ data class Member(
 
         // 厅主Id
         val clientId: Int,
+
+        // 代理Id
+        val agentId: Int,
 
         // 用户名
         val username: String,
@@ -47,11 +51,14 @@ data class Member(
         // 创建时间
         val createdTime: LocalDateTime,
 
+        // 代理
+        val role: Role,
+
         // 登陆Ip
         val loginIp: String?,
 
-        // 推广来源
-        val promoteSource: String?,
+        // 推广码
+        val promoteCode: String,
 
         // 登陆时间
         val loginTime: LocalDateTime?

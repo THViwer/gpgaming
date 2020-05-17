@@ -7,10 +7,12 @@ import com.onepiece.gpgaming.beans.model.Member
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
+import com.onepiece.gpgaming.beans.value.database.MemberRelationValue
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.database.WalletCo
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.MemberDao
+import com.onepiece.gpgaming.core.dao.MemberRelationDao
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.utils.RedisService
@@ -24,8 +26,13 @@ class MemberServiceImpl(
         private val memberDao: MemberDao,
         private val walletService: WalletService,
         private val redisService: RedisService,
-        private val bCryptPasswordEncoder: BCryptPasswordEncoder
+        private val bCryptPasswordEncoder: BCryptPasswordEncoder,
+        private val memberRelationDao: MemberRelationDao
 ) : MemberService {
+
+    override fun getDefaultAgent(bossId: Int): Member {
+        return memberDao.getByBossIdAndUsername(bossId = bossId, username = "default_agent")!!
+    }
 
     override fun getMember(id: Int): Member {
         val redisKey = OnePieceRedisKeyConstant.member(id)
@@ -36,7 +43,7 @@ class MemberServiceImpl(
 
     override fun findByIds(ids: List<Int>, levelId: Int?): List<Member> {
         val query = MemberQuery(ids = ids, clientId = null, startTime = null, endTime = null, status = null, levelId = levelId,
-                username = null, promoteCode = null, name = null, phone = null)
+                username = null, promoteCode = null, name = null, phone = null, role = null, agentId = null, bossId = null)
         return memberDao.list(query).toList()
     }
 
@@ -59,6 +66,12 @@ class MemberServiceImpl(
         if (phone.isNullOrBlank()) return null
 
         return memberDao.getByBossIdAndPhone(bossId, phone)?.copy(password = "", safetyPassword = "")
+    }
+
+    override fun findByBossIdAndCode(bossId: Int, promoteCode: String): Member? {
+        if (promoteCode.isNullOrBlank()) return null
+
+        return memberDao.getByBossIdAndPhone(bossId, promoteCode)?.copy(password = "", safetyPassword = "")
     }
 
     override fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member> {
@@ -104,6 +117,18 @@ class MemberServiceImpl(
         // create wallet
         val walletCo = WalletCo(clientId = memberCo.clientId, memberId = id)
         walletService.create(walletCo)
+
+        // 创建代理关系
+        val agent = memberDao.get(id = memberCo.agentId)
+        val (r1, r2) = if (agent.username == "default_agent") {
+            agent.id to null
+        } else {
+            val preAgent = memberDao.get(id = agent.agentId)
+            preAgent.id to agent.id
+        }
+
+        val relationCo = MemberRelationValue.MemberRelationCo(bossId = memberCo.bossId, memberId = id, r1 = r1, r2 = r2)
+        memberRelationDao.create(relationCo)
     }
 
     override fun update(memberUo: MemberUo) {

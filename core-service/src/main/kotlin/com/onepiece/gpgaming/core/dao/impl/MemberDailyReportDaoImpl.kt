@@ -25,6 +25,7 @@ class MemberDailyReportDaoImpl(
             val id = rs.getInt("id")
             val day = rs.getDate("day").toLocalDate()
             val clientId = rs.getInt("client_id")
+            val agentId = rs.getInt("agent_id")
             val memberId = rs.getInt("member_id")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
@@ -51,7 +52,7 @@ class MemberDailyReportDaoImpl(
                     createdTime = createdTime, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
                     depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, totalMWin = totalMWin,
                     thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount,backwaterMoney = backwaterMoney,
-                    backwaterExecution = backwaterExecution, promotionMoney = promotionMoney)
+                    backwaterExecution = backwaterExecution, promotionMoney = promotionMoney, agentId = agentId)
         }
 
     override fun create(reports: List<MemberDailyReport>) {
@@ -59,6 +60,7 @@ class MemberDailyReportDaoImpl(
         return batchInsert(reports)
                 .set("day")
                 .set("client_id")
+                .set("agent_id")
                 .set("member_id")
                 .set("transfer_in")
                 .set("transfer_out")
@@ -80,6 +82,7 @@ class MemberDailyReportDaoImpl(
                     var index = 0
                     ps.setDate(++index, Date.valueOf(entity.day))
                     ps.setInt(++index, entity.clientId)
+                    ps.setInt(++index, entity.agentId)
                     ps.setInt(++index, entity.memberId)
                     ps.setBigDecimal(++index, entity.transferIn)
                     ps.setBigDecimal(++index, entity.transferOut)
@@ -158,6 +161,7 @@ class MemberDailyReportDaoImpl(
 
         return query()
                 .where("client_id", query.clientId)
+                .where("agent_id", query.agentId)
                 .asWhere("day >= ?", query.startDate)
                 .asWhere("day < ?", query.endDate)
                 .where("member_id", query.memberId)

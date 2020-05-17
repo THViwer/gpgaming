@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.alibaba.excel.EasyExcel
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.MemberBank
@@ -33,6 +34,7 @@ import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
 import com.onepiece.gpgaming.games.GameApi
+import com.onepiece.gpgaming.utils.StringUtil
 import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
@@ -78,7 +80,7 @@ class MemberApiController(
             @RequestParam(value = "phone", required = false) phone: String?,
             @RequestParam(value = "levelId", required = false) levelId: Int?,
             @RequestParam(value = "status", required = false) status: Status?,
-            @RequestParam(value = "promoteSource", required = false) promoteSource: String?,
+            @RequestParam(value = "promoteCode", required = false) promoteCode: String?,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): MemberPage {
@@ -92,12 +94,12 @@ class MemberApiController(
         } else {
             getClientId()
         }
-
         val client = clientService.get(clientId)
 
 
         val query = MemberQuery(clientId = clientId, startTime = null, endTime = null, username = username,
-                levelId = levelId, status = status, promoteCode = promoteSource, name = name, phone = phone)
+                levelId = levelId, status = status, promoteCode = promoteCode, name = name, phone = phone,
+                role = Role.Member, bossId = null, agentId = null)
         val page = memberService.query(query, current, size)
         if (page.total == 0) return MemberPage(total = 0, data = emptyList())
 
@@ -111,7 +113,7 @@ class MemberApiController(
             with(it) {
                 MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name ?: "error level",
                         balance = memberMap[it.id]?.balance ?: BigDecimal.valueOf(-1), status = it.status, createdTime = createdTime,
-                        loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteSource = it.promoteSource,
+                        loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteCode = it.promoteCode,
                         country = client.country)
             }
         }
@@ -132,7 +134,8 @@ class MemberApiController(
 
         // 会员查询
         val query = MemberQuery(clientId = clientId, startTime = startTime, endTime = endTime, status = Status.Normal,
-                levelId = null, name = null, username = null, phone = null, promoteCode = null)
+                levelId = null, name = null, username = null, phone = null, promoteCode = null, role = null, agentId = null,
+                bossId = null)
         val members = memberService.query(query, current = 0, size = 999999).data
         if (members.isEmpty()) return emptyList()
         val memberIds = members.map { it.id }.toList()
@@ -261,8 +264,17 @@ class MemberApiController(
 
         check(memberCoReq.levelId > 0) { OnePieceExceptionCode.DATA_FAIL }
 
-        val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password, promoteSource = memberCoReq.promoteSource,
-                safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId, name = memberCoReq.name, phone = memberCoReq.phone, bossId = bossId)
+        //TODO 校验是否已存在
+        val promoteCode = memberCoReq.promoteCode?: StringUtil.generateNonce(6)
+
+        // 代理Id
+        val agentId = memberCoReq.agentId ?:
+        memberService.getDefaultAgent(bossId = bossId).id
+
+
+        val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password, promoteCode = promoteCode,
+                safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId, name = memberCoReq.name, phone = memberCoReq.phone, bossId = bossId,
+                agentId = agentId, role = memberCoReq.role)
         memberService.create(memberCo)
     }
 
