@@ -190,7 +190,7 @@ open class TransferUtil(
         val promotionAmount = platformMemberTransferUo?.promotionAmount?: BigDecimal.ZERO
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = promotionAmount,
                 from = from, to = to, joinPromotionId = platformMemberTransferUo?.joinPromotionId, promotionJson = platformMemberTransferUo?.promotionJson, username = username,
-                requirementBet = platformMemberTransferUo?.requirementBet?: BigDecimal.ZERO)
+                requirementBet = platformMemberTransferUo?.requirementBet?: BigDecimal.ZERO, promotionPreMoney = platformMemberTransferUo?.promotionPreMoney?: amount)
         transferOrderService.create(transferOrderCo)
 
         // 平台钱包更改信息
@@ -199,7 +199,7 @@ open class TransferUtil(
         } else {
             val init = PlatformMemberTransferUo(id = platformMember.id, joinPromotionId = null, currentBet = BigDecimal.ZERO, requirementBet = BigDecimal.ZERO,
                     promotionAmount = BigDecimal.ZERO, transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO,
-                    promotionJson = null, platforms = emptyList(), category = PromotionCategory.First)
+                    promotionJson = null, platforms = emptyList(), category = PromotionCategory.First, promotionPreMoney = amount)
             platformMemberService.transferIn(init)
         }
 
@@ -330,7 +330,7 @@ open class TransferUtil(
         // 生成转账订单
         val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "in", platformUsername = platformMember.username)
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = BigDecimal.ZERO,
-                from = from, to = to, joinPromotionId = null, promotionJson = null, username = username, requirementBet = BigDecimal.ZERO)
+                from = from, to = to, joinPromotionId = null, promotionJson = null, username = username, requirementBet = BigDecimal.ZERO, promotionPreMoney = amount)
         transferOrderService.create(transferOrderCo)
 
 

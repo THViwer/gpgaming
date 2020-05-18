@@ -162,9 +162,11 @@ data class Promotion (
             promotionId: Int
     ): PlatformMemberTransferUo {
 
+        val promotionPreMoney = amount.plus(platformBalance)
+
         val init = PlatformMemberTransferUo(id = platformMemberId, joinPromotionId = promotionId, currentBet = BigDecimal.ZERO, requirementBet = BigDecimal.ZERO,
                 promotionAmount = BigDecimal.ZERO, transferAmount = amount, requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO,
-                promotionJson = null, platforms = platforms, category = category)
+                promotionJson = null, platforms = platforms, category = category, promotionPreMoney = promotionPreMoney)
 
         return when (this.ruleType) {
             PromotionRuleType.Bet -> {

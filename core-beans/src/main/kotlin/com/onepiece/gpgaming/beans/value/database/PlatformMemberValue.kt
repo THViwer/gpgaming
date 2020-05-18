@@ -44,6 +44,9 @@ data class PlatformMemberTransferUo(
         // 当前打码量
         val currentBet: BigDecimal,
 
+        // 优惠计算金额
+        val promotionPreMoney: BigDecimal,
+
         // 需要打码量
         val requirementBet: BigDecimal,
 
