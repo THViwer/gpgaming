@@ -14,7 +14,6 @@ import com.onepiece.gpgaming.beans.value.database.PromotionDailyReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientReportExcelVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPlatformReportWebVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberReportWebVo
-import com.onepiece.gpgaming.beans.value.internet.web.MemberValue
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.ReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
@@ -82,7 +81,7 @@ class ReportApiController(
 //        val memberId = memberService.findByUsername(username)?.id?: return emptyList()
 
         val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate, minPromotionMoney = null,
-                minBackwaterMoney = null, current = 0, size = 10000)
+                minBackwaterMoney = null, current = 0, size = 10000, agentId = null)
         val history = memberPlatformDailyReportService.query(query)
 
         //查询今天的
@@ -145,7 +144,8 @@ class ReportApiController(
         val memberId = memberService.findByUsername(clientId, username)?.id
 
         val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate,
-                minBackwaterMoney = minBackwaterMoney, minPromotionMoney = minPromotionMoney, current = current, size = size)
+                minBackwaterMoney = minBackwaterMoney, minPromotionMoney = minPromotionMoney, current = current, size = size,
+                agentId = null)
 
         val total  = memberDailyReportService.total(query)
         val history = memberDailyReportService.query(query)
@@ -246,9 +246,9 @@ class ReportApiController(
         val data = this.clientDaily(startDate = startDate, endDate = endDate).data.map {
             with(it) {
                 ClientReportExcelVo(day = day.toString(),totalBet = totalBet, totalMWin = totalMWin, transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney,
-                depositCount = depositCount, depositSequence = depositSequence, thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, thirdPaySequence = thirdPaySequence,
-                promotionAmount = promotionAmount, withdrawMoney = withdrawMoney, withdrawCount = withdrawCount, artificialMoney = artificialMoney, artificialCount = artificialCount,
-                backwaterMoney = backwaterMoney, newMemberCount = newMemberCount)
+                        depositCount = depositCount, depositSequence = depositSequence, thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, thirdPaySequence = thirdPaySequence,
+                        promotionAmount = promotionAmount, withdrawMoney = withdrawMoney, withdrawCount = withdrawCount, artificialMoney = artificialMoney, artificialCount = artificialCount,
+                        backwaterMoney = backwaterMoney, newMemberCount = newMemberCount)
             }
         }
 

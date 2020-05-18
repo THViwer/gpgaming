@@ -784,7 +784,7 @@ open class CashApiController(
         val startDate = today.with(DayOfWeek.MONDAY)
         val endDate = today.with(DayOfWeek.SUNDAY).plusDays(1)
         val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate, minBackwaterMoney = null, minPromotionMoney = null, current = 0,
-                size = 999999)
+                size = 999999, agentId = null)
         val reports = memberDailyReportService.query(query)
         val todayReport = betOrderService.report(memberId = memberId, startDate = today, endDate = today.plusDays(1))
                 .map { it.platform to it.totalBet }.toMap()
