@@ -19,6 +19,9 @@ data class TransferOrderCo(
         // 用户名
         val username: String,
 
+        // 优惠计算金额
+        val promotionPreMoney: BigDecimal,
+
         // 转账金额
         val money: BigDecimal,
 

@@ -40,6 +40,9 @@ sealed class TransferOrderValue {
             // 会员Id
             val memberId: Int,
 
+            // 优惠前金额
+            val promotionPreMoney: BigDecimal,
+
             // 转账金额
             val money: BigDecimal,
 

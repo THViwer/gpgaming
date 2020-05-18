@@ -30,6 +30,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
             val username = rs.getString("username")
+            val promotionPreMoney = rs.getBigDecimal("promotion_pre_money")
             val money = rs.getBigDecimal("money")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
             val requirementBet = rs.getBigDecimal("requirement_bet")
@@ -46,7 +47,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
             TransferOrder(orderId = orderId, clientId = clientId, memberId = memberId, money = money, promotionAmount = promotionAmount,
                     from = from, to = to, state = state, createdTime = createdTime, updatedTime = updatedTime, joinPromotionId = joinPromotionId,
                     promotionJson = promotionJson, username = username, status = status, transferOutAmount = transferOutAmount,
-                    requirementBet = requirementBet)
+                    requirementBet = requirementBet, promotionPreMoney = promotionPreMoney)
         }
 
     override fun create(transferOrderCo: TransferOrderCo): Boolean {
@@ -55,6 +56,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .set("client_id", transferOrderCo.clientId)
                 .set("member_id", transferOrderCo.memberId)
                 .set("username", transferOrderCo.username)
+                .set("promotion_pre_money", transferOrderCo.promotionPreMoney)
                 .set("money", transferOrderCo.money)
                 .set("promotion_amount", transferOrderCo.promotionAmount)
                 .set("requirement_bet", transferOrderCo.requirementBet)

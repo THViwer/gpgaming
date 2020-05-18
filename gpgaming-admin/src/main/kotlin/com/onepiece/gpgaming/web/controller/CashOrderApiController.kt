@@ -345,7 +345,7 @@ class CashOrderApiController(
         return list.map { order ->
             TransferOrderValue.TransferOrderVo(orderId = order.orderId, memberId = order.memberId, money = order.money,
                     promotionJson = order.promotionJson, joinPromotionId = order.joinPromotionId, from = order.from, to = order.to,
-                    state = order.state, createdTime = order.createdTime, promotionAmount = order.promotionAmount)
+                    state = order.state, createdTime = order.createdTime, promotionAmount = order.promotionAmount, promotionPreMoney = order.promotionPreMoney)
         }
     }
 
