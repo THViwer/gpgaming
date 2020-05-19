@@ -80,13 +80,13 @@ class ReportApiController(
         val clientId = getClientId()
 //        val memberId = memberService.findByUsername(username)?.id?: return emptyList()
 
-        val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate, minPromotionMoney = null,
-                minBackwaterMoney = null, current = 0, size = 10000, agentId = null)
+        val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate, minRebateAmount = null,
+                minPromotionAmount = null, current = 0, size = 10000, agentId = null)
         val history = memberPlatformDailyReportService.query(query)
 
         //查询今天的
         val todayData = this.includeToday(endDate) {
-            reportService.startMemberPlatformDailyReport(memberId = memberId, startDate = LocalDate.now())
+            reportService.startMemberPlatformDailyReport(startDate = LocalDate.now())
         }
 
         val data = history.plus(todayData)
@@ -134,8 +134,8 @@ class ReportApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "username", required = false) username: String?,
-            @RequestParam("minBackwaterMoney",  required = false) minBackwaterMoney: BigDecimal?,
-            @RequestParam("minPromotionMoney",  required = false) minPromotionMoney: BigDecimal?,
+            @RequestParam("minRebateAmount",  required = false) minRebateAmount: BigDecimal?,
+            @RequestParam("minPromotionAmount",  required = false) minPromotionAmount: BigDecimal?,
             @RequestParam("current") current: Int,
             @RequestParam("size") size: Int
     ): ReportValue.MemberTotalDetailReport {
@@ -144,7 +144,7 @@ class ReportApiController(
         val memberId = memberService.findByUsername(clientId, username)?.id
 
         val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate,
-                minBackwaterMoney = minBackwaterMoney, minPromotionMoney = minPromotionMoney, current = current, size = size,
+                minRebateAmount = minRebateAmount, minPromotionAmount = minPromotionAmount, current = current, size = size,
                 agentId = null)
 
         val total  = memberDailyReportService.total(query)
@@ -162,9 +162,9 @@ class ReportApiController(
         val data = history
         if (data.isEmpty()) {
             val emptyTotal = MemberReportValue.MemberReportTotal(count = 0,  totalMWin = BigDecimal.ZERO, totalBet = BigDecimal.ZERO, transferIn = BigDecimal.ZERO,
-                    transferOut = BigDecimal.ZERO, totalDepositCount = 0, totalDepositMoney = BigDecimal.ZERO, totalWithdrawCount = 0, totalWithdrawMoney = BigDecimal.ZERO,
-                    totalArtificialCount = 0, totalArtificialMoney = BigDecimal.ZERO, totalThirdPayCount = 0, totalThirdPayMoney = BigDecimal.ZERO, totalBackwaterMoney = BigDecimal.ZERO,
-                    totalPromotionMoney = BigDecimal.ZERO)
+                    transferOut = BigDecimal.ZERO, totalDepositCount = 0, totalDepositAmount = BigDecimal.ZERO, totalWithdrawCount = 0, totalWithdrawAmount = BigDecimal.ZERO,
+                    totalArtificialCount = 0, totalArtificialAmount = BigDecimal.ZERO, totalThirdPayCount = 0, totalThirdPayAmount = BigDecimal.ZERO, totalRebateAmount = BigDecimal.ZERO,
+                    totalPromotionAmount = BigDecimal.ZERO)
             return ReportValue.MemberTotalDetailReport(data = emptyList(), memberReportTotal = emptyTotal)
         }
 //
@@ -177,11 +177,11 @@ class ReportApiController(
                 val member = members[it.memberId] ?: error(OnePieceExceptionCode.DATA_FAIL)
                 with(it) {
                     MemberReportWebVo(day = day, clientId = clientId, memberId = member.id, username = member.username,
-                            transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney,
-                            withdrawMoney = withdrawMoney, artificialMoney = artificialMoney, artificialCount = artificialCount,
+                            transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
+                            withdrawAmount = withdrawAmount, artificialAmount = artificialAmount, artificialCount = artificialCount,
                             settles = it.settles, totalMWin = it.totalMWin, totalBet = it.totalBet, thirdPayCount = thirdPayCount,
-                            thirdPayMoney = thirdPayMoney,  backwaterMoney = it.backwaterMoney,
-                            promotionMoney = it.promotionMoney)
+                            thirdPayAmount = thirdPayAmount, rebateAmount = it.rebateAmount,
+                            promotionAmount = it.promotionAmount)
                 }
             } catch (e: Exception) {
                 log.error("", e)
@@ -204,7 +204,7 @@ class ReportApiController(
 
         //查询今天的
         val todayData = this.includeToday(endDate) {
-            reportService.startClientPlatformReport(clientId = clientId, startDate = LocalDate.now())
+            reportService.startClientPlatformReport(startDate = LocalDate.now())
         }
 
         val data = clientPlatformDailyReportService.query(query).plus(todayData).sortedByDescending { it.day }
@@ -245,10 +245,9 @@ class ReportApiController(
 
         val data = this.clientDaily(startDate = startDate, endDate = endDate).data.map {
             with(it) {
-                ClientReportExcelVo(day = day.toString(),totalBet = totalBet, totalMWin = totalMWin, transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney,
-                        depositCount = depositCount, depositSequence = depositSequence, thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount, thirdPaySequence = thirdPaySequence,
-                        promotionAmount = promotionAmount, withdrawMoney = withdrawMoney, withdrawCount = withdrawCount, artificialMoney = artificialMoney, artificialCount = artificialCount,
-                        backwaterMoney = backwaterMoney, newMemberCount = newMemberCount)
+                ClientReportExcelVo(day = day.toString(),totalBet = totalBet, totalMWin = totalMWin, transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
+                        depositCount = depositCount,  thirdPayAmount = depositAmount, thirdPayCount = thirdPayCount, promotionAmount = promotionAmount, withdrawAmount = withdrawAmount,
+                        withdrawCount = withdrawCount, artificialAmount = artificialAmount, artificialCount = artificialCount, rebateAmount = rebateAmount, newMemberCount = newMemberCount)
             }
         }
 

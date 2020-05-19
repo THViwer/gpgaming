@@ -1,7 +1,9 @@
 package com.onepiece.gpgaming.task
 
 import com.onepiece.gpgaming.beans.enums.WalletEvent
+import com.onepiece.gpgaming.beans.value.database.AgentReportValue
 import com.onepiece.gpgaming.beans.value.database.WalletUo
+import com.onepiece.gpgaming.core.service.AgentMonthReportService
 import com.onepiece.gpgaming.core.service.MemberDailyReportService
 import com.onepiece.gpgaming.core.service.WalletService
 import org.slf4j.LoggerFactory
@@ -10,12 +12,13 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 
 @Component
-class BackwaterTask(
+class RebateTask(
         private val memberDailyReportService: MemberDailyReportService,
-        private val walletService: WalletService
+        private val walletService: WalletService,
+        private val agentMonthReportService: AgentMonthReportService
 ) {
 
-    private val log = LoggerFactory.getLogger(BackwaterTask::class.java)
+    private val log = LoggerFactory.getLogger(RebateTask::class.java)
 
 
     // 返水任务
@@ -30,15 +33,15 @@ class BackwaterTask(
         var index = 0
         var next: Boolean = true
         do {
-            val list = memberDailyReportService.queryBackwater(current = index, size = 1000)
+            val list = memberDailyReportService.queryRebate(current = index, size = 1000)
 
             log.info("${LocalDate.now()}开始执行返水任务. 从${index}到${index+1000}条数据")
 
-            val ids = list.filter { it.backwaterMoney.toDouble() > 0 }.mapNotNull {
+            val ids = list.filter { it.rebateAmount.toDouble() > 0 }.mapNotNull {
 
                 try {
-                    val walletUo = WalletUo(clientId = it.clientId, waiterId = null, memberId = it.memberId, money = it.backwaterMoney, eventId = "${it.id}",
-                            event = WalletEvent.Backwater, remarks = "system backwater")
+                    val walletUo = WalletUo(clientId = it.clientId, waiterId = null, memberId = it.memberId, money = it.rebateAmount, eventId = "${it.id}",
+                            event = WalletEvent.Rebate, remarks = "system rebate")
                     walletService.update(walletUo)
 
                     it.id
@@ -49,7 +52,7 @@ class BackwaterTask(
             }
 
             if (ids.isNotEmpty())
-                memberDailyReportService.updateBackwater(ids)
+                memberDailyReportService.updateRebate(ids)
 
             index += 1000
             next = list.isNotEmpty()
@@ -63,5 +66,23 @@ class BackwaterTask(
 
     }
 
+    @Scheduled(cron = "0 0 6 * * ?")
+    fun startAgentCommission() {
+
+        val data = agentMonthReportService.commissions()
+        val ids = data.mapNotNull { report ->
+            try {
+                val money = report.agentCommission.plus(report.memberCommission)
+                val walletUo = WalletUo(clientId = report.clientId, waiterId = null, memberId = report.agentId, money = money, eventId = "${report.id}",
+                        event = WalletEvent.Commission, remarks = "agent commission")
+                walletService.update(walletUo)
+                report.id
+            } catch (e: Exception) {
+                null
+            }
+        }
+
+        agentMonthReportService.executionCommission(ids)
+    }
 
 }

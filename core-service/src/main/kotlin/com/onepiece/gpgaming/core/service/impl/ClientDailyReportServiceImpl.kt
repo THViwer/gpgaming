@@ -11,8 +11,8 @@ class ClientDailyReportServiceImpl(
         private val clientDailyReportDao: ClientDailyReportDao
 ) : ClientDailyReportService {
 
-    override fun create(reports: List<ClientDailyReport>) {
-        return clientDailyReportDao.create(reports)
+    override fun create(data: List<ClientDailyReport>) {
+        return clientDailyReportDao.create(data)
     }
 
     override fun query(query: ClientReportQuery): List<ClientDailyReport> {

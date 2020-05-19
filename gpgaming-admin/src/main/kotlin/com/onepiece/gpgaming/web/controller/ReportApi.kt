@@ -25,8 +25,8 @@ interface ReportApi {
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "username", required = false) username: String?,
-            @RequestParam("minBackwaterMoney",  required = false) minBackwaterMoney: BigDecimal?,
-            @RequestParam("minPromotionMoney",  required = false) minPromotionMoney: BigDecimal?,
+            @RequestParam("minRebateAmount",  required = false) minRebateAmount: BigDecimal?,
+            @RequestParam("minPromotionAmount",  required = false) minPromotionAmount: BigDecimal?,
             @RequestParam("current") current: Int,
             @RequestParam("size") size: Int
     ): ReportValue.MemberTotalDetailReport

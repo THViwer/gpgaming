@@ -34,6 +34,9 @@ data class ArtificialOrder(
         // 操作角色
         val operatorRole: Role,
 
+        // 金额
+        val money: BigDecimal,
+
         // 操作后余额
         val balance: BigDecimal,
 

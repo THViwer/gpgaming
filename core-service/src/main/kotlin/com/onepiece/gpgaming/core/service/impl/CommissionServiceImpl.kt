@@ -13,6 +13,10 @@ class CommissionServiceImpl(
         private val commissionDao: CommissionDao
 ): CommissionService {
 
+    override fun all(): List<Commission> {
+        return commissionDao.all()
+    }
+
     override fun list(bossId: Int, type: CommissionType): List<Commission> {
         return commissionDao.list(bossId = bossId).filter { it.type == type }
     }

@@ -1,7 +1,7 @@
 package com.onepiece.gpgaming.task.controller
 
 import com.onepiece.gpgaming.core.service.ReportService
-import com.onepiece.gpgaming.task.BackwaterTask
+import com.onepiece.gpgaming.task.RebateTask
 import com.onepiece.gpgaming.task.PromotionTask
 import com.onepiece.gpgaming.task.ReportTask
 import com.onepiece.gpgaming.task.SexyGamingTask
@@ -17,7 +17,7 @@ class DemoController(
         private val reportTask: ReportTask,
         private val promotionTask: PromotionTask,
         private val sexyGamingTask: SexyGamingTask,
-        private val backwaterTask: BackwaterTask
+        private val backwaterTask: RebateTask
 ) {
 
     @GetMapping("/sexyGaming")
@@ -31,11 +31,11 @@ class DemoController(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate): Any {
 
         return when (type) {
-            "1" -> reportService.startMemberPlatformDailyReport(memberId = null, startDate = startDate)
-            "2" -> reportService.startMemberReport(memberId = null, startDate = startDate)
+            "1" -> reportService.startMemberPlatformDailyReport(startDate = startDate)
+            "2" -> reportService.startMemberReport(startDate = startDate)
 //            "2" -> reportTask.startMemberReport(startDate = startDate)
-            "3" -> reportService.startClientPlatformReport(clientId = null, startDate = startDate)
-            "4" -> reportService.startClientReport(clientId = null, startDate = startDate)
+            "3" -> reportService.startClientPlatformReport(startDate = startDate)
+            "4" -> reportService.startClientReport(startDate = startDate)
             "5" -> backwaterTask.start()
             else -> error("参数error")
         }

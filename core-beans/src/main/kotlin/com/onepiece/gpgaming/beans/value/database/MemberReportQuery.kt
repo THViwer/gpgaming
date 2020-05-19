@@ -15,9 +15,9 @@ data class MemberReportQuery(
 
         val endDate: LocalDate,
 
-        val minBackwaterMoney: BigDecimal?,
+        val minRebateAmount: BigDecimal?,
 
-        val minPromotionMoney: BigDecimal?,
+        val minPromotionAmount: BigDecimal?,
 
         val current: Int,
 

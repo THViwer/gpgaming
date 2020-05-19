@@ -24,11 +24,11 @@ class MemberDailyReportServiceImpl(
         return memberDailyReportDao.query(query)
     }
 
-    override fun queryBackwater(current: Int, size: Int): List<MemberDailyReport> {
-        return memberDailyReportDao.queryBackwater(current = current, size = size)
+    override fun queryRebate(current: Int, size: Int): List<MemberDailyReport> {
+        return memberDailyReportDao.queryRebate(current = current, size = size)
     }
 
-    override fun updateBackwater(ids: List<Int>) {
-        memberDailyReportDao.updateBackwater(ids)
+    override fun updateRebate(ids: List<Int>) {
+        memberDailyReportDao.updateRebate(ids)
     }
 }

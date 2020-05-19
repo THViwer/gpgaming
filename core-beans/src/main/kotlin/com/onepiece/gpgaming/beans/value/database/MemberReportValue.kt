@@ -1,11 +1,8 @@
 package com.onepiece.gpgaming.beans.value.database
 
 import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
-import com.onepiece.gpgaming.beans.enums.Status
-import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 sealed class MemberReportValue {
 
@@ -30,31 +27,31 @@ sealed class MemberReportValue {
             val totalDepositCount: Int,
 
             // 充值金额
-            val totalDepositMoney: BigDecimal,
+            val totalDepositAmount: BigDecimal,
 
             // 取款次数
             val totalWithdrawCount: Int,
 
             // 人工提存金额
-            val totalArtificialMoney: BigDecimal,
+            val totalArtificialAmount: BigDecimal,
 
             // 人工提存次数
             val totalArtificialCount: Int,
 
             // 自动入款金额
-            val totalThirdPayMoney: BigDecimal,
+            val totalThirdPayAmount: BigDecimal,
 
             // 自动入款次数
             val totalThirdPayCount: Int,
 
             // 取款金额
-            val totalWithdrawMoney: BigDecimal,
+            val totalWithdrawAmount: BigDecimal,
 
             // 返水金额
-            val totalBackwaterMoney: BigDecimal,
+            val totalRebateAmount: BigDecimal,
 
             //  优惠金额
-            val totalPromotionMoney: BigDecimal
+            val totalPromotionAmount: BigDecimal
 
     )
 

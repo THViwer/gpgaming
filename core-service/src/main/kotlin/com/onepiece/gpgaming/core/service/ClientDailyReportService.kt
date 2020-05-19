@@ -5,7 +5,7 @@ import com.onepiece.gpgaming.beans.value.database.ClientReportQuery
 
 interface ClientDailyReportService  {
 
-    fun create(reports: List<ClientDailyReport>)
+    fun create(data: List<ClientDailyReport>)
 
     fun query(query: ClientReportQuery): List<ClientDailyReport>
 

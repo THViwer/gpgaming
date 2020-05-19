@@ -33,7 +33,10 @@ enum class WalletEvent {
     Artificial,
 
     // 返水
-    Backwater,
+    Rebate,
+
+    // 佣金
+    Commission
 
     // 补偿
 //    REPARATION

@@ -14,11 +14,11 @@ interface MemberDailyReportDao  {
 
     fun query(query: MemberReportQuery): List<MemberDailyReport>
 
-    fun queryBackwater(current: Int, size: Int): List<MemberDailyReport>
+    fun queryRebate(current: Int, size: Int): List<MemberDailyReport>
 
-    fun updateBackwater(ids: List<Int>)
+    fun updateRebate(ids: List<Int>)
 
-    fun backwater(startDate: LocalDate): Map<Int, BigDecimal>
+    fun rebate(startDate: LocalDate): Map<Int, BigDecimal>
 
     fun analysis(query: MemberReportValue.AnalysisQuery): List<MemberReportValue.AnalysisVo>
 

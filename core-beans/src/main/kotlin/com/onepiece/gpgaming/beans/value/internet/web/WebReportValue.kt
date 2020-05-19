@@ -52,19 +52,19 @@ data class MemberReportWebVo(
         val transferOut: BigDecimal,
 
         // 充值金额
-        val depositMoney: BigDecimal,
+        val depositAmount: BigDecimal,
 
         // 第三方充值金额
-        val thirdPayMoney: BigDecimal,
+        val thirdPayAmount: BigDecimal,
 
         // 第三方充值总数
         val thirdPayCount: Int,
 
         // 取款金额
-        val withdrawMoney: BigDecimal,
+        val withdrawAmount: BigDecimal,
 
         // 人工提存金额
-        val artificialMoney: BigDecimal,
+        val artificialAmount: BigDecimal,
 
         // 人工提存次数
         val artificialCount: Int,
@@ -76,10 +76,10 @@ data class MemberReportWebVo(
         val totalMWin: BigDecimal,
 
         // 返水金额
-        val backwaterMoney: BigDecimal,
+        val rebateAmount: BigDecimal,
 
         //  优惠金额
-        val promotionMoney: BigDecimal,
+        val promotionAmount: BigDecimal,
 
         // 平台结算列表
         val settles: List<MemberDailyReport.PlatformSettle>

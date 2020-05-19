@@ -24,82 +24,90 @@ class MemberDailyReportDaoImpl(
         get() = { rs ->
             val id = rs.getInt("id")
             val day = rs.getDate("day").toLocalDate()
+            val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
+            val superiorAgentId = rs.getInt("superior_agent_id")
             val agentId = rs.getInt("agent_id")
             val memberId = rs.getInt("member_id")
+            val username  = rs.getString("username")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
-            val depositMoney = rs.getBigDecimal("deposit_money")
+            val depositAmount = rs.getBigDecimal("deposit_amount")
             val depositCount = rs.getInt("deposit_count")
-            val withdrawMoney = rs.getBigDecimal("withdraw_money")
+            val withdrawAmount = rs.getBigDecimal("withdraw_amount")
             val withdrawCount = rs.getInt("withdraw_count")
-            val artificialMoney = rs.getBigDecimal("artificial_money")
+            val artificialAmount = rs.getBigDecimal("artificial_amount")
             val artificialCount = rs.getInt("artificial_count")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val status = rs.getString("status").let { Status.valueOf(it) }
             val totalBet = rs.getBigDecimal("total_bet")
             val totalMWin = rs.getBigDecimal("total_m_win")
             val settles = rs.getString("settles").let { objectMapper.readValue<List<MemberDailyReport.PlatformSettle>>(it) }
-            val thirdPayMoney = rs.getBigDecimal("third_pay_money")
+            val thirdPayAmount = rs.getBigDecimal("third_pay_amount")
             val thirdPayCount = rs.getInt("third_pay_count")
-            val backwater = rs.getBigDecimal("backwater")
-            val backwaterMoney = rs.getBigDecimal("backwater_money")
-            val backwaterExecution = rs.getBoolean("backwater_execution")
-            val promotionMoney = rs.getBigDecimal("promotion_money")
+            val rebateAmount = rs.getBigDecimal("rebate_amount")
+            val rebateExecution = rs.getBoolean("rebate_execution")
+            val promotionAmount = rs.getBigDecimal("promotion_amount")
 
-            MemberDailyReport(id = id, day = day, clientId = clientId, memberId = memberId,
-                    transferIn = transferIn, transferOut = transferOut, depositMoney = depositMoney, withdrawMoney = withdrawMoney,
-                    createdTime = createdTime, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
+            MemberDailyReport(id = id, day = day, clientId = clientId, memberId = memberId, username = username,
+                    transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount, withdrawAmount = withdrawAmount,
+                    createdTime = createdTime, status = status, artificialAmount = artificialAmount, artificialCount = artificialCount,
                     depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, totalMWin = totalMWin,
-                    thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount,backwaterMoney = backwaterMoney,
-                    backwaterExecution = backwaterExecution, promotionMoney = promotionMoney, agentId = agentId)
+                    thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, bossId = bossId,
+                    rebateExecution = rebateExecution, promotionAmount = promotionAmount, agentId = agentId, superiorAgentId = superiorAgentId)
         }
 
     override fun create(reports: List<MemberDailyReport>) {
 
         return batchInsert(reports)
                 .set("day")
+                .set("boss_id")
                 .set("client_id")
+                .set("superior_agent_id")
                 .set("agent_id")
                 .set("member_id")
+                .set("username")
                 .set("transfer_in")
                 .set("transfer_out")
-                .set("deposit_money")
+                .set("deposit_amount")
                 .set("deposit_count")
-                .set("withdraw_money")
+                .set("withdraw_amount")
                 .set("withdraw_count")
-                .set("artificial_money")
+                .set("artificial_amount")
                 .set("artificial_count")
                 .set("total_bet")
                 .set("total_m_win")
                 .set("settles")
-                .set("third_pay_money")
+                .set("third_pay_amount")
                 .set("third_pay_count")
-                .set("backwater_money")
+                .set("rebate_amount")
                 .set("backwater_execution")
-                .set("promotion_money")
+                .set("promotion_amount")
                 .execute { ps, entity ->
                     var index = 0
                     ps.setDate(++index, Date.valueOf(entity.day))
+                    ps.setInt(++index, entity.bossId)
                     ps.setInt(++index, entity.clientId)
+                    ps.setInt(++index, entity.superiorAgentId)
                     ps.setInt(++index, entity.agentId)
                     ps.setInt(++index, entity.memberId)
+                    ps.setString(++index, entity.username)
                     ps.setBigDecimal(++index, entity.transferIn)
                     ps.setBigDecimal(++index, entity.transferOut)
-                    ps.setBigDecimal(++index, entity.depositMoney)
+                    ps.setBigDecimal(++index, entity.depositAmount)
                     ps.setInt(++index, entity.depositCount)
-                    ps.setBigDecimal(++index, entity.withdrawMoney)
+                    ps.setBigDecimal(++index, entity.withdrawAmount)
                     ps.setInt(++index, entity.withdrawCount)
-                    ps.setBigDecimal(++index, entity.artificialMoney)
+                    ps.setBigDecimal(++index, entity.artificialAmount)
                     ps.setInt(++index, entity.artificialCount)
                     ps.setBigDecimal(++index, entity.totalBet)
                     ps.setBigDecimal(++index, entity.totalMWin)
                     ps.setString(++index, objectMapper.writeValueAsString(entity.settles))
-                    ps.setBigDecimal(++index, entity.thirdPayMoney)
+                    ps.setBigDecimal(++index, entity.thirdPayAmount)
                     ps.setInt(++index, entity.thirdPayCount)
-                    ps.setBigDecimal(++index, entity.backwaterMoney)
-                    ps.setBoolean(++index, entity.backwaterExecution)
-                    ps.setBigDecimal(++index, entity.promotionMoney)
+                    ps.setBigDecimal(++index, entity.rebateAmount)
+                    ps.setBoolean(++index, entity.rebateExecution)
+                    ps.setBigDecimal(++index, entity.promotionAmount)
                 }
 
     }
@@ -113,15 +121,15 @@ class MemberDailyReportDaoImpl(
             sum(transfer_in) as transferIn,
             sum(transfer_out) as transferOut,
             sum(deposit_count) as totalDepositCount,
-            sum(deposit_money) as totalDepositMoney,
+            sum(deposit_amount) as totalDepositAmount,
             sum(withdraw_count) as totalWithdrawCount,
-            sum(artificial_money) as totalArtificialMoney,
+            sum(artificial_amount) as totalArtificialAmount,
             sum(artificial_count) as totalArtificialCount,
-            sum(third_pay_money) as totalThirdPayMoney,
+            sum(third_pay_amount) as totalThirdPayAmount,
             sum(third_pay_count) as totalThirdPayCount,
-            sum(withdraw_money) as totalWithdrawMoney,
-            sum(backwater_money) as totalBackwaterMoney,
-            sum(promotion_money)as totalPromotionMoney
+            sum(withdraw_amount) as totalWithdrawAmount,
+            sum(backwater_amount) as totalBackwaterAmount,
+            sum(promotion_amount)as totalPromotionAmount
         """.trimIndent()
 
         return query(columns)
@@ -129,31 +137,31 @@ class MemberDailyReportDaoImpl(
                 .asWhere("day >= ?", query.startDate)
                 .asWhere("day < ?", query.endDate)
                 .where("member_id", query.memberId)
-                .asWhere("backwater_money >= ?", query.minBackwaterMoney)
-                .asWhere("promotion_money >= ?", query.minPromotionMoney)
+                .asWhere("rebate_amount >= ?", query.minRebateAmount)
+                .asWhere("promotion_amount >= ?", query.minPromotionAmount)
                 .executeOnlyOne { rs ->
                     val count = rs.getInt("count")
-                    val totalMWin  = rs.getBigDecimal("totalMWin") ?: BigDecimal.ZERO
-                    val totalBet  = rs.getBigDecimal("totalBet") ?: BigDecimal.ZERO
+                    val totalMWin = rs.getBigDecimal("totalMWin") ?: BigDecimal.ZERO
+                    val totalBet = rs.getBigDecimal("totalBet") ?: BigDecimal.ZERO
                     val transferIn = rs.getBigDecimal("transferIn") ?: BigDecimal.ZERO
                     val transferOut = rs.getBigDecimal("transferOut") ?: BigDecimal.ZERO
                     val totalDepositCount = rs.getInt("totalDepositCount")
-                    val totalDepositMoney  = rs.getBigDecimal("totalDepositMoney")?: BigDecimal.ZERO
+                    val totalDepositAmount = rs.getBigDecimal("totalDepositAmount") ?: BigDecimal.ZERO
                     val totalWithdrawCount = rs.getInt("totalWithdrawCount")
-                    val  totalArtificialMoney  =  rs.getBigDecimal("totalArtificialMoney")?: BigDecimal.ZERO
+                    val totalArtificialAmount = rs.getBigDecimal("totalArtificialAmount") ?: BigDecimal.ZERO
                     val totalArtificialCount = rs.getInt("totalArtificialCount")
-                    val totalThirdPayMoney = rs.getBigDecimal("totalThirdPayMoney")?: BigDecimal.ZERO
+                    val totalThirdPayAmount = rs.getBigDecimal("totalThirdPayAmount") ?: BigDecimal.ZERO
                     val totalThirdPayCount = rs.getInt("totalThirdPayCount")
-                    val totalWithdrawMoney = rs.getBigDecimal("totalWithdrawMoney")?: BigDecimal.ZERO
-                    val totalBackwaterMoney = rs.getBigDecimal("totalBackwaterMoney")?: BigDecimal.ZERO
-                    val totalPromotionMoney = rs.getBigDecimal("totalPromotionMoney")?: BigDecimal.ZERO
+                    val totalWithdrawAmount = rs.getBigDecimal("totalWithdrawAmount") ?: BigDecimal.ZERO
+                    val totalRebbateAmount = rs.getBigDecimal("totalBackwaterAmount") ?: BigDecimal.ZERO
+                    val totalPromotionAmount = rs.getBigDecimal("totalPromotionAmount") ?: BigDecimal.ZERO
 
                     MemberReportValue.MemberReportTotal(count = count, totalMWin = totalMWin, totalBet = totalBet, transferIn = transferIn,
-                            transferOut = transferOut, totalDepositCount = totalDepositCount, totalDepositMoney = totalDepositMoney,
-                            totalWithdrawCount = totalWithdrawCount, totalWithdrawMoney = totalWithdrawMoney,
-                            totalArtificialCount = totalArtificialCount,  totalArtificialMoney = totalArtificialMoney,
-                            totalThirdPayCount = totalThirdPayCount, totalThirdPayMoney = totalThirdPayMoney,
-                            totalBackwaterMoney = totalBackwaterMoney, totalPromotionMoney = totalPromotionMoney)
+                            transferOut = transferOut, totalDepositCount = totalDepositCount, totalDepositAmount = totalDepositAmount,
+                            totalWithdrawCount = totalWithdrawCount, totalWithdrawAmount = totalWithdrawAmount,
+                            totalArtificialCount = totalArtificialCount, totalArtificialAmount = totalArtificialAmount,
+                            totalThirdPayCount = totalThirdPayCount, totalThirdPayAmount = totalThirdPayAmount,
+                            totalRebateAmount = totalRebbateAmount, totalPromotionAmount = totalRebbateAmount)
                 }
     }
 
@@ -165,14 +173,14 @@ class MemberDailyReportDaoImpl(
                 .asWhere("day >= ?", query.startDate)
                 .asWhere("day < ?", query.endDate)
                 .where("member_id", query.memberId)
-                .asWhere("backwater_money >= ?", query.minBackwaterMoney)
-                .asWhere("promotion_money >= ?", query.minPromotionMoney)
+                .asWhere("rebate >= ?", query.minRebateAmount)
+                .asWhere("promotion_amount >= ?", query.minPromotionAmount)
                 .sort("day desc")
                 .limit(query.current, query.size)
                 .execute(mapper)
     }
 
-    override fun queryBackwater(current: Int, size: Int): List<MemberDailyReport> {
+    override fun queryRebate(current: Int, size: Int): List<MemberDailyReport> {
         return query()
                 .where("backwater_execution", false)
                 .asWhere("backwater_money != 0")
@@ -180,14 +188,14 @@ class MemberDailyReportDaoImpl(
                 .execute(mapper)
     }
 
-    override fun updateBackwater(ids: List<Int>) {
+    override fun updateRebate(ids: List<Int>) {
         update()
                 .set("backwater_execution", true)
                 .asWhere("id in (${ids.joinToString(",")})")
                 .execute()
     }
 
-    override fun backwater(startDate: LocalDate): Map<Int, BigDecimal> {
+    override fun rebate(startDate: LocalDate): Map<Int, BigDecimal> {
         return query("client_id, sum(backwater_money) as total_backwater_money")
                 .asWhere("day >= ?", startDate)
                 .asWhere("day < ?", startDate.plusDays(1))

@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.beans.model
 
-import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -11,6 +10,9 @@ data class ClientDailyReport(
 
         // 报表时间
         val day: LocalDate,
+
+        // bossId
+        val bossId: Int,
 
         // 厅主Id
         val clientId: Int,
@@ -28,49 +30,47 @@ data class ClientDailyReport(
         val transferOut: BigDecimal,
 
         // 充值金额
-        val depositMoney: BigDecimal,
+        val depositAmount: BigDecimal,
 
         // 充值次数
         val depositCount: Int,
 
         // 充值人数
-        val depositSequence: Int,
+//        val depositSequence: Int,
 
         // 优惠金额
         val promotionAmount: BigDecimal,
 
         // 取款金额
-        val withdrawMoney: BigDecimal,
+        val withdrawAmount: BigDecimal,
 
         // 取款次数
         val withdrawCount: Int,
 
         // 人工提存金锭
-        val artificialMoney: BigDecimal,
+        val artificialAmount: BigDecimal,
 
         // 人工提存次数
         val artificialCount: Int,
 
         // 第三方充值金额
-        val thirdPayMoney: BigDecimal,
+        val thirdPayAmount: BigDecimal,
 
         // 第三方充值总数
         val thirdPayCount: Int,
 
         // 三方充值人数
-        val thirdPaySequence: Int,
+//        val thirdPaySequence: Int,
 
         // 返水金额
-        val backwaterMoney: BigDecimal,
+        val rebateAmount: BigDecimal,
 
         // 今日新增用户
         val newMemberCount: Int,
 
         // 创建时间
-        val createdTime: LocalDateTime,
+        val createdTime: LocalDateTime
 
-        // 状态
-        val status: Status
 ) {
 
     // 业主盈利金额

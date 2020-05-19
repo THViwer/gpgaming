@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.core.dao.impl
 
-import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.value.database.ClientReportQuery
 import com.onepiece.gpgaming.core.dao.ClientDailyReportDao
@@ -16,77 +15,72 @@ class fClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_
         get() = { rs ->
             val id = rs.getInt("id")
             val day = rs.getDate("day").toLocalDate()
+            val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
-            val depositMoney = rs.getBigDecimal("deposit_money")
+            val depositAmount = rs.getBigDecimal("deposit_amount")
             val depositCount = rs.getInt("deposit_count")
-            val depositSequence = rs.getInt("deposit_sequence")
-            val withdrawMoney = rs.getBigDecimal("withdraw_money")
+            val withdrawAmount = rs.getBigDecimal("withdraw_amount")
             val withdrawCount = rs.getInt("withdraw_count")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
-            val artificialMoney = rs.getBigDecimal("artificial_money")
+            val artificialAmount = rs.getBigDecimal("artificial_amount")
             val artificialCount = rs.getInt("artificial_count")
             val newMemberCount = rs.getInt("new_member_count")
-            val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            val status = rs.getString("status").let { Status.valueOf(it) }
             val totalBet = rs.getBigDecimal("total_bet")
             val totalMWin = rs.getBigDecimal("total_m_win")
-            val thirdPayMoney = rs.getBigDecimal("third_pay_money")
+            val thirdPayAmount = rs.getBigDecimal("third_pay_amount")
             val thirdPayCount = rs.getInt("third_pay_count")
-            val thirdPaySequence = rs.getInt("third_pay_sequence")
-            val backwaterMoney = rs.getBigDecimal("backwater_money")
+            val rebateAmount = rs.getBigDecimal("rebate_amount")
+            val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
-            ClientDailyReport(id = id, day = day, clientId = clientId, transferIn = transferIn, transferOut = transferOut,
-                    depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
-                    withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
-                    promotionAmount = promotionAmount, status = status, artificialMoney = artificialMoney, artificialCount = artificialCount,
-                    totalBet = totalBet, totalMWin = totalMWin, thirdPayMoney = thirdPayMoney, thirdPayCount = thirdPayCount,
-                    thirdPaySequence = thirdPaySequence, depositSequence = depositSequence, backwaterMoney = backwaterMoney)
+
+            ClientDailyReport(id = id, day = day, bossId = bossId, clientId = clientId, transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
+                    depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
+                    promotionAmount = promotionAmount, artificialAmount = artificialAmount, artificialCount = artificialCount, totalBet = totalBet, totalMWin = totalMWin,
+                    thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount)
         }
 
     override fun create(reports: List<ClientDailyReport>) {
         batchInsert(reports)
                 .set("day")
+                .set("boss_id")
                 .set("client_id")
                 .set("transfer_in")
                 .set("transfer_out")
-                .set("deposit_money")
+                .set("deposit_amount")
                 .set("deposit_count")
-                .set("deposit_sequence")
-                .set("withdraw_money")
+                .set("withdraw_amount")
                 .set("withdraw_count")
                 .set("promotion_amount")
-                .set("artificial_money")
+                .set("artificial_amount")
                 .set("artificial_count")
                 .set("new_member_count")
                 .set("total_bet")
                 .set("total_m_win")
-                .set("third_pay_money")
+                .set("third_pay_amount")
                 .set("third_pay_count")
-                .set("third_pay_sequence")
-                .set("backwater_money")
+                .set("rebate_amount")
                 .execute { ps, entity ->
                     var x = 0
                     ps.setDate(++x, Date.valueOf(entity.day))
+                    ps.setInt(++x, entity.bossId)
                     ps.setInt(++x, entity.clientId)
                     ps.setBigDecimal(++x, entity.transferIn)
                     ps.setBigDecimal(++x, entity.transferOut)
-                    ps.setBigDecimal(++x, entity.depositMoney)
+                    ps.setBigDecimal(++x, entity.depositAmount)
                     ps.setInt(++x, entity.depositCount)
-                    ps.setInt(++x, entity.depositSequence)
-                    ps.setBigDecimal(++x, entity.withdrawMoney)
+                    ps.setBigDecimal(++x, entity.withdrawAmount)
                     ps.setInt(++x, entity.withdrawCount)
                     ps.setBigDecimal(++x, entity.promotionAmount)
-                    ps.setBigDecimal(++x, entity.artificialMoney)
+                    ps.setBigDecimal(++x, entity.artificialAmount)
                     ps.setInt(++x, entity.artificialCount)
                     ps.setInt(++x, entity.newMemberCount)
                     ps.setBigDecimal(++x, entity.totalBet)
                     ps.setBigDecimal(++x, entity.totalMWin)
-                    ps.setBigDecimal(++x, entity.thirdPayMoney)
+                    ps.setBigDecimal(++x, entity.thirdPayAmount)
                     ps.setInt(++x, entity.thirdPayCount)
-                    ps.setInt(++x, entity.thirdPaySequence)
-                    ps.setBigDecimal(++x, entity.backwaterMoney)
+                    ps.setBigDecimal(++x, entity.rebateAmount)
                 }
     }
 

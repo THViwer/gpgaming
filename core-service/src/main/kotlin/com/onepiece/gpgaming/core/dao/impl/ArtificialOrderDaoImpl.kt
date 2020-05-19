@@ -26,6 +26,7 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
             val operatorId = rs.getInt("operator_id")
             val operatorUsername = rs.getString("operator_username")
             val operatorRole = rs.getString("operator_role").let { Role.valueOf(it) }
+            val money = rs.getBigDecimal("money")
             val balance = rs.getBigDecimal("balance")
             val beforeBalance = rs.getBigDecimal("before_balance")
             val remarks = rs.getString("remarks")
@@ -33,7 +34,7 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
             val status = rs.getString("status").let { Status.valueOf(it) }
             ArtificialOrder(id = id, clientId = clientId, memberId = memberId, operatorId = operatorId, operatorRole = operatorRole,
                     balance = balance, beforeBalance = beforeBalance, remarks = remarks, createdTime = createdTime, orderId = orderId,
-                    status = status, username = username, operatorUsername = operatorUsername)
+                    status = status, username = username, operatorUsername = operatorUsername, money = money)
         }
 
     override fun query(query: ArtificialOrderQuery): List<ArtificialOrder> {
@@ -65,6 +66,7 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
                 .set("operator_id", artificialOrder.operatorId)
                 .set("operator_username", artificialOrder.operatorUsername)
                 .set("operator_role", artificialOrder.operatorRole)
+                .set("money", artificialOrder.money)
                 .set("balance", artificialOrder.balance)
                 .set("before_balance", artificialOrder.beforeBalance)
                 .set("remarks", artificialOrder.remarks)

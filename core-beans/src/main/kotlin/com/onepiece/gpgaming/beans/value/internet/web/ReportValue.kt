@@ -144,10 +144,10 @@ sealed class ReportValue {
                 return data.sumByDouble { it.depositCount.toDouble() }.toBigDecimal().setScale(2, 2)
             }
 
-        val totalDepositMoney: BigDecimal
+        val totalDepositAmount: BigDecimal
             @ApiModelProperty("总充值金额")
             get() {
-                return data.sumByDouble { it.depositMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+                return data.sumByDouble { it.depositAmount.toDouble() }.toBigDecimal().setScale(2, 2)
             }
 
         val totalWithdrawCount: BigDecimal
@@ -156,10 +156,10 @@ sealed class ReportValue {
                 return data.sumByDouble { it.withdrawCount.toDouble() }.toBigDecimal().setScale(2, 2)
             }
 
-        val totalWithdrawMoney: BigDecimal
+        val totalWithdrawAmount: BigDecimal
             @ApiModelProperty("总取款金额")
             get() {
-                return data.sumByDouble { it.withdrawMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+                return data.sumByDouble { it.withdrawAmount.toDouble() }.toBigDecimal().setScale(2, 2)
             }
 
         val totalNewMemberCount: Int
@@ -168,10 +168,10 @@ sealed class ReportValue {
                 return data.sumBy { it.newMemberCount }
             }
 
-        val totalThirdPayMoney: BigDecimal
+        val totalThirdPayAmount: BigDecimal
             @ApiModelProperty("总三方充值金额")
             get() {
-                return data.sumByDouble { it.thirdPayMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+                return data.sumByDouble { it.thirdPayAmount.toDouble() }.toBigDecimal().setScale(2, 2)
             }
 
         val totalThirdPayCount: Int
@@ -180,10 +180,10 @@ sealed class ReportValue {
                 return data.sumBy { it.thirdPayCount }
             }
 
-        val totalArtificialMoney: BigDecimal
+        val totalArtificialAmount: BigDecimal
             @ApiModelProperty("总人工提存金额")
             get() {
-                return data.sumByDouble { it.artificialMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+                return data.sumByDouble { it.artificialAmount.toDouble() }.toBigDecimal().setScale(2, 2)
             }
 
         val totalArtificialCount: Int
@@ -210,10 +210,10 @@ sealed class ReportValue {
                 return totalBet.minus(totalMWin)
             }
 
-        val totalBackwaterMoney: BigDecimal
+        val totalRebateAmount: BigDecimal
             @ApiModelProperty("总返水金额")
             get() {
-                return data.sumByDouble { it.backwaterMoney.toDouble() }.toBigDecimal().setScale(2, 2)
+                return data.sumByDouble { it.rebateAmount.toDouble() }.toBigDecimal().setScale(2, 2)
             }
 
 
