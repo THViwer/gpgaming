@@ -60,22 +60,22 @@ interface AgentConfigApi {
 
     @ApiOperation(tags = ["agent"], value = "佣金列表")
     fun commissions(
-            @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate
+            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate
     ): List<AgentValue.AgentCommissionVo>
 
     @ApiOperation(tags = ["agent"], value = "下级代理佣金列表")
     fun subCommissions(
-            @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
+            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
             @RequestParam("agentId") agentId: Int
     ): List<AgentValue.AgentCommissionVo>
 
 
     @ApiOperation(tags = ["agent"], value = "会员佣金列表")
     fun memberCommissions(
-            @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
+            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
             @RequestParam("agentId") agentId: Int
     ): List<AgentValue.MemberCommissionVo>
 
