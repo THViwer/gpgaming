@@ -124,6 +124,12 @@ data class MemberDailyReport(
         return this
     }
 
+    fun isHasData(): Boolean {
+        return depositCount > 0 || thirdPayCount > 0 || withdrawCount > 0 || rebateAmount.toDouble() > 0 && promotionAmount.toDouble() > 0 || totalBet.toDouble() > 0
+    }
+
+
+
     // 下注金额
 //    val totalBet: BigDecimal
 //        get() {

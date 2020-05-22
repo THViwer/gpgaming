@@ -11,9 +11,17 @@ sealed class AgentReportValue {
 
     data class AgentMonthQuery(
 
+            // bossId
             val bossId: Int,
 
-            val agentId: Int
+            // 业主Id
+            val clientId: Int,
+
+            // 上级代理Id
+            val superiorAgentId: Int? = null,
+
+            // 代理Id
+            val agentId: Int? = null
     )
 
 

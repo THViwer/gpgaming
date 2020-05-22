@@ -31,14 +31,16 @@ class ReportTask(
 
 //        this.startMemberPlatformDailyReport(localDate)
 
-        this.startMemberReport(localDate)
+        this.startMemberReport(startDate = localDate)
+
+        this.startAgentMonthReport(startDate = localDate)
 
 //        this.startClientPlatformReport(localDate)
 
-        this.startClientReport(localDate)
+        this.startClientReport(startDate = localDate)
     }
 
-    @Scheduled(cron = "0 0 3 1 * ? *")
+    @Scheduled(cron = "0 0 3 1 * ?")
     fun startMonth() {
         val localDate = LocalDate.now().minusMonths(1)
         this.startAgentMonthReport(startDate = localDate)
@@ -47,16 +49,17 @@ class ReportTask(
 
     private fun tryLock(localDate: LocalDate, type: TaskTimerType, function: () -> Unit) {
 
-        val state = taskTimerService.lock(day = localDate, type = type)
-        if (!state) return
-
-        try {
-            function()
-            taskTimerService.done(day = localDate, type = type)
-        } catch (e: Exception) {
-            log.error("执行报表任务失败:", e)
-            taskTimerService.fail(day = localDate, type = type)
-        }
+        function()
+//        val state = taskTimerService.lock(day = localDate, type = type)
+//        if (!state) return
+//
+//        try {
+//            function()
+//            taskTimerService.done(day = localDate, type = type)
+//        } catch (e: Exception) {
+//            log.error("执行报表任务失败:", e)
+//            taskTimerService.fail(day = localDate, type = type)
+//        }
     }
 
     // 会员平台日报表

@@ -15,6 +15,9 @@ data class Client(
         // bossId
         val bossId: Int,
 
+        // 主要业主
+        val main: Boolean,
+
         // 国家
         val country: Country,
 

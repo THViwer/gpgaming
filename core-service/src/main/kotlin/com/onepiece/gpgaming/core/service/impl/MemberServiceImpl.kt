@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.service.impl
 
 import com.onepiece.gpgaming.beans.base.Page
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Member
@@ -16,6 +17,7 @@ import com.onepiece.gpgaming.core.dao.MemberRelationDao
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.utils.RedisService
+import com.onepiece.gpgaming.utils.StringUtil
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -29,6 +31,13 @@ class MemberServiceImpl(
         private val bCryptPasswordEncoder: BCryptPasswordEncoder,
         private val memberRelationDao: MemberRelationDao
 ) : MemberService {
+
+    override fun getAgentByCode(bossId: Int, clientId: Int, code: String): Member? {
+
+        val query = MemberQuery(bossId = bossId, clientId = clientId,  role = Role.Agent, username = null, name = null, phone = null,
+                levelId = null, promoteCode = code, startTime = null, status = null, agentId = null, endTime = null)
+        return memberDao.list(query).firstOrNull()
+    }
 
     override fun getDefaultAgent(bossId: Int): Member {
         return memberDao.getByBossIdAndUsername(bossId = bossId, username = "default_agent")!!
@@ -71,7 +80,7 @@ class MemberServiceImpl(
     override fun findByBossIdAndCode(bossId: Int, promoteCode: String): Member? {
         if (promoteCode.isNullOrBlank()) return null
 
-        return memberDao.getByBossIdAndPhone(bossId, promoteCode)?.copy(password = "", safetyPassword = "")
+        return memberDao.findByBossIdAndCode(bossId, promoteCode)?.copy(password = "", safetyPassword = "")
     }
 
     override fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member> {
@@ -102,6 +111,19 @@ class MemberServiceImpl(
         check(member.safetyPassword == safetyPassword) { OnePieceExceptionCode.SAFETY_PASSWORD_CHECK_FAIL }
     }
 
+    private fun getPromoteCode(bossId: Int, clientId: Int, code: String?): String {
+
+        val promoteCode = code ?: StringUtil.generateNonce(6)
+        val member = this.getAgentByCode(bossId = bossId, clientId = clientId, code = promoteCode)
+
+        return if (member == null) {
+            promoteCode
+        } else {
+            this.getPromoteCode(bossId = bossId, clientId = clientId, code = null)
+        }
+
+    }
+
     @Transactional(rollbackFor = [Exception::class])
     override fun create(memberCo: MemberCo) {
 
@@ -109,9 +131,11 @@ class MemberServiceImpl(
         val hasMember = memberDao.getByUsername(memberCo.clientId, memberCo.username)
         check(hasMember == null) { OnePieceExceptionCode.USERNAME_EXISTENCE }
 
+        val promoteCode = this.getPromoteCode(bossId = memberCo.bossId, clientId = memberCo.clientId, code = memberCo.promoteCode)
+
         // create member
         val password = bCryptPasswordEncoder.encode(memberCo.password)
-        val id = memberDao.create(memberCo.copy(password = password))
+        val id = memberDao.create(memberCo.copy(password = password, promoteCode = promoteCode))
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // create wallet
@@ -119,16 +143,16 @@ class MemberServiceImpl(
         walletService.create(walletCo)
 
         // 创建代理关系
-        val agent = memberDao.get(id = memberCo.agentId)
-        val (r1, r2) = if (agent.username == "default_agent") {
-            agent.id to null
-        } else {
-            val preAgent = memberDao.get(id = agent.agentId)
-            preAgent.id to agent.id
-        }
-
-        val relationCo = MemberRelationValue.MemberRelationCo(bossId = memberCo.bossId, memberId = id, r1 = r1, r2 = r2)
-        memberRelationDao.create(relationCo)
+//        val agent = memberDao.get(id = memberCo.agentId)
+//        val (r1, r2) = if (agent.username == "default_agent") {
+//            agent.id to null
+//        } else {
+//            val preAgent = memberDao.get(id = agent.agentId)
+//            preAgent.id to agent.id
+//        }
+//
+//        val relationCo = MemberRelationValue.MemberRelationCo(bossId = memberCo.bossId, memberId = id, r1 = r1, r2 = r2)
+//        memberRelationDao.create(relationCo)
     }
 
     override fun update(memberUo: MemberUo) {

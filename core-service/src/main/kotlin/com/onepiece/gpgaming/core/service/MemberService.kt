@@ -9,6 +9,8 @@ import com.onepiece.gpgaming.beans.value.database.MemberUo
 
 interface MemberService {
 
+    fun getAgentByCode(bossId: Int, clientId: Int, code: String): Member?
+
     fun getDefaultAgent(bossId: Int): Member
 
     fun getMember(id: Int): Member

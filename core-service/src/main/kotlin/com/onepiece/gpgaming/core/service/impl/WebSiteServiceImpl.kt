@@ -25,6 +25,10 @@ class WebSiteServiceImpl(
         }
     }
 
+    override fun getDataByBossId(bossId: Int): List<WebSite> {
+        return this.all().filter { it.bossId == bossId }
+    }
+
     override fun create(webSiteCo: WebSiteCo) {
 
         val state = webSiteDao.create(webSiteCo)

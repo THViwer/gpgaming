@@ -17,6 +17,7 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
         get() = { rs ->
             val id = rs.getInt("id")
             val bossId = rs.getInt("boss_id")
+            val main = rs.getBoolean("main")
             val country = rs.getString("country").let { Country.valueOf(it) }
             val username = rs.getString("username")
             val password = rs.getString("password")
@@ -30,7 +31,7 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
             Client(id = id, username = username, password = password, createdTime = createdTime, loginTime = loginTime,
                     status = status, loginIp = loginIp, name = name, logo = logo, whitelists = whitelists, shortcutLogo = shortcutLogo,
-                    bossId = bossId, country = country)
+                    bossId = bossId, country = country, main = main)
         }
 
     override fun findByUsername(username: String): Client? {
@@ -41,6 +42,7 @@ class ClientDaoImpl : BasicDaoImpl<Client>("client"), ClientDao {
     override fun create(clientCo: ClientCo): Int {
         return insert()
                 .set("boss_id", clientCo.bossId)
+                .set("main", clientCo.main)
                 .set("country", clientCo.country)
                 .set("logo", clientCo.logo)
                 .set("shortcut_logo", clientCo.logo)

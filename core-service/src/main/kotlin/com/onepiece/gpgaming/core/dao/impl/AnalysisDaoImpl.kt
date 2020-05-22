@@ -1,11 +1,13 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.AgentDailyReport
 import com.onepiece.gpgaming.beans.model.AgentMonthReport
 import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
+import com.onepiece.gpgaming.beans.value.database.AgentValue
 import com.onepiece.gpgaming.beans.value.database.AnalysisValue
 import com.onepiece.gpgaming.beans.value.database.MemberValue
 import com.onepiece.gpgaming.core.dao.AnalysisDao
@@ -31,8 +33,10 @@ class AnalysisDaoImpl(
             select
                    m.boss_id,
                    m.client_id,
+                   x.agent_id superior_agent_id,
                    m.agent_id,
                    m.id,
+                   m.level_id,
                    m.username,
                    IFNULL(d.total_deposit,0) total_deposit,
                    IFNULL(d.deposit_count,0) deposit_count,
@@ -53,54 +57,56 @@ class AnalysisDaoImpl(
             from member m
                 left join (
                     select member_id, sum(money) total_deposit, count(*) deposit_count from deposit d
-                    where d.created_time > '2020-04-20' and d.created_time < '2021-01-01' and d.state = 'Successful' group by member_id
+                    where d.created_time > '$startDate' and d.created_time < '${endDate}' and d.state = 'Successful' group by member_id
                 ) d on m.id = d.member_id
                 left join (
                     select member_id, sum(amount) third_pay_amount, count(*) third_pay_count from pay_order p
-                    where p.created_time > '2020-04-20' and p.created_time < '2021-01-01' and p.state = 'Successful' group by member_id
+                    where p.created_time > '$startDate' and p.created_time < '$endDate' and p.state = 'Successful' group by member_id
                 ) p on m.id = p.member_id
                 left join (
                     select member_id, sum(money) artificial_amount, count(*) artificial_count from artificial_order a
-                    where a.created_time > '2020-04-20' and a.created_time < '2021-01-01' group by member_id
+                    where a.created_time > '$startDate' and a.created_time < '$endDate' group by member_id
                 ) a on m.id = a.member_id
                 left join (
                     select member_id, sum(money) total_withdraw, count(*) withdraw_count from withdraw w
-                    where w.created_time > '2020-04-20' and w.created_time < '2021-01-01'  and w.state = 'Successful' group  by member_id
+                    where w.created_time > '$startDate' and w.created_time < '$endDate'  and w.state = 'Successful' group  by member_id
                 ) w on m.id = w.member_id
                 left join (
                     select t.member_id, sum(money) transfer_out, sum(promotion_amount) promotion_amount, sum(requirement_bet) requirement_bet from transfer_order t
-                    where t.created_time > '2020-04-20' and t.created_time < '2021-01-01' and state = 'Successful' and t.`from` = 'Center' group by member_id
+                    where t.created_time > '$startDate' and t.created_time < '$endDate' and state = 'Successful' and t.`from` = 'Center' group by member_id
                 ) t1 on m.id = t1.member_id
             
                 left join (
                     select t.member_id,  sum(requirement_bet) slot_requirement_bet from transfer_order t
-                    where t.created_time > '2020-04-20' and t.created_time < '2021-01-01' and state = 'Successful' and t.`from` = 'Center'
+                    where t.created_time > '$startDate' and t.created_time < '$endDate' and state = 'Successful' and t.`from` = 'Center'
                       and t.`to` in ('Joker', 'Kiss918', 'Pussy888', 'Mega', 'Pragmatic', 'SpadeGaming', 'TTG', 'MicroGaming', 'PlaytechSlot', 'PNG', 'GamePlay', 'SimplePlay', 'AsiaGamingSlot')
                     group by member_id
                 ) st on m.id = st.member_id
                 left join (
                     select t.member_id,  sum(requirement_bet) live_requirement_bet from transfer_order t
-                    where t.created_time > '2020-04-20' and t.created_time < '2021-01-01' and state = 'Successful' and t.`from` = 'Center'
+                    where t.created_time > '$startDate' and t.created_time < '$endDate' and state = 'Successful' and t.`from` = 'Center'
                       and t.`to` in ('CT', 'DreamGaming', 'Evolution', 'GoldDeluxe', 'SexyGaming', 'Fgg', 'AllBet', 'SaGaming', 'AsiaGamingLive', 'MicroGamingLive', 'PlaytechLive', 'EBet')
                     group by member_id
                 ) lt on m.id = lt.member_id
                 left join (
                     select t.member_id,  sum(requirement_bet) sport_requirement_bet from transfer_order t
-                    where t.created_time > '2020-04-20' and t.created_time < '2021-01-01' and state = 'Successful' and t.`from` = 'Center'
+                    where t.created_time > '$startDate' and t.created_time < '$endDate' and state = 'Successful' and t.`from` = 'Center'
                       and t.`to` in ('Lbc', 'Bcs', 'CMD')
                     group by member_id
                 ) spt on m.id = spt.member_id
                 left join (
                     select t.member_id,  sum(requirement_bet) fish_requirement_bet from transfer_order t
-                    where t.created_time > '2020-04-20' and t.created_time < '2021-01-01' and state = 'Successful' and t.`from` = 'Center'
+                    where t.created_time > '$startDate' and t.created_time < '$endDate' and state = 'Successful' and t.`from` = 'Center'
                       and t.`to` in ('GGFishing')
                     group by member_id
                 ) ft on m.id = ft.member_id
             
                 left join (
                     select t.member_id, sum(money) transfer_in from transfer_order t
-                    where t.created_time > '2020-04-20' and t.created_time < '2021-01-01' and state = 'Successful' and t.`to` = 'Center' group by member_id
+                    where t.created_time > '$startDate' and t.created_time < '$endDate' and state = 'Successful' and t.`to` = 'Center' group by member_id
                 ) t2 on m.id = t2.member_id
+                
+                left join member x on x.id = m.agent_id
             where m.role  = 'Member';
         """.trimIndent()
 
@@ -148,7 +154,7 @@ class AnalysisDaoImpl(
                    agent_id,
                    count(*) active_count
             from member_daily_report
-            where day >= '$startDate' and day < '$endDate' and deposit_amount > 0 or third_pay_amount > 0
+            where day >= '$startDate' and day < '$endDate' and (deposit_amount >= 0 or third_pay_amount >= 0)
             group by agent_id;
         """.trimIndent()
 
@@ -168,10 +174,13 @@ class AnalysisDaoImpl(
                 m.client_id,
             	m.id agent_id,
                 m.agent_id superior_agent_id,
-                IFNULL(mr.total_bet, 0) new_member_count,
+                IFNULL(mr.total_bet, 0) total_bet,
+                IFNULL(mr.total_m_win, 0) total_m_win,
                 IFNULL(mr.total_deposit, 0) total_deposit,
+                IFNULL(mr.total_withdraw, 0) total_withdraw,
                 IFNULL(mr.total_rebate, 0) total_rebate,
-                IFNULL(mr.total_promotion_amount, 0) total_promotion_amount
+                IFNULL(mr.total_promotion, 0) total_promotion,
+                IFNULL(mc.new_member_count, 0) new_member_count
             from member m 
             left join  (
             		select 
@@ -180,7 +189,8 @@ class AnalysisDaoImpl(
             			sum(total_bet) total_bet, 
             			sum(total_m_win) total_m_win,
             			sum(deposit_amount + third_pay_amount) total_deposit,
-            			sum(rebate) total_rebate,
+                        sum(withdraw_amount) total_withdraw,
+            			sum(rebate_amount) total_rebate,
             			sum(promotion_amount) total_promotion
             		from member_daily_report where day = '${startDate}' group by boss_id, agent_id
             ) mr on m.id = mr.agent_id 
@@ -220,7 +230,7 @@ class AnalysisDaoImpl(
                    superior_agent_id,
                    count(*) active_count
             from member_daily_report
-            where day >= '$startDate' and day < '$endDate' and total_deposit > 0
+            where day >= '$startDate' and day < '$endDate'
             group by superior_agent_id;
         """.trimIndent()
 
@@ -273,7 +283,7 @@ class AnalysisDaoImpl(
             select
                    boss_id,
                    client_id,
-                   superior_agent_id
+                   superior_agent_id,
                    agent_id,
                    sum(total_deposit) total_deposit,
                    sum(total_withdraw) total_withdraw,
@@ -301,11 +311,11 @@ class AnalysisDaoImpl(
             val totalPromotion = rs.getBigDecimal("total_promotion")
             val newMemberCount =  rs.getInt("new_member_count")
 
-            AgentMonthReport(id  = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = agentId, totalDeposit = totalDeposit, totalWithdraw = totalWithdraw,
-                    totalBet = totalBet, totalMWin = totalMWin, totalPromotion = totalPromotion, totalRebate = totalRebate, day = startDate,
-                    agentCommissionScale = BigDecimal.ZERO, agentActiveCount = 0, agentCommission = BigDecimal.ZERO,
+            AgentMonthReport(id  = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = agentId, totalDeposit = totalDeposit,
+                    totalWithdraw = totalWithdraw, totalBet = totalBet, totalMWin = totalMWin, totalPromotion = totalPromotion, totalRebate = totalRebate,
+                    day = startDate, agentCommissionScale = BigDecimal.ZERO, agentActiveCount = 0, agentCommission = BigDecimal.ZERO,
                     memberCommissionScale = BigDecimal.ZERO, memberActiveCount = 0, memberCommission = BigDecimal.ZERO,
-                    createdTime = LocalDateTime.now(), clientId = clientId, commissionExecution = false)
+                    createdTime = LocalDateTime.now(), clientId = clientId, commissionExecution = false, newMemberCount = newMemberCount)
         }
     }
 
@@ -313,6 +323,7 @@ class AnalysisDaoImpl(
     override fun clientReport(startDate: LocalDate, endDate: LocalDate): List<ClientDailyReport> {
         val sql = """
             select
+                   r.boss_id,
                    r.client_id,
                    sum(r.total_bet) total_bet,
                    sum(r.total_m_win) total_m_win,
@@ -333,7 +344,7 @@ class AnalysisDaoImpl(
                 left join (
                     select client_id, count(*) new_member_count from member where created_time >= '$startDate' and created_time < '$endDate' group by client_id
                 ) x on r.client_id = x.client_id
-            where  r.day >= '$startDate' and r.day < '$endDate' group  by client_id;
+            where  r.day >= '$startDate' and r.day < '$endDate' group  by boss_id, client_id
         """.trimIndent()
 
         return jdbcTemplate.query(sql) {  rs, _ ->
@@ -444,5 +455,36 @@ class AnalysisDaoImpl(
         }
 
         TODO("Not yet implemented")
+    }
+
+    override fun memberCount(agentId: Int, role: Role): Int {
+        val sql = "select count(*) count from `member` where agent_id = ? and `role` = ?"
+
+        return jdbcTemplate.query(sql) { rs, _ ->
+            rs.getInt("count")
+        }.first()
+    }
+
+    override fun subAgents(bossId: Int, clientId: Int, agentId: Int): List<AgentValue.SubAgentVo> {
+
+        val sql = """
+            select m.username, m.phone, m.created_time, m.formal, t.count from member m
+                left join (
+                    select agent_id, count(*) count from member x group by boss_id, client_id, agent_id
+                ) t on m.id = t.agent_id
+            where m.boss_id = '$bossId' and client_id = '$clientId' m.agent_id = '$agentId' and `role` = 'Agent';
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql) { rs, _ ->
+
+            val username = rs.getString("username")
+            val phone = rs.getString("phone")
+            val formal = rs.getBoolean("formal")
+            val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val memberCount = rs.getInt("count")
+
+            AgentValue.SubAgentVo(username = username, phone = phone, formal = formal, memberCount = memberCount,
+                    createdTime = createdTime)
+        }
     }
 }

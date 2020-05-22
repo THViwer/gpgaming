@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.Level
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
+import com.onepiece.gpgaming.beans.value.database.AnalysisValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.core.dao.ArtificialOrderDao
@@ -98,6 +99,10 @@ class ReportServiceImpl(
 
         return list.map { report ->
 
+            if (report.memberId == 179) {
+                println("xx")
+            }
+
             // 平台下注金额
             val settles = betMap[report.memberId]?.map {
                 MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, mwin = it.totalWin, validBet = it.validBet)
@@ -122,7 +127,7 @@ class ReportServiceImpl(
                                 .multiply(level.slotRebate)
                                 .divide(BigDecimal.valueOf(100))
                     PlatformCategory.LiveVideo ->
-                        (it.validBet.min(report.liveRequirementBet))
+                        (it.validBet.minus(report.liveRequirementBet))
                                 .multiply(level.liveRebate)
                                 .divide(BigDecimal.valueOf(100))
                     PlatformCategory.Sport ->
@@ -136,7 +141,16 @@ class ReportServiceImpl(
             val rebateExecution = rebate.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
             report.copy(rebateAmount = rebate, rebateExecution = rebateExecution, totalBet = totalBet, totalMWin = totalMWin, settles = settles)
-        }
+        }.filter {
+
+            val x = it.isHasData()
+
+            if  (it.memberId == 179) {
+                println("11")
+            }
+            x
+
+        } // 过滤空数据
     }
 
     override fun startAgentReport(startDate: LocalDate): List<AgentDailyReport> {
@@ -151,8 +165,8 @@ class ReportServiceImpl(
         val endDate = today.with(TemporalAdjusters.lastDayOfMonth())
 
         // 查询代理列表
-        val memberQuery = MemberQuery(bossId = null, role = Role.Agent, clientId = null, agentId = null, username = null, name = null, phone = null, status = null, levelId = null, promoteCode = null,
-                startTime = null,  endTime = null)
+        val memberQuery = MemberQuery(bossId = null, role = Role.Agent, clientId = null, agentId = null, username = null,
+                name = null, phone = null, status = null, levelId = null, promoteCode = null, startTime = null,  endTime = null)
         val agents = memberDao.query(query = memberQuery, current = 0, size = 999999)
 
         // 代理佣金配置
@@ -186,7 +200,7 @@ class ReportServiceImpl(
 
                 // 计算会员佣金
                 val memberCommission = memberCollect[agent.id] ?: error("")
-                val memberActive = memberActives[agent.id] ?: error("")
+                val memberActive = memberActives[agent.id] ?: AnalysisValue.ActiveCollect(agentId = -1, activeCount = 0)
                 val mCommission = memberCommissions.first { it.activeCount > memberActive.activeCount }
                 val memberCommissionAmount =
                         (memberCommission.totalBet
@@ -197,8 +211,12 @@ class ReportServiceImpl(
                                 .divide(BigDecimal.valueOf(100))
                                 .setScale(2, 2)
 
-                memberCommission.copy(memberCommission = memberCommissionAmount, memberCommissionScale = mCommission.scale, memberActiveCount = memberActive.activeCount)
+                val commissionExecution = memberCommissionAmount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
+
+                memberCommission.copy(memberCommission = memberCommissionAmount, memberCommissionScale = mCommission.scale, memberActiveCount = memberActive.activeCount,
+                        commissionExecution = commissionExecution)
             } catch (e: Exception)  {
+                log.error("agent month report error: ", e)
                 null
             }
         }
@@ -218,14 +236,16 @@ class ReportServiceImpl(
                         if (flag) it else null
 
                     }?.let {
-                        val aCommission = agentCommissions.firstOrNull { x -> x.activeCount == agentActive!!.activeCount }
+                        val aCommission = agentCommissions.firstOrNull { x -> x.activeCount > agentActive!!.activeCount }
 
                         if (aCommission != null) aCommission to it else null
                     }?.let { (aCommission, report) ->
-                        val sCommissionAmount = agentGroup[report.agentId]!!.sumByDouble { x -> x.agentCommission.toDouble() }.toBigDecimal().setScale(2,  2)
+                        val sCommissionAmount = agentGroup[report.agentId]!!.sumByDouble { x -> x.memberCommission.toDouble() }.toBigDecimal().setScale(2,  2)
                         val agentCommissionAmount = sCommissionAmount.multiply(aCommission.scale).divide(BigDecimal.valueOf(100))
+                                .setScale(2, 2)
 
-                        report.copy(agentCommission = agentCommissionAmount, agentActiveCount = agentActive!!.activeCount, agentCommissionScale = aCommission.scale)
+                        val commissionExecution = agentCommissionAmount.plus(report.memberCommission).setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
+                        report.copy(agentCommission = agentCommissionAmount, agentActiveCount = agentActive!!.activeCount, agentCommissionScale = aCommission.scale, commissionExecution = commissionExecution)
                     } ?: report
                 }
                 else -> report

@@ -82,7 +82,10 @@ data class MemberCo(
         val levelId: Int,
 
         // 推广来源
-        val promoteCode: String?
+        val promoteCode: String?,
+
+        // 是否正式
+        val formal: Boolean
 )
 
 data class MemberUo(
@@ -123,7 +126,10 @@ data class MemberUo(
         val loginIp: String? = null,
 
         // 登陆时间
-        val loginTime: LocalDateTime? = null
+        val loginTime: LocalDateTime? = null,
+
+        // 是否正式
+        val formal: Boolean? = null
 )
 
 

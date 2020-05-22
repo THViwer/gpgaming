@@ -40,6 +40,9 @@ data class AgentMonthReport(
         // 会员活跃人数
         val memberActiveCount: Int,
 
+        // 会员佣金比例
+        val memberCommissionScale: BigDecimal,
+
         // 会员充值
         val totalDeposit: BigDecimal,
 
@@ -58,13 +61,18 @@ data class AgentMonthReport(
         // 当前顾客盈利
         val totalMWin: BigDecimal,
 
-        // 会员佣金比例
-        val memberCommissionScale: BigDecimal,
-
         // 佣金是否已执行
         val commissionExecution: Boolean,
+
+        // 新增会员数
+        val newMemberCount: Int,
 
         // 创建时间
         val createdTime: LocalDateTime
 
-)
+) {
+
+    val totalCommission: BigDecimal = agentCommission.plus(memberCommission)
+
+
+}

@@ -36,6 +36,7 @@ object OnePieceExceptionCode {
     const val MOVE_LEVEL_COUNT_ISMAX = "4009" // 移动人数为0
     const val PLATFORM_DATA_FAIL = "4010" // 平台返回数据错误
     const val MEMBER_BANK_EXIST = "4011" // 用户该银行已有银行卡
+    const val AGENT_PROCESS = "4012" // 代理审核中
 
     // 5000 cash error
     const val ORDER_EXPIRED = "5001" // 订单操作过期

@@ -65,7 +65,9 @@ class PullBetTask(
 
             val gps = gamePlatformService.all().map { it.platform to  it }.toMap()
 
+            // TODO 暂时用AllBet
             val binds = platformBindService.all()
+                    .filter { it.clientId == 1 && it.platform == Platform.AllBet }
                     .filter { it.status != Status.Delete }
                     .filter { gps[it.platform]?.status == Status.Normal }
 

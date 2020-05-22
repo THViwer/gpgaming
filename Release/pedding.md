@@ -5,6 +5,7 @@
     Commission 佣金配置表
     MemberRelation 会员关系表
     AgentReportDaily 代理日报表
+    AgentApply 代理申请表
     
 2. 新增、修改字段
     Member 新增 role、promoteCode、agentId
@@ -25,6 +26,7 @@
                               
     WalletEvent 修改：Backwater -> Rebate
     update wallet_note set `event` = 'Rebate' where `event` = 'Backwater';
+    TransferOrder  新增 promotion_pre_money
     
 2. 添加默认代理
     

@@ -1,10 +1,12 @@
 package com.onepiece.gpgaming.core.dao
 
 import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.model.AgentDailyReport
 import com.onepiece.gpgaming.beans.model.AgentMonthReport
 import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
+import com.onepiece.gpgaming.beans.value.database.AgentValue
 import com.onepiece.gpgaming.beans.value.database.AnalysisValue
 import com.onepiece.gpgaming.beans.value.database.MemberValue
 import java.time.LocalDate
@@ -46,6 +48,18 @@ interface AnalysisDao  {
      * 业主日报表
      */
     fun clientReport(startDate: LocalDate, endDate: LocalDate): List<ClientDailyReport>
+
+    /**
+     * 统计总数
+     */
+    fun memberCount(agentId: Int, role: Role):  Int
+
+
+    /**
+     * 查询下级代理列表
+     */
+    fun subAgents(bossId: Int, clientId: Int, agentId: Int): List<AgentValue.SubAgentVo>
+
 
 
 

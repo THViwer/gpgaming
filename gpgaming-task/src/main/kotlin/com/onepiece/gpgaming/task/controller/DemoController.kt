@@ -1,8 +1,8 @@
 package com.onepiece.gpgaming.task.controller
 
 import com.onepiece.gpgaming.core.service.ReportService
-import com.onepiece.gpgaming.task.RebateTask
 import com.onepiece.gpgaming.task.PromotionTask
+import com.onepiece.gpgaming.task.RebateTask
 import com.onepiece.gpgaming.task.ReportTask
 import com.onepiece.gpgaming.task.SexyGamingTask
 import org.springframework.format.annotation.DateTimeFormat
@@ -17,7 +17,7 @@ class DemoController(
         private val reportTask: ReportTask,
         private val promotionTask: PromotionTask,
         private val sexyGamingTask: SexyGamingTask,
-        private val backwaterTask: RebateTask
+        private val rebateTask: RebateTask
 ) {
 
     @GetMapping("/sexyGaming")
@@ -31,14 +31,37 @@ class DemoController(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate): Any {
 
         return when (type) {
-            "1" -> reportService.startMemberPlatformDailyReport(startDate = startDate)
-            "2" -> reportService.startMemberReport(startDate = startDate)
-//            "2" -> reportTask.startMemberReport(startDate = startDate)
-            "3" -> reportService.startClientPlatformReport(startDate = startDate)
-            "4" -> reportService.startClientReport(startDate = startDate)
-            "5" -> backwaterTask.start()
+            "member" -> reportService.startMemberReport(startDate = startDate)
+            "agent" ->  reportService.startAgentReport(startDate = startDate)
+            "agentMonth" ->  reportService.startAgentMonthReport(today = startDate)
+            "client" -> reportService.startClientReport(startDate = startDate)
             else -> error("参数error")
         }
+    }
+
+
+    @GetMapping("/report2")
+    fun start2(
+            @RequestParam("type") type: String,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate
+    ): Any {
+
+        when (type) {
+            "all" -> {
+                reportTask.startMemberReport(startDate)
+                reportTask.startAgentReport(startDate)
+                reportTask.startAgentMonthReport(startDate)
+                reportTask.startClientReport(startDate)
+            }
+            "member" -> reportTask.startMemberReport(startDate)
+            "agent" -> reportTask.startAgentReport(startDate)
+            "agentMonth" -> reportTask.startAgentMonthReport(startDate)
+            "client" -> reportTask.startClientReport(startDate)
+            "rebate" -> rebateTask.start()
+            "commission" -> rebateTask.startAgentCommission()
+        }
+
+        return "success"
     }
 
     @GetMapping("/promotion")
@@ -58,9 +81,9 @@ class DemoController(
         return "success"
     }
 
-    @GetMapping("/backwater")
+    @GetMapping("/rebate")
     fun backwaterTask(): String {
-        backwaterTask.start()
+        rebateTask.start()
         return "success"
     }
 

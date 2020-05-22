@@ -11,7 +11,6 @@ import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
-import java.sql.Date
 import java.sql.ResultSet
 import java.time.LocalDate
 
@@ -81,11 +80,11 @@ class MemberDailyReportDaoImpl(
                 .set("third_pay_amount")
                 .set("third_pay_count")
                 .set("rebate_amount")
-                .set("backwater_execution")
+                .set("rebate_execution")
                 .set("promotion_amount")
                 .execute { ps, entity ->
                     var index = 0
-                    ps.setDate(++index, Date.valueOf(entity.day))
+                    ps.setString(++index, "${entity.day}")
                     ps.setInt(++index, entity.bossId)
                     ps.setInt(++index, entity.clientId)
                     ps.setInt(++index, entity.superiorAgentId)
@@ -257,6 +256,62 @@ class MemberDailyReportDaoImpl(
                     depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney, withdrawCount = withdrawCount,
                     artificialMoney = artificialMoney, artificialCount = artificialCount, backwaterMoney = backwaterMoney,
                     promotionMoney = promotionMoney, clientId = query.clientId)
+        }
+    }
+
+    override fun collect(query: MemberReportValue.CollectQuery): List<MemberReportValue.MemberMonthReport> {
+
+        val sql = """
+            select
+                   boss_id,
+                   client_id,
+                   member_id,
+                   username,
+                   sum(total_bet) total_bet,
+                   sum(total_m_win) total_m_win,
+                   sum(transfer_in) transfer_in,
+                   sum(transfer_out) transfer_out,
+                   sum(deposit_count) deposit_count,
+                   sum(deposit_amount) deposit_amount,
+                   sum(withdraw_count) withdraw_count,
+                   sum(withdraw_amount) withdraw_amount,
+                   sum(third_pay_count) third_pay_count,
+                   sum(third_pay_amount) third_pay_amount,
+                   sum(promotion_amount) promotion_amount,
+                   sum(rebate_amount) rebate_amount
+            from member_daily_report
+            where day >= '${query.startDate}' and day < '${query.endDate}' and agent_id = ${query.agentId}
+            group by boss_id, client_id, superior_agent_id, agent_id, member_id, username;
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql) { rs, _ ->
+            val bossId = rs.getInt("boss_id")
+            val clientId = rs.getInt("client_id")
+            val superiorAgentId = rs.getInt("superior_agent_id")
+            val agentId = rs.getInt("agent_id")
+            val memberId = rs.getInt("member_id")
+            val username  = rs.getString("username")
+            val transferIn = rs.getBigDecimal("transfer_in")
+            val transferOut = rs.getBigDecimal("transfer_out")
+            val depositAmount = rs.getBigDecimal("deposit_amount")
+            val depositCount = rs.getInt("deposit_count")
+            val withdrawAmount = rs.getBigDecimal("withdraw_amount")
+            val withdrawCount = rs.getInt("withdraw_count")
+            val artificialAmount = rs.getBigDecimal("artificial_amount")
+            val artificialCount = rs.getInt("artificial_count")
+            val totalBet = rs.getBigDecimal("total_bet")
+            val totalMWin = rs.getBigDecimal("total_m_win")
+            val thirdPayAmount = rs.getBigDecimal("third_pay_amount")
+            val thirdPayCount = rs.getInt("third_pay_count")
+            val rebateAmount = rs.getBigDecimal("rebate_amount")
+            val promotionAmount = rs.getBigDecimal("promotion_amount")
+
+
+            MemberReportValue.MemberMonthReport(bossId = bossId, clientId = clientId, agentId = agentId, memberId = memberId, username = username,
+                    transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount, depositCount = depositCount, withdrawAmount = withdrawAmount,
+                    withdrawCount = withdrawCount, artificialAmount = artificialAmount, artificialCount = artificialCount, totalBet = totalBet, totalMWin = totalMWin,
+                    thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, promotionAmount = promotionAmount,
+                    superiorAgentId = superiorAgentId, day = query.startDate)
         }
     }
 }

@@ -8,6 +8,8 @@ interface WebSiteService {
 
     fun all(): List<WebSite>
 
+    fun getDataByBossId(bossId: Int): List<WebSite>
+
     fun create(webSiteCo: WebSiteCo)
 
     fun update(webSiteUo: WebSiteUo)

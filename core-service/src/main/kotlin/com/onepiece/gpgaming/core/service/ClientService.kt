@@ -9,6 +9,8 @@ import java.math.BigDecimal
 
 interface ClientService {
 
+    fun getMainClient(bossId: Int): Client?
+
     fun get(id: Int): Client
 
     fun all(): List<Client>

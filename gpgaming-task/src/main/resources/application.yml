@@ -6,7 +6,7 @@ spring:
       driver-class-name: com.mysql.jdbc.Driver
       username: gp
       password: GPGaming88!@#
-      url: jdbc:mysql://45.153.129.188:3306/gp_cgh?useUnicode=true&characterEncoding=UTF-8
+      url: jdbc:mysql://45.153.129.188:3306/gpgaming?useUnicode=true&characterEncoding=UTF-8
   profiles:
     active: dev
 

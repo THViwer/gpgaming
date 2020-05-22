@@ -1,42 +1,84 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.onepiece.gpgaming.beans.enums.ApplyState
 import com.onepiece.gpgaming.beans.enums.CommissionType
 import com.onepiece.gpgaming.beans.model.Commission
+import com.onepiece.gpgaming.beans.value.database.AgentValue
 import com.onepiece.gpgaming.beans.value.database.CommissionValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
+import java.time.LocalDate
 
-@Api(tags = ["bet"], description = "代理配置")
+@Api(tags = ["agent"], description = "代理配置")
 interface AgentConfigApi {
 
-    @ApiOperation(tags = ["cash"], value = "佣金 -> 设置")
+    @ApiOperation(tags = ["agent"], value = "佣金 -> 设置")
     fun commission(
             @RequestParam("/type") type: CommissionType
     ): List<Commission>
 
-    @ApiOperation(tags = ["cash"], value = "佣金 -> 创建")
+    @ApiOperation(tags = ["agent"], value = "佣金 -> 创建")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun commissionCreate(
             @RequestBody co: CommissionValue.CommissionCo
     )
 
-    @ApiOperation(tags = ["cash"], value = "佣金 -> 更新")
+    @ApiOperation(tags = ["agent"], value = "佣金 -> 更新")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun commissionUpdate(
             @RequestBody uo: CommissionValue.CommissionUo
     )
 
-    @GetMapping("/agents")
+//    @ApiOperation(tags = ["agent"], value = "代理 -> 列表")
+//    fun agents(
+//            @RequestParam("username") username: String,
+//            @RequestParam("superiorUsername") superiorUsername: String
+//    ): List<MemberValue.Agent>
+
+
+    @ApiOperation(tags = ["agent"], value = "代理 -> 列表")
     fun agents(
-            @RequestParam("username") username: String,
-            @RequestParam("superiorUsername") superiorUsername: String
-    ): List<MemberValue.Agent>
+            @RequestParam("username", required = false) username: String?
+    ): List<AgentValue.SubAgentVo>
+
+
+    @ApiOperation(tags = ["agent"], value = "代理 -> 申请列表")
+    fun applies(): List<MemberValue.Agent>
+
+    @ApiOperation(tags = ["agent"], value = "代理 -> 审核")
+    fun check(
+            @RequestParam("id") id: Int,
+            @RequestParam("state") state: ApplyState,
+            @RequestParam("remark") remark: String
+    )
+
+    @ApiOperation(tags = ["agent"], value = "佣金列表")
+    fun commissions(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate
+    ): List<AgentValue.AgentCommissionVo>
+
+    @ApiOperation(tags = ["agent"], value = "下级代理佣金列表")
+    fun subCommissions(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
+            @RequestParam("agentId") agentId: Int
+    ): List<AgentValue.AgentCommissionVo>
+
+
+    @ApiOperation(tags = ["agent"], value = "会员佣金列表")
+    fun memberCommissions(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
+            @RequestParam("agentId") agentId: Int
+    ): List<AgentValue.MemberCommissionVo>
+
 
 
 }

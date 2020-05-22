@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 
 interface AuthService {
 
-    fun  login(clientId: Int, role: Role, username: String): String
+    fun  login(bossId: Int, clientId: Int, role: Role, username: String): String
 
     fun refresh(id: Int)
 
@@ -23,8 +23,8 @@ class AuthServiceImpl(
         private val tokenStore: TokenStore
 ) : AuthService {
 
-    override fun login(clientId: Int, role: Role, username: String): String {
-        val upToken = UsernamePasswordAuthenticationToken("${clientId}@${role}@${username}", "123456")
+    override fun login(bossId: Int, clientId: Int, role: Role, username: String): String {
+        val upToken = UsernamePasswordAuthenticationToken("${bossId}@${clientId}@${role}@${username}", "123456")
         val authentication = authenticationManager.authenticate(upToken)
         SecurityContextHolder.getContext().authentication = authentication
 

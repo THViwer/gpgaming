@@ -41,10 +41,11 @@ open class ClientApiController(
             check(has == null) { OnePieceExceptionCode.DATA_EXIST }
         }
 
+        val mainClient = clientService.getMainClient(bossId = clientCoReq.bossId)
 
         val clientCo = ClientCo(username = clientCoReq.username, password = clientCoReq.password, name = clientCoReq.name,
                 logo = clientCoReq.logo, whitelists = clientCoReq.whitelists, shortcutLogo = clientCoReq.shortcutLogo,
-                bossId = clientCoReq.bossId, country = clientCoReq.country)
+                bossId = clientCoReq.bossId, country = clientCoReq.country, main = mainClient == null)
         clientService.create(clientCo)
     }
 

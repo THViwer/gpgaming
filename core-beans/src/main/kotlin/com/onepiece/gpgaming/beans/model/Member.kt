@@ -60,6 +60,9 @@ data class Member(
         // 推广码
         val promoteCode: String,
 
+        // 是否是正式
+        val formal: Boolean,
+
         // 登陆时间
         val loginTime: LocalDateTime?
 )

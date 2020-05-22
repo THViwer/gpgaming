@@ -21,7 +21,7 @@ interface MemberDao: BasicDao<Member> {
 
     fun getByBossIdAndPhone(bossId: Int, phone: String): Member?
 
-    fun findByBossIdAndSource(bossId: Int, promoteCode: String): Member?
+    fun findByBossIdAndCode(bossId: Int, promoteCode: String): Member?
 
     fun total(query: MemberQuery): Int
 

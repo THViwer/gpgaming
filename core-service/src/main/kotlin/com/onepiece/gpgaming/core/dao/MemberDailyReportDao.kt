@@ -22,4 +22,6 @@ interface MemberDailyReportDao  {
 
     fun analysis(query: MemberReportValue.AnalysisQuery): List<MemberReportValue.AnalysisVo>
 
+    fun collect(query: MemberReportValue.CollectQuery): List<MemberReportValue.MemberMonthReport>
+
 }

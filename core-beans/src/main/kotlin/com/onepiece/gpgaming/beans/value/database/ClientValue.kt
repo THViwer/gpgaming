@@ -12,6 +12,9 @@ data class ClientCo(
         // 国家
         val country: Country,
 
+        // 主业主
+        val main: Boolean,
+
         // 昵称
         val name: String,
 

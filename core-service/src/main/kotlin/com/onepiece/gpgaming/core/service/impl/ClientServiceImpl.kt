@@ -54,6 +54,10 @@ class ClientServiceImpl(
     @Lazy
     lateinit var indexUtil: IndexUtil
 
+    override fun getMainClient(bossId: Int): Client? {
+        return clientDao.all().filter { it.bossId == bossId }.firstOrNull { it.main }
+    }
+
     override fun get(id: Int): Client {
 
         val redisKey = OnePieceRedisKeyConstant.getClient(id)
@@ -88,9 +92,11 @@ class ClientServiceImpl(
         val hasClient = clientDao.findByUsername(clientCo.username)
         check(hasClient == null) { OnePieceExceptionCode.USERNAME_EXISTENCE }
 
+        val main = clientDao.all().count { it.bossId == clientCo.bossId } == 0
+
         // insert client
         val password = bCryptPasswordEncoder.encode(clientCo.password)
-        val id = clientDao.create(clientCo.copy(password = password))
+        val id = clientDao.create(clientCo.copy(password = password, main = main))
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // create default level

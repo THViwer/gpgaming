@@ -21,7 +21,6 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val role = rs.getString("role").let { Role.valueOf(it) }
-            val promotionCode = rs.getString("promotion_code")
             val agentId = rs.getInt("agent_id")
             val username = rs.getString("username")
             val name = rs.getString("name")
@@ -35,12 +34,14 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val loginIp = rs.getString("login_ip")
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
-            val promoteCode = rs.getString("promote_code")
+            val promoteCode = rs.getString("promote_code") ?: ""
+            val formal = rs.getBoolean("formal")
 
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
                     safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion,
-                    autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = promoteCode)
+                    autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = promoteCode,
+                    formal = formal)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -48,6 +49,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("boss_id", memberCo.bossId)
                 .set("client_id", memberCo.clientId)
                 .set("agent_id", memberCo.agentId)
+                .set("role", memberCo.role)
                 .set("username", memberCo.username)
                 .set("name", memberCo.name)
                 .set("phone", memberCo.phone)
@@ -57,6 +59,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("level_id", memberCo.levelId)
                 .set("status", Status.Normal)
                 .set("promote_code", memberCo.promoteCode)
+                .set("formal", memberCo.formal)
                 .executeGeneratedKey()
     }
 
@@ -72,6 +75,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("login_ip", memberUo.loginIp)
                 .set("login_time", memberUo.loginTime)
                 .set("auto_transfer", memberUo.autoTransfer)
+                .set("formal", memberUo.formal)
                 .where("id", memberUo.id)
                 .execute() == 1
 
@@ -105,7 +109,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .executeMaybeOne(mapper)
     }
 
-    override fun findByBossIdAndSource(bossId: Int, promoteCode: String): Member? {
+    override fun findByBossIdAndCode(bossId: Int, promoteCode: String): Member? {
         return query()
                 .where("boss_id", bossId)
                 .where("promote_code", promoteCode)
@@ -128,17 +132,17 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
 
     override fun query(query: MemberQuery, current: Int, size: Int): List<Member> {
         return query()
+                .where("boss_id", query.bossId)
                 .where("client_id", query.clientId)
-                .where("agent_id", query.agentId)
                 .where("role", query.role)
+                .where("agent_id", query.agentId)
+                .whereIn("id", query.ids)
                 .where("username", query.username)
-                .where("name", query.name)
-                .where("phone", query.phone)
                 .where("status", query.status)
                 .where("level_id", query.levelId)
+                .where("promoteCode", query.promoteCode)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
-                .where("promote_code", query.promoteCode)
                 .sort("id desc")
                 .limit(current, size)
                 .execute(mapper)
@@ -146,12 +150,15 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
 
     override fun list(query: MemberQuery): List<Member> {
         return query()
+                .where("boss_id", query.bossId)
                 .where("client_id", query.clientId)
+                .where("role", query.role)
                 .where("agent_id", query.agentId)
                 .whereIn("id", query.ids)
                 .where("username", query.username)
                 .where("status", query.status)
                 .where("level_id", query.levelId)
+                .where("promote_code", query.promoteCode)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
                 .sort("id desc")

@@ -1,15 +1,25 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.onepiece.gpgaming.beans.enums.ApplyState
 import com.onepiece.gpgaming.beans.enums.CommissionType
 import com.onepiece.gpgaming.beans.enums.Role
-import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Commission
+import com.onepiece.gpgaming.beans.value.database.AgentApplyValue
+import com.onepiece.gpgaming.beans.value.database.AgentReportValue
+import com.onepiece.gpgaming.beans.value.database.AgentValue
 import com.onepiece.gpgaming.beans.value.database.CommissionValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
+import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberValue
+import com.onepiece.gpgaming.core.dao.AgentApplyDao
+import com.onepiece.gpgaming.core.dao.AgentMonthReportDao
+import com.onepiece.gpgaming.core.dao.AnalysisDao
+import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
+import com.onepiece.gpgaming.core.service.AgentApplyService
 import com.onepiece.gpgaming.core.service.CommissionService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -17,12 +27,18 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/agent")
 class AgentConfigApiController(
         private val commissionService: CommissionService,
-        private val memberService: MemberService
+        private val memberService: MemberService,
+        private val agentMonthReportDao: AgentMonthReportDao,
+        private val agentDailyReportDao: AgentMonthReportDao,
+        private val memberDailyReportDao: MemberDailyReportDao,
+        private val analysisDao: AnalysisDao,
+        private val agentApplyService: AgentApplyService
 ) : BasicController(), AgentConfigApi {
 
     @GetMapping("/commission")
@@ -42,26 +58,101 @@ class AgentConfigApiController(
         commissionService.update(uo = uo)
     }
 
+    @GetMapping("/apply")
+    override fun applies(): List<MemberValue.Agent> {
+
+        val current = this.current()
+
+        val applyQuery = AgentApplyValue.ApplyQuery(bossId = current.bossId, clientId = current.clientId, state = ApplyState.Process)
+        val applies = agentApplyService.list(applyQuery)
+                .map { it.agentId }
+
+        val memberQuery = MemberQuery(bossId = current.bossId, clientId = current.clientId, agentId = null, username = null, ids = applies, role = Role.Agent,
+                name = null, phone = null, levelId = null, startTime = null, endTime = null, status = null, promoteCode = null)
+        val data = memberService.query(memberQuery, 0, 999999).data
+
+        return data.map {
+            MemberValue.Agent(id = it.id, agentId = it.agentId, username = it.username, name = it.name, phone = it.phone, status = it.status, createdTime = it.createdTime,
+                    loginTime = it.loginTime, loginIp = it.loginIp, promoteCode = it.promoteCode)
+        }
+    }
+
+    @PutMapping("/apply/check")
+    override fun check(
+            @RequestParam("id") id: Int,
+            @RequestParam("state") state: ApplyState,
+            @RequestParam("remark") remark: String
+    ) {
+        agentApplyService.check(id = id, state = state, remark = remark)
+    }
+
     @GetMapping
     override fun agents(
-            @RequestParam("username") username: String,
-            @RequestParam("superiorUsername") superiorUsername: String
-    ): List<MemberValue.Agent> {
-
-        val bossId = getBossId()
-
-        val agentId = if (superiorUsername.isNullOrBlank()) {
-            memberService.findByUsername(clientId = getClientId(), username = superiorUsername)?.id
-        } else null
-
-        //TODO 显示代理下有多少会员等
-
-        val query = MemberQuery(bossId = bossId, username = username, role = Role.Agent, agentId = agentId, clientId = null, status = Status.Normal,
-                startTime = null, endTime = null, levelId = null, name = null, phone = null, promoteCode = null)
-        return memberService.query(query,0, 1000).data.map {
-            MemberValue.Agent(id = it.id, agentId = it.agentId, username = it.username, name = it.username, phone = it.phone, status = it.status, createdTime = it.createdTime,
-                    loginIp = it.loginIp, promoteCode = it.promoteCode, loginTime = it.loginTime)
-        }
-
+            @RequestParam("username", required = false) username: String?
+    ): List<AgentValue.SubAgentVo> {
+        val current = this.current()
+        val agentId = memberService.findByUsername(clientId = getClientId(), username = username)?.id?: -1
+        return analysisDao.subAgents(bossId = current.bossId, clientId = current.clientId, agentId = agentId)
     }
+
+
+
+    @GetMapping("/commission")
+    override fun commissions(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate
+    ): List<AgentValue.AgentCommissionVo> {
+
+        val current = this.current()
+
+        val reportQuery = AgentReportValue.AgentMonthQuery(bossId = current.bossId, clientId = current.clientId,  agentId = current.id)
+        return agentMonthReportDao.query(reportQuery).map {
+            AgentValue.AgentCommissionVo(day = it.day, totalDeposit = it.totalDeposit, totalWithdraw = it.totalWithdraw, totalBet = it.totalBet,
+                    totalMWin = it.totalMWin,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,
+                    subAgentCommission = it.agentCommission, memberCommission = it.memberCommission)
+        }
+    }
+
+
+    @GetMapping("/commission/sub")
+    override fun subCommissions(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
+            @RequestParam("agentId") agentId: Int
+    ): List<AgentValue.AgentCommissionVo> {
+        val current = this.current()
+        val reportQuery = AgentReportValue.AgentMonthQuery(bossId = current.bossId, clientId = current.clientId,  superiorAgentId = current.id)
+        return agentMonthReportDao.query(reportQuery).map {
+            AgentValue.AgentCommissionVo(day = it.day, totalDeposit = it.totalDeposit, totalWithdraw = it.totalWithdraw, totalBet = it.totalBet,
+                    totalMWin = it.totalMWin,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,
+                    subAgentCommission = it.agentCommission, memberCommission = it.memberCommission)
+        }
+    }
+
+    @GetMapping("commission/member")
+    override fun memberCommissions(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
+            @RequestParam("agentId") agentId: Int
+    ): List<AgentValue.MemberCommissionVo> {
+
+        val current = this.current()
+
+
+        val collectQuery = MemberReportValue.CollectQuery(bossId = current.bossId, clientId = current.clientId, startDate = startDate, endDate = endDate,
+                agentId = current.id)
+
+        return memberDailyReportDao.collect(query = collectQuery).map {
+            val username = it.username
+            val size = username.length
+
+            val first = username.substring(0, 1)
+            val last = username.substring(size - 1, size)
+
+            val newUsername = "${first}****${last}"
+
+            AgentValue.MemberCommissionVo(username = newUsername, totalBet = it.totalBet, totalMWin = it.totalMWin, totalRebate = it.rebateAmount, totalPromotion = it.promotionAmount)
+        }
+    }
+
 }

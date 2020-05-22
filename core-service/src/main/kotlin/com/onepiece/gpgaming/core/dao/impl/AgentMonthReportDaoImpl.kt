@@ -33,12 +33,13 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
             val totalRebate  =  rs.getBigDecimal("total_rebate")
             val totalPromotion  = rs.getBigDecimal("total_promotion")
             val commissionExecution = rs.getBoolean("commission_execution")
+            val newMemberCount = rs.getInt("new_member_count")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             AgentMonthReport(id  =  id, day = day, bossId = bossId, clientId = clientId, superiorAgentId = superiorAgentId, agentId = agentId, agentCommission = agentCommission,
                     agentActiveCount = agentActiveCount, agentCommissionScale = agentCommissionScale, memberCommission = memberCommission, memberActiveCount = memberActiveCount,
                     totalDeposit = totalDeposit, totalWithdraw = totalWithdraw, totalBet = totalBet, totalMWin = totalMWin,  memberCommissionScale = memberCommissionScale,
-                    createdTime = createdTime, totalRebate = totalRebate, totalPromotion = totalPromotion, commissionExecution = commissionExecution)
+                    createdTime = createdTime, totalRebate = totalRebate, totalPromotion = totalPromotion, commissionExecution = commissionExecution, newMemberCount = newMemberCount)
 
         }
 
@@ -47,37 +48,52 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
                 .set("day")
                 .set("boss_id")
                 .set("client_id")
+                .set("superior_agent_id")
                 .set("agent_id")
-                .set("agent_commission")
+
                 .set("agent_active_count")
                 .set("agent_commission_scale")
+                .set("agent_commission")
+
                 .set("member_active_count")
+                .set("member_commission")
+                .set("member_commission_scale")
+
                 .set("total_deposit")
                 .set("total_withdraw")
                 .set("total_bet")
                 .set("total_m_win")
-                .set("member_commission_scale")
+                .set("commission_execution")
                 .execute { ps, entity ->
                     var x = 0
                     ps.setString(++x, entity.day.toString())
                     ps.setInt(++x, entity.bossId)
                     ps.setInt(++x, entity.clientId)
+                    ps.setInt(++x, entity.superiorAgentId)
                     ps.setInt(++x, entity.agentId)
-                    ps.setBigDecimal(++x, entity.agentCommission)
+
                     ps.setInt(++x, entity.agentActiveCount)
                     ps.setBigDecimal(++x, entity.agentCommissionScale)
+                    ps.setBigDecimal(++x, entity.agentCommission)
+
                     ps.setInt(++x,  entity.memberActiveCount)
+                    ps.setBigDecimal(++x, entity.memberCommission)
+                    ps.setBigDecimal(++x, entity.memberCommissionScale)
+
+
                     ps.setBigDecimal(++x,  entity.totalDeposit)
                     ps.setBigDecimal(++x, entity.totalWithdraw)
                     ps.setBigDecimal(++x, entity.totalBet)
                     ps.setBigDecimal(++x, entity.totalMWin)
-                    ps.setBigDecimal(++x, entity.memberCommissionScale)
+                    ps.setBoolean(++x, entity.commissionExecution)
                 }
     }
 
     override fun query(query: AgentReportValue.AgentMonthQuery): List<AgentMonthReport> {
         return query()
                 .where("boss_id", query.bossId)
+                .where("client_id", query.clientId)
+                .where("superior_agent_id", query.superiorAgentId)
                 .where("agent_id", query.agentId)
                 .execute(mapper)
     }
