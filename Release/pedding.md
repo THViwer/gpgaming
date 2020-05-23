@@ -8,7 +8,7 @@
     AgentApply 代理申请表
     
 2. 新增、修改字段
-    Member 新增 role、promoteCode、agentId
+    Member 新增 role、promoteCode、agentId、formal
     Withdraw 新增 role
     MemberDailyReport 新增 agentId、username、superiorAgentId 
                     修改
