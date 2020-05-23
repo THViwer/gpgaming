@@ -137,6 +137,14 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
                 .executeOnlyOne()
     }
 
+    override fun rebate(walletTransferInUo: WalletTransferInUo): Boolean {
+        return update().asSet("balance = balance + ${walletTransferInUo.money}")
+                .set("process_id", UUID.randomUUID().toString())
+                .where("id", walletTransferInUo.id)
+                .where("process_id", walletTransferInUo.processId)
+                .executeOnlyOne()
+    }
+
     override fun query(walletQuery: WalletQuery): List<Wallet> {
         return query()
                 .where("client_id", walletQuery.clientId)
