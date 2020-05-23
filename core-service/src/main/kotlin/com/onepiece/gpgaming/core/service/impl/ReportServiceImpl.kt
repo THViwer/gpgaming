@@ -166,7 +166,7 @@ class ReportServiceImpl(
         val endDate = today.with(TemporalAdjusters.lastDayOfMonth())
 
         // 查询代理列表
-        val memberQuery = MemberQuery(bossId = null, role = Role.Agent, clientId = null, agentId = agentId, username = null,
+        val memberQuery = MemberQuery(bossId = null, role = Role.Agent, clientId = null, agentId = null, username = null,
                 name = null, phone = null, status = null, levelId = null, promoteCode = null, startTime = null,  endTime = null)
         val agents = memberDao.query(query = memberQuery, current = 0, size = 999999)
 
@@ -174,7 +174,7 @@ class ReportServiceImpl(
         val commissions = commissionService.all().sortedBy { it.activeCount }
 
         // 会员佣金列表
-        val memberCollect = analysisDao.agentMonthReport(agentId = agentId, startDate = startDate, endDate = endDate)
+        val memberCollect = analysisDao.agentMonthReport(agentId = null, startDate = startDate, endDate = endDate)
                 .map { it.agentId to it }
                 .toMap()
         // 会员存活人数
@@ -255,7 +255,7 @@ class ReportServiceImpl(
             }
         }
 
-        return data
+        return data.filter { agentId == null || it.agentId == agentId }
     }
 
     override fun startClientPlatformReport(startDate: LocalDate): List<ClientPlatformDailyReport> {
