@@ -31,6 +31,7 @@ import com.onepiece.gpgaming.core.service.SeoService
 import com.onepiece.gpgaming.core.service.SlotGameService
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
+import com.onepiece.gpgaming.player.controller.value.ApiValue
 import com.onepiece.gpgaming.player.controller.value.BannerVo
 import com.onepiece.gpgaming.player.controller.value.CompileValue
 import com.onepiece.gpgaming.player.controller.value.Contacts
@@ -75,13 +76,10 @@ open class ApiController(
     private val log = LoggerFactory.getLogger(ApiController::class.java)
 
     @GetMapping
-    override fun config(
-            @RequestHeader("launch") launch: LaunchMethod,
-            @RequestHeader("language") language: Language
-    ): IndexConfig {
+    override fun config(): IndexConfig {
         val clientId = this.getClientIdByDomain()
         val url = SystemConstant.getClientResourcePath(clientId = clientId, profile = activeConfig.profile)
-        return IndexConfig(url = "$url/index_${language.name.toLowerCase()}.json?${UUID.randomUUID()}")
+        return IndexConfig(url = "$url/index_${getHeaderLanguage().name.toLowerCase()}.json?${UUID.randomUUID()}")
     }
 
     @GetMapping("/compile")
@@ -94,13 +92,11 @@ open class ApiController(
     }
 
     @GetMapping("/hotGames")
-    override fun hotGames(
-            @RequestHeader("launch") launch: LaunchMethod,
-            @RequestHeader("language") language: Language
-    ): List<HotGameVo> {
+    override fun hotGames(): List<HotGameVo> {
         val clientId = this.getClientIdByDomain()
+        val language = getHeaderLanguage()
 
-        val type = if (launch == LaunchMethod.Wap) HotGameType.Mobile else HotGameType.Pc
+        val type = if (getHeaderLaunch() == LaunchMethod.Wap) HotGameType.Mobile else HotGameType.Pc
 
         val games = hotGameService.list(clientId).filter { it.type == type }
                 .let {
@@ -152,11 +148,10 @@ open class ApiController(
     }
 
     @GetMapping("/index/platforms")
-    override fun indexPlatforms(
-            @RequestHeader("launch", defaultValue = "Wap") launch: LaunchMethod
-    ): List<PlatformVo> {
+    override fun indexPlatforms(): List<PlatformVo> {
 
         val clientId = getClientIdByDomain()
+        val launch = getHeaderLaunch()
         val gamePlatforms = gamePlatformService.all()
 
         // 平台信息
@@ -182,12 +177,11 @@ open class ApiController(
     }
 
     @GetMapping("/promotion")
-    override fun promotion(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod
-    ): List<PromotionVo> {
+    override fun promotion(): List<PromotionVo> {
 
         val clientId = getClientIdByDomain()
+        val (language, launch) = getLanguageAndLaunchFormHeader()
+
 
         val allPromotion = promotionService.all(clientId)
                 .filter { it.status == Status.Normal }
@@ -235,39 +229,15 @@ open class ApiController(
 
     }
 
-//    @GetMapping("/slot/menu")
-//    override fun slotMenu(
-//            @RequestHeader("language") language: Language,
-//            @RequestHeader("launch") launch: LaunchMethod,
-//            @RequestParam("platform") platform: Platform): Map<String, String> {
-//
-//        val url = when(platform) {
-//            Platform.Joker -> "${SystemConstant.AWS_SLOT}/joker_${language.name.toLowerCase()}.json"
-//            Platform.MicroGaming -> "${SystemConstant.AWS_SLOT}/micro_gaming_${language.name.toLowerCase()}.json"
-//            Platform.Pragmatic -> "${SystemConstant.AWS_SLOT}/pragmatic_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
-//            Platform.SpadeGaming -> "${SystemConstant.AWS_SLOT}/spade_game_${language.name.toLowerCase()}.json"
-//            Platform.TTG -> "${SystemConstant.AWS_SLOT}/ttg_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
-//            Platform.PNG -> "${SystemConstant.AWS_SLOT}/png_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
-//            Platform.GamePlay -> "${SystemConstant.AWS_SLOT}/gameplay_${language.name.toLowerCase()}.json"
-//            Platform.SimplePlay -> "${SystemConstant.AWS_SLOT}/simple_play_${language.name.toLowerCase()}.json"
-//            Platform.PlaytechSlot -> "${SystemConstant.AWS_SLOT}/playtech_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
-//            Platform.AsiaGamingSlot -> "${SystemConstant.AWS_SLOT}/asia_gaming_${launch.name.toLowerCase()}_${language.name.toLowerCase()}.json"
-//            else -> error(OnePieceExceptionCode.DATA_FAIL)
-//        }
-//        return mapOf(
-//                "url" to "$url?${UUID.randomUUID()}"
-//        )
-//    }
-
-
 
     @GetMapping("/slots")
     override fun slots(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod,
             @RequestParam("platform") platform: Platform
     ): List<SlotCategoryVo> {
         if (platform.category != PlatformCategory.Slot) return emptyList()
+
+        val (language, launch) = getLanguageAndLaunchFormHeader()
+
 
         val list = slotGameService.findByPlatform(platform)
         if (list.isEmpty()) return emptyList()
@@ -294,13 +264,13 @@ open class ApiController(
 
     @GetMapping("/start")
     override fun start(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("platform") platform: Platform,
-            @RequestHeader("launch") launch: LaunchMethod
+            @RequestHeader("platform") platform: Platform
     ): StartGameResp {
 
         val member = current()
         val platformMember = getPlatformMember(platform, member)
+        val (language, launch) = getLanguageAndLaunchFormHeader()
+
 
         transferSync.asyncTransfer(current(), platformMember)
 
@@ -326,10 +296,10 @@ open class ApiController(
 
     @GetMapping("/start/demo")
     override fun startDemo(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("platform") platform: Platform,
-            @RequestHeader("launch") launch: LaunchMethod
+            @RequestHeader("platform") platform: Platform
     ): StartGameResp {
+        val (language, launch) = getLanguageAndLaunchFormHeader()
+
         val url = gameApi.startDemo(clientId = getClientIdByDomain(), platform = platform, language = language, launch = launch)
 
         return StartGameResp(path = url)
@@ -337,10 +307,10 @@ open class ApiController(
 
     @GetMapping("/start/slot")
     override fun startSlotGame(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp {
+
+        val (language, launch) = getLanguageAndLaunchFormHeader()
 
         val member = current()
         val platformMember = getPlatformMember(platform, member)
@@ -369,10 +339,10 @@ open class ApiController(
 
     @GetMapping("/start/slot/demo")
     override fun startSlotDemoGame(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp {
+
+        val (language, launch) = getLanguageAndLaunchFormHeader()
 
         val gameUrl = gameApi.startSlotDemo(clientId = getClientIdByDomain(), platform = platform, gameId = gameId, language = language,
                 launchMethod = launch)
@@ -452,10 +422,9 @@ open class ApiController(
 
     @GetMapping("/banner")
     override fun banners(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod,
             @RequestParam(value =  "type") type: BannerType
     ): List<BannerVo> {
+        val (language, launch) = getLanguageAndLaunchFormHeader()
 
         val clientId = this.getClientIdByDomain()
 
@@ -481,10 +450,10 @@ open class ApiController(
 
     @GetMapping("/{category}")
     override fun categories(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod,
             @PathVariable(value =  "category") category: PlatformCategory
     ): PlatformCategoryDetail {
+
+        val (language, launch) = getLanguageAndLaunchFormHeader()
 
         val clientId = this.getClientIdByDomain()
         val gamePlatforms = gamePlatformService.all()
@@ -563,10 +532,10 @@ open class ApiController(
 
     @GetMapping("/select/country")
     override fun selectCountry(
-            @RequestParam("country") country: Country,
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
+            @RequestParam("country") country: Country
     ): SelectCountryResult {
+
+        val (language, launch) = getLanguageAndLaunchFormHeader()
 
         val bossId = getBossIdByDomain()
         val clients = clientService.all().filter { it.bossId == bossId }
@@ -576,6 +545,35 @@ open class ApiController(
 
         val webSites = webSiteService.all().filter { it.status == Status.Normal }.first { it.clientId == client.id }
         return SelectCountryResult(domain = "https://www.${webSites.domain}${isMobile}", language = language)
+    }
+
+
+    @GetMapping("/guide")
+    override fun guideConfig(): ApiValue.GuideConfigVo {
+
+        val bossId = this.getBossIdByDomain()
+
+        val requestURL = getRequest().requestURL.toString()
+        val sites = webSiteService.all().filter { it.bossId == bossId }
+                .filter { !requestURL.contains(it.domain) }
+
+        val clients = clientService.all().filter { it.status == Status.Normal && bossId == bossId }
+
+
+        val launch = getHeaderLaunch()
+        val countries = clients.mapNotNull { client ->
+            sites.firstOrNull { it.clientId == client.id }?.let {
+                val path = when (launch) {
+                    LaunchMethod.Wap -> "https://www.${it.domain}/m"
+                    else -> "https://www.${it.domain}"
+                }
+                ApiValue.GuideConfigVo.CountryVo(country = it.country, path = path)
+            }
+        }
+
+        val logo = clients.first().logo
+
+        return ApiValue.GuideConfigVo(logo = logo, countries = countries)
     }
 
     fun <T> getRandom(list: List<T>?) : T? {

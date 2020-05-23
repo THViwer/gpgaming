@@ -1,6 +1,8 @@
 package com.onepiece.gpgaming.player.controller.basic
 
 import com.onepiece.gpgaming.beans.enums.Country
+import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
@@ -59,6 +61,23 @@ abstract class BasicController {
         val request = this.getRequest()
         val url = request.requestURL.toString()
         return webSiteService.match(url).country
+    }
+
+    fun getHeaderLanguage(): Language {
+        val request = this.getRequest()
+        return request.getHeader("language").let {
+            Language.valueOf(it)
+        }
+    }
+
+    fun getLanguageAndLaunchFormHeader(): Pair<Language, LaunchMethod> {
+        return this.getHeaderLanguage() to this.getHeaderLaunch()
+    }
+
+    fun getHeaderLaunch(): LaunchMethod {
+        return this.getRequest().getHeader("launch").let {
+            LaunchMethod.valueOf(it)
+        }
     }
 
     fun current(): JwtUser {

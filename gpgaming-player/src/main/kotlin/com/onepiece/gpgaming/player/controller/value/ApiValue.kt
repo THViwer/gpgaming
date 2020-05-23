@@ -1,11 +1,35 @@
 package com.onepiece.gpgaming.player.controller.value
 
 import com.onepiece.gpgaming.beans.enums.BannerType
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
+
+sealed class ApiValue {
+
+        data class GuideConfigVo(
+
+                @ApiModelProperty("logo")
+                val logo: String,
+
+                @ApiModelProperty("国家列表")
+                val countries: List<CountryVo>
+        ) {
+                data class CountryVo(
+
+                        // 国家
+                        val country: Country,
+
+                        // 域名
+                        val path: String
+                )
+
+        }
+
+}
 
 data class IndexConfig(
         val url: String

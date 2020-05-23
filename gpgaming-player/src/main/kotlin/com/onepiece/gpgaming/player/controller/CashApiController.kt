@@ -119,9 +119,9 @@ open class CashApiController(
 
 
     @GetMapping("/bank")
-    override fun banks(
-            @RequestHeader("launch") launch: LaunchMethod
-    ): List<BankVo> {
+    override fun banks(): List<BankVo> {
+
+        val launch = getHeaderLaunch()
 
         val country = this.getCountryByDomain()
 
@@ -268,13 +268,13 @@ open class CashApiController(
 
     @PostMapping("/thirdpay/select")
     override fun selectPay(
-            @RequestHeader("language") language: Language,
             @RequestParam("payId") payId: Int,
             @RequestParam("amount") amount: BigDecimal,
             @RequestParam("responseUrl") responseUrl: String,
             @RequestParam("selectBank",  required = false) selectBank: Bank?
     ): ThirdPayValue.SelectPayResult {
 
+        val language = getHeaderLanguage()
         val current = current()
         val orderId = orderIdBuilder.generatorPayOrderId(clientId = current.clientId)
 
@@ -493,12 +493,12 @@ open class CashApiController(
 
     @GetMapping("/check/promotion")
     override fun checkPromotion(
-            @RequestHeader("language") language: Language,
             @RequestParam("platform") platform: Platform,
             @RequestParam("amount") amount: BigDecimal,
             @RequestParam("promotionId", required = false) promotionId: Int?
     ): CheckPromotinResp {
 
+        val language = getHeaderLanguage()
         val current = this.current()
 
         val member = memberService.getMember(current.id)
@@ -585,11 +585,12 @@ open class CashApiController(
     @PutMapping("/transfer")
     @Transactional(rollbackFor = [Exception::class])
     override fun transfer(
-            @RequestHeader("language") language: Language,
             @RequestBody cashTransferReq: CashValue.CashTransferReq
     ): List<BalanceVo> {
         val watch = StopWatch()
         watch.start()
+
+        val language = getHeaderLanguage()
 
         log.info("用户：${current().username}，开始转账")
         // 如果转入的平台是918kiss、pussy、mega 则默认添加优惠为-100
@@ -625,19 +626,19 @@ open class CashApiController(
         return when {
             cashTransferReq.from == Platform.Center -> {
                 val fromBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, totalBet = BigDecimal.ZERO)
-                val toBalance = this.balance(language = language, platform = cashTransferReq.to)
+                val toBalance = this.balance(platform = cashTransferReq.to)
 
                 listOf(fromBalance, toBalance)
             }
             cashTransferReq.to == Platform.Center -> {
-                val fromBalance = this.balance(language = language, platform = cashTransferReq.from)
+                val fromBalance = this.balance(platform = cashTransferReq.from)
                 val toBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, totalBet = BigDecimal.ZERO)
 
                 listOf(fromBalance, toBalance)
             }
             else -> {
-                val fromBalance = this.balance(language = language, platform = cashTransferReq.from)
-                val toBalance = this.balance(language = language, platform = cashTransferReq.to)
+                val fromBalance = this.balance(platform = cashTransferReq.from)
+                val toBalance = this.balance(platform = cashTransferReq.to)
                 val centerBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, totalBet = BigDecimal.ZERO)
 
                 listOf(fromBalance, toBalance, centerBalance)
@@ -719,10 +720,11 @@ open class CashApiController(
 
     @GetMapping("/balance")
     override fun balance(
-            @RequestHeader("language") language: Language,
             @RequestHeader("platform") platform: Platform
     ): BalanceVo {
         val member = current()
+
+        val language = getHeaderLanguage()
 
         val walletBalance = walletService.getMemberWallet(current().id).balance
 
@@ -751,10 +753,10 @@ open class CashApiController(
 
     @GetMapping("/balances")
     override fun balances(
-            @RequestHeader("language") language: Language,
             @RequestParam("category", required = false) category: PlatformCategory?
     ): List<BalanceVo> {
 
+        val language = getHeaderLanguage()
         val member = this.current()
         val clientId = member.clientId
         val memberId = member.id

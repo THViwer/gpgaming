@@ -1,8 +1,6 @@
 package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.enums.Country
-import com.onepiece.gpgaming.beans.enums.Language
-import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.player.controller.value.ChangePwdReq
 import com.onepiece.gpgaming.player.controller.value.CheckUsernameResp
 import com.onepiece.gpgaming.player.controller.value.LoginReq
@@ -15,7 +13,6 @@ import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
@@ -24,12 +21,10 @@ interface UserApi {
 
     @ApiOperation(tags = ["user"], value = "登陆")
     fun login(
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
             @RequestBody loginReq: LoginReq): LoginResp
 
     @ApiOperation(tags = ["user"], value = "查看登陆信息")
     fun loginDetail(
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
     ): LoginResp
 
     @ApiOperation(tags = ["user"], value = "更新自动转账配置")
@@ -38,14 +33,11 @@ interface UserApi {
 
     @ApiOperation(tags = ["user"], value = "注册")
     fun register(
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
             @RequestBody registerReq: RegisterReq
     ): LoginResp
 
     @ApiOperation(tags = ["user"], value = "可选国家列表")
-    fun countries(
-            @RequestHeader("language", defaultValue = "EN") language: Language
-    ): List<Country>
+    fun countries(): List<Country>
 
     @ApiOperation(tags = ["user"], value = "检查用户名是否存在")
     fun checkUsername(@PathVariable("username") username: String): CheckUsernameResp

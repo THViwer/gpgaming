@@ -2,12 +2,11 @@ package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.enums.BannerType
 import com.onepiece.gpgaming.beans.enums.Country
-import com.onepiece.gpgaming.beans.enums.Language
-import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
+import com.onepiece.gpgaming.player.controller.value.ApiValue
 import com.onepiece.gpgaming.player.controller.value.BannerVo
 import com.onepiece.gpgaming.player.controller.value.CompileValue
 import com.onepiece.gpgaming.player.controller.value.Contacts
@@ -30,30 +29,19 @@ import org.springframework.web.bind.annotation.RequestParam
 interface Api {
 
     @ApiOperation(tags = ["api"], value = "首页配置")
-    fun config(
-            @RequestHeader("launch") launch: LaunchMethod,
-            @RequestHeader("language") language: Language
-    ): IndexConfig
+    fun config(): IndexConfig
 
     @ApiOperation(tags = ["api"], value = "域名配置")
     fun getConfig(): CompileValue.Config
 
     @ApiOperation(tags = ["api"], value = "热门游戏")
-    fun hotGames(
-            @RequestHeader("launch") launch: LaunchMethod,
-            @RequestHeader("language") language: Language
-    ): List<HotGameVo>
+    fun hotGames(): List<HotGameVo>
 
     @ApiOperation(tags = ["api"],  value = "首页平台列表")
-    fun indexPlatforms(
-            @RequestHeader("launch", defaultValue = "Wap") launch: LaunchMethod = LaunchMethod.Wap
-    ): List<PlatformVo>
+    fun indexPlatforms(): List<PlatformVo>
 
     @ApiOperation(tags = ["api"], value = "优惠活动")
-    fun promotion(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod
-    ): List<PromotionVo>
+    fun promotion(): List<PromotionVo>
 
 //    @ApiOperation(tags = ["api"], value = "老虎机菜单")
 //    @Deprecated("推荐使用/slots方法")
@@ -63,38 +51,26 @@ interface Api {
 //            @RequestParam("platform") platform: Platform): Map<String, String>
 
     @ApiOperation(tags = ["api"], value = "老虎机游戏列表")
-    fun slots(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod,
-            @RequestParam("platform") platform: Platform
-    ): List<SlotCategoryVo>
+    fun slots(@RequestParam("platform") platform: Platform): List<SlotCategoryVo>
 
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台)")
     fun start(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("platform") platform: Platform,
-            @RequestHeader("launch") launch: LaunchMethod
+            @RequestHeader("platform") platform: Platform
     ): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始游戏(平台试玩)")
     fun startDemo(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("platform") platform: Platform,
-            @RequestHeader("launch") launch: LaunchMethod
+            @RequestHeader("platform") platform: Platform
     ): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始游戏(老虎机)")
     fun startSlotGame(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp
 
     @ApiOperation(tags = ["api"], value = "开始试玩(老虎机)")
     fun startSlotDemoGame(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod,
             @RequestHeader("platform") platform: Platform,
             @RequestParam("gameId") gameId: String): StartGameResp
 
@@ -108,15 +84,11 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "banner列表")
     fun banners(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod,
             @RequestParam(value =  "type") type: BannerType
     ): List<BannerVo>
 
     @ApiOperation(tags = ["api"], value = "获得平台类目页信息")
     fun categories(
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch") launch: LaunchMethod,
             @PathVariable(value =  "category") category: PlatformCategory
     ): PlatformCategoryDetail
 
@@ -135,9 +107,11 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "改变国家")
     fun selectCountry(
-            @RequestParam("country") country: Country,
-            @RequestHeader("language") language: Language,
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
+            @RequestParam("country") country: Country
     ): SelectCountryResult
+
+
+    @ApiOperation(tags = ["api"], value = "网站导航配置")
+    fun guideConfig(): ApiValue.GuideConfigVo
 
 }

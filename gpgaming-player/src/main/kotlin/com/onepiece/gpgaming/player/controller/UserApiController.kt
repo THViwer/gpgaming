@@ -48,11 +48,11 @@ class UserApiController(
 
     @PostMapping
     override fun login(
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
             @RequestBody loginReq: LoginReq
     ): LoginResp {
 
         val bossId = getBossIdByDomain()
+        val launch = getHeaderLaunch()
 
         val loginValue = LoginValue(bossId = bossId, username = loginReq.username, password = loginReq.password, ip = RequestUtil.getIpAddress())
         val member = memberService.login(loginValue)
@@ -79,10 +79,10 @@ class UserApiController(
 
     @GetMapping("/login/detail")
     override fun loginDetail(
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod
     ): LoginResp {
 
         val user = this.currentUser()
+        val launch = getHeaderLaunch()
 
         val member = memberService.getMember(user.id)
 
@@ -109,11 +109,11 @@ class UserApiController(
 
     @PutMapping
     override fun register(
-            @RequestHeader("launch", defaultValue = "Web") launch: LaunchMethod,
             @RequestBody registerReq: RegisterReq
     ): LoginResp {
 
         check(registerReq.country != Country.Default)
+        val launch = getHeaderLaunch()
 
         val bossId = getBossIdByDomain()
         log.info("bossId = $bossId")
@@ -127,14 +127,13 @@ class UserApiController(
         memberService.create(memberCo)
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)
-        return this.login(launch, loginReq)
+        return this.login(loginReq)
     }
 
     @GetMapping("/country")
-    override fun countries(
-            @RequestHeader("language", defaultValue = "EN") language: Language
-    ): List<Country> {
+    override fun countries(): List<Country> {
 
+        val language = getHeaderLanguage()
         val clientId = getClientIdByDomain()
         val client = clientService.get(clientId)
 
