@@ -42,7 +42,7 @@ interface AnalysisDao  {
     /**
      * 代理月报瑶
      */
-    fun agentMonthReport(startDate: LocalDate, endDate: LocalDate): List<AgentMonthReport>
+    fun agentMonthReport(agentId: Int? = null, startDate: LocalDate, endDate: LocalDate): List<AgentMonthReport>
 
     /**
      * 业主日报表

@@ -103,7 +103,16 @@ sealed class AgentValue {
             val subAgentCount: Int,
 
             // 会员总数
-            val memberCount:  Int
+            val memberCount:  Int,
+
+            // 当月会员佣金
+            val memberCommission: BigDecimal,
+
+            // 当月下级代理佣金
+            val subAgentCommission: BigDecimal,
+
+            // 代理月费
+            val agencyMonthFee: BigDecimal
     )
 
     data class SubAgentVo(

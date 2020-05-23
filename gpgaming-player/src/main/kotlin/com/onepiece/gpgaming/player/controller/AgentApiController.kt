@@ -16,6 +16,7 @@ import com.onepiece.gpgaming.core.service.AgentApplyService
 import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberService
+import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.LoginReq
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 
 @RestController
 @RequestMapping("/agent")
@@ -42,7 +44,8 @@ class AgentApiController(
         private val analysisDao: AnalysisDao,
         private val agentApplyService: AgentApplyService,
         private val agentMonthReportDao: AgentMonthReportDao,
-        private val memberDailyReportDao: MemberDailyReportDao
+        private val memberDailyReportDao: MemberDailyReportDao,
+        private val reportService: ReportService
 ) : BasicController(), AgentApi {
 
 
@@ -101,12 +104,20 @@ class AgentApiController(
 
         val memberId = this.current().id
 
+        val agent = memberService.getMember(memberId)
         val wallet = walletService.getMemberWallet(memberId = memberId)
 
         val agentCount = analysisDao.memberCount(agentId = memberId, role = Role.Agent)
         val memberCount = analysisDao.memberCount(agentId = memberId, role = Role.Member)
 
-        return AgentValue.AgentInfo(balance = wallet.balance, subAgentCount = agentCount, memberCount = memberCount)
+        // 当前这个月佣金
+        val startDate  = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth())
+        val agentMonthReport = reportService.startAgentMonthReport(agentId = memberId, today = startDate)
+                .first()
+
+
+        return AgentValue.AgentInfo(balance = wallet.balance, subAgentCount = agentCount, memberCount = memberCount,
+        subAgentCommission = agentMonthReport.agentCommission, memberCommission = agentMonthReport.memberCommission, agencyMonthFee = agent.agencyMonthFee)
     }
 
     @GetMapping("/sub")

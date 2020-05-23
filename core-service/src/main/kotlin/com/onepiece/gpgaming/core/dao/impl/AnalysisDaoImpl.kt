@@ -277,8 +277,9 @@ class AnalysisDaoImpl(
 
     }
 
-    override fun agentMonthReport(startDate: LocalDate, endDate: LocalDate): List<AgentMonthReport> {
+    override fun agentMonthReport(agentId: Int?, startDate: LocalDate, endDate: LocalDate): List<AgentMonthReport> {
 
+        val append = if (agentId != null) " and agent_id = $agentId" else ""
         val sql  = """
             select
                    boss_id,
@@ -293,7 +294,7 @@ class AnalysisDaoImpl(
                    sum(total_promotion) total_promotion,
                    sum(new_member_count) new_member_count
             from agent_daily_report
-                where day > '$startDate' and day < '$endDate'
+                where day > '$startDate' and day < '$endDate' $append
                 group by boss_id, client_id, superior_agent_id, agent_id
         """.trimIndent()
 
@@ -459,7 +460,7 @@ class AnalysisDaoImpl(
     }
 
     override fun memberCount(agentId: Int, role: Role): Int {
-        val sql = "select count(*) count from `member` where agent_id = ? and `role` = ?"
+        val sql = "select count(*) count from `member` where agent_id = $agentId and `role` = '${role.name}'"
 
         return jdbcTemplate.query(sql) { rs, _ ->
             rs.getInt("count")

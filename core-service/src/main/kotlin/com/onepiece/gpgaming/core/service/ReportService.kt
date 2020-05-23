@@ -28,7 +28,7 @@ interface ReportService {
     /**
      * 代理月报表
      */
-    fun startAgentMonthReport(today: LocalDate): List<AgentMonthReport>
+    fun startAgentMonthReport(agentId: Int? = null, today: LocalDate): List<AgentMonthReport>
 
     /**
      * 厅主平台报表

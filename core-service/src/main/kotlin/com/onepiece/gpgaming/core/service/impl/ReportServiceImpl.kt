@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.Level
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
+import com.onepiece.gpgaming.beans.model.MemberRelation
 import com.onepiece.gpgaming.beans.value.database.AnalysisValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.core.dao.AnalysisDao
@@ -159,13 +160,13 @@ class ReportServiceImpl(
         return analysisDao.agentReport(startDate = startDate, endDate = endDate)
     }
 
-    override fun startAgentMonthReport(today: LocalDate): List<AgentMonthReport> {
+    override fun startAgentMonthReport(agentId: Int?, today: LocalDate): List<AgentMonthReport> {
 
         val startDate = today.with(TemporalAdjusters.firstDayOfMonth())
         val endDate = today.with(TemporalAdjusters.lastDayOfMonth())
 
         // 查询代理列表
-        val memberQuery = MemberQuery(bossId = null, role = Role.Agent, clientId = null, agentId = null, username = null,
+        val memberQuery = MemberQuery(bossId = null, role = Role.Agent, clientId = null, agentId = agentId, username = null,
                 name = null, phone = null, status = null, levelId = null, promoteCode = null, startTime = null,  endTime = null)
         val agents = memberDao.query(query = memberQuery, current = 0, size = 999999)
 
@@ -173,7 +174,7 @@ class ReportServiceImpl(
         val commissions = commissionService.all().sortedBy { it.activeCount }
 
         // 会员佣金列表
-        val memberCollect = analysisDao.agentMonthReport(startDate = startDate, endDate = endDate)
+        val memberCollect = analysisDao.agentMonthReport(agentId = agentId, startDate = startDate, endDate = endDate)
                 .map { it.agentId to it }
                 .toMap()
         // 会员存活人数
@@ -196,10 +197,12 @@ class ReportServiceImpl(
 
             try {
 //                val agentCommissions = commissions.filter { agent.bossId == it.bossId }.filter { it.type == CommissionType.AgentCommission }
+
+                //TODO 操 有问题？
                 val memberCommissions = commissions.filter { agent.bossId == it.bossId }.filter { it.type == CommissionType.MemberCommission }
 
                 // 计算会员佣金
-                val memberCommission = memberCollect[agent.id] ?: error("")
+                val memberCommission = memberCollect[agent.id] ?: AgentMonthReport.empty(agentId = agent.id)
                 val memberActive = memberActives[agent.id] ?: AnalysisValue.ActiveCollect(agentId = -1, activeCount = 0)
                 val mCommission = memberCommissions.first { it.activeCount > memberActive.activeCount }
                 val memberCommissionAmount =

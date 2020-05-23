@@ -78,5 +78,17 @@ data class AgentMonthReport(
     // 总佣金
     val totalCommission: BigDecimal = agentCommission.plus(memberCommission).minus(agencyMonthFee)
 
+    companion object {
+
+        fun empty(agentId: Int): AgentMonthReport {
+
+            return AgentMonthReport(id = -1, agentId = agentId, bossId = -1, clientId = -1, superiorAgentId = -1, totalDeposit = BigDecimal.ZERO,
+                    totalWithdraw = BigDecimal.ZERO, totalBet = BigDecimal.ZERO, totalMWin = BigDecimal.ZERO, totalRebate = BigDecimal.ZERO, totalPromotion = BigDecimal.ZERO,
+                    newMemberCount = 0, day = LocalDate.now(), createdTime = LocalDateTime.now(), agencyMonthFee = BigDecimal.ZERO, agentCommissionScale = BigDecimal.ZERO,
+                    agentActiveCount = 0, agentCommission = BigDecimal.ZERO, memberCommission = BigDecimal.ZERO, memberActiveCount = 0, memberCommissionScale = BigDecimal.ZERO,
+                    commissionExecution = true)
+        }
+
+    }
 
 }
