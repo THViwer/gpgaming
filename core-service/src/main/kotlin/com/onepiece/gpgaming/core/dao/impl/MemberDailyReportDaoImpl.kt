@@ -127,7 +127,7 @@ class MemberDailyReportDaoImpl(
             sum(third_pay_amount) as totalThirdPayAmount,
             sum(third_pay_count) as totalThirdPayCount,
             sum(withdraw_amount) as totalWithdrawAmount,
-            sum(backwater_amount) as totalBackwaterAmount,
+            sum(rebate_amount) as totalRebateAmount,
             sum(promotion_amount)as totalPromotionAmount
         """.trimIndent()
 
@@ -152,7 +152,7 @@ class MemberDailyReportDaoImpl(
                     val totalThirdPayAmount = rs.getBigDecimal("totalThirdPayAmount") ?: BigDecimal.ZERO
                     val totalThirdPayCount = rs.getInt("totalThirdPayCount")
                     val totalWithdrawAmount = rs.getBigDecimal("totalWithdrawAmount") ?: BigDecimal.ZERO
-                    val totalRebbateAmount = rs.getBigDecimal("totalBackwaterAmount") ?: BigDecimal.ZERO
+                    val totalRebateAmount = rs.getBigDecimal("totalRebateAmount") ?: BigDecimal.ZERO
                     val totalPromotionAmount = rs.getBigDecimal("totalPromotionAmount") ?: BigDecimal.ZERO
 
                     MemberReportValue.MemberReportTotal(count = count, totalMWin = totalMWin, totalBet = totalBet, transferIn = transferIn,
@@ -160,7 +160,7 @@ class MemberDailyReportDaoImpl(
                             totalWithdrawCount = totalWithdrawCount, totalWithdrawAmount = totalWithdrawAmount,
                             totalArtificialCount = totalArtificialCount, totalArtificialAmount = totalArtificialAmount,
                             totalThirdPayCount = totalThirdPayCount, totalThirdPayAmount = totalThirdPayAmount,
-                            totalRebateAmount = totalRebbateAmount, totalPromotionAmount = totalRebbateAmount)
+                            totalRebateAmount = totalRebateAmount, totalPromotionAmount = totalPromotionAmount)
                 }
     }
 
