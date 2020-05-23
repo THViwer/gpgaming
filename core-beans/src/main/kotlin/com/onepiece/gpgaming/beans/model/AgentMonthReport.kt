@@ -67,12 +67,16 @@ data class AgentMonthReport(
         // 新增会员数
         val newMemberCount: Int,
 
+        // 代理月费
+        val agencyMonthFee: BigDecimal,
+
         // 创建时间
         val createdTime: LocalDateTime
 
 ) {
 
-    val totalCommission: BigDecimal = agentCommission.plus(memberCommission)
+    // 总佣金
+    val totalCommission: BigDecimal = agentCommission.plus(memberCommission).minus(agencyMonthFee)
 
 
 }

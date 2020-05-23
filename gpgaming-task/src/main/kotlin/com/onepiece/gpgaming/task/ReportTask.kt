@@ -95,12 +95,12 @@ class ReportTask(
     }
 
 //    // 厅主平台日报表
-//    fun startClientPlatformReport(startDate: LocalDate) {
-//        tryLock(localDate = startDate, type = TaskTimerType.ClientPlatformDaily) {
-//            val data = reportService.startClientPlatformReport(startDate= startDate)
-//            clientPlatformDailyReportService.create(data)
-//        }
-//    }
+/*    fun startClientPlatformReport(startDate: LocalDate) {
+        tryLock(localDate = startDate, type = TaskTimerType.ClientPlatformDaily) {
+            val data = reportService.startClientPlatformReport(startDate= startDate)
+            clientPlatformDailyReportService.create(data)
+        }
+    }*/
 
     // 厅主报表
     fun startClientReport(startDate: LocalDate) {

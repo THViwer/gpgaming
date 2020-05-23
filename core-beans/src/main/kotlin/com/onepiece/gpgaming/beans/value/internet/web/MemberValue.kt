@@ -154,6 +154,14 @@ sealed class MemberValue {
 
         )
 
+        data class AgentUo(
+                // 代理Id
+                val id: Int,
+
+                // 代理佣金
+                val agencyMonthFee: BigDecimal
+        )
+
 }
 
 open class LocalDateTimeConverter: Converter<LocalDateTime> {

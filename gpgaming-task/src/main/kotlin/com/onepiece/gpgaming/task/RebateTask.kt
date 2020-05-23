@@ -72,7 +72,7 @@ class RebateTask(
         val data = agentMonthReportService.commissions()
         val ids = data.mapNotNull { report ->
             try {
-                val money = report.agentCommission.plus(report.memberCommission)
+                val money = report.totalCommission
                 val walletUo = WalletUo(clientId = report.clientId, waiterId = null, memberId = report.agentId, money = money, eventId = "${report.id}",
                         event = WalletEvent.Commission, remarks = "agent commission")
                 walletService.update(walletUo)

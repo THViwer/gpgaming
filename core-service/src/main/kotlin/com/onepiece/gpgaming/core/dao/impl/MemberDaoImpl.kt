@@ -9,6 +9,7 @@ import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
 import java.sql.ResultSet
 import java.time.LocalDate
 
@@ -35,13 +36,14 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val loginIp = rs.getString("login_ip")
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
             val promoteCode = rs.getString("promote_code") ?: ""
+            val agencyMonthFee = rs.getBigDecimal("agency_month_fee")
             val formal = rs.getBoolean("formal")
 
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
                     safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion,
                     autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = promoteCode,
-                    formal = formal)
+                    formal = formal, agencyMonthFee = agencyMonthFee)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -60,6 +62,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("status", Status.Normal)
                 .set("promote_code", memberCo.promoteCode)
                 .set("formal", memberCo.formal)
+                .set("agency_fee", BigDecimal.ZERO)
                 .executeGeneratedKey()
     }
 
@@ -76,6 +79,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("login_time", memberUo.loginTime)
                 .set("auto_transfer", memberUo.autoTransfer)
                 .set("formal", memberUo.formal)
+                .set("agency_month_fee", memberUo.agencyMonthFee)
                 .where("id", memberUo.id)
                 .execute() == 1
 

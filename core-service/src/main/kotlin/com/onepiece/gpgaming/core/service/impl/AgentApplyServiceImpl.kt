@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.core.dao.AgentApplyDao
 import com.onepiece.gpgaming.core.service.AgentApplyService
 import com.onepiece.gpgaming.core.service.MemberService
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 
 @Service
 class AgentApplyServiceImpl(
@@ -27,7 +28,7 @@ class AgentApplyServiceImpl(
         check(flag) { OnePieceExceptionCode.DATA_FAIL }
     }
 
-    override fun check(id: Int, state: ApplyState, remark: String) {
+    override fun check(id: Int, state: ApplyState, remark: String, agencyMonthFee: BigDecimal) {
 
         val apply = agentApplyDao.get(id = id)
         check(apply.state == ApplyState.Process) { OnePieceExceptionCode.DATA_FAIL }
@@ -39,7 +40,7 @@ class AgentApplyServiceImpl(
 
         // 更新用户
         if (state == ApplyState.Done) {
-            val memberUo = MemberUo(id = apply.agentId, formal = true)
+            val memberUo = MemberUo(id = apply.agentId, formal = true, agencyMonthFee = agencyMonthFee)
             memberService.update(memberUo)
         }
 

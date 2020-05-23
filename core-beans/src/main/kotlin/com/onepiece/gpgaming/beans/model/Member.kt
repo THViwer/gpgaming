@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 /**
@@ -57,11 +58,16 @@ data class Member(
         // 登陆Ip
         val loginIp: String?,
 
+        //TODO 下面 是代理独有的字段
+
         // 推广码
         val promoteCode: String,
 
         // 是否是正式
         val formal: Boolean,
+
+        // 每月的代理费
+        val agencyMonthFee: BigDecimal,
 
         // 登陆时间
         val loginTime: LocalDateTime?

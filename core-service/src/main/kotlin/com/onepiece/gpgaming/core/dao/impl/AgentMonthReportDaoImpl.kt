@@ -34,12 +34,14 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
             val totalPromotion  = rs.getBigDecimal("total_promotion")
             val commissionExecution = rs.getBoolean("commission_execution")
             val newMemberCount = rs.getInt("new_member_count")
+            val agencyMonthFee = rs.getBigDecimal("agency_,onth_fee")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             AgentMonthReport(id  =  id, day = day, bossId = bossId, clientId = clientId, superiorAgentId = superiorAgentId, agentId = agentId, agentCommission = agentCommission,
                     agentActiveCount = agentActiveCount, agentCommissionScale = agentCommissionScale, memberCommission = memberCommission, memberActiveCount = memberActiveCount,
                     totalDeposit = totalDeposit, totalWithdraw = totalWithdraw, totalBet = totalBet, totalMWin = totalMWin,  memberCommissionScale = memberCommissionScale,
-                    createdTime = createdTime, totalRebate = totalRebate, totalPromotion = totalPromotion, commissionExecution = commissionExecution, newMemberCount = newMemberCount)
+                    createdTime = createdTime, totalRebate = totalRebate, totalPromotion = totalPromotion, commissionExecution = commissionExecution, newMemberCount = newMemberCount,
+                    agencyMonthFee = agencyMonthFee)
 
         }
 
@@ -64,6 +66,7 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
                 .set("total_bet")
                 .set("total_m_win")
                 .set("commission_execution")
+                .set("agency_month_fee")
                 .execute { ps, entity ->
                     var x = 0
                     ps.setString(++x, entity.day.toString())
@@ -86,6 +89,7 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
                     ps.setBigDecimal(++x, entity.totalBet)
                     ps.setBigDecimal(++x, entity.totalMWin)
                     ps.setBoolean(++x, entity.commissionExecution)
+                    ps.setBigDecimal(++x, entity.agencyMonthFee)
                 }
     }
 

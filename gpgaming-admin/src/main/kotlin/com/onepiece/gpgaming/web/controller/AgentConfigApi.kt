@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @Api(tags = ["agent"], description = "代理配置")
@@ -55,8 +56,15 @@ interface AgentConfigApi {
     fun check(
             @RequestParam("id") id: Int,
             @RequestParam("state") state: ApplyState,
-            @RequestParam("remark") remark: String
+            @RequestParam("remark") remark: String,
+            @RequestParam("agencyMonthFee") agencyMonthFee: BigDecimal
     )
+
+
+    @ApiOperation(tags = ["agent"], value = "代理 -> 更新")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun update(@RequestBody req: MemberValue.AgentUo)
+
 
     @ApiOperation(tags = ["agent"], value = "佣金列表")
     fun commissions(

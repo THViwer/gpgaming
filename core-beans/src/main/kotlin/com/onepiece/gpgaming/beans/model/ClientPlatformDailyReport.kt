@@ -35,6 +35,9 @@ data class ClientPlatformDailyReport(
         // 优惠金额
         val promotionAmount: BigDecimal,
 
+        // 返水金额
+//        val rebateAmount: BigDecimal,
+
         // 创建时间
         val createdTime: LocalDateTime,
 

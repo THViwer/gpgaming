@@ -214,7 +214,7 @@ class ReportServiceImpl(
                 val commissionExecution = memberCommissionAmount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
                 memberCommission.copy(memberCommission = memberCommissionAmount, memberCommissionScale = mCommission.scale, memberActiveCount = memberActive.activeCount,
-                        commissionExecution = commissionExecution)
+                        commissionExecution = commissionExecution, agencyMonthFee = agent.agencyMonthFee)
             } catch (e: Exception)  {
                 log.error("agent month report error: ", e)
                 null

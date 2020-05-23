@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.web.controller
 import com.onepiece.gpgaming.beans.enums.ApplyState
 import com.onepiece.gpgaming.beans.enums.CommissionType
 import com.onepiece.gpgaming.beans.enums.Role
+import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Commission
 import com.onepiece.gpgaming.beans.value.database.AgentApplyValue
 import com.onepiece.gpgaming.beans.value.database.AgentReportValue
@@ -10,6 +11,7 @@ import com.onepiece.gpgaming.beans.value.database.AgentValue
 import com.onepiece.gpgaming.beans.value.database.CommissionValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
+import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberValue
 import com.onepiece.gpgaming.core.dao.AgentApplyDao
 import com.onepiece.gpgaming.core.dao.AgentMonthReportDao
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @RestController
@@ -81,9 +84,10 @@ class AgentConfigApiController(
     override fun check(
             @RequestParam("id") id: Int,
             @RequestParam("state") state: ApplyState,
-            @RequestParam("remark") remark: String
+            @RequestParam("remark") remark: String,
+            @RequestParam("agencyMonthFee") agencyMonthFee: BigDecimal
     ) {
-        agentApplyService.check(id = id, state = state, remark = remark)
+        agentApplyService.check(id = id, state = state, remark = remark, agencyMonthFee = agencyMonthFee)
     }
 
     @GetMapping
@@ -95,7 +99,15 @@ class AgentConfigApiController(
         return analysisDao.subAgents(bossId = current.bossId, clientId = current.clientId, agentId = agentId)
     }
 
+    @PutMapping
+    override fun update(@RequestBody req: MemberValue.AgentUo) {
 
+        val agent = memberService.getMember(req.id)
+        check(agent.clientId == this.getClientId()) { OnePieceExceptionCode.DATA_FAIL }
+
+        val memberUo = MemberUo(id = req.id, agencyMonthFee = req.agencyMonthFee)
+        memberService.update(memberUo)
+    }
 
     @GetMapping("/commission")
     override fun commissions(

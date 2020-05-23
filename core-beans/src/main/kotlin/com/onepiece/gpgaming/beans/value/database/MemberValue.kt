@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.beans.value.database
 
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
 
@@ -129,7 +130,10 @@ data class MemberUo(
         val loginTime: LocalDateTime? = null,
 
         // 是否正式
-        val formal: Boolean? = null
+        val formal: Boolean? = null,
+
+        // 代理费
+        val agencyMonthFee: BigDecimal? = null
 )
 
 
