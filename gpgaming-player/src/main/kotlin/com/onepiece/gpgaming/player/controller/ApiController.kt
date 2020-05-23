@@ -13,6 +13,7 @@ import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
@@ -32,6 +33,7 @@ import com.onepiece.gpgaming.core.service.SlotGameService
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.ApiValue
+import com.onepiece.gpgaming.player.controller.basic.MathUtil
 import com.onepiece.gpgaming.player.controller.value.BannerVo
 import com.onepiece.gpgaming.player.controller.value.CompileValue
 import com.onepiece.gpgaming.player.controller.value.Contacts
@@ -507,11 +509,13 @@ open class ApiController(
     @GetMapping("/contactUs")
     override fun contactUs(): Contacts {
 
-        val list = contactService.list(clientId = getClientIdByDomain()).filter { it.status == Status.Normal }
+        val list = contactService.list(clientId = getClientIdByDomain())
+                .filter { it.role == Role.Member }
+                .filter { it.status == Status.Normal }
 
         val contacts = list.groupBy { it.type }
-        val wechatContact = contacts[ContactType.Wechat]?.let { getRandom(it) }
-        val whatContact = contacts[ContactType.Whatsapp]?.let { getRandom(it) }
+        val wechatContact = contacts[ContactType.Wechat]?.let { MathUtil.getRandom(it) }
+        val whatContact = contacts[ContactType.Whatsapp]?.let { MathUtil.getRandom(it) }
 
         val  facebook = list.firstOrNull { it.type == ContactType.Facebook }
         val  youTuBe = list.firstOrNull { it.type == ContactType.YouTuBe }
@@ -527,8 +531,7 @@ open class ApiController(
 
         val seo = seoService.get(clientId)
         return SeoValue.SeoVo(title = seo.title, keywords = seo.keywords, description = seo.description, liveChatId = seo.liveChatId,
-                googleStatisticsId = seo.googleStatisticsId, facebookTr = seo.facebookTr, liveChatTab = seo.liveChatTab, asgContent = seo.asgContent,
-                facebookShowPosition = seo.facebookShowPosition)
+                googleStatisticsId = seo.googleStatisticsId, facebookTr = seo.facebookTr, liveChatTab = seo.liveChatTab, asgContent = seo.asgContent)
     }
 
     @GetMapping("/select/country")
