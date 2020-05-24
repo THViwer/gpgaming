@@ -175,9 +175,9 @@ open class CashApiController(
 
         val platforms = platformMemberService.findPlatformMember(memberId)
 
-        val kiss918Deposit = platforms.firstOrNull { it.platform == Platform.Kiss918 }?.totalTransferOutAmount?: BigDecimal.ZERO
-        val pussyDeposit = platforms.find { it.platform == Platform.Pussy888 }?.totalTransferOutAmount?: BigDecimal.ZERO
-        val megaDeposit = platforms.find { it.platform == Platform.Mega }?.totalTransferOutAmount?: BigDecimal.ZERO
+        val kiss918Deposit = platforms.firstOrNull { it.platform == Platform.Kiss918 }?.totalAmount?: BigDecimal.ZERO
+        val pussyDeposit = platforms.find { it.platform == Platform.Pussy888 }?.totalAmount?: BigDecimal.ZERO
+        val megaDeposit = platforms.find { it.platform == Platform.Mega }?.totalAmount?: BigDecimal.ZERO
 
         val currentBet = platforms.sumByDouble { it.totalBet.toDouble() }
                 .let { BigDecimal.valueOf(it) }
