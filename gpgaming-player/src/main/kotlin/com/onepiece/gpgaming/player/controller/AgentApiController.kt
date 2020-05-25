@@ -150,8 +150,8 @@ class AgentApiController(
 
     @GetMapping("/commission/sub")
     override fun subCommissions(
-            @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") endDate:  LocalDate,
+            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate:  LocalDate,
             @RequestParam("agentId") agentId: Int
     ): List<AgentValue.AgentCommissionVo> {
         val current = this.current()
@@ -165,8 +165,8 @@ class AgentApiController(
 
     @GetMapping("commission/member")
     override fun memberCommissions(
-            @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") endDate:  LocalDate,
+            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate:  LocalDate,
             @RequestParam("agentId") agentId: Int
     ): List<AgentValue.MemberCommissionVo> {
 
