@@ -90,13 +90,17 @@ class AgentApiController(
 
         val urls = sites.groupBy { it.country }.map { it.value.first() }.map {
 
-            val promoteURL = "https://www.${it.domain}"
-            val mobilePromoteURL = "https://www.${it.domain}/m"
+            val promoteURL = "https://www.${it.domain}/register?affid=${member.promoteCode}"
+            val mobilePromoteURL = "https://www.${it.domain}/m/register?affid=${member.promoteCode}"
 
             AgentValue.PromoteVo(country = it.country, promoteURL = promoteURL, mobilePromoteURL = mobilePromoteURL)
         }
 
-        return AgentValue.AgentLoginResp(token = token, name = member.name, urls = urls, promoteCode = member.promoteCode)
+        val defaultClient = clientService.getMainClient(bossId = bossId) ?: error("")
+        val defaultSite = sites.first { it.clientId == defaultClient.id }
+        val subAgentPromoteUrl = "https://agent.${defaultSite}/register?affid=${member.promoteCode}"
+
+        return AgentValue.AgentLoginResp(token = token, name = member.name, urls = urls, promoteCode = member.promoteCode, subAgentPromoteUrl = subAgentPromoteUrl)
     }
 
     @GetMapping("/info")

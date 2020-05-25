@@ -38,7 +38,10 @@ sealed class AgentValue {
             val promoteCode: String,
 
             // 推广地址
-            val urls: List<PromoteVo>
+            val urls: List<PromoteVo>,
+
+            // 下级代理推广地址
+            val subAgentPromoteUrl: String
 
     )
 
