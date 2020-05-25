@@ -121,7 +121,7 @@ class AgentApiController(
 
 
         return AgentValue.AgentInfo(balance = wallet.balance, subAgentCount = agentCount, memberCount = memberCount,
-        subAgentCommission = agentMonthReport.agentCommission, memberCommission = agentMonthReport.memberCommission, agencyMonthFee = agent.agencyMonthFee)
+                subAgentCommission = agentMonthReport.agentCommission, memberCommission = agentMonthReport.memberCommission, agencyMonthFee = agent.agencyMonthFee)
     }
 
     @GetMapping("/sub")
@@ -133,8 +133,8 @@ class AgentApiController(
 
     @GetMapping("/commission")
     override fun commissions(
-            @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") endDate:  LocalDate
+            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate:  LocalDate
     ): List<AgentValue.AgentCommissionVo> {
 
         val current = this.current()
