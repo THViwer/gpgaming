@@ -474,7 +474,7 @@ class AnalysisDaoImpl(
                 left join (
                     select agent_id, count(*) count from member x group by boss_id, client_id, agent_id
                 ) t on m.id = t.agent_id
-            where m.boss_id = '$bossId' and client_id = '$clientId' m.agent_id = '$agentId' and `role` = 'Agent';
+            where m.boss_id = '$bossId' and client_id = '$clientId' and m.agent_id = '$agentId' and `role` = 'Agent';
         """.trimIndent()
 
         return jdbcTemplate.query(sql) { rs, _ ->
