@@ -34,7 +34,7 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
             val totalPromotion  = rs.getBigDecimal("total_promotion")
             val commissionExecution = rs.getBoolean("commission_execution")
             val newMemberCount = rs.getInt("new_member_count")
-            val agencyMonthFee = rs.getBigDecimal("agency_,onth_fee")
+            val agencyMonthFee = rs.getBigDecimal("agency_onth_fee")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             AgentMonthReport(id  =  id, day = day, bossId = bossId, clientId = clientId, superiorAgentId = superiorAgentId, agentId = agentId, agentCommission = agentCommission,
