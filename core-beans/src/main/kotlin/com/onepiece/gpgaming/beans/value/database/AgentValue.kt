@@ -120,6 +120,9 @@ sealed class AgentValue {
 
     data class SubAgentVo(
 
+            // 代理Id
+            val id: Int,
+
             // 姓名
             val username: String,
 
