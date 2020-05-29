@@ -148,6 +148,9 @@ sealed class AgentValue {
             // 日期
             val day: LocalDate,
 
+            // 代理Id
+            val agentId: Int,
+
             // 会员充值
             val totalDeposit: BigDecimal,
 
