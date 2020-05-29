@@ -70,6 +70,8 @@ class AgentConfigApiController(
         val applies = agentApplyService.list(applyQuery)
                 .map { it.agentId }
 
+        if (applies.isEmpty()) return emptyList()
+
         val memberQuery = MemberQuery(bossId = current.bossId, clientId = current.clientId, agentId = null, username = null, ids = applies, role = Role.Agent,
                 name = null, phone = null, levelId = null, startTime = null, endTime = null, status = null, promoteCode = null)
         val data = memberService.query(memberQuery, 0, 999999).data
