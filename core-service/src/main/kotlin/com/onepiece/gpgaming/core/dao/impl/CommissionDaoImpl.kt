@@ -37,6 +37,7 @@ class CommissionDaoImpl: BasicDaoImpl<Commission>("commission"), CommissionDao {
                 .set("boss_id", co.bossId)
                 .set("active_count", co.activeCount)
                 .set("min_deposit_amount", co.minDepositAmount)
+                .set("type", co.type)
                 .set("scale", co.scale)
                 .set("status", co.status)
                 .executeOnlyOne()

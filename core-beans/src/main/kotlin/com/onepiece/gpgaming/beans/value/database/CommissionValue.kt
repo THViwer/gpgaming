@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.value.database
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.onepiece.gpgaming.beans.enums.CommissionType
 import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
 
@@ -17,6 +18,9 @@ sealed class CommissionValue {
 
             // 最小充值金额
             val minDepositAmount: BigDecimal,
+
+            // 佣金类型
+            val type: CommissionType,
 
             // 佣金比例
             val scale: BigDecimal,
