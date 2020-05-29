@@ -129,6 +129,9 @@ sealed class AgentValue {
             // 会员总数
             val memberCount: Int,
 
+            // 代理月费用
+            val agencyMonthFee: BigDecimal,
+
             // 是否是正式
             val formal: Boolean,
 

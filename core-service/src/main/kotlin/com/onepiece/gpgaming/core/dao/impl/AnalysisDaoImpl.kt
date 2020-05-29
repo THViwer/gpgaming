@@ -470,7 +470,7 @@ class AnalysisDaoImpl(
     override fun subAgents(bossId: Int, clientId: Int, agentId: Int): List<AgentValue.SubAgentVo> {
 
         val sql = """
-            select m.username, m.phone, m.created_time, m.formal, t.count from member m
+            select m.username, m.phone, m.agency_month_fee, m.created_time, m.formal, t.count from member m
                 left join (
                     select agent_id, count(*) count from member x group by boss_id, client_id, agent_id
                 ) t on m.id = t.agent_id
@@ -484,9 +484,10 @@ class AnalysisDaoImpl(
             val formal = rs.getBoolean("formal")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val memberCount = rs.getInt("count")
+            val agencyMonthFee = rs.getBigDecimal("agency_month_fee")
 
             AgentValue.SubAgentVo(username = username, phone = phone, formal = formal, memberCount = memberCount,
-                    createdTime = createdTime)
+                    createdTime = createdTime, agencyMonthFee = agencyMonthFee)
         }
     }
 }
