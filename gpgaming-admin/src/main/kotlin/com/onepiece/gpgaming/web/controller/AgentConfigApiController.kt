@@ -13,7 +13,6 @@ import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberValue
-import com.onepiece.gpgaming.core.dao.AgentApplyDao
 import com.onepiece.gpgaming.core.dao.AgentMonthReportDao
 import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
@@ -119,7 +118,7 @@ class AgentConfigApiController(
 
         val current = this.current()
 
-        val reportQuery = AgentReportValue.AgentMonthQuery(bossId = current.bossId, clientId = current.clientId,  agentId = current.id)
+        val reportQuery = AgentReportValue.AgentMonthQuery(bossId = current.bossId, clientId = current.clientId,  agentId = null)
         return agentMonthReportDao.query(reportQuery).map {
             AgentValue.AgentCommissionVo(day = it.day, totalDeposit = it.totalDeposit, totalWithdraw = it.totalWithdraw, totalBet = it.totalBet,
                     totalMWin = it.totalMWin,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,
