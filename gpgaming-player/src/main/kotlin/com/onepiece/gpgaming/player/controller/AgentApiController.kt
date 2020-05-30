@@ -143,7 +143,7 @@ class AgentApiController(
         return agentMonthReportDao.query(reportQuery).map {
             AgentValue.AgentCommissionVo(day = it.day, totalDeposit = it.totalDeposit, totalWithdraw = it.totalWithdraw, totalBet = it.totalBet,
                     totalMWin = it.totalMWin,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,
-                    subAgentCommission = it.agentCommission, memberCommission = it.memberCommission)
+                    subAgentCommission = it.agentCommission, memberCommission = it.memberCommission, agentId = it.agentId)
         }
     }
 
@@ -159,7 +159,7 @@ class AgentApiController(
         return agentMonthReportDao.query(reportQuery).map {
             AgentValue.AgentCommissionVo(day = it.day, totalDeposit = it.totalDeposit, totalWithdraw = it.totalWithdraw, totalBet = it.totalBet,
                     totalMWin = it.totalMWin,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,
-                    subAgentCommission = it.agentCommission, memberCommission = it.memberCommission)
+                    subAgentCommission = it.agentCommission, memberCommission = it.memberCommission, agentId = it.agentId)
         }
     }
 
