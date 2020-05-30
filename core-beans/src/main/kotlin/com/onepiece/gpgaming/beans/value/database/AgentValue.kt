@@ -79,6 +79,41 @@ sealed class AgentValue {
             val loginTime: LocalDateTime
     )
 
+    data class AgentCoByAdmin(
+            // 用户Id
+            val bossId: Int,
+
+            // 代理Id
+            val clientId: Int,
+
+            // 是否是上级代理
+            val superiorAgentId: Int?,
+
+            // 真是姓名
+            val name: String,
+
+            // 手机
+            val phone: String,
+
+            // 用户名
+            val username: String,
+
+            // 密码
+            val password: String,
+
+            // 状态
+            val status: Status,
+
+            // 推广code
+            val code: String,
+
+            // 是否是正式
+            val formal: Boolean,
+
+            // 每月的代理费
+            val agencyMonthFee: BigDecimal
+    )
+
     data class AgentUo(
 
             // Id

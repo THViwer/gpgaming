@@ -12,7 +12,9 @@ sealed class AgentApplyValue {
 
             val agentId: Int,
 
-            val state: ApplyState
+            val state: ApplyState,
+
+            val remark: String?
     )
 
     data class ApplyUo(

@@ -45,6 +45,7 @@ interface AgentConfigApi {
 
     @ApiOperation(tags = ["agent"], value = "代理 -> 列表")
     fun agents(
+            @RequestParam("superiorAgentId", required = false) superiorAgentId: Int?,
             @RequestParam("username", required = false) username: String?
     ): List<AgentValue.SubAgentVo>
 
@@ -59,6 +60,10 @@ interface AgentConfigApi {
             @RequestParam("remark") remark: String,
             @RequestParam("agencyMonthFee") agencyMonthFee: BigDecimal
     )
+
+    @ApiOperation(tags = ["agent"], value = "代理 -> 创建")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun create(@RequestBody req: AgentValue.AgentCoByAdmin)
 
 
     @ApiOperation(tags = ["agent"], value = "代理 -> 更新")

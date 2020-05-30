@@ -31,7 +31,7 @@ class AgentApplyDaoImpl : BasicDaoImpl<AgentApply>("agent_apply"), AgentApplyDao
         return insert()
                 .set("agent_id", co.agentId)
                 .set("state", co.state)
-                .set("remark", "")
+                .set("remark", co.remark?: "")
                 .executeOnlyOne()
     }
 

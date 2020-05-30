@@ -9,6 +9,7 @@ import com.onepiece.gpgaming.beans.value.database.AgentApplyValue
 import com.onepiece.gpgaming.beans.value.database.AgentReportValue
 import com.onepiece.gpgaming.beans.value.database.AgentValue
 import com.onepiece.gpgaming.beans.value.database.CommissionValue
+import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.beans.value.database.MemberUo
@@ -18,6 +19,7 @@ import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.service.AgentApplyService
 import com.onepiece.gpgaming.core.service.CommissionService
+import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.springframework.format.annotation.DateTimeFormat
@@ -36,6 +38,7 @@ import java.time.LocalDate
 class AgentConfigApiController(
         private val commissionService: CommissionService,
         private val memberService: MemberService,
+        private val levelService: LevelService,
         private val agentMonthReportDao: AgentMonthReportDao,
         private val agentDailyReportDao: AgentMonthReportDao,
         private val memberDailyReportDao: MemberDailyReportDao,
@@ -91,12 +94,38 @@ class AgentConfigApiController(
         agentApplyService.check(id = id, state = state, remark = remark, agencyMonthFee = agencyMonthFee)
     }
 
+
+    @PostMapping
+    override fun create(@RequestBody req: AgentValue.AgentCoByAdmin) {
+
+        val user = this.current()
+
+        val defaultLevel = levelService.getDefaultLevel(clientId = user.clientId)
+
+        val superiorAgentId = req.superiorAgentId ?: -1
+        val memberCo = MemberCo(bossId = user.bossId, clientId = user.id, agentId = superiorAgentId, levelId = defaultLevel.id, name = req.name, phone = req.phone,
+                username = req.username, password = req.password, promoteCode = null, role = Role.Agent, safetyPassword = req.password, formal = true)
+        memberService.create(memberCo)
+
+
+        val member = memberService.findByUsername(clientId = user.clientId, username = req.username) ?: error("注册失败")
+        val applyCo = AgentApplyValue.ApplyCo(bossId = member.bossId, clientId = member.clientId, agentId = member.id, state = ApplyState.Done, remark = "client add agent")
+        agentApplyService.create(applyCo)
+    }
+
     @GetMapping
     override fun agents(
+            @RequestParam("superiorAgentId", required = false) superiorAgentId: Int?,
             @RequestParam("username", required = false) username: String?
     ): List<AgentValue.SubAgentVo> {
         val current = this.current()
-        val agentId = memberService.findByUsername(clientId = getClientId(), username = username)?.id?: -1
+        val agentId = when {
+            superiorAgentId != null -> superiorAgentId
+            username != null -> {
+                memberService.findByUsername(clientId = getClientId(), username = username)?.id?: -1
+            }
+            else -> -1
+        }
         return analysisDao.subAgents(bossId = current.bossId, clientId = current.clientId, agentId = agentId)
     }
 
