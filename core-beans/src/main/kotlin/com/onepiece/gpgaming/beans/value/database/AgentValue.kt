@@ -100,9 +100,6 @@ sealed class AgentValue {
             // 状态
             val status: Status,
 
-            // 推广code
-            val code: String,
-
             // 是否是正式
             val formal: Boolean,
 
