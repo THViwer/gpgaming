@@ -70,7 +70,7 @@ class AgentApiController(
 
         // 代理申请表
         val member = memberService.findByUsername(clientId = mainClient.id, username = req.username) ?: error("注册失败")
-        val applyCo = AgentApplyValue.ApplyCo(bossId = member.bossId, clientId = member.clientId, agentId = member.id, state = ApplyState.Process)
+        val applyCo = AgentApplyValue.ApplyCo(bossId = member.bossId, clientId = member.clientId, agentId = member.id, state = ApplyState.Process, remark = "")
         agentApplyService.create(applyCo)
     }
 
