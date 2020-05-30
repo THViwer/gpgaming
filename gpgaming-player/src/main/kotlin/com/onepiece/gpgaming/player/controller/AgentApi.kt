@@ -39,7 +39,7 @@ interface AgentApi {
     fun subCommissions(
             @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate:  LocalDate,
-            @RequestParam("agentId") agentId: Int
+            @RequestParam("superiorAgentId") superiorAgentId: Int
     ): List<AgentValue.AgentCommissionVo>
 
 

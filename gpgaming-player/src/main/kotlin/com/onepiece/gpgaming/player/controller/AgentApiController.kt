@@ -152,10 +152,10 @@ class AgentApiController(
     override fun subCommissions(
             @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate:  LocalDate,
-            @RequestParam("agentId") agentId: Int
+            @RequestParam("superiorAgentId") superiorAgentId: Int
     ): List<AgentValue.AgentCommissionVo> {
         val current = this.current()
-        val reportQuery = AgentReportValue.AgentMonthQuery(bossId = current.bossId, clientId = current.clientId,  superiorAgentId = current.id)
+        val reportQuery = AgentReportValue.AgentMonthQuery(bossId = current.bossId, clientId = current.clientId,  superiorAgentId = superiorAgentId)
         return agentMonthReportDao.query(reportQuery).map {
             AgentValue.AgentCommissionVo(day = it.day, totalDeposit = it.totalDeposit, totalWithdraw = it.totalWithdraw, totalBet = it.totalBet,
                     totalMWin = it.totalMWin,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,
