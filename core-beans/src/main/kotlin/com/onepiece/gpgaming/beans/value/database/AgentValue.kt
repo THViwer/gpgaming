@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.database
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
@@ -80,11 +81,6 @@ sealed class AgentValue {
     )
 
     data class AgentCoByAdmin(
-            // 用户Id
-            val bossId: Int,
-
-            // 代理Id
-            val clientId: Int,
 
             // 是否是上级代理
             val superiorAgentId: Int?,
