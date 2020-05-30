@@ -57,6 +57,6 @@ class ConfigApiController(
     @GetMapping("/enum/bank")
     override fun getBank(): List<Bank> {
         val country = getCountryByDomain()
-        return Bank.of(country = Country.Singapore)
+        return Bank.of(country = country)
     }
 }
