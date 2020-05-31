@@ -62,7 +62,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("status", Status.Normal)
                 .set("promote_code", memberCo.promoteCode)
                 .set("formal", memberCo.formal)
-                .set("agency_fee", BigDecimal.ZERO)
+                .set("agency_month_fee", BigDecimal.ZERO)
                 .executeGeneratedKey()
     }
 
