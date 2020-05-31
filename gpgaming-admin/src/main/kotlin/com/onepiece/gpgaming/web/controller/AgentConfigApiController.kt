@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.math.BigDecimal
 import java.time.LocalDate
 
 @RestController
@@ -85,13 +84,8 @@ class AgentConfigApiController(
     }
 
     @PutMapping("/apply/check")
-    override fun check(
-            @RequestParam("id") id: Int,
-            @RequestParam("state") state: ApplyState,
-            @RequestParam("remark") remark: String,
-            @RequestParam("agencyMonthFee") agencyMonthFee: BigDecimal
-    ) {
-        agentApplyService.check(id = id, state = state, remark = remark, agencyMonthFee = agencyMonthFee)
+    override fun check(@RequestBody checkReq: AgentValue.AgentCheckReq) {
+        agentApplyService.check(id = checkReq.id, state = checkReq.state, remark = checkReq.remark?: "", agencyMonthFee = checkReq.agencyMonthFee)
     }
 
 

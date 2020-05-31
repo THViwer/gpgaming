@@ -54,12 +54,8 @@ interface AgentConfigApi {
     fun applies(): List<MemberValue.Agent>
 
     @ApiOperation(tags = ["agent"], value = "代理 -> 审核")
-    fun check(
-            @RequestParam("id") id: Int,
-            @RequestParam("state") state: ApplyState,
-            @RequestParam("remark") remark: String,
-            @RequestParam("agencyMonthFee") agencyMonthFee: BigDecimal
-    )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun check(@RequestBody checkReq: AgentValue.AgentCheckReq)
 
     @ApiOperation(tags = ["agent"], value = "代理 -> 创建")
     @ResponseStatus(HttpStatus.NO_CONTENT)

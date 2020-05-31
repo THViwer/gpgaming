@@ -1,6 +1,6 @@
 package com.onepiece.gpgaming.beans.value.database
 
-import com.fasterxml.jackson.annotation.JsonIgnore
+import com.onepiece.gpgaming.beans.enums.ApplyState
 import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
@@ -143,6 +143,17 @@ sealed class AgentValue {
             val subAgentCommission: BigDecimal,
 
             // 代理月费
+            val agencyMonthFee: BigDecimal
+    )
+
+    data class AgentCheckReq(
+
+            val id: Int,
+
+            val state: ApplyState,
+
+            val remark: String?,
+
             val agencyMonthFee: BigDecimal
     )
 
