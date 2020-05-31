@@ -22,6 +22,7 @@ import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.LoginReq
 import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.utils.RequestUtil
+import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -48,6 +49,7 @@ class AgentApiController(
         private val reportService: ReportService
 ) : BasicController(), AgentApi {
 
+    private val log = LoggerFactory.getLogger(AgentApiController::class.java)
 
     @PutMapping
     override fun register(@RequestBody req: AgentValue.AgentRegisterReq) {

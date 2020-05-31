@@ -29,6 +29,8 @@ class AgentApplyDaoImpl : BasicDaoImpl<AgentApply>("agent_apply"), AgentApplyDao
 
     override fun create(co: AgentApplyValue.ApplyCo): Boolean {
         return insert()
+                .set("boss_id", co.bossId)
+                .set("client_id", co.clientId)
                 .set("agent_id", co.agentId)
                 .set("state", co.state)
                 .set("remark", co.remark?: "")
