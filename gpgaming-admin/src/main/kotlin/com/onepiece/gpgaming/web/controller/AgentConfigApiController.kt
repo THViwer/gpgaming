@@ -79,7 +79,7 @@ class AgentConfigApiController(
 
         return data.map {
 
-            val apply = applies.first { it.agentId == it.id }
+            val apply = applies.first { a -> a.agentId == it.id }
 
             MemberValue.Agent(id = apply.id, agentId = it.agentId, username = it.username, name = it.name, phone = it.phone, status = it.status, createdTime = it.createdTime,
                     loginTime = it.loginTime, loginIp = it.loginIp, promoteCode = it.promoteCode)
