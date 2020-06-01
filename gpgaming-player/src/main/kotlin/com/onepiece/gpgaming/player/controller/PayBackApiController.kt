@@ -2,7 +2,8 @@ package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.core.service.PayOrderService
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.RequestContextHolder
@@ -98,24 +99,43 @@ class PayBackApiController(
         }
     }
 
-    @GetMapping("/gppay")
-    override fun gppay() {
+    data class MerchantNotifyReq(
+
+            // 商户code
+            val merchantCode: String,
+
+            // 订单Id
+            val orderId: String,
+
+            // 订单状态
+            val state: String,
+
+            // 时间戳
+            val timestamp: Long,
+
+            // 订单签名
+            val sign: String
+
+    )
+
+    @PostMapping("/gppay")
+    override fun gppay(@RequestBody req: MerchantNotifyReq) {
 
         //         val req = MerchantNotifyReq(orderId = mOrderId, state = order.state, merchantCode = merchant.code, timestamp = System.currentTimeMillis() / 1000,
-        val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
+//        val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
+//
+//        val orderId = request.getParameter("orderId")
+//        val state = request.getParameter("state")
+//        val merchantCode = request.getParameter("merchantCode")
+//        val timestamp = request.getParameter("timestamp")
+//        val sign = request.getParameter("sign")
+//
+        log.info("gppay获得通知订单: ${req}")
 
-        val orderId = request.getParameter("orderId")
-        val state = request.getParameter("state")
-        val merchantCode = request.getParameter("merchantCode")
-        val timestamp = request.getParameter("timestamp")
-        val sign = request.getParameter("sign")
-
-        log.info("gppay获得通知订单: orderId=${orderId}, state=${state}, merchantCode=${merchantCode}, timestamp=${timestamp}, sign=${sign}")
-
-        if (state == "Successful") {
-            payOrderService.successful(orderId = orderId, thirdOrderId = orderId)
+        if (req.state == "Successful") {
+            payOrderService.successful(orderId = req.orderId, thirdOrderId = req.orderId)
         } else {
-            payOrderService.failed(orderId = orderId)
+            payOrderService.failed(orderId = req.orderId)
         }
 
 
