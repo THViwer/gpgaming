@@ -69,16 +69,19 @@ class AgentConfigApiController(
 
         val applyQuery = AgentApplyValue.ApplyQuery(bossId = current.bossId, clientId = current.clientId, state = ApplyState.Process)
         val applies = agentApplyService.list(applyQuery)
-                .map { it.agentId }
+        val agentIds = applies.map { it.agentId }
 
         if (applies.isEmpty()) return emptyList()
 
-        val memberQuery = MemberQuery(bossId = current.bossId, clientId = current.clientId, agentId = null, username = null, ids = applies, role = Role.Agent,
+        val memberQuery = MemberQuery(bossId = current.bossId, clientId = current.clientId, agentId = null, username = null, ids = agentIds, role = Role.Agent,
                 name = null, phone = null, levelId = null, startTime = null, endTime = null, status = null, promoteCode = null)
         val data = memberService.query(memberQuery, 0, 999999).data
 
         return data.map {
-            MemberValue.Agent(id = it.id, agentId = it.agentId, username = it.username, name = it.name, phone = it.phone, status = it.status, createdTime = it.createdTime,
+
+            val apply = applies.first { it.agentId == it.id }
+
+            MemberValue.Agent(id = apply.id, agentId = it.agentId, username = it.username, name = it.name, phone = it.phone, status = it.status, createdTime = it.createdTime,
                     loginTime = it.loginTime, loginIp = it.loginIp, promoteCode = it.promoteCode)
         }
     }
