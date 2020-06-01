@@ -12,4 +12,7 @@ interface PayBackApi  {
     @ApiOperation(tags = ["payment"], value = "surepay")
     fun surepay()
 
+    @ApiOperation(tags = ["payment"], value = "gppay")
+    fun gppay()
+
 }

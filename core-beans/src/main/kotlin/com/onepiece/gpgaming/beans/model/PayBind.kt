@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.enums.Status
+import com.onepiece.gpgaming.beans.model.pay.GPPayConfig
 import com.onepiece.gpgaming.beans.model.pay.M3PayConfig
 import com.onepiece.gpgaming.beans.model.pay.PayConfig
 import com.onepiece.gpgaming.beans.model.pay.SurePayConfig
@@ -45,6 +46,7 @@ data class PayBind (
         return when (payType) {
             PayType.M3Pay -> objectMapper.readValue<M3PayConfig>(configJson)
             PayType.SurePay -> objectMapper.readValue<SurePayConfig>(configJson)
+            PayType.GPPay -> objectMapper.readValue<GPPayConfig>(configJson)
         }
     }
 

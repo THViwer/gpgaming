@@ -20,6 +20,7 @@ import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.PlatformMember
+import com.onepiece.gpgaming.beans.model.pay.GPPayConfig
 import com.onepiece.gpgaming.beans.model.pay.SurePayConfig
 import com.onepiece.gpgaming.beans.value.database.DepositCo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
@@ -53,8 +54,8 @@ import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.core.service.WalletNoteService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
+import com.onepiece.gpgaming.payment.PayGateway
 import com.onepiece.gpgaming.payment.PayRequest
-import com.onepiece.gpgaming.payment.PayService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.BalanceVo
 import com.onepiece.gpgaming.player.controller.value.CashDepositResp
@@ -110,7 +111,7 @@ open class CashApiController(
         private val transferOrderService: TransferOrderService,
         private val payBindService: PayBindService,
         private val payOrderService: PayOrderService,
-        private val payGateway: PayService,
+        private val payGateway: PayGateway,
         private val memberDailyReportService: MemberDailyReportService,
         private val betOrderService: BetOrderService
 ) : BasicController(), CashApi {
@@ -256,6 +257,13 @@ open class CashApiController(
 
                             config.supportBanks.map { sb ->
                                 val bank =  sb.bank
+                                BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo)
+                            }
+                        }
+                        PayType.GPPay -> {
+                            val config =  it.getConfig(objectMapper) as GPPayConfig
+
+                            config.supportBanks.map { bank ->
                                 BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo)
                             }
                         }

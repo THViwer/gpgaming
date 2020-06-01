@@ -2,11 +2,11 @@ package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.core.service.PayOrderService
 import org.slf4j.LoggerFactory
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
-import java.lang.Exception
 
 
 @RestController
@@ -61,7 +61,7 @@ class PayBackApiController(
     @RequestMapping("/surepay")
     override fun surepay() {
 
-            val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
+        val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
 
         log.info("--------------------------------")
         log.info("--------------------------------")
@@ -96,5 +96,29 @@ class PayBackApiController(
         } catch (e: Exception) {
             log.info("支付请求失败", e)
         }
+    }
+
+    @GetMapping("/gppay")
+    override fun gppay() {
+
+        //         val req = MerchantNotifyReq(orderId = mOrderId, state = order.state, merchantCode = merchant.code, timestamp = System.currentTimeMillis() / 1000,
+        val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
+
+        val orderId = request.getParameter("orderId")
+        val state = request.getParameter("state")
+        val merchantCode = request.getParameter("merchantCode")
+        val timestamp = request.getParameter("timestamp")
+        val sign = request.getParameter("sign")
+
+        log.info("gppay获得通知订单: orderId=${orderId}, state=${state}, merchantCode=${merchantCode}, timestamp=${timestamp}, sign=${sign}")
+
+        if (state == "Successful") {
+            payOrderService.successful(orderId = orderId, thirdOrderId = orderId)
+        } else {
+            payOrderService.failed(orderId = orderId)
+        }
+
+
+
     }
 }
