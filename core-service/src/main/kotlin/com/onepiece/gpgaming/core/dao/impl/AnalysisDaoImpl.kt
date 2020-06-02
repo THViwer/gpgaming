@@ -250,6 +250,7 @@ class AnalysisDaoImpl(
                    boss_id,
                    client_id,
                    superior_agent_id,
+                   username,
                    sum(total_deposit) total_deposit,
                    sum(total_withdraw) total_withdraw,
                    sum(total_bet) total_bet,
@@ -264,6 +265,7 @@ class AnalysisDaoImpl(
         return  jdbcTemplate.query(sql) { rs, _ ->
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
+            val username = rs.getString("username")
             val superiorAgentId = rs.getInt("superior_agent_id")
             val totalDeposit = rs.getBigDecimal("total_deposit")
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
@@ -274,7 +276,7 @@ class AnalysisDaoImpl(
             val newMemberCount = rs.getInt("new_member_count")
             AgentDailyReport(id = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = -1, totalDeposit = totalDeposit, totalWithdraw = totalWithdraw,
                     totalBet = totalBet, totalMWin = totalMWin, totalRebate = totalRebate, totalPromotion = totalPromotion, newMemberCount = newMemberCount,
-                    createdTime = LocalDateTime.now(), day = startDate, clientId = clientId)
+                    createdTime = LocalDateTime.now(), day = startDate, clientId = clientId, username = username)
         }
 
     }
