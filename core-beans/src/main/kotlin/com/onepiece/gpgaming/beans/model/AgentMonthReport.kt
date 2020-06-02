@@ -22,8 +22,14 @@ data class AgentMonthReport(
         // 上级代理Id
         val superiorAgentId: Int,
 
+        // 上级代理的用户名
+//        val superiorUsername: String,
+
         // 代理Id
         val agentId: Int,
+
+        // 代理的用户名
+        val username: String,
 
         // 代理佣金
         val agentCommission: BigDecimal,
@@ -86,7 +92,7 @@ data class AgentMonthReport(
                     totalWithdraw = BigDecimal.ZERO, totalBet = BigDecimal.ZERO, totalMWin = BigDecimal.ZERO, totalRebate = BigDecimal.ZERO, totalPromotion = BigDecimal.ZERO,
                     newMemberCount = 0, day = LocalDate.now(), createdTime = LocalDateTime.now(), agencyMonthFee = BigDecimal.ZERO, agentCommissionScale = BigDecimal.ZERO,
                     agentActiveCount = 0, agentCommission = BigDecimal.ZERO, memberCommission = BigDecimal.ZERO, memberActiveCount = 0, memberCommissionScale = BigDecimal.ZERO,
-                    commissionExecution = true)
+                    commissionExecution = true, username = "None")
         }
 
     }

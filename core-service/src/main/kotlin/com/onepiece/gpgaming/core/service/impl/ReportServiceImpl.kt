@@ -12,7 +12,6 @@ import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.Level
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
-import com.onepiece.gpgaming.beans.model.MemberRelation
 import com.onepiece.gpgaming.beans.value.database.AnalysisValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.core.dao.AnalysisDao
@@ -217,7 +216,7 @@ class ReportServiceImpl(
                 val commissionExecution = memberCommissionAmount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
                 memberCommission.copy(memberCommission = memberCommissionAmount, memberCommissionScale = mCommission.scale, memberActiveCount = memberActive.activeCount,
-                        commissionExecution = commissionExecution, agencyMonthFee = agent.agencyMonthFee)
+                        commissionExecution = commissionExecution, agencyMonthFee = agent.agencyMonthFee, username = agent.username)
             } catch (e: Exception)  {
                 log.error("agent month report error: ", e)
                 null

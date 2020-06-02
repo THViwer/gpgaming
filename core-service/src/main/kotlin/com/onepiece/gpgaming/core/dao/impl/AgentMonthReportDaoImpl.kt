@@ -16,9 +16,11 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
             val id = rs.getInt("id")
             val day = rs.getDate("day").toLocalDate()
             val superiorAgentId = rs.getInt("superior_agent_id")
+//            val superiorUsername = rs.getString("superior_jsername")
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val agentId = rs.getInt("agent_id")
+            val username = rs.getString("username")
             val agentCommission = rs.getBigDecimal("agent_commission")
             val agentActiveCount = rs.getInt("agent_active_count")
             val agentCommissionScale = rs.getBigDecimal("agent_commission_scale")
@@ -41,7 +43,7 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
                     agentActiveCount = agentActiveCount, agentCommissionScale = agentCommissionScale, memberCommission = memberCommission, memberActiveCount = memberActiveCount,
                     totalDeposit = totalDeposit, totalWithdraw = totalWithdraw, totalBet = totalBet, totalMWin = totalMWin,  memberCommissionScale = memberCommissionScale,
                     createdTime = createdTime, totalRebate = totalRebate, totalPromotion = totalPromotion, commissionExecution = commissionExecution, newMemberCount = newMemberCount,
-                    agencyMonthFee = agencyMonthFee)
+                    agencyMonthFee = agencyMonthFee, username = username)
 
         }
 
@@ -51,7 +53,9 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
                 .set("boss_id")
                 .set("client_id")
                 .set("superior_agent_id")
+                .set("superior_username")
                 .set("agent_id")
+                .set("username")
 
                 .set("agent_active_count")
                 .set("agent_commission_scale")
@@ -74,6 +78,7 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
                     ps.setInt(++x, entity.clientId)
                     ps.setInt(++x, entity.superiorAgentId)
                     ps.setInt(++x, entity.agentId)
+                    ps.setString(++x, entity.username)
 
                     ps.setInt(++x, entity.agentActiveCount)
                     ps.setBigDecimal(++x, entity.agentCommissionScale)

@@ -317,7 +317,7 @@ class AnalysisDaoImpl(
                     day = startDate, agentCommissionScale = BigDecimal.ZERO, agentActiveCount = 0, agentCommission = BigDecimal.ZERO,
                     memberCommissionScale = BigDecimal.ZERO, memberActiveCount = 0, memberCommission = BigDecimal.ZERO,
                     createdTime = LocalDateTime.now(), clientId = clientId, commissionExecution = false, newMemberCount = newMemberCount,
-                    agencyMonthFee = BigDecimal.ZERO)
+                    agencyMonthFee = BigDecimal.ZERO, username = "None")
         }
     }
 
