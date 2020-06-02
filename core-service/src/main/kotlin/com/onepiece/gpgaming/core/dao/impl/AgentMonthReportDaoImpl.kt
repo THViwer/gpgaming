@@ -53,7 +53,6 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
                 .set("boss_id")
                 .set("client_id")
                 .set("superior_agent_id")
-                .set("superior_username")
                 .set("agent_id")
                 .set("username")
 

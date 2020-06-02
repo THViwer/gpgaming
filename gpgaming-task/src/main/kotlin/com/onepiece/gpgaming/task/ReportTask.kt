@@ -88,8 +88,13 @@ class ReportTask(
 
     // 代理月报表
     fun startAgentMonthReport(startDate: LocalDate) {
-        tryLock(localDate = startDate, type = TaskTimerType.AgentMonth) {
-            val data = reportService.startAgentMonthReport(today =  startDate)
+
+        if (startDate.dayOfMonth != 1) return
+
+        val month = startDate.minusMonths(1)
+
+        tryLock(localDate = month, type = TaskTimerType.AgentMonth) {
+            val data = reportService.startAgentMonthReport(today =  month)
             agentMonthReportService.create(data = data)
         }
     }
