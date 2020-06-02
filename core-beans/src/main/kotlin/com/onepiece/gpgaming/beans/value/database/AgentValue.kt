@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.database
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.ApplyState
 import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Status
@@ -82,9 +83,6 @@ sealed class AgentValue {
 
     data class AgentCoByAdmin(
 
-            // 是否是上级代理
-            val superiorAgentId: Int?,
-
             // 真是姓名
             val name: String,
 
@@ -96,12 +94,6 @@ sealed class AgentValue {
 
             // 密码
             val password: String,
-
-            // 状态
-            val status: Status,
-
-            // 是否是正式
-            val formal: Boolean,
 
             // 每月的代理费
             val agencyMonthFee: BigDecimal

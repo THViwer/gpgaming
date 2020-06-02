@@ -155,11 +155,21 @@ sealed class MemberValue {
         )
 
         data class AgentUo(
+
                 // 代理Id
                 val id: Int,
 
+                // 真实姓名
+                val name: String?,
+
                 // 代理佣金
-                val agencyMonthFee: BigDecimal
+                val agencyMonthFee: BigDecimal,
+
+                // 修改密码
+                val password: String?,
+
+                // 状态
+                val status: Status?
         )
 
 }

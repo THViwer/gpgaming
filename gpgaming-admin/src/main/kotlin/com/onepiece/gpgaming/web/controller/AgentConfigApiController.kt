@@ -99,7 +99,8 @@ class AgentConfigApiController(
 
         val defaultLevel = levelService.getDefaultLevel(clientId = user.clientId)
 
-        val superiorAgentId = req.superiorAgentId ?: -1
+        //val superiorAgentId = req.superiorAgentId ?: -1
+        val superiorAgentId = -1
         val memberCo = MemberCo(bossId = user.bossId, clientId = user.id, agentId = superiorAgentId, levelId = defaultLevel.id, name = req.name, phone = req.phone,
                 username = req.username, password = req.password, promoteCode = null, role = Role.Agent, safetyPassword = req.password, formal = true)
         memberService.create(memberCo)
@@ -132,7 +133,7 @@ class AgentConfigApiController(
         val agent = memberService.getMember(req.id)
         check(agent.clientId == this.getClientId()) { OnePieceExceptionCode.DATA_FAIL }
 
-        val memberUo = MemberUo(id = req.id, agencyMonthFee = req.agencyMonthFee)
+        val memberUo = MemberUo(id = req.id, agencyMonthFee = req.agencyMonthFee, name = req.name, password = req.password, status = req.status)
         memberService.update(memberUo)
     }
 
