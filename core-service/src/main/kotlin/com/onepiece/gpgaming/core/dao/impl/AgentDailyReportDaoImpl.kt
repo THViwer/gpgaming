@@ -17,6 +17,7 @@ class AgentDailyReportDaoImpl : BasicDaoImpl<AgentDailyReport>("agent_daily_repo
             val bossId =  rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val agentId = rs.getInt("agent_id")
+            val usernaem = rs.getString("username")
             val superiorAgentId = rs.getInt("superior_agent_id")
             val totalDeposit = rs.getBigDecimal("total_deposit")
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
@@ -30,7 +31,7 @@ class AgentDailyReportDaoImpl : BasicDaoImpl<AgentDailyReport>("agent_daily_repo
 
             AgentDailyReport(id = id, bossId = bossId, clientId = clientId, agentId = agentId, totalDeposit = totalDeposit, totalWithdraw = totalWithdraw,
                     totalBet = totalBet, totalMWin = totalMWin, newMemberCount = newMemberCount, day = day, createdTime = createdTime,
-                    superiorAgentId = superiorAgentId, totalRebate = totalRebate, totalPromotion = totalPromotion)
+                    superiorAgentId = superiorAgentId, totalRebate = totalRebate, totalPromotion = totalPromotion, username = usernaem)
         }
 
     override fun create(data: List<AgentDailyReport>) {
@@ -38,6 +39,7 @@ class AgentDailyReportDaoImpl : BasicDaoImpl<AgentDailyReport>("agent_daily_repo
                 .set("boss_id")
                 .set("client_id")
                 .set("agent_id")
+                .set("username")
                 .set("superior_agent_id")
                 .set("total_deposit")
                 .set("total_withdraw")
@@ -52,6 +54,7 @@ class AgentDailyReportDaoImpl : BasicDaoImpl<AgentDailyReport>("agent_daily_repo
                     ps.setInt(++x, entity.bossId)
                     ps.setInt(++x, entity.clientId)
                     ps.setInt(++x, entity.agentId)
+                    ps.setString(++x, entity.username)
                     ps.setInt(++x,  entity.superiorAgentId)
                     ps.setBigDecimal(++x, entity.totalDeposit)
                     ps.setBigDecimal(++x, entity.totalWithdraw)

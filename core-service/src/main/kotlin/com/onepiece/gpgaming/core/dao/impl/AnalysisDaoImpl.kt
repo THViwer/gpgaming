@@ -173,6 +173,7 @@ class AnalysisDaoImpl(
             	m.boss_id,
                 m.client_id,
             	m.id agent_id,
+                m.username username,
                 m.agent_id superior_agent_id,
                 IFNULL(mr.total_bet, 0) total_bet,
                 IFNULL(mr.total_m_win, 0) total_m_win,
@@ -208,6 +209,7 @@ class AnalysisDaoImpl(
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val agentId = rs.getInt("agent_id")
+            val usernaem = rs.getString("username")
             val superiorAgentId =  rs.getInt("superior_agent_id")
             val totalBet = rs.getBigDecimal("total_bet")
             val totalMWin = rs.getBigDecimal("total_m_win")
@@ -220,7 +222,7 @@ class AnalysisDaoImpl(
             AgentDailyReport(id = -1, bossId = bossId, clientId = clientId, agentId = agentId, totalBet = totalBet, totalMWin = totalMWin,
                     totalDeposit = totalDeposit, totalWithdraw = totalWithdraw, totalRebate = totalRebate,
                     totalPromotion = totalPromotion, newMemberCount = newMemberCount, day = startDate,
-                    superiorAgentId = superiorAgentId, createdTime = LocalDateTime.now())
+                    superiorAgentId = superiorAgentId, createdTime = LocalDateTime.now(), username = usernaem)
         })
     }
 
