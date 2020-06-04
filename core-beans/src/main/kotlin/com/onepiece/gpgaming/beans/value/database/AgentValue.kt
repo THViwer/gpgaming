@@ -157,6 +157,9 @@ sealed class AgentValue {
             // 姓名
             val username: String,
 
+            // 姓名
+            val name: String,
+
             // 手机
             val phone: String,
 

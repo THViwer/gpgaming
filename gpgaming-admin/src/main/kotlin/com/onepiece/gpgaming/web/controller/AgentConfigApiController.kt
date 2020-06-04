@@ -124,7 +124,16 @@ class AgentConfigApiController(
             }
             else -> -1
         }
+
         return analysisDao.subAgents(bossId = current.bossId, clientId = current.clientId, agentId = agentId)
+
+//        val list = analysisDao.subAgents(bossId = current.bossId, clientId = current.clientId, agentId = agentId)
+//        if (list.isEmpty()) return emptyList()
+//
+//        // 查询代理列表
+//        val agentIds = list.map { it.id }
+//        val memberQuery = MemberQuery(ids = agentIds)
+//        val agents = memberService.query(memberQuery = memberQuery, current = 0, size = 999999)
     }
 
     @PutMapping

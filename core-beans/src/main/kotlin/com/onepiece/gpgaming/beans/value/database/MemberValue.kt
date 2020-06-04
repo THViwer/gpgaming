@@ -4,7 +4,6 @@ import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.*
 
 
 sealed class MemberValue {
@@ -23,31 +22,31 @@ sealed class MemberValue {
 
 data class MemberQuery(
 
-        val bossId: Int?,
+        val bossId: Int? = null,
 
-        val clientId: Int?,
+        val clientId: Int? = null,
 
-        val agentId: Int?,
+        val agentId: Int? = null,
 
-        val role: Role?,
+        val role: Role? = null,
 
-        val username: String?,
+        val username: String? = null,
 
-        val name: String?,
+        val name: String? = null,
 
-        val phone: String?,
+        val phone: String? = null,
 
-        val status: Status?,
+        val status: Status? = null,
 
-        val levelId: Int?,
+        val levelId: Int? = null,
 
         val ids: List<Int>? = null,
 
-        val promoteCode: String?,
+        val promoteCode: String? = null,
 
-        val startTime: LocalDateTime?,
+        val startTime: LocalDateTime? = null,
 
-        val endTime: LocalDateTime?
+        val endTime: LocalDateTime? = null
 )
 
 data class MemberCo(

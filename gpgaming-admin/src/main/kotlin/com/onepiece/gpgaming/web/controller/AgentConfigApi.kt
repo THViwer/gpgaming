@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.web.controller
 
-import com.onepiece.gpgaming.beans.enums.ApplyState
 import com.onepiece.gpgaming.beans.enums.CommissionType
 import com.onepiece.gpgaming.beans.model.Commission
 import com.onepiece.gpgaming.beans.value.database.AgentValue
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
-import java.math.BigDecimal
 import java.time.LocalDate
 
 @Api(tags = ["agent"], description = "代理配置")
