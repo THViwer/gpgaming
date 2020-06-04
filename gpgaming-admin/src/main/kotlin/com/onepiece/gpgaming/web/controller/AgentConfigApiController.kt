@@ -39,7 +39,7 @@ class AgentConfigApiController(
         private val memberService: MemberService,
         private val levelService: LevelService,
         private val agentMonthReportDao: AgentMonthReportDao,
-        private val agentDailyReportDao: AgentMonthReportDao,
+//        private val agentDailyReportDao: AgentMonthReportDao,
         private val memberDailyReportDao: MemberDailyReportDao,
         private val analysisDao: AnalysisDao,
         private val agentApplyService: AgentApplyService
@@ -145,7 +145,8 @@ class AgentConfigApiController(
 
         val current = this.current()
 
-        val reportQuery = AgentReportValue.AgentMonthQuery(bossId = current.bossId, clientId = current.clientId,  agentId = null)
+        val reportQuery = AgentReportValue.AgentMonthQuery(bossId = current.bossId, clientId = current.clientId,  agentId = null, startDate = startDate,
+                endDate = endDate)
         return agentMonthReportDao.query(reportQuery).map {
             AgentValue.AgentCommissionVo(day = it.day, totalDeposit = it.totalDeposit, totalWithdraw = it.totalWithdraw, totalBet = it.totalBet,
                     totalMWin = it.totalMWin,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,

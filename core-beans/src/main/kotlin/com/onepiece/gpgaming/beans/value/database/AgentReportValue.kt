@@ -1,5 +1,7 @@
 package com.onepiece.gpgaming.beans.value.database
 
+import java.time.LocalDate
+
 sealed class AgentReportValue {
 
     data class AgentDailyQuery(
@@ -21,7 +23,13 @@ sealed class AgentReportValue {
             val superiorAgentId: Int? = null,
 
             // 代理Id
-            val agentId: Int? = null
+            val agentId: Int? = null,
+
+            // 查询开始时间
+            val startDate: LocalDate? = null,
+
+            // 查询结束时间
+            val endDate: LocalDate? = null
     )
 
 
