@@ -110,9 +110,11 @@ class AgentApiController(
         val bossId = this.getBossIdByDomain()
         val memberId = this.current().id
 
+        // 代理和余额
         val agent = memberService.getMember(memberId)
         val wallet = walletService.getMemberWallet(memberId = memberId)
 
+        // 会员数量
         val agentCount = analysisDao.memberCount(agentId = memberId, role = Role.Agent)
         val memberCount = analysisDao.memberCount(agentId = memberId, role = Role.Member)
 
@@ -122,6 +124,7 @@ class AgentApiController(
                 .first()
 
 
+        // 推广连接
         val sites = webSiteService.getDataByBossId(bossId = bossId)
         val urls = sites.groupBy { it.country }.map { it.value.first() }.map {
 
@@ -134,12 +137,14 @@ class AgentApiController(
         val defaultSite = sites.first { it.clientId == defaultClient.id }
         val subAgentPromoteUrl = "https://agent.${defaultSite}/register?affid=${agent.promoteCode}"
 
+        // 导航页
         val guideUrl = "https://guide.${defaultSite}"
-
 
         return AgentValue.AgentInfo(balance = wallet.balance, subAgentCount = agentCount, memberCount = memberCount,
                 subAgentCommission = agentMonthReport.agentCommission, memberCommission = agentMonthReport.memberCommission,
-                agencyMonthFee = agent.agencyMonthFee, urls = urls, subAgentPromoteUrl = subAgentPromoteUrl, guideUrl = guideUrl)
+                agencyMonthFee = agent.agencyMonthFee, urls = urls, subAgentPromoteUrl = subAgentPromoteUrl, guideUrl = guideUrl,
+                username = agent.username, phone = agent.phone, promoteCode = agent.promoteCode, name = agent.name,
+                createdTime = agent.createdTime)
     }
 
     @GetMapping("/contactUs")
@@ -200,7 +205,7 @@ class AgentApiController(
         }
     }
 
-    @GetMapping("commission/member")
+    @GetMapping("/commission/member")
     override fun memberCommissions(
             @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate:  LocalDate,

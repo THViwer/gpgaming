@@ -111,6 +111,18 @@ sealed class AgentValue {
 
     data class AgentInfo(
 
+            // 用户名
+            val username: String,
+
+            // 姓名
+            val name: String,
+
+            // 手机号
+            val phone: String,
+
+            // 推广code
+            val promoteCode: String,
+
             // 余额
             val balance: BigDecimal,
 
@@ -136,7 +148,10 @@ sealed class AgentValue {
             val subAgentPromoteUrl: String,
 
             // 网站导航页
-            val guideUrl: String
+            val guideUrl: String,
+
+            // 创建时间
+            val createdTime: LocalDateTime
     )
 
     data class AgentCheckReq(
