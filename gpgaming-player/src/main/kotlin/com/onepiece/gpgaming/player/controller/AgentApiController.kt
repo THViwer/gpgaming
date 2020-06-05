@@ -228,7 +228,7 @@ class AgentApiController(
     }
 
     @GetMapping("/i18n")
-    override fun i18nContentConfig(@RequestParam("configType") configType: I18nConfig): List<I18nContent.DefaultContentI18n> {
+    override fun i18nContentConfig(@RequestParam("configType") configType: I18nConfig): I18nContent.DefaultContentI18n {
 
         val clientId = getClientIdByDomain()
         val request = this.getRequest()
@@ -236,8 +236,11 @@ class AgentApiController(
             Language.valueOf(it)
         }
 
-        return i18nContentService.getConfigType(clientId = clientId, configType = configType)
-                .filter { it.language == language }
-                .map { it.getII18nContent(objectMapper = objectMapper) as I18nContent.DefaultContentI18n }
+        val list =  i18nContentService.getConfigType(clientId = clientId, configType = configType)
+        val content = list.firstOrNull { it.language == language } ?: list.firstOrNull { it.language == Language.EN }
+        return content?.let {
+            it.getII18nContent(objectMapper = objectMapper) as I18nContent.DefaultContentI18n
+        } ?: I18nContent.DefaultContentI18n(title = "hi", content = "this is content")
+
     }
 }

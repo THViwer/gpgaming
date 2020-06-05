@@ -58,6 +58,6 @@ interface AgentApi {
 
 
     @ApiOperation(tags = ["agent"], value = "国际化内容配置")
-    fun i18nContentConfig(@RequestParam("configType") configType: I18nConfig): List<I18nContent.DefaultContentI18n>
+    fun i18nContentConfig(@RequestParam("configType") configType: I18nConfig): I18nContent.DefaultContentI18n
 
 }
