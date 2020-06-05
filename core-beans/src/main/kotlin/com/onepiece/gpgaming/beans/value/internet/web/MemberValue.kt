@@ -209,6 +209,12 @@ data class MemberVo(
         @ApiModelProperty("id")
         val id: Int,
 
+        @ApiModelProperty("代理Id")
+        val agentId: Int,
+
+        @ApiModelProperty("代理用户名")
+        val agentUsername: String = "-",
+
         @ApiModelProperty("国家")
         val country: Country,
 

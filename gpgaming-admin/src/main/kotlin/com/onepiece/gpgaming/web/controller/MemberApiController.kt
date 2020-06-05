@@ -109,12 +109,23 @@ class MemberApiController(
         val walletQuery = WalletQuery(clientId = clientId, memberIds = ids)
         val memberMap = walletService.query(walletQuery).map { it.memberId to it }.toMap()
 
+        val agentIds = page.data.map { it.agentId }
+        val agentQuery = MemberQuery(ids = agentIds)
+        val agentMap = memberService.query(memberQuery = agentQuery, current = 0, size = 999999)
+                .data
+                .map { it.id to it }
+                .toMap()
+
         val data = page.data.map {
+
+            val agent = agentMap[it.agentId]
+            val (agentId, agentUsername) = (agent?.id?: -1) to (agent?.username?: "-")
+
             with(it) {
                 MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name ?: "error level",
                         balance = memberMap[it.id]?.balance ?: BigDecimal.valueOf(-1), status = it.status, createdTime = createdTime,
                         loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteCode = it.promoteCode,
-                        country = client.country)
+                        country = client.country, agentId = agentId, agentUsername = agentUsername)
             }
         }
 
