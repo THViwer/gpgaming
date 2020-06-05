@@ -15,6 +15,7 @@ import com.onepiece.gpgaming.beans.value.database.AgentValue
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
+import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.core.dao.AgentMonthReportDao
 import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
@@ -28,6 +29,7 @@ import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.basic.MathUtil
+import com.onepiece.gpgaming.player.controller.value.ChangePwdReq
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.LoginReq
 import com.onepiece.gpgaming.player.jwt.AuthService
@@ -102,6 +104,15 @@ class AgentApiController(
         val token = authService.login(bossId = bossId, clientId = member.clientId, username = loginReq.username, role = member.role)
 
         return AgentValue.AgentLoginResp(token = token, name = member.name, promoteCode = member.promoteCode)
+    }
+
+    @PutMapping("/reset/pwd")
+    override fun reset(@RequestBody req: ChangePwdReq) {
+
+        val id = this.current().id
+
+        val memberUo = MemberUo(id = id, oldPassword = req.oldPassword, password = req.password)
+        memberService.update(memberUo = memberUo)
     }
 
     @GetMapping("/info")

@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.player.controller
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.value.database.AgentValue
+import com.onepiece.gpgaming.player.controller.value.ChangePwdReq
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.LoginReq
 import io.swagger.annotations.Api
@@ -25,6 +26,11 @@ interface AgentApi {
     fun login(
             @RequestBody loginReq: LoginReq
     ): AgentValue.AgentLoginResp
+
+    @ApiOperation(tags = ["agent"], value = "代理修改密码")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun reset(@RequestBody req: ChangePwdReq)
+
 
     @ApiOperation(tags = ["agent"], value = "代理当前信息")
     fun info(): AgentValue.AgentInfo
@@ -59,5 +65,6 @@ interface AgentApi {
 
     @ApiOperation(tags = ["agent"], value = "国际化内容配置")
     fun i18nContentConfig(@RequestParam("configType") configType: I18nConfig): I18nContent.DefaultContentI18n
+
 
 }
