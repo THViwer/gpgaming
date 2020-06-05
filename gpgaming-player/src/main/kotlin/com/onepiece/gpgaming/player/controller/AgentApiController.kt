@@ -1,7 +1,9 @@
 package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.enums.ApplyState
+import com.onepiece.gpgaming.beans.enums.ContactType
 import com.onepiece.gpgaming.beans.enums.Role
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.value.database.AgentApplyValue
 import com.onepiece.gpgaming.beans.value.database.AgentReportValue
@@ -14,11 +16,14 @@ import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.service.AgentApplyService
 import com.onepiece.gpgaming.core.service.ClientService
+import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
+import com.onepiece.gpgaming.player.controller.basic.MathUtil
+import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.LoginReq
 import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.utils.RequestUtil
@@ -46,6 +51,7 @@ class AgentApiController(
         private val agentApplyService: AgentApplyService,
         private val agentMonthReportDao: AgentMonthReportDao,
         private val memberDailyReportDao: MemberDailyReportDao,
+        private val contactService: ContactService,
         private val reportService: ReportService
 ) : BasicController(), AgentApi {
 
@@ -127,6 +133,25 @@ class AgentApiController(
         return AgentValue.AgentInfo(balance = wallet.balance, subAgentCount = agentCount, memberCount = memberCount,
                 subAgentCommission = agentMonthReport.agentCommission, memberCommission = agentMonthReport.memberCommission,
                 agencyMonthFee = agent.agencyMonthFee, urls = urls, subAgentPromoteUrl = subAgentPromoteUrl, guideUrl = guideUrl)
+    }
+
+    @GetMapping("/contactUs")
+    override fun contactUs(): Contacts {
+
+        val list = contactService.list(clientId = getClientIdByDomain())
+                .filter { it.role == Role.Member }
+                .filter { it.status == Status.Normal }
+
+        val contacts = list.groupBy { it.type }
+        val wechatContact = contacts[ContactType.Wechat]?.let { MathUtil.getRandom(it) }
+        val whatContact = contacts[ContactType.Whatsapp]?.let { MathUtil.getRandom(it) }
+
+        val  facebook = list.firstOrNull { it.type == ContactType.Facebook }
+        val  youTuBe = list.firstOrNull { it.type == ContactType.YouTuBe }
+        val  instagram = list.firstOrNull { it.type == ContactType.Instagram }
+
+        return Contacts(wechatContact = wechatContact, whatsappContact = whatContact, facebook = facebook, youtube = youTuBe,
+                instagram = instagram)
     }
 
     @GetMapping("/sub")

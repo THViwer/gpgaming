@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.ContactType
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
 
@@ -12,8 +13,11 @@ data class Contact (
         // id
         val id: Int,
 
-        // 业主Id
+        // 代理Id
         val clientId: Int,
+
+        // 角色配置 Member or Agent
+        val role: Role,
 
         // 类型
         val type: ContactType,

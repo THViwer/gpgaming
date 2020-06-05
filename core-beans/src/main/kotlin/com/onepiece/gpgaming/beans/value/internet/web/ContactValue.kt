@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.ContactType
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 
@@ -12,6 +13,9 @@ sealed class ContactValue {
 
             @ApiModelProperty("二维码图片")
             val qrCode: String?,
+
+            @ApiModelProperty("角色 Member / Agent")
+            val role: Role = Role.Member,
 
             @ApiModelProperty("类型")
             val type: ContactType

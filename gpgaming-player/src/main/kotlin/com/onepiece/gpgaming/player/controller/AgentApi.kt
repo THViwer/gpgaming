@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.value.database.AgentValue
+import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.LoginReq
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -25,6 +26,9 @@ interface AgentApi {
 
     @ApiOperation(tags = ["agent"], value = "代理当前信息")
     fun info(): AgentValue.AgentInfo
+
+    @ApiOperation(tags = ["api"], value = "联系我们")
+    fun contactUs(): Contacts
 
     @ApiOperation(tags = ["agent"], value = "下级代理列表")
     fun subAgents(): List<AgentValue.SubAgentVo>

@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.service.impl
 
 import com.onepiece.gpgaming.beans.enums.ContactType
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Contact
@@ -13,8 +14,8 @@ class ContactServiceImpl(
         private val contactDao: ContactDao
 ) : ContactService {
 
-    override fun create(clientId: Int, type: ContactType, number: String, qrCode: String?) {
-        val state = contactDao.create(clientId = clientId, type = type, number = number, qrCode = qrCode)
+    override fun create(clientId: Int, type: ContactType, role: Role, number: String, qrCode: String?) {
+        val state = contactDao.create(clientId = clientId, type = type, role = role, number = number, qrCode = qrCode)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 

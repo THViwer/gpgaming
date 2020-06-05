@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.ContactType
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Contact
@@ -40,7 +41,8 @@ class ContactApiController(
             else  -> {}
         }
 
-        contactService.create(clientId = getClientId(), type = create.type, number = create.number, qrCode = create.qrCode)
+        check(create.role == Role.Member || create.role == Role.Agent) { OnePieceExceptionCode.DATA_FAIL }
+        contactService.create(clientId = getClientId(), type = create.type, number = create.number, qrCode = create.qrCode, role = create.role)
     }
 
     @PutMapping
