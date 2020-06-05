@@ -8,7 +8,6 @@ import com.onepiece.gpgaming.beans.model.Member
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
-import com.onepiece.gpgaming.beans.value.database.MemberRelationValue
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.database.WalletCo
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
@@ -17,7 +16,6 @@ import com.onepiece.gpgaming.core.dao.MemberRelationDao
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.utils.RedisService
-import com.onepiece.gpgaming.utils.StringUtil
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -111,17 +109,31 @@ class MemberServiceImpl(
         check(member.safetyPassword == safetyPassword) { OnePieceExceptionCode.SAFETY_PASSWORD_CHECK_FAIL }
     }
 
-    private fun getPromoteCode(bossId: Int, clientId: Int, code: String?): String {
+    private fun getAgentSequence(): Long {
+        val sequence = redisService.increase("agent:sequence")
 
-        val promoteCode = code ?: StringUtil.generateNonce(6)
-        val member = this.getAgentByCode(bossId = bossId, clientId = clientId, code = promoteCode)
-
-        return if (member == null) {
-            promoteCode
+        return if (sequence < 1) {
+            try {
+                val memberQuery = MemberQuery(role = Role.Agent)
+                val member = memberDao.query(query = memberQuery, current = 0, size = 1).firstOrNull()
+                member?.promoteCode?.toLong() ?: 1
+            } catch (e: Exception) {
+                1
+            }
         } else {
-            this.getPromoteCode(bossId = bossId, clientId = clientId, code = null)
+            sequence
         }
+    }
 
+    private fun getPromoteCode(): String {
+        val sequence = this.getAgentSequence()
+        return when {
+            sequence < 10 -> "0000$sequence"
+            sequence < 100 -> "000$sequence"
+            sequence < 1000 -> "00$sequence"
+            sequence < 10000 -> "0${sequence}"
+            else -> "$sequence"
+        }
     }
 
     @Transactional(rollbackFor = [Exception::class])
@@ -131,7 +143,7 @@ class MemberServiceImpl(
         val hasMember = memberDao.getByUsername(memberCo.clientId, memberCo.username)
         check(hasMember == null) { OnePieceExceptionCode.USERNAME_EXISTENCE }
 
-        val promoteCode = this.getPromoteCode(bossId = memberCo.bossId, clientId = memberCo.clientId, code = memberCo.promoteCode)
+        val promoteCode = this.getPromoteCode()
 
         // create member
         val password = bCryptPasswordEncoder.encode(memberCo.password)
