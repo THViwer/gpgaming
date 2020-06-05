@@ -135,10 +135,10 @@ class AgentApiController(
         }
         val defaultClient = clientService.getMainClient(bossId = bossId) ?: error("")
         val defaultSite = sites.first { it.clientId == defaultClient.id }
-        val subAgentPromoteUrl = "https://agent.${defaultSite}/register?affid=${agent.promoteCode}"
+        val subAgentPromoteUrl = "https://agent.${defaultSite.domain}/register?affid=${agent.promoteCode}"
 
         // 导航页
-        val guideUrl = "https://guide.${defaultSite}"
+        val guideUrl = "https://guide.${defaultSite.domain}"
 
         return AgentValue.AgentInfo(balance = wallet.balance, subAgentCount = agentCount, memberCount = memberCount,
                 subAgentCommission = agentMonthReport.agentCommission, memberCommission = agentMonthReport.memberCommission,
