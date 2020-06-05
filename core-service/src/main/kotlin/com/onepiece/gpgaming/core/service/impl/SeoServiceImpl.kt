@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.service.impl
 
+import com.onepiece.gpgaming.beans.enums.ShowPosition
 import com.onepiece.gpgaming.beans.model.Seo
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
@@ -23,7 +24,7 @@ class SeoServiceImpl(
 
             if (list.isEmpty()) {
                 val seoUo = SeoValue.SeoUo(clientId = clientId, title = "", keywords = "", description = "", googleStatisticsId = "", liveChatId = "", facebookTr = "",
-                        liveChatTab = true, asgContent = "")
+                        liveChatTab = true, asgContent = "", facebookShowPosition = ShowPosition.Index)
                 seoDao.create(seoUo)
                 seoDao.all(clientId).first()
             } else {

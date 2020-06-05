@@ -1,7 +1,6 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.ContactType
-import com.onepiece.gpgaming.beans.enums.ShowPosition
 import com.onepiece.gpgaming.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 
@@ -15,10 +14,7 @@ sealed class ContactValue {
             val qrCode: String?,
 
             @ApiModelProperty("类型")
-            val type: ContactType,
-
-            @ApiModelProperty("显示位置")
-            val showPosition: ShowPosition = ShowPosition.Index
+            val type: ContactType
     )
 
     data class Update(
@@ -27,9 +23,6 @@ sealed class ContactValue {
 
             @ApiModelProperty("号码(微信号或whatsapp)")
             val number: String,
-
-            @ApiModelProperty("显示位置")
-            val showPosition: ShowPosition = ShowPosition.Index,
 
             @ApiModelProperty("二维码图片")
             val qrCode: String?,

@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.web.controller
 import com.onepiece.gpgaming.beans.enums.HotGameType
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.RecommendedType
+import com.onepiece.gpgaming.beans.enums.ShowPosition
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Recommended
 import com.onepiece.gpgaming.beans.model.Seo
@@ -16,7 +17,6 @@ import com.onepiece.gpgaming.beans.value.internet.web.PromotionCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionVo
 import com.onepiece.gpgaming.beans.value.internet.web.RecommendedWebValue
-import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
@@ -40,6 +40,7 @@ interface IndexApi {
             @RequestParam("liveChatTab") liveChatTab: Boolean,
             @RequestParam("googleStatisticsId") googleStatisticsId: String,
             @RequestParam("facebookTr") facebookTr:String,
+            @RequestParam("facebookShowPosition") facebookShowPosition: ShowPosition,
             @RequestParam("asgContent") asgContent: String
     )
 

@@ -40,13 +40,11 @@ class ContactApiController(
             else  -> {}
         }
 
-        contactService.create(clientId = getClientId(), type = create.type, number = create.number, qrCode = create.qrCode,
-                showPosition = create.showPosition)
+        contactService.create(clientId = getClientId(), type = create.type, number = create.number, qrCode = create.qrCode)
     }
 
     @PutMapping
     override fun update(@RequestBody update: ContactValue.Update) {
-        contactService.update(id = update.id, number = update.number, status = update.status, qrCode = update.qrCode,
-                showPosition = update.showPosition)
+        contactService.update(id = update.id, number = update.number, status = update.status, qrCode = update.qrCode)
     }
 }

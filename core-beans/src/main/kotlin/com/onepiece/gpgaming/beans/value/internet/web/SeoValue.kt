@@ -1,5 +1,7 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
+import com.onepiece.gpgaming.beans.enums.ShowPosition
+
 sealed class SeoValue {
 
     data class SeoUo(
@@ -22,6 +24,9 @@ sealed class SeoValue {
 
             //面子书广告
             val facebookTr: String,
+
+            //facebook 显示位置
+            val facebookShowPosition: ShowPosition,
 
             // asg content
             val asgContent: String
@@ -46,6 +51,9 @@ sealed class SeoValue {
 
             //面子书广告
             val facebookTr: String,
+
+            //facebook 显示位置
+            val facebookShowPosition: ShowPosition,
 
             // asg content
             val asgContent: String

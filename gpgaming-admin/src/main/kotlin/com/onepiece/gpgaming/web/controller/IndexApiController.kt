@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.PromotionRuleType
 import com.onepiece.gpgaming.beans.enums.RecommendedType
+import com.onepiece.gpgaming.beans.enums.ShowPosition
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
@@ -76,13 +77,14 @@ class IndexApiController(
             @RequestParam("liveChatTab") liveChatTab: Boolean,
             @RequestParam("googleStatisticsId") googleStatisticsId: String,
             @RequestParam("facebookTr") facebookTr: String,
+            @RequestParam("facebookShowPosition") facebookShowPosition: ShowPosition,
             @RequestParam("asgContent") asgContent: String
     ) {
         val clientId = getClientId()
 
         val seoUo = SeoValue.SeoUo(clientId = clientId, title = title, keywords = keywords, description = description,
                 liveChatId = liveChatId, googleStatisticsId = googleStatisticsId, facebookTr = facebookTr, liveChatTab = liveChatTab,
-                asgContent = asgContent)
+                asgContent = asgContent, facebookShowPosition = facebookShowPosition)
         seoService.update(seoUo)
     }
 

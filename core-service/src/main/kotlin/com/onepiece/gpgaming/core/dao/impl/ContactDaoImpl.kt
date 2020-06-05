@@ -26,25 +26,22 @@ class ContactDaoImpl : BasicDaoImpl<Contact>("contact"), ContactDao {
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
-            Contact(id = id, clientId = clientId, type = type, number = number, status = status, createdTime = createdTime, qrCode = qrCode,
-                    showPosition = showPosition)
+            Contact(id = id, clientId = clientId, type = type, number = number, status = status, createdTime = createdTime, qrCode = qrCode)
         }
 
-    override fun create(clientId: Int, type: ContactType, showPosition: ShowPosition, number: String, qrCode: String?): Boolean {
+    override fun create(clientId: Int, type: ContactType, number: String, qrCode: String?): Boolean {
         return insert().set("client_id", clientId)
                 .set("type", type)
-                .set("show_position", showPosition)
                 .set("number", number)
                 .set("qr_code", qrCode)
                 .set("status", Status.Normal)
                 .executeOnlyOne()
     }
 
-    override fun update(id: Int, number: String, status: Status, showPosition: ShowPosition, qrCode: String?): Boolean {
+    override fun update(id: Int, number: String, status: Status, qrCode: String?): Boolean {
         return update()
                 .set("number", number)
                 .set("qr_code", qrCode)
-                .set("show_position", showPosition)
                 .set("status", status)
                 .where("id", id)
                 .executeOnlyOne()

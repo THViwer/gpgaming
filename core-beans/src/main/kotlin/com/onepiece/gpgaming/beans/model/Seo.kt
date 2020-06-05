@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
+import com.onepiece.gpgaming.beans.enums.ShowPosition
 import java.time.LocalDateTime
 
 data class Seo(
@@ -30,6 +31,9 @@ data class Seo(
 
         //面子书广告
         val facebookTr: String,
+
+        // facebook显示位置
+        val facebookShowPosition: ShowPosition,
 
         // asg 广告内容
         val asgContent: String,

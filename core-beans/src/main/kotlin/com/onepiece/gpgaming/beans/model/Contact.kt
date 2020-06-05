@@ -1,7 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.ContactType
-import com.onepiece.gpgaming.beans.enums.ShowPosition
 import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
 
@@ -18,9 +17,6 @@ data class Contact (
 
         // 类型
         val type: ContactType,
-
-        // 显示位置
-        val showPosition: ShowPosition,
 
         // 号码
         val number: String,

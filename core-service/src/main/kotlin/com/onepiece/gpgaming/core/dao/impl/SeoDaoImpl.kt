@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.dao.impl
 
+import com.onepiece.gpgaming.beans.enums.ShowPosition
 import com.onepiece.gpgaming.beans.model.Seo
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.core.dao.SeoDao
@@ -23,10 +24,12 @@ class SeoDaoImpl: BasicDaoImpl<Seo>("seo"), SeoDao {
             val googleStatisticsId = rs.getString("google_statistics_id")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val facebookTr = rs.getString("facebook_tr")
+            val facebookShowPosition = rs.getString("facebook_show_position")
+                    .let { ShowPosition.valueOf(it) }
             val asgContent = rs.getString("asg_content")
             Seo(id = id, clientId = clientId, keywords = keywords, description = description, createdTime = createdTime,
                     title = title, liveChatId = liveChatId, googleStatisticsId = googleStatisticsId, facebookTr = facebookTr,
-                    liveChatTab = liveChatTab, asgContent = asgContent)
+                    liveChatTab = liveChatTab, asgContent = asgContent, facebookShowPosition = facebookShowPosition)
 
         }
 
@@ -40,6 +43,7 @@ class SeoDaoImpl: BasicDaoImpl<Seo>("seo"), SeoDao {
                 .set("live_chat_tab", seoUo.liveChatTab)
                 .set("google_statistics_id", seoUo.googleStatisticsId)
                 .set("facebook_tr", seoUo.facebookTr)
+                .set("facebook_show_position", seoUo.facebookShowPosition)
                 .executeOnlyOne()
     }
 
@@ -52,6 +56,7 @@ class SeoDaoImpl: BasicDaoImpl<Seo>("seo"), SeoDao {
                 .set("live_chat_tab", seoUo.liveChatTab)
                 .set("google_statistics_id", seoUo.googleStatisticsId)
                 .set("facebook_tr", seoUo.facebookTr)
+                .set("facebook_show_position", seoUo.facebookShowPosition)
                 .set("asg_content", seoUo.asgContent)
                 .where("client_id", seoUo.clientId)
                 .executeOnlyOne()
