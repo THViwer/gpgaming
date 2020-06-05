@@ -118,7 +118,7 @@ class MemberServiceImpl(
                 val member = memberDao.query(query = memberQuery, current = 0, size = 1).firstOrNull()
                 member?.promoteCode?.toLong() ?: 1
             } catch (e: Exception) {
-                1
+                1L
             }
         } else {
             sequence
