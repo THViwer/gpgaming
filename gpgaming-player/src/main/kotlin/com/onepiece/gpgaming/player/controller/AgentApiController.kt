@@ -88,26 +88,13 @@ class AgentApiController(
 
         val token = authService.login(bossId = bossId, clientId = member.clientId, username = loginReq.username, role = member.role)
 
-        val sites = webSiteService.getDataByBossId(bossId = bossId)
-
-        val urls = sites.groupBy { it.country }.map { it.value.first() }.map {
-
-            val promoteURL = "https://www.${it.domain}/register?affid=${member.promoteCode}"
-            val mobilePromoteURL = "https://www.${it.domain}/m/register?affid=${member.promoteCode}"
-
-            AgentValue.PromoteVo(country = it.country, promoteURL = promoteURL, mobilePromoteURL = mobilePromoteURL)
-        }
-
-        val defaultClient = clientService.getMainClient(bossId = bossId) ?: error("")
-        val defaultSite = sites.first { it.clientId == defaultClient.id }
-        val subAgentPromoteUrl = "https://agent.${defaultSite}/register?affid=${member.promoteCode}"
-
-        return AgentValue.AgentLoginResp(token = token, name = member.name, urls = urls, promoteCode = member.promoteCode, subAgentPromoteUrl = subAgentPromoteUrl)
+        return AgentValue.AgentLoginResp(token = token, name = member.name, promoteCode = member.promoteCode)
     }
 
     @GetMapping("/info")
     override fun info(): AgentValue.AgentInfo {
 
+        val bossId = this.getBossIdByDomain()
         val memberId = this.current().id
 
         val agent = memberService.getMember(memberId)
@@ -122,8 +109,24 @@ class AgentApiController(
                 .first()
 
 
+        val sites = webSiteService.getDataByBossId(bossId = bossId)
+        val urls = sites.groupBy { it.country }.map { it.value.first() }.map {
+
+            val promoteURL = "https://www.${it.domain}/register?affid=${agent.promoteCode}"
+            val mobilePromoteURL = "https://www.${it.domain}/m/register?affid=${agent.promoteCode}"
+
+            AgentValue.PromoteVo(country = it.country, promoteURL = promoteURL, mobilePromoteURL = mobilePromoteURL)
+        }
+        val defaultClient = clientService.getMainClient(bossId = bossId) ?: error("")
+        val defaultSite = sites.first { it.clientId == defaultClient.id }
+        val subAgentPromoteUrl = "https://agent.${defaultSite}/register?affid=${agent.promoteCode}"
+
+        val guideUrl = "https://guide.${defaultSite}"
+
+
         return AgentValue.AgentInfo(balance = wallet.balance, subAgentCount = agentCount, memberCount = memberCount,
-                subAgentCommission = agentMonthReport.agentCommission, memberCommission = agentMonthReport.memberCommission, agencyMonthFee = agent.agencyMonthFee)
+                subAgentCommission = agentMonthReport.agentCommission, memberCommission = agentMonthReport.memberCommission,
+                agencyMonthFee = agent.agencyMonthFee, urls = urls, subAgentPromoteUrl = subAgentPromoteUrl, guideUrl = guideUrl)
     }
 
     @GetMapping("/sub")
@@ -187,7 +190,8 @@ class AgentApiController(
 
             val newUsername = "${first}****${last}"
 
-            AgentValue.MemberCommissionVo(username = newUsername, totalBet = it.totalBet, totalMWin = it.totalMWin, totalRebate = it.rebateAmount, totalPromotion = it.promotionAmount)
+            AgentValue.MemberCommissionVo(username = newUsername, totalBet = it.totalBet, totalMWin = it.totalMWin, totalRebate = it.rebateAmount,
+                    totalPromotion = it.promotionAmount)
         }
 
     }

@@ -36,14 +36,7 @@ sealed class AgentValue {
             val token: String,
 
             // 推广码
-            val promoteCode: String,
-
-            // 推广地址
-            val urls: List<PromoteVo>,
-
-            // 下级代理推广地址
-            val subAgentPromoteUrl: String
-
+            val promoteCode: String
     )
 
     data class PromoteVo(
@@ -134,7 +127,16 @@ sealed class AgentValue {
             val subAgentCommission: BigDecimal,
 
             // 代理月费
-            val agencyMonthFee: BigDecimal
+            val agencyMonthFee: BigDecimal,
+
+            // 推广地址
+            val urls: List<PromoteVo>,
+
+            // 下级代理推广地址
+            val subAgentPromoteUrl: String,
+
+            // 网站导航页
+            val guideUrl: String
     )
 
     data class AgentCheckReq(
