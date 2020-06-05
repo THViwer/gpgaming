@@ -103,6 +103,8 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
                 .where("client_id", query.clientId)
                 .where("superior_agent_id", query.superiorAgentId)
                 .where("agent_id", query.agentId)
+                .asWhere("day >= ?", query.startDate)
+                .asWhere("day < ?", query.endDate)
                 .execute(mapper)
     }
 

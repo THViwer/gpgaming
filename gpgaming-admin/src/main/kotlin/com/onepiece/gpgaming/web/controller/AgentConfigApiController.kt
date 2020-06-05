@@ -165,7 +165,7 @@ class AgentConfigApiController(
         return agentMonthReportDao.query(reportQuery).map {
             AgentValue.AgentCommissionVo(day = it.day, totalDeposit = it.totalDeposit, totalWithdraw = it.totalWithdraw, totalBet = it.totalBet,
                     totalMWin = it.totalMWin,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,
-                    subAgentCommission = it.agentCommission, memberCommission = it.memberCommission, agentId = it.agentId)
+                    subAgentCommission = it.agentCommission, memberCommission = it.memberCommission, agentId = it.agentId, username = it.username)
         }
     }
 
@@ -181,11 +181,11 @@ class AgentConfigApiController(
         return agentMonthReportDao.query(reportQuery).map {
             AgentValue.AgentCommissionVo(day = it.day, totalDeposit = it.totalDeposit, totalWithdraw = it.totalWithdraw, totalBet = it.totalBet,
                     totalMWin = it.totalMWin,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,
-                    subAgentCommission = it.agentCommission, memberCommission = it.memberCommission, agentId = it.agentId)
+                    subAgentCommission = it.agentCommission, memberCommission = it.memberCommission, agentId = it.agentId, username = it.username)
         }
     }
 
-    @GetMapping("commission/member")
+    @GetMapping("/commission/member")
     override fun memberCommissions(
             @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") startDate: LocalDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
@@ -193,7 +193,6 @@ class AgentConfigApiController(
     ): List<AgentValue.MemberCommissionVo> {
 
         val current = this.current()
-
 
         val collectQuery = MemberReportValue.CollectQuery(bossId = current.bossId, clientId = current.clientId, startDate = startDate, endDate = endDate,
                 agentId = current.id)

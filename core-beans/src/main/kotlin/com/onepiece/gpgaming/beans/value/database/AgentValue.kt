@@ -207,6 +207,9 @@ sealed class AgentValue {
             // 代理Id
             val agentId: Int,
 
+            // 用户名
+            val username: String,
+
             // 会员充值
             val totalDeposit: BigDecimal,
 
