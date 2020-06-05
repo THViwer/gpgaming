@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.beans.value.database
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.ApplyState
 import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Status
@@ -153,6 +152,12 @@ sealed class AgentValue {
 
             // 代理Id
             val id: Int,
+
+            // 上级代理Id
+            val superiorAgentId: Int,
+
+            // 上级代理用户名
+            val superiorUsername: String,
 
             // 姓名
             val username: String,

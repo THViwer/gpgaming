@@ -125,15 +125,21 @@ class AgentConfigApiController(
             else -> -1
         }
 
-        return analysisDao.subAgents(bossId = current.bossId, clientId = current.clientId, agentId = agentId)
+        val list = analysisDao.subAgents(bossId = current.bossId, clientId = current.clientId, agentId = agentId)
+        if (list.isEmpty()) return emptyList()
 
-//        val list = analysisDao.subAgents(bossId = current.bossId, clientId = current.clientId, agentId = agentId)
-//        if (list.isEmpty()) return emptyList()
-//
-//        // 查询代理列表
-//        val agentIds = list.map { it.id }
-//        val memberQuery = MemberQuery(ids = agentIds)
-//        val agents = memberService.query(memberQuery = memberQuery, current = 0, size = 999999)
+
+        val superiorIds = list.map { it.superiorAgentId }.filter { it != -1 }
+        val memberQuery = MemberQuery(ids = superiorIds)
+        val agents = memberService.query(memberQuery = memberQuery, current = 0, size = 999999)
+                .data
+                .map { it.id to it }
+                .toMap()
+
+        return list.map {
+            val superior = agents[it.superiorAgentId]?.name?: "-"
+            it.copy(superiorUsername = superior)
+        }
     }
 
     @PutMapping

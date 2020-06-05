@@ -476,7 +476,7 @@ class AnalysisDaoImpl(
         val qParam = if (agentId != -1) " and m.id = $agentId" else ""
 
         val sql = """
-            select m.id, m.username, m.phone, m.name, m.agency_month_fee, m.created_time, m.formal, t.count from member m
+            select m.id, m.agent_id superior_agent_id,m.username, m.phone, m.name, m.agency_month_fee, m.created_time, m.formal, t.count from member m
                 left join (
                     select agent_id, count(*) count from member x group by boss_id, client_id, agent_id
                 ) t on m.id = t.agent_id
@@ -486,6 +486,7 @@ class AnalysisDaoImpl(
         return jdbcTemplate.query(sql) { rs, _ ->
 
             val id = rs.getInt("id")
+            val superiorAgentId = rs.getInt("superior_agent_id")
             val username = rs.getString("username")
             val name = rs.getString("name")
             val phone = rs.getString("phone")
@@ -495,7 +496,8 @@ class AnalysisDaoImpl(
             val agencyMonthFee = rs.getBigDecimal("agency_month_fee")
 
             AgentValue.SubAgentVo(id = id, username = username, phone = phone, formal = formal, memberCount = memberCount,
-                    createdTime = createdTime, agencyMonthFee = agencyMonthFee, name = name)
+                    createdTime = createdTime, agencyMonthFee = agencyMonthFee, name = name, superiorAgentId = superiorAgentId,
+                    superiorUsername = "-")
         }
     }
 }
