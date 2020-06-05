@@ -1,10 +1,14 @@
 package com.onepiece.gpgaming.player.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.enums.ApplyState
 import com.onepiece.gpgaming.beans.enums.ContactType
+import com.onepiece.gpgaming.beans.enums.I18nConfig
+import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.value.database.AgentApplyValue
 import com.onepiece.gpgaming.beans.value.database.AgentReportValue
 import com.onepiece.gpgaming.beans.value.database.AgentValue
@@ -17,6 +21,7 @@ import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.service.AgentApplyService
 import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.ContactService
+import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.ReportService
@@ -52,7 +57,9 @@ class AgentApiController(
         private val agentMonthReportDao: AgentMonthReportDao,
         private val memberDailyReportDao: MemberDailyReportDao,
         private val contactService: ContactService,
-        private val reportService: ReportService
+        private val reportService: ReportService,
+        private val objectMapper: ObjectMapper,
+        private val i18nContentService: I18nContentService
 ) : BasicController(), AgentApi {
 
     private val log = LoggerFactory.getLogger(AgentApiController::class.java)
@@ -218,7 +225,19 @@ class AgentApiController(
             AgentValue.MemberCommissionVo(username = newUsername, totalBet = it.totalBet, totalMWin = it.totalMWin, totalRebate = it.rebateAmount,
                     totalPromotion = it.promotionAmount)
         }
-
     }
 
+    @GetMapping("/i18n")
+    override fun i18nContentConfig(@RequestParam("configType") configType: I18nConfig): List<I18nContent.DefaultContentI18n> {
+
+        val clientId = getClientIdByDomain()
+        val request = this.getRequest()
+        val language = request.getHeader("language").let {
+            Language.valueOf(it)
+        }
+
+        return i18nContentService.getConfigType(clientId = clientId, configType = configType)
+                .filter { it.language == language }
+                .map { it.getII18nContent(objectMapper = objectMapper) as I18nContent.DefaultContentI18n }
+    }
 }

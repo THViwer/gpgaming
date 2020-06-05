@@ -49,6 +49,9 @@ data class I18nContent (
             I18nConfig.Promotion -> objectMapper.readValue<PromotionI18n>(contentJson)
             I18nConfig.IndexSport -> objectMapper.readValue<IndexSportI18n>(contentJson)
             I18nConfig.HotGame -> objectMapper.readValue<HotGameI18n>(contentJson)
+
+            I18nConfig.RegisterSide,
+            I18nConfig.AgentPlans -> objectMapper.readValue<DefaultContentI18n>(contentJson)
         }
     }
 
@@ -145,7 +148,17 @@ data class I18nContent (
             val img3: String?
     ): II18nContent
 
+    /**
+     * 默认国际化内容
+     */
+    data class DefaultContentI18n(
 
+            // 标题
+            val title: String,
+
+            // 内容
+            val content: String
+    ): II18nContent
 
 }
 

@@ -21,6 +21,14 @@ enum class I18nConfig {
     IndexVideo,
 
     // 热门游戏
-    HotGame
+    HotGame,
+
+    // 注册
+    RegisterSide,
+
+    // 代理计划
+    AgentPlans,
+
+
 
 }

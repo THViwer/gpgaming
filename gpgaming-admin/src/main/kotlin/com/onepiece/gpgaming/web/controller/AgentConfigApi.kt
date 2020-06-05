@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.CommissionType
 import com.onepiece.gpgaming.beans.model.Commission
+import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.value.database.AgentValue
 import com.onepiece.gpgaming.beans.value.database.CommissionValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberValue
@@ -85,7 +86,5 @@ interface AgentConfigApi {
             @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") endDate: LocalDate,
             @RequestParam("agentId") agentId: Int
     ): List<AgentValue.MemberCommissionVo>
-
-
 
 }

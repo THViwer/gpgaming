@@ -1,5 +1,7 @@
 package com.onepiece.gpgaming.player.controller
 
+import com.onepiece.gpgaming.beans.enums.I18nConfig
+import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.value.database.AgentValue
 import com.onepiece.gpgaming.player.controller.value.Contacts
 import com.onepiece.gpgaming.player.controller.value.LoginReq
@@ -54,5 +56,8 @@ interface AgentApi {
             @RequestParam("agentId") agentId: Int
     ): List<AgentValue.MemberCommissionVo>
 
+
+    @ApiOperation(tags = ["agent"], value = "国际化内容配置")
+    fun i18nContentConfig(@RequestParam("configType") configType: I18nConfig): List<I18nContent.DefaultContentI18n>
 
 }
