@@ -245,8 +245,8 @@ open class ApiController(
         return list.filter { it.contents.isNotEmpty() }
                 .map { blog ->
                     val content = blog.contents.firstOrNull { it.language == language } ?: blog.contents.first { it.language == Language.EN }
-                    BlogValue.BlogMVo(id = blog.id, title = blog.title, headImg = blog.headImg, sort = blog.sort, platform = blog.platform, content = content,
-                            status = blog.status)
+                    BlogValue.BlogMVo(id = blog.id, title = blog.title, headImg = blog.headImg, sort = blog.sort, platform = blog.platform,
+                            content = content.getII18nContent(objectMapper) as I18nContent.DefaultContentI18n, status = blog.status)
                 }
     }
 

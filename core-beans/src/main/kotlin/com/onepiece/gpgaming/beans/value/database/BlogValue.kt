@@ -65,7 +65,7 @@ sealed class BlogValue {
             val platform: Platform,
 
             // 国际化内容
-            val content: I18nContent,
+            val content: I18nContent.DefaultContentI18n,
 
             // 状态
             val status: Status
