@@ -25,7 +25,11 @@ sealed class ApiValue {
 
                         // 域名
                         val path: String
-                )
+                ) {
+
+                        val logo: String = country.logo
+
+                }
 
         }
 
