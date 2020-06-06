@@ -42,7 +42,7 @@ class ContactApiController(
         }
 
         check(create.role == Role.Member || create.role == Role.Agent) { OnePieceExceptionCode.DATA_FAIL }
-        contactService.create(clientId = getClientId(), type = create.type, number = create.number, qrCode = create.qrCode)
+        contactService.create(clientId = getClientId(), type = create.type, number = create.number, qrCode = create.qrCode, role = create.role)
     }
 
     @PutMapping

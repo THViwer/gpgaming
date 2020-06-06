@@ -1,7 +1,7 @@
 package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.ContactType
-import com.onepiece.gpgaming.beans.enums.ShowPosition
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
 

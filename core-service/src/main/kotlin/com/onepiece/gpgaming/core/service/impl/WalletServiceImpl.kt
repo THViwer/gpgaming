@@ -76,10 +76,6 @@ class WalletServiceImpl(
                 val transferInUo = WalletTransferInUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
                 walletDao.transferIn(transferInUo)
             }
-            WalletEvent.Backwater -> {
-                val transferInUo = WalletTransferInUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
-                walletDao.rebate(transferInUo)
-            }
         }
 
         val afterMoney: BigDecimal
