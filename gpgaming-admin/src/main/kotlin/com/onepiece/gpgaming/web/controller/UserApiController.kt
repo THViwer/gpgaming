@@ -5,7 +5,6 @@ import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.value.database.ClientLoginValue
 import com.onepiece.gpgaming.beans.value.database.ClientUo
-import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.WaiterUo
 import com.onepiece.gpgaming.beans.value.internet.web.ChangePwdReq
 import com.onepiece.gpgaming.beans.value.internet.web.LoginReq
@@ -67,7 +66,7 @@ class UserApiController(
             val authUser = authService.login(bossId = client.bossId, id = client.id, role = Role.Client, username = client.username, mAuthorities = permissions)
 
             LoginResp(id = client.id, clientId = client.id, username = client.username, role = Role.Client,
-                    token = authUser.token, permissions = permissions)
+                    token = authUser.token, permissions = permissions, main = client.main)
 
         } catch (e: Exception) {
             val waiter = waiterService.login(loginValue)
@@ -77,7 +76,7 @@ class UserApiController(
             val authUser = authService.login(bossId = waiter.bossId, id = waiter.id, role = Role.Waiter, username = waiter.username, mAuthorities = permissions)
 
             LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = Role.Waiter,
-                    token = authUser.token, permissions = permissions)
+                    token = authUser.token, permissions = permissions, main = client.main)
         }
     }
 
@@ -90,7 +89,7 @@ class UserApiController(
         val authUser = authService.login(bossId = -1, id = clientId, role = Role.Client, username = req.username, mAuthorities = permissions)
 
         return LoginResp(id = -1, clientId = clientId, username = req.username, role = Role.Client,
-                token = authUser.token, permissions = permissions)
+                token = authUser.token, permissions = permissions, main = true)
     }
 
     @PutMapping("/password")

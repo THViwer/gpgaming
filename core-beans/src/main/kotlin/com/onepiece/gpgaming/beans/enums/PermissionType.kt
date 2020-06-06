@@ -46,6 +46,9 @@ enum class PermissionType(
     REPORT_PROMOTION("5000", "5300", "优惠报表", "优惠报表"),
     REPORT_ANALYSIS("5000", "5400", "会员分析", "会员分析"),
 
+    // 代理管理
+    AGENT_MANAGER("-1", "6000", "代理", "代理")
+
 
     ;
 

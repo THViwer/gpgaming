@@ -117,7 +117,7 @@ object AwsS3Util {
 
 
 fun main() {
-    val file = File("/Users/cabbage/Downloads/sg_bank")
+    val file = File("/Users/cabbage/Downloads/支付银行")
     val list = file.listFiles().map { file ->
         val url = AwsS3Util.uploadLocalFile(file, "bank/logo/${file.name.replace(" ", "")}")
         file.name to url

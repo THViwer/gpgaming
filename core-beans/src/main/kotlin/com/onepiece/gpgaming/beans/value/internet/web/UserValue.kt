@@ -2,7 +2,6 @@ package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.Role
 import io.swagger.annotations.ApiModelProperty
-import java.util.*
 
 object UserValueFactory {
 
@@ -19,6 +18,9 @@ data class LoginResp(
 
         @ApiModelProperty("厅主Id")
         val clientId: Int,
+
+        @ApiModelProperty("是否是主业主")
+        val main: Boolean,
 
         @ApiModelProperty("用户名")
         val username: String,
