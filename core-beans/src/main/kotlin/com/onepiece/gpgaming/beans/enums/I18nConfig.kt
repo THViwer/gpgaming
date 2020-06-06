@@ -29,6 +29,9 @@ enum class I18nConfig {
     // 代理计划
     AgentPlans,
 
+    // blog
+    Blog
+
 
 
 }

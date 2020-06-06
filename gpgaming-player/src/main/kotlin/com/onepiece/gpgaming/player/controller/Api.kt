@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.enums.BannerType
 import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
+import com.onepiece.gpgaming.beans.value.database.BlogValue
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.player.controller.value.ApiValue
@@ -49,6 +50,10 @@ interface Api {
 //            @RequestHeader("language") language: Language,
 //            @RequestHeader("launch") launch: LaunchMethod,
 //            @RequestParam("platform") platform: Platform): Map<String, String>
+
+    @ApiOperation(tags = ["api"], value = "blog")
+    fun blogs(): List<BlogValue.BlogMVo>
+
 
     @ApiOperation(tags = ["api"], value = "老虎机游戏列表")
     fun slots(@RequestParam("platform") platform: Platform): List<SlotCategoryVo>
@@ -104,12 +109,10 @@ interface Api {
     @ApiOperation(tags = ["api"], value = "seo配置")
     fun seo(): SeoValue.SeoVo
 
-
     @ApiOperation(tags = ["api"], value = "改变国家")
     fun selectCountry(
             @RequestParam("country") country: Country
     ): SelectCountryResult
-
 
     @ApiOperation(tags = ["api"], value = "网站导航配置")
     fun guideConfig(): ApiValue.GuideConfigVo

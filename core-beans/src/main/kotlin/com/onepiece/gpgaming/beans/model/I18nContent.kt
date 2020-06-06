@@ -51,6 +51,7 @@ data class I18nContent (
             I18nConfig.HotGame -> objectMapper.readValue<HotGameI18n>(contentJson)
 
             I18nConfig.RegisterSide,
+            I18nConfig.Blog,
             I18nConfig.AgentPlans -> objectMapper.readValue<DefaultContentI18n>(contentJson)
         }
     }

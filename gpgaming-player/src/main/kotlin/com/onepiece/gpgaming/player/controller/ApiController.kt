@@ -18,11 +18,13 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
+import com.onepiece.gpgaming.beans.value.database.BlogValue
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.BannerService
+import com.onepiece.gpgaming.core.service.BlogService
 import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.HotGameService
@@ -32,8 +34,8 @@ import com.onepiece.gpgaming.core.service.SeoService
 import com.onepiece.gpgaming.core.service.SlotGameService
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
-import com.onepiece.gpgaming.player.controller.value.ApiValue
 import com.onepiece.gpgaming.player.controller.basic.MathUtil
+import com.onepiece.gpgaming.player.controller.value.ApiValue
 import com.onepiece.gpgaming.player.controller.value.BannerVo
 import com.onepiece.gpgaming.player.controller.value.CompileValue
 import com.onepiece.gpgaming.player.controller.value.Contacts
@@ -72,7 +74,8 @@ open class ApiController(
         private val objectMapper: ObjectMapper,
         private val hotGameService: HotGameService,
         private val clientService: ClientService,
-        private val seoService: SeoService
+        private val seoService: SeoService,
+        private val blogService: BlogService
 ) : BasicController(), Api {
 
     private val log = LoggerFactory.getLogger(ApiController::class.java)
@@ -231,6 +234,21 @@ open class ApiController(
 
     }
 
+    @GetMapping("/blog")
+    override fun blogs(): List<BlogValue.BlogMVo> {
+
+        val clientId = this.getClientIdByDomain()
+        val language = this.getHeaderLanguage()
+
+        val list = blogService.normalList(clientId = clientId)
+
+        return list.filter { it.contents.isNotEmpty() }
+                .map { blog ->
+                    val content = blog.contents.firstOrNull { it.language == language } ?: blog.contents.first { it.language == Language.EN }
+                    BlogValue.BlogMVo(id = blog.id, title = blog.title, headImg = blog.headImg, sort = blog.sort, platform = blog.platform, content = content,
+                            status = blog.status)
+                }
+    }
 
     @GetMapping("/slots")
     override fun slots(

@@ -16,6 +16,7 @@ import com.onepiece.gpgaming.beans.model.Recommended
 import com.onepiece.gpgaming.beans.model.Seo
 import com.onepiece.gpgaming.beans.value.database.BannerCo
 import com.onepiece.gpgaming.beans.value.database.BannerUo
+import com.onepiece.gpgaming.beans.value.database.BlogValue
 import com.onepiece.gpgaming.beans.value.database.HotGameValue
 import com.onepiece.gpgaming.beans.value.database.I18nContentCo
 import com.onepiece.gpgaming.beans.value.database.I18nContentUo
@@ -33,6 +34,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.RecommendedWebValue
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.service.BannerService
+import com.onepiece.gpgaming.core.service.BlogService
 import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
@@ -56,6 +58,7 @@ class IndexApiController(
         private val hotGameService: HotGameService,
         private val indexUtil: IndexUtil,
         private val seoService: SeoService,
+        private val blogService: BlogService,
         private val objectMapper: ObjectMapper
 ): BasicController(), IndexApi {
 
@@ -279,5 +282,23 @@ class IndexApiController(
     @PutMapping("/hotGame")
     override fun update(@RequestBody hotGameUo: HotGameValue.HotGameUo) {
         hotGameService.update(hotGameUo)
+    }
+
+    @GetMapping("/blog")
+    override fun blogList(): List<BlogValue.BlogVo> {
+        val clientId = getClientId()
+        return blogService.list(clientId = clientId)
+    }
+
+    @PostMapping("/blog")
+    override fun blogCreate(@RequestBody blogCo: BlogValue.BlogCo) {
+        val clientId = getClientId()
+        return blogService.create(co = blogCo.copy(clientId = clientId))
+    }
+
+    @PutMapping("/blog")
+    override fun blogUpdate(@RequestBody blogUo: BlogValue.BlogUo) {
+        return blogService.update(uo = blogUo)
+
     }
 }

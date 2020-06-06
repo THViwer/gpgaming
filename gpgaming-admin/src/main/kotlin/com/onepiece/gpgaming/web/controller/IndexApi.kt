@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.enums.ShowPosition
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Recommended
 import com.onepiece.gpgaming.beans.model.Seo
+import com.onepiece.gpgaming.beans.value.database.BlogValue
 import com.onepiece.gpgaming.beans.value.database.HotGameValue
 import com.onepiece.gpgaming.beans.value.internet.web.BannerCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerUoReq
@@ -113,6 +114,18 @@ interface IndexApi {
     @ApiOperation(tags = ["web setting"], value = "热门游戏 -> 更新")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody hotGameUo: HotGameValue.HotGameUo)
+
+
+    @ApiOperation(tags = ["web setting"], value = "blog -> 列表")
+    fun blogList(): List<BlogValue.BlogVo>
+
+    @ApiOperation(tags = ["web setting"], value = "blog -> 创建")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun blogCreate(@RequestBody blogCo: BlogValue.BlogCo)
+
+    @ApiOperation(tags = ["web setting"], value = "blog -> 更新")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun blogUpdate(@RequestBody blogUo: BlogValue.BlogUo)
 
 
 
