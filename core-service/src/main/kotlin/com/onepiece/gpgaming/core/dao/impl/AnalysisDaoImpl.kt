@@ -478,7 +478,7 @@ class AnalysisDaoImpl(
         val sql = """
             select m.id, m.agent_id superior_agent_id,m.username, m.phone, m.name, m.agency_month_fee, m.created_time, m.formal, t.count from member m
                 left join (
-                    select agent_id, count(*) count from member x group by boss_id, client_id, agent_id
+                    select agent_id, count(*) count from member x group by boss_id, agent_id
                 ) t on m.id = t.agent_id
             where m.boss_id = '$bossId' and client_id = '$clientId' $qParam and `role` = 'Agent' order by m.id desc ;
         """.trimIndent()
