@@ -27,7 +27,7 @@ sealed class ApiValue {
                         val path: String,
 
                         // 是否是主站
-                        val maon: Boolean
+                        val main: Boolean
                 ) {
 
                         val logo: String = country.logo
