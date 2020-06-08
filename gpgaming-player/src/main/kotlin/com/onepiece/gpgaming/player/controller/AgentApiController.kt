@@ -82,12 +82,15 @@ class AgentApiController(
         // 创建代理
         val memberCo = MemberCo(bossId = bossId, clientId = mainClient.id, agentId = agentId, levelId = level.id, name = req.name, phone = req.phone,
                 username = req.username, password = req.password, promoteCode = null, role = Role.Agent, safetyPassword = req.password, formal = false)
-        memberService.create(memberCo)
+        val id = memberService.create(memberCo)
 
 
         // 代理申请表
-        val member = memberService.findByUsername(clientId = mainClient.id, username = req.username) ?: error("注册失败")
-        val applyCo = AgentApplyValue.ApplyCo(bossId = member.bossId, clientId = member.clientId, agentId = member.id, state = ApplyState.Process, remark = "")
+//        val member = memberService.findByUsername(clientId = mainClient.id, username = req.username) ?: error("注册失败")
+//        val applyCo = AgentApplyValue.ApplyCo(bossId = member.bossId, clientId = member.clientId, agentId = member.id, state = ApplyState.Process, remark = "")
+//        agentApplyService.create(applyCo)
+
+        val applyCo = AgentApplyValue.ApplyCo(bossId = bossId, clientId = mainClient.id, agentId = id, state = ApplyState.Process, remark = "")
         agentApplyService.create(applyCo)
     }
 

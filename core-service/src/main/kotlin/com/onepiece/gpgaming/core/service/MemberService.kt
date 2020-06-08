@@ -33,7 +33,7 @@ interface MemberService {
 
     fun checkSafetyPassword(id: Int, safetyPassword: String)
 
-    fun create(memberCo: MemberCo)
+    fun create(memberCo: MemberCo): Int
 
     fun update(memberUo: MemberUo)
 

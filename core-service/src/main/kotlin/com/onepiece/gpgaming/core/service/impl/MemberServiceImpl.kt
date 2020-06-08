@@ -137,7 +137,7 @@ class MemberServiceImpl(
     }
 
     @Transactional(rollbackFor = [Exception::class])
-    override fun create(memberCo: MemberCo) {
+    override fun create(memberCo: MemberCo): Int {
 
         // check username exist
         val hasMember = memberDao.getByUsername(memberCo.clientId, memberCo.username)
@@ -153,6 +153,8 @@ class MemberServiceImpl(
         // create wallet
         val walletCo = WalletCo(clientId = memberCo.clientId, memberId = id)
         walletService.create(walletCo)
+
+        return id
 
         // 创建代理关系
 //        val agent = memberDao.get(id = memberCo.agentId)

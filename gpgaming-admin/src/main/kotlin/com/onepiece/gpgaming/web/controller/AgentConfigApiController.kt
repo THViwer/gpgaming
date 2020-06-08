@@ -103,11 +103,11 @@ class AgentConfigApiController(
         val superiorAgentId = -1
         val memberCo = MemberCo(bossId = user.bossId, clientId = user.id, agentId = superiorAgentId, levelId = defaultLevel.id, name = req.name, phone = req.phone,
                 username = req.username, password = req.password, promoteCode = null, role = Role.Agent, safetyPassword = req.password, formal = true)
-        memberService.create(memberCo)
+        val id = memberService.create(memberCo)
 
 
-        val member = memberService.findByUsername(clientId = user.clientId, username = req.username) ?: error("注册失败")
-        val applyCo = AgentApplyValue.ApplyCo(bossId = member.bossId, clientId = member.clientId, agentId = member.id, state = ApplyState.Done, remark = "client add agent")
+//        val member = memberService.findByUsername(clientId = user.clientId, username = req.username) ?: error("注册失败")
+        val applyCo = AgentApplyValue.ApplyCo(bossId = user.bossId, clientId = user.clientId, agentId = id, state = ApplyState.Done, remark = "client add agent")
         agentApplyService.create(applyCo)
     }
 
