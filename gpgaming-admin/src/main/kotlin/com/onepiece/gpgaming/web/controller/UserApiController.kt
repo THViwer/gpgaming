@@ -86,7 +86,10 @@ class UserApiController(
 
         val permissions = PermissionType.values().map { it.resourceId }.plus("-1")
 
-        val authUser = authService.login(bossId = -1, id = clientId, role = Role.Client, username = req.username, mAuthorities = permissions)
+
+        val bossId = getBossIdByDomain()
+
+        val authUser = authService.login(bossId = bossId, id = clientId, role = Role.Client, username = req.username, mAuthorities = permissions)
 
         return LoginResp(id = -1, clientId = clientId, username = req.username, role = Role.Client,
                 token = authUser.token, permissions = permissions, main = true)
