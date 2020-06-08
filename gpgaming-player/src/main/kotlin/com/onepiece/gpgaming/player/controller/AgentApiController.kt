@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.model.AgentMonthReport
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.value.database.AgentApplyValue
 import com.onepiece.gpgaming.beans.value.database.AgentReportValue
@@ -135,7 +136,7 @@ class AgentApiController(
         // 当前这个月佣金
         val startDate  = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth())
         val agentMonthReport = reportService.startAgentMonthReport(agentId = memberId, today = startDate)
-                .first()
+                .firstOrNull() ?: AgentMonthReport.empty(agentId = agent.id)
 
 
         // 推广连接
