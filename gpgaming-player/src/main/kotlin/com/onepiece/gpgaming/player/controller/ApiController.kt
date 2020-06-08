@@ -586,19 +586,23 @@ open class ApiController(
 
 
         val launch = getHeaderLaunch()
+        var mainPath = ""
         val countries = clients.mapNotNull { client ->
             sites.firstOrNull { it.clientId == client.id }?.let {
                 val path = when (launch) {
                     LaunchMethod.Wap -> "https://www.${it.domain}/m"
                     else -> "https://www.${it.domain}"
                 }
-                ApiValue.GuideConfigVo.CountryVo(country = it.country, path = path, maon = it.clientId == defaultClient.id)
+                if (it.clientId == defaultClient.id) {
+                    mainPath = path
+                }
+                ApiValue.GuideConfigVo.CountryVo(country = it.country, path = path, main = it.clientId == defaultClient.id)
             }
         }
 
         val logo = defaultClient.logo
 
-        return ApiValue.GuideConfigVo(logo = logo, countries = countries)
+        return ApiValue.GuideConfigVo(logo = logo, countries = countries, mainPath = mainPath)
     }
 
     fun <T> getRandom(list: List<T>?) : T? {

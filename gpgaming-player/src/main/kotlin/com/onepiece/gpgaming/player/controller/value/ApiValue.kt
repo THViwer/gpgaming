@@ -15,6 +15,9 @@ sealed class ApiValue {
                 @ApiModelProperty("logo")
                 val logo: String,
 
+                @ApiModelProperty("主站的域名")
+                val mainPath: String,
+
                 @ApiModelProperty("国家列表")
                 val countries: List<CountryVo>
         ) {
