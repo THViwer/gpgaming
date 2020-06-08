@@ -19,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.firewall.DefaultHttpFirewall
 import org.springframework.security.web.firewall.HttpFirewall
-import org.springframework.security.web.firewall.StrictHttpFirewall
 
 
 @Configuration
@@ -113,7 +112,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/user",
                         "/user/check/**",
                         "/user/country",
-                        "/agent/**",
+                        "/agent",
 
                         "/cash/bank",
                         "/cash/upload/proof",
