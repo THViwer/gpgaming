@@ -1,11 +1,13 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.model.Contact
 import com.onepiece.gpgaming.beans.value.internet.web.ContactValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
 
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 interface ContactApi {
 
     @ApiOperation(tags = ["web setting"], value = "联系我们 -> 列表")
-    fun all(): List<Contact>
+    fun all(@RequestParam("role", defaultValue = "Member") role: Role): List<Contact>
 
     @ApiOperation(tags = ["web setting"], value = "联系我们 -> 创建")
     @ResponseStatus(HttpStatus.NO_CONTENT)
