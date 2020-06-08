@@ -582,6 +582,8 @@ open class ApiController(
 
         val clients = clientService.all().filter { it.status == Status.Normal && bossId == bossId }
 
+        val defaultClient = clients.first { it.main }
+
 
         val launch = getHeaderLaunch()
         val countries = clients.mapNotNull { client ->
@@ -590,11 +592,11 @@ open class ApiController(
                     LaunchMethod.Wap -> "https://www.${it.domain}/m"
                     else -> "https://www.${it.domain}"
                 }
-                ApiValue.GuideConfigVo.CountryVo(country = it.country, path = path)
+                ApiValue.GuideConfigVo.CountryVo(country = it.country, path = path, maon = it.clientId == defaultClient.id)
             }
         }
 
-        val logo = clients.first().logo
+        val logo = defaultClient.logo
 
         return ApiValue.GuideConfigVo(logo = logo, countries = countries)
     }

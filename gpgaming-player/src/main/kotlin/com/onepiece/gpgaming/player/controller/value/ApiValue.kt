@@ -24,7 +24,10 @@ sealed class ApiValue {
                         val country: Country,
 
                         // 域名
-                        val path: String
+                        val path: String,
+
+                        // 是否是主站
+                        val maon: Boolean
                 ) {
 
                         val logo: String = country.logo
