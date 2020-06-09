@@ -57,6 +57,13 @@ abstract class BasicController {
         return webSiteService.matchReturnBossId(url)
     }
 
+    fun getBossIdByGuide(): Int {
+        val request = this.getRequest()
+        val url = request.requestURL.toString()
+        return webSiteService.match(url).clientId
+    }
+
+
     fun getCountryByDomain(): Country {
         val request = this.getRequest()
         val url = request.requestURL.toString()

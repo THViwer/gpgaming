@@ -98,7 +98,7 @@ class AgentApiController(
     @PostMapping
     override fun login(@RequestBody loginReq: LoginReq): AgentValue.AgentLoginResp {
 
-        val bossId = getBossIdByDomain()
+        val bossId = getBossIdByGuide()
 
         val loginValue = LoginValue(bossId = bossId, username = loginReq.username, password = loginReq.password, ip = RequestUtil.getIpAddress())
         val member = memberService.login(loginValue)
