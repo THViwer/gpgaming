@@ -1,10 +1,10 @@
 package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.enums.Country
-import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.LoginValue
@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -58,11 +57,18 @@ class UserApiController(
         val member = memberService.login(loginValue)
         check(member.role == Role.Member) { OnePieceExceptionCode.LOGIN_FAIL }
 
-        val webSites = webSiteService.all()
-        val currentWebSite = webSites.first { getRequest().requestURL.contains(it.domain) }
 
-        val client = clientService.get(member.clientId)
-        val clientWebSite = webSites.filter { it.bossId == bossId }.first { it.clientId == member.clientId }
+        val client = clientService.get(id = member.clientId)
+        val webSites = webSiteService.getDataByBossId(bossId = bossId)
+        val clientSite = webSites.filter { it.clientId == member.clientId && it.country == client.country && it.status == Status.Normal }
+                .first()
+
+//        val webSites = webSiteService.all()
+        val currentWebSite = webSites.first { getRequest().requestURL.contains(it.domain) }
+//
+//        val client = clientService.get(member.clientId)
+//        val clientWebSite = webSites.first { it.bossId == bossId && it.clientId == member.clientId && it.country ==  }
+//                .filter { it.bossId == bossId }.first { it.clientId == member.clientId }
 
 
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
@@ -70,10 +76,10 @@ class UserApiController(
         return if (currentWebSite.clientId == member.clientId) {
             val token = authService.login(bossId = bossId, clientId = member.clientId, username = loginReq.username, role = member.role)
             LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name, autoTransfer = member.autoTransfer,
-                    domain = "https://www.${clientWebSite.domain}${isMobile}", country = client.country, successful = true)
+                    domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = true)
         } else {
             LoginResp(id = member.id, role = Role.Member, username = member.username, token = "", name = member.name, autoTransfer = member.autoTransfer,
-                    domain = "https://www.${clientWebSite.domain}${isMobile}", country = client.country, successful = false)
+                    domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = false)
         }
     }
 
