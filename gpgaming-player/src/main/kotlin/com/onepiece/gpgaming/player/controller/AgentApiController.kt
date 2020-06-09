@@ -122,7 +122,7 @@ class AgentApiController(
     @GetMapping("/info")
     override fun info(): AgentValue.AgentInfo {
 
-        val bossId = this.getBossIdByDomain()
+        val bossId = this.current().bossId
         val memberId = this.current().id
 
         // 代理和余额
