@@ -144,13 +144,13 @@ class AgentApiController(
         val urls = sites.groupBy { it.country }.map { it.value.first() }.map {
 
             val promoteURL = "https://www.${it.domain}/RegisterPage?aff=${agent.promoteCode}"
-            val mobilePromoteURL = "https://www.${it.domain}/m/RegisterPage?affid=${agent.promoteCode}"
+            val mobilePromoteURL = "https://www.${it.domain}/m/RegisterPage?aff=${agent.promoteCode}"
 
             AgentValue.PromoteVo(country = it.country, promoteURL = promoteURL, mobilePromoteURL = mobilePromoteURL)
         }
         val defaultClient = clientService.getMainClient(bossId = bossId) ?: error("")
         val defaultSite = sites.first { it.clientId == defaultClient.id }
-        val subAgentPromoteUrl = "https://agent.${defaultSite.domain}/register?affid=${agent.promoteCode}"
+        val subAgentPromoteUrl = "https://agent.${defaultSite.domain}/register?aff=${agent.promoteCode}"
 
         // 导航页
         val guideUrl = "https://guide.${defaultSite.domain}"
