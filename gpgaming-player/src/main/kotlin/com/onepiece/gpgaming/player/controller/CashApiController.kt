@@ -145,7 +145,7 @@ open class CashApiController(
         // 我的银行卡列表
         val myBankMap = memberBankService.query(member.id).map { it.bank to it }.toMap()
 
-        return Bank.values().map {
+        return this.banks().map {
             val myBank = myBankMap[it]
 
             when (myBank != null) {
@@ -154,7 +154,7 @@ open class CashApiController(
                             clientId = member.clientId, memberId = member.id, logo = myBank.bank.logo, grayLogo = myBank.bank.grayLogo)
                 }
                 else -> {
-                    MemberBankVo(id = -1, name = it.cname, bank = it, bankCardNumber = null, clientId = member.clientId,
+                    MemberBankVo(id = -1, name = it.name, bank = it.bank, bankCardNumber = null, clientId = member.clientId,
                             memberId = member.clientId, logo = it.logo, grayLogo = it.grayLogo)
                 }
             }
