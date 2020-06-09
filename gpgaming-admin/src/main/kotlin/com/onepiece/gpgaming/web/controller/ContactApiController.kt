@@ -37,7 +37,7 @@ class ContactApiController(
             ContactType.Instagram,
             ContactType.YouTuBe  -> {
                 val  has = contactService.list(clientId)
-                        .filter { it.role == create.role }
+                        .filter { it.role != create.role }
                         .filter { it.status  != Status.Delete }
                         .firstOrNull { it.type == create.type }
                 check(has == null ) { OnePieceExceptionCode.DATA_FAIL }
