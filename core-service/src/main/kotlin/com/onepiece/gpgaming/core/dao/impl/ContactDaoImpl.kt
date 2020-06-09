@@ -33,6 +33,7 @@ class ContactDaoImpl : BasicDaoImpl<Contact>("contact"), ContactDao {
                 .set("type", type)
                 .set("number", number)
                 .set("qr_code", qrCode)
+                .set("role", role)
                 .set("status", Status.Normal)
                 .executeOnlyOne()
     }
