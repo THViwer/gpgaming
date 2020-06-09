@@ -60,8 +60,7 @@ class UserApiController(
 
         val client = clientService.get(id = member.clientId)
         val webSites = webSiteService.getDataByBossId(bossId = bossId)
-        val clientSite = webSites.filter { it.clientId == member.clientId && it.country == client.country && it.status == Status.Normal }
-                .first()
+        val clientSite = webSites.first { it.clientId == member.clientId && it.country == client.country && it.status == Status.Normal }
 
 //        val webSites = webSiteService.all()
         val currentWebSite = webSites.first { getRequest().requestURL.contains(it.domain) }
