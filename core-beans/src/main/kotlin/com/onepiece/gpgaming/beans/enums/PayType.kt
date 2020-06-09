@@ -20,7 +20,7 @@ enum class PayType(
             logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/SurePay_ori.png"
     ),
 
-    GPPay(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/FPXpay_gray.png",
+    FPX(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/FPXpay_gray.png",
             logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/FPXpay_ori.png"
     )
     ;
@@ -30,11 +30,9 @@ enum class PayType(
         return when  (this) {
             M3Pay -> objectMapper.readValue<M3PayConfig>(data)
             SurePay -> objectMapper.readValue<SurePayConfig>(data)
-            GPPay -> objectMapper.readValue<GPPayConfig>(data)
+            FPX -> objectMapper.readValue<GPPayConfig>(data)
             else -> error("不支持类型")
         }
-
-
     }
 
 }
