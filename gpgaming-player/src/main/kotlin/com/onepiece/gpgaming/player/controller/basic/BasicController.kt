@@ -61,7 +61,7 @@ abstract class BasicController {
         val request = this.getRequest()
         val url = request.requestURL.toString()
 
-        return if (url.contains("gpgaming88.com")) { // TODO 测试环境写死
+        return if (url.contains("gpgaming88.com") || url.contains("localhost")) { // TODO 测试环境写死
             8
         } else {
             webSiteService.match(url).clientId
