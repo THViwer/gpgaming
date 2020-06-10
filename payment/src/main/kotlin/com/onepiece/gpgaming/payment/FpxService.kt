@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
 
-data class GPPayResponse(
+data class FPXPayResponse(
 
         // 错误码
         val errorCode: Int = 0,
@@ -20,7 +20,7 @@ data class GPPayResponse(
         val payUrl: String
 )
 
-data class GPPayReq(
+data class FPXPayRequest(
 
         // 商户Code
         val merchantCode: String,
@@ -58,10 +58,10 @@ class GPPayService(
 //                "merchantBackPath" to config.backendURL
 //        ).toMap()
 
-        val req = GPPayReq(merchantCode = config.merchantId, orderId = req.orderId, amount = req.amount.setScale(2, 2),
+        val fpxReq = FPXPayRequest(merchantCode = config.merchantId, orderId = req.orderId, amount = req.amount.setScale(2, 2),
                 bank = req.selectBank!!, merchantBackPath = config.backendURL)
 
-        val response = okHttpUtil.doPostJson(url = config.apiPath, data = req, clz = GPPayResponse::class.java)
+        val response = okHttpUtil.doPostJson(url = config.apiPath, data = fpxReq, clz = FPXPayResponse::class.java)
 
 
         return mapOf(
