@@ -58,15 +58,9 @@ class UserApiController(
         val member = memberService.login(loginValue)
         check(member.role == Role.Member) { OnePieceExceptionCode.LOGIN_FAIL }
 
-        log.info("-----------login1-----------")
-
-
         val client = clientService.get(id = member.clientId)
         val webSites = webSiteService.getDataByBossId(bossId = bossId)
         val clientSite = webSites.first { it.clientId == member.clientId && it.country == client.country && it.status == Status.Normal }
-
-
-        log.info("-----------login2-----------")
 
 
 //        val webSites = webSiteService.all()
