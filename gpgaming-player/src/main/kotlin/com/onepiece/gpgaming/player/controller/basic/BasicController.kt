@@ -60,7 +60,12 @@ abstract class BasicController {
     fun getBossIdByGuide(): Int {
         val request = this.getRequest()
         val url = request.requestURL.toString()
-        return webSiteService.match(url).clientId
+
+        return if (url.contains("gpgaming88.com")) { // TODO 测试环境写死
+            8
+        } else {
+            webSiteService.match(url).clientId
+        }
     }
 
 

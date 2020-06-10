@@ -8,7 +8,7 @@ spring:
       password: mWHzuJt4qWKrBjZc
       url: jdbc:mysql://gp88db.cnzohpwidxge.ap-southeast-1.rds.amazonaws.com:3306/gpgaming?useUnicode=true&characterEncoding=UTF-8
   profiles:
-    active: dev
+    active: prod
 
   redis:
     host: 172.168.99.10
