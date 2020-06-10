@@ -51,16 +51,23 @@ class UserApiController(
     ): LoginResp {
 
         val bossId = getBossIdByDomain()
+        log.info("bossId = $bossId")
         val launch = getHeaderLaunch()
 
         val loginValue = LoginValue(bossId = bossId, username = loginReq.username, password = loginReq.password, ip = RequestUtil.getIpAddress())
         val member = memberService.login(loginValue)
         check(member.role == Role.Member) { OnePieceExceptionCode.LOGIN_FAIL }
 
+        log.info("-----------login1-----------")
+
 
         val client = clientService.get(id = member.clientId)
         val webSites = webSiteService.getDataByBossId(bossId = bossId)
         val clientSite = webSites.first { it.clientId == member.clientId && it.country == client.country && it.status == Status.Normal }
+
+
+        log.info("-----------login2-----------")
+
 
 //        val webSites = webSiteService.all()
         val currentWebSite = webSites.first { getRequest().requestURL.contains(it.domain) }
