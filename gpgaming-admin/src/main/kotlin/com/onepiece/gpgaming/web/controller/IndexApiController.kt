@@ -299,6 +299,11 @@ class IndexApiController(
     @PutMapping("/blog")
     override fun blogUpdate(@RequestBody blogUo: BlogValue.BlogUo) {
         return blogService.update(uo = blogUo)
+    }
 
+    @GetMapping("/agentPlans")
+    override fun agentPlats(): List<I18nContent> {
+        val clientId = getClientId()
+        return i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.AgentPlans)
     }
 }

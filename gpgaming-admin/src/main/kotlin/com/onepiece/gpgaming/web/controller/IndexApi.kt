@@ -128,5 +128,8 @@ interface IndexApi {
     fun blogUpdate(@RequestBody blogUo: BlogValue.BlogUo)
 
 
+    @ApiOperation(tags = ["web setting"], value = "代理计划 -> 列表")
+    fun agentPlats(): List<I18nContent>
+
 
 }
