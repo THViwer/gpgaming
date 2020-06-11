@@ -1,0 +1,18 @@
+node {
+    def mvnHome
+    stage('Preparation') {
+        print 'DEBUG: parameter releaseVersion = ' + params.releaseVersion
+        git 'git@gitlab.gpgaming88.com:onepiece/gpgaming.git'
+       // mvnHome = tool 'M3'
+        mvnHome = '/usr/share/maven'
+    }
+    stage('Release') {
+        def pom = readMavenPom file: 'pom.xml'
+        def releaseVersion = params.releaseVersion
+        def version = pom.version.replace("1.0-SNAPSHOT", "${releaseVersion}")
+        sh "${mvnHome}/bin/mvn -DreleaseVersion=${version} -DdevelopmentVersion=${pom.version} -DpushChanges=false -DlocalCheckout=true -DpreparationGoals=initialize -Dresume=false" +
+                " release:prepare release:perform -B"
+        sh "git push --set-upstream origin master"
+        sh "git push origin ${pom.artifactId}-${version}"
+     }
+ }
