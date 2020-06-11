@@ -40,7 +40,7 @@ data class FPXPayRequest(
 )
 
 @Service
-class GPPayService(
+class FpxService(
         private val okHttpUtil: PayOkHttpUtil
 ) : PayService {
 
