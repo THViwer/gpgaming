@@ -81,7 +81,7 @@ data class MemberCo(
         // 等级Id
         val levelId: Int,
 
-        // 推广来源
+        // 推广来源(现在就是用户Id)
         val promoteCode: String?,
 
         // 是否正式

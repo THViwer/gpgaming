@@ -60,7 +60,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("safety_password", memberCo.safetyPassword)
                 .set("level_id", memberCo.levelId)
                 .set("status", Status.Normal)
-                .set("id", memberCo.promoteCode)
+                .set("promote_code", memberCo.promoteCode)
                 .set("formal", memberCo.formal)
                 .set("agency_month_fee", BigDecimal.ZERO)
                 .executeGeneratedKey()
