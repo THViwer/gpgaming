@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 class PayGateway(
         private val m3PayService: M3PayService,
         private val surePayService: SurePayService,
-        private val gpPayService: GPPayService
+        private val fpxService: FpxService
 
 ) : PayService {
 
@@ -16,7 +16,7 @@ class PayGateway(
         return  when (req.payType) {
             PayType.M3Pay -> m3PayService.start(req)
             PayType.SurePay -> surePayService.start(req)
-            PayType.FPX -> gpPayService.start(req)
+            PayType.FPX -> fpxService.start(req)
         }
     }
 }
