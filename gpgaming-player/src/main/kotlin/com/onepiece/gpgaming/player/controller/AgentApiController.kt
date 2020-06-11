@@ -166,7 +166,7 @@ class AgentApiController(
     override fun contactUs(): Contacts {
 
         val list = contactService.list(clientId = getClientIdByDomain())
-                .filter { it.role == Role.Member }
+                .filter { it.role == Role.Agent }
                 .filter { it.status == Status.Normal }
 
         val contacts = list.groupBy { it.type }
