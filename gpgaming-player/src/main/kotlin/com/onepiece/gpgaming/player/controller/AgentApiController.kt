@@ -71,7 +71,7 @@ class AgentApiController(
     override fun register(@RequestBody req: AgentValue.AgentRegisterReq) {
 
 
-        val bossId = getBossIdByDomain()
+        val bossId = getBossIdByGuide()
         val mainClient = clientService.getMainClient(bossId) ?: error("没有默认代理")
 
 
