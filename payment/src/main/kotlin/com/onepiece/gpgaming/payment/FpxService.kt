@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.payment
 
 import com.onepiece.gpgaming.beans.enums.Bank
+import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.pay.GPPayConfig
 import com.onepiece.gpgaming.payment.http.PayOkHttpUtil
 import org.apache.commons.codec.digest.DigestUtils
@@ -62,6 +63,7 @@ class GPPayService(
                 bank = req.selectBank!!, merchantBackPath = config.backendURL)
 
         val response = okHttpUtil.doPostJson(url = config.apiPath, data = fpxReq, clz = FPXPayResponse::class.java)
+        check(response.errorCode != 200) { OnePieceExceptionCode.SYSTEM }
 
 
         return mapOf(
