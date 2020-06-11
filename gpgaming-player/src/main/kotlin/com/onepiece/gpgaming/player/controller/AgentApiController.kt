@@ -138,8 +138,7 @@ class AgentApiController(
         val agentMonthReport = reportService.startAgentMonthReport(agentId = memberId, today = startDate)
                 .firstOrNull() ?: AgentMonthReport.empty(agentId = agent.id)
 
-
-        // 推广连接
+        // 推广连接码
         val sites = webSiteService.getDataByBossId(bossId = bossId)
         val urls = sites.groupBy { it.country }.map { it.value.first() }.map {
 
