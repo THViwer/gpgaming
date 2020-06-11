@@ -113,6 +113,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/user/check/**",
                         "/user/country",
                         "/agent",
+                        "/agent/contactUs",
 
                         "/cash/bank",
                         "/cash/upload/proof",
