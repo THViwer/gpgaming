@@ -42,7 +42,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
                     safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion,
-                    autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = promoteCode,
+                    autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = "$id",
                     formal = formal, agencyMonthFee = agencyMonthFee)
         }
 
@@ -60,7 +60,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("safety_password", memberCo.safetyPassword)
                 .set("level_id", memberCo.levelId)
                 .set("status", Status.Normal)
-                .set("promote_code", memberCo.promoteCode)
+                .set("id", memberCo.promoteCode)
                 .set("formal", memberCo.formal)
                 .set("agency_month_fee", BigDecimal.ZERO)
                 .executeGeneratedKey()
@@ -116,7 +116,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
     override fun findByBossIdAndCode(bossId: Int, promoteCode: String): Member? {
         return query()
                 .where("boss_id", bossId)
-                .where("promote_code", promoteCode)
+                .where("id", promoteCode)
                 .executeMaybeOne(mapper)
     }
 
@@ -144,7 +144,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .where("username", query.username)
                 .where("status", query.status)
                 .where("level_id", query.levelId)
-                .where("promoteCode", query.promoteCode)
+                .where("id", query.promoteCode)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
                 .sort("id desc")
@@ -162,7 +162,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .where("username", query.username)
                 .where("status", query.status)
                 .where("level_id", query.levelId)
-                .where("promote_code", query.promoteCode)
+                .where("id", query.promoteCode)
                 .asWhere("created_time > ?", query.startTime)
                 .asWhere("created_time <= ?", query.endTime)
                 .sort("id desc")
