@@ -181,8 +181,8 @@ class MemberDailyReportDaoImpl(
 
     override fun queryRebate(current: Int, size: Int): List<MemberDailyReport> {
         return query()
-                .where("backwater_execution", false)
-                .asWhere("backwater_money != 0")
+                .where("rebate_execution", false)
+                .asWhere("rebate_amount != 0")
                 .limit(current, size)
                 .execute(mapper)
     }

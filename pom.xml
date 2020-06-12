@@ -20,8 +20,8 @@
 		<module>core-beans</module>
 
 		<!-- 暂时关闭 如果不发布 可以不打开 -->
-<!--		<module>gpgaming-task</module>-->
-<!--		<module>gpgaming-su</module>-->
+		<module>gpgaming-task</module>
+		<module>gpgaming-su</module>
 
 		<!-- 为了防止编译过慢 -->
 		<module>utils</module>
