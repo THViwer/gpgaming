@@ -85,13 +85,13 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
                 .count()
     }
 
-    override fun lock(withdraLockUo: DepositLockUo): Boolean {
-        return update().set("lock_waiter_id", withdraLockUo.lockWaiterId)
-                .set("lock_waiter_name", withdraLockUo.lockWaiterName)
+    override fun lock(depositLockUo: DepositLockUo): Boolean {
+        return update().set("lock_waiter_id", depositLockUo.lockWaiterId)
+                .set("lock_waiter_name", depositLockUo.lockWaiterName)
                 .set("process_id", UUID.randomUUID().toString())
-                .where("client_id", withdraLockUo.clientId)
-                .where("order_id", withdraLockUo.orderId)
-                .where("process_id", withdraLockUo.processId)
+                .where("client_id", depositLockUo.clientId)
+                .where("order_id", depositLockUo.orderId)
+                .where("process_id", depositLockUo.processId)
                 .asWhere("lock_waiter_id is null")
                 .executeOnlyOne()
     }

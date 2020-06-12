@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.core.dao.impl
 
-import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.AgentDailyReport
@@ -9,7 +8,6 @@ import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.value.database.AgentValue
 import com.onepiece.gpgaming.beans.value.database.AnalysisValue
-import com.onepiece.gpgaming.beans.value.database.MemberValue
 import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.utils.Query
 import org.springframework.jdbc.core.JdbcTemplate
@@ -306,7 +304,7 @@ class AnalysisDaoImpl(
 
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
-            val agentId = rs.getInt("agent_id")
+            val mAgentId = rs.getInt("agent_id")
             val superiorAgentId = rs.getInt("superior_agent_id")
             val totalDeposit = rs.getBigDecimal("total_deposit")
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
@@ -316,7 +314,7 @@ class AnalysisDaoImpl(
             val totalPromotion = rs.getBigDecimal("total_promotion")
             val newMemberCount =  rs.getInt("new_member_count")
 
-            AgentMonthReport(id  = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = agentId, totalDeposit = totalDeposit,
+            AgentMonthReport(id  = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = mAgentId, totalDeposit = totalDeposit,
                     totalWithdraw = totalWithdraw, totalBet = totalBet, totalMWin = totalMWin, totalPromotion = totalPromotion, totalRebate = totalRebate,
                     day = startDate, agentCommissionScale = BigDecimal.ZERO, agentActiveCount = 0, agentCommission = BigDecimal.ZERO,
                     memberCommissionScale = BigDecimal.ZERO, memberActiveCount = 0, memberCommission = BigDecimal.ZERO,

@@ -29,8 +29,8 @@ class PayOkHttpUtil(
     companion object {
         val JSON = "application/json; charset=utf-8".toMediaType()
         val XML = "application/xml; charset=utf-8".toMediaType()
-        val TEXT_XML = "text/xml; charset=utf-8".toMediaType()
-        val TEXT = "text/html; charset=utf-8".toMediaType()
+//        val TEXT_XML = "text/xml; charset=utf-8".toMediaType()
+//        val TEXT = "text/html; charset=utf-8".toMediaType()
     }
 
     val client = OkHttpClient.Builder()
@@ -114,13 +114,13 @@ class PayOkHttpUtil(
 
 
     fun doPostForm(platform: Platform, url: String, body: FormBody, headers: Map<String, String> = emptyMap()){
-        doPostForm(platform, url, body, String::class.java, headers) { code, response ->
+        doPostForm(platform, url, body, String::class.java, headers) { _, _ ->
             OnePieceExceptionCode.PLATFORM_METHOD_FAIL
         }
     }
 
     fun <T> doPostForm(platform: Platform, url: String, body: FormBody, clz: Class<T>, headers: Map<String, String> = emptyMap()): T {
-        return doPostForm(platform = platform, url = url, body = body, clz = clz, headers = headers) { code, response ->
+        return doPostForm(platform = platform, url = url, body = body, clz = clz, headers = headers) { _, _ ->
             error (OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
     }

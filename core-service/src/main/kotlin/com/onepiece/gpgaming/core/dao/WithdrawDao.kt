@@ -20,7 +20,7 @@ interface WithdrawDao: BasicDao<Withdraw> {
 
     fun create(orderCo: WithdrawCo): Boolean
 
-    fun lock(withdrawLockUo: DepositLockUo): Boolean
+    fun lock(depositLockUo: DepositLockUo): Boolean
 
     fun check(orderUo: WithdrawUo): Boolean
 

@@ -48,8 +48,8 @@ class FpxService(
         val config = req.payConfig as GPPayConfig
 
         //TODO 签名暂定
-        val signParam = ""
-        val token =  DigestUtils.md5Hex(signParam)
+//        val signParam = ""
+//        val token =  DigestUtils.md5Hex(signParam)
 
 //        val param = mapOf<String, Any>(
 //                "merchantCode" to config.merchantId,

@@ -80,14 +80,14 @@ class ReportServiceImpl(
 
     override fun startMemberReport(startDate: LocalDate): List<MemberDailyReport> {
         val endDate = startDate.plusDays(1)
-        val now = LocalDateTime.now()
+//        val now = LocalDateTime.now()
 
         // 报表数据
         val list = analysisDao.memberReport(startDate = startDate, endDate = endDate)
 
         // 注单
-        val payOrders = payOrderDao.mReport(clientId = null, memberId = null, startDate = startDate, endDate = endDate)
-        val payOrderMap = payOrders.map { it.memberId to it }.toMap()
+//        val payOrders = payOrderDao.mReport(clientId = null, memberId = null, startDate = startDate, endDate = endDate)
+//        val payOrderMap = payOrders.map { it.memberId to it }.toMap()
 
         // 会员对应返水比例
         val levelIds = levelDao.all().map { it.id to it }.toMap()

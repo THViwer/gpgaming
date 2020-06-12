@@ -39,7 +39,7 @@ class JwtTokenUtil : Serializable {
     }
 
 
-    fun getUsernameFromToken(token: String): String? {
+    private fun getUsernameFromToken(token: String): String? {
         return try {
             val claims = getClaimsFromToken(token)
             claims.subject
@@ -81,6 +81,7 @@ class JwtTokenUtil : Serializable {
     }
 
     private fun isTokenExpired(token: String): Boolean {
+        println(token)
         //        final Date expiration = getExpirationDateFromToken(token);
         //        return expiration.before(new Date());
         return false
@@ -88,6 +89,7 @@ class JwtTokenUtil : Serializable {
 
     private fun isCreatedBeforeLastPasswordReset(created: Date?, lastPasswordReset: Date?): Boolean {
         //return lastPasswordReset != null && created!!.before(lastPasswordReset)
+        println("$created : $lastPasswordReset")
         return false
     }
 

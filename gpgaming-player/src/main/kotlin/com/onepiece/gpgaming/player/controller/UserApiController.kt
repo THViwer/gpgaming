@@ -120,7 +120,6 @@ class UserApiController(
     ): LoginResp {
 
         check(registerReq.country != Country.Default)
-        val launch = getHeaderLaunch()
 
         val bossId = getBossIdByDomain()
         log.info("bossId = $bossId")
@@ -146,7 +145,6 @@ class UserApiController(
     @GetMapping("/country")
     override fun countries(): List<Country> {
 
-        val language = getHeaderLanguage()
         val clientId = getClientIdByDomain()
         val client = clientService.get(clientId)
 
