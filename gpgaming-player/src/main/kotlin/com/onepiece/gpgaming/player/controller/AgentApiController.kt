@@ -259,7 +259,7 @@ class AgentApiController(
         val content = list.firstOrNull { it.language == language } ?: list.firstOrNull { it.language == Language.EN }
         return content?.let {
             it.getII18nContent(objectMapper = objectMapper) as I18nContent.DefaultContentI18n
-        } ?: I18nContent.DefaultContentI18n(title = "hi", content = "this is content")
+        } ?: I18nContent.DefaultContentI18n(title = "hi", subTitle = "hi, sub title", content = "this is content")
 
     }
 }
