@@ -3,8 +3,12 @@ package com.onepiece.gpgaming.beans.model
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.onepiece.gpgaming.beans.enums.*
-import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.PromotionCategory
+import com.onepiece.gpgaming.beans.enums.PromotionPeriod
+import com.onepiece.gpgaming.beans.enums.PromotionRuleType
+import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberTransferUo
 import com.onepiece.gpgaming.utils.JacksonUtil
 import java.math.BigDecimal
@@ -76,7 +80,6 @@ data class Promotion (
             return when (ruleType) {
                 PromotionRuleType.Bet -> JacksonUtil.objectMapper.readValue<PromotionRules.BetRule>(ruleJson)
                 PromotionRuleType.Withdraw -> JacksonUtil.objectMapper.readValue<PromotionRules.WithdrawRule>(ruleJson)
-                else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
         }
 
@@ -132,7 +135,6 @@ data class Promotion (
                 val withdrawRule = this.rule as PromotionRules.WithdrawRule
                 (amount.plus(platformBalance)).multiply(withdrawRule.promotionProportion)
             }
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
         return promotionAmount
