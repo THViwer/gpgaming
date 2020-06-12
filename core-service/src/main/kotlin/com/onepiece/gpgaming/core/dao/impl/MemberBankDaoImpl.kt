@@ -51,6 +51,7 @@ class MemberBankDaoImpl : BasicDaoImpl<MemberBank>("member_bank"), MemberBankDao
     override fun update(memberBankUo: MemberBankUo): Boolean {
         return update().set("bank", memberBankUo.bank)
                 .set("bank_card_number", memberBankUo.bankCardNumber)
+                .set("status", memberBankUo.status)
                 .where("id", memberBankUo.id)
                 .executeOnlyOne()
     }
