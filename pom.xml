@@ -10,17 +10,19 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<!--<module>treasure-web</module>-->
-		<module>utils</module>
 		<module>core-service</module>
 		<module>gpgaming-admin</module>
 		<module>gpgaming-player</module>
 		<module>core-beans</module>
-		<module>games</module>
-		<module>payment</module>
+
 		<module>gpgaming-task</module>
 		<module>gpgaming-su</module>
-<!--		<module>gpgaming-agent</module>-->
+
+		<!-- 为了防止编译过慢 -->
+<!--		<module>utils</module>-->
+<!--		<module>games</module>-->
+<!--		<module>payment</module>-->
+
 	</modules>
 
 </project>
