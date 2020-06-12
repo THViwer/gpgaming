@@ -108,6 +108,13 @@ class IndexApiController(
 
         val i18nContentCo = I18nContentCo(clientId = clientId, content = i18nContentCoReq.getI18nContent(objectMapper),
                 language = i18nContentCoReq.language, configId = i18nContentCoReq.configId, configType = i18nContentCoReq.configType)
+                .let {
+                    when (it.configType) {
+                        I18nConfig.AgentPlans,
+                        I18nConfig.RegisterSide -> it.copy(configId = -1)
+                        else -> it
+                    }
+                }
 
         i18nContentService.create(i18nContentCo)
 

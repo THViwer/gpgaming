@@ -157,6 +157,9 @@ data class I18nContent (
             // 标题
             val title: String,
 
+            // 子标题
+            val subTitle: String,
+
             // 内容
             val content: String
     ): II18nContent
