@@ -38,7 +38,7 @@ data class Promotion (
         val ruleType: PromotionRuleType,
 
         // 优惠层级Id 如果为null则是全部
-        val levelId: Int?,
+        val levelId: List<Int>,
 
         // 优惠周期
         val period: PromotionPeriod,
@@ -69,7 +69,7 @@ data class Promotion (
 
 ) {
 
-    fun <T> getPromotioRuleCondition(mapper: ObjectMapper, clz: Class<T>):  T{
+    fun <T> getPromotionRuleCondition(mapper: ObjectMapper, clz: Class<T>):  T{
         return mapper.readValue(ruleJson, clz)
     }
 

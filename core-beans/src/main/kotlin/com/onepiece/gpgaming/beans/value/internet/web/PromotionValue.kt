@@ -39,7 +39,7 @@ data class PromotionVo(
         val top: Boolean,
 
         @ApiModelProperty("优惠层级Id 如果为null则是全部")
-        val levelId: Int?,
+        val levelId: List<Int>,
 
 //        @ApiModelProperty("图标")
 //        val icon: String,
@@ -90,7 +90,7 @@ data class PromotionCoReq(
         val category: PromotionCategory,
 
         @ApiModelProperty("层级Id")
-        val levelId: Int?,
+        val levelId: List<Int>,
 
         @ApiModelProperty("平台")
         val platforms: List<Platform>,
@@ -150,7 +150,7 @@ data class PromotionUoReq(
         val status: Status?,
 
         @ApiModelProperty("层级Id")
-        val levelId: Int?,
+        val levelId: List<Int>?,
 
         @ApiModelProperty("优惠规则")
         val promotionRuleVo: PromotionRuleVo?,

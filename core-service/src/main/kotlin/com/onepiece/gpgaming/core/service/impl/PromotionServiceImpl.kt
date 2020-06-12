@@ -98,7 +98,7 @@ class PromotionServiceImpl(
             val ruleJson = objectMapper.writeValueAsString(rule)
 
             return Promotion(id = -100, clientId = 0, category = PromotionCategory.Special, platforms = listOf(Platform.Kiss918, Platform.Pussy888, Platform.Mega),
-                    stopTime = null, ruleType = PromotionRuleType.Withdraw, levelId = null, period = PromotionPeriod.Daily, periodMaxPromotion = BigDecimal(99999999),
+                    stopTime = null, ruleType = PromotionRuleType.Withdraw, levelId = emptyList(), period = PromotionPeriod.Daily, periodMaxPromotion = BigDecimal(99999999),
                     ruleJson = ruleJson, top = true, status = Status.Normal, createdTime = now, updatedTime = now, sequence = 100, show = true)
         } else {
             promotionDao.get(id)

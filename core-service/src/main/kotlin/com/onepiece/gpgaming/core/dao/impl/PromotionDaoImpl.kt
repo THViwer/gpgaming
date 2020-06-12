@@ -10,7 +10,6 @@ import com.onepiece.gpgaming.beans.value.database.PromotionCo
 import com.onepiece.gpgaming.beans.value.database.PromotionUo
 import com.onepiece.gpgaming.core.dao.PromotionDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
-import com.onepiece.gpgaming.core.dao.basic.getIntOrNull
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.time.LocalDateTime
@@ -31,7 +30,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val periodMaxPromotion = rs.getBigDecimal("period_max_promotion")
             val status = rs.getString("status").let { Status.valueOf(it) }
 
-            val levelId = rs.getIntOrNull("level_id")
+            val levelId = rs.getString("level_id").split(",").map { it.toInt() }
             val ruleType = rs.getString("rule_type").let { PromotionRuleType.valueOf(it) }
             val ruleJson = rs.getString("rule_json")
             val sequence = rs.getInt("sequence")
@@ -56,7 +55,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
 //                .set("icon", promotionCo.icon)
                 .set("period", promotionCo.period)
                 .set("period_max_promotion", promotionCo.periodMaxPromotion)
-                .set("level_id", promotionCo.levelId)
+                .set("level_id", promotionCo.levelId.joinToString(separator = ","))
                 .set("rule_json", promotionCo.ruleJson)
                 .set("rule_type", promotionCo.ruleType)
                 .set("sequence", promotionCo.sequence)
@@ -75,7 +74,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("period", promotionUo.period)
                 .set("period_max_promotion", promotionUo.periodMaxPromotion)
                 .set("status", promotionUo.status)
-                .setIfNull("level_id", promotionUo.levelId)
+                .set("level_id", promotionUo.levelId?.joinToString(separator = ","))
                 .set("rule_json", promotionUo.ruleJson)
                 .set("updated_time", LocalDateTime.now())
                 .set("sequence", promotionUo.sequence)

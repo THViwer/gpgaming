@@ -32,7 +32,7 @@ data class PromotionCo(
         val top: Boolean,
 
         // 层级Id
-        val levelId: Int?,
+        val levelId: List<Int>,
 
         // 优惠类型
         val ruleType: PromotionRuleType,
@@ -74,7 +74,7 @@ data class PromotionUo(
         val status: Status? = null,
 
         // 层级Id
-        val levelId: Int?,
+        val levelId: List<Int>?,
 
         // 路由规则json
         val ruleJson: String?,

@@ -539,9 +539,9 @@ open class CashApiController(
                     PromotionPeriod.check(promotion = promotion, historyOrders = historyOrders)
                 }
                 .filter { promotion ->
-                    log.info("用户：${current.username}, 优惠Id：${promotion.id}, 过滤结果5：${promotion.levelId == null || promotion.levelId == member.levelId} ")
-
-                    promotion.levelId == null || promotion.levelId == member.levelId
+                    log.info("用户：${current.username}, 优惠Id：${promotion.id}, 过滤结果5：${promotion.levelId.isEmpty() || promotion.levelId.contains(member.levelId)} ")
+                    promotion.levelId.isEmpty() || promotion.levelId.contains(member.levelId)
+//                    promotion.levelId == null || promotion.levelId == member.levelId
                 }
 
         log.info("用户：${current.username}, 可参加优惠列表：$joinPromotions")
