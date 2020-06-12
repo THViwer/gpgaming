@@ -188,6 +188,9 @@ sealed class AgentValue {
             // 会员总数
             val memberCount: Int,
 
+            // 代理总灵敏
+            val subAgentCount: Int,
+
             // 代理月费用
             val agencyMonthFee: BigDecimal,
 

@@ -474,10 +474,13 @@ class AnalysisDaoImpl(
         val qParam = if (agentId != -1) " and m.id = $agentId" else ""
 
         val sql = """
-            select m.id, m.agent_id superior_agent_id,m.username, m.phone, m.name, m.agency_month_fee, m.created_time, m.formal, t.count from member m
+            select m.id, m.agent_id superior_agent_id,m.username, m.phone, m.name, m.agency_month_fee, m.created_time, m.formal, t.count member_count, y.count agent_count from member m
                 left join (
-                    select agent_id, count(*) count from member x group by boss_id, agent_id
+                    select agent_id, count(*) count from member x where role = 'Member' group by boss_id, agent_id
                 ) t on m.id = t.agent_id
+                left join (
+                    select agent_id, count(*) count from member x where role = 'Agent' group by boss_id, agent_id
+                ) y on m.id = y.agent_id
             where m.boss_id = '$bossId' and client_id = '$clientId' $qParam and `role` = 'Agent' order by m.id desc ;
         """.trimIndent()
 
@@ -490,12 +493,14 @@ class AnalysisDaoImpl(
             val phone = rs.getString("phone")
             val formal = rs.getBoolean("formal")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            val memberCount = rs.getInt("count")
+            val memberCount = rs.getInt("member_count")
+            val agentCount = rs.getInt("agent_count")
+
             val agencyMonthFee = rs.getBigDecimal("agency_month_fee")
 
             AgentValue.SubAgentVo(id = id, username = username, phone = phone, formal = formal, memberCount = memberCount,
                     createdTime = createdTime, agencyMonthFee = agencyMonthFee, name = name, superiorAgentId = superiorAgentId,
-                    superiorUsername = "-")
+                    superiorUsername = "-", subAgentCount = agentCount)
         }
     }
 }
