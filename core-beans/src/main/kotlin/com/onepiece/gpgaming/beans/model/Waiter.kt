@@ -44,8 +44,11 @@ data class Waiter (
 
     val clientBanks: List<Int>?
         get() {
-            return clientBankData?.let { it.split(",").map { it.toInt() } }
+            return clientBankData?.let {
+                it.split(",")
+                        .let {
+                            if (it.isEmpty() || (it.size == 1 && it.first().isEmpty())) emptyList() else it.map { x -> x.toInt() }
+                        }
+            }
         }
-
-
 }
