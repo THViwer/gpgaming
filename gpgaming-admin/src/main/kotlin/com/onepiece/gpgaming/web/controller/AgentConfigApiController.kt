@@ -153,7 +153,7 @@ class AgentConfigApiController(
                 .toMap()
 
         return list.map {
-            val superior = agents[it.superiorAgentId]?.name?: "-"
+            val superior = agents[it.superiorAgentId]?.username?: "-"
             it.copy(superiorUsername = superior)
         }
     }
