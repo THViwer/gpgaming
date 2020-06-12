@@ -77,8 +77,12 @@ abstract class BasicController {
 
     fun getHeaderLanguage(): Language {
         val request = this.getRequest()
-        return request.getHeader("language").let {
-            Language.valueOf(it)
+        return try {
+            request.getHeader("language").let {
+                Language.valueOf(it)
+            }
+        } finally {
+            Language.EN
         }
     }
 
