@@ -124,12 +124,6 @@ class Insert(
         val sql = "insert ignore into `$table` (${names}) values (${questions})"
 //        val sql = "insert into `$table` (${names}) values (${questions})"
 
-        log.info("------GeneratedKey-------")
-        log.info("sql = $sql")
-        log.info("param = $param")
-        log.info("------end-------")
-
-
         val row = jdbcTemplate.update({ connection ->
             val ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)
             param.forEachIndexed { index, any ->
