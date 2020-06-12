@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.utils
 
+import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.BatchPreparedStatementSetter
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.GeneratedKeyHolder
@@ -77,6 +78,10 @@ class Insert(
         private val jdbcTemplate: JdbcTemplate,
         private val table: String
 ) {
+
+    private val log = LoggerFactory.getLogger(BatchInsert::class.java)
+
+
     private val columns = arrayListOf<String>()
     private val param = arrayListOf<Any>()
 
@@ -116,8 +121,13 @@ class Insert(
 
         val names = columns.joinToString(separator = ",")
         val questions = (0 until columns.size).joinToString(separator = ","){ "?" }
-//        val sql = "insert ignore into `$table` (${names}) values (${questions})"
-        val sql = "insert into `$table` (${names}) values (${questions})"
+        val sql = "insert ignore into `$table` (${names}) values (${questions})"
+//        val sql = "insert into `$table` (${names}) values (${questions})"
+
+        log.info("------GeneratedKey-------")
+        log.info("sql = $sql")
+        log.info("param = $param")
+        log.info("------end-------")
 
 
         val row = jdbcTemplate.update({ connection ->
