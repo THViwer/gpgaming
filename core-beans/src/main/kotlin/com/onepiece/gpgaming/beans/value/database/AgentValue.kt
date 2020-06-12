@@ -197,7 +197,12 @@ sealed class AgentValue {
             // 创建时间
             val createdTime: LocalDateTime
 
-    )
+    ) {
+
+        // 推广码
+        val promoteCode: String = "$id"
+
+    }
 
     data class AgentCommissionVo(
 
