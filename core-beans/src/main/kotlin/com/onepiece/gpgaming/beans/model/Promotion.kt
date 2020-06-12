@@ -110,13 +110,7 @@ data class Promotion (
                     else -> "Transfer:$amount, Main Wallet:${platformBalance},Promotion Bonus:${promotionAmount}, Total Amount:${amount.plus(promotionAmount).plus(platformBalance)}, Game balance reach ${requirementTransferOutAmount} to transfer out"
                 }
             }
-            else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
-
-    }
-
-    private fun getA() {
-
 
     }
 
@@ -124,7 +118,7 @@ data class Promotion (
     /**
      * 获得优惠金额
      */
-    fun getPromotionAmount(amount: BigDecimal, platformBalance: BigDecimal, overPromotionAmount: BigDecimal): BigDecimal{
+    private fun getPromotionAmount(amount: BigDecimal, platformBalance: BigDecimal, overPromotionAmount: BigDecimal): BigDecimal{
 
         if (this.rule.minAmount.toDouble() > amount.toDouble()) return BigDecimal.ZERO
         if (this.rule.maxAmount.toDouble() < amount.toDouble()) return BigDecimal.ZERO

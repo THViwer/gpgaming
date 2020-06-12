@@ -31,7 +31,6 @@ enum class PayType(
             M3Pay -> objectMapper.readValue<M3PayConfig>(data)
             SurePay -> objectMapper.readValue<SurePayConfig>(data)
             FPX -> objectMapper.readValue<GPPayConfig>(data)
-            else -> error("不支持类型")
         }
     }
 

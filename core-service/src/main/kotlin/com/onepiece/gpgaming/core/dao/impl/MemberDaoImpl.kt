@@ -35,7 +35,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val loginIp = rs.getString("login_ip")
             val loginTime = rs.getTimestamp("login_time")?.toLocalDateTime()
-            val promoteCode = rs.getString("promote_code") ?: ""
+//            val promoteCode = rs.getString("promote_code") ?: ""
             val agencyMonthFee = rs.getBigDecimal("agency_month_fee")
             val formal = rs.getBoolean("formal")
 

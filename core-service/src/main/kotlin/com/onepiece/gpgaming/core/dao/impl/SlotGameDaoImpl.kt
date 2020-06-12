@@ -67,7 +67,7 @@ class SlotGameDaoImpl : BasicDaoImpl<SlotGame>("slot_game"), SlotGameDao {
                 .set("category", slotGameUo.category)
                 .set("hot", slotGameUo.hot)
                 .set("new", slotGameUo.new)
-                .set("launchs", slotGameUo.launchs?.joinToString(separator = ","))
+                .set("launchs", slotGameUo.launchs.joinToString(separator = ","))
                 .set("cname", slotGameUo.cname)
                 .set("ename", slotGameUo.ename)
                 .set("clogo", slotGameUo.clogo)

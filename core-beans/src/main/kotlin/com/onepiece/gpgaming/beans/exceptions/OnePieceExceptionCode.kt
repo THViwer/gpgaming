@@ -2,7 +2,7 @@ package com.onepiece.gpgaming.beans.exceptions
 
 import java.lang.RuntimeException
 
-class LogicException(code: String): RuntimeException()
+//class LogicException(code: String): RuntimeException()
 
 //class BusinessException(code: Int): RuntimeException()
 

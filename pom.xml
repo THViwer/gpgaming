@@ -9,19 +9,24 @@
 	<description>Demo project for Spring Boot</description>
 	<packaging>pom</packaging>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<modules>
 		<module>core-service</module>
 		<module>gpgaming-admin</module>
 		<module>gpgaming-player</module>
 		<module>core-beans</module>
 
-		<module>gpgaming-task</module>
-		<module>gpgaming-su</module>
+		<!-- 暂时关闭 如果不发布 可以不打开 -->
+<!--		<module>gpgaming-task</module>-->
+<!--		<module>gpgaming-su</module>-->
 
 		<!-- 为了防止编译过慢 -->
-<!--		<module>utils</module>-->
-<!--		<module>games</module>-->
-<!--		<module>payment</module>-->
+		<module>utils</module>
+		<module>games</module>
+		<module>payment</module>
 
 	</modules>
 

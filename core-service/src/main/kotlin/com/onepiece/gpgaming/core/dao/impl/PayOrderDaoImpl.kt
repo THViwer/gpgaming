@@ -131,12 +131,12 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
                 .group("client_id, member_id")
                 .execute { rs ->
 
-                    val clientId = rs.getInt("client_id")
+                    val mClientId = rs.getInt("client_id")
                     val mMemberId = rs.getInt("member_id")
                     val amount = rs.getBigDecimal("amount")
                     val count = rs.getInt("count")
 
-                    PayOrderValue.PayOrderMReport(clientId = clientId, memberId = mMemberId, totalAmount = amount, count = count)
+                    PayOrderValue.PayOrderMReport(clientId = mClientId, memberId = mMemberId, totalAmount = amount, count = count)
                 }
     }
 

@@ -83,12 +83,12 @@ class ArtificialOrderDaoImpl : BasicDaoImpl<ArtificialOrder>("artificial_order")
                 .group("client_id, member_id")
                 .execute { rs ->
 
-                    val clientId = rs.getInt("client_id")
-                    val memberId = rs.getInt("member_id")
+                    val mClientId = rs.getInt("client_id")
+                    val mMemberId = rs.getInt("member_id")
                     val totalAmount = rs.getBigDecimal("total_amount")
                     val count = rs.getInt("count")
 
-                    ArtificialReportVo(clientId = clientId, memberId = memberId, totalAmount = totalAmount, count = count)
+                    ArtificialReportVo(clientId = mClientId, memberId = mMemberId, totalAmount = totalAmount, count = count)
                 }
     }
 
