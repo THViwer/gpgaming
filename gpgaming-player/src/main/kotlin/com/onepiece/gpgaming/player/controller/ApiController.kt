@@ -444,7 +444,7 @@ open class ApiController(
     override fun banners(
             @RequestParam(value =  "type") type: BannerType
     ): List<BannerVo> {
-        val (language, launch) = getLanguageAndLaunchFormHeader()
+        val (language, _) = getLanguageAndLaunchFormHeader()
 
         val clientId = this.getClientIdByDomain()
 

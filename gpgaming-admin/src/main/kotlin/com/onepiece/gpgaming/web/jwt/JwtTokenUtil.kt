@@ -24,12 +24,12 @@ class JwtTokenUtil : Serializable {
 
         private const val serialVersionUID = -3301605591108950415L
 
-        private val CLAIM_KEY_USERNAME = "sub"
-        private val CLAIM_KEY_CREATED = "created"
+        private const val CLAIM_KEY_USERNAME = "sub"
+        private const val CLAIM_KEY_CREATED = "created"
     }
 
 
-    internal var key: Key? = null
+    private var key: Key? = null
 
     private fun getKey(): Key {
         if (key == null) {
@@ -39,41 +39,32 @@ class JwtTokenUtil : Serializable {
     }
 
 
-    fun getUsernameFromToken(token: String): String? {
-        var username: String?
-        try {
+    private fun getUsernameFromToken(token: String): String? {
+        return try {
             val claims = getClaimsFromToken(token)
-            username = claims.subject
+            claims.subject
         } catch (e: Exception) {
 //            log.error("", e)
-            username = null
+            null
         }
-
-        return username
     }
 
-    fun getCreatedDateFromToken(token: String): Date? {
-        var created: Date?
-        try {
+    private fun getCreatedDateFromToken(token: String): Date? {
+        return try {
             val claims = getClaimsFromToken(token)
-            created = Date(claims[CLAIM_KEY_CREATED] as Long)
+            Date(claims[CLAIM_KEY_CREATED] as Long)
         } catch (e: Exception) {
-            created = null
+            null
         }
-
-        return created
     }
 
     fun getExpirationDateFromToken(token: String): Date? {
-        var expiration: Date?
-        try {
+        return try {
             val claims = getClaimsFromToken(token)
-            expiration = claims.expiration
+            claims.expiration
         } catch (e: Exception) {
-            expiration = null
+            null
         }
-
-        return expiration
     }
 
     private fun getClaimsFromToken(token: String): Claims {
@@ -107,7 +98,7 @@ class JwtTokenUtil : Serializable {
         return generateToken(claims)
     }
 
-    internal fun generateToken(claims: Map<String, Any>): String {
+    private fun generateToken(claims: Map<String, Any>): String {
 
         return Jwts.builder()
                 .addClaims(claims)
