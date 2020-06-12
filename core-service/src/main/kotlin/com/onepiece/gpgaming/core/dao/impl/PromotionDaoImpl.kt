@@ -30,7 +30,11 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val periodMaxPromotion = rs.getBigDecimal("period_max_promotion")
             val status = rs.getString("status").let { Status.valueOf(it) }
 
-            val levelId = rs.getString("level_id").split(",").map { it.toInt() }
+            val levelId = rs.getString("level_id").split(",")
+                    .let {
+                        if (it.isEmpty() || (it.size == 1 && it.first().isEmpty())) emptyList() else it.map { x -> x.toInt() }
+                    }
+
             val ruleType = rs.getString("rule_type").let { PromotionRuleType.valueOf(it) }
             val ruleJson = rs.getString("rule_json")
             val sequence = rs.getInt("sequence")
