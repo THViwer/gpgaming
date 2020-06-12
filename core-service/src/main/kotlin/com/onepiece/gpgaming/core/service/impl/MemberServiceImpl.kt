@@ -81,6 +81,10 @@ class MemberServiceImpl(
         return memberDao.findByBossIdAndCode(bossId, promoteCode)?.copy(password = "", safetyPassword = "")
     }
 
+    override fun list(memberQuery: MemberQuery): List<Member> {
+        return memberDao.query(memberQuery, 0, 5000).map { it.copy(password = "") }
+    }
+
     override fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member> {
         val total = memberDao.total(query = memberQuery)
         if (total == 0) return Page.empty()

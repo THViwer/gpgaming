@@ -27,6 +27,8 @@ interface MemberService {
 
     fun findByBossIdAndCode(bossId: Int, promoteCode: String): Member?
 
+    fun list(memberQuery: MemberQuery): List<Member>
+
     fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member>
 
     fun login(loginValue: LoginValue): Member

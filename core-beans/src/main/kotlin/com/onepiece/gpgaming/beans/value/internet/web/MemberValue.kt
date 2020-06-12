@@ -125,6 +125,12 @@ sealed class MemberValue {
                 // id
                 val id: Int,
 
+                // 上级代理Id
+                val superiorAgentId: Int,
+
+                // 上级代理用户名
+                val superiorUsername: String,
+
                 // 代理Id
                 val agentId: Int,
 

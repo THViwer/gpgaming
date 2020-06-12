@@ -67,22 +67,38 @@ class AgentConfigApiController(
 
         val current = this.current()
 
+        // 查询代理申请
         val applyQuery = AgentApplyValue.ApplyQuery(bossId = current.bossId, clientId = current.clientId, state = ApplyState.Process)
         val applies = agentApplyService.list(applyQuery)
         val agentIds = applies.map { it.agentId }
-
         if (applies.isEmpty()) return emptyList()
 
+
+        // 查询用户基本信息
         val memberQuery = MemberQuery(bossId = current.bossId, clientId = current.clientId, agentId = null, username = null, ids = agentIds, role = Role.Agent,
                 name = null, phone = null, levelId = null, startTime = null, endTime = null, status = null, promoteCode = null)
-        val data = memberService.query(memberQuery, 0, 999999).data
+        val data = memberService.list(memberQuery)
+
+
+        // 查询上级代理信息
+        val superiorIds = data.map { it.agentId }.filter { it == -1 }
+        val agentQuery = MemberQuery(ids = superiorIds)
+        val superiorAgents = memberService.list(memberQuery = agentQuery)
+                .map { it.id to it }
+                .toMap()
+
 
         return data.map {
+
+            val superiorAgent = superiorAgents[it.agentId]
+            val superiorAgentId = superiorAgent?.id ?: -1
+            val superiorUsername = superiorAgent?.username ?: "-"
+
 
             val apply = applies.first { a -> a.agentId == it.id }
 
             MemberValue.Agent(id = apply.id, agentId = it.agentId, username = it.username, name = it.name, phone = it.phone, status = it.status, createdTime = it.createdTime,
-                    loginTime = it.loginTime, loginIp = it.loginIp, promoteCode = it.promoteCode)
+                    loginTime = it.loginTime, loginIp = it.loginIp, promoteCode = it.promoteCode, superiorAgentId = superiorAgentId, superiorUsername = superiorUsername)
         }
     }
 
