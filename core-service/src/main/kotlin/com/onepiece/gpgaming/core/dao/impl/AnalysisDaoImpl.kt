@@ -334,19 +334,19 @@ class AnalysisDaoImpl(
                    sum(r.transfer_in) transfer_in,
                    sum(r.transfer_out) transfer_out,
                    sum(r.artificial_amount) artificial_amount,
-                   count(r.artificial_count) artificial_count,
+                   sum(r.artificial_count) artificial_count,
                    sum(r.third_pay_amount) third_pay_amount,
-                   count(r.third_pay_count) third_pay_count,
+                   sum(r.third_pay_count) third_pay_count,
                    sum(r.deposit_amount) deposit_amount,
-                   count(r.deposit_count) deposit_count,
+                   sum(r.deposit_count) deposit_count,
                    sum(r.withdraw_amount) withdraw_amount,
-                   count(r.withdraw_count) withdraw_count,
+                   sum(r.withdraw_count) withdraw_count,
                    sum(r.rebate_amount) rebate_amount,
                    sum(r.promotion_amount) promotion_amount,
-                   count(x.new_member_count) new_member_count
+                   x.new_member_count new_member_count
             from member_daily_report r
                 left join (
-                    select client_id, count(*) new_member_count from member where created_time >= '$startDate' and created_time < '$endDate' group by client_id
+                    select client_id, count(*) new_member_count from member where `role` = 'Member' and created_time >= '$startDate' and created_time < '$endDate' group by client_id
                 ) x on r.client_id = x.client_id
             where  r.day >= '$startDate' and r.day < '$endDate' group  by boss_id, client_id
         """.trimIndent()
