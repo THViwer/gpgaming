@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.player.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.enums.ApplyState
 import com.onepiece.gpgaming.beans.enums.ContactType
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Role
@@ -147,12 +148,14 @@ class AgentApiController(
 
             AgentValue.PromoteVo(country = it.country, promoteURL = promoteURL, mobilePromoteURL = mobilePromoteURL)
         }
-        val defaultClient = clientService.getMainClient(bossId = bossId) ?: error("")
-        val defaultSite = sites.first { it.clientId == defaultClient.id }
-        val subAgentPromoteUrl = "https://aff.${defaultSite.domain}?affid=${agent.promoteCode}"
+
+        val mainSite = webSiteService.getDataByBossId(bossId = -1).first { it.clientId == agent.clientId && it.country == Country.Default }
+//        val defaultClient = clientService.getMainClient(bossId = bossId) ?: error("")
+//        val defaultSite = sites.first { it.clientId == defaultClient.id }
+        val subAgentPromoteUrl = "https://aff.${mainSite.domain}?affid=${agent.promoteCode}"
 
         // 导航页
-        val guideUrl = "https://www.${defaultSite.domain}"
+        val guideUrl = "https://www.${mainSite.domain}"
 
         return AgentValue.AgentInfo(balance = wallet.balance, subAgentCount = agentCount, memberCount = memberCount,
                 subAgentCommission = agentMonthReport.agentCommission, memberCommission = agentMonthReport.memberCommission,
