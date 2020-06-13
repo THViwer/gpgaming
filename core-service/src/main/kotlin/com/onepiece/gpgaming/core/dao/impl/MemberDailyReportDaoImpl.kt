@@ -189,7 +189,7 @@ class MemberDailyReportDaoImpl(
 
     override fun updateRebate(ids: List<Int>) {
         update()
-                .set("backwater_execution", true)
+                .set("rebate_execution", true)
                 .asWhere("id in (${ids.joinToString(",")})")
                 .execute()
     }
