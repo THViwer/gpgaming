@@ -192,7 +192,7 @@ class ReportServiceImpl(
                 .toMap()
 
         // 计算所有代理的会员佣金
-        val process = agents.mapNotNull { agent ->
+        val process = agents.filter { it.formal && it.username != "default_agent" }.mapNotNull { agent ->
 
             try {
 //                val agentCommissions = commissions.filter { agent.bossId == it.bossId }.filter { it.type == CommissionType.AgentCommission }
