@@ -149,7 +149,7 @@ class AgentApiController(
             AgentValue.PromoteVo(country = it.country, promoteURL = promoteURL, mobilePromoteURL = mobilePromoteURL)
         }
 
-        val mainSite = webSiteService.getDataByBossId(bossId = -1).first { it.clientId == agent.clientId && it.country == Country.Default }
+        val mainSite = webSiteService.getDataByBossId(bossId = -1).first { it.clientId == bossId && it.country == Country.Default }
 //        val defaultClient = clientService.getMainClient(bossId = bossId) ?: error("")
 //        val defaultSite = sites.first { it.clientId == defaultClient.id }
         val subAgentPromoteUrl = "https://aff.${mainSite.domain}?affid=${agent.promoteCode}"
