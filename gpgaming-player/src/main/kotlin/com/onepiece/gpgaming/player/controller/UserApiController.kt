@@ -195,8 +195,7 @@ class UserApiController(
         val platformMembers = platformMemberService.findPlatformMember(memberId =  current.id)
 
 
-        val bind = platformBindService.findClientPlatforms(clientId = current.clientId).first { it.platform == Platform.PlaytechSlot }
-        val clientToken = bind.clientToken as PlaytechClientToken
+
 
         return platformMembers.map {
 
@@ -211,6 +210,10 @@ class UserApiController(
 
             val username = when (it.platform) {
                 Platform.PlaytechLive, Platform.PlaytechSlot -> {
+
+                    val bind = platformBindService.findClientPlatforms(clientId = current.clientId).first { it.platform == Platform.PlaytechSlot }
+                    val clientToken = bind.clientToken as PlaytechClientToken
+
                     "${clientToken.prefix}_${it.username}".toUpperCase()
                 }
                 else -> it.username
