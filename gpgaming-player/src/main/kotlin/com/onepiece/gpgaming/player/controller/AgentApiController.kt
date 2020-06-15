@@ -22,7 +22,6 @@ import com.onepiece.gpgaming.core.dao.AgentMonthReportDao
 import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.service.AgentApplyService
-import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.LevelService
@@ -52,7 +51,6 @@ import java.time.temporal.TemporalAdjusters
 @RequestMapping("/agent")
 class AgentApiController(
         private val memberService: MemberService,
-        private val clientService: ClientService,
         private val levelService: LevelService,
         private val authService: AuthService,
         private val walletService: WalletService,
@@ -72,7 +70,7 @@ class AgentApiController(
     override fun register(@RequestBody req: AgentValue.AgentRegisterReq) {
 
 
-        val bossId = getBossIdByGuide()
+        val bossId = getBossId()
         val mainClient = clientService.getMainClient(bossId) ?: error("没有默认代理")
 
 
@@ -99,7 +97,7 @@ class AgentApiController(
     @PostMapping
     override fun login(@RequestBody loginReq: LoginReq): AgentValue.AgentLoginResp {
 
-        val bossId = getBossIdByGuide()
+        val bossId = getBossId()
 
         val loginValue = LoginValue(bossId = bossId, username = loginReq.username, password = loginReq.password, ip = RequestUtil.getIpAddress())
         val member = memberService.login(loginValue)
@@ -167,7 +165,7 @@ class AgentApiController(
     @GetMapping("/contactUs")
     override fun contactUs(): Contacts {
 
-        val list = contactService.list(clientId = getClientIdByDomain())
+        val list = contactService.list(clientId = getClientId())
                 .filter { it.role == Role.Agent }
                 .filter { it.status == Status.Normal }
 
@@ -252,7 +250,7 @@ class AgentApiController(
     @GetMapping("/i18n")
     override fun i18nContentConfig(@RequestParam("configType") configType: I18nConfig): I18nContent.DefaultContentI18n {
 
-        val clientId = getClientIdByDomain()
+        val clientId = getClientId()
         val request = this.getRequest()
         val language = request.getHeader("language").let {
             Language.valueOf(it)

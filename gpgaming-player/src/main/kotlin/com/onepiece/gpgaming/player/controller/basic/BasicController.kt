@@ -6,8 +6,10 @@ import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.model.Client
 import com.onepiece.gpgaming.beans.model.WebSite
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
+import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
@@ -44,41 +46,72 @@ abstract class BasicController {
     @Autowired
     lateinit var gamePlatformService: GamePlatformService
 
+    @Autowired
+    lateinit var clientService: ClientService
 
+    fun getRequest(): HttpServletRequest {
+        return (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
+    }
 
-    fun getClientIdByDomain(): Int {
+    private fun getRequestPath(): String {
         val request = this.getRequest()
-        val url = request.requestURL.toString()
-        return webSiteService.match(url).clientId
-    }
-
-    fun getBossIdByDomain(): Int {
-        val request = this.getRequest()
-        val url = request.requestURL.toString()
-        return webSiteService.matchReturnBossId(url)
-    }
-
-    fun getBossIdByGuide(): Int {
-        val request = this.getRequest()
-        val url = request.requestURL.toString()
-
-        return if (url.contains("gpgaming88.com") || url.contains("localhost")) { // TODO 测试环境写死
-            8
-        } else {
-            webSiteService.match(url).clientId
-        }
+        return request.requestURL.toString()
     }
 
 
-    fun getCountryByDomain(): Country {
-        return this.getSiteByDomain().country
+    fun getWebSite(): WebSite {
+        return webSiteService.match(this.getRequestPath())
     }
 
-     fun getSiteByDomain(): WebSite {
-         val request = this.getRequest()
-         val url = request.requestURL.toString()
-         return webSiteService.match(url)
-     }
+    fun getBossId(): Int {
+
+        val requestPath = this.getRequestPath()
+        if (requestPath.contains("gpgaming88.com") || requestPath.contains("localhost")) return 8
+
+
+        val site = getWebSite()
+        return if (site.country == Country.Default) site.clientId else site.bossId
+    }
+
+    fun getClientId(): Int {
+        val site = getWebSite()
+        return site.clientId
+    }
+
+    fun getMainClient(): Client {
+        val bossId = this.getBossId()
+        return clientService.getMainClient(bossId = bossId) ?: error(OnePieceExceptionCode.SYSTEM)
+    }
+
+
+//    fun getClientIdByDomain(): Int {
+//        val request = this.getRequest()
+//        val url = request.requestURL.toString()
+//        return webSiteService.match(url).clientId
+//    }
+//
+//    fun getBossIdByDomain(): Int {
+//        val request = this.getRequest()
+//        val url = request.requestURL.toString()
+//        return webSiteService.matchReturnBossId(url)
+//    }
+//
+//    fun getBossIdByGuide(): Int {
+//        val request = this.getRequest()
+//        val url = request.requestURL.toString()
+//
+//        return if (url.contains("gpgaming88.com") || url.contains("localhost")) { // TODO 测试环境写死
+//            8
+//        } else {
+//            webSiteService.match(url).clientId
+//        }
+//    }
+//
+//     fun getSiteByDomain(): WebSite {
+//         val request = this.getRequest()
+//         val url = request.requestURL.toString()
+//         return webSiteService.match(url)
+//     }
 
     fun getHeaderLanguage(): Language {
         val request = this.getRequest()
@@ -112,10 +145,6 @@ abstract class BasicController {
     fun currentClientIdAndMemberId():Pair<Int, Int> {
         val member = current()
         return member.clientId to member.id
-    }
-
-    fun getRequest(): HttpServletRequest {
-        return (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).request
     }
 
     @Synchronized

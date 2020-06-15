@@ -10,7 +10,6 @@ import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberUo
-import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
@@ -39,8 +38,7 @@ import org.springframework.web.bind.annotation.RestController
 class UserApiController(
         private val memberService: MemberService,
         private val authService: AuthService,
-        private val levelService: LevelService,
-        private val clientService: ClientService
+        private val levelService: LevelService
 ) : BasicController(), UserApi {
 
     private val log = LoggerFactory.getLogger(UserApiController::class.java)
@@ -50,7 +48,7 @@ class UserApiController(
             @RequestBody loginReq: LoginReq
     ): LoginResp {
 
-        val bossId = getBossIdByDomain()
+        val bossId = getBossId()
         log.info("bossId = $bossId")
         val launch = getHeaderLaunch()
 
@@ -121,7 +119,7 @@ class UserApiController(
 
         check(registerReq.country != Country.Default)
 
-        val bossId = getBossIdByDomain()
+        val bossId = getBossId()
         log.info("bossId = $bossId")
         log.info("clients = ${clientService.all()}")
         val client = clientService.all().filter { it.bossId == bossId }.first { it.country == registerReq.country }
@@ -145,7 +143,7 @@ class UserApiController(
     @GetMapping("/country")
     override fun countries(): List<Country> {
 
-        val clientId = getClientIdByDomain()
+        val clientId = getClientId()
         val client = clientService.get(clientId)
 
         val bossId = client.bossId
@@ -164,7 +162,7 @@ class UserApiController(
 
     @GetMapping("/check/{username}")
     override fun checkUsername(@PathVariable("username") username: String): CheckUsernameResp {
-        val bossId = getBossIdByDomain()
+        val bossId = getBossId()
 
         val exist = memberService.findByBossIdAndUsername(bossId, username) != null
         return CheckUsernameResp(exist)
@@ -172,7 +170,7 @@ class UserApiController(
 
     @GetMapping("/check/phone/{phone}")
     override fun checkPhone(@PathVariable("phone") phone: String): CheckUsernameResp {
-        val bossId = getBossIdByDomain()
+        val bossId = getBossId()
         val exist = memberService.findByBossIdAndPhone(bossId, phone) != null
         return CheckUsernameResp(exist)
     }

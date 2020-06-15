@@ -76,7 +76,7 @@ class OpenApiController(
             @PathVariable("clientId") clientId: Int): String {
 
         val json = String(getRequest().inputStream.readBytes())
-        log.info("厅主：${getClientIdByDomain()}, 请求参数:$json")
+        log.info("厅主：${getClientId()}, 请求参数:$json")
 
         val mapUtil = objectMapper.readValue<JacksonMapUtil>(json.replace("json=", "")).mapUtil
 

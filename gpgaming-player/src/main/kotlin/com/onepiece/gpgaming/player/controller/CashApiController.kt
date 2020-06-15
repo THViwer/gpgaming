@@ -43,7 +43,6 @@ import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
 import com.onepiece.gpgaming.core.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ClientBankService
-import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.MemberBankService
@@ -115,8 +114,7 @@ open class CashApiController(
         private val payOrderService: PayOrderService,
         private val payGateway: PayGateway,
         private val memberDailyReportService: MemberDailyReportService,
-        private val betOrderService: BetOrderService,
-        private val clientService: ClientService
+        private val betOrderService: BetOrderService
 ) : BasicController(), CashApi {
 
     private val log = LoggerFactory.getLogger(CashApiController::class.java)
@@ -127,7 +125,7 @@ open class CashApiController(
 
         val launch = getHeaderLaunch()
 
-        val selectCountry = this.getSiteByDomain()
+        val selectCountry = this.getWebSite()
                 .let {
                     when {
                         it.country == Country.Default && it.bossId == -1 -> {

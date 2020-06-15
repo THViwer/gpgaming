@@ -26,7 +26,6 @@ import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.BlogService
-import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
@@ -74,7 +73,6 @@ open class ApiController(
         private val activeConfig: ActiveConfig,
         private val objectMapper: ObjectMapper,
         private val hotGameService: HotGameService,
-        private val clientService: ClientService,
         private val seoService: SeoService,
         private val blogService: BlogService,
         private val indexUtil: IndexUtil
@@ -84,7 +82,7 @@ open class ApiController(
 
     @GetMapping
     override fun config(): IndexConfig {
-        val clientId = this.getClientIdByDomain()
+        val clientId = this.getClientId()
         val url = SystemConstant.getClientResourcePath(clientId = clientId, profile = activeConfig.profile)
         return IndexConfig(url = "$url/index_${getHeaderLanguage().name.toLowerCase()}.json?${UUID.randomUUID()}")
     }
@@ -100,7 +98,7 @@ open class ApiController(
     @GetMapping("/compile")
     override fun getConfig(): CompileValue.Config {
 
-        val clientId = getClientIdByDomain()
+        val clientId = getClientId()
         val client = clientService.get(clientId)
 
         return CompileValue.Config(logo = client.logo, shortcutLogo = client.shortcutLogo)
@@ -108,7 +106,7 @@ open class ApiController(
 
     @GetMapping("/hotGames")
     override fun hotGames(): List<HotGameVo> {
-        val clientId = this.getClientIdByDomain()
+        val clientId = this.getClientId()
         val language = getHeaderLanguage()
 
         val type = if (getHeaderLaunch() == LaunchMethod.Wap) HotGameType.Mobile else HotGameType.Pc
@@ -120,24 +118,13 @@ open class ApiController(
 
         if (games.isEmpty()) return emptyList()
 
-//        log.info("step 1 ${games}")
-
         val i18nContentMap = i18nContentService.getConfigType(games.first().clientId, I18nConfig.HotGame)
-//                .filter { it.language == language }
                 .map { "${it.configId}_${it.language}" to it }
                 .toMap()
 
-//        if (i18nContentMap.isEmpty()) return emptyList()
-//        log.info("step 2 $i18nContentMap")
-
-
         val opens = platformBindService.findClientPlatforms(clientId)
-//                .filter { it.platform.category == PlatformCategory.Slot }
                 .map { it.platform }
                 .toSet()
-
-//        log.info("step 3 $opens")
-
 
         if (opens.isEmpty()) return emptyList()
 
@@ -165,7 +152,7 @@ open class ApiController(
     @GetMapping("/index/platforms")
     override fun indexPlatforms(): List<PlatformVo> {
 
-        val clientId = getClientIdByDomain()
+        val clientId = getClientId()
         val launch = getHeaderLaunch()
         val gamePlatforms = gamePlatformService.all()
 
@@ -194,7 +181,7 @@ open class ApiController(
     @GetMapping("/promotion")
     override fun promotion(): List<PromotionVo> {
 
-        val clientId = getClientIdByDomain()
+        val clientId = getClientId()
         val (language, launch) = getLanguageAndLaunchFormHeader()
 
 
@@ -247,7 +234,7 @@ open class ApiController(
     @GetMapping("/blog")
     override fun blogs(): List<BlogValue.BlogMVo> {
 
-        val clientId = this.getClientIdByDomain()
+        val clientId = this.getClientId()
         val language = this.getHeaderLanguage()
 
         val list = blogService.normalList(clientId = clientId)
@@ -330,7 +317,7 @@ open class ApiController(
     ): StartGameResp {
         val (language, launch) = getLanguageAndLaunchFormHeader()
 
-        val url = gameApi.startDemo(clientId = getClientIdByDomain(), platform = platform, language = language, launch = launch)
+        val url = gameApi.startDemo(clientId = getClientId(), platform = platform, language = language, launch = launch)
 
         return StartGameResp(path = url)
     }
@@ -374,7 +361,7 @@ open class ApiController(
 
         val (language, launch) = getLanguageAndLaunchFormHeader()
 
-        val gameUrl = gameApi.startSlotDemo(clientId = getClientIdByDomain(), platform = platform, gameId = gameId, language = language,
+        val gameUrl = gameApi.startSlotDemo(clientId = getClientId(), platform = platform, gameId = gameId, language = language,
                 launchMethod = launch)
         return StartGameResp(path = gameUrl)
     }
@@ -456,13 +443,13 @@ open class ApiController(
     ): List<BannerVo> {
         val (language, _) = getLanguageAndLaunchFormHeader()
 
-        val clientId = this.getClientIdByDomain()
+        val clientId = this.getClientId()
 
         val map = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Banner)
                 .map { "${it.configId}:${it.language}" to it }
                 .toMap()
 
-        return bannerService.findByType(clientId = getClientIdByDomain(), type = type).mapNotNull {
+        return bannerService.findByType(clientId = clientId, type = type).mapNotNull {
             val i18nContent = map["${it.id}:${language}"]
                     ?: map["${it.id}:${Language.EN}"]
             i18nContent?.let { x ->
@@ -485,10 +472,10 @@ open class ApiController(
 
         val (language, launch) = getLanguageAndLaunchFormHeader()
 
-        val clientId = this.getClientIdByDomain()
+        val clientId = this.getClientId()
         val gamePlatforms = gamePlatformService.all()
 
-        val platforms = platformBindService.findClientPlatforms(clientId = getClientIdByDomain())
+        val platforms = platformBindService.findClientPlatforms(clientId = clientId)
                 .filter { it.platform.category == category }
                 .map {
                     val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
@@ -537,7 +524,7 @@ open class ApiController(
     @GetMapping("/contactUs")
     override fun contactUs(): Contacts {
 
-        val list = contactService.list(clientId = getClientIdByDomain())
+        val list = contactService.list(clientId = getClientId())
                 .filter { it.role == Role.Member }
                 .filter { it.status == Status.Normal }
 
@@ -555,9 +542,9 @@ open class ApiController(
 
     @GetMapping("/seo")
     override fun seo(): SeoValue.SeoVo {
-        val clientId = getClientIdByDomain()
+        val mainClient = this.getMainClient()
 
-        val seo = seoService.get(clientId)
+        val seo = seoService.get(mainClient.id)
         return SeoValue.SeoVo(title = seo.title, keywords = seo.keywords, description = seo.description, liveChatId = seo.liveChatId,
                 googleStatisticsId = seo.googleStatisticsId, facebookTr = seo.facebookTr, liveChatTab = seo.liveChatTab, asgContent = seo.asgContent,
                 facebookShowPosition = seo.facebookShowPosition)
@@ -570,7 +557,7 @@ open class ApiController(
 
         val (language, launch) = getLanguageAndLaunchFormHeader()
 
-        val bossId = getBossIdByDomain()
+        val bossId = getClientId()
         val clients = clientService.all().filter { it.bossId == bossId }
         val client = clients.firstOrNull { it.country == country } ?: clients.first()
 
