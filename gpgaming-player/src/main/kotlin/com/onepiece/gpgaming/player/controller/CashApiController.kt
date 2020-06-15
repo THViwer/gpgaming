@@ -130,7 +130,7 @@ open class CashApiController(
         val selectCountry = this.getSiteByDomain()
                 .let {
                     when {
-                        it.country == Country.Malaysia && it.bossId == -1 -> {
+                        it.country == Country.Default && it.bossId == -1 -> {
                             null
 //                            clientService.getMainClient(bossId = it.clientId)?.country ?: Country.Malaysia
                         }
