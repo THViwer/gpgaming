@@ -250,10 +250,10 @@ class AgentApiController(
     @GetMapping("/i18n")
     override fun i18nContentConfig(@RequestParam("configType") configType: I18nConfig): I18nContent.DefaultContentI18n {
 
-        val clientId = getClientId()
+        val mainClient = getMainClient()
         val language = getHeaderLanguage()
 
-        val list =  i18nContentService.getConfigType(clientId = clientId, configType = configType)
+        val list =  i18nContentService.getConfigType(clientId = mainClient.id, configType = configType)
         val content = list.firstOrNull { it.language == language } ?: list.firstOrNull { it.language == Language.EN }
         return content?.let {
             it.getII18nContent(objectMapper = objectMapper) as I18nContent.DefaultContentI18n
