@@ -251,10 +251,7 @@ class AgentApiController(
     override fun i18nContentConfig(@RequestParam("configType") configType: I18nConfig): I18nContent.DefaultContentI18n {
 
         val clientId = getClientId()
-        val request = this.getRequest()
-        val language = request.getHeader("language").let {
-            Language.valueOf(it)
-        }
+        val language = getHeaderLanguage()
 
         val list =  i18nContentService.getConfigType(clientId = clientId, configType = configType)
         val content = list.firstOrNull { it.language == language } ?: list.firstOrNull { it.language == Language.EN }
