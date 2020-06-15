@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Bank
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.value.database.ClientBankCo
 import com.onepiece.gpgaming.beans.value.database.ClientBankUo
 import com.onepiece.gpgaming.beans.value.internet.web.BankVo
@@ -27,7 +28,7 @@ class ClientBankApiController(
     @GetMapping("/default/bank")
     override fun banks(): List<BankVo> {
         return Bank.values().map {
-            BankVo(bank = it, name = it.cname, logo = it.logo, grayLogo = it.grayLogo)
+            BankVo(bank = it, name = it.cname, logo = it.logo, grayLogo = it.grayLogo, country = Country.Default)
         }
     }
 

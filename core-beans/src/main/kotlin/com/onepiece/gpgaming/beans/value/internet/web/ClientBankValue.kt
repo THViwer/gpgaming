@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.Bank
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
@@ -24,6 +25,8 @@ object ClientBankValueFactory {
 data class BankVo(
 
         val bank: Bank,
+
+        val country: Country,
 
         val name: String,
 

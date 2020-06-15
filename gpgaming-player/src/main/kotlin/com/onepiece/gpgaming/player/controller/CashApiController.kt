@@ -127,11 +127,12 @@ open class CashApiController(
 
         val launch = getHeaderLaunch()
 
-        val country = this.getSiteByDomain()
+        val selectCountry = this.getSiteByDomain()
                 .let {
                     when {
                         it.country == Country.Malaysia && it.bossId == -1 -> {
-                            clientService.getMainClient(bossId = it.clientId)?.country ?: Country.Malaysia
+                            null
+//                            clientService.getMainClient(bossId = it.clientId)?.country ?: Country.Malaysia
                         }
                         it.country == Country.Default -> {
                             clientService.getMainClient(bossId = it.bossId)?.country ?: Country.Malaysia
@@ -141,15 +142,20 @@ open class CashApiController(
                 }
 
         val mobile = launch == LaunchMethod.Wap
-        return Bank.of(country = country)
-                .map {
-                    BankVo(
-                            grayLogo = if (mobile) it.grayLogo else it.mGrayLogo,
-                            logo = if (mobile) it.mLogo else it.logo,
-                            name = it.cname,
-                            bank = it
-                    )
-                }
+
+        return Country.values().filter { it == selectCountry || selectCountry == null }.map { country ->
+            val banks = Bank.of(country = country)
+
+            banks.map {
+                BankVo(
+                        country = country,
+                        grayLogo = if (mobile) it.grayLogo else it.mGrayLogo,
+                        logo = if (mobile) it.mLogo else it.logo,
+                        name = it.cname,
+                        bank = it
+                )
+            }
+        }.reduce { acc, list -> acc.plus(list) }
     }
 
     @GetMapping("/bank/my")
@@ -271,14 +277,14 @@ open class CashApiController(
 
                             config.supportBanks.map { sb ->
                                 val bank =  sb.bank
-                                BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo)
+                                BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo, country = Country.Default)
                             }
                         }
                         PayType.FPX -> {
                             val config =  it.getConfig(objectMapper) as GPPayConfig
 
                             config.supportBanks.map { bank ->
-                                BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo)
+                                BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo, country = Country.Default)
                             }
                         }
                         else -> null
