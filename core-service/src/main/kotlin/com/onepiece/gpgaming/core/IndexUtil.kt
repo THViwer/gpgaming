@@ -3,12 +3,10 @@ package com.onepiece.gpgaming.core
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.SystemConstant
 import com.onepiece.gpgaming.beans.enums.BannerType
-import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.RecommendedType
 import com.onepiece.gpgaming.beans.enums.Status
-import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Recommended
 import com.onepiece.gpgaming.beans.value.internet.web.Index
@@ -19,10 +17,13 @@ import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.RecommendedService
 import com.onepiece.gpgaming.core.service.WebSiteService
+import com.onepiece.gpgaming.utils.AwsS3Util
 import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import java.io.File
+import java.util.*
 
 @Service
 class IndexUtil(
@@ -43,18 +44,18 @@ class IndexUtil(
     lateinit var platformBindService: PlatformBindService
 
 
-    fun getIndexConfig(clientId: Int, language: Language, x: Int = 0): Index {
-
-        if (x > 2) error(OnePieceExceptionCode.SYSTEM)
-
-        val redisKey = OnePieceRedisKeyConstant.indexCacheConfig(clientId = clientId, language = language)
-        val index = redisService.get(key = redisKey, clz = Index::class.java)
-
-        return index ?: {
-            this.generatorIndexPage(clientId = clientId)
-            this.getIndexConfig(clientId = clientId, language = language, x = x + 1)
-        }.invoke()
-    }
+//    fun getIndexConfig(clientId: Int, language: Language, x: Int = 0): Index {
+//
+//        if (x > 2) error(OnePieceExceptionCode.SYSTEM)
+//
+//        val redisKey = OnePieceRedisKeyConstant.indexCacheConfig(clientId = clientId, language = language)
+//        val index = redisService.get(key = redisKey, clz = Index::class.java)
+//
+//        return index ?: {
+//            this.generatorIndexPage(clientId = clientId)
+//            this.getIndexConfig(clientId = clientId, language = language, x = x + 1)
+//        }.invoke()
+//    }
 
     @Async
     fun generatorIndexPage(clientId: Int) {
@@ -95,7 +96,7 @@ class IndexUtil(
         }
 
 
-        Language.values().toList().map { language ->
+        Language.values().toList().forEach { language ->
 
             // 公告
             val announcement = (announcements.firstOrNull{ it.language == language }
@@ -150,7 +151,7 @@ class IndexUtil(
             val hotGameUrl = "${SystemConstant.AWS_SLOT}/hot_sort_20_web_${hotLanguage.name.toLowerCase()}.json"
 
             // 代理地址
-            val agentSite = webSiteService.getDataByBossId(bossId = client.bossId).first { it.status == Status.Normal && it.country == Country.Default }
+            val agentSite = webSiteService.getAffSite(clientId = client.bossId)
             val affSite = "https://aff.${agentSite.domain}"
 
 
@@ -159,15 +160,15 @@ class IndexUtil(
                     shortcutLogo = client.shortcutLogo, affSite = affSite)
 
             // 放到缓存中
-            val redisKey = OnePieceRedisKeyConstant.indexCacheConfig(clientId = clientId, language = language)
-            redisService.put(key = redisKey, value = index)
+//            val redisKey = OnePieceRedisKeyConstant.indexCacheConfig(clientId = clientId, language = language)
+//            redisService.put(key = redisKey, value = index)
 
-//            val json = objectMapper.writeValueAsString(index)
-//            val userHome = System.getProperty("user.home")
-//            val file = File("$userHome/${UUID.randomUUID()}.json")
-//            file.writeBytes(json.toByteArray())
-//            AwsS3Util.uploadLocalFile(file, "client/${client.id}/index_${language.name.toLowerCase()}.json", profile = activeConfig.profile)
-//            file.delete()
+            val json = objectMapper.writeValueAsString(index)
+            val userHome = System.getProperty("user.home")
+            val file = File("$userHome/${UUID.randomUUID()}.json")
+            file.writeBytes(json.toByteArray())
+            AwsS3Util.uploadLocalFile(file, "client/${client.id}/index_${language.name.toLowerCase()}.json", profile = activeConfig.profile)
+            file.delete()
 
         }
     }

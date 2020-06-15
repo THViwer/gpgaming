@@ -19,7 +19,6 @@ import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.BlogValue
-import com.onepiece.gpgaming.beans.value.internet.web.Index
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.core.ActiveConfig
@@ -90,13 +89,13 @@ open class ApiController(
         return IndexConfig(url = "$url/index_${getHeaderLanguage().name.toLowerCase()}.json?${UUID.randomUUID()}")
     }
 
-    @GetMapping("/index")
-    override fun indexConfig(): Index {
-        val clientId = getClientIdByDomain()
-        val language = this.getHeaderLanguage()
-
-        return indexUtil.getIndexConfig(clientId = clientId, language = language)
-    }
+//    @GetMapping("/index")
+//    override fun indexConfig(): Index {
+//        val clientId = getClientIdByDomain()
+//        val language = this.getHeaderLanguage()
+//
+//        return indexUtil.getIndexConfig(clientId = clientId, language = language)
+//    }
 
     @GetMapping("/compile")
     override fun getConfig(): CompileValue.Config {
