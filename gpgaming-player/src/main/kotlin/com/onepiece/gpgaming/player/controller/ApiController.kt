@@ -571,10 +571,7 @@ open class ApiController(
     @GetMapping("/guide")
     override fun guideConfig(): ApiValue.GuideConfigVo {
 
-        val request = this.getRequest()
-        val url = request.requestURL.toString()
-        val bossId = webSiteService.match(url).clientId
-
+        val bossId = getBossId()
 
         val requestURL = getRequest().requestURL.toString()
         val sites = webSiteService.all().filter { it.bossId == bossId }

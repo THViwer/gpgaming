@@ -143,10 +143,9 @@ class UserApiController(
     @GetMapping("/country")
     override fun countries(): List<Country> {
 
+        val bossId = getBossId()
         val clientId = getClientId()
-        val client = clientService.get(clientId)
 
-        val bossId = client.bossId
         val clients = clientService.all().filter { it.bossId == bossId }
 
         return clients.filter { it.country != Country.Default }.map {
