@@ -226,7 +226,7 @@ class MemberDailyReportDaoImpl(
             		sum(total_bet) total_bet,
             		sum(total_m_win) total_m_win,
             		sum(total_bet-total_m_win) total_m_loss,
-            		sum(deposit_amount+third_pay_money) deposit_amount,
+            		sum(deposit_amount+third_pay_amount) deposit_amount,
             		count(deposit_count+third_pay_count) deposit_count,
             		sum(withdraw_money) withdraw_money,
             		count(withdraw_count) withdraw_count,
