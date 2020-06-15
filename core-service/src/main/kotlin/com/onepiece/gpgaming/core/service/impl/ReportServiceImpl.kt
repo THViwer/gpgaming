@@ -15,18 +15,12 @@ import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
 import com.onepiece.gpgaming.beans.value.database.AnalysisValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.core.dao.AnalysisDao
-import com.onepiece.gpgaming.core.dao.ArtificialOrderDao
 import com.onepiece.gpgaming.core.dao.BetOrderDao
-import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.dao.LevelDao
-import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.dao.MemberDao
-import com.onepiece.gpgaming.core.dao.PayOrderDao
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
 import com.onepiece.gpgaming.core.dao.TransferReportQuery
-import com.onepiece.gpgaming.core.dao.WithdrawDao
 import com.onepiece.gpgaming.core.service.BetOrderService
-import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.CommissionService
 import com.onepiece.gpgaming.core.service.ReportService
 import org.slf4j.LoggerFactory
@@ -39,15 +33,9 @@ import java.time.temporal.TemporalAdjusters
 @Service
 class ReportServiceImpl(
         private val transferOrderDao: TransferOrderDao,
-        private val depositDao: DepositDao,
-        private val withdrawDao: WithdrawDao,
         private val memberDao: MemberDao,
         private val betOrderService: BetOrderService,
-        private val artificialOrderDao: ArtificialOrderDao,
         private val betOrderDao: BetOrderDao,
-        private val payOrderDao: PayOrderDao,
-        private val memberDailyReportDao: MemberDailyReportDao,
-        private val clientService: ClientService,
         private val levelDao: LevelDao,
         private val analysisDao: AnalysisDao,
         private val commissionService: CommissionService
@@ -80,28 +68,21 @@ class ReportServiceImpl(
 
     override fun startMemberReport(startDate: LocalDate): List<MemberDailyReport> {
         val endDate = startDate.plusDays(1)
-//        val now = LocalDateTime.now()
 
         // 报表数据
         val list = analysisDao.memberReport(startDate = startDate, endDate = endDate)
 
-        // 注单
-//        val payOrders = payOrderDao.mReport(clientId = null, memberId = null, startDate = startDate, endDate = endDate)
-//        val payOrderMap = payOrders.map { it.memberId to it }.toMap()
-
         // 会员对应返水比例
         val levelIds = levelDao.all().map { it.id to it }.toMap()
-
 
         // 平台报表 输赢
         val betReports = betOrderDao.mreport(clientId = null, memberId = null, startDate = startDate)
         val betMap = betReports.groupBy { it.memberId }
 
-        return list.map { report ->
+        //TODO  Kiss918、Pussy888、Mega
 
-            if (report.memberId == 179) {
-                println("xx")
-            }
+
+        return list.map { report ->
 
             // 平台下注金额
             val settles = betMap[report.memberId]?.map {
