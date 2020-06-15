@@ -133,6 +133,11 @@ class IndexApiController(
     }
 
 
+    @GetMapping("/i18n")
+    override fun list(@RequestParam("config") config: I18nConfig): List<I18nContent> {
+        val clientId = getClientId()
+        return i18nContentService.getConfigType(clientId = clientId, configType = config)
+    }
 
     @GetMapping("/banner")
     override fun bannerList(): List<BannerVo> {

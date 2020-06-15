@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.HotGameType
+import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.RecommendedType
 import com.onepiece.gpgaming.beans.enums.ShowPosition
@@ -59,6 +60,9 @@ interface IndexApi {
     @ApiOperation(tags = ["web setting"], value = "国际化 -> 内容更新")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody i18nContentUoReq: I18nContentWebValue.I18nContentUoReq)
+
+    @ApiOperation(tags = ["web setting"], value = "国际化 -> 列表")
+    fun list(@RequestParam("config") config: I18nConfig): List<I18nContent>
 
 
 
