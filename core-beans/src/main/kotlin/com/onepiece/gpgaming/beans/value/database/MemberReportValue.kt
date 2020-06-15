@@ -1,7 +1,6 @@
 package com.onepiece.gpgaming.beans.value.database
 
 import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
-import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -173,25 +172,25 @@ sealed class MemberReportValue {
             val depositCount: Int,
 
             // 充值金额
-            val depositMoney: BigDecimal,
+            val depositAmount: BigDecimal,
 
             // 取款次数
             val withdrawCount: Int,
 
             // 人工提存金额
-            val artificialMoney: BigDecimal,
+            val artificialAmount: BigDecimal,
 
             // 人工提存次数
             val artificialCount: Int,
 
             // 取款金额
-            val withdrawMoney: BigDecimal,
+            val withdrawAmount: BigDecimal,
 
             // 返水金额
-            val backwaterMoney: BigDecimal,
+            val rebateAmount: BigDecimal,
 
             //  优惠金额
-            val promotionMoney: BigDecimal
+            val promotionAmount: BigDecimal
     )
 
 }

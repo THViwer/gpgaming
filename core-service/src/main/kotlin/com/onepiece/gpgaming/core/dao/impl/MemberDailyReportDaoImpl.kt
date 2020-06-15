@@ -210,13 +210,13 @@ class MemberDailyReportDaoImpl(
     override fun analysis(query: MemberReportValue.AnalysisQuery): List<MemberReportValue.AnalysisVo> {
 
         val sortBy = when (query.sort) {
-            MemberAnalysisSort.WithdrawMax -> "withdraw_money"
+            MemberAnalysisSort.WithdrawMax -> "withdraw_amount"
             MemberAnalysisSort.WithdrawSeqMax -> "withdraw_count"
-            MemberAnalysisSort.DepositMax -> "deposit_money"
+            MemberAnalysisSort.DepositMax -> "deposit_amount"
             MemberAnalysisSort.DepositSeqMax -> "deposit_count"
             MemberAnalysisSort.WinMax -> "total_m_win"
             MemberAnalysisSort.LossMax -> "total_m_loss"
-            MemberAnalysisSort.PromotionMax -> "promotion_money"
+            MemberAnalysisSort.PromotionMax -> "promotion_amount"
         }
 
         val sql = """
@@ -226,14 +226,14 @@ class MemberDailyReportDaoImpl(
             		sum(total_bet) total_bet,
             		sum(total_m_win) total_m_win,
             		sum(total_bet-total_m_win) total_m_loss,
-            		sum(deposit_money+third_pay_money) deposit_money,
+            		sum(deposit_amount+third_pay_money) deposit_amount,
             		count(deposit_count+third_pay_count) deposit_count,
             		sum(withdraw_money) withdraw_money,
             		count(withdraw_count) withdraw_count,
-            		sum(artificial_money) artificial_money,
+            		sum(artificial_money) artificial_amount,
             		count(artificial_count) artificial_count,
-            		sum(backwater_money) backwater_money,
-            		sum(promotion_money) promotion_money
+            		sum(rebate_amount) rebate_amount,
+            		sum(promotion_amount) promotion_amount
             	from member_daily_report 
             	where day >= '${query.startDate}' and day < '${query.endDate}' and client_id = ${query.clientId} group by member_id
             ) as t order by t.${sortBy} desc limit ${query.size};
@@ -243,19 +243,19 @@ class MemberDailyReportDaoImpl(
             val totalBet = rs.getBigDecimal("total_bet")
             val totalMWin = rs.getBigDecimal("total_m_win")
             val totalMLoss = rs.getBigDecimal("total_m_loss")
-            val depositMoney = rs.getBigDecimal("deposit_money")
+            val depositAmount = rs.getBigDecimal("deposit_amount")
             val depositCount = rs.getInt("deposit_count")
-            val withdrawMoney = rs.getBigDecimal("withdraw_money")
+            val withdrawAmount = rs.getBigDecimal("withdraw_amount")
             val withdrawCount = rs.getInt("withdraw_count")
-            val artificialMoney = rs.getBigDecimal("artificial_money")
+            val artificialAmount = rs.getBigDecimal("artificial_amount")
             val artificialCount = rs.getInt("artificial_count")
-            val backwaterMoney = rs.getBigDecimal("backwater_money")
-            val promotionMoney = rs.getBigDecimal("promotion_money")
+            val rebateAmount = rs.getBigDecimal("rebate_amount")
+            val promotionAmount = rs.getBigDecimal("promotion_amount")
 
             MemberReportValue.AnalysisVo(memberId = memberId, totalBet = totalBet, totalMWin = totalMWin, totalMLoss = totalMLoss,
-                    depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney, withdrawCount = withdrawCount,
-                    artificialMoney = artificialMoney, artificialCount = artificialCount, backwaterMoney = backwaterMoney,
-                    promotionMoney = promotionMoney, clientId = query.clientId)
+                    depositAmount = depositAmount, depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount,
+                    artificialAmount = artificialAmount, artificialCount = artificialCount, rebateAmount = rebateAmount,
+                    promotionAmount = promotionAmount, clientId = query.clientId)
         }
     }
 
