@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core
 
+import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 
@@ -54,4 +55,6 @@ object OnePieceRedisKeyConstant {
     fun getSeo(clientId: Int) = "seo:${clientId}"
 
     fun getPayBinds(clientId: Int) = "pay:bind:$clientId"
+
+    fun indexCacheConfig(clientId: Int, language: Language) = "index:config:${clientId}:$language"
 }

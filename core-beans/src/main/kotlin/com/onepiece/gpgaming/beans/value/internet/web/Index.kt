@@ -41,7 +41,10 @@ data class Index(
         val sports: List<SportRecommended>,
 
         @ApiModelProperty("直人推荐")
-        val lives: List<LiveRecommended>
+        val lives: List<LiveRecommended>,
+
+        @ApiModelProperty("代理域名地址")
+        val affSite: String
 
 ) {
 

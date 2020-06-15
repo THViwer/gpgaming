@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.value.database.BlogValue
+import com.onepiece.gpgaming.beans.value.internet.web.Index
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.player.controller.value.ApiValue
@@ -31,6 +32,9 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "首页配置")
     fun config(): IndexConfig
+
+    @ApiOperation(tags = ["api"], value = "首页配置")
+    fun indexConfig(): Index
 
     @ApiOperation(tags = ["api"], value = "域名配置")
     fun getConfig(): CompileValue.Config

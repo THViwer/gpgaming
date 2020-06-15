@@ -19,9 +19,11 @@ import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.BlogValue
+import com.onepiece.gpgaming.beans.value.internet.web.Index
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.core.ActiveConfig
+import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.BlogService
@@ -75,7 +77,8 @@ open class ApiController(
         private val hotGameService: HotGameService,
         private val clientService: ClientService,
         private val seoService: SeoService,
-        private val blogService: BlogService
+        private val blogService: BlogService,
+        private val indexUtil: IndexUtil
 ) : BasicController(), Api {
 
     private val log = LoggerFactory.getLogger(ApiController::class.java)
@@ -85,6 +88,14 @@ open class ApiController(
         val clientId = this.getClientIdByDomain()
         val url = SystemConstant.getClientResourcePath(clientId = clientId, profile = activeConfig.profile)
         return IndexConfig(url = "$url/index_${getHeaderLanguage().name.toLowerCase()}.json?${UUID.randomUUID()}")
+    }
+
+    @GetMapping("/index")
+    override fun indexConfig(): Index {
+        val clientId = getClientIdByDomain()
+        val language = this.getHeaderLanguage()
+
+        return indexUtil.getIndexConfig(clientId = clientId, language = language)
     }
 
     @GetMapping("/compile")
