@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.model.WebSite
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService
@@ -70,10 +71,14 @@ abstract class BasicController {
 
 
     fun getCountryByDomain(): Country {
-        val request = this.getRequest()
-        val url = request.requestURL.toString()
-        return webSiteService.match(url).country
+        return this.getSiteByDomain().country
     }
+
+     fun getSiteByDomain(): WebSite {
+         val request = this.getRequest()
+         val url = request.requestURL.toString()
+         return webSiteService.match(url)
+     }
 
     fun getHeaderLanguage(): Language {
         val request = this.getRequest()

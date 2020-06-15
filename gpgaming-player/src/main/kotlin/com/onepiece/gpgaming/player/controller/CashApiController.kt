@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.player.controller
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.Bank
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
@@ -42,6 +43,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
 import com.onepiece.gpgaming.core.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ClientBankService
+import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.MemberBankService
@@ -113,7 +115,8 @@ open class CashApiController(
         private val payOrderService: PayOrderService,
         private val payGateway: PayGateway,
         private val memberDailyReportService: MemberDailyReportService,
-        private val betOrderService: BetOrderService
+        private val betOrderService: BetOrderService,
+        private val clientService: ClientService
 ) : BasicController(), CashApi {
 
     private val log = LoggerFactory.getLogger(CashApiController::class.java)
@@ -124,7 +127,18 @@ open class CashApiController(
 
         val launch = getHeaderLaunch()
 
-        val country = this.getCountryByDomain()
+        val country = this.getSiteByDomain()
+                .let {
+                    when {
+                        it.country == Country.Malaysia && it.bossId == -1 -> {
+                            clientService.getMainClient(bossId = it.clientId)?.country ?: Country.Malaysia
+                        }
+                        it.country == Country.Default -> {
+                            clientService.getMainClient(bossId = it.bossId)?.country ?: Country.Malaysia
+                        }
+                        else -> it.country
+                    }
+                }
 
         val mobile = launch == LaunchMethod.Wap
         return Bank.of(country = country)
