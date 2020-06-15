@@ -151,9 +151,9 @@ class IndexUtil(
             val hotGameUrl = "${SystemConstant.AWS_SLOT}/hot_sort_20_web_${hotLanguage.name.toLowerCase()}.json"
 
             // 代理地址
-            val agentSite = webSiteService.getAffSite(clientId = client.bossId)
-            val affSite = "https://aff.${agentSite.domain}"
-
+            val affSite = webSiteService.getAffSite(clientId = client.bossId)?.let {
+                "https://aff.${it.domain}"
+            }
 
             val index = Index(logo = logo, announcement = announcement, recommendedPlatforms = recommendedPlatforms, lives = recommendLives,
                     banners = bannerVoList, sports = recommendSports, hotGameUrl = hotGameUrl, recommendedVideos = recommendVideos, name = client.name,

@@ -44,7 +44,7 @@ data class Index(
         val lives: List<LiveRecommended>,
 
         @ApiModelProperty("代理域名地址")
-        val affSite: String
+        val affSite: String?
 
 ) {
 

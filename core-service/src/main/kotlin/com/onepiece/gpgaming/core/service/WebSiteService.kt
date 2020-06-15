@@ -10,7 +10,7 @@ interface WebSiteService {
 
     fun getDataByBossId(bossId: Int): List<WebSite>
 
-    fun getAffSite(clientId: Int): WebSite
+    fun getAffSite(clientId: Int): WebSite?
 
     fun create(webSiteCo: WebSiteCo)
 

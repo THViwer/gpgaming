@@ -31,8 +31,8 @@ class WebSiteServiceImpl(
         return this.all().filter { it.bossId == bossId }
     }
 
-    override fun getAffSite(clientId: Int): WebSite {
-        return this.getDataByBossId(bossId = -1).first { it.clientId == clientId && it.status == Status.Normal && it.country == Country.Default }
+    override fun getAffSite(clientId: Int): WebSite? {
+        return this.getDataByBossId(bossId = -1).firstOrNull { it.clientId == clientId && it.status == Status.Normal && it.country == Country.Default }
     }
 
     override fun create(webSiteCo: WebSiteCo) {
