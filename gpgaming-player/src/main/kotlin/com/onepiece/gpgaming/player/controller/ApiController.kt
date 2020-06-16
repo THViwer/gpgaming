@@ -261,7 +261,17 @@ open class ApiController(
 
     @GetMapping("/i18n")
     override fun i18nConfig(@RequestParam("config") config: I18nConfig): List<I18nContent> {
-        return i18nContentService.getConfigType(clientId = getClientId(), configType = config)
+        val language = getHeaderLanguage()
+        val contents = i18nContentService.getConfigType(clientId = getClientId(), configType = config)
+
+        return when (config) {
+            I18nConfig.RegisterSide -> {
+                val data = contents.firstOrNull { it.language == language }
+                        ?: contents.first { it.language == Language.EN }
+                listOf(data)
+            }
+            else -> contents.filter { it.language == language }
+        }
     }
 
     @GetMapping("/slots")
