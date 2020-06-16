@@ -50,7 +50,7 @@ interface Api {
     fun promotion(): List<PromotionVo>
 
     @ApiOperation(tags = ["api"], value = "代理域名地址")
-    fun getAffSite(): CompileValue.AffSite
+    fun indexConfig(): CompileValue.AffSite
 
 //    @ApiOperation(tags = ["api"], value = "老虎机菜单")
 //    @Deprecated("推荐使用/slots方法")

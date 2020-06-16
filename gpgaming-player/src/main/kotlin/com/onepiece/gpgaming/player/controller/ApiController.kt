@@ -231,8 +231,8 @@ open class ApiController(
 
     }
 
-    @GetMapping("/aff/site")
-    override fun getAffSite(): CompileValue.AffSite {
+    @GetMapping("/config")
+    override fun indexConfig(): CompileValue.AffSite {
 
         val bossId = getBossId()
 
