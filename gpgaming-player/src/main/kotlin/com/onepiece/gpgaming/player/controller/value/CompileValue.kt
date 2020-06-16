@@ -11,5 +11,9 @@ sealed class CompileValue {
 
     )
 
+    data class AffSite(
+            val path: String?
+    )
+
 
 }
