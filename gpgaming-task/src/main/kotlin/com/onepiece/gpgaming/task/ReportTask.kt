@@ -70,15 +70,6 @@ class ReportTask(
 //        }
 //    }
 
-    // 获得Kiss918、Pussy888、Mega报表
-    fun getOtherReport(startDate: LocalDate) {
-
-
-
-    }
-
-
-
     // 会员日报表
     fun startMemberReport(startDate: LocalDate) {
         tryLock(localDate = startDate, type = TaskTimerType.MemberDaily) {

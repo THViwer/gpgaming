@@ -48,7 +48,7 @@ class PullBetTask(
         this.execute(redisKey = redisKey, time = "")
     }
 
-//    @Scheduled(cron="0 0 0/1  * * ? ")
+//    @Scheduled(cron="0 0/2 *  * * ? ")
     fun startOneHour() {
         val redisKey = "pull:task:running:hour"
         this.execute(redisKey = redisKey, time = ":hour")

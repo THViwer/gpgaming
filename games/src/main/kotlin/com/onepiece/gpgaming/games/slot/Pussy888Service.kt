@@ -205,12 +205,10 @@ class Pussy888Service(
         val data = listOf(
                 "sDate=${reportQueryReq.startDate}",
                 "eDate=${reportQueryReq.startDate.plusDays(1)}",
-                "type=ServerTotalReport",
-                "time=${System.currentTimeMillis()}",
-                "authcode=${clientToken.autoCode}"
+                "type=ServerTotalReport"
         )
 
-        val url = "${clientToken.apiPath}/ashx/AgentTotalReport.ashx"
+        val url = "${clientToken.apiOrderPath}/ashx/AgentTotalReport.ashx"
         val mapUtil = this.startGetJson(url = url, username = clientToken.agentName, clientToken = clientToken, data = data)
 
         return mapUtil.asList("results").map {
