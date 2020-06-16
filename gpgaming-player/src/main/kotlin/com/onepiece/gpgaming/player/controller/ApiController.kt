@@ -267,8 +267,9 @@ open class ApiController(
         return when (config) {
             I18nConfig.RegisterSide -> {
                 val data = contents.firstOrNull { it.language == language }
-                        ?: contents.first { it.language == Language.EN }
-                listOf(data)
+                        ?: contents.firstOrNull { it.language == Language.EN }
+
+                data?.let { listOf(it) } ?: emptyList()
             }
             else -> contents.filter { it.language == language }
         }
