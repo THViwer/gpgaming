@@ -32,6 +32,8 @@ data class MemberQuery(
 
         val username: String? = null,
 
+        val usernames: List<String>? = null,
+
         val name: String? = null,
 
         val phone: String? = null,

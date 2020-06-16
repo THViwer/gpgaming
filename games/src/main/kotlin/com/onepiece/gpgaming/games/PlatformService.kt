@@ -120,6 +120,13 @@ abstract class PlatformService {
     }
 
     /**
+     * 查询报表
+     */
+    open fun queryReport(reportQueryReq: GameValue.ReportQueryReq): List<GameValue.PlatformReportData> {
+        error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
+    }
+
+    /**
      * 拉取订单(工具),提供redis缓存
      */
     fun pullByNextId(clientId: Int, platform: Platform, function: (nowId: String) -> Pair<String, List<BetOrderValue.BetOrderCo>>): List<BetOrderValue.BetOrderCo> {

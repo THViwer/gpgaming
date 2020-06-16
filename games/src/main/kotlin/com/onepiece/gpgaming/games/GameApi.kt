@@ -44,9 +44,8 @@ import com.onepiece.gpgaming.utils.RedisService
 import com.onepiece.gpgaming.utils.RequestUtil
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Component
@@ -445,6 +444,21 @@ class GameApi(
             Platform.Kiss918, Platform.Mega, Platform.Pussy888, Platform.SexyGaming, Platform.Bcs, Platform.AllBet, Platform.TTG -> {
                 val betOrderReq = GameValue.BetOrderReq(token = clientToken, startTime = startTime, endTime = endTime, username = platformUsername)
                 getPlatformApi(platform).queryBetOrder(betOrderReq)
+            }
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
+        }
+    }
+
+    /**
+     * 查询报表
+     */
+    fun queryReport(clientId: Int, platform: Platform, startDate: LocalDate): List<GameValue.PlatformReportData> {
+        val clientToken = getClientToken(clientId = clientId, platform = platform)
+
+        return when (platform) {
+            Platform.Kiss918, Platform.Pussy888, Platform.Mega -> {
+                val req = GameValue.ReportQueryReq(token = clientToken, startDate = startDate)
+                getPlatformApi(platform).queryReport(req)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }

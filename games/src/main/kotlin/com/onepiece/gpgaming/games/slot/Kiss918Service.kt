@@ -199,6 +199,26 @@ class Kiss918Service (
         return GameValue.TransferResp.of(successful = flag)
     }
 
+    override fun queryReport(reportQueryReq: GameValue.ReportQueryReq): List<GameValue.PlatformReportData> {
+
+        val clientToken = reportQueryReq.token as Kiss918ClientToken
+
+        val data = listOf(
+                "sDate=${reportQueryReq.startDate}",
+                "eDate=${reportQueryReq.startDate.plusDays(1)}",
+                "type=ServerTotalReport",
+                "time=${System.currentTimeMillis()}",
+                "authcode=${clientToken.autoCode}"
+        )
+
+        val url = "${clientToken.apiPath}/ashx/AgentTotalReport.ashx"
+        val mapUtil = this.startGetJson(url = url, username = clientToken.agentName, clientToken = clientToken, data = data)
+        println(mapUtil)
+        return emptyList()
+    }
+
+
+
     override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
         val clientToken = betOrderReq.token as Kiss918ClientToken
 

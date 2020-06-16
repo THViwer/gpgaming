@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 sealed class GameValue {
@@ -102,10 +103,26 @@ sealed class GameValue {
             fun failed(): TransferResp {
                 return TransferResp(transfer = false, platformOrderId = "-", balance = BigDecimal.valueOf(-1))
             }
-
         }
-
     }
+
+    data class PlatformReportData(
+
+            // 用户名
+            val username: String,
+
+            // 平台
+            val platform: Platform,
+
+            // 下注金额
+            val bet: BigDecimal,
+
+            // 盈利
+            val win: BigDecimal,
+
+            // 原始数据
+            val originData: String
+    )
 
     data class CheckTransferReq(
             val token: ClientToken,
@@ -161,6 +178,15 @@ sealed class GameValue {
             val startTime: LocalDateTime,
 
             val endTime: LocalDateTime
+    )
+
+    data class ReportQueryReq(
+
+            // 用户名
+            val token: ClientToken,
+
+            // 开始日期
+            val startDate: LocalDate
     )
 
 

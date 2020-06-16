@@ -9,6 +9,6 @@ interface OtherPlatformReportDao : BasicDao<OtherPlatformReport> {
 
     fun list(startDate: LocalDate): List<OtherPlatformReport>
 
-    fun create(co: OtherPlatformReportValue.PlatformReportCo)
+    fun batch(data: List<OtherPlatformReportValue.PlatformReportCo>)
 
 }

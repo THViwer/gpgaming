@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.MegaClientToken
+import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
@@ -144,6 +145,36 @@ class MegaService : PlatformService() {
         )
         val mapUtil = this.startPostJson(method = "open.mega.player.game.log.url.get", data = data, clientToken = clientToken)
         return mapUtil.asString("result")
+    }
+
+    override fun queryReport(reportQueryReq: GameValue.ReportQueryReq): List<GameValue.PlatformReportData> {
+
+        val clientToken = reportQueryReq.token as MegaClientToken
+
+        val random = UUID.randomUUID().toString()
+        val digest = this.sign(random = random, loginId = clientToken.agentId, clientToken = clientToken)
+
+
+        val startTime = reportQueryReq.startDate.atStartOfDay()
+        val endTime = startTime.plusDays(1)
+        val data = mapOf(
+                "agentLoginId" to clientToken.agentId,
+                "startTime" to startTime.format(dateTimeFormat),
+                "endTime" to endTime.format(dateTimeFormat),
+                "random" to random,
+                "type" to "1",
+                "sn" to clientToken.appId,
+                "digest" to digest
+        )
+        val mapUtil = this.startPostJson(method = "open.mega.player.total.report", data = data, clientToken = clientToken)
+
+        return mapUtil.asList("result").map {
+            val bet = it.asBigDecimal("bet")
+            val win = it.asBigDecimal("win")
+            val username = it.asString("loginId")
+            val originData = objectMapper.writeValueAsString(it.data)
+            GameValue.PlatformReportData(username = username, platform = Platform.Mega, bet = bet, win = win, originData = originData)
+        }
     }
 
 

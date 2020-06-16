@@ -18,6 +18,7 @@ import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.core.dao.BetOrderDao
 import com.onepiece.gpgaming.core.dao.LevelDao
 import com.onepiece.gpgaming.core.dao.MemberDao
+import com.onepiece.gpgaming.core.dao.OtherPlatformReportDao
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
 import com.onepiece.gpgaming.core.dao.TransferReportQuery
 import com.onepiece.gpgaming.core.service.BetOrderService
@@ -38,7 +39,8 @@ class ReportServiceImpl(
         private val betOrderDao: BetOrderDao,
         private val levelDao: LevelDao,
         private val analysisDao: AnalysisDao,
-        private val commissionService: CommissionService
+        private val commissionService: CommissionService,
+        private val otherPlatformReportDao: OtherPlatformReportDao
 ) : ReportService {
 
     private val log = LoggerFactory.getLogger(ReportServiceImpl::class.java)
@@ -80,14 +82,28 @@ class ReportServiceImpl(
         val betMap = betReports.groupBy { it.memberId }
 
         //TODO  Kiss918、Pussy888、Mega
+        val otherReports = otherPlatformReportDao.list(startDate = startDate)
+                .map { "${it.memberId}_${it.platform}" to it }
+                .toMap()
 
 
         return list.map { report ->
 
+            // kiss918、pussy、mega平台的日报表
+            val otherSettles = listOf(Platform.Kiss918, Platform.Pussy888, Platform.Mega).mapNotNull { platform ->
+                val memberId = report.memberId
+
+                otherReports["${memberId}_$platform"]
+                        ?.let {
+                            MemberDailyReport.PlatformSettle(platform = platform, bet = it.bet, mwin = it.win, validBet = it.bet)
+                        }
+            }
+
             // 平台下注金额
-            val settles = betMap[report.memberId]?.map {
+            val settles = (betMap[report.memberId]?.map {
                 MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, mwin = it.totalWin, validBet = it.validBet)
-            }?: emptyList()
+            }?: emptyList()).plus(otherSettles)
+
             val totalBet = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额
             val totalMWin = settles.sumByDouble { it.mwin.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
 
