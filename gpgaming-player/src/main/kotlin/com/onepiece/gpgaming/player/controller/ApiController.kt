@@ -231,6 +231,18 @@ open class ApiController(
 
     }
 
+    @GetMapping("/aff/site")
+    override fun getAffSite(): CompileValue.AffSite {
+
+        val bossId = getBossId()
+
+        // 代理地址
+        val affSite = webSiteService.getAffSite(clientId = bossId)?.let {
+            "https://aff.${it.domain}"
+        }
+        return CompileValue.AffSite(path = affSite)
+    }
+
     @GetMapping("/blog")
     override fun blogs(): List<BlogValue.BlogMVo> {
 
@@ -245,6 +257,11 @@ open class ApiController(
                     BlogValue.BlogMVo(id = blog.id, title = blog.title, headImg = blog.headImg, sort = blog.sort, platform = blog.platform,
                             content = content.getII18nContent(objectMapper) as I18nContent.DefaultContentI18n, status = blog.status)
                 }
+    }
+
+    @GetMapping("/i18n")
+    override fun i18nConfig(@RequestParam("config") config: I18nConfig): List<I18nContent> {
+        return i18nContentService.getConfigType(clientId = getClientId(), configType = config)
     }
 
     @GetMapping("/slots")

@@ -2,8 +2,10 @@ package com.onepiece.gpgaming.player.controller
 
 import com.onepiece.gpgaming.beans.enums.BannerType
 import com.onepiece.gpgaming.beans.enums.Country
+import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
+import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.value.database.BlogValue
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
@@ -47,6 +49,9 @@ interface Api {
     @ApiOperation(tags = ["api"], value = "优惠活动")
     fun promotion(): List<PromotionVo>
 
+    @ApiOperation(tags = ["api"], value = "代理域名地址")
+    fun getAffSite(): CompileValue.AffSite
+
 //    @ApiOperation(tags = ["api"], value = "老虎机菜单")
 //    @Deprecated("推荐使用/slots方法")
 //    fun slotMenu(
@@ -56,6 +61,9 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "blog")
     fun blogs(): List<BlogValue.BlogMVo>
+
+    @ApiOperation(tags = ["api"], value = "国际化配置")
+    fun i18nConfig(@RequestParam("config") config: I18nConfig): List<I18nContent>
 
 
     @ApiOperation(tags = ["api"], value = "老虎机游戏列表")
