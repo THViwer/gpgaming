@@ -4,7 +4,6 @@ import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.pay.GPPayConfig
 import com.onepiece.gpgaming.payment.http.PayOkHttpUtil
-import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
@@ -36,7 +35,13 @@ data class FPXPayRequest(
         val bank: Bank,
 
         // 商户回调地址
-        val merchantBackPath: String = "http://localhost:8011/api/v1/admin/demo/pay"
+        val merchantBackPath: String = "http://localhost:8011/api/v1/admin/demo/pay",
+
+        // 支付成功跳转url
+        val responseUrl: String,
+
+        // 失败的跳转Url
+        val failResponseUrl: String
 )
 
 @Service
@@ -60,7 +65,7 @@ class FpxService(
 //        ).toMap()
 
         val fpxReq = FPXPayRequest(merchantCode = config.merchantId, orderId = req.orderId, amount = req.amount.setScale(2, 2),
-                bank = req.selectBank!!, merchantBackPath = config.backendURL)
+                bank = req.selectBank!!, merchantBackPath = config.backendURL, responseUrl = req.responseUrl, failResponseUrl = req.failResponseUrl)
 
         val response = okHttpUtil.doPostJson(url = config.apiPath, data = fpxReq, clz = FPXPayResponse::class.java)
         check(response.errorCode != 200) { OnePieceExceptionCode.SYSTEM }
