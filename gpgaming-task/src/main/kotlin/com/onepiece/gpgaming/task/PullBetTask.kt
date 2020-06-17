@@ -14,6 +14,8 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.time.LocalDateTime
+import java.util.concurrent.FutureTask
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.stream.Collectors
 
 
@@ -48,7 +50,7 @@ class PullBetTask(
         this.execute(redisKey = redisKey, time = "")
     }
 
-//    @Scheduled(cron="0 0/2 *  * * ? ")
+//    @Scheduled(cron="0 0 0/1  * * ? ")
     fun startOneHour() {
         val redisKey = "pull:task:running:hour"
         this.execute(redisKey = redisKey, time = ":hour")
