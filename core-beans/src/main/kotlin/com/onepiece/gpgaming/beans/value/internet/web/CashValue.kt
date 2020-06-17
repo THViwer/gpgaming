@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.DepositChannel
 import com.onepiece.gpgaming.beans.enums.PayState
@@ -173,6 +174,7 @@ sealed class CashValue {
     data class ThirdPayResponse(
 
             @ApiIgnore
+            @JsonIgnore
             val summaries: List<PayOrderValue.ThirdPaySummary>,
 
             @ApiModelProperty("列表")
