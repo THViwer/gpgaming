@@ -5,9 +5,9 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.PlatformMember
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberCo
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberTransferUo
+import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberValue
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.beans.value.order.BetCacheVo
-import com.onepiece.gpgaming.core.NoRollbackException
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.PlatformMemberDao
 import com.onepiece.gpgaming.core.service.PlatformMemberService
@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import java.lang.Exception
 import java.math.BigDecimal
 
 @Service
@@ -129,5 +128,9 @@ class PlatformMemberServiceImpl(
 
     override fun batchBet(data: List<BetCacheVo>) {
         return platformMemberDao.batchBet(data)
+    }
+
+    override fun list(query: PlatformMemberValue.PlatformMemberQuery): List<PlatformMember> {
+        return platformMemberDao.list(query = query)
     }
 }

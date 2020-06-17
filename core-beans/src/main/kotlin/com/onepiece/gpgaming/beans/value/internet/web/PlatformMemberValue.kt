@@ -3,6 +3,24 @@ package com.onepiece.gpgaming.beans.value.internet.web
 import com.onepiece.gpgaming.beans.enums.Platform
 import java.math.BigDecimal
 
+sealed class PlatformMemberValue {
+
+    data class PlatformMemberQuery(
+
+            // clientId
+            val clientId: Int,
+
+            // 平台
+            val platform: Platform,
+
+            // 用户名列表
+            val usernames: List<String>
+
+    )
+
+
+}
+
 data class PlatformMemberVo(
 
         // id

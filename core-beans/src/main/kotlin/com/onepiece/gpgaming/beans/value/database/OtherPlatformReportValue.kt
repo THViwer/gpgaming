@@ -8,9 +8,6 @@ sealed class OtherPlatformReportValue {
 
     data class PlatformReportCo(
 
-            // bossId
-            val bossId: Int,
-
             // clientId
             val clientId: Int,
 

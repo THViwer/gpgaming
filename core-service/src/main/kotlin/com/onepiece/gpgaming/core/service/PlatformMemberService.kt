@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.model.PlatformMember
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberTransferUo
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberDetailVo
+import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberValue
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.beans.value.order.BetCacheVo
 import java.math.BigDecimal
@@ -31,4 +32,6 @@ interface PlatformMemberService {
     fun cleanTransferIn(memberId: Int, platform: Platform, transferOutAmount: BigDecimal = BigDecimal.ZERO)
 
     fun batchBet(data: List<BetCacheVo>)
+
+    fun list(query: PlatformMemberValue.PlatformMemberQuery): List<PlatformMember>
 }

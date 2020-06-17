@@ -16,7 +16,7 @@ class OtherPlatformReportDaoImpl : BasicDaoImpl<OtherPlatformReport>("other_plat
     override val mapper: (rs: ResultSet) -> OtherPlatformReport
         get() = { rs ->
             val id = rs.getInt("id")
-            val bossId = rs.getInt("boss_id")
+//            val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
             val day = rs.getDate("day").toLocalDate()
@@ -26,19 +26,19 @@ class OtherPlatformReportDaoImpl : BasicDaoImpl<OtherPlatformReport>("other_plat
             val originData = rs.getString("origin_data")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
-            OtherPlatformReport(id = id, bossId = bossId, clientId = clientId, memberId = memberId, day = day,
+            OtherPlatformReport(id = id, clientId = clientId, memberId = memberId, day = day,
                     platform = platform, bet = bet, win = win, originData = originData, createdTime = createdTime)
         }
 
     override fun list(startDate: LocalDate): List<OtherPlatformReport> {
         return query()
-                .asWhere("day >= ?", startDate)
+                .where("day", startDate)
                 .execute(mapper)
     }
 
     override fun batch(data: List<OtherPlatformReportValue.PlatformReportCo>) {
         batchInsert(data = data)
-                .set("boss_id")
+//                .set("boss_id")
                 .set("client_id")
                 .set("member_id")
                 .set("day")
@@ -48,7 +48,7 @@ class OtherPlatformReportDaoImpl : BasicDaoImpl<OtherPlatformReport>("other_plat
                 .set("origin_data")
                 .execute { ps, entity ->
                     var x = 0
-                    ps.setInt(++x, entity.bossId)
+//                    ps.setInt(++x, entity.bossId)
                     ps.setInt(++x, entity.clientId)
                     ps.setInt(++x, entity.memberId)
                     ps.setString(++x, "${entity.day}")

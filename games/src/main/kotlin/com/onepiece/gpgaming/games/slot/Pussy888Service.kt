@@ -205,7 +205,8 @@ class Pussy888Service(
         val data = listOf(
                 "sDate=${reportQueryReq.startDate}",
                 "eDate=${reportQueryReq.startDate.plusDays(1)}",
-                "type=ServerTotalReport"
+                "userName=${clientToken.agentName}",
+                "Type=ServerTotalReport"
         )
 
         val url = "${clientToken.apiOrderPath}/ashx/AgentTotalReport.ashx"

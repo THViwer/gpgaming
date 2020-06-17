@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.PlatformMember
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberCo
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberTransferUo
+import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberValue
 import com.onepiece.gpgaming.beans.value.order.BetCacheVo
 import com.onepiece.gpgaming.core.dao.PlatformMemberDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
@@ -130,5 +131,13 @@ class PlatformMemberDaoImpl : BasicDaoImpl<PlatformMember>("platform_member"), P
         }
         jdbcTemplate.batchUpdate(*sql.toTypedArray())
 
+    }
+
+    override fun list(query: PlatformMemberValue.PlatformMemberQuery): List<PlatformMember> {
+        return query()
+                .where("client_Id", query.clientId)
+                .where("platform", query.platform)
+                .whereIn("username", query.usernames)
+                .execute(mapper)
     }
 }

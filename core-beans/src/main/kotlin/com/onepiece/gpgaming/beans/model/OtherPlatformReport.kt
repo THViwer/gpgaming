@@ -11,7 +11,7 @@ data class OtherPlatformReport (
         val id: Int,
 
         // bossId
-        val bossId: Int,
+//        val bossId: Int,
 
         // clientId
         val clientId: Int,

@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.model.PlatformMember
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberCo
 import com.onepiece.gpgaming.beans.value.database.PlatformMemberTransferUo
+import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberValue
 import com.onepiece.gpgaming.beans.value.order.BetCacheVo
 import com.onepiece.gpgaming.core.dao.basic.BasicDao
 import java.math.BigDecimal
@@ -23,5 +24,7 @@ interface PlatformMemberDao: BasicDao<PlatformMember> {
     fun batchBet(data: List<BetCacheVo>)
 
     fun updatePassword(id: Int, password: String): Boolean
+
+    fun list(query: PlatformMemberValue.PlatformMemberQuery): List<PlatformMember>
 
 }
