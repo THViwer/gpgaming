@@ -58,6 +58,11 @@ interface AnalysisDao  {
      */
     fun subAgents(bossId: Int, clientId: Int, agentId: Int): List<AgentValue.SubAgentVo>
 
+    /**
+     * 统计存人数
+     */
+    fun activeCount(startDate: LocalDate, endDate: LocalDate): Map<Int, Int>
+
 
 
 

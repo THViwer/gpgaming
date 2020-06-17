@@ -317,6 +317,13 @@ class ReportServiceImpl(
 
     override fun startClientReport(startDate: LocalDate): List<ClientDailyReport> {
         val endDate = startDate.plusDays(1)
-        return analysisDao.clientReport(startDate = startDate, endDate = endDate)
+        val list =  analysisDao.clientReport(startDate = startDate, endDate = endDate)
+
+        val map = analysisDao.activeCount(startDate = startDate, endDate = startDate.plusDays(1))
+
+        return list.map {
+            val activeCount = map[it.clientId] ?: 0
+            it.copy(activeCount = activeCount)
+        }
     }
 }

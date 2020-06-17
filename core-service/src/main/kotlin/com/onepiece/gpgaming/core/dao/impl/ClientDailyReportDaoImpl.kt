@@ -9,7 +9,7 @@ import java.sql.Date
 import java.sql.ResultSet
 
 @Repository
-class fClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_report"), ClientDailyReportDao {
+class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_report"), ClientDailyReportDao {
 
     override val mapper: (rs: ResultSet) -> ClientDailyReport
         get() = { rs ->
@@ -17,6 +17,7 @@ class fClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_
             val day = rs.getDate("day").toLocalDate()
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
+            val activeCount = rs.getInt("active_count")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
             val depositAmount = rs.getBigDecimal("deposit_amount")
@@ -38,7 +39,7 @@ class fClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_
             ClientDailyReport(id = id, day = day, bossId = bossId, clientId = clientId, transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
                     depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
                     promotionAmount = promotionAmount, artificialAmount = artificialAmount, artificialCount = artificialCount, totalBet = totalBet, totalMWin = totalMWin,
-                    thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount)
+                    thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, activeCount = activeCount)
         }
 
     override fun create(reports: List<ClientDailyReport>) {
@@ -46,6 +47,7 @@ class fClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_
                 .set("day")
                 .set("boss_id")
                 .set("client_id")
+                .set("active_count")
                 .set("transfer_in")
                 .set("transfer_out")
                 .set("deposit_amount")
@@ -66,6 +68,7 @@ class fClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_
                     ps.setDate(++x, Date.valueOf(entity.day))
                     ps.setInt(++x, entity.bossId)
                     ps.setInt(++x, entity.clientId)
+                    ps.setInt(++x, entity.activeCount)
                     ps.setBigDecimal(++x, entity.transferIn)
                     ps.setBigDecimal(++x, entity.transferOut)
                     ps.setBigDecimal(++x, entity.depositAmount)

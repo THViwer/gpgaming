@@ -374,7 +374,7 @@ class AnalysisDaoImpl(
                     transferIn = transferIn, transferOut = transferOut, artificialAmount = artificialAmount, artificialCount = artificialCount,
                     depositAmount = depositAmount, depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount,
                     rebateAmount = rebateAmount, promotionAmount = promotionAmount, thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount,
-                    newMemberCount = newMemberCount, createdTime = LocalDateTime.now())
+                    newMemberCount = newMemberCount, createdTime = LocalDateTime.now(), activeCount = 0)
 
         }
 
@@ -503,4 +503,22 @@ class AnalysisDaoImpl(
                     superiorUsername = "-", subAgentCount = agentCount)
         }
     }
+
+    override fun activeCount(startDate: LocalDate, endDate: LocalDate): Map<Int, Int> {
+
+        val sql = """
+            select client_id, count(distinct(username)) count  from (
+            	select client_id, username from deposit where  state = 'Successful' and created_time > '${startDate}' and created_time < '${endDate}'
+            	union all select client_id, username from pay_order where state = 'Successful' and created_time > '${startDate}' and created_time < '${endDate}'
+            	union all select client_id, username from withdraw where state = 'Successful' and created_time > '${startDate}' and created_time < '${endDate}'
+            ) t group by client_id;
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql) { rs, _ ->
+            val clientId = rs.getInt("client_id")
+            val count = rs.getInt("count")
+            clientId to count
+        }.toMap()
+    }
+
 }

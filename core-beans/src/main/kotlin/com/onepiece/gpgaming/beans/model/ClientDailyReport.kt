@@ -17,6 +17,9 @@ data class ClientDailyReport(
         // 厅主Id
         val clientId: Int,
 
+        // 存活人数
+        val activeCount: Int,
+
         // 下注金额
         val totalBet: BigDecimal,
 
