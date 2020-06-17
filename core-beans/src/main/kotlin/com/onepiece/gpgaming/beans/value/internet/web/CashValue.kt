@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.DepositChannel
+import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.model.Deposit
@@ -9,6 +10,7 @@ import com.onepiece.gpgaming.beans.model.PayOrder
 import com.onepiece.gpgaming.beans.model.Withdraw
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import io.swagger.annotations.ApiModelProperty
+import springfox.documentation.annotations.ApiIgnore
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -170,17 +172,31 @@ sealed class CashValue {
 
     data class ThirdPayResponse(
 
-            @ApiModelProperty("汇总")
+            @ApiIgnore
             val summaries: List<PayOrderValue.ThirdPaySummary>,
 
             @ApiModelProperty("列表")
             val data: List<PayOrder>
     ) {
 
+        val bankSummaries: List<ThirdPayBankTotal>
+            @ApiModelProperty("汇总")
+            get() {
+                return summaries.groupBy { it.bank }.map {
+
+                    val successfulAmount = it.value.firstOrNull { it.state == PayState.Successful }?.totalAmount ?: BigDecimal.ZERO
+                    val processAmount = it.value.firstOrNull { it.state == PayState.Process }?.totalAmount ?: BigDecimal.ZERO
+                    val closeAmount = it.value.firstOrNull { it.state == PayState.Close }?.totalAmount ?: BigDecimal.ZERO
+                    val failedAmount = it.value.firstOrNull { it.state == PayState.Failed }?.totalAmount ?: BigDecimal.ZERO
+
+                    ThirdPayBankTotal(bank = it.key, successfulAmount = successfulAmount, processAmount = processAmount, closeAmount = closeAmount, failedAmount = failedAmount)
+                }
+            }
 
 
         data class ThirdPayBankTotal(
 
+                val bank: Bank,
 
                 val successfulAmount: BigDecimal,
 
