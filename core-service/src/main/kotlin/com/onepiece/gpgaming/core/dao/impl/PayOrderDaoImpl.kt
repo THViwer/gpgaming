@@ -42,7 +42,7 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
         }
 
     override fun summary(query: PayOrderValue.PayOrderQuery): List<PayOrderValue.ThirdPaySummary> {
-        return query("bank, sum(amount) total_amount")
+        return query("bank, state, sum(amount) total_amount")
                 .asWhere("created_time >= ?", query.startDate)
                 .asWhere("created_time < ?", query.endDate)
                 .where("pay_type", query.payType)
