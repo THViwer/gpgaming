@@ -51,12 +51,13 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
                 .where("username", query.username)
                 .where("state", query.state)
                 .asWhere("bank is not null")
-                .group("bank")
+                .group("bank, state")
                 .execute { rs ->
                     val bank = rs.getString("bank").let { Bank.valueOf(it) }
+                    val state = rs.getString("state").let { PayState.valueOf(it) }
                     val totalAmount = rs.getBigDecimal("total_amount")
 
-                    PayOrderValue.ThirdPaySummary(bank = bank, totalAmount = totalAmount)
+                    PayOrderValue.ThirdPaySummary(bank = bank, totalAmount = totalAmount, state = state)
                 }
     }
 

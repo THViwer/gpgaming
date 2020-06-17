@@ -138,6 +138,9 @@ sealed class PayOrderValue {
             // 银行
             val bank: Bank,
 
+            // 支付状态
+            val state: PayState,
+
             // 总金额
             val totalAmount: BigDecimal
     )
