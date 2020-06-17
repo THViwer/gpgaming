@@ -10,7 +10,6 @@ import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
 import com.onepiece.gpgaming.beans.model.PayBind
-import com.onepiece.gpgaming.beans.model.PayOrder
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderCo
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderQuery
 import com.onepiece.gpgaming.beans.value.database.DepositLockUo
@@ -408,13 +407,16 @@ class CashOrderApiController(
             @RequestParam("orderId", required = false) orderId: String?,
             @RequestParam("username", required = false) username: String?,
             @RequestParam("state", required = false) state: PayState?
-    ): List<PayOrder> {
+    ): CashValue.ThirdPayResponse {
         val user = this.current()
 
         val query = PayOrderValue.PayOrderQuery(clientId = user.clientId, memberId = null, username = username,
-                state = state, startDate = startDate, endDate = endDate, current = 0, size = 500, orderId = orderId,
+                state = state, startDate = startDate, endDate = endDate, current = 0, size = 2000, orderId = orderId,
                 payType = payType, memberIds = null)
-        return payOrderService.query(query)
+        val list = payOrderService.query(query)
+        val summaries = payOrderService.summary(query = query)
+
+        return CashValue.ThirdPayResponse(summaries = summaries, data = list)
     }
 
     @PutMapping("/thirdpay")

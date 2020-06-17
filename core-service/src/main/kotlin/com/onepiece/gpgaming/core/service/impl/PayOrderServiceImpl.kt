@@ -8,7 +8,6 @@ import com.onepiece.gpgaming.beans.model.PayOrder
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.beans.value.database.WalletUo
 import com.onepiece.gpgaming.core.dao.PayOrderDao
-import com.onepiece.gpgaming.core.dao.WalletDao
 import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.WalletService
 import org.springframework.stereotype.Service
@@ -30,6 +29,10 @@ class PayOrderServiceImpl(
 
     override fun query(query: PayOrderValue.PayOrderQuery): List<PayOrder> {
         return payOrderDao.query(query)
+    }
+
+    override fun summary(query: PayOrderValue.PayOrderQuery): List<PayOrderValue.ThirdPaySummary> {
+        return payOrderDao.summary(query = query)
     }
 
     override fun create(co: PayOrderValue.PayOrderCo) {

@@ -5,7 +5,9 @@ import com.onepiece.gpgaming.beans.enums.DepositChannel
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.model.Deposit
+import com.onepiece.gpgaming.beans.model.PayOrder
 import com.onepiece.gpgaming.beans.model.Withdraw
+import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -164,7 +166,15 @@ sealed class CashValue {
 
             @ApiModelProperty("参加优惠活动Id")
             var promotionId: Int?
+    )
 
+    data class ThirdPayResponse(
+
+            @ApiModelProperty("汇总")
+            val summaries: List<PayOrderValue.ThirdPaySummary>,
+
+            @ApiModelProperty("列表")
+            val data: List<PayOrder>
     )
 
 }

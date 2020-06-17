@@ -11,6 +11,8 @@ interface PayOrderService  {
 
     fun query(query: PayOrderValue.PayOrderQuery): List<PayOrder>
 
+    fun summary(query: PayOrderValue.PayOrderQuery): List<PayOrderValue.ThirdPaySummary>
+
     fun create(co: PayOrderValue.PayOrderCo)
 
     fun check(uo: PayOrderValue.ConstraintUo)

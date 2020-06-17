@@ -8,7 +8,6 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
 import com.onepiece.gpgaming.beans.model.PayBind
-import com.onepiece.gpgaming.beans.model.PayOrder
 import com.onepiece.gpgaming.beans.value.database.PayBindValue
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
@@ -131,8 +130,6 @@ interface CashOrderApi {
     fun payBindUpdate(@RequestBody req: PayBindValue.PayBindUo)
 
 
-
-
     @ApiOperation(tags = ["cash"], value = "第三方订单 -> 列表")
     fun payOrder(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
@@ -141,7 +138,7 @@ interface CashOrderApi {
             @RequestParam("orderId", required = false) orderId: String?,
             @RequestParam("username", required = false) username: String?,
             @RequestParam("state", required = false) state: PayState?
-    ): List<PayOrder>
+    ): CashValue.ThirdPayResponse
 
     @ApiOperation(tags = ["cash"], value = "第三方订单 -> 入款")
     @ResponseStatus(HttpStatus.NO_CONTENT)
