@@ -35,6 +35,7 @@ class WaiterServiceImpl(
         checkNotNull(waiter) { OnePieceExceptionCode.LOGIN_FAIL }
         check(bCryptPasswordEncoder.matches(loginValue.password, waiter.password)) { OnePieceExceptionCode.LOGIN_FAIL }
         check(waiter.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
+        check(loginValue.clientId == waiter.clientId) { OnePieceExceptionCode.LOGIN_FAIL }
 
         // update client
         val waiterUo = WaiterUo(id = waiter.id, loginIp = loginValue.ip, loginTime = LocalDateTime.now(), clientBankData = null)

@@ -175,6 +175,22 @@ sealed class CashValue {
 
             @ApiModelProperty("列表")
             val data: List<PayOrder>
-    )
+    ) {
+
+
+
+        data class ThirdPayBankTotal(
+
+
+                val successfulAmount: BigDecimal,
+
+                val closeAmount: BigDecimal,
+
+                val failedAmount: BigDecimal,
+
+                val processAmount: BigDecimal
+
+        )
+    }
 
 }
