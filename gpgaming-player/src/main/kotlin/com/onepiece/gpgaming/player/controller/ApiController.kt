@@ -585,7 +585,7 @@ open class ApiController(
 
         val (language, launch) = getLanguageAndLaunchFormHeader()
 
-        val bossId = getClientId()
+        val bossId = getBossId()
         val clients = clientService.all().filter { it.bossId == bossId }
         val client = clients.firstOrNull { it.country == country } ?: clients.first()
 
