@@ -50,6 +50,27 @@ data class LoginReq(
         @ApiModelProperty("密码")
         val password: String
 )
+
+data class LoginByAdminReq(
+
+        @ApiModelProperty("用户名")
+        val username: String,
+
+        @ApiModelProperty("clientId")
+        val clientId: Int,
+
+        @ApiModelProperty("现在时间")
+        val time: Long,
+
+        @ApiModelProperty("hash")
+        val hash: String
+)
+
+data class LoginByAdminResponse(
+
+        val loginPath: String
+)
+
 data class RegisterReq(
 
         @ApiModelProperty("国家")

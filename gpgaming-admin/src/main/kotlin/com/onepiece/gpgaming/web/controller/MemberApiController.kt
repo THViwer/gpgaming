@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.alibaba.excel.EasyExcel
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
@@ -20,6 +21,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.MemberUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.MemberValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberWalletInfo
+import com.onepiece.gpgaming.beans.value.internet.web.UserValue
 import com.onepiece.gpgaming.beans.value.internet.web.WalletVo
 import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.dao.PayOrderDao
@@ -34,9 +36,11 @@ import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
 import com.onepiece.gpgaming.games.GameApi
+import com.onepiece.gpgaming.games.http.OkHttpUtil
 import com.onepiece.gpgaming.utils.StringUtil
 import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -68,9 +72,16 @@ class MemberApiController(
 
         private val depositDao: DepositDao,
         private val withdrawDao: WithdrawDao,
-        private val payOrderDao: PayOrderDao
+        private val payOrderDao: PayOrderDao,
+
+        private val bCryptPasswordEncoder: BCryptPasswordEncoder,
+        private val okHttpUtil: OkHttpUtil
 
 ) : BasicController(), MemberApi {
+
+    companion object {
+        private const val HASH_CODE = "28b419c9-08aa-40d1-9bc1-ea59ddf751f0"
+    }
 
 
     @GetMapping
@@ -132,6 +143,21 @@ class MemberApiController(
         return MemberPage(total = page.total, data = data)
     }
 
+    @GetMapping("/login")
+    override fun loginByAdmin(@RequestParam("username") username: String): UserValue.MemberLoginResponse {
+
+        val bossId = getBossId()
+        val clientId = getClientId()
+        val time = System.currentTimeMillis()
+        val hash = bCryptPasswordEncoder.encode("${time}:$${HASH_CODE}:$username")
+
+
+        val webSite = webSiteService.getDataByBossId(bossId = bossId).first { it.clientId == clientId }
+        val req = UserValue.MemberLoginReq(clientId = clientId, username = username, time = time, hash = hash)
+
+        val url = "https://www.${webSite.domain}/api/v1/player/user/login_from_admin"
+        return okHttpUtil.doPostJson(platform = Platform.CT, url = url, data = req, clz = UserValue.MemberLoginResponse::class.java)
+    }
 
     @GetMapping("/follow")
     override fun follow(

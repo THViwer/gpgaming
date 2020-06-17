@@ -15,6 +15,8 @@ import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.ChangePwdReq
 import com.onepiece.gpgaming.player.controller.value.CheckUsernameResp
+import com.onepiece.gpgaming.player.controller.value.LoginByAdminReq
+import com.onepiece.gpgaming.player.controller.value.LoginByAdminResponse
 import com.onepiece.gpgaming.player.controller.value.LoginReq
 import com.onepiece.gpgaming.player.controller.value.LoginResp
 import com.onepiece.gpgaming.player.controller.value.PlatformMemberUo
@@ -24,6 +26,7 @@ import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.player.jwt.JwtUser
 import com.onepiece.gpgaming.utils.RequestUtil
 import org.slf4j.LoggerFactory
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -38,15 +41,25 @@ import org.springframework.web.bind.annotation.RestController
 class UserApiController(
         private val memberService: MemberService,
         private val authService: AuthService,
-        private val levelService: LevelService
+        private val levelService: LevelService,
+        private val passwordEncoder: PasswordEncoder
 ) : BasicController(), UserApi {
 
-    private val log = LoggerFactory.getLogger(UserApiController::class.java)
+    companion object {
+        private val IP_LIST = listOf(
+                "127.0.0.1",
+                "localhost",
+                "185.232.92.67",
+                "13.251.241.87"
+        )
+        private const val HASH_CODE = "28b419c9-08aa-40d1-9bc1-ea59ddf751f0"
+        private val log = LoggerFactory.getLogger(UserApiController::class.java)
+
+    }
+
 
     @PostMapping
-    override fun login(
-            @RequestBody loginReq: LoginReq
-    ): LoginResp {
+    override fun login(@RequestBody loginReq: LoginReq): LoginResp {
 
         val bossId = getBossId()
         log.info("bossId = $bossId")
@@ -82,9 +95,34 @@ class UserApiController(
     }
 
 
+
+    @PostMapping("/login_from_admin")
+    override fun login(@RequestBody req: LoginByAdminReq): LoginByAdminResponse {
+
+        // 验证IP
+        val ip = RequestUtil.getIpAddress()
+        check(IP_LIST.contains(ip)) { OnePieceExceptionCode.SYSTEM }
+
+        // 验证密码
+        val pwdStr = "${req.time}:$HASH_CODE:${req.username}"
+        val flag = passwordEncoder.matches(pwdStr, req.hash)
+        check(flag) { OnePieceExceptionCode.SYSTEM }
+
+        // 校验用户名
+        val member = memberService.findByUsername(clientId = req.clientId, username = req.username)
+        checkNotNull(member) { OnePieceExceptionCode.SYSTEM }
+
+        // 域名跳转地址
+        val client = clientService.get(req.clientId)
+        val site = webSiteService.getDataByBossId(bossId = client.bossId).first { it.status == Status.Normal && it.country == client.country }
+
+        // 登陆
+        val token = authService.login(bossId = member.bossId, clientId = member.clientId, username = member.username, role = member.role)
+        return LoginByAdminResponse(loginPath = "https://www.${site.domain}?t=$token")
+    }
+
     @GetMapping("/login/detail")
-    override fun loginDetail(
-    ): LoginResp {
+    override fun loginDetail(): LoginResp {
 
         val user = this.currentUser()
         val launch = getHeaderLaunch()

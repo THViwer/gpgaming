@@ -11,6 +11,31 @@ object UserValueFactory {
 
 }
 
+sealed class UserValue {
+
+        data class MemberLoginResponse(
+
+                val loginPath: String
+
+        )
+
+        data class MemberLoginReq(
+
+                @ApiModelProperty("用户名")
+                val username: String,
+
+                @ApiModelProperty("clientId")
+                val clientId: Int,
+
+                @ApiModelProperty("现在时间")
+                val time: Long,
+
+                @ApiModelProperty("hash")
+                val hash: String
+        )
+}
+
+
 data class LoginResp(
 
         @ApiModelProperty("id")
@@ -34,6 +59,8 @@ data class LoginResp(
         @ApiModelProperty("权限")
         val permissions: List<String>
 )
+
+
 
 data class LoginReq(
 

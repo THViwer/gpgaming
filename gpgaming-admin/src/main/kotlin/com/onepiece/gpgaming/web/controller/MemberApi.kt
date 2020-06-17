@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.MemberBank
 import com.onepiece.gpgaming.beans.value.internet.web.MemberBankValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberCoReq
+import com.onepiece.gpgaming.beans.value.internet.web.MemberLoginResponse
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPage
 import com.onepiece.gpgaming.beans.value.internet.web.MemberUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.MemberValue
@@ -35,6 +36,9 @@ interface MemberApi {
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): MemberPage
 
+
+    @ApiOperation(tags = ["user"], value = "会员 -> 登陆")
+    fun loginByAdmin(@RequestParam("username") username: String): MemberLoginResponse
 
     @ApiOperation(tags = ["user"], value = "会员 -> 跟踪")
     fun follow(

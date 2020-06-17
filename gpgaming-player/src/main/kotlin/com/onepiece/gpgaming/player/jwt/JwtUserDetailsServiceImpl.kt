@@ -2,7 +2,6 @@ package com.onepiece.gpgaming.player.jwt
 
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.core.dao.MemberDao
-import com.onepiece.gpgaming.core.service.PlatformMemberService
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -12,8 +11,7 @@ import java.util.*
 @Service
 class JwtUserDetailsServiceImpl(
         private val passwordEncoder: PasswordEncoder,
-        private val memberDao: MemberDao,
-        private val platformMemberService: PlatformMemberService
+        private val memberDao: MemberDao
 ): UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {

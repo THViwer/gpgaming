@@ -3,6 +3,8 @@ package com.onepiece.gpgaming.player.controller
 import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.player.controller.value.ChangePwdReq
 import com.onepiece.gpgaming.player.controller.value.CheckUsernameResp
+import com.onepiece.gpgaming.player.controller.value.LoginByAdminReq
+import com.onepiece.gpgaming.player.controller.value.LoginByAdminResponse
 import com.onepiece.gpgaming.player.controller.value.LoginReq
 import com.onepiece.gpgaming.player.controller.value.LoginResp
 import com.onepiece.gpgaming.player.controller.value.PlatformMemberUo
@@ -20,8 +22,11 @@ import org.springframework.web.bind.annotation.ResponseStatus
 interface UserApi {
 
     @ApiOperation(tags = ["user"], value = "登陆")
-    fun login(
-            @RequestBody loginReq: LoginReq): LoginResp
+    fun login(@RequestBody loginReq: LoginReq): LoginResp
+
+    @ApiOperation(tags = ["user"], value = "登陆(admin)")
+    fun login(@RequestBody req: LoginByAdminReq): LoginByAdminResponse
+
 
     @ApiOperation(tags = ["user"], value = "查看登陆信息")
     fun loginDetail(
