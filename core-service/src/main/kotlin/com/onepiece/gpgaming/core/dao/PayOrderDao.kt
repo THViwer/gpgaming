@@ -7,6 +7,8 @@ import java.time.LocalDateTime
 
 interface PayOrderDao {
 
+    fun summary(query: PayOrderValue.PayOrderQuery): List<PayOrderValue.ThirdPaySummary>
+
     fun total(query: PayOrderValue.PayOrderQuery): Int
 
     fun query(query: PayOrderValue.PayOrderQuery): List<PayOrder>

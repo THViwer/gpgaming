@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.dao.impl
 
+import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.model.PayOrder
@@ -21,7 +22,9 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
             val clientId = rs.getInt("client_id")
             val memberId = rs.getInt("member_id")
             val username = rs.getString("username")
+            val payId = rs.getInt("pay_id")
             val payType = rs.getString("pay_type").let { PayType.valueOf(it) }
+            val bank = rs.getString("bank")?.let { Bank.valueOf(it) }
             val amount = rs.getBigDecimal("amount")
             val orderId = rs.getString("order_id")
             val thirdOrderId = rs.getString("third_order_id")
@@ -34,13 +37,37 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
 
             PayOrder(id = id, clientId = clientId, memberId = memberId, username = username, amount = amount,
                     orderId = orderId, thirdOrderId = thirdOrderId, operatorId = operatorId, operatorUsername = operatorUsername,
-                    remark = remark, state = state, createdTime = createdTime, updatedTime = updatedTime, payType = payType)
+                    remark = remark, state = state, createdTime = createdTime, updatedTime = updatedTime, payType = payType,
+                    payId = payId, bank = bank)
         }
+
+    override fun summary(query: PayOrderValue.PayOrderQuery): List<PayOrderValue.ThirdPaySummary> {
+        return query("bank, sum(amount)")
+                .asWhere("created_time >= ?", query.startDate)
+                .asWhere("created_time < ?", query.endDate)
+                .where("pay_type", query.payType)
+                .where("member_id", query.memberId)
+                .whereIn("member_id", query.memberIds)
+                .where("username", query.username)
+                .where("state", query.state)
+                .asWhere("bank is not null")
+                .group("bank")
+                .execute { rs ->
+                    val bank = rs.getString("bank").let { Bank.valueOf(it) }
+                    val totalAmount = rs.getBigDecimal("total_amount")
+
+                    PayOrderValue.ThirdPaySummary(bank = bank, totalAmount = totalAmount)
+                }
+    }
 
     override fun total(query: PayOrderValue.PayOrderQuery): Int {
         return query("count(*)")
                 .where("client_id", query.clientId)
+                .asWhere("created_time >= ?", query.startDate)
+                .asWhere("created_time < ?", query.endDate)
+                .where("pay_type", query.payType)
                 .where("member_id", query.memberId)
+                .whereIn("member_id", query.memberIds)
                 .where("username", query.username)
                 .where("state", query.state)
                 .count()
@@ -75,7 +102,9 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
                 .set("order_id", co.orderId)
                 .set("amount", co.amount)
                 .set("state", PayState.Process)
+                .set("pay_id", co.payId)
                 .set("pay_type", co.payType)
+                .set("bank", co.bank)
                 .executeOnlyOne()
     }
 

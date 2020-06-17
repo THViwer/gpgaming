@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.beans.model.pay
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.beans.enums.Bank
 
 data class SurePayConfig(

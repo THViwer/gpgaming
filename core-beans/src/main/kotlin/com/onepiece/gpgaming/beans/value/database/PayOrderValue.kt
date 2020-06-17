@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.database
 
+import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.PayType
 import java.math.BigDecimal
@@ -60,8 +61,14 @@ sealed class PayOrderValue {
             // 订单Id
             val orderId: String,
 
+            // 支付Id
+            val payId: Int,
+
             // 支付平台
             val payType: PayType,
+
+            // 支付银行
+            val bank: Bank?,
 
             // 金额
             val amount: BigDecimal
@@ -124,6 +131,15 @@ sealed class PayOrderValue {
 
             // 三方充值人数
             val thirdPaySequence: Int
-
     )
+
+    data class ThirdPaySummary(
+
+            // 银行
+            val bank: Bank,
+
+            // 总金额
+            val totalAmount: BigDecimal
+    )
+
 }

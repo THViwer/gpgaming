@@ -44,13 +44,13 @@ class PullBetTask(
         betOrderService.batch(orders)
     }
 
-    @Scheduled(cron="0/20 * *  * * ? ")
+//    @Scheduled(cron="0/20 * *  * * ? ")
     fun start20Second() {
         val redisKey = "pull:task:running"
         this.execute(redisKey = redisKey, time = "")
     }
 
-    @Scheduled(cron="0 0/2 *  * * ? ")
+//    @Scheduled(cron="0 0 0/1  * * ? ")
     fun startOneHour() {
         val redisKey = "pull:task:running:hour"
         this.execute(redisKey = redisKey, time = ":hour")

@@ -1,8 +1,8 @@
 package com.onepiece.gpgaming.beans.model
 
+import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.PayType
-import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -29,8 +29,14 @@ data class PayOrder (
         // 第三方订单Id
         val thirdOrderId: String?,
 
+        // 支付Id
+        val payId: Int,
+
         // 支付平台
         val payType: PayType,
+
+        // 银行
+        val bank: Bank?,
 
         // 操作者Id
         val operatorId: Int?,

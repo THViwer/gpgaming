@@ -314,7 +314,7 @@ open class CashApiController(
 
         // 生成订单
         val payCo = PayOrderValue.PayOrderCo(clientId = current.clientId, memberId = current.id, username = this.currentUsername(), orderId = orderId,
-                amount = amount, payType = bind.payType)
+                amount = amount, payType = bind.payType, payId = payId, bank = selectBank)
         payOrderService.create(payCo)
 
         return ThirdPayValue.SelectPayResult(data = map)
