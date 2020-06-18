@@ -156,7 +156,8 @@ class Insert(
 open class Query(
         private val jdbcTemplate: JdbcTemplate,
         private val table: String,
-        private val returnColumns: String? = null
+        private val returnColumns: String? = null,
+        private val includeStatus: Boolean = true
 ) {
     private val columns = arrayListOf<String>()
     private val param = arrayListOf<Any>()
@@ -238,10 +239,11 @@ open class Query(
 
         val queryColumn = returnColumns?: "*"
 
+        val statusStr = if (includeStatus) " status != 'Delete' " else ""
         val begin =  if (columns.isEmpty()) {
-            "select $queryColumn from `$table` where status != 'Delete'"
+            "select $queryColumn from `$table` where $statusStr"
         } else {
-            "select $queryColumn from `$table` where $names and status != 'Delete'"
+            "select $queryColumn from `$table` where $names and $statusStr"
         }
 
         val sql = StringBuilder(begin)

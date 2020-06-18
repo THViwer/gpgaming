@@ -20,7 +20,7 @@ abstract class BasicDaoImpl<T>(
 
 
     override fun get(id: Int): T {
-        return query().where("id", id).executeOnlyOne(mapper)
+        return query(includeStatus = false).where("id", id).executeOnlyOne(mapper)
     }
 
     override fun all(clientId: Int): List<T> {
@@ -39,8 +39,8 @@ abstract class BasicDaoImpl<T>(
         return JdbcBuilder.batchInsert(jdbcTemplate, table, data)
     }
 
-    fun query(returnColumns: String? = null, defaultTable: String? = null): Query {
-        return Query(jdbcTemplate, defaultTable?: table, returnColumns)
+    fun query(returnColumns: String? = null, defaultTable: String? = null, includeStatus: Boolean = true): Query {
+        return Query(jdbcTemplate, defaultTable?: table, returnColumns, includeStatus)
     }
 
     fun update(defaultTable: String? = null): Update {
