@@ -239,12 +239,13 @@ open class Query(
 
         val queryColumn = returnColumns?: "*"
 
-        val statusStr = if (includeStatus) " status != 'Delete' " else ""
-        val begin =  if (columns.isEmpty()) {
-            "select $queryColumn from `$table` where $statusStr"
-        } else {
-            "select $queryColumn from `$table` where $names and $statusStr"
+        val begin = when {
+            columns.isEmpty() && includeStatus -> "select $queryColumn from `$table` where status != 'Delete'"
+            columns.isEmpty() -> "select $queryColumn from `$table`"
+            includeStatus -> "select $queryColumn from `$table` where $names and status != 'Delete'"
+            else -> "select $queryColumn from `$table` where $names"
         }
+
 
         val sql = StringBuilder(begin)
 
