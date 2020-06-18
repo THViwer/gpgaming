@@ -110,6 +110,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/api",
                         "/api/**",
                         "/user",
+                        "/user/login_from_admin",
                         "/user/check/**",
                         "/user/country",
                         "/agent",

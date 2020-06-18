@@ -4,11 +4,11 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.MemberBank
 import com.onepiece.gpgaming.beans.value.internet.web.MemberBankValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberCoReq
-import com.onepiece.gpgaming.beans.value.internet.web.MemberLoginResponse
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPage
 import com.onepiece.gpgaming.beans.value.internet.web.MemberUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.MemberValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberWalletInfo
+import com.onepiece.gpgaming.beans.value.internet.web.UserValue
 import com.onepiece.gpgaming.beans.value.internet.web.WalletVo
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
@@ -38,7 +38,7 @@ interface MemberApi {
 
 
     @ApiOperation(tags = ["user"], value = "会员 -> 登陆")
-    fun loginByAdmin(@RequestParam("username") username: String): MemberLoginResponse
+    fun loginByAdmin(@RequestParam("username") username: String): UserValue.MemberLoginResponse
 
     @ApiOperation(tags = ["user"], value = "会员 -> 跟踪")
     fun follow(

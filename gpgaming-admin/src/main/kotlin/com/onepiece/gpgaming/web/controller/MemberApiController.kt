@@ -149,13 +149,16 @@ class MemberApiController(
         val bossId = getBossId()
         val clientId = getClientId()
         val time = System.currentTimeMillis()
-        val hash = bCryptPasswordEncoder.encode("${time}:$${HASH_CODE}:$username")
+
+        val pwdStr = "${time}:$HASH_CODE:${username}"
+        val hash = bCryptPasswordEncoder.encode(pwdStr)
 
 
         val webSite = webSiteService.getDataByBossId(bossId = bossId).first { it.clientId == clientId }
         val req = UserValue.MemberLoginReq(clientId = clientId, username = username, time = time, hash = hash)
 
         val url = "https://www.${webSite.domain}/api/v1/player/user/login_from_admin"
+//        val url = "http://localhost:8002/api/v1/player/user/login_from_admin"
         return okHttpUtil.doPostJson(platform = Platform.CT, url = url, data = req, clz = UserValue.MemberLoginResponse::class.java)
     }
 
