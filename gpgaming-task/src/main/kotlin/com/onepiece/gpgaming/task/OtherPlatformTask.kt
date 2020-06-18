@@ -24,8 +24,8 @@ class OtherPlatformTask(
 
     private val list = listOf(Platform.Kiss918, Platform.Pussy888, Platform.Mega)
 
-    //    @Scheduled(cron = "0 1 0 * * ?")
-    @Scheduled(cron = "0/10 * * * * ?")
+        @Scheduled(cron = "0 30 0 * * ?")
+//    @Scheduled(cron = "0/10 * * * * ?")
     fun start() {
         val binds = platformBindService.all()
                 .filter {
