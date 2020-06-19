@@ -73,7 +73,7 @@ class JwtAuthenticationTokenFilter(
                 username,
                 hashSecret,
                 otp
-        ).joinToString(separator = ":")
+        ).joinToString(separator = "")
 
         val valid = passwordEncoder.matches(param, hash)
 //        check(valid) { HttpStatus.UNAUTHORIZED }
