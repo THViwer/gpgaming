@@ -2,7 +2,6 @@ package com.onepiece.gpgaming.player.jwt
 
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -64,7 +63,11 @@ class JwtAuthenticationTokenFilter(
         val hash = request.getHeader("hash")
 
 
-        val username = SecurityContextHolder.getContext()?.authentication?.details?.let { it as JwtUser }?.username
+        val username = try {
+            SecurityContextHolder.getContext()?.authentication?.details?.let { it as JwtUser }?.username
+        } catch (e: Exception) {
+            null
+        }
 
         val param = listOfNotNull(
                 username,
