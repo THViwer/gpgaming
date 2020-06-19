@@ -80,7 +80,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
     @Bean
     @Throws(Exception::class)
     open fun authenticationTokenFilterBean(): JwtAuthenticationTokenFilter {
-        return JwtAuthenticationTokenFilter(jwtTokenUtil = jwtTokenUtil, tokenStore = tokenStore)
+        return JwtAuthenticationTokenFilter(jwtTokenUtil = jwtTokenUtil, tokenStore = tokenStore, passwordEncoder = passwordEncoder())
     }
 
     @Throws(Exception::class)

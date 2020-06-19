@@ -29,6 +29,7 @@ jwt:
   secret: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCFljRsWfgyl3+k
   expiration: 7
   tokenHead: "Bearer "
+  hashSecret: ZmVhZ3dVSW9pMTIzMTBLSEgyMWZ3ZndmYQ==
   route:
     authentication:
       path: auth
