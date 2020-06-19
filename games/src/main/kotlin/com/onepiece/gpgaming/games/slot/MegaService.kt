@@ -170,7 +170,7 @@ class MegaService : PlatformService() {
 
         return mapUtil.asList("result").map {
             val bet = it.asBigDecimal("bet")
-            val win = it.asBigDecimal("win")
+            val win = it.asBigDecimal("win").negate()
             val username = it.asString("loginId")
             val originData = objectMapper.writeValueAsString(it.data)
             GameValue.PlatformReportData(username = username, platform = Platform.Mega, bet = bet, win = win, originData = originData)
