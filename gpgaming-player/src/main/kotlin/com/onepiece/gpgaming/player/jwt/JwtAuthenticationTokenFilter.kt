@@ -47,7 +47,7 @@ class JwtAuthenticationTokenFilter(
             }
         }
 
-        this.validHash(request = request)
+//        this.validHash(request = request)
 
         chain.doFilter(request, response)
     }
