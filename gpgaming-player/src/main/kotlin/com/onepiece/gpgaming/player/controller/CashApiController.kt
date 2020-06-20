@@ -289,7 +289,7 @@ open class CashApiController(
                     }
                     ThirdPayValue.SupportPay(payId = it.id, payType = it.payType, minAmount = it.minAmount, maxAmount = it.maxAmount,
                             banks = banks)
-                }
+                }.sortedBy { it.payType.sort }
     }
 
     @PostMapping("/thirdpay/select")

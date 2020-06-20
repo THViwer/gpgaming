@@ -124,18 +124,23 @@ class AgentApiController(
         val bossId = this.current().bossId
         val memberId = this.current().id
 
+        log.info("--------")
+
         // 代理和余额
         val agent = memberService.getMember(memberId)
         val wallet = walletService.getMemberWallet(memberId = memberId)
+        log.info("----1----")
 
         // 会员数量
         val agentCount = analysisDao.memberCount(agentId = memberId, role = Role.Agent)
         val memberCount = analysisDao.memberCount(agentId = memberId, role = Role.Member)
+        log.info("----2----")
 
         // 当前这个月佣金
         val startDate  = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth())
         val agentMonthReport = reportService.startAgentMonthReport(agentId = memberId, today = startDate)
                 .firstOrNull() ?: AgentMonthReport.empty(agentId = agent.id)
+        log.info("-----3---")
 
         // 推广连接码
         val sites = webSiteService.getDataByBossId(bossId = bossId)
@@ -146,6 +151,8 @@ class AgentApiController(
 
             AgentValue.PromoteVo(country = it.country, promoteURL = promoteURL, mobilePromoteURL = mobilePromoteURL)
         }
+        log.info("---4-----")
+
 
         val mainSite = webSiteService.getDataByBossId(bossId = -1).first { it.clientId == bossId && it.country == Country.Default }
 //        val defaultClient = clientService.getMainClient(bossId = bossId) ?: error("")
@@ -154,6 +161,8 @@ class AgentApiController(
 
         // 导航页
         val guideUrl = "https://www.${mainSite.domain}"
+        log.info("-----5---")
+
 
         return AgentValue.AgentInfo(balance = wallet.balance, subAgentCount = agentCount, memberCount = memberCount,
                 subAgentCommission = agentMonthReport.agentCommission, memberCommission = agentMonthReport.memberCommission,

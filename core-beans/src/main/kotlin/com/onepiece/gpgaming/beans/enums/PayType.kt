@@ -9,19 +9,23 @@ import com.onepiece.gpgaming.beans.model.pay.SurePayConfig
 
 enum class PayType(
         val greyLogo: String,
-        val logo: String
+        val logo: String,
+        val sort: Int
 ){
 
     M3Pay(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/m3pay_gray.png",
-            logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/m3pay_ori.png"
+            logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/m3pay_ori.png",
+            sort = 100
     ),
 
     SurePay(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/SurePay_gray.png",
-            logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/SurePay_ori.png"
+            logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/SurePay_ori.png",
+            sort = 100
     ),
 
     FPX(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/FPXpay_gray.png",
-            logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/FPXpay_ori.png"
+            logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/FPXpay_ori.png",
+            sort = 1
     )
     ;
 
