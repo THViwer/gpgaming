@@ -1,6 +1,6 @@
 spring:
   application:
-    name: web
+    name: admin
   datasource:
     druid:
       driver-class-name: com.mysql.jdbc.Driver
