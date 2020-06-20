@@ -116,6 +116,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/agent",
                         "/agent/contactUs",
                         "/agent/i18n",
+                        "/agent/index/config",
 
                         "/cash/bank",
                         "/cash/upload/proof",
