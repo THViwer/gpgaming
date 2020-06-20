@@ -156,6 +156,9 @@ sealed class AgentValue {
 
     data class AffIndexConfig(
 
+            // 名称
+            val name: String,
+
             // logo
             val logo: String,
 

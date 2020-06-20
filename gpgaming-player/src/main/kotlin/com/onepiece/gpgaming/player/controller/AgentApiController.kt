@@ -126,7 +126,9 @@ class AgentApiController(
         val mainSite = webSiteService.getDataByBossId(bossId = -1).first { it.clientId == mainClient.bossId && it.country == Country.Default }
         val guideUrl = "https://www.${mainSite.domain}"
 
-        return AgentValue.AffIndexConfig(logo = mainClient.logo, shortcutLogo = mainClient.shortcutLogo, guideUrl = guideUrl)
+
+        val name = mainSite.domain.replace(".com", "")
+        return AgentValue.AffIndexConfig(logo = mainClient.logo, shortcutLogo = mainClient.shortcutLogo, guideUrl = guideUrl, name = name)
     }
 
     @GetMapping("/info")
