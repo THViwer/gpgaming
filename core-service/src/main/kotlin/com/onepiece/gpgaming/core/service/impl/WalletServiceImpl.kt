@@ -96,12 +96,16 @@ class WalletServiceImpl(
                 money = walletUo.money
                 afterMoney = wallet.balance.plus(walletUo.money)
             }
-            WalletEvent.WITHDRAW,
             WalletEvent.TRANSFER_IN_ROLLBACK,
             WalletEvent.TRANSFER_OUT -> {
                 money = walletUo.money.negate()
+                afterMoney = wallet.balance.minus(walletUo.money)
+            }
+            WalletEvent.WITHDRAW -> {
+                money = walletUo.money.negate()
                 afterMoney = wallet.balance
             }
+
         }
 
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
