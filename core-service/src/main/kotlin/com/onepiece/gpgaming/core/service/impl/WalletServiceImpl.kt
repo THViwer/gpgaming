@@ -82,7 +82,7 @@ class WalletServiceImpl(
         val money: BigDecimal
         when (walletUo.event) {
             WalletEvent.FREEZE -> {
-                money = walletUo.money
+                money = walletUo.money.negate()
                 afterMoney = wallet.balance.minus(walletUo.money)
             }
             WalletEvent.Rebate,
@@ -100,7 +100,7 @@ class WalletServiceImpl(
             WalletEvent.TRANSFER_IN_ROLLBACK,
             WalletEvent.TRANSFER_OUT -> {
                 money = walletUo.money.negate()
-                afterMoney = wallet.balance.minus(walletUo.money)
+                afterMoney = wallet.balance
             }
         }
 
