@@ -154,6 +154,18 @@ sealed class AgentValue {
             val createdTime: LocalDateTime
     )
 
+    data class AffIndexConfig(
+
+            // logo
+            val logo: String,
+
+            // shortcutLogo
+            val shortcutLogo: String,
+
+            // 导航页
+            val guideUrl: String
+    )
+
     data class AgentCheckReq(
 
             val id: Int,

@@ -31,6 +31,8 @@ interface AgentApi {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun reset(@RequestBody req: ChangePwdReq)
 
+    @ApiOperation(tags = ["agent"], value = "代理首页基础信息")
+    fun config(): AgentValue.AffIndexConfig
 
     @ApiOperation(tags = ["agent"], value = "代理当前信息")
     fun info(): AgentValue.AgentInfo
