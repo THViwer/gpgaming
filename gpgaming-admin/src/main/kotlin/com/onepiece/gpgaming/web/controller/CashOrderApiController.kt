@@ -386,7 +386,7 @@ class CashOrderApiController(
 
     @GetMapping("/payBind")
     override fun payBind(): List<PayBind> {
-        return payBindService.list(clientId = this.getClientId())
+        return payBindService.all(clientId = this.getClientId())
     }
 
     @PostMapping("/payBind")
