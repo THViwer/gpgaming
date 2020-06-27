@@ -85,6 +85,7 @@ class UserApiController(
         check(req.password == "GPGaming88!@#")
 
         val permissions = PermissionType.values().map { it.resourceId }.plus("-1")
+                .plus("2800")
 
 
         val bossId = getBossIdByDomain()
