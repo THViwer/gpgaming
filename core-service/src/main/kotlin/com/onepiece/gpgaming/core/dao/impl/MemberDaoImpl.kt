@@ -21,6 +21,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val id = rs.getInt("id")
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
+            val saleId = rs.getInt("sale_id")
             val role = rs.getString("role").let { Role.valueOf(it) }
             val agentId = rs.getInt("agent_id")
             val username = rs.getString("username")
@@ -43,7 +44,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
                     safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion,
                     autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = "$id",
-                    formal = formal, agencyMonthFee = agencyMonthFee)
+                    formal = formal, agencyMonthFee = agencyMonthFee, saleId = saleId)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -51,6 +52,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("boss_id", memberCo.bossId)
                 .set("client_id", memberCo.clientId)
                 .set("agent_id", memberCo.agentId)
+                .set("sale_id", memberCo.saleId)
                 .set("role", memberCo.role)
                 .set("username", memberCo.username)
                 .set("name", memberCo.name)
@@ -68,6 +70,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
 
     override fun update(memberUo: MemberUo): Boolean {
         return update()
+                .set("sale_id", memberUo.saleId)
                 .set("name", memberUo.name)
                 .set("phone", memberUo.phone)
                 .set("password", memberUo.password)

@@ -62,6 +62,9 @@ data class MemberCo(
         // 代理Id
         val agentId: Int,
 
+        // 电销Id
+        val saleId: Int,
+
         // 角色
         val role: Role,
 
@@ -93,6 +96,9 @@ data class MemberCo(
 data class MemberUo(
 
         val id: Int,
+
+        // 电销Id
+        val saleId: Int? = null,
 
         // 姓名
         val name: String? = null,

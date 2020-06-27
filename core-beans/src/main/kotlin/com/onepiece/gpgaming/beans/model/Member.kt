@@ -22,6 +22,9 @@ data class Member(
         // 代理Id
         val agentId: Int,
 
+        // 销售员Id 当role = Member时才有
+        val saleId: Int,
+
         // 用户名
         val username: String,
 

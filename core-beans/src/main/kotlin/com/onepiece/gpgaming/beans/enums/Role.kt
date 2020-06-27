@@ -11,6 +11,9 @@ enum class Role {
     // 代理
     Agent,
 
+    // 电销人员
+    Sale,
+
     // 客服
     Waiter,
 
