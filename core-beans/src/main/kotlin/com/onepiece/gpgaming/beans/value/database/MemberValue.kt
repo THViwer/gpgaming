@@ -63,7 +63,7 @@ data class MemberCo(
         val agentId: Int,
 
         // 电销Id
-        val saleId: Int,
+        val saleId: Int? = -1,
 
         // 角色
         val role: Role,

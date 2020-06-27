@@ -118,7 +118,7 @@ class AgentConfigApiController(
         //val superiorAgentId = req.superiorAgentId ?: -1
         val superiorAgentId = -1
         val memberCo = MemberCo(bossId = user.bossId, clientId = user.id, agentId = superiorAgentId, levelId = defaultLevel.id, name = req.name, phone = req.phone,
-                username = req.username, password = req.password, promoteCode = null, role = Role.Agent, safetyPassword = req.password, formal = true)
+                username = req.username, password = req.password, promoteCode = null, role = Role.Agent, safetyPassword = req.password, formal = true, saleId = -1)
         val id = memberService.create(memberCo)
 
 

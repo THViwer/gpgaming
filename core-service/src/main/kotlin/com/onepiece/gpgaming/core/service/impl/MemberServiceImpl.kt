@@ -14,6 +14,7 @@ import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.dao.MemberRelationDao
 import com.onepiece.gpgaming.core.service.MemberService
+import com.onepiece.gpgaming.core.service.SalesmanService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -27,7 +28,8 @@ class MemberServiceImpl(
         private val walletService: WalletService,
         private val redisService: RedisService,
         private val bCryptPasswordEncoder: BCryptPasswordEncoder,
-        private val memberRelationDao: MemberRelationDao
+        private val memberRelationDao: MemberRelationDao,
+        private val salesmanService: SalesmanService
 ) : MemberService {
 
     override fun getAgentByCode(bossId: Int, clientId: Int, code: String): Member? {
@@ -143,15 +145,20 @@ class MemberServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun create(memberCo: MemberCo): Int {
 
+
         // check username exist
         val hasMember = memberDao.getByUsername(memberCo.clientId, memberCo.username)
         check(hasMember == null) { OnePieceExceptionCode.USERNAME_EXISTENCE }
 
         val promoteCode = this.getPromoteCode()
 
+        // 电销人员Id
+        val saleId = salesmanService.select(bossId = memberCo.bossId, clientId = memberCo.clientId, saleId = memberCo.saleId)
+                ?.id ?: -1
+
         // create member
         val password = bCryptPasswordEncoder.encode(memberCo.password)
-        val id = memberDao.create(memberCo.copy(password = password, promoteCode = promoteCode))
+        val id = memberDao.create(memberCo.copy(password = password, promoteCode = promoteCode, saleId = saleId))
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // create wallet

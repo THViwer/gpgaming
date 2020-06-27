@@ -314,7 +314,7 @@ class MemberApiController(
 
         val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password, promoteCode = promoteCode,
                 safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId, name = memberCoReq.name, phone = memberCoReq.phone, bossId = bossId,
-                agentId = agentId, role = memberCoReq.role, formal = true)
+                agentId = agentId, role = memberCoReq.role, formal = true, saleId = memberCoReq.saleCode?.toInt())
         memberService.create(memberCo)
     }
 

@@ -27,6 +27,7 @@ import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.ReportService
+import com.onepiece.gpgaming.core.service.SalesmanService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.basic.MathUtil
@@ -61,7 +62,8 @@ class AgentApiController(
         private val contactService: ContactService,
         private val reportService: ReportService,
         private val objectMapper: ObjectMapper,
-        private val i18nContentService: I18nContentService
+        private val i18nContentService: I18nContentService,
+        private val salesmanService: SalesmanService
 ) : BasicController(), AgentApi {
 
     private val log = LoggerFactory.getLogger(AgentApiController::class.java)
@@ -81,7 +83,8 @@ class AgentApiController(
 
         // 创建代理
         val memberCo = MemberCo(bossId = bossId, clientId = mainClient.id, agentId = agentId, levelId = level.id, name = req.name, phone = req.phone,
-                username = req.username, password = req.password, promoteCode = null, role = Role.Agent, safetyPassword = req.password, formal = false)
+                username = req.username, password = req.password, promoteCode = null, role = Role.Agent, safetyPassword = req.password, formal = false,
+                saleId = -1)
         val id = memberService.create(memberCo)
 
 

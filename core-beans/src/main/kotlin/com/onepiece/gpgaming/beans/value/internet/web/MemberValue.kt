@@ -363,6 +363,9 @@ data class MemberCoReq(
         val levelId: Int,
 
         @ApiModelProperty("推广码")
-        val promoteCode: String?
+        val promoteCode: String?,
+
+        @ApiModelProperty("电销人员Id")
+        val saleCode: String?
 
 )

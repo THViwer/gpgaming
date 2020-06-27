@@ -4,7 +4,6 @@ import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
 import io.swagger.annotations.ApiModelProperty
-import java.util.*
 
 data class LoginResp(
 
@@ -92,7 +91,10 @@ data class RegisterReq(
         val safetyPassword: String = "1234",
 
         @ApiModelProperty("推广码")
-        val promoteCode: String?
+        val promoteCode: String?,
+
+        @ApiModelProperty("电销人员Id")
+        val saleCode: String?
 )
 
 data class ChangePwdReq(
