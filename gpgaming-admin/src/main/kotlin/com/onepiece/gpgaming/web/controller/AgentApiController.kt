@@ -34,7 +34,7 @@ import java.time.LocalDate
 
 @RestController
 @RequestMapping("/agent")
-class AgentConfigApiController(
+class AgentApiController(
         private val commissionService: CommissionService,
         private val memberService: MemberService,
         private val levelService: LevelService,
@@ -43,7 +43,7 @@ class AgentConfigApiController(
         private val memberDailyReportDao: MemberDailyReportDao,
         private val analysisDao: AnalysisDao,
         private val agentApplyService: AgentApplyService
-) : BasicController(), AgentConfigApi {
+) : BasicController(), AgentApi {
 
     @GetMapping("/commission/setting")
     override fun commission(@RequestParam("type") type: CommissionType): List<Commission> {

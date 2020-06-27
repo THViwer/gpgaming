@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import java.time.LocalDate
 
 @Api(tags = ["agent"], description = "代理配置")
-interface AgentConfigApi {
+interface AgentApi {
 
     @ApiOperation(tags = ["agent"], value = "佣金 -> 设置")
     fun commission(
