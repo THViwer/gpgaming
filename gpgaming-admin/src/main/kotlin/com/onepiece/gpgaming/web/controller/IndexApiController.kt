@@ -2,14 +2,17 @@ package com.onepiece.gpgaming.web.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.onepiece.gpgaming.beans.enums.ContactType
 import com.onepiece.gpgaming.beans.enums.HotGameType
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.PromotionRuleType
 import com.onepiece.gpgaming.beans.enums.RecommendedType
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.ShowPosition
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.model.Contact
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.PromotionRules
 import com.onepiece.gpgaming.beans.model.Recommended
@@ -24,6 +27,7 @@ import com.onepiece.gpgaming.beans.value.database.RecommendedValue
 import com.onepiece.gpgaming.beans.value.internet.web.BannerCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerVo
+import com.onepiece.gpgaming.beans.value.internet.web.ContactValue
 import com.onepiece.gpgaming.beans.value.internet.web.HotGameVo
 import com.onepiece.gpgaming.beans.value.internet.web.I18nContentWebValue
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionCoReq
@@ -35,6 +39,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.BlogService
+import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
@@ -59,6 +64,7 @@ class IndexApiController(
         private val indexUtil: IndexUtil,
         private val seoService: SeoService,
         private val blogService: BlogService,
+        private val contactService: ContactService,
         private val objectMapper: ObjectMapper
 ): BasicController(), IndexApi {
 
@@ -317,5 +323,35 @@ class IndexApiController(
     override fun agentPlats(): List<I18nContent> {
         val clientId = getClientId()
         return i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.AgentPlans)
+    }
+
+    @GetMapping("/contactUs")
+    override fun all(@RequestParam("role", defaultValue = "Member") role: Role): List<Contact> {
+        return contactService.list(clientId = getClientId()).filter { it.role == role }
+    }
+
+    @PostMapping("/contactUs")
+    override fun create(@RequestBody create: ContactValue.Create) {
+
+        val clientId = getClientId()
+
+        when (create.type) {
+            ContactType.Facebook,
+            ContactType.Instagram,
+            ContactType.YouTuBe  -> {
+                val  has = contactService.list(clientId)
+                        .firstOrNull { it.clientId == clientId && it.role == create.role && it.type == create.type && it.status != Status.Delete }
+                check(has == null ) { OnePieceExceptionCode.DATA_FAIL }
+            }
+            else  -> {}
+        }
+
+        check(create.role == Role.Member || create.role == Role.Agent) { OnePieceExceptionCode.DATA_FAIL }
+        contactService.create(clientId = getClientId(), type = create.type, number = create.number, qrCode = create.qrCode, role = create.role)
+    }
+
+    @PutMapping("/contactUs")
+    override fun update(@RequestBody update: ContactValue.Update) {
+        contactService.update(id = update.id, number = update.number, status = update.status, qrCode = update.qrCode)
     }
 }

@@ -1,4 +1,4 @@
-package com.onepiece.gpgaming.web.controller
+package com.onepiece.gpgaming.web.controller.util
 
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PromotionCategory

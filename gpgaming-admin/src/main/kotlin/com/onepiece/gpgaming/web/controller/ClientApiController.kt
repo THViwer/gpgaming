@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/platform")
-class ClientPlatformApiController(
+class ClientApiController(
         private val gamePlatformService: GamePlatformService
-): BasicController(), ClientPlatformApi {
+): BasicController(), ClientApi {
 
-    @GetMapping
+    @GetMapping("/platform")
     override fun all(): List<PlatformVo> {
         val clientId = getClientId()
         val clientBinds = platformBindService.findClientPlatforms(clientId)
@@ -41,7 +40,7 @@ class ClientPlatformApiController(
         }
     }
 
-    @GetMapping("/open")
+    @GetMapping("/platform/open")
     override fun openList(): List<PlatformVo> {
         val clientId = getClientId()
         val gamePlatforms = gamePlatformService.all()
@@ -54,7 +53,7 @@ class ClientPlatformApiController(
         }
     }
 
-    @PutMapping
+    @PutMapping("/platform")
     override fun update(@RequestBody uo: PlatformValue.PlatformBindUo) {
         val bindUo = PlatformBindUo(id = uo.id, username = null, hot = uo.hot, new = uo.new, password = null, tokenJson = null,
                 earnestBalance = null, status = null)

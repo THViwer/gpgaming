@@ -16,6 +16,7 @@ import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.utils.RedisService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
+import com.onepiece.gpgaming.web.controller.util.TransferUtil
 import com.onepiece.gpgaming.web.jwt.AuthService
 import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcTemplate

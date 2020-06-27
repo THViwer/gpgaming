@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.MemberBank
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
+import com.onepiece.gpgaming.beans.value.database.LevelValue
 import com.onepiece.gpgaming.beans.value.database.MemberBankUo
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
@@ -14,6 +15,11 @@ import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.beans.value.database.WalletQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
+import com.onepiece.gpgaming.beans.value.internet.web.LevelCoReq
+import com.onepiece.gpgaming.beans.value.internet.web.LevelMemberVo
+import com.onepiece.gpgaming.beans.value.internet.web.LevelMoveDo
+import com.onepiece.gpgaming.beans.value.internet.web.LevelUoReq
+import com.onepiece.gpgaming.beans.value.internet.web.LevelVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberBankValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPage
@@ -57,7 +63,6 @@ import java.util.stream.Collectors
 
 
 @RestController
-@RequestMapping("/member")
 class MemberApiController(
         private val memberService: MemberService,
         private val walletService: WalletService,
@@ -84,7 +89,7 @@ class MemberApiController(
     }
 
 
-    @GetMapping
+    @GetMapping("/member")
     override fun query(
             @RequestParam(value = "username", required = false) username: String?,
             @RequestParam(value = "name", required = false) name: String?,
@@ -143,7 +148,7 @@ class MemberApiController(
         return MemberPage(total = page.total, data = data)
     }
 
-    @GetMapping("/login")
+    @GetMapping("/member/login")
     override fun loginByAdmin(@RequestParam("username") username: String): UserValue.MemberLoginResponse {
 
         val bossId = getBossId()
@@ -162,7 +167,7 @@ class MemberApiController(
         return okHttpUtil.doPostJson(platform = Platform.CT, url = url, data = req, clz = UserValue.MemberLoginResponse::class.java)
     }
 
-    @GetMapping("/follow")
+    @GetMapping("/member/follow")
     override fun follow(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
@@ -228,7 +233,7 @@ class MemberApiController(
         }
     }
 
-    @GetMapping("/follow/excel")
+    @GetMapping("/member/follow/excel")
     override fun followExcel(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
@@ -246,7 +251,7 @@ class MemberApiController(
         EasyExcel.write(response.outputStream, MemberValue.FollowVo::class.java).autoCloseStream(false).sheet("member").doWrite(data)
     }
 
-    @GetMapping("/info")
+    @GetMapping("/member/info")
     override fun getWalletInfo(@RequestParam("memberId") memberId: Int): MemberWalletInfo {
 
         val clientId = getClientId()
@@ -285,7 +290,7 @@ class MemberApiController(
 
     }
 
-    @PutMapping
+    @PutMapping("/member")
     override fun update(@RequestBody memberUoReq: MemberUoReq) {
         val clientId = getClientId()
 
@@ -297,7 +302,7 @@ class MemberApiController(
         memberService.update(memberUo)
     }
 
-    @PostMapping
+    @PostMapping("/member")
     override fun create(@RequestBody memberCoReq: MemberCoReq) {
         val clientId = getClientId()
         val bossId = getBossId()
@@ -318,7 +323,7 @@ class MemberApiController(
         memberService.create(memberCo)
     }
 
-    @GetMapping("/wallet/{memberId}")
+    @GetMapping("/member/wallet/{memberId}")
     override fun balance(
             @PathVariable(value = "memberId") memberId: Int
     ): WalletVo {
@@ -340,12 +345,12 @@ class MemberApiController(
 //        }
     }
 
-    @GetMapping("/bank/{memberId}")
+    @GetMapping("/member/bank/{memberId}")
     override fun banks(@PathVariable(value = "memberId") memberId: Int): List<MemberBank> {
         return memberBankService.query(memberId = memberId)
     }
 
-    @PutMapping("/bank")
+    @PutMapping("/member/bank")
     override fun bankUo(@RequestBody req: MemberBankValue.MemberBankUo) {
 
         val banks = memberBankService.query(memberId = req.memberId)
@@ -355,4 +360,113 @@ class MemberApiController(
         val uo = MemberBankUo(id = req.id, bank = req.bank, bankCardNumber = req.bankCardNumber, status = null)
         memberBankService.update(uo)
     }
+
+
+    @GetMapping("/level")
+    override fun all(): List<LevelVo> {
+        val clientId = getClientId()
+
+        val levelCountMap = memberService.getLevelCount(clientId)
+
+        return levelService.all(clientId).map {
+            val count = levelCountMap[it.id] ?: 0
+            LevelVo(id = it.id, name = it.name, status = it.status, createdTime = it.createdTime, total = count, sportRebate = it.sportRebate,
+                    liveRebate = it.liveRebate, slotRebate = it.slotRebate, fishRebate = it.fishRebate)
+        }
+    }
+
+    @GetMapping("/level/normal")
+    override fun normalList(): List<LevelVo> {
+        return all().filter { it.status == Status.Normal }
+    }
+
+    @PostMapping("/level")
+    override fun create(@RequestBody levelCoReq: LevelCoReq) {
+        val clientId = getClientId()
+        val levelCo = LevelValue.LevelCo(clientId = clientId, name = levelCoReq.name, sportRebate = levelCoReq.sportRebate, liveRebate = levelCoReq.liveRebate,
+                slotRebate = levelCoReq.slotRebate, fishRebate = levelCoReq.fishRebate)
+        levelService.create(levelCo)
+    }
+
+    @PutMapping("/level")
+    override fun update(@RequestBody levelUoReq: LevelUoReq) {
+        val levelUo = LevelValue.LevelUo(id = levelUoReq.id, name = levelUoReq.name, status = levelUoReq.status, sportRebate = levelUoReq.sportRebate,
+                liveRebate = levelUoReq.liveRebate, slotRebate = levelUoReq.slotRebate, fishRebate = levelUoReq.fishRebate)
+        levelService.update(levelUo)
+    }
+
+    @GetMapping("/level/member")
+    override fun findMembers(
+            @RequestParam("username", required = false) username: String?,
+            @RequestParam("levelId", required = false) levelId: Int?,
+            @RequestParam("minBalance", required = false) minBalance: BigDecimal?,
+            @RequestParam("maxBalance", required = false) maxBalance: BigDecimal?,
+            @RequestParam("minTotalDepositBalance", required = false) minTotalDepositBalance: BigDecimal?,
+            @RequestParam("maxTotalDepositBalance", required = false) maxTotalDepositBalance: BigDecimal?,
+            @RequestParam("minTotalWithdrawBalance", required = false) minTotalWithdrawBalance: BigDecimal?,
+            @RequestParam("maxTotalWithdrawBalance", required = false) maxTotalWithdrawBalance: BigDecimal?,
+            @RequestParam("minTotalDepositFrequency", required = false) minTotalDepositFrequency: Int?,
+            @RequestParam("maxTotalDepositFrequency", required = false) maxTotalDepositFrequency: Int?,
+            @RequestParam("minTotalWithdrawFrequency", required = false) minTotalWithdrawFrequency: Int?,
+            @RequestParam("maxTotalWithdrawFrequency", required = false) maxTotalWithdrawFrequency: Int?
+    ): List<LevelMemberVo> {
+        val clientId = getClientId()
+
+        check(
+                username == null
+                        || minBalance == null || maxBalance == null
+                        || minTotalDepositBalance == null || maxTotalDepositBalance == null
+                        || minTotalWithdrawBalance == null || maxTotalWithdrawBalance == null
+                        || minTotalDepositFrequency == null || maxTotalDepositFrequency == null
+                        || minTotalWithdrawFrequency == null || maxTotalWithdrawFrequency == null) { OnePieceExceptionCode.QUERY_COUNT_TOO_SMALL}
+
+        val memberId = when (username != null) {
+            true -> memberService.findByUsername(clientId, username)?.id ?: return emptyList()
+            false -> null
+        }
+
+        // 查询钱包情况
+        val walletQuery = WalletQuery(clientId = clientId, memberId = memberId, minBalance = minBalance, minTotalDepositBalance = minTotalDepositBalance,
+                minTotalDepositFrequency = minTotalDepositFrequency, minTotalWithdrawBalance = minTotalWithdrawBalance, minTotalWithdrawFrequency = minTotalWithdrawFrequency,
+                maxBalance = maxBalance, maxTotalDepositBalance = maxTotalDepositBalance, maxTotalDepositFrequency = maxTotalDepositFrequency,
+                maxTotalWithdrawBalance = maxTotalWithdrawBalance, maxTotalWithdrawFrequency = maxTotalWithdrawFrequency)
+        val wallets = walletService.query(walletQuery)
+        if (wallets.isEmpty()) return emptyList()
+        val memberIds = wallets.map { it.memberId }
+        val walletMap = wallets.map{ it.memberId to it}.toMap()
+
+        // 查询用户信息
+        val members = memberService.findByIds(levelId = levelId, ids = memberIds)
+
+        // 查询用户层级
+        val levels = levelService.all(clientId).map { it.id to it }.toMap()
+
+        // 组装数据
+        return members.filter { walletMap[it.id] != null }.map { member ->
+            val wallet = walletMap[member.id] ?: error(OnePieceExceptionCode.DATA_FAIL)
+
+            val level = levels[member.levelId]?: error(OnePieceExceptionCode.DATA_FAIL)
+
+            LevelMemberVo(memberId = member.id, username = member.username, balance = wallet.balance, freezeBalance = wallet.freezeBalance, totalDepositBalance = wallet.totalDepositBalance,
+                    totalWithdrawBalance = wallet.totalWithdrawBalance, totalGiftBalance = wallet.totalGiftBalance, totalWithdrawFrequency = wallet.totalWithdrawFrequency,
+                    totalDepositFrequency = wallet.totalDepositFrequency, loginTime = member.loginTime, levelId = level.id, levelName = level.name)
+        }
+
+
+    }
+
+    @PutMapping("/level/move")
+    override fun move(@RequestBody levelMoveDo: LevelMoveDo) {
+        val clientId = getClientId()
+
+        //TODO 人数多的时候进行分组移动
+        check(levelMoveDo.memberIds.isNotEmpty()) { OnePieceExceptionCode.MOVE_LEVEL_COUNT_ISZERO }
+        check(levelMoveDo.memberIds.size <= 2000) { OnePieceExceptionCode.MOVE_LEVEL_COUNT_ISMAX }
+
+        memberService.moveLevel(clientId = clientId, levelId = levelMoveDo.levelId, memberIds = levelMoveDo.memberIds)
+    }
+
+
+
+
 }

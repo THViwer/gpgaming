@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 
 @Api(tags = ["index"], description = "首页")
-interface ClientPlatformApi {
+interface ClientApi {
 
     @ApiOperation(tags = ["index"], value = "厅主平台 -> 列表")
     fun all(): List<PlatformVo>

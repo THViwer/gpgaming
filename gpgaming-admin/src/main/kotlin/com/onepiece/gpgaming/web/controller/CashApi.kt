@@ -9,12 +9,15 @@ import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.model.ArtificialOrder
 import com.onepiece.gpgaming.beans.model.PayBind
 import com.onepiece.gpgaming.beans.value.database.PayBindValue
+import com.onepiece.gpgaming.beans.value.internet.web.BankVo
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
+import com.onepiece.gpgaming.beans.value.internet.web.ClientBankCoReq
+import com.onepiece.gpgaming.beans.value.internet.web.ClientBankUoReq
+import com.onepiece.gpgaming.beans.value.internet.web.ClientBankVo
 import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.WalletNoteValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
-import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
@@ -24,8 +27,22 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-@Api(tags = ["cash"], description = "现金管理")
-interface CashOrderApi {
+interface CashApi {
+
+    @ApiOperation(tags = ["cash"], value = "银行列表")
+    fun banks(): List<BankVo>
+
+    @ApiOperation(tags = ["cash"], value = "厅主银行卡 -> 列表")
+    fun all(): List<ClientBankVo>
+
+    @ApiOperation(tags = ["cash"], value = "厅主银行卡 -> 创建")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    fun create(@RequestBody clientBankCoReq: ClientBankCoReq)
+
+    @ApiOperation(tags = ["cash"], value = "厅主银行卡 -> 更新")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    fun update(@RequestBody clientBankUoReq: ClientBankUoReq)
+
 
 
     @ApiOperation(tags = ["cash"], value = "出入款 -> 列表")

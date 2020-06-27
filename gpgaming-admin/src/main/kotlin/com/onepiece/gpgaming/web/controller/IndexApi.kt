@@ -4,7 +4,9 @@ import com.onepiece.gpgaming.beans.enums.HotGameType
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.RecommendedType
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.ShowPosition
+import com.onepiece.gpgaming.beans.model.Contact
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Recommended
 import com.onepiece.gpgaming.beans.model.Seo
@@ -13,6 +15,7 @@ import com.onepiece.gpgaming.beans.value.database.HotGameValue
 import com.onepiece.gpgaming.beans.value.internet.web.BannerCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerVo
+import com.onepiece.gpgaming.beans.value.internet.web.ContactValue
 import com.onepiece.gpgaming.beans.value.internet.web.HotGameVo
 import com.onepiece.gpgaming.beans.value.internet.web.I18nContentWebValue
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionCoReq
@@ -135,5 +138,16 @@ interface IndexApi {
     @ApiOperation(tags = ["web setting"], value = "代理计划 -> 列表")
     fun agentPlats(): List<I18nContent>
 
+
+    @ApiOperation(tags = ["web setting"], value = "联系我们 -> 列表")
+    fun all(@RequestParam("role", defaultValue = "Member") role: Role): List<Contact>
+
+    @ApiOperation(tags = ["web setting"], value = "联系我们 -> 创建")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun create(@RequestBody create: ContactValue.Create)
+
+    @ApiOperation(tags = ["web setting"], value = "联系我们 -> 更新")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun update(@RequestBody update: ContactValue.Update)
 
 }

@@ -1,6 +1,8 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.base.Page
+import com.onepiece.gpgaming.beans.enums.Bank
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.PayType
@@ -12,20 +14,28 @@ import com.onepiece.gpgaming.beans.model.ArtificialOrder
 import com.onepiece.gpgaming.beans.model.PayBind
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderCo
 import com.onepiece.gpgaming.beans.value.database.ArtificialOrderQuery
+import com.onepiece.gpgaming.beans.value.database.ClientBankCo
+import com.onepiece.gpgaming.beans.value.database.ClientBankUo
 import com.onepiece.gpgaming.beans.value.database.DepositLockUo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.PayBindValue
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.beans.value.database.WalletNoteQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
+import com.onepiece.gpgaming.beans.value.internet.web.BankVo
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
+import com.onepiece.gpgaming.beans.value.internet.web.ClientBankCoReq
+import com.onepiece.gpgaming.beans.value.internet.web.ClientBankUoReq
+import com.onepiece.gpgaming.beans.value.internet.web.ClientBankVo
 import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.WalletNoteValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
 import com.onepiece.gpgaming.core.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.ArtificialOrderService
+import com.onepiece.gpgaming.core.service.ClientBankService
 import com.onepiece.gpgaming.core.service.DepositService
+import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PayBindService
 import com.onepiece.gpgaming.core.service.PayOrderService
@@ -36,20 +46,19 @@ import com.onepiece.gpgaming.core.service.WalletNoteService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
+import com.onepiece.gpgaming.web.controller.util.TransferUtil
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 @RestController
-@RequestMapping("/cash")
-class CashOrderApiController(
+class CashApiController(
         private val depositService: DepositService,
         private val withdrawService: WithdrawService,
         private val artificialOrderService: ArtificialOrderService,
@@ -62,11 +71,56 @@ class CashOrderApiController(
         private val payOrderService: PayOrderService,
         private val payBindService: PayBindService,
         private val platformMemberService: PlatformMemberService,
-        private val walletNoteService: WalletNoteService
-) : BasicController(), CashOrderApi {
+        private val walletNoteService: WalletNoteService,
+        private val clientBankService: ClientBankService,
+        private val levelService: LevelService
+): BasicController(), CashApi {
+
+    @GetMapping("/clientBank/default/bank")
+    override fun banks(): List<BankVo> {
+        return Bank.values().map {
+            BankVo(bank = it, name = it.cname, logo = it.logo, grayLogo = it.grayLogo, country = Country.Default)
+        }
+    }
+
+    @GetMapping("/clientBank")
+    override fun all(): List<ClientBankVo> {
 
 
-    @GetMapping("/check")
+        val clientId = getClientId()
+        val levelMap = levelService.all(clientId).map { it.id to it.name }.toMap()
+
+        return clientBankService.findClientBank(clientId).map {
+            with(it) {
+                val levelName = levelMap[it.levelId]?: "-"
+
+                ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
+                        status = status, createdTime = createdTime, levelId = levelId, levelName = levelName, logo = bank.logo,
+                        grayLogo = bank.grayLogo, minAmount = minAmount, maxAmount = maxAmount)
+            }
+        }
+    }
+
+    @PostMapping("/clientBank")
+    override fun create(@RequestBody clientBankCoReq: ClientBankCoReq) {
+        val clientId = getClientId()
+        val clientBankCo = ClientBankCo(clientId = clientId, bank = clientBankCoReq.bank, bankCardNumber = clientBankCoReq.bankCardNumber,
+                name = clientBankCoReq.name, levelId = clientBankCoReq.levelId, minAmount = clientBankCoReq.minAmount, maxAmount = clientBankCoReq.maxAmount)
+        clientBankService.create(clientBankCo)
+
+    }
+
+    @PutMapping("/clientBank")
+    override fun update(@RequestBody clientBankUoReq: ClientBankUoReq) {
+        val clientBankUo = ClientBankUo(id = clientBankUoReq.id, bank = clientBankUoReq.bank, bankCardNumber = clientBankUoReq.bankCardNumber,
+                status = clientBankUoReq.status, name = clientBankUoReq.name, levelId = clientBankUoReq.levelId, minAmount = clientBankUoReq.minAmount,
+                maxAmount = clientBankUoReq.maxAmount)
+        clientBankService.update(clientBankUo)
+    }
+
+
+
+    @GetMapping("/cash/check")
     override fun check(): List<CashValue.CheckOrderVo> {
         val clientId = getClientId()
 
@@ -82,7 +136,7 @@ class CashOrderApiController(
 
     }
 
-    @PutMapping("/check/lock")
+    @PutMapping("/cash/check/lock")
     override fun checkLock(@RequestBody req: CashValue.CheckOrderLockReq) {
 
         val current = this.current()
@@ -108,7 +162,7 @@ class CashOrderApiController(
         }
     }
 
-    @PutMapping("/check")
+    @PutMapping("/cash/check")
     override fun check(@RequestBody req: CashValue.CheckOrderReq) {
 
         val current = this.current()
@@ -129,7 +183,7 @@ class CashOrderApiController(
 
     }
 
-    @GetMapping("/deposit")
+    @GetMapping("/cash/deposit")
     override fun deposit(): List<DepositValue.DepositVo> {
 
         val user = current()
@@ -165,7 +219,7 @@ class CashOrderApiController(
         }
     }
 
-    @GetMapping("/deposit/history")
+    @GetMapping("/cash/deposit/history")
     override fun deposit(
             @RequestParam(value = "state", required = false) state: DepositState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
@@ -201,7 +255,7 @@ class CashOrderApiController(
 
     }
 
-    @PutMapping("/deposit/lock")
+    @PutMapping("/cash/deposit/lock")
     override fun tryLock(@RequestParam("orderId") orderId: String) {
         val current = current()
         val order = depositService.findDeposit(current.clientId, orderId)
@@ -212,14 +266,14 @@ class CashOrderApiController(
         depositService.lock(depositLockUo)
     }
 
-    @PutMapping("/deposit")
+    @PutMapping("/cash/deposit")
     override fun check(@RequestBody depositUoReq: DepositValue.DepositUoReq) {
         val current = this.current()
         val req = depositUoReq.copy(clientId = current.clientId, waiterId = current.id)
         depositService.check(req)
     }
 
-    @PutMapping("/artificial")
+    @PutMapping("/cash/artificial")
     override fun artificial(@RequestBody artificialCoReq: DepositValue.ArtificialCoReq) {
         val current = current()
         val orderId = orderIdBuilder.generatorArtificialOrderId()
@@ -235,7 +289,7 @@ class CashOrderApiController(
         artificialOrderService.create(artificialOrderCo)
     }
 
-    @GetMapping("/artificial")
+    @GetMapping("/cash/artificial")
     override fun artificialList(
             @RequestParam("username", required = false) username: String?,
             @RequestParam("operatorUsername", required = false) operatorUsername: String?,
@@ -261,7 +315,7 @@ class CashOrderApiController(
         return artificialOrderService.query(query)
     }
 
-    @GetMapping("/withdraw")
+    @GetMapping("/cash/withdraw")
     override fun withdraw(): List<WithdrawValue.WithdrawVo> {
         val clientId = getClientId()
         val withdrawQuery = WithdrawQuery(clientId = clientId, lockWaiterId = this.getCurrentWaiterId(), startTime = null, endTime = null,
@@ -281,7 +335,7 @@ class CashOrderApiController(
 
     }
 
-    @GetMapping("/withdraw/history")
+    @GetMapping("/cash/withdraw/history")
     override fun withdraw(
             @RequestParam(value = "state", required = false) state: WithdrawState?,
             @RequestParam(value = "orderId", required = false) orderId: String?,
@@ -310,7 +364,7 @@ class CashOrderApiController(
 
     }
 
-    @PutMapping("/withdraw/lock")
+    @PutMapping("/cash/withdraw/lock")
     override fun withdrawLock(@RequestParam("orderId") orderId: String) {
         val current = this.current()
         val order = withdrawService.findWithdraw(current.clientId, orderId)
@@ -321,7 +375,7 @@ class CashOrderApiController(
         withdrawService.lock(depositLockUo)
     }
 
-    @PutMapping("/withdraw")
+    @PutMapping("/cash/withdraw")
     override fun withdrawCheck(@RequestBody withdrawUoReq: WithdrawValue.WithdrawUoReq) {
         val current = this.current()
         val req = withdrawUoReq.copy(clientId = current.clientId, waiterId = current.id)
@@ -329,7 +383,7 @@ class CashOrderApiController(
 
     }
 
-    @GetMapping("/transfer")
+    @GetMapping("/cash/transfer")
     override fun query(
             @RequestParam("promotionId", required = false) promotionId: Int?,
             @RequestParam("memberId", required = false) memberId: Int?,
@@ -348,7 +402,7 @@ class CashOrderApiController(
         }
     }
 
-    @GetMapping("/wallet/note")
+    @GetMapping("/cash/wallet/note")
     override fun walletNoteList(
             @RequestParam("memberId") memberId: Int
     ): List<WalletNoteValue.WalletNoteVo> {
@@ -369,13 +423,13 @@ class CashOrderApiController(
         }
     }
 
-    @GetMapping("/retrieve")
+    @GetMapping("/cash/retrieve")
     override fun retrieve(@RequestParam("memberId") memberId: Int): List<CashValue.BalanceAllInVo> {
         val member = memberService.getMember(memberId)
         return transferUtil.transferInAll(clientId = member.clientId, memberId = memberId, username = member.username)
     }
 
-    @PutMapping("/clean/promotion")
+    @PutMapping("/cash/clean/promotion")
     override fun constraintCleanPromotion(
             @RequestParam("memberId") memberId: Int,
             @RequestParam("platform") platform: Platform
@@ -384,22 +438,22 @@ class CashOrderApiController(
         platformMemberService.cleanTransferIn(memberId = memberId, platform = platform)
     }
 
-    @GetMapping("/payBind")
+    @GetMapping("/cash/payBind")
     override fun payBind(): List<PayBind> {
         return payBindService.all(clientId = this.getClientId())
     }
 
-    @PostMapping("/payBind")
+    @PostMapping("/cash/payBind")
     override fun payBindCreate(@RequestBody req: PayBindValue.PayBindCo) {
         payBindService.create(req.copy(clientId = this.getClientId()))
     }
 
-    @PutMapping("/payBind")
+    @PutMapping("/cash/payBind")
     override fun payBindUpdate(@RequestBody req: PayBindValue.PayBindUo) {
         payBindService.update(req.copy(clientId = this.getClientId()))
     }
 
-    @GetMapping("/thirdpay")
+    @GetMapping("/cash/thirdpay")
     override fun payOrder(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
@@ -419,7 +473,7 @@ class CashOrderApiController(
         return CashValue.ThirdPayResponse(summaries = summaries, data = list)
     }
 
-    @PutMapping("/thirdpay")
+    @PutMapping("/cash/thirdpay")
     override fun thirdPayCheck(
             @RequestParam("orderId") orderId: String,
             @RequestParam("remark") remark: String
@@ -430,4 +484,8 @@ class CashOrderApiController(
         val uo = PayOrderValue.ConstraintUo(orderId = orderId, operatorId = user.id, operatorUsername = user.username, remark = remark)
         payOrderService.check(uo)
     }
+
+
+
+
 }

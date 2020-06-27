@@ -2,6 +2,11 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.MemberBank
+import com.onepiece.gpgaming.beans.value.internet.web.LevelCoReq
+import com.onepiece.gpgaming.beans.value.internet.web.LevelMemberVo
+import com.onepiece.gpgaming.beans.value.internet.web.LevelMoveDo
+import com.onepiece.gpgaming.beans.value.internet.web.LevelUoReq
+import com.onepiece.gpgaming.beans.value.internet.web.LevelVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberBankValue
 import com.onepiece.gpgaming.beans.value.internet.web.MemberCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.MemberPage
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @Api(tags = ["user"], description = " ")
@@ -73,5 +79,40 @@ interface MemberApi {
     @ApiOperation(tags = ["user"], value = "会员 -> 银行卡修改")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun bankUo(@RequestBody req: MemberBankValue.MemberBankUo)
+
+
+    @ApiOperation(tags = ["user"], value = "层级 -> 列表")
+    fun all(): List<LevelVo>
+
+    @ApiOperation(tags = ["user"], value = "层级 -> 可用列表")
+    fun normalList(): List<LevelVo>
+
+    @ApiOperation(tags = ["user"], value = "层级 -> 创建")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    fun create(@RequestBody levelCoReq: LevelCoReq)
+
+    @ApiOperation(tags = ["user"], value = "层级 -> 更新")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun update(@RequestBody levelUoReq: LevelUoReq)
+
+    @ApiOperation(tags = ["user"], value = "层级 -> 条件查询会员")
+    fun findMembers(
+            @RequestParam("username", required = false) username: String?,
+            @RequestParam("levelId", required = false) levelId: Int?,
+            @RequestParam("minBalance", required = false) minBalance: BigDecimal?,
+            @RequestParam("maxBalance", required = false) maxBalance: BigDecimal?,
+            @RequestParam("minTotalDepositBalance", required = false) minTotalDepositBalance: BigDecimal?,
+            @RequestParam("maxTotalDepositBalance", required = false) maxTotalDepositBalance: BigDecimal?,
+            @RequestParam("minTotalWithdrawBalance", required = false) minTotalWithdrawBalance: BigDecimal?,
+            @RequestParam("maxTotalWithdrawBalance", required = false) maxTotalWithdrawBalance: BigDecimal?,
+            @RequestParam("minTotalDepositFrequency", required = false) minTotalDepositFrequency: Int?,
+            @RequestParam("maxTotalDepositFrequency", required = false) maxTotalDepositFrequency: Int?,
+            @RequestParam("minTotalWithdrawFrequency", required = false) minTotalWithdrawFrequency: Int?,
+            @RequestParam("maxTotalWithdrawFrequency", required = false) maxTotalWithdrawFrequency: Int?
+    ): List<LevelMemberVo>
+
+    @ApiOperation(tags = ["user"], value = "层级 -> 移动")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun move(@RequestBody levelMoveDo: LevelMoveDo)
 
 }
