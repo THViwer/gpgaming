@@ -1,12 +1,18 @@
 package com.onepiece.gpgaming.beans.value.database
 
-data class ClientLoginValue(
 
-        val clientId: Int,
+sealed class ClientLoginValue{
 
-        val username: String,
+    data class ClientLoginReq(
 
-        val password: String,
+            val clientId: Int,
 
-        val ip: String
-)
+            val username: String,
+
+            val password: String,
+
+            val ip: String
+    )
+
+}
+

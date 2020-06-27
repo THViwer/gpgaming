@@ -14,7 +14,7 @@ import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.dao.MemberRelationDao
 import com.onepiece.gpgaming.core.service.MemberService
-import com.onepiece.gpgaming.core.service.SalesmanService
+import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -29,7 +29,7 @@ class MemberServiceImpl(
         private val redisService: RedisService,
         private val bCryptPasswordEncoder: BCryptPasswordEncoder,
         private val memberRelationDao: MemberRelationDao,
-        private val salesmanService: SalesmanService
+        private val waiterService: WaiterService
 ) : MemberService {
 
     override fun getAgentByCode(bossId: Int, clientId: Int, code: String): Member? {
@@ -153,7 +153,7 @@ class MemberServiceImpl(
         val promoteCode = this.getPromoteCode()
 
         // 电销人员Id
-        val saleId = salesmanService.select(bossId = memberCo.bossId, clientId = memberCo.clientId, saleId = memberCo.saleId)
+        val saleId = waiterService.selectSale(bossId = memberCo.bossId, clientId = memberCo.clientId, saleId = memberCo.saleId)
                 ?.id ?: -1
 
         // create member

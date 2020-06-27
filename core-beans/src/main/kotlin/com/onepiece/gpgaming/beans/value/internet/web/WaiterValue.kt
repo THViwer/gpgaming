@@ -1,8 +1,10 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.Bank
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import io.swagger.annotations.ApiModelProperty
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 
@@ -80,10 +82,19 @@ data class WaiterUoReq(
         val password: String?,
 
         @ApiModelProperty("入款银行卡Id")
-        val clientBanks: List<Int>?
+        val clientBanks: List<Int>?,
+
+        @ApiModelProperty("自己顾客的佣金")
+        val ownCustomerScale: BigDecimal?,
+
+        @ApiModelProperty("系统顾客的佣金")
+        val systemCustomerScale: BigDecimal?
 )
 
 data class WaiterCoReq(
+
+        @ApiModelProperty("角色")
+        val role: Role,
 
         @ApiModelProperty("用户名")
         val username: String,
@@ -98,6 +109,14 @@ data class WaiterCoReq(
         val status: Status,
 
         @ApiModelProperty("入款银行卡Id")
-        val clientBanks: List<Int>?
+        val clientBanks: List<Int>?,
+
+        @ApiModelProperty("自己顾客的佣金")
+        val ownCustomerScale: BigDecimal?,
+
+        @ApiModelProperty("系统顾客的佣金")
+        val systemCustomerScale: BigDecimal?
+
+
 
 )

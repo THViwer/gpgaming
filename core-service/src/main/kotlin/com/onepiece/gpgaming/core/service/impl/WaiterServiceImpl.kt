@@ -5,11 +5,11 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Waiter
 import com.onepiece.gpgaming.beans.value.database.ClientLoginValue
 import com.onepiece.gpgaming.beans.value.database.PermissionUo
-import com.onepiece.gpgaming.beans.value.database.WaiterCo
-import com.onepiece.gpgaming.beans.value.database.WaiterUo
+import com.onepiece.gpgaming.beans.value.database.WaiterValue
 import com.onepiece.gpgaming.core.dao.WaiterDao
 import com.onepiece.gpgaming.core.service.PermissionService
 import com.onepiece.gpgaming.core.service.WaiterService
+import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -18,7 +18,8 @@ import java.time.LocalDateTime
 class WaiterServiceImpl(
         private val waiterDao: WaiterDao,
         private val permissionService: PermissionService,
-        private val bCryptPasswordEncoder: BCryptPasswordEncoder
+        private val bCryptPasswordEncoder: BCryptPasswordEncoder,
+        private val redisService: RedisService
 ) : WaiterService {
 
     override fun get(id: Int): Waiter {
@@ -29,7 +30,7 @@ class WaiterServiceImpl(
         return waiterDao.all(clientId)
     }
 
-    override fun login(loginValue: ClientLoginValue): Waiter {
+    override fun login(loginValue: ClientLoginValue.ClientLoginReq): Waiter {
 
         val waiter = waiterDao.findByUsername(loginValue.username)
         checkNotNull(waiter) { OnePieceExceptionCode.LOGIN_FAIL }
@@ -38,13 +39,13 @@ class WaiterServiceImpl(
         check(loginValue.clientId == waiter.clientId) { OnePieceExceptionCode.LOGIN_FAIL }
 
         // update client
-        val waiterUo = WaiterUo(id = waiter.id, loginIp = loginValue.ip, loginTime = LocalDateTime.now(), clientBankData = null)
+        val waiterUo = WaiterValue.WaiterUo(id = waiter.id, loginIp = loginValue.ip, loginTime = LocalDateTime.now(), clientBankData = null)
         this.update(waiterUo)
 
         return waiter.copy(password = "")
     }
 
-    override fun create(waiterCo: WaiterCo) {
+    override fun create(waiterCo: WaiterValue.WaiterCo) {
         val password = bCryptPasswordEncoder.encode(waiterCo.password)
         val id = waiterDao.create(waiterCo.copy(password = password))
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
@@ -63,12 +64,30 @@ class WaiterServiceImpl(
         return waiter
     }
 
-    override fun update(waiterUo: WaiterUo) {
+    override fun update(waiterUo: WaiterValue.WaiterUo) {
         val password = waiterUo.password?.let {
             bCryptPasswordEncoder.encode(it)
         }
 
         val state = waiterDao.update(waiterUo.copy(password = password))
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+    }
+
+    override fun selectSale(bossId: Int, clientId: Int, saleId: Int?): Waiter? {
+
+        fun selectNext(): Waiter? {
+            val redisKey = "salesman:id:$clientId"
+            val cacheSaleId = redisService.get(key = redisKey, clz = Int::class.java) ?: -1
+            return waiterDao.all(clientId = clientId).filter { bossId == it.bossId }
+                    .let { list ->
+                        list.firstOrNull { it.id > cacheSaleId } ?: list.firstOrNull()
+                    }?.also {
+                        redisService.put(key = redisKey, value = it.id)
+                    }
+        }
+
+        return saleId?.let {
+            waiterDao.get(saleId)
+        } ?: selectNext()
     }
 }

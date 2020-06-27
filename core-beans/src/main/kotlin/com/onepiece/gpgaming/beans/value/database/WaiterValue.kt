@@ -1,50 +1,73 @@
 package com.onepiece.gpgaming.beans.value.database
 
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
-data class WaiterCo(
 
-        val bossId: Int,
+sealed class WaiterValue {
 
-        // 厅主Id
-        val clientId: Int,
 
-        // 登陆用户名
-        val username: String,
+    data class WaiterCo(
 
-        // 密码
-        val password: String,
+            val bossId: Int,
 
-        // 入款银行卡Id
-        val clientBankData: String?,
+            // 厅主Id
+            val clientId: Int,
 
-        // 名称 昵称
-        val name: String
+            // 角色
+            val role: Role,
 
-)
+            // 登陆用户名
+            val username: String,
 
-data class WaiterUo(
+            // 密码
+            val password: String,
 
-        val id: Int,
+            // 入款银行卡Id
+            val clientBankData: String?,
 
-        val oldPassword: String? = null,
+            // 名称 昵称
+            val name: String,
 
-        // 密码
-        val password: String? = null,
+            // 自己顾客的佣金
+            val ownCustomerScale: BigDecimal,
 
-        // 入款银行卡Id
-        val clientBankData: String?,
+            // 系统顾客的佣金
+            val systemCustomerScale: BigDecimal
+    )
 
-        // 名称 昵称
-        val name: String? = null,
+    data class WaiterUo(
 
-        // 状态
-        val status: Status? = null,
+            val id: Int,
 
-        // 登陆Ip
-        val loginIp: String? = null,
+            val oldPassword: String? = null,
 
-        // 登陆时间
-        val loginTime: LocalDateTime? = null
-)
+            // 密码
+            val password: String? = null,
+
+            // 入款银行卡Id
+            val clientBankData: String?,
+
+            // 名称 昵称
+            val name: String? = null,
+
+            // 状态
+            val status: Status? = null,
+
+            // 登陆Ip
+            val loginIp: String? = null,
+
+            // 登陆时间
+            val loginTime: LocalDateTime? = null,
+
+            // 自己顾客的佣金
+            val ownCustomerScale: BigDecimal? = null,
+
+            // 系统顾客的佣金
+            val systemCustomerScale: BigDecimal? = null
+    )
+
+
+}

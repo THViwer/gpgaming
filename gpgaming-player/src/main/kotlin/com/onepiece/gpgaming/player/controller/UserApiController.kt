@@ -12,7 +12,6 @@ import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberService
-import com.onepiece.gpgaming.core.service.SalesmanService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.ChangePwdReq
 import com.onepiece.gpgaming.player.controller.value.CheckUsernameResp
@@ -43,8 +42,7 @@ class UserApiController(
         private val memberService: MemberService,
         private val authService: AuthService,
         private val levelService: LevelService,
-        private val passwordEncoder: PasswordEncoder,
-        private val salesmanService: SalesmanService
+        private val passwordEncoder: PasswordEncoder
 ) : BasicController(), UserApi {
 
     companion object {
@@ -170,13 +168,10 @@ class UserApiController(
             memberService.findByBossIdAndCode(bossId = bossId, promoteCode = registerReq.promoteCode)
         } ?: memberService.getDefaultAgent(bossId = bossId)
 
-        // 选取电销人员Id
-        val salesman = salesmanService.select(bossId = bossId, clientId = clientId, saleId = registerReq.saleCode?.toInt())
-
         val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
         val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
                 levelId = defaultLevel.id, name = registerReq.name, phone = registerReq.phone, promoteCode = registerReq.promoteCode, bossId = bossId, agentId = agent.id,
-                role = Role.Member, formal = true, saleId = salesman?.id ?: -1)
+                role = Role.Member, formal = true, saleId = registerReq.saleCode?.toInt())
         memberService.create(memberCo)
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)

@@ -5,7 +5,7 @@ import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.value.database.ClientLoginValue
 import com.onepiece.gpgaming.beans.value.database.ClientUo
-import com.onepiece.gpgaming.beans.value.database.WaiterUo
+import com.onepiece.gpgaming.beans.value.database.WaiterValue
 import com.onepiece.gpgaming.beans.value.internet.web.ChangePwdReq
 import com.onepiece.gpgaming.beans.value.internet.web.LoginReq
 import com.onepiece.gpgaming.beans.value.internet.web.LoginResp
@@ -51,33 +51,42 @@ class UserApiController(
 
         // 校验ip是否准确
         val ip = getIpAddress()
-        val client = clientService.get(clientId)
-        log.info("client whitelists: ${client.whitelists}")
+        val currentClient = clientService.get(clientId)
+        log.info("client whitelists: ${currentClient.whitelists}")
         log.info("current ip: $ip")
-        check(client.whitelists.isEmpty() || client.whitelists.firstOrNull { it == ip || it.isBlank() } != null) {  OnePieceExceptionCode.IP_ILLEGAL }
+        check(currentClient.whitelists.isEmpty() || currentClient.whitelists.firstOrNull { it == ip || it.isBlank() } != null) {  OnePieceExceptionCode.IP_ILLEGAL }
 
-        val loginValue = ClientLoginValue(clientId = clientId, username = loginReq.username, password = loginReq.password, ip = ip)
+        val loginValue = ClientLoginValue.ClientLoginReq(clientId = clientId, username = loginReq.username, password = loginReq.password, ip = ip)
 
         log.info("admin login, username = ${loginReq.username}, password = ${loginReq.password}")
-        return try {
-            val client = clientService.login(loginValue)
-            val permissions = PermissionType.values().map { it.resourceId }.plus("-1")
 
-            val authUser = authService.login(bossId = client.bossId, id = client.id, role = Role.Client, username = client.username, mAuthorities = permissions)
+        return let {
+            try {
+                val client = clientService.login(loginValue)
+                val permissions = PermissionType.values().map { it.resourceId }.plus("-1")
 
-            LoginResp(id = client.id, clientId = client.id, username = client.username, role = Role.Client,
-                    token = authUser.token, permissions = permissions, main = client.main)
+                val authUser = authService.login(bossId = client.bossId, id = client.id, role = Role.Client, username = client.username, mAuthorities = permissions)
 
-        } catch (e: Exception) {
-            val waiter = waiterService.login(loginValue)
+                LoginResp(id = client.id, clientId = client.id, username = client.username, role = Role.Client,
+                        token = authUser.token, permissions = permissions, main = client.main)
+            } catch (e: Exception) {
+                null
+            }
+        }?.let {
 
-            val permissions = permissionService.findWaiterPermissions(waiterId = waiter.id).permissions.filter { it.effective }.map { it.resourceId }
+            try {
+                val waiter = waiterService.login(loginValue)
 
-            val authUser = authService.login(bossId = waiter.bossId, id = waiter.id, role = Role.Waiter, username = waiter.username, mAuthorities = permissions)
+                val permissions = permissionService.findWaiterPermissions(waiterId = waiter.id).permissions.filter { it.effective }.map { it.resourceId }
 
-            LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = Role.Waiter,
-                    token = authUser.token, permissions = permissions, main = client.main)
-        }
+                val authUser = authService.login(bossId = waiter.bossId, id = waiter.id, role = Role.Waiter, username = waiter.username, mAuthorities = permissions)
+
+                LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = Role.Waiter,
+                        token = authUser.token, permissions = permissions, main = currentClient.main)
+            } catch (e: Exception) {
+                null
+            }
+        } ?: error("login failed")
     }
 
     private fun superAdmin(req: LoginReq, clientId: Int): LoginResp {
@@ -107,7 +116,7 @@ class UserApiController(
                 clientService.update(clientUo)
             }
             Role.Waiter -> {
-                val waiterUo = WaiterUo(id = current.id, oldPassword = changePwdReq.oldPassword, password = changePwdReq.password, clientBankData = null)
+                val waiterUo = WaiterValue.WaiterUo(id = current.id, oldPassword = changePwdReq.oldPassword, password = changePwdReq.password, clientBankData = null)
                 waiterService.update(waiterUo)
             }
             else -> check(false) { OnePieceExceptionCode.AUTHORITY_FAIL }

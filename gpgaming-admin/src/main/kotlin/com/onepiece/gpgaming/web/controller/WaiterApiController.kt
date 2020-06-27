@@ -2,11 +2,11 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.PermissionType
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.PermissionDetail
 import com.onepiece.gpgaming.beans.value.database.PermissionUo
-import com.onepiece.gpgaming.beans.value.database.WaiterCo
-import com.onepiece.gpgaming.beans.value.database.WaiterUo
+import com.onepiece.gpgaming.beans.value.database.WaiterValue
 import com.onepiece.gpgaming.beans.value.internet.web.PermissionValue
 import com.onepiece.gpgaming.beans.value.internet.web.WaiterCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.WaiterUoReq
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.math.BigDecimal
 
 @RestController
 @RequestMapping("/waiter")
@@ -59,9 +60,14 @@ class WaiterApiController(
         val bossId = getBossId()
         val clientId = getClientId()
 
-        val waiterCo = WaiterCo(clientId = clientId, username = waiterCoReq.username, name = waiterCoReq.name,
+        check(waiterCoReq.role == Role.Waiter || waiterCoReq.role == Role.Sale) { "role is error" }
+
+        val ownCustomerScale = waiterCoReq.ownCustomerScale ?: BigDecimal.ZERO
+        val systemCustomerScale = waiterCoReq.systemCustomerScale ?: BigDecimal.ZERO
+
+        val waiterCo = WaiterValue.WaiterCo(clientId = clientId, username = waiterCoReq.username, name = waiterCoReq.name,
                 password = waiterCoReq.password, clientBankData = waiterCoReq.clientBanks?.joinToString(","),
-                bossId = bossId)
+                bossId = bossId, ownCustomerScale = ownCustomerScale, systemCustomerScale = systemCustomerScale, role = waiterCoReq.role)
         waiterService.create(waiterCo)
     }
 
@@ -72,8 +78,13 @@ class WaiterApiController(
         val hasWaiter = waiterService.get(waiterUoReq.id)
         check(hasWaiter.clientId == clientId) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
-        val waiterUo = WaiterUo(id = waiterUoReq.id, name = waiterUoReq.name, status = waiterUoReq.status,
-                password = waiterUoReq.password, clientBankData = waiterUoReq.clientBanks?.joinToString(","))
+
+        val ownCustomerScale = waiterUoReq.ownCustomerScale ?: BigDecimal.ZERO
+        val systemCustomerScale = waiterUoReq.systemCustomerScale ?: BigDecimal.ZERO
+
+        val waiterUo = WaiterValue.WaiterUo(id = waiterUoReq.id, name = waiterUoReq.name, status = waiterUoReq.status,
+                password = waiterUoReq.password, clientBankData = waiterUoReq.clientBanks?.joinToString(","),
+                ownCustomerScale = ownCustomerScale, systemCustomerScale = systemCustomerScale)
         waiterService.update(waiterUo)
     }
 
