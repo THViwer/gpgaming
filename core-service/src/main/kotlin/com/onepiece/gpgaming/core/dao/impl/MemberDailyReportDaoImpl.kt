@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.core.dao.impl
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
+import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
@@ -26,6 +27,8 @@ class MemberDailyReportDaoImpl(
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val superiorAgentId = rs.getInt("superior_agent_id")
+            val saleId = rs.getInt("sale_id")
+            val saleScope = rs.getString("sale_scope").let { SaleScope.valueOf(it) }
             val agentId = rs.getInt("agent_id")
             val memberId = rs.getInt("member_id")
             val username  = rs.getString("username")
@@ -53,7 +56,8 @@ class MemberDailyReportDaoImpl(
                     createdTime = createdTime, status = status, artificialAmount = artificialAmount, artificialCount = artificialCount,
                     depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, totalMWin = totalMWin,
                     thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, bossId = bossId,
-                    rebateExecution = rebateExecution, promotionAmount = promotionAmount, agentId = agentId, superiorAgentId = superiorAgentId)
+                    rebateExecution = rebateExecution, promotionAmount = promotionAmount, agentId = agentId, superiorAgentId = superiorAgentId,
+                    saleId = saleId, saleScope = saleScope)
         }
 
     override fun create(reports: List<MemberDailyReport>) {
@@ -64,6 +68,8 @@ class MemberDailyReportDaoImpl(
                 .set("client_id")
                 .set("superior_agent_id")
                 .set("agent_id")
+                .set("sale_id")
+                .set("sale_scope")
                 .set("member_id")
                 .set("username")
                 .set("transfer_in")
@@ -89,6 +95,8 @@ class MemberDailyReportDaoImpl(
                     ps.setInt(++index, entity.clientId)
                     ps.setInt(++index, entity.superiorAgentId)
                     ps.setInt(++index, entity.agentId)
+                    ps.setInt(++index, entity.saleId)
+                    ps.setString(++index, entity.saleScope.name)
                     ps.setInt(++index, entity.memberId)
                     ps.setString(++index, entity.username)
                     ps.setBigDecimal(++index, entity.transferIn)
@@ -312,6 +320,41 @@ class MemberDailyReportDaoImpl(
                     withdrawCount = withdrawCount, artificialAmount = artificialAmount, artificialCount = artificialCount, totalBet = totalBet, totalMWin = totalMWin,
                     thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, promotionAmount = promotionAmount,
                     superiorAgentId = superiorAgentId, day = query.startDate)
+        }
+    }
+
+    override fun saleCollect(query: MemberReportValue.MemberCollectQuery): List<MemberReportValue.SaleReportVo> {
+
+        val saleColumn = query.saleId?.let { " and sale_id = ${query.saleId}" } ?: ""
+
+        val sql = """
+            select 
+            	boss_id, 
+            	client_id, 
+            	sale_id,
+                sale_scope,
+            	sum(deposit_amount + third_pay_amount) total_deposit,
+            	sum(withdraw_amount) total_withdraw,
+            	sum(promotion_amount) total_promotion,
+            	sum(rebate_amount) total_rebate
+            from member_daily_report where day = '${query.day} $saleColumn'
+            group by boss_id, client_id, sale_id, sale_scope;
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql) { rs, _ ->
+
+            val bossId = rs.getInt("boss_id")
+            val clientId = rs.getInt("client_id")
+            val saleId = rs.getInt("sale_id")
+            val saleScope = rs.getString("sale_scope").let { SaleScope.valueOf(it) }
+            val totalDeposit = rs.getBigDecimal("total_deposit")
+            val totalWithdraw = rs.getBigDecimal("total_withdraw")
+            val totalPromotion = rs.getBigDecimal("total_promotion")
+            val totalRebate = rs.getBigDecimal("total_rebate")
+
+            MemberReportValue.SaleReportVo(bossId = bossId, clientId = clientId, saleId = saleId, totalDeposit = totalDeposit,
+                    totalWithdraw = totalWithdraw, totalPromotion = totalPromotion, totalRebate = totalRebate, saleScope = saleScope)
+
         }
     }
 }

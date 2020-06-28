@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.value.database
 
 import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
+import com.onepiece.gpgaming.beans.enums.SaleScope
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -80,6 +81,13 @@ sealed class MemberReportValue {
             val endDate: LocalDate,
 
             val agentId: Int
+    )
+
+    data class MemberCollectQuery(
+
+            val day: LocalDate,
+
+            val saleId: Int?
 
     )
 
@@ -147,6 +155,44 @@ sealed class MemberReportValue {
             // 返水金额
             val rebateAmount: BigDecimal
     )
+
+    data class SaleReportVo(
+
+            // bossId
+            val bossId: Int,
+
+            // clientId
+            val clientId: Int,
+
+            // saleId
+            val saleId: Int,
+
+            // 电销类型
+            val saleScope: SaleScope,
+
+            // 总充值
+            val totalDeposit: BigDecimal,
+
+            // 总取款
+            val totalWithdraw: BigDecimal,
+
+            // 总优惠
+            val totalPromotion: BigDecimal,
+
+            // 总返水
+            val totalRebate: BigDecimal
+    ) {
+
+        companion object {
+
+            fun empty(saleScope: SaleScope): SaleReportVo {
+                return SaleReportVo(bossId = -1, clientId = -1, saleId = -1, saleScope = saleScope, totalDeposit = BigDecimal.ZERO, totalWithdraw = BigDecimal.ZERO,
+                        totalPromotion = BigDecimal.ZERO, totalRebate = BigDecimal.ZERO)
+            }
+
+        }
+
+    }
 
     data class AnalysisVo(
 

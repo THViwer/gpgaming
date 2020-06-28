@@ -78,6 +78,18 @@ class ReportTask(
         }
     }
 
+    //TODO 电销日报表
+    fun startSaleReport(startDate: LocalDate) {
+
+
+
+    }
+
+    //TODO 电销月报表
+    fun startSaleMonthReport(startDate: LocalDate) {
+
+    }
+
     // 代理日报表
     fun startAgentReport(startDate: LocalDate) {
         tryLock(localDate = startDate, type = TaskTimerType.AgentDaily) {

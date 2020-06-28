@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.Role
+import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -24,6 +25,9 @@ data class Member(
 
         // 销售员Id 当role = Member时才有
         val saleId: Int,
+
+        // 电销类型
+        val saleScope: SaleScope,
 
         // 用户名
         val username: String,

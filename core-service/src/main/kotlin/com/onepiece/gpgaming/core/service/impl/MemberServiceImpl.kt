@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.core.service.impl
 
 import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.Role
+import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Member
@@ -155,10 +156,11 @@ class MemberServiceImpl(
         // 电销人员Id
         val saleId = waiterService.selectSale(bossId = memberCo.bossId, clientId = memberCo.clientId, saleId = memberCo.saleId)
                 ?.id ?: -1
+        val saleScope = if (memberCo.saleId == saleId && saleId != -1) SaleScope.Own else SaleScope.System
 
         // create member
         val password = bCryptPasswordEncoder.encode(memberCo.password)
-        val id = memberDao.create(memberCo.copy(password = password, promoteCode = promoteCode, saleId = saleId))
+        val id = memberDao.create(memberCo.copy(password = password, promoteCode = promoteCode, saleId = saleId, saleScope = saleScope))
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // create wallet

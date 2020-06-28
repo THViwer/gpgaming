@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.service.impl
 
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Waiter
@@ -21,6 +22,10 @@ class WaiterServiceImpl(
         private val bCryptPasswordEncoder: BCryptPasswordEncoder,
         private val redisService: RedisService
 ) : WaiterService {
+
+    override fun all(role: Role?): List<Waiter> {
+        return waiterDao.all().filter { role == null || role == it.role }
+    }
 
     override fun get(id: Int): Waiter {
         return waiterDao.get(id)

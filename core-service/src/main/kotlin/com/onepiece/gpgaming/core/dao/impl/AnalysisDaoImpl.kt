@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.Role
+import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.AgentDailyReport
 import com.onepiece.gpgaming.beans.model.AgentMonthReport
@@ -33,6 +34,8 @@ class AnalysisDaoImpl(
                    m.client_id,
                    x.agent_id superior_agent_id,
                    m.agent_id,
+                   m.sale_id,
+                   m.sale_scope,
                    m.id,
                    m.level_id,
                    m.username,
@@ -114,6 +117,8 @@ class AnalysisDaoImpl(
             val clientId = rs.getInt("client_id")
             val superiorAgentId = rs.getInt("superior_agent_id")
             val agentId =  rs.getInt("agent_id")
+            val saleId = rs.getInt("sale_id")
+            val saleScope = rs.getString("sale_scope").let { SaleScope.valueOf(it) }
             val memberId = rs.getInt("id")
             val levelId = rs.getInt("level_id")
             val username  = rs.getString("username")
@@ -139,7 +144,7 @@ class AnalysisDaoImpl(
                     depositCount = depositCount, thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, artificialAmount = artificialAmount, artificialCount = artificialCount,
                     withdrawAmount = totalWithdraw, withdrawCount = withdrawCount, transferOut = transferOut, promotionAmount = promotionAmount, transferIn = transferIn,
                     rebateAmount = BigDecimal.ZERO, rebateExecution = true, day = startDate, settles = emptyList(), totalBet = BigDecimal.ZERO, totalMWin = BigDecimal.ZERO,
-                    status = Status.Normal, createdTime = LocalDateTime.now(), superiorAgentId = superiorAgentId)
+                    status = Status.Normal, createdTime = LocalDateTime.now(), superiorAgentId = superiorAgentId, saleId = saleId, saleScope = saleScope)
 
             report.expand(levelId = levelId, slotRequirementBet = slotRequirementBet, liveRequirementBet = liveRequirementBet, sportRequirementBet = sportRequirementBet,
                     fishRequirementBet = fishRequirementBet)

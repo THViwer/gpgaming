@@ -1,10 +1,13 @@
 package com.onepiece.gpgaming.core.service
 
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.model.Waiter
 import com.onepiece.gpgaming.beans.value.database.ClientLoginValue
 import com.onepiece.gpgaming.beans.value.database.WaiterValue
 
 interface WaiterService {
+
+    fun all(role: Role? = null): List<Waiter>
 
     fun get(id: Int): Waiter
 

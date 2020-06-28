@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.Role
+import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Member
 import com.onepiece.gpgaming.beans.value.database.MemberCo
@@ -22,6 +23,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val saleId = rs.getInt("sale_id")
+            val saleScope = rs.getString("sale_scope").let{ SaleScope.valueOf(it) }
             val role = rs.getString("role").let { Role.valueOf(it) }
             val agentId = rs.getInt("agent_id")
             val username = rs.getString("username")
@@ -44,7 +46,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
                     safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion,
                     autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = "$id",
-                    formal = formal, agencyMonthFee = agencyMonthFee, saleId = saleId)
+                    formal = formal, agencyMonthFee = agencyMonthFee, saleId = saleId, saleScope = saleScope)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -53,6 +55,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("client_id", memberCo.clientId)
                 .set("agent_id", memberCo.agentId)
                 .set("sale_id", memberCo.saleId)
+                .set("sale_scope", memberCo.saleScope)
                 .set("role", memberCo.role)
                 .set("username", memberCo.username)
                 .set("name", memberCo.name)

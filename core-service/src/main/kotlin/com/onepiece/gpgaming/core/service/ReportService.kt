@@ -6,6 +6,8 @@ import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
+import com.onepiece.gpgaming.beans.model.SaleDailyReport
+import com.onepiece.gpgaming.beans.model.SaleMonthReport
 import java.time.LocalDate
 
 interface ReportService {
@@ -29,6 +31,17 @@ interface ReportService {
      * 代理月报表
      */
     fun startAgentMonthReport(agentId: Int? = null, today: LocalDate): List<AgentMonthReport>
+
+    /**
+     * 电销日报表
+     */
+    fun startSaleReport(startDate: LocalDate): List<SaleDailyReport>
+
+    /**
+     * 电销月报表e
+     */
+    fun startSaleMonthReport(startDate: LocalDate): List<SaleMonthReport>
+
 
     /**
      * 厅主平台报表

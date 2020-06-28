@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -24,6 +25,12 @@ data class MemberDailyReport(
 
         // 代理
         val agentId: Int,
+
+        // 电销人员Id
+        val saleId: Int,
+
+        // 电销类型
+        val saleScope: SaleScope,
 
         // 会员Id
         val memberId: Int,

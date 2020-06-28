@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.enums.CommissionType
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Role
+import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.AgentDailyReport
 import com.onepiece.gpgaming.beans.model.AgentMonthReport
@@ -12,11 +13,15 @@ import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.Level
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
+import com.onepiece.gpgaming.beans.model.SaleDailyReport
+import com.onepiece.gpgaming.beans.model.SaleMonthReport
 import com.onepiece.gpgaming.beans.value.database.AnalysisValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
+import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.core.dao.BetOrderDao
 import com.onepiece.gpgaming.core.dao.LevelDao
+import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.dao.OtherPlatformReportDao
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
@@ -24,6 +29,7 @@ import com.onepiece.gpgaming.core.dao.TransferReportQuery
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.CommissionService
 import com.onepiece.gpgaming.core.service.ReportService
+import com.onepiece.gpgaming.core.service.WaiterService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -40,7 +46,9 @@ class ReportServiceImpl(
         private val levelDao: LevelDao,
         private val analysisDao: AnalysisDao,
         private val commissionService: CommissionService,
-        private val otherPlatformReportDao: OtherPlatformReportDao
+        private val otherPlatformReportDao: OtherPlatformReportDao,
+        private val memberDailyReportDao: MemberDailyReportDao,
+        private val waiterService: WaiterService
 ) : ReportService {
 
     private val log = LoggerFactory.getLogger(ReportServiceImpl::class.java)
@@ -252,6 +260,54 @@ class ReportServiceImpl(
         }
 
         return data.filter { agentId == null || it.agentId == agentId }
+    }
+
+    override fun startSaleReport(startDate: LocalDate): List<SaleDailyReport> {
+
+        val salesmanList = waiterService.all(role = Role.Sale)
+        val salesmanMap = salesmanList.map { it.id to it }.toMap()
+
+        val query = MemberReportValue.MemberCollectQuery(day = startDate, saleId = null)
+        val list = memberDailyReportDao.saleCollect(query)
+
+
+        return list.groupBy { it.saleId }.map {
+
+            val saleId = it.key
+            val data = it.value
+
+            val sale = salesmanMap[saleId]
+            val username = sale?.username ?: "default_sale"
+
+            val ownSaleVo = data.firstOrNull { it.saleScope == SaleScope.Own } ?: MemberReportValue.SaleReportVo.empty(saleScope = SaleScope.Own)
+            val systemSaleVo = data.firstOrNull { it.saleScope == SaleScope.System } ?: MemberReportValue.SaleReportVo.empty(saleScope = SaleScope.System)
+
+            val bossId = if (ownSaleVo.bossId != -1) ownSaleVo.bossId else systemSaleVo.bossId
+            val clientId = if (ownSaleVo.clientId != -1) ownSaleVo.clientId else systemSaleVo.clientId
+
+
+            val ownCustomerScale = sale?.ownCustomerScale ?: BigDecimal.ZERO
+            val systemCustomerScale = sale?.systemCustomerScale ?: BigDecimal.ZERO
+
+            val ownCustomerFee = (ownSaleVo.totalDeposit.minus(ownSaleVo.totalPromotion).minus(ownSaleVo.totalRebate)).multiply(ownCustomerScale).let {
+                if (it < BigDecimal.ZERO) BigDecimal.ZERO else it
+            }
+            val systemCustomerFee = (systemSaleVo.totalDeposit.minus(systemSaleVo.totalPromotion).minus(systemSaleVo.totalRebate)).multiply(systemCustomerScale).let {
+                if (it < BigDecimal.ZERO) BigDecimal.ZERO else it
+            }
+            SaleDailyReport(bossId = bossId, clientId = clientId, saleId = saleId, saleUsername = username, ownCustomerScale = ownCustomerScale, ownCustomerFee = ownCustomerFee,
+                    ownTotalDeposit = ownSaleVo.totalDeposit, ownTotalPromotion = ownSaleVo.totalPromotion, ownTotalWithdraw = ownSaleVo.totalWithdraw, ownTotalRebate = ownSaleVo.totalRebate,
+                    systemTotalDeposit = systemSaleVo.totalDeposit, systemCustomerFee = systemCustomerFee, systemCustomerScale = systemCustomerScale, systemTotalPromotion = systemSaleVo.totalPromotion,
+                    systemTotalRebate = systemSaleVo.totalRebate, systemTotalWithdraw = systemSaleVo.totalWithdraw, id = -1, day = startDate, createdTime = LocalDateTime.now())
+
+        }
+    }
+
+    override fun startSaleMonthReport(startDate: LocalDate): List<SaleMonthReport> {
+
+
+
+
     }
 
     override fun startClientPlatformReport(startDate: LocalDate): List<ClientPlatformDailyReport> {
