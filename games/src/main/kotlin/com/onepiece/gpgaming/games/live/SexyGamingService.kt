@@ -73,7 +73,7 @@ class SexyGamingService: PlatformService() {
         val mapUtil = this.startGetJson(clientToken = clientToken, method = "/wallet/getBalance", data = data)
 
 
-        return mapUtil.asMap("results").data.entries.first().value.toString().toBigDecimal()
+        return mapUtil.asList("results").first().asBigDecimal("balance")
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
