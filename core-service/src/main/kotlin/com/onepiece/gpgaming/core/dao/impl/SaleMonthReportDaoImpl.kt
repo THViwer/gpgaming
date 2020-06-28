@@ -18,15 +18,29 @@ class SaleMonthReportDaoImpl : BasicDaoImpl<SaleMonthReport>("sale_month_report"
             val saleId = rs.getInt("sale_id")
             val day = rs.getDate("day").toLocalDate()
             val saleUsername = rs.getString("sale_username")
+
+            val ownTotalDeposit = rs.getBigDecimal("own_total_deposit")
+            val ownTotalWithdraw = rs.getBigDecimal("own_total_withdraw")
+            val ownTotalPromotion = rs.getBigDecimal("own_total_promotion")
+            val ownTotalRebate = rs.getBigDecimal("own_total_rebate")
             val ownCustomerScale = rs.getBigDecimal("own_customer_scale")
             val ownCustomerFee = rs.getBigDecimal("own_customer_fee")
-            val systemCustomerScale = rs.getBigDecimal("own_customer_scale")
+
+            val systemTotalDeposit = rs.getBigDecimal("system_total_deposit")
+            val systemTotalWithdraw = rs.getBigDecimal("system_total_withdraw")
+            val systemTotalPromotion = rs.getBigDecimal("system_total_promotion")
+            val systemTotalRebate = rs.getBigDecimal("system_total_rebate")
+            val systemCustomerScale = rs.getBigDecimal("system_customer_scale")
             val systemCustomerFee = rs.getBigDecimal("system_customer_fee")
+
+
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             SaleMonthReport(id = id, bossId = bossId, clientId = clientId, saleId = saleId, day = day, saleUsername = saleUsername,
-                    ownCustomerScale = ownCustomerScale, ownCustomerFee = ownCustomerFee, systemCustomerScale = systemCustomerScale,
-                    systemCustomerFee = systemCustomerFee, createdTime = createdTime)
+                    ownTotalDeposit = ownTotalDeposit, ownTotalWithdraw = ownTotalWithdraw, ownTotalPromotion = ownTotalPromotion, ownTotalRebate = ownTotalRebate,
+                    ownCustomerFee = ownCustomerFee, ownCustomerScale = ownCustomerScale, systemCustomerFee = systemCustomerFee, systemCustomerScale = systemCustomerScale,
+                    systemTotalDeposit = systemTotalDeposit, systemTotalWithdraw = systemTotalWithdraw, systemTotalPromotion = systemTotalPromotion, systemTotalRebate = systemTotalRebate,
+                    createdTime = createdTime)
         }
 
     override fun batch(data: List<SaleMonthReport>) {
@@ -37,10 +51,22 @@ class SaleMonthReportDaoImpl : BasicDaoImpl<SaleMonthReport>("sale_month_report"
                 .set("sale_id")
                 .set("day")
                 .set("sale_username")
+
+                .set("own_total_deposit")
+                .set("own_total_withdraw")
+                .set("own_total_promotion")
+                .set("own_total_rebate")
                 .set("own_customer_scale")
                 .set("own_customer_fee")
+
+
+                .set("system_total_deposit")
+                .set("system_total_withdraw")
+                .set("system_total_promotion")
+                .set("system_total_rebate")
                 .set("system_customer_scale")
-                .set("system+customer_fee")
+                .set("system_customer_fee")
+
                 .execute { ps, entity ->
                     var x = 0
                     ps.setInt(++x, entity.bossId)
@@ -48,8 +74,18 @@ class SaleMonthReportDaoImpl : BasicDaoImpl<SaleMonthReport>("sale_month_report"
                     ps.setInt(++x, entity.saleId)
                     ps.setString(++x, entity.day.toString())
                     ps.setString(++x, entity.saleUsername)
+
+                    ps.setBigDecimal(++x, entity.ownTotalDeposit)
+                    ps.setBigDecimal(++x, entity.ownTotalWithdraw)
+                    ps.setBigDecimal(++x, entity.ownTotalPromotion)
+                    ps.setBigDecimal(++x, entity.ownTotalRebate)
                     ps.setBigDecimal(++x, entity.ownCustomerScale)
                     ps.setBigDecimal(++x, entity.ownCustomerFee)
+
+                    ps.setBigDecimal(++x, entity.systemTotalDeposit)
+                    ps.setBigDecimal(++x, entity.systemTotalWithdraw)
+                    ps.setBigDecimal(++x, entity.systemTotalPromotion)
+                    ps.setBigDecimal(++x, entity.systemTotalRebate)
                     ps.setBigDecimal(++x, entity.systemCustomerScale)
                     ps.setBigDecimal(++x, entity.systemCustomerFee)
                 }

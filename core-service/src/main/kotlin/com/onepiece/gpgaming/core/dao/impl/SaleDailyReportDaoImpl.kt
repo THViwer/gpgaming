@@ -35,12 +35,13 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
             val systemTotalRebate = rs.getBigDecimal("system_total_rebate")
             val systemCustomerScale = rs.getBigDecimal("system_customer_scale")
             val systemCustomerFee = rs.getBigDecimal("system_customer_fee")
+
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             SaleDailyReport(id = id, bossId = bossId, clientId = clientId, saleId = saleId, day = day, saleUsername = saleUsername,
                     ownTotalDeposit = ownTotalDeposit, ownTotalWithdraw = ownTotalWithdraw, ownTotalPromotion = ownTotalPromotion, ownTotalRebate = ownTotalRebate,
-                    ownCustomerFee = ownCustomerFee, ownCustomerScale = ownCustomerFee, systemCustomerFee = systemCustomerFee, systemCustomerScale = systemCustomerScale,
-                    systemTotalDeposit = ownTotalDeposit, systemTotalWithdraw = systemTotalWithdraw, systemTotalPromotion = systemTotalPromotion, systemTotalRebate = systemTotalRebate,
+                    ownCustomerFee = ownCustomerFee, ownCustomerScale = ownCustomerScale, systemCustomerFee = systemCustomerFee, systemCustomerScale = systemCustomerScale,
+                    systemTotalDeposit = systemTotalDeposit, systemTotalWithdraw = systemTotalWithdraw, systemTotalPromotion = systemTotalPromotion, systemTotalRebate = systemTotalRebate,
                     createdTime = createdTime)
         }
 
