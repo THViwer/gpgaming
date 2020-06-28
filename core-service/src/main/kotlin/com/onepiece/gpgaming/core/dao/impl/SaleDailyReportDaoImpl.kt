@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Repository
 class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"), SaleDailyReportDao {
@@ -128,14 +129,14 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
             group by boss_id, client_id, sale_id
         """.trimIndent()
 
-        jdbcTemplate.query(sql) { rs, _ ->
+        return jdbcTemplate.query(sql) { rs, _ ->
 
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val saleId = rs.getInt("sale_id")
             val saleUsername = rs.getString("sale_username")
             val ownTotalDeposit = rs.getBigDecimal("own_total_deposit")
-            val ownTotalSithdraw = rs.getBigDecimal("own_total_withdraw")
+            val ownTotalWithdraw = rs.getBigDecimal("own_total_withdraw")
             val ownTotalPromotion = rs.getBigDecimal("own_total_promotion")
             val ownTotalRebate = rs.getBigDecimal("own_total_rebate")
             val ownCustomerScale = rs.getBigDecimal("own_customer_scale")
@@ -148,9 +149,12 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
             val systemCustomerScale = rs.getBigDecimal("system_customer_scale")
             val systemCustomerFee = rs.getBigDecimal("system_customer_fee")
 
-            SaleMonthReport(bossId = bossId, clientId = clientId, saleId = saleId, saleUsername = saleUsername)
+            SaleMonthReport(bossId = bossId, clientId = clientId, saleId = saleId, saleUsername = saleUsername,
+                    ownTotalDeposit = ownTotalDeposit, ownTotalWithdraw = ownTotalWithdraw, ownTotalPromotion = ownTotalPromotion, ownTotalRebate = ownTotalRebate,
+                    ownCustomerScale = ownCustomerScale, ownCustomerFee = ownCustomerFee, systemCustomerScale = systemCustomerScale, systemCustomerFee = systemCustomerFee,
+                    systemTotalDeposit = systemTotalDeposit, systemTotalWithdraw = systemTotalWithdraw, systemTotalPromotion = systemTotalPromotion, systemTotalRebate = systemTotalRebate,
+                    id = -1, day = startDate, createdTime = LocalDateTime.now())
         }
-
 
     }
 }

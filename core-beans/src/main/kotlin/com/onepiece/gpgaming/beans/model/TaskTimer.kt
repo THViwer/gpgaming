@@ -55,6 +55,12 @@ enum class TaskTimerType {
     // 代理月报表
     AgentMonth,
 
+    // 电销日报表
+    SaleDaily,
+
+    // 电销月报表
+    SaleMonth,
+
 }
 
 enum class TaskTimerState {

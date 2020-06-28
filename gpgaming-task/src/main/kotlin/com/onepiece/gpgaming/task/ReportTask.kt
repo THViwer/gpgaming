@@ -1,6 +1,8 @@
 package com.onepiece.gpgaming.task
 
 import com.onepiece.gpgaming.beans.model.TaskTimerType
+import com.onepiece.gpgaming.core.dao.SaleDailyReportDao
+import com.onepiece.gpgaming.core.dao.SaleMonthReportDao
 import com.onepiece.gpgaming.core.service.AgentDailyReportService
 import com.onepiece.gpgaming.core.service.AgentMonthReportService
 import com.onepiece.gpgaming.core.service.ClientDailyReportService
@@ -18,6 +20,8 @@ class ReportTask(
         private val agentDailyReportService: AgentDailyReportService,
         private val agentMonthReportService: AgentMonthReportService,
         private val clientDailyReportService: ClientDailyReportService,
+        private val saleDailyReportDao: SaleDailyReportDao,
+        private val saleMonthReportDao: SaleMonthReportDao,
         private val reportService: ReportService,
 
         private val taskTimerService: TaskTimerService
@@ -78,16 +82,22 @@ class ReportTask(
         }
     }
 
-    //TODO 电销日报表
+    // 电销日报表
     fun startSaleReport(startDate: LocalDate) {
-
-
-
+        tryLock(localDate = startDate, type = TaskTimerType.SaleDaily) {
+            val data = reportService.startSaleReport(startDate)
+            saleDailyReportDao.batch(data = data)
+        }
     }
 
-    //TODO 电销月报表
+    // 电销月报表
     fun startSaleMonthReport(startDate: LocalDate) {
+        if (startDate.dayOfMonth != 1) return
 
+        tryLock(localDate = startDate, type = TaskTimerType.SaleMonth) {
+            val data = reportService.startSaleMonthReport(startDate)
+            saleMonthReportDao.batch(data = data)
+        }
     }
 
     // 代理日报表

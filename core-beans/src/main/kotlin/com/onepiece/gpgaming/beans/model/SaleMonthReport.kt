@@ -23,11 +23,35 @@ data class SaleMonthReport(
         // 电销用户名
         val saleUsername: String,
 
+        // 总充值
+        val ownTotalDeposit: BigDecimal,
+
+        // 总取款
+        val ownTotalWithdraw: BigDecimal,
+
+        // 总优惠
+        val ownTotalPromotion: BigDecimal,
+
+        // 总返水
+        val ownTotalRebate: BigDecimal,
+
         // 自己的顾客佣金比例
         val ownCustomerScale: BigDecimal,
 
         // 自己的顾客佣金
         val ownCustomerFee: BigDecimal,
+
+        // 总充值
+        val systemTotalDeposit: BigDecimal,
+
+        // 总取款
+        val systemTotalWithdraw: BigDecimal,
+
+        // 总优惠
+        val systemTotalPromotion: BigDecimal,
+
+        // 总返水
+        val systemTotalRebate: BigDecimal,
 
         // 系统佣金比例
         val systemCustomerScale: BigDecimal,

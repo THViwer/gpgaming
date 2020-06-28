@@ -24,6 +24,7 @@ import com.onepiece.gpgaming.core.dao.LevelDao
 import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.dao.OtherPlatformReportDao
+import com.onepiece.gpgaming.core.dao.SaleDailyReportDao
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
 import com.onepiece.gpgaming.core.dao.TransferReportQuery
 import com.onepiece.gpgaming.core.service.BetOrderService
@@ -48,7 +49,8 @@ class ReportServiceImpl(
         private val commissionService: CommissionService,
         private val otherPlatformReportDao: OtherPlatformReportDao,
         private val memberDailyReportDao: MemberDailyReportDao,
-        private val waiterService: WaiterService
+        private val waiterService: WaiterService,
+        private val saleDailyReportDao: SaleDailyReportDao
 ) : ReportService {
 
     private val log = LoggerFactory.getLogger(ReportServiceImpl::class.java)
@@ -304,10 +306,8 @@ class ReportServiceImpl(
     }
 
     override fun startSaleMonthReport(startDate: LocalDate): List<SaleMonthReport> {
-
-
-
-
+        val endDate = startDate.plusMonths(1)
+        return saleDailyReportDao.collect(startDate = startDate, endDate = endDate)
     }
 
     override fun startClientPlatformReport(startDate: LocalDate): List<ClientPlatformDailyReport> {
