@@ -35,6 +35,8 @@ class DemoController(
             "agent" ->  reportService.startAgentReport(startDate = startDate)
             "agentMonth" ->  reportService.startAgentMonthReport(today = startDate)
             "client" -> reportService.startClientReport(startDate = startDate)
+            "sale" -> reportService.startSaleReport(startDate = startDate)
+            "saleMonth" -> reportService.startSaleMonthReport(startDate = startDate)
             else -> error("参数error")
         }
     }

@@ -46,7 +46,8 @@ class ReportTask(
         this.startSaleReport(startDate = localDate)
 
         this.startSaleMonthReport(startDate = localDate)
-//        this.startClientPlatformReport(localDate)
+
+        this.startClientPlatformReport(localDate)
 
         this.startClientReport(startDate = localDate)
     }
