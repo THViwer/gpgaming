@@ -1,21 +1,27 @@
 package com.onepiece.gpgaming.player.jwt
 
+import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
+import com.onepiece.gpgaming.core.service.MemberInfoService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.scheduling.annotation.Async
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.filter.OncePerRequestFilter
+import java.time.LocalDate
+import java.time.ZoneId
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class JwtAuthenticationTokenFilter(
+open class JwtAuthenticationTokenFilter(
 //        val userDetailsService: UserDetailsService,
         private val jwtTokenUtil: JwtTokenUtil,
         private val tokenStore: TokenStore,
-        private val passwordEncoder: PasswordEncoder
+        private val passwordEncoder: PasswordEncoder,
+        private val memberInfoService: MemberInfoService
 ) : OncePerRequestFilter() {
 
     private val log = LoggerFactory.getLogger(JwtAuthenticationTokenFilter::class.java)
@@ -43,6 +49,8 @@ class JwtAuthenticationTokenFilter(
                     authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
 //                    logger.info("authenticated user $authToken, setting security context")
                     SecurityContextHolder.getContext().authentication = authentication
+
+                    this.refreshToken(user = userDetails)
                 }
             }
         }
@@ -50,6 +58,24 @@ class JwtAuthenticationTokenFilter(
 //        this.validHash(request = request)
 
         chain.doFilter(request, response)
+    }
+
+    @Async
+    open fun refreshToken(user: JwtUser) {
+
+        val produceDate = user.produceDate
+
+        val localDate = produceDate.toInstant().atZone(ZoneId.of("Asia/Shanghai")).toLocalDate()
+
+        val redisKey = "tokenToLogin:${LocalDate.now()}:${user.id}"
+        val isExist = tokenStore.redisService.get(redisKey, Int::class.java)
+
+        if (localDate != LocalDate.now() && isExist != null) {
+            val infoUo = MemberInfoValue.MemberInfoUo.ofLogin(memberId = user.id)
+            memberInfoService.asyncUpdate(uo = infoUo)
+
+            tokenStore.redisService.put(key = redisKey, value = 1, timeout = 86400)
+        }
     }
 
     private fun validHash(request: HttpServletRequest) {

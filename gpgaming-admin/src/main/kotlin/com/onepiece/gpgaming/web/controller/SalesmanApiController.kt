@@ -126,7 +126,7 @@ class SalesmanApiController(
         }
     }
 
-    @PostMapping("/saleLog")
+    @GetMapping("/saleLog")
     override fun saleLogList(
             @RequestParam("saleId", required = false) saleId: Int?,
             @RequestParam("memberId") memberId: Int

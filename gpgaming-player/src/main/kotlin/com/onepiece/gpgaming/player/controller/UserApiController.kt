@@ -9,8 +9,10 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
+import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.core.service.LevelService
+import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.value.ChangePwdReq
@@ -42,6 +44,7 @@ class UserApiController(
         private val memberService: MemberService,
         private val authService: AuthService,
         private val levelService: LevelService,
+        private val memberInfoService: MemberInfoService,
         private val passwordEncoder: PasswordEncoder
 ) : BasicController(), UserApi {
 
@@ -93,8 +96,6 @@ class UserApiController(
                     domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = false)
         }
     }
-
-
 
     @PostMapping("/login_from_admin")
     override fun login(@RequestBody req: LoginByAdminReq): LoginByAdminResponse {

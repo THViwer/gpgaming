@@ -6,6 +6,8 @@ import com.onepiece.gpgaming.core.dao.basic.BasicDao
 
 interface MemberInfoDao: BasicDao<MemberInfo> {
 
+    fun has(memberId: Int): MemberInfo?
+
     fun create(co: MemberInfoValue.MemberInfoCo): Boolean
 
     fun update(uo: MemberInfoValue.MemberInfoUo): Boolean

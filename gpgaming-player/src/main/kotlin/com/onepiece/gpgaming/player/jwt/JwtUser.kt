@@ -19,16 +19,13 @@ data class JwtUser(
         val id: Int,
 
         val name: String,
-//        val level: String,
-//        val memberEndTime: LocalDateTime?,
 
         val musername: String,
 
         val mpassword: String,
 
-        val lastPasswordResetDate: Date
+        val produceDate: Date
 
-//        val platformMembers: List<PlatformMemberVo>
 ) : UserDetails {
 
     data class PlatformMemberVo (

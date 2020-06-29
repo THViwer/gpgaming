@@ -47,6 +47,13 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
                     lastSaleTime = lastSaleTime, saleCount = saleCount)
         }
 
+
+    override fun has(memberId: Int): MemberInfo? {
+        return query()
+                .where("member_id", memberId)
+                .executeMaybeOne(mapper)
+    }
+
     override fun create(co: MemberInfoValue.MemberInfoCo): Boolean {
         return insert()
                 .set("boss_id", co.bossId)
