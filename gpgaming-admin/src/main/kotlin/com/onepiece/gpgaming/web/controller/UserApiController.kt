@@ -73,7 +73,7 @@ class UserApiController(
             } catch (e: Exception) {
                 null
             }
-        }?.let {
+        } ?: let {
 
             try {
                 val waiter = waiterService.login(loginValue)
@@ -87,7 +87,7 @@ class UserApiController(
             } catch (e: Exception) {
                 null
             }
-        } ?: error("login failed")
+        } ?: error(OnePieceExceptionCode.LOGIN_FAIL)
     }
 
     private fun superAdmin(req: LoginReq, clientId: Int): LoginResp {
