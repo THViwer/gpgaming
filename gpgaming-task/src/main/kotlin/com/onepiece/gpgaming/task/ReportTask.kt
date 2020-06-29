@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.core.dao.SaleMonthReportDao
 import com.onepiece.gpgaming.core.service.AgentDailyReportService
 import com.onepiece.gpgaming.core.service.AgentMonthReportService
 import com.onepiece.gpgaming.core.service.ClientDailyReportService
+import com.onepiece.gpgaming.core.service.ClientPlatformDailyReportService
 import com.onepiece.gpgaming.core.service.MemberDailyReportService
 import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.core.service.TaskTimerService
@@ -23,6 +24,7 @@ class ReportTask(
         private val saleDailyReportDao: SaleDailyReportDao,
         private val saleMonthReportDao: SaleMonthReportDao,
         private val reportService: ReportService,
+        private val clientPlatformDailyReportService: ClientPlatformDailyReportService,
 
         private val taskTimerService: TaskTimerService
 ) {
@@ -122,12 +124,12 @@ class ReportTask(
     }
 
 //    // 厅主平台日报表
-/*    fun startClientPlatformReport(startDate: LocalDate) {
+    fun startClientPlatformReport(startDate: LocalDate) {
         tryLock(localDate = startDate, type = TaskTimerType.ClientPlatformDaily) {
             val data = reportService.startClientPlatformReport(startDate= startDate)
             clientPlatformDailyReportService.create(data)
         }
-    }*/
+    }
 
     // 厅主报表
     fun startClientReport(startDate: LocalDate) {
