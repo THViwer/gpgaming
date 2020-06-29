@@ -1,13 +1,19 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.model.SaleDailyReport
+import com.onepiece.gpgaming.beans.model.SaleLog
 import com.onepiece.gpgaming.beans.model.SaleMonthReport
 import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
+import com.onepiece.gpgaming.beans.value.database.SaleLogValue
 import com.onepiece.gpgaming.beans.value.internet.web.SalesmanValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseStatus
 import java.math.BigDecimal
 import java.time.LocalDate
 
@@ -40,6 +46,19 @@ interface SalesmanApi {
             @RequestParam("saleCountMax", required = false) saleCountMax: Int?,
             @RequestParam("sortBy", required = false, defaultValue = "0") sortBy: Int
     ): List<MemberInfoValue.MemberInfoVo>
+
+    @ApiOperation(tags = ["sale"], value = "电销 -> 记录列表")
+    fun saleLogList(
+            @RequestParam("saleId", required = false) saleId: Int?,
+            @RequestParam("memberId") memberId: Int
+    ): List<SaleLog>
+
+    @ApiOperation(tags = ["sale"], value = "电销 -> 记录")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun saleLog(
+            @RequestParam("saleId", required = false) saleId: Int?,
+            @RequestBody saleLogCo: SaleLogValue.SaleLogCo
+    )
 
     @ApiOperation(tags = ["sale"], value = "电销 -> 月报表")
     fun monthReport(
