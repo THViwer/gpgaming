@@ -18,6 +18,9 @@ sealed class SaleDailyReportValue {
             // 电销Id
             val saleId: Int? = null,
 
+            // 电销用户名
+            val saleUsername: String? = null,
+
             // 开始日期
             val startDate: LocalDate,
 

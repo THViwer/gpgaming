@@ -39,6 +39,7 @@ import com.onepiece.gpgaming.core.service.MemberBankService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
+import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
 import com.onepiece.gpgaming.games.GameApi
@@ -52,7 +53,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.RequestContextHolder
@@ -74,6 +74,7 @@ class MemberApiController(
         private val memberBankService: MemberBankService,
         private val payOrderService: PayOrderService,
         private val clientService: ClientService,
+        private val waiterService: WaiterService,
 
         private val depositDao: DepositDao,
         private val withdrawDao: WithdrawDao,
@@ -132,16 +133,22 @@ class MemberApiController(
                 .map { it.id to it }
                 .toMap()
 
+        val sales = waiterService.findClientWaiters(clientId = clientId).filter { it.role == Role.Sale }
+        val saleMap = sales.map { it.id to it }.toMap()
+
         val data = page.data.map {
 
             val agent = agentMap[it.agentId]
             val (agentId, agentUsername) = (agent?.id?: -1) to (agent?.username?: "-")
 
+            val sale = saleMap[it.saleId]
+            val saleUsername = sale?.username ?: "-"
+
             with(it) {
                 MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name ?: "error level",
                         balance = memberMap[it.id]?.balance ?: BigDecimal.valueOf(-1), status = it.status, createdTime = createdTime,
                         loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteCode = it.promoteCode,
-                        country = client.country, agentId = agentId, agentUsername = agentUsername)
+                        country = client.country, agentId = agentId, agentUsername = agentUsername, saleId = it.saleId, saleUsername = saleUsername)
             }
         }
 
@@ -298,7 +305,7 @@ class MemberApiController(
         check(member.clientId == clientId) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
         val memberUo = MemberUo(id = memberUoReq.id, levelId = memberUoReq.levelId, password = memberUoReq.password,
-                status = memberUoReq.status, name = memberUoReq.name, phone = memberUoReq.phone)
+                status = memberUoReq.status, name = memberUoReq.name, phone = memberUoReq.phone, saleId = memberUoReq.saleId)
         memberService.update(memberUo)
     }
 

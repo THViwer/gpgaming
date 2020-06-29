@@ -6,14 +6,18 @@ import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Member
+import com.onepiece.gpgaming.beans.value.database.LoginHistoryValue
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
+import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.database.WalletCo
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.dao.MemberRelationDao
+import com.onepiece.gpgaming.core.service.LoginHistoryService
+import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.core.service.WalletService
@@ -30,7 +34,9 @@ class MemberServiceImpl(
         private val redisService: RedisService,
         private val bCryptPasswordEncoder: BCryptPasswordEncoder,
         private val memberRelationDao: MemberRelationDao,
-        private val waiterService: WaiterService
+        private val waiterService: WaiterService,
+        private val memberInfoService: MemberInfoService,
+        private val loginHistoryService: LoginHistoryService
 ) : MemberService {
 
     override fun getAgentByCode(bossId: Int, clientId: Int, code: String): Member? {
@@ -108,6 +114,15 @@ class MemberServiceImpl(
         val memberUo = MemberUo(id = member.id, loginIp = loginValue.ip, loginTime = LocalDateTime.now())
         this.update(memberUo)
 
+        // 更新会员信息
+        val infoUo = MemberInfoValue.MemberInfoUo.ofLogin(memberId = member.id)
+        memberInfoService.asyncUpdate(uo = infoUo)
+
+        // 登陆历史
+        val historyCo = LoginHistoryValue.LoginHistoryCo(bossId = member.bossId, clientId = member.clientId, userId = member.id,
+                role = Role.Member, ip = loginValue.ip, country = "")
+        loginHistoryService.create(historyCo)
+
         return member.copy(password = "")
     }
 
@@ -167,6 +182,11 @@ class MemberServiceImpl(
         val walletCo = WalletCo(clientId = memberCo.clientId, memberId = id)
         walletService.create(walletCo)
 
+        // 创建会员信息
+        val memberInfoCo = MemberInfoValue.MemberInfoCo(bossId = memberCo.bossId, clientId = memberCo.clientId, agentId = memberCo.agentId, saleId = saleId,
+                memberId = id, username = memberCo.username)
+        memberInfoService.create(memberInfoCo)
+
         return id
 
         // 创建代理关系
@@ -198,6 +218,12 @@ class MemberServiceImpl(
 
         val state = memberDao.update(memberUo.copy(password = password))
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        // 修改电销Id
+        if (memberUo.saleId != null) {
+            val infoUo = MemberInfoValue.MemberInfoUo.ofUpdateSale(memberId = member.id, saleId = memberUo.saleId!!)
+            memberInfoService.asyncUpdate(uo = infoUo)
+        }
 
         redisService.delete(OnePieceRedisKeyConstant.member(memberUo.id))
     }

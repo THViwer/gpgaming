@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigDecimal
 
@@ -34,14 +35,16 @@ class WaiterApiController(
 ) : BasicController(), WaiterApi {
 
     @GetMapping
-    override fun query(): List<WaiterVo> {
+    override fun query(
+            @RequestParam("role", required = false, defaultValue = "Waiter") role: Role
+    ): List<WaiterVo> {
         val clientId = getClientId()
 
         val clientBanks = clientBankService.findClientBank(clientId)
                 .map { it.id to it }
                 .toMap()
 
-        return waiterService.findClientWaiters(clientId).map {
+        return waiterService.findClientWaiters(clientId).filter { role == it.role }.map {
             with(it) {
                 val clientBankVoList = it.clientBanks?.filter { bid -> clientBanks.containsKey(bid) }?.map {  bankId ->
                     val clientBank = clientBanks[bankId]!!

@@ -221,6 +221,12 @@ data class MemberVo(
         @ApiModelProperty("代理用户名")
         val agentUsername: String = "-",
 
+        @ApiModelProperty("电销Id")
+        val saleId: Int,
+
+        @ApiModelProperty("电销用户名")
+        val saleUsername: String,
+
         @ApiModelProperty("国家")
         val country: Country,
 
@@ -319,6 +325,9 @@ data class MemberUoReq(
 
         @ApiModelProperty("id")
         val id: Int,
+
+        @ApiModelProperty("电销Id")
+        val saleId: Int?,
 
         @ApiModelProperty("姓名")
         val name: String?,

@@ -18,6 +18,8 @@ sealed class SaleMonthReportValue {
             // 电销Id
             val saleId: Int? = null,
 
+            val saleUsername: String? = null,
+
             // 开始日期
             val startDate: LocalDate,
 

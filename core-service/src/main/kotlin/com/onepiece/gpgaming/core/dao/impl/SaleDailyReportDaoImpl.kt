@@ -100,6 +100,7 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
                 .where("client_id", query.clientId)
                 .where("member_id", query.memberId)
                 .where("sale_id", query.saleId)
+                .where("sale_username", query.saleUsername)
                 .asWhere("day >= ?", query.startDate)
                 .asWhere("day < ?", query.endDate)
                 .execute(mapper)

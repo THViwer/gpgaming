@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.RecommendedType
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Client
@@ -17,6 +18,7 @@ import com.onepiece.gpgaming.beans.value.database.ClientLoginValue
 import com.onepiece.gpgaming.beans.value.database.ClientUo
 import com.onepiece.gpgaming.beans.value.database.I18nContentCo
 import com.onepiece.gpgaming.beans.value.database.LevelValue
+import com.onepiece.gpgaming.beans.value.database.LoginHistoryValue
 import com.onepiece.gpgaming.beans.value.database.RecommendedValue
 import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
@@ -26,6 +28,7 @@ import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.LevelService
+import com.onepiece.gpgaming.core.service.LoginHistoryService
 import com.onepiece.gpgaming.core.service.RecommendedService
 import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,7 +49,8 @@ class ClientServiceImpl(
         private val bannerService: BannerService,
         private val redisService: RedisService,
         private val recommendedService: RecommendedService,
-        private val objectMapper: ObjectMapper
+        private val objectMapper: ObjectMapper,
+        private val loginHistoryService: LoginHistoryService
 
 ) : ClientService {
 
@@ -81,6 +85,9 @@ class ClientServiceImpl(
         // update client
         val clientUo = ClientUo(id = client.id, ip = loginValue.ip, loginTime = LocalDateTime.now(), name = null, logo = null, shortcutLogo = null)
         this.update(clientUo)
+
+        val historyCo = LoginHistoryValue.LoginHistoryCo(bossId = client.bossId, clientId = client.id, userId = client.id, ip = loginValue.ip, role = Role.Client)
+        loginHistoryService.create(historyCo)
 
         return client.copy(password = "")
     }

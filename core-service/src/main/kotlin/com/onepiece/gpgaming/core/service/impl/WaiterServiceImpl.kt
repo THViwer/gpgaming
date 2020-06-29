@@ -5,9 +5,11 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Waiter
 import com.onepiece.gpgaming.beans.value.database.ClientLoginValue
+import com.onepiece.gpgaming.beans.value.database.LoginHistoryValue
 import com.onepiece.gpgaming.beans.value.database.PermissionUo
 import com.onepiece.gpgaming.beans.value.database.WaiterValue
 import com.onepiece.gpgaming.core.dao.WaiterDao
+import com.onepiece.gpgaming.core.service.LoginHistoryService
 import com.onepiece.gpgaming.core.service.PermissionService
 import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.utils.RedisService
@@ -20,7 +22,8 @@ class WaiterServiceImpl(
         private val waiterDao: WaiterDao,
         private val permissionService: PermissionService,
         private val bCryptPasswordEncoder: BCryptPasswordEncoder,
-        private val redisService: RedisService
+        private val redisService: RedisService,
+        private val loginHistoryService: LoginHistoryService
 ) : WaiterService {
 
     override fun all(role: Role?): List<Waiter> {
@@ -46,6 +49,9 @@ class WaiterServiceImpl(
         // update client
         val waiterUo = WaiterValue.WaiterUo(id = waiter.id, loginIp = loginValue.ip, loginTime = LocalDateTime.now(), clientBankData = null)
         this.update(waiterUo)
+
+        val historyCo = LoginHistoryValue.LoginHistoryCo(bossId = waiter.bossId, clientId = waiter.id, userId = waiter.id, ip = loginValue.ip, role = waiter.role)
+        loginHistoryService.create(historyCo)
 
         return waiter.copy(password = "")
     }

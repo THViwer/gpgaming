@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.value.internet.web.PermissionValue
 import com.onepiece.gpgaming.beans.value.internet.web.WaiterCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.WaiterUoReq
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
 
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.ResponseStatus
 interface WaiterApi {
 
     @ApiOperation(tags = ["user"], value = "客服 -> 列表")
-    fun query(): List<WaiterVo>
+    fun query(
+            @RequestParam("role", required = false, defaultValue = "Waiter") role: Role
+    ): List<WaiterVo>
 
     @ApiOperation(tags = ["user"], value = "客服 -> 创建")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)

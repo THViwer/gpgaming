@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.core.service.impl
 import com.onepiece.gpgaming.beans.enums.WalletEvent
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Wallet
+import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
 import com.onepiece.gpgaming.beans.value.database.WalletCo
 import com.onepiece.gpgaming.beans.value.database.WalletDepositUo
 import com.onepiece.gpgaming.beans.value.database.WalletFreezeUo
@@ -14,6 +15,7 @@ import com.onepiece.gpgaming.beans.value.database.WalletUo
 import com.onepiece.gpgaming.beans.value.database.WalletWithdrawUo
 import com.onepiece.gpgaming.core.dao.WalletDao
 import com.onepiece.gpgaming.core.dao.WalletNoteDao
+import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.WalletService
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -21,7 +23,8 @@ import java.math.BigDecimal
 @Service
 class WalletServiceImpl(
         private val walletDao: WalletDao,
-        private val walletNoteDao: WalletNoteDao
+        private val walletNoteDao: WalletNoteDao,
+        private val memberInfoService: MemberInfoService
 ) : WalletService {
 
     override fun getMemberWallet(memberId: Int): Wallet {
@@ -107,8 +110,17 @@ class WalletServiceImpl(
             }
 
         }
-
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        // 更新会员信息
+        if (walletUo.event == WalletEvent.DEPOSIT || walletUo.event == WalletEvent.ThirdPay) {
+            val infoUo = MemberInfoValue.MemberInfoUo.ofDeposit(memberId = walletUo.memberId, amount = walletUo.money)
+            memberInfoService.asyncUpdate(uo = infoUo)
+        } else if (walletUo.event == WalletEvent.WITHDRAW) {
+            val infoUo = MemberInfoValue.MemberInfoUo.ofWithdraw(memberId = walletUo.memberId, amount = walletUo.money)
+            memberInfoService.asyncUpdate(uo = infoUo)
+        }
+
 
         // TODO async insert wallet note
         val walletNoteCo = WalletNoteCo(clientId = walletUo.clientId, memberId = wallet.memberId, event = walletUo.event, remarks = walletUo.remarks,
