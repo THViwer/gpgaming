@@ -72,11 +72,11 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
 
                 .asSet("total_deposit = total_deposit + ${uo.deposit}")
                 .set("last_deposit_time", uo.depositTime)
-                .asSet("deposit_count = deposit_count + ${uo.depositCount}")
+                .asSet("total_deposit_count = total_deposit_count + ${uo.depositCount}")
 
                 .asSet("total_withdraw = total_withdraw + ${uo.withdraw}")
                 .set("last_deposit_time", uo.withdrawTime)
-                .asSet("withdraw_count = withdraw_count + ${uo.withdrawCount}")
+                .asSet("total_withdraw_count = total_withdraw_count + ${uo.withdrawCount}")
 
 
                 .set("last_login_time", uo.lastLoginTime)

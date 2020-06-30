@@ -16,6 +16,7 @@ import com.onepiece.gpgaming.core.dao.SaleMonthReportDao
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.SaleLogService
+import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
@@ -34,7 +35,8 @@ class SalesmanApiController(
         private val saleDailyReportDao: SaleDailyReportDao,
         private val memberService: MemberService,
         private val memberInfoService: MemberInfoService,
-        private val saleLogService: SaleLogService
+        private val saleLogService: SaleLogService,
+        private val waiterService: WaiterService
 ): BasicController(), SalesmanApi {
 
     @GetMapping("/info")
@@ -52,7 +54,7 @@ class SalesmanApiController(
             current.id < 10000 -> "0${current.id}"
             else -> "${current.id}"
         }
-        val saleLink = "https://www.${webSite.domain}/saleCode=$"
+        val saleLink = "https://www.${webSite.domain}/saleCode=${saleCode}"
 
         return SalesmanValue.SaleInfo(name = current.username, saleCode = saleCode, saleLink = saleLink)
     }
@@ -109,13 +111,17 @@ class SalesmanApiController(
         val members = memberService.list(memberQuery)
         val memberMap = members.map { it.id to it }.toMap()
 
+        // 电销人员列表
+        val sales = waiterService.findClientWaiters(clientId = current.clientId).filter { it.role == Role.Sale }
+        val saleMap = sales.map { it.id to it }.toMap()
+
         // 返回数据
         return infoList.map { info ->
             val member = memberMap[info.memberId]
             val phone = member?.phone ?: "-"
             val name = member?.name ?: "-"
 
-            val sale = memberMap[info.saleId]
+            val sale = saleMap[info.saleId]
             val saleUsername = sale?.username ?: "-"
 
             MemberInfoValue.MemberInfoVo(saleId = info.saleId, saleUsername = saleUsername, memberId = info.memberId, username = info.username,
@@ -135,7 +141,7 @@ class SalesmanApiController(
 
         val tSaleId = saleId ?: current.id
 
-        val query = SaleLogValue.SaleLogQuery(bossId = current.bossId, clientId = current.bossId, saleId = tSaleId, memberId = memberId)
+        val query = SaleLogValue.SaleLogQuery(bossId = current.bossId, clientId = current.clientId, saleId = tSaleId, memberId = memberId)
         return saleLogService.list(query)
     }
 
@@ -155,8 +161,8 @@ class SalesmanApiController(
     @GetMapping("/report/month")
     override fun monthReport(
             @RequestParam("saleUsername", required = false) saleUsername: String?,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
     ): List<SaleMonthReport> {
         val current = this.current()
 
@@ -170,8 +176,8 @@ class SalesmanApiController(
     @GetMapping("/report/daily")
     override fun dailyReport(
             @RequestParam("saleUsername", required = false) saleUsername: String?,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
     ): List<SaleDailyReport> {
 
         val current = this.current()

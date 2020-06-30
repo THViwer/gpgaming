@@ -128,7 +128,7 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
                 sum(system_customer_fee) system_customer_fee
             from sale_daily_report 
             where day >= '$startDate' and day < '$endDate' 
-            group by boss_id, client_id, sale_id
+            group by boss_id, client_id, sale_id, sale_username;
         """.trimIndent()
 
         return jdbcTemplate.query(sql) { rs, _ ->

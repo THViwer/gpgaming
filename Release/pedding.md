@@ -7,13 +7,14 @@ ALTER TABLE member_daily_report ADD sale_id Int not null default -1;
 ALTER TABLE waiter ADD role varchar(20) not null default 'Waiter';
 ALTER TABLE waiter ADD own_customer_scale DECIMAL(10,2) not null default 0;
 ALTER TABLE waiter ADD system_customer_scale DECIMAL(10,2) not null default 0;
-
+ALTER TABLE member_daily_report ADD sale_scope VARCHAR(20) not null default 'System';
 
 
 CREATE TABLE `member_info` (
   `member_id` int(11) unsigned NOT NULL,
   `boss_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
+  `agent_id` int(11) NOT NULL,
   `sale_id` int(11) NOT NULL,
   `username` varchar(64) NOT NULL DEFAULT '',
   `total_deposit` decimal(10,2) NOT NULL DEFAULT '0.00',
@@ -27,6 +28,8 @@ CREATE TABLE `member_info` (
   `login_count` int(11) NOT NULL DEFAULT '0',
   `last_sale_time` timestamp NULL DEFAULT NULL,
   `sale_count` int(11) NOT NULL DEFAULT '0',
+  `status` varchar(20) NOT NULL DEFAULT 'Normal',
+  `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

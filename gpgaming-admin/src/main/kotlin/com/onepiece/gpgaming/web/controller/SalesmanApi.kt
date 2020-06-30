@@ -63,15 +63,15 @@ interface SalesmanApi {
     @ApiOperation(tags = ["sale"], value = "电销 -> 月报表")
     fun monthReport(
             @RequestParam("saleUsername", required = false) saleUsername: String?,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
     ): List<SaleMonthReport>
 
     @ApiOperation(tags = ["sale"], value = "电销 -> 日报表")
     fun dailyReport(
             @RequestParam("saleUsername", required = false) saleUsername: String?,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
     ): List<SaleDailyReport>
 
 }

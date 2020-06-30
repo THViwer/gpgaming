@@ -64,7 +64,7 @@ class UserApiController(
         return let {
             try {
                 val client = clientService.login(loginValue)
-                val permissions = PermissionType.values().map { it.resourceId }.plus("-1")
+                val permissions = PermissionType.values().map { it.resourceId }.plus("-1").filter { it != PermissionType.SALE_MANAGER.resourceId }
 
                 val authUser = authService.login(bossId = client.bossId, id = client.id, role = Role.Client, username = client.username, mAuthorities = permissions)
 
@@ -78,11 +78,14 @@ class UserApiController(
             try {
                 val waiter = waiterService.login(loginValue)
 
-                val permissions = permissionService.findWaiterPermissions(waiterId = waiter.id).permissions.filter { it.effective }.map { it.resourceId }
+                val permissions = when (waiter.role) {
+                    Role.Sale -> listOf(PermissionType.SALE_MANAGER.resourceId)
+                    else -> permissionService.findWaiterPermissions(waiterId = waiter.id).permissions.filter { it.effective }.map { it.resourceId }
+                }
 
-                val authUser = authService.login(bossId = waiter.bossId, id = waiter.id, role = Role.Waiter, username = waiter.username, mAuthorities = permissions)
+                val authUser = authService.login(bossId = waiter.bossId, id = waiter.id, role = waiter.role, username = waiter.username, mAuthorities = permissions)
 
-                LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = Role.Waiter,
+                LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = waiter.role,
                         token = authUser.token, permissions = permissions, main = currentClient.main)
             } catch (e: Exception) {
                 null

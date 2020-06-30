@@ -54,6 +54,8 @@ class DemoController(
                 reportTask.startAgentReport(startDate)
                 reportTask.startAgentMonthReport(startDate)
                 reportTask.startClientReport(startDate)
+                reportTask.startSaleReport(startDate)
+                reportTask.startSaleMonthReport(startDate)
             }
             "member" -> reportTask.startMemberReport(startDate)
             "agent" -> reportTask.startAgentReport(startDate)
@@ -61,6 +63,8 @@ class DemoController(
             "client" -> reportTask.startClientReport(startDate)
             "rebate" -> rebateTask.start()
             "commission" -> rebateTask.startAgentCommission()
+            "sale" -> reportTask.startSaleReport(startDate)
+            "saleMonth" -> reportTask.startSaleMonthReport(startDate)
         }
 
         return "success"

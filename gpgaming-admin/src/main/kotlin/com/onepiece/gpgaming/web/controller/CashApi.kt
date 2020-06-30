@@ -18,6 +18,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.WalletNoteValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+@Api(tags = ["cash"], description = "现金系统")
 interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "银行列表")

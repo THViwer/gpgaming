@@ -54,7 +54,7 @@ sealed class MemberInfoValue {
             val lastLoginTime: LocalDateTime? = null,
 
             // 登陆次数
-            val loginCount: Int? = null,
+            val loginCount: Int = 0,
 
             // 电销信息
             val lastSaleTime: LocalDateTime? = null,

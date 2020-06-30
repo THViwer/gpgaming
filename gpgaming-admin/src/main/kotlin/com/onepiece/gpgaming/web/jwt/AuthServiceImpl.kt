@@ -35,7 +35,7 @@ class AuthServiceImpl(
 
         val clientId = when (role) {
             Role.Client -> id
-            Role.Waiter -> {
+            Role.Waiter, Role.Sale -> {
                 val waiter = waiterService.get(id)
                 waiter.clientId
             }

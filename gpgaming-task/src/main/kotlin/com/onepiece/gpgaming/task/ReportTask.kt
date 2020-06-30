@@ -102,8 +102,10 @@ class ReportTask(
     fun startSaleMonthReport(startDate: LocalDate) {
         if (startDate.dayOfMonth != 1) return
 
+        val month = startDate.minusMonths(1)
+
         tryLock(localDate = startDate, type = TaskTimerType.SaleMonth) {
-            val data = reportService.startSaleMonthReport(startDate)
+            val data = reportService.startSaleMonthReport(startDate = month)
             saleMonthReportDao.batch(data = data)
         }
     }

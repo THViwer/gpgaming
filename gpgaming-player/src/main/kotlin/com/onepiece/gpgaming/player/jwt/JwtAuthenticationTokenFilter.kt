@@ -60,7 +60,7 @@ open class JwtAuthenticationTokenFilter(
         chain.doFilter(request, response)
     }
 
-    @Async
+//    @Async
     open fun refreshToken(user: JwtUser) {
 
         val produceDate = user.produceDate

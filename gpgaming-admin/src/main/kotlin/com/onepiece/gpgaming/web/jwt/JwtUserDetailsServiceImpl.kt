@@ -23,19 +23,21 @@ class JwtUserDetailsServiceImpl(
 
         val mainClient = clientService.getMainClient(bossId = bossId.toInt())!!
 
-
-        val permissions = if (role == Role.Admin.name) {
-            PermissionType.values().map { it.resourceId }
-        } else {
-            permissionService.findWaiterPermissions(currentUserId.toInt()).permissions.filter { it.effective }.map { it.resourceId }.plus("-1")
-        }.let {
-            if (mainClient.id == clientId.toInt()) it else it.filter { x -> x != PermissionType.AGENT_MANAGER.resourceId }
-        }.let {
-            if (mUsername == "mUsername") {
-                it.plus("2800")
-            } else {
-                it
+        val defaultPermissions = PermissionType.values()
+        val permissions = when {
+            mUsername == "super_admin" -> defaultPermissions.map { it.resourceId }
+            role == Role.Admin.name -> defaultPermissions.filter { it.resourceId != PermissionType.CASH_THIRD_PAY_SETTING.resourceId }.map { it.resourceId }
+            role == Role.Waiter.name -> {
+                permissionService.findWaiterPermissions(currentUserId.toInt())
+                        .permissions
+                        .filter { it.effective }.map { it.resourceId }
+                        .plus("-1")
+                        .filter { it != PermissionType.SALE_MANAGER.resourceId }
             }
+            role == Role.Sale.name -> {
+                listOf(PermissionType.SALE_MANAGER.resourceId)
+            }
+            else -> error("401")
         }
 
         return JwtUser(id = currentUserId.toInt(), musername = mUsername, mpassword = passwordEncoder.encode(mUsername),

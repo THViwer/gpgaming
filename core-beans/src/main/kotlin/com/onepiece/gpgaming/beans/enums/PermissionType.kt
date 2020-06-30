@@ -24,7 +24,7 @@ enum class PermissionType(
     CASH_ARTIFICIAL("2000", "2500", "人工提存", "人工提存"),
     CASH_BANK_MANAGER("2000", "2600", "银行卡管理", "银行卡管理"),
     CASH_TRANSFER_ORDER("2000", "2700", "转账单订单", "转账单订单"),
-//    CASH_THIRD_PAY_SETTING("2000", "2800", "三方支付平台设置", "三方支付平台设置"), // 特定 只有super_admin才有
+    CASH_THIRD_PAY_SETTING("2000", "2800", "三方支付平台设置", "三方支付平台设置"), // 特定 只有super_admin才有
 
     // 注单管理
     BET_MANAGE("-1", "3000", "注单管理", "注单管理"),
@@ -48,7 +48,10 @@ enum class PermissionType(
     REPORT_ANALYSIS("5000", "5400", "会员分析", "会员分析"),
 
     // 代理管理
-    AGENT_MANAGER("-1", "6000", "代理", "代理")
+    AGENT_MANAGER("-1", "6000", "代理", "代理"),
+
+    // 电销系统
+    SALE_MANAGER("-1", "7000", "电销", "电销")
 
 
     ;
