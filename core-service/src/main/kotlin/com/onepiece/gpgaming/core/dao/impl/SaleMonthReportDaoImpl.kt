@@ -100,7 +100,7 @@ class SaleMonthReportDaoImpl : BasicDaoImpl<SaleMonthReport>("sale_month_report"
                 .where("sale_id", query.saleId)
                 .where("sale_username", query.saleUsername)
                 .asWhere("day >= ?", query.startDate)
-                .asWhere("day < ?", query.endDate)
+                .asWhere("day <= ?", query.endDate)
                 .execute(mapper)
     }
 }
