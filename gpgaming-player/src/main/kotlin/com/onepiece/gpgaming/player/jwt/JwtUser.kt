@@ -24,6 +24,8 @@ data class JwtUser(
 
         val mpassword: String,
 
+        val lastPasswordResetDate: Date,
+        
         val produceDate: Date
 
 ) : UserDetails {

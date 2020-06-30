@@ -22,6 +22,6 @@ class JwtUserDetailsServiceImpl(
         val member = memberDao.getByUsername(clientId.toInt(), platformUsername)!!
 
         return JwtUser(bossId = bossId.toInt(), clientId = member.clientId, id = member.id, musername = username, mpassword = passwordEncoder.encode("123456"),
-                lastPasswordResetDate = Date(), name = member.name, role = Role.valueOf(role))
+                lastPasswordResetDate = Date(), name = member.name, role = Role.valueOf(role), produceDate = Date())
     }
 }

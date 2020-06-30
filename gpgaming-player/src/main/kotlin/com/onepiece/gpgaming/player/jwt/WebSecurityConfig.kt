@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.player.jwt
 
+import com.onepiece.gpgaming.core.service.MemberInfoService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -38,6 +39,9 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
 
     @Autowired
     lateinit var tokenStore: TokenStore
+
+    @Autowired
+    lateinit var memberInfoService: MemberInfoService
 
     @Autowired
     @Throws(Exception::class)
@@ -80,7 +84,8 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
     @Bean
     @Throws(Exception::class)
     open fun authenticationTokenFilterBean(): JwtAuthenticationTokenFilter {
-        return JwtAuthenticationTokenFilter(jwtTokenUtil = jwtTokenUtil, tokenStore = tokenStore, passwordEncoder = passwordEncoder())
+        return JwtAuthenticationTokenFilter(jwtTokenUtil = jwtTokenUtil, tokenStore = tokenStore, passwordEncoder = passwordEncoder(),
+                memberInfoService = memberInfoService)
     }
 
     @Throws(Exception::class)
