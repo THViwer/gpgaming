@@ -92,7 +92,11 @@ class OrderIdBuilder(
             else -> "$clientId"
         }
 
-        return "P${autoClientId}${now.format(dateTimeFormatter)}$autoId"
+        val profile = if (activeConfig.profile != "prod") {
+            "T"
+        }  else ""
+
+        return "${profile}P${autoClientId}${now.format(dateTimeFormatter)}$autoId"
     }
 
 
