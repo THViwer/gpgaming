@@ -1,8 +1,6 @@
 package com.onepiece.gpgaming.core
 
-import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.enums.Platform
-import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.TTGClientToken
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.utils.RedisService
@@ -15,7 +13,8 @@ import java.time.format.DateTimeFormatter
 @Component
 class OrderIdBuilder(
         private val platformBindService: PlatformBindService,
-        private val redisService: RedisService
+        private val redisService: RedisService,
+        private val activeConfig: ActiveConfig
 ) {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")
@@ -25,7 +24,12 @@ class OrderIdBuilder(
     private fun getCurrentTime(format: DateTimeFormatter = dateTimeFormat) = LocalDateTime.now().format(format)
 
     fun generatorDepositOrderId(): String {
-        return "BD${getCurrentTime()}${StringUtil.generateNumNonce(5)}"
+
+        val profile = if (activeConfig.profile != "prod") {
+            "T"
+        }  else ""
+
+        return "${profile}BD${getCurrentTime()}${StringUtil.generateNumNonce(5)}"
     }
 
     fun generatorWithdrawOrderId(): String {
