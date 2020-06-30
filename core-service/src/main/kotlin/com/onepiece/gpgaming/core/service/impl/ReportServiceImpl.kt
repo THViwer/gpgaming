@@ -291,12 +291,16 @@ class ReportServiceImpl(
             val ownCustomerScale = sale?.ownCustomerScale ?: BigDecimal.ZERO
             val systemCustomerScale = sale?.systemCustomerScale ?: BigDecimal.ZERO
 
-            val ownCustomerFee = (ownSaleVo.totalDeposit.minus(ownSaleVo.totalPromotion).minus(ownSaleVo.totalRebate)).multiply(ownCustomerScale).let {
-                if (it < BigDecimal.ZERO) BigDecimal.ZERO else it
-            }
-            val systemCustomerFee = (systemSaleVo.totalDeposit.minus(systemSaleVo.totalPromotion).minus(systemSaleVo.totalRebate)).multiply(systemCustomerScale).let {
-                if (it < BigDecimal.ZERO) BigDecimal.ZERO else it
-            }
+            val ownCustomerFee = (ownSaleVo.totalDeposit.minus(ownSaleVo.totalPromotion).minus(ownSaleVo.totalRebate)).multiply(ownCustomerScale).divide(BigDecimal.valueOf(100))
+                    .setScale(2, 2)
+                    .let {
+                        if (it < BigDecimal.ZERO) BigDecimal.ZERO else it
+                    }
+            val systemCustomerFee = (systemSaleVo.totalDeposit.minus(systemSaleVo.totalPromotion).minus(systemSaleVo.totalRebate)).multiply(systemCustomerScale).divide(BigDecimal.valueOf(100))
+                    .setScale(2, 2)
+                    .let {
+                        if (it < BigDecimal.ZERO) BigDecimal.ZERO else it
+                    }
             SaleDailyReport(bossId = bossId, clientId = clientId, saleId = saleId, saleUsername = username, ownCustomerScale = ownCustomerScale, ownCustomerFee = ownCustomerFee,
                     ownTotalDeposit = ownSaleVo.totalDeposit, ownTotalPromotion = ownSaleVo.totalPromotion, ownTotalWithdraw = ownSaleVo.totalWithdraw, ownTotalRebate = ownSaleVo.totalRebate,
                     systemTotalDeposit = systemSaleVo.totalDeposit, systemCustomerFee = systemCustomerFee, systemCustomerScale = systemCustomerScale, systemTotalPromotion = systemSaleVo.totalPromotion,
