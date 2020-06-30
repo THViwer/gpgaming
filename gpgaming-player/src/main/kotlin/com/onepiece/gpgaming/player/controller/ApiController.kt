@@ -57,7 +57,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.*
-import javax.validation.groups.Default
 import kotlin.random.Random
 
 @Suppress("CAST_NEVER_SUCCEEDS")
@@ -574,7 +573,7 @@ open class ApiController(
 
         val webSite = this.getWebSite()
         val clientId = when (webSite.country) {
-            Default -> this.getMainClient().id
+            Country.Default -> this.getMainClient().id
             else -> webSite.clientId
         }
 
