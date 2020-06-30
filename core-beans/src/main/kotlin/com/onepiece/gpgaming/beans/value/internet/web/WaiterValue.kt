@@ -34,6 +34,9 @@ data class WaiterVo(
         @ApiModelProperty("名字")
         val name: String,
 
+        @ApiModelProperty("角色")
+        val role: Role,
+
         @ApiModelProperty("状态")
         val status: Status,
 

@@ -53,7 +53,7 @@ class WaiterApiController(
                             clientBank = clientBank.bank)
                 }
                 WaiterVo(id = id, username = username, name = name, status = status, createdTime = createdTime,
-                        loginIp = loginIp, loginTime = loginTime, clientBanks = clientBankVoList)
+                        loginIp = loginIp, loginTime = loginTime, clientBanks = clientBankVoList, role = role)
             }
         }
     }
