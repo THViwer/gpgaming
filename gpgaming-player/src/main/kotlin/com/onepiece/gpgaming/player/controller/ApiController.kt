@@ -57,6 +57,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.*
+import javax.validation.groups.Default
 import kotlin.random.Random
 
 @Suppress("CAST_NEVER_SUCCEEDS")
@@ -570,9 +571,14 @@ open class ApiController(
 
     @GetMapping("/seo")
     override fun seo(): SeoValue.SeoVo {
-        val mainClient = this.getMainClient()
 
-        val seo = seoService.get(mainClient.id)
+        val webSite = this.getWebSite()
+        val clientId = when (webSite.country) {
+            Default -> this.getMainClient().id
+            else -> webSite.clientId
+        }
+
+        val seo = seoService.get(clientId = clientId)
         return SeoValue.SeoVo(title = seo.title, keywords = seo.keywords, description = seo.description, liveChatId = seo.liveChatId,
                 googleStatisticsId = seo.googleStatisticsId, facebookTr = seo.facebookTr, liveChatTab = seo.liveChatTab, asgContent = seo.asgContent,
                 facebookShowPosition = seo.facebookShowPosition)
