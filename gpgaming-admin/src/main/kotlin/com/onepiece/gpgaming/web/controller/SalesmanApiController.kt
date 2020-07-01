@@ -96,7 +96,7 @@ class SalesmanApiController(
         }
 
         // 查询
-        val query = MemberInfoValue.MemberInfoQuery(bossId = current.bossId, clientId = current.clientId, saleId = saleId, totalDepositMin = totalDepositMin,
+        val query = MemberInfoValue.MemberInfoQuery(bossId = current.bossId, clientId = current.clientId, saleId = saleId, totalDepositMin = totalDepositMin, totalDepositMax = totalDepositMax,
                 lastDepositTimeMin = lastDepositTimeMin, lastDepositTimeMax = lastDepositTimeMax, totalDepositCountMin = totalDepositCountMin,
                 totalDepositCountMax = totalDepositCountMax, registerTimeMin = registerTimeMin, registerTimeMax = registerTimeMax, lastLoginTimeMin = lastLoginTimeMin,
                 lastLoginTimeMax = lastLoginTimeMax, loginCountMin = loginCountMin, loginCountMax = null, lastSaleTimeMin = lastSaleTimeMin, lastSaleTimeMax = lastSaleTimeMax,
