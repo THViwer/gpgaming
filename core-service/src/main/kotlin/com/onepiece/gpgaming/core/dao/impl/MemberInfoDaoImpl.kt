@@ -96,6 +96,7 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
                 .where("client_id", query.clientId)
                 .where("sale_id", query.saleId)
                 .where("member_id", query.memberId)
+                .where("username", query.username)
 
                 .asWhere("total_deposit >= ?", query.totalDepositMin)
                 .asWhere("total_deposit <= ?", query.totalDepositMax)
