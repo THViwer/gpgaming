@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/user")
-open class UserApiController(
+class UserApiController(
         private val memberService: MemberService,
         private val authService: AuthService,
         private val levelService: LevelService,
