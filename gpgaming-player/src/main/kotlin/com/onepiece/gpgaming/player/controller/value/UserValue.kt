@@ -94,7 +94,10 @@ data class RegisterReq(
         val promoteCode: String?,
 
         @ApiModelProperty("电销人员Id")
-        val saleCode: String?
+        val saleCode: String?,
+
+        @ApiModelProperty("链路code")
+        val chainCode: String?
 )
 
 data class ChangePwdReq(
