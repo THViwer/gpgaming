@@ -9,13 +9,12 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
-import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberService
-import com.onepiece.gpgaming.games.http.OkHttpUtil
 import com.onepiece.gpgaming.player.controller.basic.BasicController
+import com.onepiece.gpgaming.player.controller.chain.ChainUtil
 import com.onepiece.gpgaming.player.controller.value.ChangePwdReq
 import com.onepiece.gpgaming.player.controller.value.CheckUsernameResp
 import com.onepiece.gpgaming.player.controller.value.LoginByAdminReq
@@ -28,9 +27,7 @@ import com.onepiece.gpgaming.player.controller.value.RegisterReq
 import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.player.jwt.JwtUser
 import com.onepiece.gpgaming.utils.RequestUtil
-import okhttp3.Request
 import org.slf4j.LoggerFactory
-import org.springframework.scheduling.annotation.Async
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -49,7 +46,7 @@ class UserApiController(
         private val levelService: LevelService,
         private val memberInfoService: MemberInfoService,
         private val passwordEncoder: PasswordEncoder,
-        private val okHttpUtil: OkHttpUtil
+        private val chainUtil: ChainUtil
 ) : BasicController(), UserApi {
 
     companion object {
@@ -180,30 +177,13 @@ class UserApiController(
         memberService.create(memberCo)
 
         // 通知pv
-        this.clickRv(registerReq.chainCode)
+        chainUtil.clickRv(registerReq.chainCode)
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)
         return this.login(loginReq)
     }
 
-    @Async
-    open fun clickRv(chainCode: String?) {
 
-        if (chainCode == null) return
-
-        val url = "https://m9s.co/rv/${chainCode}"
-
-        val request = Request.Builder()
-                .url(url)
-                .get()
-                .build()
-
-        try {
-            okHttpUtil.client.newCall(request).execute()
-        } catch (e: Exception) {
-
-        }
-    }
 
     @GetMapping("/country")
     override fun countries(): List<Country> {
