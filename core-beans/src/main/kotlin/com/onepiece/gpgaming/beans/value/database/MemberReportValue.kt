@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.database
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
 import com.onepiece.gpgaming.beans.enums.SaleScope
 import java.math.BigDecimal
@@ -80,7 +81,11 @@ sealed class MemberReportValue {
 
             val endDate: LocalDate,
 
-            val agentId: Int
+            val username: String? = null,
+
+            val agentId: Int? = null,
+
+            val saleId: Int? = null
     )
 
     data class MemberCollectQuery(
@@ -238,5 +243,43 @@ sealed class MemberReportValue {
             //  优惠金额
             val promotionAmount: BigDecimal
     )
+
+    data class SaleMemberReportVo(
+
+            val day: String,
+
+            // 会员Id
+            val memberId: Int,
+
+            // 用户名
+            val username: String,
+
+            // 存款次数
+            @JsonIgnore
+            val depositCount: Int,
+
+            // 充值金额
+            @JsonIgnore
+            val depositAmount: BigDecimal,
+
+            // 自动入款金额
+            @JsonIgnore
+            val thirdPayAmount: BigDecimal,
+
+            // 自动入款次数
+            @JsonIgnore
+            val thirdPayCount: Int
+    ) {
+
+        val totalDeposit: BigDecimal
+            get() {
+                return depositAmount.plus(thirdPayAmount)
+            }
+
+        val totalDepositCount: Int
+            get() {
+                return depositCount.plus(thirdPayCount)
+            }
+    }
 
 }

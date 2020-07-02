@@ -20,7 +20,7 @@ class SaleLogServiceImpl(
         val flag = saleLogDao.create(co = co)
         check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
-        val infoUo = MemberInfoValue.MemberInfoUo.ofSale(memberId = co.memberId)
+        val infoUo = MemberInfoValue.MemberInfoUo.ofSale(memberId = co.memberId, nextCallTime = co.nextCallTime)
         memberInfoService.asyncUpdate(infoUo)
     }
 

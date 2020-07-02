@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.value.database
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import java.time.LocalDateTime
 
 sealed class SaleLogValue {
 
@@ -17,7 +18,10 @@ sealed class SaleLogValue {
 
             val memberId: Int,
 
-            val remark: String
+            val remark: String,
+
+            // 下一次电话时间
+            val nextCallTime: LocalDateTime?
     )
 
     data class SaleLogQuery(

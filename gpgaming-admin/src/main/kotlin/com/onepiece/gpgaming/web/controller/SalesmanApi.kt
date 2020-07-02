@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.model.SaleDailyReport
 import com.onepiece.gpgaming.beans.model.SaleLog
 import com.onepiece.gpgaming.beans.model.SaleMonthReport
 import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
+import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.beans.value.database.SaleLogValue
 import com.onepiece.gpgaming.beans.value.internet.web.SalesmanValue
 import io.swagger.annotations.Api
@@ -59,6 +60,15 @@ interface SalesmanApi {
             @RequestParam("saleId", required = false) saleId: Int?,
             @RequestBody saleLogCo: SaleLogValue.SaleLogCo
     )
+
+    @ApiOperation(tags = ["sale"], value = "电销 -> 查询会员充值历史")
+    fun queryDepositHistory(
+            @RequestParam("saleUsername", required = false) saleUsername: String?,
+            @RequestParam("username", required = false) username: String?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
+    ): List<MemberReportValue.SaleMemberReportVo>
+
 
     @ApiOperation(tags = ["sale"], value = "电销 -> 月报表")
     fun monthReport(

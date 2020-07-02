@@ -39,12 +39,14 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
             val lastSaleTime = rs.getTimestamp("last_sale_time")?.toLocalDateTime()
             val saleCount = rs.getInt("sale_count")
 
+            val nextCallTime = rs.getTimestamp("next_call_time")?.toLocalDateTime()
+
 
             MemberInfo(bossId = bossId, clientId = clientId, agentId = agentId, saleId = saleId, memberId = memberId, username = username,
                     totalDeposit = totalDeposit, lastDepositTime = lastDepositTime, totalDepositCount = totalDepositCount,
                     totalWithdraw = totalWithdraw, lastWithdrawTime = lastWithdrawTime, totalWithdrawCount = totalWithdrawCount,
                     registerTime = registerTime, lastLoginTime = lastLoginTime, loginCount = loginCount,
-                    lastSaleTime = lastSaleTime, saleCount = saleCount)
+                    lastSaleTime = lastSaleTime, saleCount = saleCount, nextCallTime = nextCallTime)
         }
 
 
@@ -85,6 +87,7 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
                 .set("last_sale_time", uo.lastSaleTime)
                 .asSet("sale_count = sale_count + ${uo.saleCount}")
 
+                .setIfNull("next_call_time", uo.nextCallTime)
 
                 .where("member_id", uo.memberId)
                 .executeOnlyOne()
@@ -115,6 +118,8 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
                 .asWhere("last_sale_time <= ?", query.lastSaleTimeMax)
                 .asWhere("sale_count >= ?", query.saleCountMin)
                 .asWhere("sale_count <= ?", query.saleCountMax)
+
+                .sort(query.sortBy)
                 .execute(mapper)
     }
 }

@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.beans.value.database
 
-import com.onepiece.gpgaming.beans.model.MemberInfo
 import java.math.BigDecimal
 import java.time.Duration
 import java.time.LocalDate
@@ -59,7 +58,9 @@ sealed class MemberInfoValue {
             // 电销信息
             val lastSaleTime: LocalDateTime? = null,
 
-            val saleCount: Int = 0
+            val saleCount: Int = 0,
+
+            val nextCallTime: LocalDateTime? = null
 
     ) {
 
@@ -81,8 +82,8 @@ sealed class MemberInfoValue {
                 return MemberInfoUo(memberId = memberId, withdraw = amount, withdrawTime = LocalDateTime.now(), withdrawCount = 1)
             }
 
-            fun ofSale(memberId: Int): MemberInfoUo {
-                return MemberInfoUo(memberId = memberId, lastSaleTime = LocalDateTime.now(), saleCount = 1)
+            fun ofSale(memberId: Int, nextCallTime: LocalDateTime?): MemberInfoUo {
+                return MemberInfoUo(memberId = memberId, lastSaleTime = LocalDateTime.now(), saleCount = 1, nextCallTime = nextCallTime)
             }
 
         }
@@ -201,9 +202,25 @@ sealed class MemberInfoValue {
             // 电销信息
             val lastSaleTime: LocalDateTime?,
 
-            val saleCount: Int
+            val saleCount: Int,
+
+            // 下一次电话时间
+            val nextCallTime: LocalDateTime?
 
     ) {
+
+//        val nextCall: String
+//            get() {
+//                if (nextCallTime == null) return "-"
+//
+//                val duration = Duration.between(nextCallTime, LocalDateTime.now())
+//                when {
+//                    duration.toDays() > 1 -> "more than 1 days"
+//                    duration.toHours() > 1 -> "${duration.toHours()} hour"
+//                    duration.toMinutes() >
+//                }
+//
+//            }
 
         val notLoginDays: Int
             get() {

@@ -7,10 +7,12 @@ import com.onepiece.gpgaming.beans.model.SaleLog
 import com.onepiece.gpgaming.beans.model.SaleMonthReport
 import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
+import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.beans.value.database.SaleDailyReportValue
 import com.onepiece.gpgaming.beans.value.database.SaleLogValue
 import com.onepiece.gpgaming.beans.value.database.SaleMonthReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.SalesmanValue
+import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.dao.SaleDailyReportDao
 import com.onepiece.gpgaming.core.dao.SaleMonthReportDao
 import com.onepiece.gpgaming.core.service.MemberInfoService
@@ -36,7 +38,8 @@ class SalesmanApiController(
         private val memberService: MemberService,
         private val memberInfoService: MemberInfoService,
         private val saleLogService: SaleLogService,
-        private val waiterService: WaiterService
+        private val waiterService: WaiterService,
+        private val memberDailyReportDao: MemberDailyReportDao
 ): BasicController(), SalesmanApi {
 
     @GetMapping("/info")
@@ -92,6 +95,7 @@ class SalesmanApiController(
             1 -> "register_time desc"
             2 -> "last_deposit_time desc"
             3 -> "last_sale_time desc"
+            4 -> "next_call_time asc"
             else -> "member_id desc"
         }
 
@@ -128,7 +132,7 @@ class SalesmanApiController(
                     totalDeposit = info.totalDeposit, lastDepositTime = info.lastDepositTime, totalDepositCount = info.totalDepositCount,
                     totalWithdraw = info.totalWithdraw, lastWithdrawTime = info.lastWithdrawTime, totalWithdrawCount = info.totalWithdrawCount,
                     registerTime = info.registerTime, lastLoginTime = info.lastLoginTime, loginCount = info.loginCount, lastSaleTime = info.lastSaleTime,
-                    saleCount = info.saleCount, phone = phone, name = name)
+                    saleCount = info.saleCount, phone = phone, name = name, nextCallTime = info.nextCallTime)
         }
     }
 
@@ -156,6 +160,27 @@ class SalesmanApiController(
         val tSaleId = saleId ?: current.id
 
         saleLogService.create(co = saleLogCo.copy(bossId = current.bossId, clientId = current.clientId, saleId = tSaleId))
+    }
+
+    @GetMapping("/deposit/history")
+    override fun queryDepositHistory(
+            @RequestParam("saleUsername", required = false) saleUsername: String?,
+            @RequestParam("username", required = false) username: String?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
+    ): List<MemberReportValue.SaleMemberReportVo> {
+
+        val user = this.current()
+
+        val saleId = if (user.role == Role.Sale) user.id else null
+
+        val query = MemberReportValue.CollectQuery(bossId = user.bossId, clientId = user.clientId, username = username, saleId = saleId, startDate = startDate,
+                endDate = endDate)
+        val day = "$startDate~$endDate"
+        return memberDailyReportDao.collect(query).map {
+            MemberReportValue.SaleMemberReportVo(day = day, memberId = it.memberId, username = it.username, depositCount = it.depositCount,
+                    depositAmount = it.depositAmount, thirdPayCount = it.thirdPayCount, thirdPayAmount = it.thirdPayAmount)
+        }
     }
 
     @GetMapping("/report/month")

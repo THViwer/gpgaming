@@ -269,58 +269,68 @@ class MemberDailyReportDaoImpl(
 
     override fun collect(query: MemberReportValue.CollectQuery): List<MemberReportValue.MemberMonthReport> {
 
-        val sql = """
-            select
-                   boss_id,
-                   client_id,
-                   member_id,
-                   username,
-                   sum(total_bet) total_bet,
-                   sum(total_m_win) total_m_win,
-                   sum(transfer_in) transfer_in,
-                   sum(transfer_out) transfer_out,
-                   sum(deposit_count) deposit_count,
-                   sum(deposit_amount) deposit_amount,
-                   sum(withdraw_count) withdraw_count,
-                   sum(withdraw_amount) withdraw_amount,
-                   sum(third_pay_count) third_pay_count,
-                   sum(third_pay_amount) third_pay_amount,
-                   sum(promotion_amount) promotion_amount,
-                   sum(rebate_amount) rebate_amount
-            from member_daily_report
-            where day >= '${query.startDate}' and day < '${query.endDate}' and agent_id = ${query.agentId}
-            group by boss_id, client_id, superior_agent_id, agent_id, member_id, username;
+        val columns = """
+            boss_id,
+            client_id,
+            member_id,
+            username,
+            agent_id,
+            superior_agent_id,
+            sum(total_bet) total_bet,
+            sum(total_m_win) total_m_win,
+            sum(transfer_in) transfer_in,
+            sum(transfer_out) transfer_out,
+            sum(deposit_count) deposit_count,
+            sum(deposit_amount) deposit_amount,
+            sum(withdraw_count) withdraw_count,
+            sum(withdraw_amount) withdraw_amount,
+            sum(third_pay_count) third_pay_count,
+            sum(third_pay_amount) third_pay_amount,
+            sum(promotion_amount) promotion_amount,
+            sum(rebate_amount) rebate_amount,
+            sum(artificial_amount) artificial_amount,
+            sum(artificial_count) artificial_count
         """.trimIndent()
+        return query(columns)
+                .asWhere("day >= ?", query.startDate)
+                .asWhere("day <= ?", query.endDate)
+                .where("boss_id", query.bossId)
+                .where("client_id", query.clientId)
+                .where("agent_id", query.agentId)
+                .where("sale_id", query.saleId)
+                .where("username", query.username)
+                .group("boss_id, client_id, superior_agent_id, agent_id, member_id, username")
+                .execute { rs ->
 
-        return jdbcTemplate.query(sql) { rs, _ ->
-            val bossId = rs.getInt("boss_id")
-            val clientId = rs.getInt("client_id")
-            val superiorAgentId = rs.getInt("superior_agent_id")
-            val agentId = rs.getInt("agent_id")
-            val memberId = rs.getInt("member_id")
-            val username  = rs.getString("username")
-            val transferIn = rs.getBigDecimal("transfer_in")
-            val transferOut = rs.getBigDecimal("transfer_out")
-            val depositAmount = rs.getBigDecimal("deposit_amount")
-            val depositCount = rs.getInt("deposit_count")
-            val withdrawAmount = rs.getBigDecimal("withdraw_amount")
-            val withdrawCount = rs.getInt("withdraw_count")
-            val artificialAmount = rs.getBigDecimal("artificial_amount")
-            val artificialCount = rs.getInt("artificial_count")
-            val totalBet = rs.getBigDecimal("total_bet")
-            val totalMWin = rs.getBigDecimal("total_m_win")
-            val thirdPayAmount = rs.getBigDecimal("third_pay_amount")
-            val thirdPayCount = rs.getInt("third_pay_count")
-            val rebateAmount = rs.getBigDecimal("rebate_amount")
-            val promotionAmount = rs.getBigDecimal("promotion_amount")
+                    val bossId = rs.getInt("boss_id")
+                    val clientId = rs.getInt("client_id")
+                    val superiorAgentId = rs.getInt("superior_agent_id")
+                    val agentId = rs.getInt("agent_id")
+                    val memberId = rs.getInt("member_id")
+                    val username = rs.getString("username")
+                    val transferIn = rs.getBigDecimal("transfer_in")
+                    val transferOut = rs.getBigDecimal("transfer_out")
+                    val depositAmount = rs.getBigDecimal("deposit_amount")
+                    val depositCount = rs.getInt("deposit_count")
+                    val withdrawAmount = rs.getBigDecimal("withdraw_amount")
+                    val withdrawCount = rs.getInt("withdraw_count")
+                    val artificialAmount = rs.getBigDecimal("artificial_amount")
+                    val artificialCount = rs.getInt("artificial_count")
+                    val totalBet = rs.getBigDecimal("total_bet")
+                    val totalMWin = rs.getBigDecimal("total_m_win")
+                    val thirdPayAmount = rs.getBigDecimal("third_pay_amount")
+                    val thirdPayCount = rs.getInt("third_pay_count")
+                    val rebateAmount = rs.getBigDecimal("rebate_amount")
+                    val promotionAmount = rs.getBigDecimal("promotion_amount")
 
 
-            MemberReportValue.MemberMonthReport(bossId = bossId, clientId = clientId, agentId = agentId, memberId = memberId, username = username,
-                    transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount, depositCount = depositCount, withdrawAmount = withdrawAmount,
-                    withdrawCount = withdrawCount, artificialAmount = artificialAmount, artificialCount = artificialCount, totalBet = totalBet, totalMWin = totalMWin,
-                    thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, promotionAmount = promotionAmount,
-                    superiorAgentId = superiorAgentId, day = query.startDate)
-        }
+                    MemberReportValue.MemberMonthReport(bossId = bossId, clientId = clientId, agentId = agentId, memberId = memberId, username = username,
+                            transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount, depositCount = depositCount, withdrawAmount = withdrawAmount,
+                            withdrawCount = withdrawCount, artificialAmount = artificialAmount, artificialCount = artificialCount, totalBet = totalBet, totalMWin = totalMWin,
+                            thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, promotionAmount = promotionAmount,
+                            superiorAgentId = superiorAgentId, day = query.startDate)
+                }
+
     }
 
     override fun saleCollect(query: MemberReportValue.MemberCollectQuery): List<MemberReportValue.SaleReportVo> {

@@ -18,9 +18,10 @@ class SaleLogDaoImpl : BasicDaoImpl<SaleLog>("sale_log"), SaleLogDao {
             val saleId = rs.getInt("sale_id")
             val memberId = rs.getInt("member_id")
             val remark = rs.getString("remark")
+            val nextCallTime = rs.getTimestamp("next_call_time")?.toLocalDateTime()
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
-            SaleLog(id = id, bossId = bossId, clientId = clientId, saleId = saleId,
+            SaleLog(id = id, bossId = bossId, clientId = clientId, saleId = saleId, nextCallTime = nextCallTime,
                     memberId = memberId, remark = remark, createdTime = createdTime)
         }
 

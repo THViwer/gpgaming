@@ -44,6 +44,9 @@ data class MemberInfo(
         // 电销信息
         val lastSaleTime: LocalDateTime?,
 
-        val saleCount: Int
+        val saleCount: Int,
+
+        // 下一次电话时间
+        val nextCallTime: LocalDateTime?
 
 )

@@ -22,6 +22,9 @@ data class SaleLog(
         // 备注
         val remark: String,
 
+        // 下一次电话时间
+        val nextCallTime: LocalDateTime?,
+
         // 创建时间
         val createdTime: LocalDateTime
 
