@@ -4,7 +4,6 @@ import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.scheduling.annotation.Async
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -46,14 +45,13 @@ open class JwtAuthenticationTokenFilter(
             if (SecurityContextHolder.getContext().authentication == null) {
 
                 val userDetails = tokenStore.readAccessToken(authToken)
+                username = userDetails?.username
 
                 if (userDetails != null && jwtTokenUtil.validateToken(authToken, userDetails)) {
                     val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
                     authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
 //                    logger.info("authenticated user $authToken, setting security context")
                     SecurityContextHolder.getContext().authentication = authentication
-
-                    username = userDetails.username
 
                     this.refreshToken(user = userDetails)
                 }
@@ -102,7 +100,7 @@ open class JwtAuthenticationTokenFilter(
 
         val valid = passwordEncoder.matches(param, hash)
 
-        log.info("验证hash，字符串=$param,otp=$otp,上传密钥：$hash")
+        log.info("验证hash，字符串=$param , otp=$otp, username = $username, 上传密钥：$hash")
 
 //        check(valid) { HttpStatus.UNAUTHORIZED }
         if (!valid) {
