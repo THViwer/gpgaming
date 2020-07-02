@@ -105,6 +105,9 @@ open class JwtAuthenticationTokenFilter(
         ).joinToString(separator = "")
 
         val valid = passwordEncoder.matches(param, hash)
+
+        log.info("验证hash，字符串=$param,otp=$otp,上传密钥：$hash")
+
 //        check(valid) { HttpStatus.UNAUTHORIZED }
         if (!valid) {
             log.info("------------------------")
