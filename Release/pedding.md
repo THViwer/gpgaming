@@ -66,7 +66,8 @@ CREATE TABLE `sale_month_report` (
   `system_customer_fee` decimal(10,2) NOT NULL,
   `status` varchar(20) NOT NULL DEFAULT 'Normal',
   `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `boss_id` (`boss_id`,`client_id`,`sale_id`,`day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `sale_daily_report` (
@@ -90,5 +91,6 @@ CREATE TABLE `sale_daily_report` (
   `system_customer_fee` decimal(10,2) NOT NULL,
   `status` varchar(20) NOT NULL DEFAULT 'Normal',
   `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `boss_id` (`boss_id`,`client_id`,`sale_id`,`day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

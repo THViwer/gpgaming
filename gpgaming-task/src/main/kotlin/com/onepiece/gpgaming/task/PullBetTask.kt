@@ -14,8 +14,6 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.time.LocalDateTime
-import java.util.concurrent.FutureTask
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.stream.Collectors
 
 
