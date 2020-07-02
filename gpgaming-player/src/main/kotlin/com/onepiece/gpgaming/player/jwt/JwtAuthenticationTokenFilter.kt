@@ -39,6 +39,8 @@ open class JwtAuthenticationTokenFilter(
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
 
         val authHeader = request.getHeader(this.tokenHeader)
+
+        var username: String? = null
         if (authHeader != null && authHeader.startsWith(tokenHead)) {
             val authToken = authHeader.substring(tokenHead.length) // The part after "Bearer "
             if (SecurityContextHolder.getContext().authentication == null) {
@@ -51,12 +53,14 @@ open class JwtAuthenticationTokenFilter(
 //                    logger.info("authenticated user $authToken, setting security context")
                     SecurityContextHolder.getContext().authentication = authentication
 
+                    username = userDetails.username
+
                     this.refreshToken(user = userDetails)
                 }
             }
         }
 
-        this.validHash(request = request)
+        this.validHash(request = request, username = username)
 
         chain.doFilter(request, response)
     }
@@ -79,7 +83,7 @@ open class JwtAuthenticationTokenFilter(
         }
     }
 
-    private fun validHash(request: HttpServletRequest) {
+    private fun validHash(request: HttpServletRequest, username: String?) {
 
         val requestURL = request.requestURI
         if (requestURL == "/api/v1/player/" || requestURL.contains("/swagger") || requestURL.contains("/webjars") || requestURL.contains("/api-docs")) {
@@ -89,12 +93,6 @@ open class JwtAuthenticationTokenFilter(
         val otp = request.getHeader("opt")
         val hash = request.getHeader("hash")
 
-
-        val username = try {
-            SecurityContextHolder.getContext()?.authentication?.details?.let { it as JwtUser }?.username
-        } catch (e: Exception) {
-            null
-        }
 
         val param = listOfNotNull(
                 username,
