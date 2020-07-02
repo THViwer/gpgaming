@@ -41,11 +41,9 @@ class ReportTask(
 
         this.startAgentReport(startDate = localDate)
 
-        this.startAgentMonthReport(startDate = localDate)
+//        this.startAgentMonthReport(startDate = localDate)
 
         this.startSaleReport(startDate = localDate)
-
-        this.startSaleMonthReport(startDate = localDate)
 
         this.startClientPlatformReport(localDate)
 
@@ -56,6 +54,8 @@ class ReportTask(
     fun startMonth() {
         val localDate = LocalDate.now().minusMonths(1)
         this.startAgentMonthReport(startDate = localDate)
+
+        this.startSaleMonthReport(startDate = localDate)
     }
 
 

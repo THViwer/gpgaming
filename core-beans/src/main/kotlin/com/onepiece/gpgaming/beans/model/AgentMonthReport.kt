@@ -86,11 +86,11 @@ data class AgentMonthReport(
 
     companion object {
 
-        fun empty(agentId: Int): AgentMonthReport {
+        fun empty(bossId: Int, clientId: Int,agentId: Int, day: LocalDate): AgentMonthReport {
 
-            return AgentMonthReport(id = -1, agentId = agentId, bossId = -1, clientId = -1, superiorAgentId = -1, totalDeposit = BigDecimal.ZERO,
+            return AgentMonthReport(id = -1, agentId = agentId, bossId = bossId, clientId = clientId, superiorAgentId = -1, totalDeposit = BigDecimal.ZERO,
                     totalWithdraw = BigDecimal.ZERO, totalBet = BigDecimal.ZERO, totalMWin = BigDecimal.ZERO, totalRebate = BigDecimal.ZERO, totalPromotion = BigDecimal.ZERO,
-                    newMemberCount = 0, day = LocalDate.now(), createdTime = LocalDateTime.now(), agencyMonthFee = BigDecimal.ZERO, agentCommissionScale = BigDecimal.ZERO,
+                    newMemberCount = 0, day = day, createdTime = LocalDateTime.now(), agencyMonthFee = BigDecimal.ZERO, agentCommissionScale = BigDecimal.ZERO,
                     agentActiveCount = 0, agentCommission = BigDecimal.ZERO, memberCommission = BigDecimal.ZERO, memberActiveCount = 0, memberCommissionScale = BigDecimal.ZERO,
                     commissionExecution = true, username = "None")
         }

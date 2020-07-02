@@ -208,7 +208,7 @@ class ReportServiceImpl(
                 val memberCommissions = commissions.filter { agent.bossId == it.bossId }.filter { it.type == CommissionType.MemberCommission }
 
                 // 计算会员佣金
-                val memberCommission = memberCollect[agent.id] ?: AgentMonthReport.empty(agentId = agent.id)
+                val memberCommission = memberCollect[agent.id] ?: AgentMonthReport.empty(bossId = agent.bossId, clientId = agent.clientId, agentId = agent.id, day = startDate)
                 val memberActive = memberActives[agent.id] ?: AnalysisValue.ActiveCollect(agentId = -1, activeCount = 0)
                 val mCommission = memberCommissions.first { it.activeCount > memberActive.activeCount }
                 val memberCommissionAmount =
@@ -222,8 +222,8 @@ class ReportServiceImpl(
 
                 val commissionExecution = memberCommissionAmount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
-                memberCommission.copy(memberCommission = memberCommissionAmount, memberCommissionScale = mCommission.scale, memberActiveCount = memberActive.activeCount,
-                        commissionExecution = commissionExecution, agencyMonthFee = agent.agencyMonthFee, username = agent.username)
+                memberCommission.copy(bossId = agent.bossId, clientId = agent.clientId, memberCommission = memberCommissionAmount, memberCommissionScale = mCommission.scale,
+                        memberActiveCount = memberActive.activeCount, commissionExecution = commissionExecution, agencyMonthFee = agent.agencyMonthFee, username = agent.username)
             } catch (e: Exception)  {
                 log.error("agent month report error: ", e)
                 null

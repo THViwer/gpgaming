@@ -149,7 +149,7 @@ class AgentApiController(
         // 当前这个月佣金
         val startDate  = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth())
         val agentMonthReport = reportService.startAgentMonthReport(agentId = memberId, today = startDate)
-                .firstOrNull() ?: AgentMonthReport.empty(agentId = agent.id)
+                .firstOrNull() ?: AgentMonthReport.empty(bossId = bossId, clientId = agent.clientId, agentId = agent.id, day = startDate)
 
         // 推广连接码
         val sites = webSiteService.getDataByBossId(bossId = bossId)
