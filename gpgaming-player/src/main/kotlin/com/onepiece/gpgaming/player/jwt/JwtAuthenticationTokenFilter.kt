@@ -38,8 +38,6 @@ open class JwtAuthenticationTokenFilter(
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
 
-        this.validHash(request = request)
-
         val authHeader = request.getHeader(this.tokenHeader)
         if (authHeader != null && authHeader.startsWith(tokenHead)) {
             val authToken = authHeader.substring(tokenHead.length) // The part after "Bearer "
@@ -58,7 +56,7 @@ open class JwtAuthenticationTokenFilter(
             }
         }
 
-//        this.validHash(request = request)
+        this.validHash(request = request)
 
         chain.doFilter(request, response)
     }
