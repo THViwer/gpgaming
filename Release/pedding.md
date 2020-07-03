@@ -28,6 +28,7 @@ CREATE TABLE `member_info` (
   `login_count` int(11) NOT NULL DEFAULT '0',
   `last_sale_time` timestamp NULL DEFAULT NULL,
   `sale_count` int(11) NOT NULL DEFAULT '0',
+  `next_call_time` timestamp NULL DEFAULT NULL,
   `status` varchar(20) NOT NULL DEFAULT 'Normal',
   `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`member_id`)
@@ -40,6 +41,7 @@ CREATE TABLE `sale_log` (
   `sale_id` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
   `remark` varchar(256) NOT NULL DEFAULT '',
+  `next_call_time` timestamp NULL DEFAULT NULL,
   `status` varchar(20) NOT NULL DEFAULT 'Normal',
   `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
