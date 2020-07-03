@@ -89,7 +89,7 @@ class WaiterServiceImpl(
         fun selectNext(): Waiter? {
             val redisKey = "salesman:id:$clientId"
             val cacheSaleId = redisService.get(key = redisKey, clz = Int::class.java) ?: -1
-            return waiterDao.all(clientId = clientId).filter { bossId == it.bossId }
+            return waiterDao.all(clientId = clientId).filter { bossId == it.bossId }.filter { it.role == Role.Sale }
                     .let { list ->
                         list.firstOrNull { it.id > cacheSaleId } ?: list.firstOrNull()
                     }?.also {
