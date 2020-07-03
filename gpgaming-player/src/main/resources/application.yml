@@ -16,13 +16,15 @@ spring:
   output:
     ansi:
       enabled: always
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
 
 server:
   servlet:
     context-path: /api/v1/player
   port: 8002
   max-http-header-size: 102400
-
+  shutdown: graceful
 
 jwt:
   header: Authorization
