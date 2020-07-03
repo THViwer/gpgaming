@@ -85,7 +85,7 @@ open class JwtAuthenticationTokenFilter(
     private fun validHash(request: HttpServletRequest, username: String?) {
 
         val requestURL = request.requestURI
-        if (requestURL == "/api/v1/player/" || requestURL.contains("/swagger") || requestURL.contains("/webjars") || requestURL.contains("/api-docs")) {
+        if (requestURL.contains("/api/v1/player/") || requestURL.contains("/swagger") || requestURL.contains("/webjars") || requestURL.contains("/api-docs")) {
             return
         }
 
