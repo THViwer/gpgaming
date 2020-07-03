@@ -26,10 +26,12 @@ class OkHttpUtil(
 
     private val log = LoggerFactory.getLogger(OkHttpUtil::class.java)
 
-    val JSON = "application/json; charset=utf-8".toMediaType()
-    val XML = "application/xml; charset=utf-8".toMediaType()
-    val TEXT_XML = "text/xml; charset=utf-8".toMediaType()
-    val TEXT = "text/html; charset=utf-8".toMediaType()
+    companion object {
+        val JSON = "application/json; charset=utf-8".toMediaType()
+        val XML = "application/xml; charset=utf-8".toMediaType()
+        val TEXT_XML = "text/xml; charset=utf-8".toMediaType()
+        val TEXT = "text/html; charset=utf-8".toMediaType()
+    }
 
     val client = OkHttpClient.Builder()
             .connectTimeout(20, TimeUnit.SECONDS) //连接超时
