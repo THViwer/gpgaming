@@ -57,7 +57,7 @@ class SalesmanApiController(
             current.id < 10000 -> "0${current.id}"
             else -> "${current.id}"
         }
-        val saleLink = "https://www.${webSite.domain}/saleCode=${saleCode}"
+        val saleLink = "https://www.${webSite.domain}?saleCode=${saleCode}"
 
         return SalesmanValue.SaleInfo(name = current.username, saleCode = saleCode, saleLink = saleLink)
     }
