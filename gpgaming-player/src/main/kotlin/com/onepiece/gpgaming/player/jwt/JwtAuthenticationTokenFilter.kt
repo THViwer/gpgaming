@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -102,19 +103,19 @@ open class JwtAuthenticationTokenFilter(
 
         log.info("验证hash，字符串=$param , otp=$otp, username = $username, 上传密钥：$hash")
 
-//        check(valid) { HttpStatus.UNAUTHORIZED }
-        if (!valid) {
-            log.info("------------------------")
-            log.info("------------------------")
-            log.info("------------------------")
-            log.info("------------------------")
-            log.info("------------------------")
-            log.info("验证失败，字符串=$param,otp=$otp,上传密钥：$hash, 不匹配")
-            log.info("------------------------")
-            log.info("------------------------")
-            log.info("------------------------")
-            log.info("------------------------")
-            log.info("------------------------")
-        }
+        check(valid) { HttpStatus.UNAUTHORIZED }
+//        if (!valid) {
+//            log.info("------------------------")
+//            log.info("------------------------")
+//            log.info("------------------------")
+//            log.info("------------------------")
+//            log.info("------------------------")
+//            log.info("验证失败，字符串=$param,otp=$otp,上传密钥：$hash, 不匹配")
+//            log.info("------------------------")
+//            log.info("------------------------")
+//            log.info("------------------------")
+//            log.info("------------------------")
+//            log.info("------------------------")
+//        }
     }
 }
