@@ -40,7 +40,7 @@ class JwtUserDetailsServiceImpl(
             else -> error("401")
         }
 
-        return JwtUser(id = currentUserId.toInt(), musername = mUsername, mpassword = passwordEncoder.encode("123456"),
+        return JwtUser(id = currentUserId.toInt(), musername = username, mpassword = passwordEncoder.encode("123456"),
                 lastPasswordResetDate = Date(), clientId = clientId.toInt(), role = Role.valueOf(role), mauthorities = permissions,
                 bossId = bossId.toInt()
         )
