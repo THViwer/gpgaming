@@ -134,7 +134,8 @@ class JwtTokenUtil : Serializable {
         //        final Date expiration = getExpirationDateFromToken(token);
         return (username == user.username
                 && !isTokenExpired(token)
-                && !isCreatedBeforeLastPasswordReset(created, user.lastPasswordResetDate))
+                //TODO 不验证token过期 && !isCreatedBeforeLastPasswordReset(created, user.lastPasswordResetDate)
+                )
     }
 
 
