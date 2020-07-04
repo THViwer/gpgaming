@@ -120,7 +120,7 @@ class MemberServiceImpl(
 
         // 登陆历史
         val historyCo = LoginHistoryValue.LoginHistoryCo(bossId = member.bossId, clientId = member.clientId, userId = member.id,
-                role = Role.Member, ip = loginValue.ip, country = "")
+                role = Role.Member, ip = loginValue.ip, country = "", username = loginValue.username)
         loginHistoryService.create(historyCo)
 
         return member.copy(password = "")

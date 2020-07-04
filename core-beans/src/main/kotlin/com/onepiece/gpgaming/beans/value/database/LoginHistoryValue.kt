@@ -16,6 +16,8 @@ class LoginHistoryValue {
             // 用户Id
             val userId: Int,
 
+            val username: String,
+
             // 角色
             val role: Role,
 

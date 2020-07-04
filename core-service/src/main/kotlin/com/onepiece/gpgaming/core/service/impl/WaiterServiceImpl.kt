@@ -50,7 +50,7 @@ class WaiterServiceImpl(
         val waiterUo = WaiterValue.WaiterUo(id = waiter.id, loginIp = loginValue.ip, loginTime = LocalDateTime.now(), clientBankData = null)
         this.update(waiterUo)
 
-        val historyCo = LoginHistoryValue.LoginHistoryCo(bossId = waiter.bossId, clientId = waiter.id, userId = waiter.id, ip = loginValue.ip, role = waiter.role)
+        val historyCo = LoginHistoryValue.LoginHistoryCo(bossId = waiter.bossId, clientId = waiter.id, userId = waiter.id, ip = loginValue.ip, role = waiter.role, username = loginValue.username)
         loginHistoryService.create(historyCo)
 
         return waiter.copy(password = "")
@@ -101,4 +101,12 @@ class WaiterServiceImpl(
             waiterDao.get(saleId)
         } ?: selectNext()
     }
+}
+
+fun main() {
+    val bCryptPasswordEncoder = BCryptPasswordEncoder()
+    val a = "\$2a\$10\$.234ad4zzoitczY.NYvLjOM89xFDzXhrxrYGkmKoVpvVlmpuvdcSK"
+    println(bCryptPasswordEncoder.matches("111222", a))
+    println(bCryptPasswordEncoder.encode("123456"))
+    println("\$2a\$10\$ysmsX/Zo4KijT6fMM6jZleJrim3z34KrZN2sNv0EbpPbuonCrz/Tm".length)
 }

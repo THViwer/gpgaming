@@ -86,7 +86,8 @@ class ClientServiceImpl(
         val clientUo = ClientUo(id = client.id, ip = loginValue.ip, loginTime = LocalDateTime.now(), name = null, logo = null, shortcutLogo = null)
         this.update(clientUo)
 
-        val historyCo = LoginHistoryValue.LoginHistoryCo(bossId = client.bossId, clientId = client.id, userId = client.id, ip = loginValue.ip, role = Role.Client)
+        val historyCo = LoginHistoryValue.LoginHistoryCo(bossId = client.bossId, clientId = client.id, userId = client.id, ip = loginValue.ip, role = Role.Client,
+                username = loginValue.username)
         loginHistoryService.create(historyCo)
 
         return client.copy(password = "")
