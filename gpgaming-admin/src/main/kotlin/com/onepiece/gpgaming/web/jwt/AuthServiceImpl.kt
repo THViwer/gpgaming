@@ -44,7 +44,7 @@ class AuthServiceImpl(
 
         val authUsername = "$bossId:$clientId:$id:$username:$role"
 
-        val upToken = UsernamePasswordAuthenticationToken(authUsername, username)
+        val upToken = UsernamePasswordAuthenticationToken(authUsername, "123456")
         val authentication = authenticationManager.authenticate(upToken)
         SecurityContextHolder.getContext().authentication = authentication
 
