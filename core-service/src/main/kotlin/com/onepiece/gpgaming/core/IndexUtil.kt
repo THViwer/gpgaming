@@ -67,6 +67,10 @@ class IndexUtil(
         val contents = i18nContentService.getConfigs(clientId)
         val contentMap = contents.map { "${it.configId}:${it.configType}:${it.language}" to it }.toMap()
 
+        // 绑定平台
+        val platformBinds = platformBindService.findClientPlatforms(clientId = clientId)
+        val platformBindMap = platformBinds.map { it.platform to it }.toMap()
+
         // 公告
         val announcements = contents.filter { it.configType == I18nConfig.Announcement }
 
@@ -91,7 +95,7 @@ class IndexUtil(
         val recommendedPlatforms = recommendeds.first { it.type == RecommendedType.IndexPlatform }.let {
             val content = it.getRecommendedContent(objectMapper) as Recommended.RecommendedPlatform
             content.platforms.map { platform ->
-                Index.RecommendedPlatform(platform = platform, gamePlatform = platform.getGamePlatform(gamePlatforms))
+                Index.RecommendedPlatform(platform = platform, gamePlatform = platform.getGamePlatform(gamePlatforms), platformBind = platformBindMap[platform] ?: error(""))
             }
         }
 
@@ -143,7 +147,7 @@ class IndexUtil(
             val recommendLives = recommendeds.filter { it.type == RecommendedType.IndexLive }.map {
                 val content = it.getRecommendedContent(objectMapper) as Recommended.LiveRecommended
                 Index.LiveRecommended(platform = content.platform, contentImage = content.contentImage, title = content.title,
-                        gamePlatform = content.platform.getGamePlatform(gamePlatforms))
+                        gamePlatform = content.platform.getGamePlatform(gamePlatforms), platformBind = platformBindMap[content.platform] ?: error(""))
             }
 
             // 热门游戏

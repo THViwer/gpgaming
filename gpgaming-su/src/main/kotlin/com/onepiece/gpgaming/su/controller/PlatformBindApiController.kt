@@ -30,17 +30,24 @@ class PlatformBindApiController(
 
         this.checkClientToken(platform = platformBindCoReq.platform, tokenJson = platformBindCoReq.tokenJson)
 
-        val platformBindCo = PlatformBindCo(clientId = platformBindCoReq.clientId, username = platformBindCoReq.username,
-                password = platformBindCoReq.password, earnestBalance = platformBindCoReq.earnestBalance, platform = platformBindCoReq.platform, tokenJson = platformBindCoReq.tokenJson)
-        platformBindService.create(platformBindCo)
+        val platformBindCo = with(platformBindCoReq) {
+            PlatformBindCo(clientId = clientId, username = username, password = password, earnestBalance = earnestBalance, platform = platform,
+            tokenJson = tokenJson, name = name, icon = icon, disableIcon = disableIcon, originIcon = originIcon, originIconOver = originIconOver,
+            mobileIcon = mobileIcon, mobileDisableIcon = mobileDisableIcon, platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver)
+        }
+        platformBindService.create(platformBindCo = platformBindCo)
     }
 
     @PutMapping
     override fun update(@RequestBody platformBindUoReq: PlatformBindSuValue.PlatformBindUoReq) {
-        val platformBindUo = PlatformBindUo(id = platformBindUoReq.id, username = platformBindUoReq.username, password = platformBindUoReq.password,
-                earnestBalance = platformBindUoReq.earnestBalance, status = platformBindUoReq.status, tokenJson = platformBindUoReq.tokenJson, hot = null,
-                new = null)
-        platformBindService.update(platformBindUo)
+
+        val platformBindCo = with(platformBindUoReq) {
+            PlatformBindUo(id = id, username = username, password = password, earnestBalance = earnestBalance, tokenJson = tokenJson, name = name, icon = icon,
+                    disableIcon = disableIcon, originIcon = originIcon, originIconOver = originIconOver, mobileIcon = mobileIcon, mobileDisableIcon = mobileDisableIcon,
+                    platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver, hot = null, new = null, status = status)
+        }
+
+        platformBindService.update(platformBindCo)
 
     }
 

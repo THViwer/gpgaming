@@ -28,12 +28,26 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
             val hot = rs.getBoolean("hot")
             val new = rs.getBoolean("new")
 
+
+            val name = rs.getString("name")
+            val icon = rs.getString("icon")
+            val mobileIcon = rs.getString("mobile_icon")
+            val disableIcon = rs.getString("disable_icon")
+            val mobileDisableIcon = rs.getString("mobile_disable_icon")
+            val originIcon = rs.getString("origin_icon")
+            val originIconOver = rs.getString("origin_icon_over")
+            val platformDetailIcon = rs.getString("platform_detail_icon")
+            val platformDetailIconOver = rs.getString("platform_detail_icon_over")
+
+
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             val tokenJson = rs.getString("token_json")
             PlatformBind(id = id, clientId = clientId, platform = platform, status = status, createdTime = createdTime,
                     username = username, password = password, processId = processId, earnestBalance = earnestBalance,
-                    tokenJson = tokenJson, hot = hot, new = new)
+                    tokenJson = tokenJson, hot = hot, new = new, name = name, icon = icon, mobileIcon = mobileIcon,
+                    disableIcon = disableIcon, mobileDisableIcon = mobileDisableIcon, originIcon = originIcon, originIconOver = originIconOver,
+                    platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver)
         }
 
     override fun get(id: Int): PlatformBind {
@@ -63,6 +77,17 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
                 .set("hot", false)
                 .set("new", false)
                 .set("process_id", UUID.randomUUID().toString())
+
+                .set("name", platformBindCo.name)
+                .set("icon", platformBindCo.icon)
+                .set("mobile_icon", platformBindCo.mobileIcon)
+                .set("disable_icon", platformBindCo.disableIcon)
+                .set("mobile_disable_icon", platformBindCo.mobileDisableIcon)
+                .set("origin_icon", platformBindCo.originIcon)
+                .set("origin_icon_over", platformBindCo.originIconOver)
+                .set("platform_detail_icon", platformBindCo.platformDetailIcon)
+                .set("platform_detail_icon_over", platformBindCo.platformDetailIconOver)
+
                 .executeOnlyOne()
     }
 
@@ -74,6 +99,17 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
                 .set("earnest_balance", platformBindUo.earnestBalance)
                 .set("hot", platformBindUo.hot)
                 .set("new", platformBindUo.new)
+
+                .set("name", platformBindUo.name)
+                .set("icon", platformBindUo.icon)
+                .set("mobile_icon", platformBindUo.mobileIcon)
+                .set("disable_icon", platformBindUo.disableIcon)
+                .set("mobile_disable_icon", platformBindUo.mobileDisableIcon)
+                .set("origin_icon", platformBindUo.originIcon)
+                .set("origin_icon_over", platformBindUo.originIconOver)
+                .set("platform_detail_icon", platformBindUo.platformDetailIcon)
+                .set("platform_detail_icon_over", platformBindUo.platformDetailIconOver)
+
                 .where("id", platformBindUo.id)
                 .executeOnlyOne()
     }

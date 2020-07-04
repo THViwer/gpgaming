@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
-import com.onepiece.gpgaming.beans.model.GamePlatform
+import com.onepiece.gpgaming.beans.model.PlatformBind
 import io.swagger.annotations.ApiModelProperty
 
 object PlatformValueFactory {
@@ -32,7 +32,35 @@ sealed class PlatformValue {
                 val hot: Boolean?,
 
                 // 是否最新
-                val new: Boolean?
+                val new: Boolean?,
+
+
+                // 平台名称
+                val name: String,
+
+                // 图标
+                val icon: String,
+
+                // 平台维护图标
+                val disableIcon: String?,
+
+                // 原始图标
+                val originIcon: String,
+
+                // 原始鼠标移上去图标
+                val originIconOver: String,
+
+                // 手机图标
+                val mobileIcon: String,
+
+                // 手机平台维护图标
+                val mobileDisableIcon: String?,
+
+                // 平台详细图标
+                val platformDetailIcon: String?,
+
+                // 平台详情鼠标移动图片
+                val platformDetailIconOver: String?
         )
 
 
@@ -46,8 +74,11 @@ data class PlatformVo(
         @ApiModelProperty("平台")
         val platform: Platform,
 
+//        @JsonIgnore
+//        val gamePlatform: GamePlatform,
+
         @JsonIgnore
-        val gamePlatform: GamePlatform,
+        val platformBind: PlatformBind,
 
         @ApiModelProperty("是否热门")
         val hot: Boolean,
@@ -68,11 +99,11 @@ data class PlatformVo(
 
         val logo: String
                 @ApiModelProperty("平台logo")
-                get() = gamePlatform.icon
+                get() = platformBind.icon
 
         val name: String
                 @ApiModelProperty("平台名称")
-                get() = gamePlatform.name
+                get() = platformBind.name
 
 }
 

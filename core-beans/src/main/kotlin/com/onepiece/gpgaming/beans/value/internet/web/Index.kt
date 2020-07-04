@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.GamePlatform
 import com.onepiece.gpgaming.beans.model.I18nContent
+import com.onepiece.gpgaming.beans.model.PlatformBind
 import io.swagger.annotations.ApiModelProperty
 
 data class Index(
@@ -53,7 +54,10 @@ data class Index(
                 val platform: Platform,
 
                 @JsonIgnore
-                val gamePlatform: GamePlatform
+                val gamePlatform: GamePlatform,
+
+                @JsonIgnore
+                val platformBind: PlatformBind
 
         ) {
 
@@ -63,11 +67,11 @@ data class Index(
 
                 val logo: String
                         @ApiModelProperty("logo")
-                        get() = gamePlatform.originIcon
+                        get() = platformBind.originIcon
 
                 val touchLogo: String
                         @ApiModelProperty("鼠标移上去logo")
-                        get() = gamePlatform.originIconOver
+                        get() = platformBind.originIconOver
 
         }
 
@@ -90,6 +94,9 @@ data class Index(
                 @JsonIgnore
                 val gamePlatform: GamePlatform,
 
+                @JsonIgnore
+                val platformBind: PlatformBind,
+
                 @ApiModelProperty("是否启用")
                 val status: Status,
 
@@ -107,11 +114,11 @@ data class Index(
 
                 val logo: String
                         @ApiModelProperty("平台logo")
-                        get() = gamePlatform.icon
+                        get() = platformBind.icon
 
                 val name: String
                         @ApiModelProperty("平台名称")
-                        get() = gamePlatform.name
+                        get() = platformBind.name
         }
 
         data class VideoRecommended(
@@ -133,6 +140,9 @@ data class Index(
                 @JsonIgnore
                 val gamePlatform: GamePlatform,
 
+                @JsonIgnore
+                val platformBind: PlatformBind,
+
                 @ApiModelProperty("内容图片")
                 val contentImage: String,
 
@@ -142,7 +152,7 @@ data class Index(
 
                 val originLogo: String
                         @ApiModelProperty("logo")
-                        get() = gamePlatform.originIconOver
+                        get() = platformBind.originIconOver
 
         }
 

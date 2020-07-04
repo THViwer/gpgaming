@@ -10,7 +10,6 @@ import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -24,18 +23,19 @@ class ClientApiController(
         val clientBinds = platformBindService.findClientPlatforms(clientId)
                 .map { it.platform to it }
                 .toMap()
-        val gamePlatforms = gamePlatformService.all()
+
 
         return Platform.all().map {
             val clientBind = clientBinds[it]
 
-            val gamePlatform = it.getGamePlatform(gamePlatforms)
+            val platformBind = clientBinds[it] ?: error("")
+
             if (clientBind != null) {
                 PlatformVo(id = clientBind.id, platform = clientBind.platform, status = clientBind.status, open = true,
-                        gamePlatform = gamePlatform, hot = clientBind.hot, new = clientBind.new)
+                        hot = clientBind.hot, new = clientBind.new, platformBind = platformBind)
             } else {
                 PlatformVo(id = -1, platform = it, status = Status.Stop, open = false,
-                        gamePlatform = gamePlatform, hot = false, new = false)
+                        hot = false, new = false, platformBind = platformBind)
             }
         }
     }
@@ -43,20 +43,20 @@ class ClientApiController(
     @GetMapping("/platform/open")
     override fun openList(): List<PlatformVo> {
         val clientId = getClientId()
-        val gamePlatforms = gamePlatformService.all()
 
         val clientBinds = platformBindService.findClientPlatforms(clientId)
 
         return clientBinds.map {
-            PlatformVo(id = it.id, platform = it.platform, status = it.status, open = true, hot = it.hot, new = it.new,
-                    gamePlatform = it.platform.getGamePlatform(gamePlatforms))
+            PlatformVo(id = it.id, platform = it.platform, status = it.status, open = true, hot = it.hot, new = it.new, platformBind = it)
         }
     }
 
     @PutMapping("/platform")
     override fun update(@RequestBody uo: PlatformValue.PlatformBindUo) {
         val bindUo = PlatformBindUo(id = uo.id, username = null, hot = uo.hot, new = uo.new, password = null, tokenJson = null,
-                earnestBalance = null, status = null)
+                earnestBalance = null, status = null, name = uo.name, icon = uo.icon, disableIcon = uo.disableIcon, originIcon = uo.originIcon,
+                originIconOver = uo.originIconOver, mobileIcon = uo.mobileIcon, mobileDisableIcon = uo.mobileDisableIcon, platformDetailIcon = uo.platformDetailIcon,
+                platformDetailIconOver = uo.platformDetailIconOver)
         platformBindService.update(bindUo)
     }
 

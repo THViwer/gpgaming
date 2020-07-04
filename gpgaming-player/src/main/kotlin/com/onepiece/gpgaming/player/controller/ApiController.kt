@@ -170,13 +170,13 @@ open class ApiController(
                 else -> gamePlatform.status
             }
 
-            val icon = if (launch == LaunchMethod.Wap) gamePlatform.mobileIcon else gamePlatform.icon
-            val disableIcon = if (launch == LaunchMethod.Wap) gamePlatform.mobileDisableIcon else gamePlatform.disableIcon
+            val icon = if (launch == LaunchMethod.Wap) it.mobileIcon else it.icon
+            val disableIcon = if (launch == LaunchMethod.Wap) it.mobileDisableIcon else it.disableIcon
 
-            PlatformVo(id = it.id, name = gamePlatform.name, category = it.platform.category, status = status, icon = icon,
-                    launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo, disableIcon = disableIcon, originIcon = gamePlatform.originIcon,
-                    originIconOver = gamePlatform.originIconOver, categoryDetailIcon = gamePlatform.icon, platformDetailIcon = gamePlatform.platformDetailIcon,
-                    platformDetailIconOver = gamePlatform.platformDetailIconOver, hot = it.hot, new = it.new)
+            PlatformVo(id = it.id, name = it.name, category = it.platform.category, status = status, icon = icon,
+                    launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo, disableIcon = disableIcon, originIcon = it.originIcon,
+                    originIconOver = it.originIconOver, categoryDetailIcon = it.icon, platformDetailIcon = it.platformDetailIcon,
+                    platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new)
             //TODO 设置图标
         }.filter { it.status != Status.Delete }.sortedBy { it.name }
     }
@@ -399,14 +399,17 @@ open class ApiController(
 
     @GetMapping("/down")
     override fun down(@RequestHeader("platform", required = false) platform: Platform?): List<DownloadAppVo> {
-        val gamePlatforms = gamePlatformService.all()
+//        val gamePlatforms = gamePlatformService.all()
+
+        val platformBinds = platformBindService.findClientPlatforms(clientId = getClientId())
+        val bindMap = platformBinds.map { it.platform to it }.toMap()
 
         return appDownService.all()
                 .filter { it.status == Status.Normal }
                 .filter { platform == null || it.platform == platform }
                 .map {
-                    val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
-                    DownloadAppVo(platform = it.platform, icon = gamePlatform.icon, iosPath = it.iosPath, androidPath = it.androidPath)
+                    val bind = bindMap[it.platform]
+                    DownloadAppVo(platform = it.platform, icon = bind?.icon?: "", iosPath = it.iosPath, androidPath = it.androidPath)
                 }
     }
 
@@ -511,11 +514,11 @@ open class ApiController(
                 .map {
                     val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
 
-                    PlatformVo(id = it.id, platform = it.platform, name = gamePlatform.name, category = it.platform.category,
-                            status = gamePlatform.status, icon = gamePlatform.icon, launchs = gamePlatform.launchList,
-                            demo = gamePlatform.demo, disableIcon = gamePlatform.disableIcon, originIconOver = gamePlatform.originIconOver,
-                            originIcon = gamePlatform.originIcon, categoryDetailIcon = gamePlatform.icon, platformDetailIcon = gamePlatform.platformDetailIcon,
-                            platformDetailIconOver = gamePlatform.platformDetailIconOver, hot = it.hot, new = it.new)
+                    PlatformVo(id = it.id, platform = it.platform, name = it.name, category = it.platform.category,
+                            status = gamePlatform.status, icon = it.icon, launchs = gamePlatform.launchList,
+                            demo = gamePlatform.demo, disableIcon = it.disableIcon, originIconOver = it.originIconOver,
+                            originIcon = it.originIcon, categoryDetailIcon = it.icon, platformDetailIcon = it.platformDetailIcon,
+                            platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new)
                     //TODO 配置图标
                 }
 

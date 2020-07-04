@@ -63,6 +63,38 @@ data class PlatformBind(
         // tokenJson
         val tokenJson: String,
 
+
+        // 平台名称
+        val name: String,
+
+        // 图标
+        val icon: String,
+
+        // 平台维护图标
+        val disableIcon: String?,
+
+        // 原始图标
+        val originIcon: String,
+
+        // 原始鼠标移上去图标
+        val originIconOver: String,
+
+        // 手机图标
+        val mobileIcon: String,
+
+        // 手机平台维护图标
+        val mobileDisableIcon: String?,
+
+        // 平台详细图标
+        val platformDetailIcon: String?,
+
+        // 平台详情鼠标移动图片
+        val platformDetailIconOver: String?,
+
+
+
+
+
         // 进程Id
         val processId: String,
 
