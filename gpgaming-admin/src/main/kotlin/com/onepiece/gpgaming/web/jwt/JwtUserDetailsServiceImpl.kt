@@ -26,7 +26,7 @@ class JwtUserDetailsServiceImpl(
         val defaultPermissions = PermissionType.values()
         val permissions = when {
             mUsername == "super_admin" -> defaultPermissions.map { it.resourceId }
-            role == Role.Admin.name -> defaultPermissions.filter { it.resourceId != PermissionType.CASH_THIRD_PAY_SETTING.resourceId }.map { it.resourceId }
+            role == Role.Client.name -> defaultPermissions.filter { it.resourceId != PermissionType.CASH_THIRD_PAY_SETTING.resourceId }.map { it.resourceId }
             role == Role.Waiter.name -> {
                 permissionService.findWaiterPermissions(currentUserId.toInt())
                         .permissions
