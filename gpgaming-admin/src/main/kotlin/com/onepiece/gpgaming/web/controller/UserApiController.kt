@@ -64,7 +64,7 @@ class UserApiController(
         return let {
             try {
                 val client = clientService.login(loginValue)
-                val permissions = PermissionType.values().map { it.resourceId }.plus("-1").filter { it != PermissionType.SALE_MANAGER.resourceId }
+                val permissions = PermissionType.values().map { it.resourceId }.plus("-1").filter { it != PermissionType.CASH_THIRD_PAY_SETTING.resourceId }
 
                 val authUser = authService.login(bossId = client.bossId, id = client.id, role = Role.Client, username = client.username, mAuthorities = permissions)
 
