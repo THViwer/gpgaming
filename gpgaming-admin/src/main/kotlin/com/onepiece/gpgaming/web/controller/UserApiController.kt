@@ -71,6 +71,7 @@ class UserApiController(
                 LoginResp(id = client.id, clientId = client.id, username = client.username, role = Role.Client,
                         token = authUser.token, permissions = permissions, main = client.main)
             } catch (e: Exception) {
+                log.error("登陆失败", e)
                 null
             }
         } ?: let {
@@ -88,6 +89,7 @@ class UserApiController(
                 LoginResp(id = waiter.id, clientId = waiter.clientId, username = waiter.username, role = waiter.role,
                         token = authUser.token, permissions = permissions, main = currentClient.main)
             } catch (e: Exception) {
+                log.error("登陆失败", e)
                 null
             }
         } ?: error(OnePieceExceptionCode.LOGIN_FAIL)
