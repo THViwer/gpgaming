@@ -159,7 +159,7 @@ class SexyGamingService: PlatformService() {
                 "status" to "1" //已结算
         )
 
-        val mapUtil = this.startGetJson(clientToken = clientToken, method = "/wallet/getTransactionByUpdateDate", data = data)
+        val mapUtil = this.startGetJson(clientToken = clientToken, method = "/fetch/getTransactionByUpdateDate", data = data)
 
         return mapUtil.asList("transactions").map { bet ->
 
@@ -202,7 +202,7 @@ class SexyGamingService: PlatformService() {
                 "startTime" to "${startDate}T00+08:00",
                 "endTime" to "${startDate.plusDays(1)}T00+08:00"
         )
-        val mapUtil = this.startGetJson(clientToken = clientToken, method = "/wallet/getSummaryByTxTimeHour", data = data)
+        val mapUtil = this.startGetJson(clientToken = clientToken, method = "/fetch/getSummaryByTxTimeHour", data = data)
         return mapUtil.asList("transactions").firstOrNull() ?: MapUtil.instance(hashMapOf())
     }
 
