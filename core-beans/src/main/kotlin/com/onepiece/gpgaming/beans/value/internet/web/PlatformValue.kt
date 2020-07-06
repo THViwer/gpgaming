@@ -91,6 +91,7 @@ data class PlatformVo(
 
         @ApiModelProperty("是否开通")
         val open: Boolean
+
 ) {
 
         val category: PlatformCategory
@@ -105,6 +106,29 @@ data class PlatformVo(
                 @ApiModelProperty("平台名称")
                 get() = platformBind.name
 
+        // 图标
+        val icon: String = platformBind.icon
+
+        // 平台维护图标
+        val disableIcon: String? = platformBind.disableIcon
+
+        // 原始图标
+        val originIcon: String = platformBind.originIcon
+
+        // 原始鼠标移上去图标
+        val originIconOver: String = platformBind.originIconOver
+
+        // 手机图标
+        val mobileIcon: String = platformBind.mobileIcon
+
+        // 手机平台维护图标
+        val mobileDisableIcon: String? = platformBind.mobileDisableIcon
+
+        // 平台详细图标
+        val platformDetailIcon: String? = platformBind.platformDetailIcon
+
+        // 平台详情鼠标移动图片
+        val platformDetailIconOver: String? = platformBind.platformDetailIconOver
 }
 
 
