@@ -66,6 +66,7 @@ class PullBetTask(
             // TODO 暂时用AllBet
             val binds = platformBindService.all()
 //                    .filter { it.clientId == 1 && it.platform == Platform.AllBet }
+                    .filter { it.clientId != 4 } //TODO 暂时先关闭BWClub88
                     .filter { it.status != Status.Delete }
                     .filter { gps[it.platform]?.status == Status.Normal }
 
