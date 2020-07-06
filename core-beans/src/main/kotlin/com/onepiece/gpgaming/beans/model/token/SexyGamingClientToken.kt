@@ -4,6 +4,8 @@ class SexyGamingClientToken(
 
         val apiPath: String,
 
+        val orderApiPath: String,
+
         val agentId: String,
 
         val cert: String,
