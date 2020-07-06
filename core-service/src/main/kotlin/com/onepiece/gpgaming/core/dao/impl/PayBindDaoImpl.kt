@@ -47,7 +47,7 @@ class PayBindDaoImpl(
 
     override fun update(uo: PayBindValue.PayBindUo): Boolean {
         return update()
-                .set("level_id", uo.levelId)
+                .setIfNull("level_id", uo.levelId)
                 .set("config_json", uo.configJson)
                 .set("status", uo.status)
                 .set("min_amount", uo.minAmount)
