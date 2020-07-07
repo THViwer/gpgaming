@@ -18,12 +18,14 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
+import com.onepiece.gpgaming.beans.value.database.AppVersionValue
 import com.onepiece.gpgaming.beans.value.database.BlogValue
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.service.AppDownService
+import com.onepiece.gpgaming.core.service.AppVersionService
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.BlogService
 import com.onepiece.gpgaming.core.service.ContactService
@@ -75,7 +77,8 @@ open class ApiController(
         private val hotGameService: HotGameService,
         private val seoService: SeoService,
         private val blogService: BlogService,
-        private val indexUtil: IndexUtil
+        private val indexUtil: IndexUtil,
+        private val appVersionService: AppVersionService
 ) : BasicController(), Api {
 
     private val log = LoggerFactory.getLogger(ApiController::class.java)
@@ -633,6 +636,22 @@ open class ApiController(
         val logo = defaultClient.logo
 
         return ApiValue.GuideConfigVo(logo = logo, countries = countries, mainPath = mainPath)
+    }
+
+    @GetMapping("/application/version")
+    override fun checkVersion(): Map<String, AppVersionValue.AppVersionVo> {
+        val mainClientId = getMainClient().id
+        val list =  appVersionService.getVersions(mainClientId = mainClientId)
+                .map {
+                    AppVersionValue.AppVersionVo(id = it.id, launch = it.launch, url = it.url, version = it.version, content = it.content, constraint = it.constraint)
+                }
+        val android = list.firstOrNull { it.launch == LaunchMethod.Android }
+        val ios = list.firstOrNull { it.launch == LaunchMethod.Ios }
+
+        return mapOf(
+            "android" to android,
+                "ios" to ios
+        ).filter { it.value != null }.map { it.key to it.value!! }.toMap()
     }
 
     fun <T> getRandom(list: List<T>?) : T? {
