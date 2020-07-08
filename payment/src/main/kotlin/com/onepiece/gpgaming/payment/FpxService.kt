@@ -4,8 +4,10 @@ import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.pay.GPPayConfig
 import com.onepiece.gpgaming.payment.http.PayOkHttpUtil
+import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.util.*
 
 
 data class FPXPayResponse(
@@ -24,6 +26,10 @@ data class FPXPayRequest(
 
         // 商户Code
         val merchantCode: String,
+
+        val opt: String = "",
+
+        val hash: String = "",
 
         // 商户端订单Id
         val orderId: String,
@@ -66,8 +72,12 @@ class FpxService(
 
         val fpxReq = FPXPayRequest(merchantCode = config.merchantId, orderId = req.orderId, amount = req.amount.setScale(2, 2),
                 bank = req.selectBank!!, merchantBackPath = config.backendURL, responseUrl = req.responseUrl, failResponseUrl = req.failResponseUrl)
+        val otp = UUID.randomUUID().toString()
 
-        val response = okHttpUtil.doPostJson(url = config.apiPath, data = fpxReq, clz = FPXPayResponse::class.java)
+        val param = "${req.orderId}:${config.merchantId}:${config.apiKey}:${otp}"
+        val hash = DigestUtils.md5Hex(param)
+
+        val response = okHttpUtil.doPostJson(url = config.apiPath, data = fpxReq.copy(opt = otp, hash = hash), clz = FPXPayResponse::class.java)
         check(response.errorCode != 200) { OnePieceExceptionCode.SYSTEM }
 
 
