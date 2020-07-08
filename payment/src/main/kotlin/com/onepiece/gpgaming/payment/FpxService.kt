@@ -27,7 +27,7 @@ data class FPXPayRequest(
         // 商户Code
         val merchantCode: String,
 
-        val opt: String = "",
+        val otp: String = "",
 
         val hash: String = "",
 
@@ -77,7 +77,7 @@ class FpxService(
         val param = "${req.orderId}:${config.merchantId}:${config.apiKey}:${otp}"
         val hash = DigestUtils.md5Hex(param)
 
-        val response = okHttpUtil.doPostJson(url = config.apiPath, data = fpxReq.copy(opt = otp, hash = hash), clz = FPXPayResponse::class.java)
+        val response = okHttpUtil.doPostJson(url = config.apiPath, data = fpxReq.copy(otp = otp, hash = hash), clz = FPXPayResponse::class.java)
         check(response.errorCode != 200) { OnePieceExceptionCode.SYSTEM }
 
 
