@@ -79,6 +79,7 @@ class ClientServiceImpl(
     override fun login(loginValue: ClientLoginValue.ClientLoginReq): Client {
         val client = clientDao.findByUsername(loginValue.username)
         checkNotNull(client) { OnePieceExceptionCode.LOGIN_FAIL }
+        check(loginValue.clientId == client.id) { OnePieceExceptionCode.LOGIN_FAIL }
         check(bCryptPasswordEncoder.matches(loginValue.password, client.password))
         check(client.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
 
