@@ -86,6 +86,8 @@ class WaiterServiceImpl(
 
     override fun selectSale(bossId: Int, clientId: Int, saleId: Int?): Waiter? {
 
+        if (saleId != null && saleId <= 0) return null
+
         fun selectNext(): Waiter? {
             val redisKey = "salesman:id:$clientId"
             val cacheSaleId = redisService.get(key = redisKey, clz = Int::class.java) ?: -1
