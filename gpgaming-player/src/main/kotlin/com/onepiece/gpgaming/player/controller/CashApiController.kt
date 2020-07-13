@@ -15,6 +15,7 @@ import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
 import com.onepiece.gpgaming.beans.enums.PromotionPeriod
 import com.onepiece.gpgaming.beans.enums.PromotionRuleType
+import com.onepiece.gpgaming.beans.enums.RiskLevel
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.enums.WalletEvent
 import com.onepiece.gpgaming.beans.enums.WithdrawState
@@ -453,11 +454,13 @@ open class CashApiController(
         if (page.total == 0) return Page.empty()
 
         val data = page.data.map {
+
+            // 如果是用户 不用显示风险等级
             with(it) {
                 WithdrawValue.WithdrawVo(id = it.id, orderId = it.orderId, money = money, state = it.state, remark = remarks, createdTime = createdTime,
                         endTime = endTime, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber, memberName = memberName,
                         memberId = it.memberId, memberBankId = it.memberBankId, lockWaiterId = it.lockWaiterId, username = username,
-                        lockWaiterUsername = null)
+                        lockWaiterUsername = null, riskLevel = RiskLevel.None)
             }
         }
 

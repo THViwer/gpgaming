@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.DepositState
+import com.onepiece.gpgaming.beans.enums.RiskLevel
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import io.swagger.annotations.ApiModelProperty
 import springfox.documentation.annotations.ApiIgnore
@@ -90,7 +91,10 @@ sealed class WithdrawValue {
                 val createdTime: LocalDateTime,
 
                 @ApiModelProperty("操作时间")
-                val endTime: LocalDateTime?
+                val endTime: LocalDateTime?,
+
+                @ApiModelProperty("风险等级")
+                val riskLevel: RiskLevel
 
         )
 

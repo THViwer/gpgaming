@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.RiskLevel
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
@@ -18,6 +19,7 @@ import com.onepiece.gpgaming.beans.value.database.ClientBankCo
 import com.onepiece.gpgaming.beans.value.database.ClientBankUo
 import com.onepiece.gpgaming.beans.value.database.DepositLockUo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
+import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.PayBindValue
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.beans.value.database.WalletNoteQuery
@@ -325,11 +327,22 @@ class CashApiController(
             it.id to it
         }.toMap()
 
-        return withdrawService.query(withdrawQuery).map {
+        val list = withdrawService.query(withdrawQuery)
+
+        // 会员列表
+        val memberIds = list.map { it.memberId }
+        val memberQuery = MemberQuery(clientId = clientId, ids = memberIds)
+        val members = memberService.list(memberQuery)
+                .map { it.id to it }
+                .toMap()
+
+        // 返回
+        return list.map {
+            val riskLevel = members[it.memberId]?.riskLevel ?: RiskLevel.None
             with(it) {
                 WithdrawValue.WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber,
                         memberId = memberId, memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = endTime, lockWaiterId = it.lockWaiterId,
-                        username = username, lockWaiterUsername = waiters[it.lockWaiterId ?: 0]?.username, id = it.id)
+                        username = username, lockWaiterUsername = waiters[it.lockWaiterId ?: 0]?.username, id = it.id, riskLevel = riskLevel)
             }
         }
 
@@ -351,11 +364,23 @@ class CashApiController(
             it.id to it
         }.toMap()
 
-        val data = withdrawService.query(withdrawQuery).map {
+        val list = withdrawService.query(withdrawQuery)
+
+        // 会员列表
+        val memberIds = list.map { it.memberId }
+        val memberQuery = MemberQuery(clientId = clientId, ids = memberIds)
+        val members = memberService.list(memberQuery)
+                .map { it.id to it }
+                .toMap()
+
+        // 返回
+        val data = list.map {
+            val riskLevel = members[it.memberId]?.riskLevel ?: RiskLevel.None
+
             with(it) {
                 WithdrawValue.WithdrawVo(orderId = it.orderId, money = it.money, memberBankId = memberBankId, memberBank = memberBank, memberBankCardNumber = memberBankCardNumber,
                         memberId = memberId, memberName = memberName, state = it.state, remark = remarks, createdTime = createdTime, endTime = it.endTime,
-                        lockWaiterId = it.lockWaiterId, username = it.username, lockWaiterUsername = waiters[it.lockWaiterId ?: 0]?.username, id = it.id)
+                        lockWaiterId = it.lockWaiterId, username = it.username, lockWaiterUsername = waiters[it.lockWaiterId ?: 0]?.username, id = it.id, riskLevel = riskLevel)
             }
         }
 
