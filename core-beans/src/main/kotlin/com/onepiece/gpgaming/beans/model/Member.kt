@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
+import com.onepiece.gpgaming.beans.enums.RiskLevel
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
@@ -75,6 +76,12 @@ data class Member(
 
         // 每月的代理费
         val agencyMonthFee: BigDecimal,
+
+        // 风险等级
+        val riskLevel: RiskLevel,
+
+        // 注册ip
+        val registerIp: String,
 
         // 登陆时间
         val loginTime: LocalDateTime?

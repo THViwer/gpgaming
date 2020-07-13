@@ -82,7 +82,7 @@ class AgentApiController(
         // 创建代理
         val memberCo = MemberCo(bossId = bossId, clientId = mainClient.id, agentId = agentId, levelId = level.id, name = req.name, phone = req.phone,
                 username = req.username, password = req.password, promoteCode = null, role = Role.Agent, safetyPassword = req.password, formal = false,
-                saleId = -1)
+                saleId = -1, registerIp = "agent:register")
         val id = memberService.create(memberCo)
 
 

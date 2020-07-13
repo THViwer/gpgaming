@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.dao.impl
 
+import com.onepiece.gpgaming.beans.enums.RiskLevel
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
@@ -41,12 +42,15 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
 //            val promoteCode = rs.getString("promote_code") ?: ""
             val agencyMonthFee = rs.getBigDecimal("agency_month_fee")
             val formal = rs.getBoolean("formal")
+            val registerIp = rs.getString("register_ip")
+            val riskLevel = rs.getString("risk_level").let { RiskLevel.valueOf(it) }
 
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
                     safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion,
                     autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = "$id",
-                    formal = formal, agencyMonthFee = agencyMonthFee, saleId = saleId, saleScope = saleScope)
+                    formal = formal, agencyMonthFee = agencyMonthFee, saleId = saleId, saleScope = saleScope,
+                    registerIp = registerIp, riskLevel = riskLevel)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -68,6 +72,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("promote_code", memberCo.promoteCode)
                 .set("formal", memberCo.formal)
                 .set("agency_month_fee", BigDecimal.ZERO)
+                .set("register_ip", memberCo.registerIp)
                 .executeGeneratedKey()
     }
 

@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.database
 
+import com.onepiece.gpgaming.beans.enums.RiskLevel
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
@@ -36,6 +37,8 @@ data class MemberQuery(
         val usernames: List<String>? = null,
 
         val name: String? = null,
+
+        val registerIp: String? = null,
 
         val phone: String? = null,
 
@@ -94,7 +97,13 @@ data class MemberCo(
         val promoteCode: String?,
 
         // 是否正式
-        val formal: Boolean
+        val formal: Boolean,
+
+        // 注册ip
+        val registerIp: String,
+
+        // 风险等级
+        val riskLevel: RiskLevel = RiskLevel.None
 )
 
 data class MemberUo(

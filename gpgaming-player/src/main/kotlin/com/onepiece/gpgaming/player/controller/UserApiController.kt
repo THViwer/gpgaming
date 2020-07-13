@@ -173,7 +173,7 @@ class UserApiController(
         val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
         val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
                 levelId = defaultLevel.id, name = registerReq.name, phone = registerReq.phone, promoteCode = registerReq.promoteCode, bossId = bossId, agentId = agent.id,
-                role = Role.Member, formal = true, saleId = registerReq.saleCode?.toInt())
+                role = Role.Member, formal = true, saleId = registerReq.saleCode?.toInt(), registerIp = RequestUtil.getIpAddress())
         memberService.create(memberCo)
 
         // 通知pv

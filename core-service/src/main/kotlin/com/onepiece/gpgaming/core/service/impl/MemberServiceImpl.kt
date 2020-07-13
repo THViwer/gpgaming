@@ -16,6 +16,7 @@ import com.onepiece.gpgaming.beans.value.database.WalletCo
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.dao.MemberRelationDao
+import com.onepiece.gpgaming.core.risk.RiskUtil
 import com.onepiece.gpgaming.core.service.LoginHistoryService
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberService
@@ -36,7 +37,8 @@ class MemberServiceImpl(
         private val memberRelationDao: MemberRelationDao,
         private val waiterService: WaiterService,
         private val memberInfoService: MemberInfoService,
-        private val loginHistoryService: LoginHistoryService
+        private val loginHistoryService: LoginHistoryService,
+        private val riskUtil: RiskUtil
 ) : MemberService {
 
     override fun getAgentByCode(bossId: Int, clientId: Int, code: String): Member? {
@@ -174,8 +176,9 @@ class MemberServiceImpl(
         val saleScope = if (memberCo.saleId == saleId && saleId != -1) SaleScope.Own else SaleScope.System
 
         // create member
+        val riskLevel = riskUtil.checkRiskLevel(clientId = memberCo.clientId, name = memberCo.name, ip = memberCo.registerIp)
         val password = bCryptPasswordEncoder.encode(memberCo.password)
-        val id = memberDao.create(memberCo.copy(password = password, promoteCode = promoteCode, saleId = saleId, saleScope = saleScope))
+        val id = memberDao.create(memberCo.copy(password = password, promoteCode = promoteCode, saleId = saleId, saleScope = saleScope, riskLevel = riskLevel))
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // create wallet
