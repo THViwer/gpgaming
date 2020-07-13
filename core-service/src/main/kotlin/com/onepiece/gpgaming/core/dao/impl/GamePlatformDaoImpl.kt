@@ -16,19 +16,25 @@ class GamePlatformDaoImpl : BasicDaoImpl<GamePlatform>("game_platform"), GamePla
         get() = { rs ->
             val id = rs.getInt("id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
-//            val name = rs.getString("name")
-//            val icon = rs.getString("icon")
-//            val mobileIcon = rs.getString("mobile_icon")
-//            val disableIcon = rs.getString("disable_icon")
-//            val mobileDisableIcon = rs.getString("mobile_disable_icon")
-//            val originIcon = rs.getString("origin_icon")
-//            val originIconOver = rs.getString("origin_icon_over")
+
             val demo = rs.getBoolean("demo")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val launchs = rs.getString("launchs")
-//            val platformDetailIcon = rs.getString("platform_detail_icon")
-//            val platformDetailIconOver = rs.getString("platform_detail_icon_over")
-            GamePlatform(id = id, platform = platform, demo = demo, status = status, launchs = launchs)
+
+
+            val name = rs.getString("name")
+            val icon = rs.getString("icon")
+            val mobileIcon = rs.getString("mobile_icon")
+            val disableIcon = rs.getString("disable_icon")
+            val mobileDisableIcon = rs.getString("mobile_disable_icon")
+            val originIcon = rs.getString("origin_icon")
+            val originIconOver = rs.getString("origin_icon_over")
+            val platformDetailIcon = rs.getString("platform_detail_icon")
+            val platformDetailIconOver = rs.getString("platform_detail_icon_over")
+            GamePlatform(id = id, platform = platform, demo = demo, status = status, launchs = launchs,
+
+                    name = name, icon = icon, mobileIcon = mobileIcon, disableIcon = disableIcon, mobileDisableIcon = mobileDisableIcon,
+                    originIconOver = originIconOver, originIcon = originIcon, platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver)
         }
 
     override fun create(co: GamePlatformValue.GamePlatformCo): Boolean {

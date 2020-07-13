@@ -59,51 +59,51 @@ data class PlatformBindUo(
         val id: Int,
 
         // 用户名
-        val username: String?,
+        val username: String?= null,
 
         // 是否热门
-        val hot: Boolean?,
+        val hot: Boolean?= null,
 
         // 是否新游戏
-        val new: Boolean?,
+        val new: Boolean?= null,
 
         // 密码
-        val password: String?,
+        val password: String?= null,
 
         // token信息
-        val tokenJson: String?,
+        val tokenJson: String?= null,
 
         // 保证金
-        val earnestBalance: BigDecimal?,
+        val earnestBalance: BigDecimal?= null,
 
         // 状态
-        val status: Status?,
+        val status: Status?= null,
 
         // 平台名称
-        val name: String,
+        val name: String?= null,
 
         // 图标
-        val icon: String,
+        val icon: String?= null,
 
         // 平台维护图标
-        val disableIcon: String?,
+        val disableIcon: String?= null,
 
         // 原始图标
-        val originIcon: String,
+        val originIcon: String?= null,
 
         // 原始鼠标移上去图标
-        val originIconOver: String,
+        val originIconOver: String?= null,
 
         // 手机图标
-        val mobileIcon: String,
+        val mobileIcon: String?= null,
 
         // 手机平台维护图标
-        val mobileDisableIcon: String?,
+        val mobileDisableIcon: String? = null,
 
         // 平台详细图标
-        val platformDetailIcon: String?,
+        val platformDetailIcon: String? = null,
 
         // 平台详情鼠标移动图片
-        val platformDetailIconOver: String?
+        val platformDetailIconOver: String? = null
 
 )
