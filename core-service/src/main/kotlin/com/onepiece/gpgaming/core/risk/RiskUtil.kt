@@ -3,12 +3,14 @@ package com.onepiece.gpgaming.core.risk
 import com.onepiece.gpgaming.beans.enums.RiskLevel
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.core.service.MemberService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class RiskUtil(
-        private val memberService: MemberService
-) {
+class RiskUtil{
+
+    @Autowired
+    lateinit var memberService: MemberService
 
 
     /**
