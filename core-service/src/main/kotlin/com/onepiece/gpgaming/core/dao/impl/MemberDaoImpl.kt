@@ -73,6 +73,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("formal", memberCo.formal)
                 .set("agency_month_fee", BigDecimal.ZERO)
                 .set("register_ip", memberCo.registerIp)
+                .set("risk_level", memberCo.riskLevel)
                 .executeGeneratedKey()
     }
 
