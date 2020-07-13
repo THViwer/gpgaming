@@ -109,7 +109,9 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
 
                         "/user/cleanSG",
 
-                        "/user"
+                        "/user",
+
+                        "/demo/**"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, "/order").permitAll()
                 // 对于获取token的rest api要允许匿名访问
