@@ -8,6 +8,7 @@ import com.alibaba.excel.metadata.GlobalConfiguration
 import com.alibaba.excel.metadata.property.ExcelContentProperty
 import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.RiskLevel
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Deposit
@@ -262,6 +263,12 @@ data class MemberVo(
 
         @ApiModelProperty("登陆Ip")
         val loginIp: String?,
+
+        @ApiModelProperty("登陆Ip")
+        val registerIp: String,
+
+        @ApiModelProperty("风险等级")
+        val riskLevel: RiskLevel,
 
         @ApiModelProperty("登陆时间")
         val loginTime: LocalDateTime?
