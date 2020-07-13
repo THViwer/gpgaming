@@ -23,7 +23,7 @@ class DemoController(
 
         val binds = platformBindService.all()
 
-        binds.forEach {
+        binds.parallelStream().forEach {
             val gamePlatform = gamePlatformMap[it.platform] ?: error("")
             val bindUo = with(gamePlatform) {
                 PlatformBindUo(id = it.id, name = name, mobileIcon = mobileIcon, mobileDisableIcon = mobileDisableIcon, originIcon = originIcon,
