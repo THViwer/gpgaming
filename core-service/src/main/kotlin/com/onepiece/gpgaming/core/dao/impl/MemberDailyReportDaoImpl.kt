@@ -235,11 +235,11 @@ class MemberDailyReportDaoImpl(
             		sum(total_m_win) total_m_win,
             		sum(total_bet-total_m_win) total_m_loss,
             		sum(deposit_amount+third_pay_amount) deposit_amount,
-            		count(deposit_count+third_pay_count) deposit_count,
+            		sum(deposit_count+third_pay_count) deposit_count,
             		sum(withdraw_amount) withdraw_amount,
-            		count(withdraw_count) withdraw_count,
+            		sum(withdraw_count) withdraw_count,
             		sum(artificial_amount) artificial_amount,
-            		count(artificial_count) artificial_count,
+            		sum(artificial_count) artificial_count,
             		sum(rebate_amount) rebate_amount,
             		sum(promotion_amount) promotion_amount
             	from member_daily_report 
