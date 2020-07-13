@@ -5,6 +5,10 @@ sealed class CompileValue {
 
     data class Config(
 
+            val bossId: Int,
+
+            val clientId: Int,
+
             val logo: String,
 
             val shortcutLogo: String

@@ -104,7 +104,7 @@ open class ApiController(
         val clientId = getClientId()
         val client = clientService.get(clientId)
 
-        return CompileValue.Config(logo = client.logo, shortcutLogo = client.shortcutLogo)
+        return CompileValue.Config(bossId = client.bossId, clientId = clientId, logo = client.logo, shortcutLogo = client.shortcutLogo)
     }
 
     @GetMapping("/hotGames")
