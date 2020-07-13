@@ -23,6 +23,7 @@ import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.utils.RedisService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -37,9 +38,11 @@ class MemberServiceImpl(
         private val memberRelationDao: MemberRelationDao,
         private val waiterService: WaiterService,
         private val memberInfoService: MemberInfoService,
-        private val loginHistoryService: LoginHistoryService,
-        private val riskUtil: RiskUtil
+        private val loginHistoryService: LoginHistoryService
 ) : MemberService {
+
+    @Autowired
+    lateinit var riskUtil: RiskUtil
 
     override fun getAgentByCode(bossId: Int, clientId: Int, code: String): Member? {
 
