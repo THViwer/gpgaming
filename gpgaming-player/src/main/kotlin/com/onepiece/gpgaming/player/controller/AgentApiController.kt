@@ -129,7 +129,7 @@ class AgentApiController(
 
 
         val name = mainSite.domain.replace(".com", "")
-        return AgentValue.AffIndexConfig(logo = mainClient.logo, shortcutLogo = mainClient.shortcutLogo, guideUrl = guideUrl, name = name)
+        return AgentValue.AffIndexConfig(bossId = mainClient.bossId, logo = mainClient.logo, shortcutLogo = mainClient.shortcutLogo, guideUrl = guideUrl, name = name)
     }
 
     @GetMapping("/info")
