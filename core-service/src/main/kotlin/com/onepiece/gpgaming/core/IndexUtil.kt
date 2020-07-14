@@ -94,8 +94,10 @@ class IndexUtil(
         // 首页推荐平台
         val recommendedPlatforms = recommendeds.first { it.type == RecommendedType.IndexPlatform }.let {
             val content = it.getRecommendedContent(objectMapper) as Recommended.RecommendedPlatform
-            content.platforms.map { platform ->
-                Index.RecommendedPlatform(platform = platform, gamePlatform = platform.getGamePlatform(gamePlatforms), platformBind = platformBindMap[platform] ?: error(""))
+            content.platforms.mapNotNull { platform ->
+                platformBindMap[platform]?.let {
+                    Index.RecommendedPlatform(platform = platform, gamePlatform = platform.getGamePlatform(gamePlatforms), platformBind = it)
+                }
             }
         }
 
