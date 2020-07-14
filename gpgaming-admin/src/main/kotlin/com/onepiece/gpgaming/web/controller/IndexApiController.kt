@@ -195,10 +195,11 @@ class IndexApiController(
 
             val promotionRuleVo = PromotionRuleVo(ruleType = promotion.ruleType, ruleJson = promotion.ruleJson)
 
+            val code = if(promotion.code == "") "-" else promotion.code
             PromotionVo(id = promotion.id, clientId = promotion.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
                     status = promotion.status, createdTime = promotion.createdTime, updatedTime = promotion.updatedTime, i18nContents = i18nContents,
                     promotionRuleVo = promotionRuleVo, platforms = promotion.platforms, period = promotion.period, periodMaxPromotion = promotion.periodMaxPromotion,
-                    levelId = promotion.levelId, sequence = promotion.sequence, show = promotion.show)
+                    levelId = promotion.levelId, sequence = promotion.sequence, show = promotion.show, code = code)
         }
     }
 

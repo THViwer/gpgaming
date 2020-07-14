@@ -17,6 +17,9 @@ data class PromotionVo(
         @ApiModelProperty("id")
         val id: Int,
 
+        @ApiModelProperty("优惠码")
+        val code: String,
+
         @ApiModelProperty("厅主Id")
         val clientId: Int,
 
