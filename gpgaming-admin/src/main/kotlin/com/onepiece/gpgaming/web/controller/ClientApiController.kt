@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
+import com.onepiece.gpgaming.beans.model.PlatformBind
 import com.onepiece.gpgaming.beans.value.database.PlatformBindUo
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformValue
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformVo
@@ -25,17 +26,10 @@ class ClientApiController(
                 .toMap()
 
 
-        return Platform.all().map {
-            val clientBind = clientBinds[it]
-
-            val platformBind = clientBinds[it] ?: error("")
-
-            if (clientBind != null) {
-                PlatformVo(id = clientBind.id, platform = clientBind.platform, status = clientBind.status, open = true,
-                        hot = clientBind.hot, new = clientBind.new, platformBind = platformBind)
-            } else {
-                PlatformVo(id = -1, platform = it, status = Status.Stop, open = false,
-                        hot = false, new = false, platformBind = platformBind)
+        return Platform.all().mapNotNull {
+            clientBinds[it]?.let { bind ->
+                PlatformVo(id = bind.id, platform = bind.platform, status = bind.status, open = true,
+                        hot = bind.hot, new = bind.new, platformBind = bind)
             }
         }
     }
