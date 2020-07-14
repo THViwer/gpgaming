@@ -24,6 +24,36 @@ import java.util.*
 
 sealed class MemberValue {
 
+        data class RiskDetail(
+
+                // 姓名相同列表
+                val sameNameList: List<RiskMemberVo>,
+
+                // 注册ip相同列表
+                val sameRegisterIpList: List<RiskMemberVo>
+
+        ) {
+
+                data class RiskMemberVo(
+
+                        // 用户Id
+                        val memberId: Int,
+
+                        // 用户名
+                        val username: String,
+
+                        // 姓名
+                        val name:  String,
+
+                        // 登陆ip
+                        val loginIp: String,
+
+                        // 注册ip
+                        val registerIp: String
+                )
+
+        }
+
         data class FollowVo(
 
                 @ExcelProperty("会员Id")

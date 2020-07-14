@@ -43,6 +43,12 @@ interface MemberApi {
     ): MemberPage
 
 
+    @ApiOperation(tags = ["user"], value = "会员 -> 风险详情")
+    fun checkRiskDetail(
+            @PathVariable("memberId") memberId: Int
+    ): MemberValue.RiskDetail
+
+
     @ApiOperation(tags = ["user"], value = "会员 -> 登陆")
     fun loginByAdmin(@RequestParam("username") username: String): UserValue.MemberLoginResponse
 

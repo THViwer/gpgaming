@@ -156,6 +156,32 @@ class MemberApiController(
         return MemberPage(total = page.total, data = data)
     }
 
+
+    @GetMapping("/risk/detail/{memberId}")
+    override fun checkRiskDetail(@PathVariable("memberId") memberId: Int): MemberValue.RiskDetail {
+
+        val user = this.current()
+        val member = memberService.getMember(id = memberId)
+
+        val memberQuery = MemberQuery(bossId = user.bossId, clientId = user.clientId, name = member.name)
+        val theSameNames = memberService.list(memberQuery).filter { it.id != memberId }
+
+        val registerIp = if (member.registerIp == "admin:register" || member.registerIp == "agent:register" || member.registerIp == "None") null else member.registerIp
+        val theRegisterIps = registerIp?.let {
+            memberService.list(memberQuery.copy(name = null, registerIp = member.registerIp)).filter { it.id != memberId }
+        } ?: emptyList()
+
+        val sameNameList = theSameNames.map {
+            MemberValue.RiskDetail.RiskMemberVo(memberId = it.id,  username = it.username, name = it.name, loginIp = it.loginIp?: "-", registerIp = it.registerIp)
+        }
+
+        val registerIpList = theRegisterIps.map {
+            MemberValue.RiskDetail.RiskMemberVo(memberId = it.id,  username = it.username, name = it.name, loginIp = it.loginIp?: "-", registerIp = it.registerIp)
+        }
+
+        return MemberValue.RiskDetail(sameNameList = sameNameList, sameRegisterIpList = registerIpList)
+    }
+
     @GetMapping("/member/login")
     override fun loginByAdmin(@RequestParam("username") username: String): UserValue.MemberLoginResponse {
 
