@@ -192,6 +192,7 @@ open class ApiController(
                 .filter { it.status == Status.Normal }
                 .sortedBy { it.sequence }
                 .filter { it.show }
+                .filter { it.category != PromotionCategory.ActivationCode } // 优惠码Code类型不显示在前台
 
         val promotions = arrayListOf<Promotion>()
 

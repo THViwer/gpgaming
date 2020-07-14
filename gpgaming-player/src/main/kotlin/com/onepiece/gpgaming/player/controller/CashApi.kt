@@ -128,7 +128,8 @@ interface CashApi {
     fun checkPromotion(
             @RequestParam("platform") platform: Platform,
             @RequestParam("amount") amount: BigDecimal,
-            @RequestParam("promotionId", required = false) promotionId: Int?
+            @RequestParam("promotionId", required = false) promotionId: Int?,
+            @RequestParam("code", required = false) code: String?
     ): CheckPromotinResp
 
     @ApiOperation(tags = ["cash"], value = "转账")

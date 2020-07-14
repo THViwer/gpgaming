@@ -524,7 +524,8 @@ open class CashApiController(
     override fun checkPromotion(
             @RequestParam("platform") platform: Platform,
             @RequestParam("amount") amount: BigDecimal,
-            @RequestParam("promotionId", required = false) promotionId: Int?
+            @RequestParam("promotionId", required = false) promotionId: Int?,
+            @RequestParam("code", required = false) code: String?
     ): CheckPromotinResp {
 
         val language = getHeaderLanguage()
@@ -541,6 +542,10 @@ open class CashApiController(
 
 
         val joinPromotions = promotions
+                .filter {
+                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果0：${it.code == code || it.category != PromotionCategory.ActivationCode} ")
+                    it.code == code || (it.category != PromotionCategory.ActivationCode && code == null)
+                }
                 .filter {
                     log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果1：${promotionId == null || it.id == promotionId} ")
                     promotionId == null || it.id == promotionId

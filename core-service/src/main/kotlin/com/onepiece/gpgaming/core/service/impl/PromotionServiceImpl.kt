@@ -17,6 +17,7 @@ import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.PromotionDao
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.utils.RedisService
+import com.onepiece.gpgaming.utils.StringUtil
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -40,31 +41,27 @@ class PromotionServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun create(clientId: Int, promotionCoReq: PromotionCoReq) {
 
+        val code = this.getCode(clientId = clientId)
         // 创建优惠记录
         val promotionCo = PromotionCo(clientId = clientId, category = promotionCoReq.category, stopTime = promotionCoReq.stopTime, top = promotionCoReq.top,
                 levelId = promotionCoReq.levelId, ruleType = promotionCoReq.promotionRuleVo.ruleType, periodMaxPromotion = promotionCoReq.periodMaxPromotion,
                 ruleJson = promotionCoReq.promotionRuleVo.ruleJson, platforms = promotionCoReq.platforms, period = promotionCoReq.period,
-                sequence = promotionCoReq.sequence, show = promotionCoReq.show)
+                sequence = promotionCoReq.sequence, show = promotionCoReq.show, code = code)
         val promotionId = promotionDao.create(promotionCo)
         check(promotionId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
-        // 创建国际化
-//        val i18nContent = promotionCoReq.i18nContent
-//        val i18nContentCo = I18nContentCo(clientId = promotionCo.clientId, title = i18nContent.title, synopsis = i18nContent.synopsis,
-//                content = i18nContent.content, configId = promotionId, configType = I18nConfig.Promotion, language = i18nContent.language,
-//                banner = i18nContent.banner, precautions = i18nContent.precautions)
-//        val i18nContentId = i18nContentService.create(i18nContentCo)
-//        check(i18nContentId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
-
-        // 创建优惠活动
-//        val promotionRuleVo = promotionCoReq.PromotionRuleVo
-//        val promotionRuleCo = PromotionRuleCo(clientId = clientId, platform = promotionCoReq.platform, category = promotionRuleVo.category,
-//                levelId = promotionRuleVo.levelId, ruleJson = promotionRuleVo.ruleJson, promotionId = promotionId)
-//        val promotionRoleState = promotionRoleDao.create(promotionRuleCo)
-//        check(promotionRoleState) { OnePieceExceptionCode.DB_CHANGE_FAIL }
-//
         redisService.delete(OnePieceRedisKeyConstant.promotions(promotionCo.clientId))
     }
+
+    fun getCode(clientId: Int): String {
+
+        val code = StringUtil.generateNonce(6).toUpperCase()
+
+        this.all(clientId = clientId).firstOrNull { it.code == code } ?: return code
+
+        return this.getCode(clientId = clientId)
+    }
+
 
     override fun update(clientId: Int, promotionUoReq: PromotionUoReq) {
 
@@ -99,7 +96,7 @@ class PromotionServiceImpl(
 
             return Promotion(id = -100, clientId = 0, category = PromotionCategory.Special, platforms = listOf(Platform.Kiss918, Platform.Pussy888, Platform.Mega),
                     stopTime = null, ruleType = PromotionRuleType.Withdraw, levelId = emptyList(), period = PromotionPeriod.Daily, periodMaxPromotion = BigDecimal(99999999),
-                    ruleJson = ruleJson, top = true, status = Status.Normal, createdTime = now, updatedTime = now, sequence = 100, show = true)
+                    ruleJson = ruleJson, top = true, status = Status.Normal, createdTime = now, updatedTime = now, sequence = 100, show = true, code = "")
         } else {
             promotionDao.get(id)
         }

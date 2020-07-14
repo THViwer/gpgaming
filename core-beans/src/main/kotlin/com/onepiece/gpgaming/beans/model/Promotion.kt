@@ -61,6 +61,9 @@ data class Promotion (
         // 是否前台显示
         val show: Boolean,
 
+        // 优惠码
+        val code: String,
+
         // 创建时间
         val createdTime: LocalDateTime,
 

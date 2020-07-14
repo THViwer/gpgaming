@@ -14,7 +14,10 @@ enum class PromotionCategory(
     // 返水优惠
     Backwater("backwater", "返水"),
 
-    // 其它
+    // 优惠码 (不显示在前台)
+    ActivationCode("ActivationCode", "优惠码"),
+
+    // 其它(来显示在前台)
     Other("other", "其它"),
 
 

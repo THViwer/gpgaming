@@ -40,13 +40,15 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val sequence = rs.getInt("sequence")
             val show = rs.getBoolean("show")
 
+            val code = rs.getString("code")
+
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
 
             Promotion(id = id, category = category, stopTime = stopTime, status = status, createdTime = createdTime,
                     clientId = clientId, top = top, updatedTime = updatedTime, platforms = platforms, levelId = levelId,
                     ruleJson = ruleJson, ruleType = ruleType, period = period, periodMaxPromotion = periodMaxPromotion,
-                    sequence = sequence, show = show)
+                    sequence = sequence, show = show, code = code)
         }
 
     override fun create(promotionCo: PromotionCo): Int {
@@ -65,6 +67,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("sequence", promotionCo.sequence)
                 .set("status", Status.Stop)
                 .set("show", promotionCo.show)
+                .set("code", promotionCo.code)
                 .executeGeneratedKey()
     }
 

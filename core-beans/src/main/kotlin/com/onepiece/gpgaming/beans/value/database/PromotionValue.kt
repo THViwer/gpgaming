@@ -44,7 +44,10 @@ data class PromotionCo(
         val show: Boolean,
 
         // 排序
-        val sequence: Int
+        val sequence: Int,
+
+        // 优惠码
+        val code: String
 
 )
 
