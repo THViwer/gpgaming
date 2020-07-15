@@ -32,7 +32,6 @@ import java.time.LocalDateTime
 @Service
 class MemberServiceImpl(
         private val memberDao: MemberDao,
-        private val walletService: WalletService,
         private val redisService: RedisService,
         private val bCryptPasswordEncoder: BCryptPasswordEncoder,
         private val memberRelationDao: MemberRelationDao,
@@ -43,6 +42,10 @@ class MemberServiceImpl(
 
     @Autowired
     lateinit var riskUtil: RiskUtil
+
+    @Autowired
+    lateinit var walletService: WalletService
+
 
     override fun getAgentByCode(bossId: Int, clientId: Int, code: String): Member? {
 

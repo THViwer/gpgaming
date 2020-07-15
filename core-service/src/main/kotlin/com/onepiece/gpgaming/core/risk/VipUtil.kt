@@ -31,7 +31,7 @@ class VipUtil {
 
         val levels = vipService.list(clientId = clientId)
                 .filter { it.status == Status.Normal }
-                .sortedBy { it.depositAmount }
+                .sortedByDescending { it.depositAmount }
         if (levels.isEmpty()) return
 
         levels.firstOrNull {
