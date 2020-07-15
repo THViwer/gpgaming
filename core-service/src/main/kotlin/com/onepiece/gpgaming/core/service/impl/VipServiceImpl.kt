@@ -12,6 +12,10 @@ class VipServiceImpl(
         private val vipDao: VipDao
 ) : VipService {
 
+    override fun get(vipId: Int): Vip {
+        return vipDao.get(vipId)
+    }
+
     override fun list(clientId: Int): List<Vip> {
         return vipDao.all(clientId = clientId)
     }

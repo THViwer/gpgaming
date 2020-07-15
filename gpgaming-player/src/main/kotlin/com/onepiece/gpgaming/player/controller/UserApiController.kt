@@ -13,6 +13,7 @@ import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberService
+import com.onepiece.gpgaming.core.service.VipService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.chain.ChainUtil
 import com.onepiece.gpgaming.player.controller.value.ChangePwdReq
@@ -46,7 +47,8 @@ class UserApiController(
         private val levelService: LevelService,
         private val memberInfoService: MemberInfoService,
         private val passwordEncoder: PasswordEncoder,
-        private val chainUtil: ChainUtil
+        private val chainUtil: ChainUtil,
+        private val vipService: VipService
 ) : BasicController(), UserApi {
 
     companion object {
@@ -85,16 +87,24 @@ class UserApiController(
 //        val clientWebSite = webSites.first { it.bossId == bossId && it.clientId == member.clientId && it.country ==  }
 //                .filter { it.bossId == bossId }.first { it.clientId == member.clientId }
 
+        val (vipName, vipLogo) = if (member.vipId > 0) {
+            val vip = vipService.get(vipId = member.vipId)
+            vip.name to vip.logo
+        } else {
+            "-" to "-"
+        }
 
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
 
         return if (currentWebSite.clientId == member.clientId) {
             val token = authService.login(bossId = bossId, clientId = member.clientId, username = loginReq.username, role = member.role)
             LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name, autoTransfer = member.autoTransfer,
-                    domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = true)
+                    domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = true, vipLogo = vipLogo, vipName = vipName,
+                    levelId = member.levelId)
         } else {
             LoginResp(id = member.id, role = Role.Member, username = member.username, token = "", name = member.name, autoTransfer = member.autoTransfer,
-                    domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = false)
+                    domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = false, vipLogo = vipLogo, vipName = vipName,
+                    levelId = member.levelId)
         }
     }
 
@@ -140,9 +150,19 @@ class UserApiController(
         val client = clientService.get(member.clientId)
 
 
+
+        val (vipName, vipLogo) = if (member.vipId > 0) {
+            val vip = vipService.get(vipId = member.vipId)
+            vip.name to vip.logo
+        } else {
+            "-" to "-"
+        }
+
+
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
         return LoginResp(id = member.id, role = Role.Member, username = member.username, token = authToken, name = member.name, autoTransfer = member.autoTransfer,
-                domain = "https://www.${webSite.domain}${isMobile}", country = client.country, successful = true)
+                domain = "https://www.${webSite.domain}${isMobile}", country = client.country, successful = true, levelId = member.levelId, vipName = vipName,
+                vipLogo = vipLogo)
 
     }
 

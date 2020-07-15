@@ -10,6 +10,15 @@ data class LoginResp(
         @ApiModelProperty("id")
         val id: Int,
 
+        @ApiModelProperty("层级Id")
+        val levelId: Int,
+
+        @ApiModelProperty("vip 名称")
+        val vipName: String,
+
+        @ApiModelProperty("vip logo")
+        val vipLogo: String,
+
         @ApiModelProperty("真实姓名")
         val name: String,
 
