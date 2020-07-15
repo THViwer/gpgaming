@@ -211,7 +211,7 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
     }
 
     override fun sumSuccessful(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): BigDecimal {
-        return query("sum(money) deposit_amount")
+        return query("sum(amount) deposit_amount")
                 .where("client_id", clientId)
                 .where("member_id", memberId)
                 .where("state", PayState.Successful)

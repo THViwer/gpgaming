@@ -41,7 +41,7 @@ class VipUtil {
             val day = it.days.substring(0, it.days.length-1).toLong()
             val unit = it.days.substring(it.days.length -1, it.days.length)
 
-            val endDate = LocalDate.now()
+            val endDate = LocalDate.now().plusDays(1)
 
             val startDate = when (unit) {
                 "d" -> endDate.minusDays(day)
