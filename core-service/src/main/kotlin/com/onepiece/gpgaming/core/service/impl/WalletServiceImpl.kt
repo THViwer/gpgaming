@@ -122,7 +122,7 @@ class WalletServiceImpl(
                 memberInfoService.asyncUpdate(uo = infoUo)
 
                 // 刷新vip等级
-                vipUtil.checkAndUpdateVip(clientId = walletUo.clientId, memberId = walletUo.memberId)
+                vipUtil.checkAndUpdateVip(clientId = walletUo.clientId, memberId = walletUo.memberId, amount = walletUo.money)
             }
             WalletEvent.WITHDRAW -> {
                 val infoUo = MemberInfoValue.MemberInfoUo.ofWithdraw(memberId = walletUo.memberId, amount = walletUo.money)

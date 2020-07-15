@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.VipService
 import org.springframework.stereotype.Component
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @Component
@@ -17,7 +18,7 @@ class VipUtil(
         private val vipService: VipService
 ) {
 
-    fun checkAndUpdateVip(clientId: Int, memberId: Int) {
+    fun checkAndUpdateVip(clientId: Int, memberId: Int, amount: BigDecimal = BigDecimal.ZERO) {
 
         val levels = vipService.list(clientId = clientId)
                 .filter { it.status == Status.Normal }
@@ -44,7 +45,7 @@ class VipUtil(
             val depositAmount = depositService.sumSuccessful(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
             val payAmount = payOrderService.sumSuccessful(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
 
-            depositAmount.plus(payAmount).toDouble() >= needDeposit.toDouble()
+            depositAmount.plus(payAmount).plus(amount).toDouble() >= needDeposit.toDouble()
         }?.also {
 
             val member = memberService.getMember(id = memberId)
