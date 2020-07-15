@@ -77,10 +77,13 @@ open class JwtAuthenticationTokenFilter(
         val isExist = tokenStore.redisService.get(redisKey, Int::class.java)
 
         if (localDate != LocalDate.now() && isExist != null) {
+
+            tokenStore.redisService.put(key = redisKey, value = 1, timeout = 86400)
+
+            // 更新用户信息
             val infoUo = MemberInfoValue.MemberInfoUo.ofLogin(memberId = user.id)
             memberInfoService.asyncUpdate(uo = infoUo)
 
-            tokenStore.redisService.put(key = redisKey, value = 1, timeout = 86400)
 
             // 检查vip等级
             vipUtil.checkAndUpdateVip(clientId = user.clientId, memberId = user.id)
