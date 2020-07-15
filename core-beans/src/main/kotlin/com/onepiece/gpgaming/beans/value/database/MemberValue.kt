@@ -116,6 +116,9 @@ data class MemberUo(
         // 姓名
         val name: String? = null,
 
+        // 风险等级
+        val riskLevel: RiskLevel? = null,
+
         // 手机号
         val phone: String? = null,
 

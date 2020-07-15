@@ -179,7 +179,7 @@ class MemberServiceImpl(
         val saleScope = if (memberCo.saleId == saleId && saleId != -1) SaleScope.Own else SaleScope.System
 
         // create member
-        val riskLevel = riskUtil.checkRiskLevel(clientId = memberCo.clientId, name = memberCo.name, ip = memberCo.registerIp)
+        val riskLevel = riskUtil.checkRiskLevel(clientId = memberCo.clientId, username = memberCo.username, name = memberCo.name, ip = memberCo.registerIp)
         val password = bCryptPasswordEncoder.encode(memberCo.password)
         val id = memberDao.create(memberCo.copy(password = password, promoteCode = promoteCode, saleId = saleId, saleScope = saleScope, riskLevel = riskLevel))
         check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }

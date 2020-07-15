@@ -81,6 +81,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
         return update()
                 .set("sale_id", memberUo.saleId)
                 .set("name", memberUo.name)
+                .set("risk_level", memberUo.riskLevel)
                 .set("phone", memberUo.phone)
                 .set("password", memberUo.password)
                 .set("safety_password", memberUo.safetyPassword)
