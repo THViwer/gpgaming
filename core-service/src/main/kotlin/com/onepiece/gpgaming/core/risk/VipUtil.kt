@@ -54,7 +54,7 @@ class VipUtil {
             val depositAmount = depositService.sumSuccessful(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
             val payAmount = payOrderService.sumSuccessful(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
 
-            depositAmount.plus(payAmount).plus(amount).toDouble() >= needDeposit.toDouble()
+            depositAmount.plus(payAmount).toDouble() >= needDeposit.toDouble()
         }?.also {
 
             val member = memberService.getMember(id = memberId)
