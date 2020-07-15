@@ -6,17 +6,21 @@ import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.VipService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDate
 
 @Component
 class VipUtil(
-        private val memberService: MemberService,
         private val depositService: DepositService,
         private val payOrderService: PayOrderService,
         private val vipService: VipService
 ) {
+
+    @Autowired
+    lateinit var memberService: MemberService
+
 
     fun checkAndUpdateVip(clientId: Int, memberId: Int, amount: BigDecimal = BigDecimal.ZERO) {
 
