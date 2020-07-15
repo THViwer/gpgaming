@@ -12,9 +12,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 @Component
-class VipUtil(
-
-) {
+class VipUtil {
 
     @Autowired
     lateinit var memberService: MemberService
