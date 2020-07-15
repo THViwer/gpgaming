@@ -140,6 +140,9 @@ data class MemberUo(
         // 等级Id
         val levelId: Int? = null,
 
+        // vip id
+        val vipId: Int? = null,
+
         // 自动转账
         val autoTransfer: Boolean? = null,
 

@@ -16,6 +16,7 @@ import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import com.onepiece.gpgaming.core.dao.basic.getIntOrNull
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
 import java.sql.ResultSet
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -157,6 +158,18 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                     val count = rs.getInt("count")
                     DepositReportVo(clientId = xClientId, memberId = xMemberId, money = money, count = count)
                 }
+    }
+
+    override fun sumSuccessful(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): BigDecimal {
+        return query("sum(money) deposit_amount")
+                .where("client_id", clientId)
+                .where("member_id", memberId)
+                .where("state", DepositState.Successful)
+                .asWhere("created_time >= ?", startDate)
+                .asWhere("created_time < ?", endDate)
+                .executeMaybeOne { rs ->
+                    rs.getBigDecimal("deposit_amount")
+                } ?: BigDecimal.ZERO
     }
 
     override fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo> {

@@ -11,6 +11,8 @@ import com.onepiece.gpgaming.core.dao.PayOrderDao
 import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.WalletService
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Service
@@ -77,5 +79,9 @@ class PayOrderServiceImpl(
 
     override fun close(closeTime: LocalDateTime) {
         payOrderDao.close(closeTime)
+    }
+
+    override fun sumSuccessful(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): BigDecimal {
+        return payOrderDao.sumSuccessful(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
     }
 }

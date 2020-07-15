@@ -17,6 +17,7 @@ import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.WalletService
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @Service
@@ -72,6 +73,10 @@ class DepositServiceImpl(
 
     override fun report(startDate: LocalDate, endDate: LocalDate): List<DepositReportVo> {
         return depositDao.report(clientId = null, memberId = null, startDate = startDate, endDate = endDate)
+    }
+
+    override fun sumSuccessful(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): BigDecimal {
+        return depositDao.sumSuccessful(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
     }
 
     override fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo> {

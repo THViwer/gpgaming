@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.player.jwt
 
 import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
+import com.onepiece.gpgaming.core.risk.VipUtil
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -21,7 +22,8 @@ open class JwtAuthenticationTokenFilter(
         private val jwtTokenUtil: JwtTokenUtil,
         private val tokenStore: TokenStore,
         private val passwordEncoder: PasswordEncoder,
-        private val memberInfoService: MemberInfoService
+        private val memberInfoService: MemberInfoService,
+        private val vipUtil: VipUtil
 ) : OncePerRequestFilter() {
 
     private val log = LoggerFactory.getLogger(JwtAuthenticationTokenFilter::class.java)
@@ -79,6 +81,9 @@ open class JwtAuthenticationTokenFilter(
             memberInfoService.asyncUpdate(uo = infoUo)
 
             tokenStore.redisService.put(key = redisKey, value = 1, timeout = 86400)
+
+            // 检查vip等级
+            vipUtil.checkAndUpdateVip(clientId = user.clientId, memberId = user.id)
         }
     }
 

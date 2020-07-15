@@ -48,6 +48,9 @@ data class Member(
         // 等级Id
         val levelId: Int,
 
+        // vipId
+        val vipId: Int,
+
         // 是否已有首充值
         val firstPromotion: Boolean,
 

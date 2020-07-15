@@ -2,6 +2,8 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.MemberBank
+import com.onepiece.gpgaming.beans.model.Vip
+import com.onepiece.gpgaming.beans.value.database.VipValue
 import com.onepiece.gpgaming.beans.value.internet.web.LevelCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.LevelMemberVo
 import com.onepiece.gpgaming.beans.value.internet.web.LevelMoveDo
@@ -100,6 +102,22 @@ interface MemberApi {
     @ApiOperation(tags = ["user"], value = "层级 -> 更新")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody levelUoReq: LevelUoReq)
+
+
+
+    @ApiOperation(tags = ["user"], value = "vip -> 列表")
+    fun vipList(): List<Vip>
+
+    @ApiOperation(tags = ["user"], value = "vip -> 创建")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun vipCreate(@RequestBody co: VipValue.VipCo)
+
+    @ApiOperation(tags = ["user"], value = "vip -> 更新")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun vipUpdate(@RequestBody uo: VipValue.VipUo)
+
+
+
 
     @ApiOperation(tags = ["user"], value = "层级 -> 条件查询会员")
     fun findMembers(

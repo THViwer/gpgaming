@@ -15,6 +15,7 @@ import com.onepiece.gpgaming.beans.value.database.WalletUo
 import com.onepiece.gpgaming.beans.value.database.WalletWithdrawUo
 import com.onepiece.gpgaming.core.dao.WalletDao
 import com.onepiece.gpgaming.core.dao.WalletNoteDao
+import com.onepiece.gpgaming.core.risk.VipUtil
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.WalletService
 import org.springframework.stereotype.Service
@@ -24,7 +25,8 @@ import java.math.BigDecimal
 class WalletServiceImpl(
         private val walletDao: WalletDao,
         private val walletNoteDao: WalletNoteDao,
-        private val memberInfoService: MemberInfoService
+        private val memberInfoService: MemberInfoService,
+        private val vipUtil: VipUtil
 ) : WalletService {
 
     override fun getMemberWallet(memberId: Int): Wallet {
@@ -113,12 +115,20 @@ class WalletServiceImpl(
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // 更新会员信息
-        if (walletUo.event == WalletEvent.DEPOSIT || walletUo.event == WalletEvent.ThirdPay) {
-            val infoUo = MemberInfoValue.MemberInfoUo.ofDeposit(memberId = walletUo.memberId, amount = walletUo.money)
-            memberInfoService.asyncUpdate(uo = infoUo)
-        } else if (walletUo.event == WalletEvent.WITHDRAW) {
-            val infoUo = MemberInfoValue.MemberInfoUo.ofWithdraw(memberId = walletUo.memberId, amount = walletUo.money)
-            memberInfoService.asyncUpdate(uo = infoUo)
+        when (walletUo.event){
+            WalletEvent.DEPOSIT,
+            WalletEvent.ThirdPay -> {
+                val infoUo = MemberInfoValue.MemberInfoUo.ofDeposit(memberId = walletUo.memberId, amount = walletUo.money)
+                memberInfoService.asyncUpdate(uo = infoUo)
+
+                // 刷新vip等级
+                vipUtil.checkAndUpdateVip(clientId = walletUo.clientId, memberId = walletUo.memberId)
+            }
+            WalletEvent.WITHDRAW -> {
+                val infoUo = MemberInfoValue.MemberInfoUo.ofWithdraw(memberId = walletUo.memberId, amount = walletUo.money)
+                memberInfoService.asyncUpdate(uo = infoUo)
+            }
+            else -> {}
         }
 
 

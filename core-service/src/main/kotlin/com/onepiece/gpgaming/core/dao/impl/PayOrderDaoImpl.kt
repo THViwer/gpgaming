@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao.impl
 
 import com.onepiece.gpgaming.beans.enums.Bank
+import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.model.PayOrder
@@ -9,6 +10,7 @@ import com.onepiece.gpgaming.core.dao.PayOrderDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import com.onepiece.gpgaming.core.dao.basic.getIntOrNull
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
 import java.sql.ResultSet
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -206,5 +208,17 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
                     PayOrderValue.PayOrderCReport(clientId = clientId, totalAmount = amount, count = count, thirdPaySequence = thirdPaySequence)
 
                 }
+    }
+
+    override fun sumSuccessful(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): BigDecimal {
+        return query("sum(money) deposit_amount")
+                .where("client_id", clientId)
+                .where("member_id", memberId)
+                .where("state", PayState.Successful)
+                .asWhere("created_time >= ?", startDate)
+                .asWhere("created_time < ?", endDate)
+                .executeMaybeOne { rs ->
+                    rs.getBigDecimal("deposit_amount")
+                } ?: BigDecimal.ZERO
     }
 }

@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.beans.value.database.DepositLockUo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.DepositReportVo
 import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
+import java.math.BigDecimal
 import java.time.LocalDate
 
 interface DepositService {
@@ -25,6 +26,8 @@ interface DepositService {
     fun check(depositUoReq: DepositValue.DepositUoReq)
 
     fun report(startDate: LocalDate, endDate: LocalDate): List<DepositReportVo>
+
+    fun sumSuccessful(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): BigDecimal
 
     fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo>
 

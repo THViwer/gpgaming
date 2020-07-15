@@ -34,6 +34,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val safetyPassword = rs.getString("safety_password")
             val firstPromotion = rs.getBoolean("first_promotion")
             val levelId = rs.getInt("level_id")
+            val vipId = rs.getInt("vip_id")
             val autoTransfer = rs.getBoolean("auto_transfer")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
@@ -50,7 +51,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                     safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion,
                     autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = "$id",
                     formal = formal, agencyMonthFee = agencyMonthFee, saleId = saleId, saleScope = saleScope,
-                    registerIp = registerIp, riskLevel = riskLevel)
+                    registerIp = registerIp, riskLevel = riskLevel, vipId = vipId)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -74,6 +75,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("agency_month_fee", BigDecimal.ZERO)
                 .set("register_ip", memberCo.registerIp)
                 .set("risk_level", memberCo.riskLevel)
+                .set("vip_id", -1)
                 .executeGeneratedKey()
     }
 
@@ -88,6 +90,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("first_promotion", memberUo.firstPromotion)
                 .set("status", memberUo.status)
                 .set("level_id", memberUo.levelId)
+                .set("vip_id", memberUo.vipId)
                 .set("login_ip", memberUo.loginIp)
                 .set("login_time", memberUo.loginTime)
                 .set("auto_transfer", memberUo.autoTransfer)

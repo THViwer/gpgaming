@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.MemberBank
+import com.onepiece.gpgaming.beans.model.Vip
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.LevelValue
 import com.onepiece.gpgaming.beans.value.database.MemberBankUo
@@ -13,6 +14,7 @@ import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
+import com.onepiece.gpgaming.beans.value.database.VipValue
 import com.onepiece.gpgaming.beans.value.database.WalletQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
 import com.onepiece.gpgaming.beans.value.internet.web.LevelCoReq
@@ -39,6 +41,7 @@ import com.onepiece.gpgaming.core.service.MemberBankService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
+import com.onepiece.gpgaming.core.service.VipService
 import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
@@ -81,7 +84,9 @@ class MemberApiController(
         private val payOrderDao: PayOrderDao,
 
         private val bCryptPasswordEncoder: BCryptPasswordEncoder,
-        private val okHttpUtil: OkHttpUtil
+        private val okHttpUtil: OkHttpUtil,
+
+        private val vipService: VipService
 
 ) : BasicController(), MemberApi {
 
@@ -427,6 +432,25 @@ class MemberApiController(
         val levelUo = LevelValue.LevelUo(id = levelUoReq.id, name = levelUoReq.name, status = levelUoReq.status, sportRebate = levelUoReq.sportRebate,
                 liveRebate = levelUoReq.liveRebate, slotRebate = levelUoReq.slotRebate, fishRebate = levelUoReq.fishRebate)
         levelService.update(levelUo)
+    }
+
+
+    @GetMapping("/vip")
+    override fun vipList(): List<Vip> {
+        val user = this.current()
+        return vipService.list(clientId = user.clientId)
+    }
+
+    @PostMapping("/vip")
+    override fun vipCreate(@RequestBody co: VipValue.VipCo) {
+        val user = this.current()
+        vipService.create(co.copy(clientId = user.clientId))
+    }
+
+    @PutMapping("/vip")
+    override fun vipUpdate(@RequestBody uo: VipValue.VipUo) {
+        val user = this.current()
+        vipService.update(uo)
     }
 
     @GetMapping("/level/member")

@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.DepositReportVo
 import com.onepiece.gpgaming.beans.value.database.DepositUo
 import com.onepiece.gpgaming.core.dao.basic.BasicDao
+import java.math.BigDecimal
 import java.time.LocalDate
 
 interface DepositDao: BasicDao<Deposit> {
@@ -25,6 +26,8 @@ interface DepositDao: BasicDao<Deposit> {
     fun update(depositUo: DepositUo): Boolean
 
     fun report(clientId: Int?, memberId: Int?, startDate: LocalDate, endDate: LocalDate, memberIds: List<Int>? = null): List<DepositReportVo>
+
+    fun sumSuccessful(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): BigDecimal
 
     fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo>
 

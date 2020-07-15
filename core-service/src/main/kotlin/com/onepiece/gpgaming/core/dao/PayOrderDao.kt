@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.core.dao
 
 import com.onepiece.gpgaming.beans.model.PayOrder
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -34,4 +35,5 @@ interface PayOrderDao {
     // 业主报表 constraint: 是否强制入款
     fun cReport(startDate: LocalDate, constraint: Boolean): List<PayOrderValue.PayOrderCReport>
 
+    fun sumSuccessful(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): BigDecimal
 }
