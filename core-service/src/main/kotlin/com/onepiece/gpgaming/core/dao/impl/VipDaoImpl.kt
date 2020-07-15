@@ -46,6 +46,7 @@ class VipDaoImpl : BasicDaoImpl<Vip>("vip"), VipDao {
                 .set("days", uo.days)
                 .set("deposit_amount", uo.depositAmount)
                 .set("status", uo.status)
+                .where("id", uo.id)
                 .executeOnlyOne()
     }
 }
