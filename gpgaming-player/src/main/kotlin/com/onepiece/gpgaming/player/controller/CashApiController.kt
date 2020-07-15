@@ -543,8 +543,8 @@ open class CashApiController(
 
         val joinPromotions = promotions
                 .filter {
-                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果0：${it.code == code || it.category != PromotionCategory.ActivationCode} ")
-                    it.code == code || (it.category != PromotionCategory.ActivationCode && code == null)
+                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果0：${it.code.toUpperCase() == code?.toUpperCase() || it.category != PromotionCategory.ActivationCode} ")
+                    it.code.toUpperCase() == code?.toUpperCase() || (it.category != PromotionCategory.ActivationCode && code == null)
                 }
                 .filter {
                     log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果1：${promotionId == null || it.id == promotionId} ")
