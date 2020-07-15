@@ -38,7 +38,7 @@ class VipUtil {
 
             val needDeposit= it.depositAmount
 
-            val day = it.days.substring(0, it.days.length).toLong()
+            val day = it.days.substring(0, it.days.length-1).toLong()
             val unit = it.days.substring(it.days.length -1, it.days.length)
 
             val endDate = LocalDate.now()

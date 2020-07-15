@@ -76,7 +76,7 @@ open class JwtAuthenticationTokenFilter(
         val redisKey = "tokenToLogin:${LocalDate.now()}:${user.id}"
         val isExist = tokenStore.redisService.get(redisKey, Int::class.java)
 
-        if (localDate != LocalDate.now() && isExist != null) {
+//        if (localDate != LocalDate.now() && isExist != null) {
             val infoUo = MemberInfoValue.MemberInfoUo.ofLogin(memberId = user.id)
             memberInfoService.asyncUpdate(uo = infoUo)
 
@@ -84,7 +84,7 @@ open class JwtAuthenticationTokenFilter(
 
             // 检查vip等级
             vipUtil.checkAndUpdateVip(clientId = user.clientId, memberId = user.id)
-        }
+//        }
     }
 
     private fun validHash(request: HttpServletRequest, username: String?) {

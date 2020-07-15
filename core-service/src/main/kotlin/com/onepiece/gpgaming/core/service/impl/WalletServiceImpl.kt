@@ -18,6 +18,7 @@ import com.onepiece.gpgaming.core.dao.WalletNoteDao
 import com.onepiece.gpgaming.core.risk.VipUtil
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.WalletService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
@@ -25,9 +26,11 @@ import java.math.BigDecimal
 class WalletServiceImpl(
         private val walletDao: WalletDao,
         private val walletNoteDao: WalletNoteDao,
-        private val memberInfoService: MemberInfoService,
-        private val vipUtil: VipUtil
+        private val memberInfoService: MemberInfoService
 ) : WalletService {
+
+    @Autowired
+    lateinit var vipUtil: VipUtil
 
     override fun getMemberWallet(memberId: Int): Wallet {
         return walletDao.getMemberWallet(memberId)
