@@ -13,13 +13,20 @@ import java.time.LocalDate
 
 @Component
 class VipUtil(
-        private val depositService: DepositService,
-        private val payOrderService: PayOrderService,
-        private val vipService: VipService
+
 ) {
 
     @Autowired
     lateinit var memberService: MemberService
+
+    @Autowired
+    lateinit var depositService: DepositService
+
+    @Autowired
+    lateinit var payOrderService: PayOrderService
+
+    @Autowired
+    lateinit var vipService: VipService
 
 
     fun checkAndUpdateVip(clientId: Int, memberId: Int, amount: BigDecimal = BigDecimal.ZERO) {
