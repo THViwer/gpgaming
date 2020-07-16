@@ -32,7 +32,7 @@ class MemberInfoServiceImpl(
         if (has == null) {
             val member = memberDao.get(id = uo.memberId)
             val co = MemberInfoValue.MemberInfoCo(bossId = member.bossId, clientId = member.clientId, agentId = member.agentId,
-                    saleId = member.saleId, memberId = uo.memberId, username = member.username)
+                    saleId = member.saleId, memberId = uo.memberId, username = member.username, registerTime = member.createdTime)
             this.create(co)
         }
 
