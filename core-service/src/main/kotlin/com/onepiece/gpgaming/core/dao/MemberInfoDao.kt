@@ -14,4 +14,6 @@ interface MemberInfoDao: BasicDao<MemberInfo> {
 
     fun list(query: MemberInfoValue.MemberInfoQuery): List<MemberInfo>
 
+    fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int)
+
 }

@@ -122,4 +122,11 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
                 .sort(query.sortBy)
                 .execute(mapper)
     }
+
+    override fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int) {
+        update()
+                .set("sale_id", toSaleId)
+                .where("client_id", clientId)
+                .where("sale_id", fromSaleId)
+    }
 }

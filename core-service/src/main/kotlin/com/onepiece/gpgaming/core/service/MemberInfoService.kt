@@ -10,4 +10,6 @@ interface MemberInfoService {
     fun list(query: MemberInfoValue.MemberInfoQuery): List<MemberInfo>
 
     fun asyncUpdate(uo: MemberInfoValue.MemberInfoUo)
+
+    fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int)
 }

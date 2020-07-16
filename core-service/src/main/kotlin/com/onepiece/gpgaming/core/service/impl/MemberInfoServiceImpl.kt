@@ -39,4 +39,8 @@ class MemberInfoServiceImpl(
         val flag = memberInfoDao.update(uo = uo)
         check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
+
+    override fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int) {
+        TODO("Not yet implemented")
+    }
 }
