@@ -169,7 +169,8 @@ class MegaService : PlatformService() {
         val mapUtil = this.startPostJson(method = "open.mega.player.total.report", data = data, clientToken = clientToken)
 
         return mapUtil.asList("result").map {
-            val bet = it.asBigDecimal("bet")
+//            val bet = it.asBigDecimal("bet")
+            val bet = BigDecimal.ZERO
             val win = it.asBigDecimal("win").negate()
             val username = it.asString("loginId")
             val originData = objectMapper.writeValueAsString(it.data)

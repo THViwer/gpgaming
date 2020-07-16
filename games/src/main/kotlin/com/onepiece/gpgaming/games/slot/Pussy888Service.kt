@@ -246,7 +246,8 @@ class Pussy888Service(
         val memberId = -1
         return mapUtils.asList("results").map { bet ->
             val orderId = bet.asString("uuid")
-            val betAmount = bet.asBigDecimal("bet")
+//            val betAmount = bet.asBigDecimal("bet")
+            val betAmount = BigDecimal.ZERO
             val winAmount = bet.asBigDecimal("Win").negate()
             val betTime = bet.asLocalDateTime("CreateTime", dateTimeFormatter)
 
