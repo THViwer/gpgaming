@@ -244,4 +244,8 @@ class MemberServiceImpl(
     override fun moveLevel(clientId: Int, levelId: Int, memberIds: List<Int>) {
         return memberDao.moveLevel(clientId, levelId, memberIds)
     }
+
+    override fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int) {
+        memberDao.moveSale(clientId = clientId, fromSaleId = fromSaleId, toSaleId = toSaleId)
+    }
 }

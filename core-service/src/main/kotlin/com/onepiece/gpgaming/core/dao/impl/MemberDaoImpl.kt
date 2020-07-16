@@ -230,4 +230,12 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .asWhere("id in (${memberIds.joinToString(",")})")
                 .execute()
     }
+
+    override fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int) {
+        update()
+                .set("sale_id", toSaleId)
+                .where("client_id", clientId)
+                .where("sale_id", fromSaleId)
+                .execute()
+    }
 }

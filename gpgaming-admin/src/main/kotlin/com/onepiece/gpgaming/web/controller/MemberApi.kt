@@ -139,4 +139,12 @@ interface MemberApi {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun move(@RequestBody levelMoveDo: LevelMoveDo)
 
+    @ApiOperation(tags = ["user"], value = "电销 -> 会员转移")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun saleMove(
+            @RequestParam("fromSaleId") fromSaleId: Int,
+            @RequestParam("toSaleId") toSaleId: Int
+    )
+
+
 }

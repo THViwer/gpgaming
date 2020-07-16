@@ -43,4 +43,6 @@ interface MemberService {
 
     fun moveLevel(clientId: Int, levelId: Int, memberIds: List<Int>)
 
+    fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int)
+
 }

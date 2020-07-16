@@ -524,7 +524,20 @@ class MemberApiController(
         memberService.moveLevel(clientId = clientId, levelId = levelMoveDo.levelId, memberIds = levelMoveDo.memberIds)
     }
 
+    @GetMapping("/sale/move")
+    override fun saleMove(
+            @RequestParam("fromSaleId") fromSaleId: Int,
+            @RequestParam("toSaleId") toSaleId: Int
+    ) {
 
+        val user = this.current()
 
+        val fromWaiter = waiterService.get(id = fromSaleId)
+        val toWaiter = waiterService.get(id = toSaleId)
 
+        check(fromWaiter.role == Role.Sale) { "from sale id error" }
+        check(toWaiter.role == Role.Sale) { "to sale id error" }
+
+        memberService.moveSale(clientId = user.clientId, fromSaleId = fromSaleId, toSaleId = toSaleId)
+    }
 }
