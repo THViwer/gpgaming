@@ -67,7 +67,7 @@ class DemoController(
             it.saleId
         }.forEach {
             val saleId = it.key
-            val memberIds = it.value
+            val memberIds = it.value.map { it.memberId }
             val sql = "update member set sale_id = $saleId where id in (${memberIds.joinToString(separator = ",")})"
             jdbcTemplate.update(sql)
         }
