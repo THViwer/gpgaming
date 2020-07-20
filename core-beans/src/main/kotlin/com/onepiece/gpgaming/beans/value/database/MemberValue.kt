@@ -103,7 +103,13 @@ data class MemberCo(
         val registerIp: String,
 
         // 风险等级
-        val riskLevel: RiskLevel = RiskLevel.None
+        val riskLevel: RiskLevel = RiskLevel.None,
+
+        // 邮箱
+        val email: String?,
+
+        // 出生日期
+        val birthday: LocalDateTime?
 )
 
 data class MemberUo(
@@ -159,7 +165,21 @@ data class MemberUo(
         val formal: Boolean? = null,
 
         // 代理费
-        val agencyMonthFee: BigDecimal? = null
+        val agencyMonthFee: BigDecimal? = null,
+
+        // 邮箱
+        val email: String? = null,
+
+        // 出生日期
+        val birthday: LocalDateTime? = null,
+
+        // 出生日期
+        val address: String? = null,
+
+        // 身份证
+        val idCard: String? = null
+
+
 )
 
 

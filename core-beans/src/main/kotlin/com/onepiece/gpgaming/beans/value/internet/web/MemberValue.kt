@@ -301,8 +301,20 @@ data class MemberVo(
         val riskLevel: RiskLevel,
 
         @ApiModelProperty("登陆时间")
-        val loginTime: LocalDateTime?
+        val loginTime: LocalDateTime?,
 
+
+        @ApiModelProperty("邮箱地址")
+        val email: String?,
+
+        @ApiModelProperty("生日")
+        val birthday: LocalDateTime?,
+
+        @ApiModelProperty("身份证")
+        val idCard: String?,
+
+        @ApiModelProperty("地址")
+        val address: String?
 )
 
 data class MemberWalletInfo(
@@ -379,7 +391,20 @@ data class MemberUoReq(
         val password: String?,
 
         @ApiModelProperty("状态")
-        val status: Status?
+        val status: Status?,
+
+        @ApiModelProperty("生日")
+        val birthday: LocalDateTime?,
+
+        @ApiModelProperty("身份证")
+        val idCard: String?,
+
+        @ApiModelProperty("地址")
+        val address: String?,
+
+        @ApiModelProperty("邮箱地址")
+        val email: String?
+
 )
 
 data class MemberCoReq(
@@ -412,6 +437,12 @@ data class MemberCoReq(
         val promoteCode: String?,
 
         @ApiModelProperty("电销人员Id")
-        val saleCode: String?
+        val saleCode: String?,
+
+        @ApiModelProperty("生日")
+        val birthday: LocalDateTime?,
+
+        @ApiModelProperty("邮箱地址")
+        val email: String?
 
 )

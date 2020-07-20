@@ -4,6 +4,18 @@ import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
 import io.swagger.annotations.ApiModelProperty
+import java.time.LocalDateTime
+
+sealed class UserValue {
+
+        data class UserInfoUo(
+
+                val email: String?,
+
+                val birthday: LocalDateTime?
+        )
+
+}
 
 data class LoginResp(
 
@@ -109,7 +121,13 @@ data class RegisterReq(
         val saleCode: String?,
 
         @ApiModelProperty("链路code")
-        val chainCode: String?
+        val chainCode: String?,
+
+        @ApiModelProperty("邮箱")
+        val email: String?,
+
+        @ApiModelProperty("出生日期")
+        val birthday: LocalDateTime
 )
 
 data class ChangePwdReq(

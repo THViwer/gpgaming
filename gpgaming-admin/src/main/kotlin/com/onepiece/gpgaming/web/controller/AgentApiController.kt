@@ -119,7 +119,7 @@ class AgentApiController(
         val superiorAgentId = -1
         val memberCo = MemberCo(bossId = user.bossId, clientId = user.id, agentId = superiorAgentId, levelId = defaultLevel.id, name = req.name, phone = req.phone,
                 username = req.username, password = req.password, promoteCode = null, role = Role.Agent, safetyPassword = req.password, formal = true, saleId = -1,
-                registerIp = "admin:register")
+                registerIp = "admin:register", birthday = req.birthday, email = req.email)
         val id = memberService.create(memberCo)
 
 

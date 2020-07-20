@@ -45,13 +45,18 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val formal = rs.getBoolean("formal")
             val registerIp = rs.getString("register_ip")
             val riskLevel = rs.getString("risk_level").let { RiskLevel.valueOf(it) }
+            val birthday = rs.getTimestamp("birthday")?.toLocalDateTime()
+            val idCard = rs.getString("id_card")
+            val address = rs.getString("address")
+            val email = rs.getString("email")
 
             Member(id = id, clientId = clientId, username = username, password = password, levelId = levelId,
                     status = status, createdTime = createdTime, loginIp = loginIp, loginTime = loginTime,
                     safetyPassword = safetyPassword, name = name, phone = phone, firstPromotion = firstPromotion,
                     autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = "$id",
                     formal = formal, agencyMonthFee = agencyMonthFee, saleId = saleId, saleScope = saleScope,
-                    registerIp = registerIp, riskLevel = riskLevel, vipId = vipId)
+                    registerIp = registerIp, riskLevel = riskLevel, vipId = vipId, birthday = birthday, idCard = idCard,
+                    address = address, email = email)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -76,6 +81,8 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("register_ip", memberCo.registerIp)
                 .set("risk_level", memberCo.riskLevel)
                 .set("vip_id", -1)
+                .set("email", memberCo.email)
+                .set("birthday", memberCo.birthday)
                 .executeGeneratedKey()
     }
 
@@ -96,6 +103,10 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("auto_transfer", memberUo.autoTransfer)
                 .set("formal", memberUo.formal)
                 .set("agency_month_fee", memberUo.agencyMonthFee)
+                .set("email", memberUo.email)
+                .set("birthday", memberUo.birthday)
+                .set("address", memberUo.address)
+                .set("id_card", memberUo.idCard)
                 .where("id", memberUo.id)
                 .execute() == 1
 

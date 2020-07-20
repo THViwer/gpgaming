@@ -152,9 +152,9 @@ class MemberApiController(
             with(it) {
                 MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name ?: "error level",
                         balance = memberMap[it.id]?.balance ?: BigDecimal.valueOf(-1), status = it.status, createdTime = createdTime,
-                        loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteCode = it.promoteCode,
+                        loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteCode = it.promoteCode, idCard = it.idCard,
                         country = client.country, agentId = agentId, agentUsername = agentUsername, saleId = it.saleId, saleUsername = saleUsername,
-                        registerIp = it.registerIp, riskLevel = it.riskLevel)
+                        registerIp = it.registerIp, riskLevel = it.riskLevel, address = it.address, email = it.address, birthday = it.birthday)
             }
         }
 
@@ -337,7 +337,8 @@ class MemberApiController(
         check(member.clientId == clientId) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
         val memberUo = MemberUo(id = memberUoReq.id, levelId = memberUoReq.levelId, password = memberUoReq.password,
-                status = memberUoReq.status, name = memberUoReq.name, phone = memberUoReq.phone, saleId = memberUoReq.saleId)
+                status = memberUoReq.status, name = memberUoReq.name, phone = memberUoReq.phone, saleId = memberUoReq.saleId,
+                email = memberUoReq.email, address = memberUoReq.address, idCard = memberUoReq.idCard, birthday = memberUoReq.birthday)
         memberService.update(memberUo)
     }
 
@@ -358,7 +359,8 @@ class MemberApiController(
 
         val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password, promoteCode = promoteCode,
                 safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId, name = memberCoReq.name, phone = memberCoReq.phone, bossId = bossId,
-                agentId = agentId, role = memberCoReq.role, formal = true, saleId = memberCoReq.saleCode?.toInt(), registerIp = "admin:register")
+                agentId = agentId, role = memberCoReq.role, formal = true, saleId = memberCoReq.saleCode?.toInt(), registerIp = "admin:register",
+                birthday = memberCoReq.birthday, email = memberCoReq.email)
         memberService.create(memberCo)
     }
 

@@ -89,7 +89,13 @@ sealed class AgentValue {
             val password: String,
 
             // 每月的代理费
-            val agencyMonthFee: BigDecimal
+            val agencyMonthFee: BigDecimal,
+
+            // 出生日期
+            val birthday: LocalDateTime?,
+
+            // 邮箱
+            val email: String?
     )
 
     data class AgentUo(

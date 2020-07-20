@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.player.controller.value.LoginResp
 import com.onepiece.gpgaming.player.controller.value.PlatformMemberUo
 import com.onepiece.gpgaming.player.controller.value.PlatformMemberVo
 import com.onepiece.gpgaming.player.controller.value.RegisterReq
+import com.onepiece.gpgaming.player.controller.value.UserValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
@@ -29,17 +30,14 @@ interface UserApi {
 
 
     @ApiOperation(tags = ["user"], value = "查看登陆信息")
-    fun loginDetail(
-    ): LoginResp
+    fun loginDetail(): LoginResp
 
     @ApiOperation(tags = ["user"], value = "更新自动转账配置")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun upAutoTransfer(@RequestParam("autoTransfer") autoTransfer: Boolean)
 
     @ApiOperation(tags = ["user"], value = "注册")
-    fun register(
-            @RequestBody registerReq: RegisterReq
-    ): LoginResp
+    fun register(@RequestBody registerReq: RegisterReq): LoginResp
 
     @ApiOperation(tags = ["user"], value = "可选国家列表")
     fun countries(): List<Country>
@@ -50,8 +48,13 @@ interface UserApi {
     @ApiOperation(tags = ["user"], value = "检查手机号是否已存在")
     fun checkPhone(@PathVariable("phone") phone: String): CheckUsernameResp
 
-    @ApiOperation(tags = ["user"], value = "修改资料")
+    @ApiOperation(tags = ["user"], value = "修改密码")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun changePassword(@RequestBody changePwdReq: ChangePwdReq)
+
+    @ApiOperation(tags = ["user"], value = "修改基础资料")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    fun changeUserInfo(@RequestBody uo: UserValue.UserInfoUo)
 
     @ApiOperation(tags = ["user"], value = "平台用户列表")
     fun platformUsers(): List<PlatformMemberVo>

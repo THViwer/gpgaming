@@ -25,6 +25,7 @@ import com.onepiece.gpgaming.player.controller.value.LoginResp
 import com.onepiece.gpgaming.player.controller.value.PlatformMemberUo
 import com.onepiece.gpgaming.player.controller.value.PlatformMemberVo
 import com.onepiece.gpgaming.player.controller.value.RegisterReq
+import com.onepiece.gpgaming.player.controller.value.UserValue
 import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.player.jwt.JwtUser
 import com.onepiece.gpgaming.utils.RequestUtil
@@ -173,9 +174,7 @@ class UserApiController(
     }
 
     @PutMapping
-    override fun register(
-            @RequestBody registerReq: RegisterReq
-    ): LoginResp {
+    override fun register(@RequestBody registerReq: RegisterReq): LoginResp {
 
         check(registerReq.country != Country.Default)
 
@@ -193,7 +192,8 @@ class UserApiController(
         val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
         val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
                 levelId = defaultLevel.id, name = registerReq.name, phone = registerReq.phone, promoteCode = registerReq.promoteCode, bossId = bossId, agentId = agent.id,
-                role = Role.Member, formal = true, saleId = registerReq.saleCode?.toInt(), registerIp = RequestUtil.getIpAddress())
+                role = Role.Member, formal = true, saleId = registerReq.saleCode?.toInt(), registerIp = RequestUtil.getIpAddress(), birthday = registerReq.birthday,
+                email = registerReq.email)
         memberService.create(memberCo)
 
         // 通知pv
@@ -248,6 +248,15 @@ class UserApiController(
     override fun changePassword(@RequestBody changePwdReq: ChangePwdReq) {
         val memberId = current().id
         val memberUo = MemberUo(id = memberId, oldPassword = changePwdReq.oldPassword, password = changePwdReq.password)
+        memberService.update(memberUo)
+    }
+
+    @PutMapping("/change/info")
+    override fun changeUserInfo(@RequestBody uo: UserValue.UserInfoUo) {
+
+        val user = this.currentUser()
+
+        val memberUo = MemberUo(id = user.id, email = uo.email, birthday = uo.birthday)
         memberService.update(memberUo)
     }
 
