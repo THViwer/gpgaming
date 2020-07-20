@@ -4,7 +4,7 @@ import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
 import io.swagger.annotations.ApiModelProperty
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 sealed class UserValue {
 
@@ -12,7 +12,7 @@ sealed class UserValue {
 
                 val email: String?,
 
-                val birthday: LocalDateTime?
+                val birthday: LocalDate?
         )
 
 }
@@ -127,7 +127,7 @@ data class RegisterReq(
         val email: String?,
 
         @ApiModelProperty("出生日期")
-        val birthday: LocalDateTime
+        val birthday: LocalDate?
 )
 
 data class ChangePwdReq(
