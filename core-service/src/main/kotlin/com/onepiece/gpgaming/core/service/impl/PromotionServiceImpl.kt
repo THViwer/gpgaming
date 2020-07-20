@@ -50,7 +50,7 @@ class PromotionServiceImpl(
         val promotionCo = PromotionCo(clientId = clientId, category = promotionCoReq.category, stopTime = promotionCoReq.stopTime, top = promotionCoReq.top,
                 levelId = promotionCoReq.levelId, ruleType = promotionCoReq.promotionRuleVo.ruleType, periodMaxPromotion = promotionCoReq.periodMaxPromotion,
                 ruleJson = promotionCoReq.promotionRuleVo.ruleJson, platforms = promotionCoReq.platforms, period = promotionCoReq.period,
-                sequence = promotionCoReq.sequence, show = promotionCoReq.show, code = promotionCoReq.code)
+                sequence = promotionCoReq.sequence, show = promotionCoReq.show, code = promotionCoReq.code?: "")
         val promotionId = promotionDao.create(promotionCo)
         check(promotionId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
