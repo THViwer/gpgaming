@@ -103,10 +103,10 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("auto_transfer", memberUo.autoTransfer)
                 .set("formal", memberUo.formal)
                 .set("agency_month_fee", memberUo.agencyMonthFee)
-                .set("email", memberUo.email)
-                .set("birthday", memberUo.birthday)
-                .set("address", memberUo.address)
-                .set("id_card", memberUo.idCard)
+                .setIfNull("email", memberUo.email)
+                .setIfNull("birthday", memberUo.birthday)
+                .setIfNull("address", memberUo.address)
+                .setIfNull("id_card", memberUo.idCard)
                 .where("id", memberUo.id)
                 .execute() == 1
 
