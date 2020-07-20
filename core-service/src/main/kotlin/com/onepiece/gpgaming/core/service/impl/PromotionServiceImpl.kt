@@ -41,12 +41,16 @@ class PromotionServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun create(clientId: Int, promotionCoReq: PromotionCoReq) {
 
-        val code = this.getCode(clientId = clientId)
+        if (promotionCoReq.code != null) {
+            val has = this.all(clientId = clientId).firstOrNull { it.code == promotionCoReq.code }
+            checkNotNull(has) { OnePieceExceptionCode.PROMOTION_CODE_EXIST }
+        }
+//        val code = this.getCode(clientId = clientId)
         // 创建优惠记录
         val promotionCo = PromotionCo(clientId = clientId, category = promotionCoReq.category, stopTime = promotionCoReq.stopTime, top = promotionCoReq.top,
                 levelId = promotionCoReq.levelId, ruleType = promotionCoReq.promotionRuleVo.ruleType, periodMaxPromotion = promotionCoReq.periodMaxPromotion,
                 ruleJson = promotionCoReq.promotionRuleVo.ruleJson, platforms = promotionCoReq.platforms, period = promotionCoReq.period,
-                sequence = promotionCoReq.sequence, show = promotionCoReq.show, code = code)
+                sequence = promotionCoReq.sequence, show = promotionCoReq.show, code = promotionCoReq.code)
         val promotionId = promotionDao.create(promotionCo)
         check(promotionId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 

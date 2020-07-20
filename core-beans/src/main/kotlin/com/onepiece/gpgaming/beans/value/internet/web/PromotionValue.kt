@@ -118,7 +118,10 @@ data class PromotionCoReq(
         val sequence: Int,
 
         @ApiModelProperty("是否前台显示")
-        val show: Boolean
+        val show: Boolean,
+
+        @ApiModelProperty("优惠码, 只有类型为ActivationCode时才显示")
+        val code: String?
 )
 
 
