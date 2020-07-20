@@ -154,7 +154,7 @@ class MemberApiController(
                         balance = memberMap[it.id]?.balance ?: BigDecimal.valueOf(-1), status = it.status, createdTime = createdTime,
                         loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteCode = it.promoteCode, idCard = it.idCard,
                         country = client.country, agentId = agentId, agentUsername = agentUsername, saleId = it.saleId, saleUsername = saleUsername,
-                        registerIp = it.registerIp, riskLevel = it.riskLevel, address = it.address, email = it.address, birthday = it.birthday)
+                        registerIp = it.registerIp, riskLevel = it.riskLevel, address = it.address, email = it.email, birthday = it.birthday)
             }
         }
 
