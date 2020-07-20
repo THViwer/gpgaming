@@ -92,7 +92,7 @@ sealed class AgentValue {
             val agencyMonthFee: BigDecimal,
 
             // 出生日期
-            val birthday: LocalDateTime?,
+            val birthday: LocalDate?,
 
             // 邮箱
             val email: String?

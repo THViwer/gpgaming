@@ -18,6 +18,7 @@ import com.onepiece.gpgaming.beans.model.Withdraw
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 import java.time.Duration
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -308,7 +309,7 @@ data class MemberVo(
         val email: String?,
 
         @ApiModelProperty("生日")
-        val birthday: LocalDateTime?,
+        val birthday: LocalDate?,
 
         @ApiModelProperty("身份证")
         val idCard: String?,
@@ -394,7 +395,7 @@ data class MemberUoReq(
         val status: Status?,
 
         @ApiModelProperty("生日")
-        val birthday: LocalDateTime?,
+        val birthday: LocalDate?,
 
         @ApiModelProperty("身份证")
         val idCard: String?,
@@ -440,7 +441,7 @@ data class MemberCoReq(
         val saleCode: String?,
 
         @ApiModelProperty("生日")
-        val birthday: LocalDateTime?,
+        val birthday: LocalDate?,
 
         @ApiModelProperty("邮箱地址")
         val email: String?

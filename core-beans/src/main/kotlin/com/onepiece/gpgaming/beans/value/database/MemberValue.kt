@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 
@@ -109,7 +110,7 @@ data class MemberCo(
         val email: String?,
 
         // 出生日期
-        val birthday: LocalDateTime?
+        val birthday: LocalDate?
 )
 
 data class MemberUo(
@@ -171,7 +172,7 @@ data class MemberUo(
         val email: String? = null,
 
         // 出生日期
-        val birthday: LocalDateTime? = null,
+        val birthday: LocalDate? = null,
 
         // 出生日期
         val address: String? = null,

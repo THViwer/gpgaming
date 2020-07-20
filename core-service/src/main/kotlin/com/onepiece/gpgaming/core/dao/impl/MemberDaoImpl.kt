@@ -45,7 +45,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val formal = rs.getBoolean("formal")
             val registerIp = rs.getString("register_ip")
             val riskLevel = rs.getString("risk_level").let { RiskLevel.valueOf(it) }
-            val birthday = rs.getTimestamp("birthday")?.toLocalDateTime()
+            val birthday = rs.getDate("birthday")?.toLocalDate()
             val idCard = rs.getString("id_card")
             val address = rs.getString("address")
             val email = rs.getString("email")

@@ -91,7 +91,7 @@ data class Member(
         val email: String?,
 
         // 生日
-        val birthday: LocalDateTime?,
+        val birthday: LocalDate?,
 
         // 身份证
         val idCard: String?,
