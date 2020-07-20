@@ -43,7 +43,7 @@ class PromotionServiceImpl(
 
         if (promotionCoReq.code != null) {
             val has = this.all(clientId = clientId).firstOrNull { it.code == promotionCoReq.code }
-            checkNotNull(has) { OnePieceExceptionCode.PROMOTION_CODE_EXIST }
+            check(has == null) { OnePieceExceptionCode.PROMOTION_CODE_EXIST }
         }
 //        val code = this.getCode(clientId = clientId)
         // 创建优惠记录
