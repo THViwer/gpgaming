@@ -28,7 +28,7 @@ class IndexController(
         val startMonth = today.withDayOfMonth(1)
         val endMonth = startMonth.plusMonths(1)
 
-        val data = (-2..12).filter { x ->
+        return (-2..12).filter { x ->
             val start = startMonth.minusMonths(x.toLong())
             "$start" > "2020-05-01"
         }.map { x ->
@@ -52,7 +52,6 @@ class IndexController(
                 }
             }
         }.toMap()
-        return data
     }
 
     private fun todayDetails(startDate: LocalDate): List<String> {
@@ -70,7 +69,7 @@ class IndexController(
         val d2 = jdbcTemplate.query(s2) { rs, _ ->
             val clientId = rs.getInt("client_id")
             val username = rs.getString("username")
-            val money = rs.getBigDecimal("money")
+            val money = rs.getBigDecimal("amount")
             "三方充值 => 业主Id:${clientId}, 用户：${username}, 充值金额：${money}"
         }
 
