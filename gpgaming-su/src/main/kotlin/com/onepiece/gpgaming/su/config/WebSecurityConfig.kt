@@ -58,7 +58,8 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/statistics",
                         "/user/share",
                         "/version/last",
-                        "/user"
+                        "/user",
+                        "/cabbage"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, "/order").permitAll()
                 // 对于获取token的rest api要允许匿名访问
