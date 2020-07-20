@@ -130,6 +130,10 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
 
                 .asWhere("last_sale_time >= ?", query.lastSaleTimeMin)
                 .asWhere("last_sale_time <= ?", query.lastSaleTimeMax)
+
+                .asWhere("next_call_time >= ?", query.nextCallTimeMin)
+                .asWhere("next_call_time <= ?", query.nextCallTimeMax)
+
                 .asWhere("sale_count >= ?", query.saleCountMin)
                 .asWhere("sale_count <= ?", query.saleCountMax)
 

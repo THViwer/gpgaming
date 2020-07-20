@@ -43,6 +43,10 @@ interface SalesmanApi {
             @RequestParam("loginCountMin", required = false) loginCountMin: Int?,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("lastSaleTimeMin", required = false) lastSaleTimeMin: LocalDate?,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("lastSaleTimeMax", required = false) lastSaleTimeMax: LocalDate?,
+
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("lastSaleTimeMin", required = false) nextCallTimeMin: LocalDate?,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("lastSaleTimeMax", required = false) nextCallTimeMax: LocalDate?,
+
             @RequestParam("saleCountMin", required = false) saleCountMin: Int?,
             @RequestParam("saleCountMax", required = false) saleCountMax: Int?,
             @RequestParam("sortBy", required = false, defaultValue = "0") sortBy: Int

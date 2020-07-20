@@ -152,6 +152,12 @@ sealed class MemberInfoValue {
             // 电销总数最大
             val saleCountMax: Int? = null,
 
+            // 下次电销最小时间
+            val nextCallTimeMin: LocalDate? = null,
+
+            // 下次电销最大时间
+            val nextCallTimeMax: LocalDate? = null,
+
             // 排序字段
             val sortBy: String = "member_id desc"
     )
