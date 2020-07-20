@@ -30,7 +30,7 @@ class IndexController(
 
         return (-2..12).filter { x ->
             val start = startMonth.minusMonths(x.toLong())
-            "$start" > "2020-05-01"
+            "$start" >= "2020-05-01"
         }.map { x ->
 
             when (x) {
