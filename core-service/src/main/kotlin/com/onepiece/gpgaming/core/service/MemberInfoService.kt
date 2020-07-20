@@ -7,6 +7,8 @@ interface MemberInfoService {
 
     fun create(co: MemberInfoValue.MemberInfoCo)
 
+    fun count(query: MemberInfoValue.MemberCountQuery): Int
+
     fun list(query: MemberInfoValue.MemberInfoQuery): List<MemberInfo>
 
     fun asyncUpdate(uo: MemberInfoValue.MemberInfoUo)

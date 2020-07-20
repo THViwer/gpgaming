@@ -93,6 +93,20 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
                 .executeOnlyOne()
     }
 
+    override fun count(query: MemberInfoValue.MemberCountQuery): Int {
+
+
+        val neverCallSql= if (query.neverCall) " lastSaleTime is null" else " 1 = 1"
+
+        return query("count(*)")
+                .where("client_id", query.clientId)
+                .asWhere(neverCallSql)
+                .asWhere("next_call_time > ?", query.minCall)
+                .asWhere("next_call_time < ?", query.maxCall)
+                .count()
+
+    }
+
     override fun list(query: MemberInfoValue.MemberInfoQuery): List<MemberInfo> {
         return query()
                 .where("boss_id", query.bossId)

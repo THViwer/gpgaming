@@ -11,7 +11,13 @@ sealed class SalesmanValue {
             val saleCode: String,
 
             // 推广连接
-            val saleLink: String
+            val saleLink: String,
+
+            // 从未电话数量
+            val neverCallCount: Int,
+
+            // 今日电话数量
+            val todayCallCount: Int
 
     )
 

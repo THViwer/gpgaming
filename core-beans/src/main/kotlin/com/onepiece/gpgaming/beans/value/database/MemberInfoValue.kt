@@ -156,6 +156,22 @@ sealed class MemberInfoValue {
             val sortBy: String = "member_id desc"
     )
 
+    data class MemberCountQuery(
+
+            // 业主Id
+            val clientId: Int,
+
+            // 从未打电话
+            val neverCall: Boolean = false,
+
+            // 最小打电话时间
+            val minCall: LocalDate? = null,
+
+            // 最大打电话时间
+            val maxCall: LocalDate? = null
+
+    )
+
     data class MemberInfoVo(
 
             // 电销Id

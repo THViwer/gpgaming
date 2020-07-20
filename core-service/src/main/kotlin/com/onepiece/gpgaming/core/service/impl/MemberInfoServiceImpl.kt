@@ -21,6 +21,10 @@ class MemberInfoServiceImpl(
         check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 
+    override fun count(query: MemberInfoValue.MemberCountQuery): Int {
+        return memberInfoDao.count(query)
+    }
+
     override fun list(query: MemberInfoValue.MemberInfoQuery): List<MemberInfo> {
         return memberInfoDao.list(query = query)
     }

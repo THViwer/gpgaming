@@ -59,7 +59,16 @@ class SalesmanApiController(
         }
         val saleLink = "https://www.${webSite.domain}?saleCode=${saleCode}"
 
-        return SalesmanValue.SaleInfo(name = current.username, saleCode = saleCode, saleLink = saleLink)
+
+        val infoQuery = MemberInfoValue.MemberCountQuery(clientId = current.clientId, neverCall = true)
+        val neverCallCount = memberInfoService.count(infoQuery)
+
+        val today = LocalDate.now()
+        val todayQuery = infoQuery.copy(neverCall = false, minCall = today, maxCall = today.plusDays(1))
+        val todayCallCount = memberInfoService.count(todayQuery)
+
+        return SalesmanValue.SaleInfo(name = current.username, saleCode = saleCode, saleLink = saleLink, neverCallCount = neverCallCount,
+                todayCallCount = todayCallCount)
     }
 
     @GetMapping("/members")

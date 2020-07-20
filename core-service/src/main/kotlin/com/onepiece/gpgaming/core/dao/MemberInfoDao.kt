@@ -12,6 +12,8 @@ interface MemberInfoDao: BasicDao<MemberInfo> {
 
     fun update(uo: MemberInfoValue.MemberInfoUo): Boolean
 
+    fun count(query: MemberInfoValue.MemberCountQuery): Int
+
     fun list(query: MemberInfoValue.MemberInfoQuery): List<MemberInfo>
 
     fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int)
