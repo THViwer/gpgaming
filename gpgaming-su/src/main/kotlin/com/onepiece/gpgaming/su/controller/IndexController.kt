@@ -63,24 +63,24 @@ class IndexController(
             val clientId = rs.getInt("client_id")
             val username = rs.getString("username")
             val money = rs.getBigDecimal("money")
-            "银行转账 => 业主Id:${clientId}, 用户：${username}, 充值金额：${money}"
+            "clientId:${clientId} => deposit, user：${username}, amount：${money}"
         }
 
         val d2 = jdbcTemplate.query(s2) { rs, _ ->
             val clientId = rs.getInt("client_id")
             val username = rs.getString("username")
             val money = rs.getBigDecimal("amount")
-            "三方充值 => 业主Id:${clientId}, 用户：${username}, 充值金额：${money}"
+            "clientId:${clientId} => thirdPay, user：${username}, amount：${money}"
         }
 
         val d3 = jdbcTemplate.query(s3) { rs, _ ->
             val clientId = rs.getInt("client_id")
             val username = rs.getString("username")
             val money = rs.getBigDecimal("money")
-            "取款 => 业主Id:${clientId}, 用户：${username}, 取款金额：${money}"
+            "clientId:${clientId} => withdraw , user：${username}, amount：${money}"
         }
 
-        return d1.plus(d2).plus(d3)
+        return d1.plus(d2).plus(d3).sorted()
     }
 
     private fun report(startDate: LocalDate, endDate: LocalDate): List<String> {
@@ -91,22 +91,22 @@ class IndexController(
         val d1 = jdbcTemplate.query(s1) { rs, _ ->
             val clientId = rs.getInt("client_id")
             val amount = rs.getBigDecimal("amount")
-            "银行转账 => 业主：${clientId}, 充值金额：${amount}"
+            "clientId：${clientId} => deposit, amount：${amount}"
         }
 
         val d2 = jdbcTemplate.query(s2) { rs, _ ->
             val clientId = rs.getInt("client_id")
             val amount = rs.getBigDecimal("amount")
-            "三方充值 => 业主：${clientId}, 充值金额：${amount}"
+            "clientId：${clientId} => thirdPay , amount：${amount}"
         }
 
         val d3 = jdbcTemplate.query(s3) { rs, _ ->
             val clientId = rs.getInt("client_id")
             val amount = rs.getBigDecimal("amount")
-            "取款 => 业主：${clientId}, 取款金额：${amount}"
+            "clientId：${clientId} => withdraw, amount：${amount}"
         }
 
-        return d1.plus(d2).plus(d3)
+        return d1.plus(d2).plus(d3).sorted()
     }
 
 
