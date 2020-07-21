@@ -19,6 +19,7 @@ import com.onepiece.gpgaming.beans.value.database.ClientUo
 import com.onepiece.gpgaming.beans.value.database.I18nContentCo
 import com.onepiece.gpgaming.beans.value.database.LevelValue
 import com.onepiece.gpgaming.beans.value.database.LoginHistoryValue
+import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.RecommendedValue
 import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
@@ -29,6 +30,7 @@ import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.LoginHistoryService
+import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.RecommendedService
 import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.beans.factory.annotation.Autowired
@@ -50,8 +52,8 @@ class ClientServiceImpl(
         private val redisService: RedisService,
         private val recommendedService: RecommendedService,
         private val objectMapper: ObjectMapper,
-        private val loginHistoryService: LoginHistoryService
-
+        private val loginHistoryService: LoginHistoryService,
+        private val memberService: MemberService
 ) : ClientService {
 
     @Autowired
@@ -113,9 +115,14 @@ class ClientServiceImpl(
                 sportRebate = BigDecimal.ZERO, fishRebate = BigDecimal.ZERO)
         levelService.create(levelCo)
 
+
+        val memberCo = MemberCo(bossId = clientCo.bossId, clientId = id, username = "default_agent", password = "111222", role = Role.Agent, agentId = -1, birthday = null,
+        email = null, levelId = -1, formal = true, phone = "155555555", name = "default_agent", promoteCode = null, registerIp = "system", safetyPassword = "111222")
+        memberService.create(memberCo)
         // create own balance
 //        val balanceCo = BalanceCo(clientId = id)
 //        balanceService.create(balanceCo)
+
 
 
         // 配置首页内容
