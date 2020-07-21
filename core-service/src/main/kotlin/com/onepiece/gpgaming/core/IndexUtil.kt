@@ -62,6 +62,8 @@ class IndexUtil(
 
         // logo
         val client = clientService.get(clientId)
+        if (client.main) return
+
         val logo = client.logo
 
         val contents = i18nContentService.getConfigs(clientId)
