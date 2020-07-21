@@ -149,10 +149,14 @@ class IndexUtil(
             }
 
             // 首页推荐的真人
-            val recommendLives = recommendeds.filter { it.type == RecommendedType.IndexLive }.map {
+            val recommendLives = recommendeds.filter { it.type == RecommendedType.IndexLive }.mapNotNull {
                 val content = it.getRecommendedContent(objectMapper) as Recommended.LiveRecommended
-                Index.LiveRecommended(platform = content.platform, contentImage = content.contentImage, title = content.title,
-                        gamePlatform = content.platform.getGamePlatform(gamePlatforms), platformBind = platformBindMap[content.platform] ?: error(""))
+
+                platformBindMap[content.platform]?.let { bind ->
+                    Index.LiveRecommended(platform = content.platform, contentImage = content.contentImage, title = content.title,
+                            gamePlatform = content.platform.getGamePlatform(gamePlatforms), platformBind = bind)
+                }
+
             }
 
             // 热门游戏
