@@ -192,12 +192,13 @@ class EvolutionService : PlatformService() {
 
                 val playerBets = MapResultUtil.asList(bet, "bets")
                 playerBets.map { playerBet ->
+                    val code = MapResultUtil.asString(playerBet, "code")
                     val orderId = MapResultUtil.asString(playerBet, "transactionId")
                     val betAmount = MapResultUtil.asBigDecimal(playerBet, "stake")
                     val winAmount = MapResultUtil.asBigDecimal(playerBet, "payout")
 
                     val originData = objectMapper.writeValueAsString(bet)
-                    BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Evolution, orderId = orderId, betTime = betTime,
+                    BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Evolution, orderId = "${orderId}:${code}", betTime = betTime,
                             settleTime = settleTime, betAmount = betAmount, winAmount = winAmount, originData = originData, validAmount = betAmount)
                 }
 
