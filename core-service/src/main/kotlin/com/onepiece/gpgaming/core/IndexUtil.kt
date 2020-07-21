@@ -63,7 +63,7 @@ class IndexUtil(
 
         // logo
         val client = clientService.get(clientId)
-        if (client.main || client.country == Country.Default) return
+        if (client.country == Country.Default) return
 
         val logo = client.logo
 
