@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.core
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.SystemConstant
 import com.onepiece.gpgaming.beans.enums.BannerType
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.RecommendedType
@@ -62,7 +63,7 @@ class IndexUtil(
 
         // logo
         val client = clientService.get(clientId)
-        if (client.main) return
+        if (client.main || client.country == Country.Default) return
 
         val logo = client.logo
 
