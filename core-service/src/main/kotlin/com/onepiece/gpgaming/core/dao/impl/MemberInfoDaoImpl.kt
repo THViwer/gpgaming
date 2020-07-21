@@ -96,7 +96,7 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
     override fun count(query: MemberInfoValue.MemberCountQuery): Int {
 
 
-        val neverCallSql= if (query.neverCall) " lastSaleTime is null" else " 1 = 1"
+        val neverCallSql= if (query.neverCall) " last_sale_time is null" else " 1 = 1"
 
         return query("count(*)")
                 .where("client_id", query.clientId)
