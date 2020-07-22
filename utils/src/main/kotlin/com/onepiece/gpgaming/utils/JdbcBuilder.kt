@@ -121,7 +121,7 @@ class Insert(
 
         val names = columns.joinToString(separator = ",")
         val questions = (0 until columns.size).joinToString(separator = ","){ "?" }
-        val sql = "insert ignore into `$table` (${names}) values (${questions})"
+        val sql = "insert into `$table` (${names}) values (${questions})"
 //        val sql = "insert into `$table` (${names}) values (${questions})"
 
         val row = jdbcTemplate.update({ connection ->
