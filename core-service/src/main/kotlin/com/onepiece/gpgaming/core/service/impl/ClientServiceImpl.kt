@@ -115,10 +115,11 @@ class ClientServiceImpl(
                 sportRebate = BigDecimal.ZERO, fishRebate = BigDecimal.ZERO)
         levelService.create(levelCo)
 
-
-        val memberCo = MemberCo(bossId = clientCo.bossId, clientId = id, username = "default_agent", password = "111222", role = Role.Agent, agentId = -1, birthday = null,
-        email = null, levelId = -1, formal = true, phone = "155555555", name = "default_agent", promoteCode = null, registerIp = "system", safetyPassword = "111222")
-        memberService.create(memberCo)
+        if (clientCo.main) {
+            val memberCo = MemberCo(bossId = clientCo.bossId, clientId = id, username = "default_agent", password = "111222", role = Role.Agent, agentId = -1, birthday = null,
+                    email = null, levelId = -1, formal = true, phone = "155555555", name = "default_agent", promoteCode = null, registerIp = "system", safetyPassword = "111222")
+            memberService.create(memberCo)
+        }
         // create own balance
 //        val balanceCo = BalanceCo(clientId = id)
 //        balanceService.create(balanceCo)
