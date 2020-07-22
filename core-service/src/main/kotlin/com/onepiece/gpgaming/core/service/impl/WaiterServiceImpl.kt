@@ -92,7 +92,7 @@ class WaiterServiceImpl(
         fun selectNext(): Waiter? {
             val redisKey = "salesman:id:$clientId"
             val cacheSaleId = redisService.get(key = redisKey, clz = Int::class.java) ?: -1
-            return waiterDao.all(clientId = clientId).filter { bossId == it.bossId }.filter { it.role == Role.Sale }
+            return waiterDao.all(clientId = clientId).filter { bossId == it.bossId }.filter { it.status == Status.Normal }.filter { it.role == Role.Sale }
                     .let { list ->
                         list.firstOrNull { it.id > cacheSaleId } ?: list.firstOrNull()
                     }?.also {
@@ -104,12 +104,4 @@ class WaiterServiceImpl(
             waiterDao.get(saleId)
         } ?: selectNext()
     }
-}
-
-fun main() {
-    val bCryptPasswordEncoder = BCryptPasswordEncoder()
-    val a = "\$2a\$10\$.234ad4zzoitczY.NYvLjOM89xFDzXhrxrYGkmKoVpvVlmpuvdcSK"
-    println(bCryptPasswordEncoder.matches("111222", a))
-    println(bCryptPasswordEncoder.encode("123456"))
-    println("\$2a\$10\$ysmsX/Zo4KijT6fMM6jZleJrim3z34KrZN2sNv0EbpPbuonCrz/Tm".length)
 }
