@@ -565,6 +565,7 @@ open class CashApiController(
                     PromotionPeriod.check(promotion = promotion, historyOrders = historyOrders)
                 }
                 .filter { promotion ->
+                    log.info("优惠层级：${promotion.levelId}, 用户层级Id：${member.levelId}")
                     log.info("用户：${current.username}, 优惠Id：${promotion.id}, 过滤结果5：${promotion.levelId.isEmpty() || promotion.levelId.contains(member.levelId)} ")
                     promotion.levelId.isEmpty() || promotion.levelId.contains(member.levelId)
 //                    promotion.levelId == null || promotion.levelId == member.levelId
