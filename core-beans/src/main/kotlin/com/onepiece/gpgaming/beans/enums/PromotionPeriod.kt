@@ -9,6 +9,9 @@ import java.time.temporal.TemporalAdjusters
 
 enum class PromotionPeriod {
 
+    // 一次性
+    Nonce,
+
     // 每天一次
     DailyOnce,
 
@@ -47,6 +50,10 @@ enum class PromotionPeriod {
             val promotionHistory = historyOrders.filter { it.joinPromotionId == promotion.id }
 
             return when (promotion.period) {
+                // 只限一次
+                Nonce -> {
+                    promotionHistory.isEmpty()
+                }
                 // 特定日期
                 Sunday -> {
                     val sunday = today.with(DayOfWeek.SUNDAY)
