@@ -1,9 +1,11 @@
 package com.onepiece.gpgaming.player.controller.chain
 
 import com.onepiece.gpgaming.games.http.OkHttpUtil
+import com.onepiece.gpgaming.utils.RequestUtil
 import okhttp3.Request
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
+import java.util.*
 
 @Component
 open class ChainUtil(
@@ -15,7 +17,8 @@ open class ChainUtil(
 
         if (chainCode == null) return
 
-        val url = "https://m9s.co/rv/${chainCode}"
+        val ip = RequestUtil.getIpAddress()
+        val url = "https://m9s.co/rv/${chainCode}?customIp=$ip&hash=${UUID.randomUUID()}"
 
         val request = Request.Builder()
                 .url(url)
