@@ -111,10 +111,10 @@ class PayBackApiController(
             val state: String,
 
             // 时间戳
-            val timestamp: Long,
+            val nonce: Long,
 
             // 订单签名
-            val sign: String
+            val hash: String
 
     )
 
