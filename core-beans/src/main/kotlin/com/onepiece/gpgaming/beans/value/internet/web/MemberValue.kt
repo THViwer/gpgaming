@@ -363,6 +363,12 @@ data class MemberWalletInfo(
                 // 总充值金额
                 val totalAmount: BigDecimal,
 
+                // 参加优惠Id
+                val joinPromotionId: Int?,
+
+                // 剩余下注金额可取出
+                val lastBet: BigDecimal,
+
                 // 总出款金额
                 val totalTransferOutAmount: BigDecimal,
 

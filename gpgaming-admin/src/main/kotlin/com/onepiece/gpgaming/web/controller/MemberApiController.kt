@@ -318,9 +318,13 @@ class MemberApiController(
                 BigDecimal.valueOf(-1)
             }
 
+            val lastBet = platformMember.joinPromotionId?.let {
+                platformMember.requirementBet.minus(platformMember.currentBet)
+            } ?: BigDecimal.ZERO
+
             MemberWalletInfo.BalanceVo(platform = platformMember.platform, balance = balance, totalWin = platformMember.totalWin, totalBet = platformMember.totalBet,
                     totalAmount = platformMember.totalAmount, totalPromotionAmount = platformMember.totalPromotionAmount, totalTransferOutAmount = platformMember.totalTransferOutAmount,
-                    pusername = platformMember.username, ppassword = platformMember.password)
+                    pusername = platformMember.username, ppassword = platformMember.password, lastBet = lastBet, joinPromotionId = platformMember.joinPromotionId)
         }.collect(Collectors.toList()).toList().sortedByDescending { it.balance }
 
 
