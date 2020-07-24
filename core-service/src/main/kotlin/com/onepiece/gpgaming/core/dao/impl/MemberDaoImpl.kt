@@ -167,6 +167,20 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .count()
     }
 
+    override fun saleCount(saleId: Int?, startDate: LocalDate, endDate: LocalDate, scope: SaleScope): Map<Int, Int> {
+        return  query("sale_id, count(*) count")
+                .where("sale_id", saleId)
+                .asWhere("created_time  > ?", startDate)
+                .asWhere("created_time  < ?", endDate)
+                .where("sale_scope", scope)
+                .group("sale_id")
+                .execute { rs ->
+                    val tSaleId = rs.getInt("sale_id")
+                    val count = rs.getInt("count")
+                    tSaleId to count
+                }.toMap()
+    }
+
     override fun query(query: MemberQuery, current: Int, size: Int): List<Member> {
         return query()
                 .where("boss_id", query.bossId)

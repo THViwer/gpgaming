@@ -1,5 +1,4 @@
-ALTER TABLE member ADD email varchar(256) DEFAULT NULL;
-ALTER TABLE member ADD id_card varchar(64) DEFAULT NULL;
-ALTER TABLE member ADD address varchar(256) DEFAULT NULL;
-ALTER TABLE member ADD DATA DATE DEFAULT NULL;
-
+ALTER TABLE sale_daily_report ADD own_member_count INT DEFAULT 0;
+ALTER TABLE sale_daily_report ADD own_system_count INT DEFAULT 0;
+ALTER TABLE sale_month_report ADD system_member_count INT DEFAULT 0;
+ALTER TABLE sale_month_report ADD system_system_count INT DEFAULT 0;

@@ -25,6 +25,7 @@ class SaleMonthReportDaoImpl : BasicDaoImpl<SaleMonthReport>("sale_month_report"
             val ownTotalRebate = rs.getBigDecimal("own_total_rebate")
             val ownCustomerScale = rs.getBigDecimal("own_customer_scale")
             val ownCustomerFee = rs.getBigDecimal("own_customer_fee")
+            val ownMemberCount = rs.getInt("own_member_count")
 
             val systemTotalDeposit = rs.getBigDecimal("system_total_deposit")
             val systemTotalWithdraw = rs.getBigDecimal("system_total_withdraw")
@@ -32,6 +33,7 @@ class SaleMonthReportDaoImpl : BasicDaoImpl<SaleMonthReport>("sale_month_report"
             val systemTotalRebate = rs.getBigDecimal("system_total_rebate")
             val systemCustomerScale = rs.getBigDecimal("system_customer_scale")
             val systemCustomerFee = rs.getBigDecimal("system_customer_fee")
+            val systemMemberCount = rs.getInt("system_member_count")
 
 
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
@@ -40,7 +42,7 @@ class SaleMonthReportDaoImpl : BasicDaoImpl<SaleMonthReport>("sale_month_report"
                     ownTotalDeposit = ownTotalDeposit, ownTotalWithdraw = ownTotalWithdraw, ownTotalPromotion = ownTotalPromotion, ownTotalRebate = ownTotalRebate,
                     ownCustomerFee = ownCustomerFee, ownCustomerScale = ownCustomerScale, systemCustomerFee = systemCustomerFee, systemCustomerScale = systemCustomerScale,
                     systemTotalDeposit = systemTotalDeposit, systemTotalWithdraw = systemTotalWithdraw, systemTotalPromotion = systemTotalPromotion, systemTotalRebate = systemTotalRebate,
-                    createdTime = createdTime)
+                    createdTime = createdTime, ownMemberCount = ownMemberCount, systemMemberCount = systemMemberCount)
         }
 
     override fun batch(data: List<SaleMonthReport>) {
@@ -58,7 +60,7 @@ class SaleMonthReportDaoImpl : BasicDaoImpl<SaleMonthReport>("sale_month_report"
                 .set("own_total_rebate")
                 .set("own_customer_scale")
                 .set("own_customer_fee")
-
+                .set("own_member_count")
 
                 .set("system_total_deposit")
                 .set("system_total_withdraw")
@@ -66,6 +68,7 @@ class SaleMonthReportDaoImpl : BasicDaoImpl<SaleMonthReport>("sale_month_report"
                 .set("system_total_rebate")
                 .set("system_customer_scale")
                 .set("system_customer_fee")
+                .set("system_member_count")
 
                 .execute { ps, entity ->
                     var x = 0
@@ -81,6 +84,7 @@ class SaleMonthReportDaoImpl : BasicDaoImpl<SaleMonthReport>("sale_month_report"
                     ps.setBigDecimal(++x, entity.ownTotalRebate)
                     ps.setBigDecimal(++x, entity.ownCustomerScale)
                     ps.setBigDecimal(++x, entity.ownCustomerFee)
+                    ps.setInt(++x, entity.ownMemberCount)
 
                     ps.setBigDecimal(++x, entity.systemTotalDeposit)
                     ps.setBigDecimal(++x, entity.systemTotalWithdraw)
@@ -88,6 +92,7 @@ class SaleMonthReportDaoImpl : BasicDaoImpl<SaleMonthReport>("sale_month_report"
                     ps.setBigDecimal(++x, entity.systemTotalRebate)
                     ps.setBigDecimal(++x, entity.systemCustomerScale)
                     ps.setBigDecimal(++x, entity.systemCustomerFee)
+                    ps.setInt(++x, entity.systemMemberCount)
                 }
     }
 

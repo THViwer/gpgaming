@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Role
+import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.SaleDailyReport
 import com.onepiece.gpgaming.beans.model.SaleLog
@@ -13,6 +14,7 @@ import com.onepiece.gpgaming.beans.value.database.SaleLogValue
 import com.onepiece.gpgaming.beans.value.database.SaleMonthReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.SalesmanValue
 import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
+import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.dao.SaleDailyReportDao
 import com.onepiece.gpgaming.core.dao.SaleMonthReportDao
 import com.onepiece.gpgaming.core.service.MemberInfoService
@@ -39,7 +41,8 @@ class SalesmanApiController(
         private val memberInfoService: MemberInfoService,
         private val saleLogService: SaleLogService,
         private val waiterService: WaiterService,
-        private val memberDailyReportDao: MemberDailyReportDao
+        private val memberDailyReportDao: MemberDailyReportDao,
+        private val memberDao: MemberDao
 ): BasicController(), SalesmanApi {
 
     @GetMapping("/info")
@@ -69,6 +72,23 @@ class SalesmanApiController(
 
         return SalesmanValue.SaleInfo(name = current.username, saleCode = saleCode, saleLink = saleLink, neverCallCount = neverCallCount,
                 todayCallCount = todayCallCount)
+    }
+
+    @GetMapping("/member/count")
+    override fun queryMemberCount(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
+    ): SalesmanValue.MemberAllocateInfo {
+        val user = this.current()
+        val ownMap = memberDao.saleCount(startDate = startDate, endDate = endDate, saleId = user.id, scope = SaleScope.Own)
+
+        val systemMap = memberDao.saleCount(startDate = startDate, endDate = endDate, saleId = user.id, scope = SaleScope.System)
+
+        return SalesmanValue.MemberAllocateInfo(
+                ownMemberCount = ownMap[user.id] ?: 0,
+                systemMemberCount = systemMap[user.id] ?: 0
+        )
+
     }
 
     @GetMapping("/members")

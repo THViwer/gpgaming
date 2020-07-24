@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.dao
 
+import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.model.Member
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
@@ -24,6 +25,8 @@ interface MemberDao: BasicDao<Member> {
     fun findByBossIdAndCode(bossId: Int, promoteCode: String): Member?
 
     fun total(query: MemberQuery): Int
+
+    fun saleCount(saleId: Int?, startDate: LocalDate, endDate: LocalDate, scope: SaleScope): Map<Int, Int>
 
     fun query(query: MemberQuery, current: Int, size: Int): List<Member>
 

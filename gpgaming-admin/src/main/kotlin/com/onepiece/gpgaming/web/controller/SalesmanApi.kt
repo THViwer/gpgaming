@@ -11,7 +11,6 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -23,6 +22,12 @@ interface SalesmanApi {
 
     @ApiOperation(tags = ["sale"], value = "电销 -> 个人信息")
     fun info(): SalesmanValue.SaleInfo
+
+    @ApiOperation(tags = ["sale"], value = "电销 -> 新增会员汇总")
+    fun queryMemberCount(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
+    ): SalesmanValue.MemberAllocateInfo
 
     @ApiOperation(tags = ["sale"], value = "电销 -> 会员列表")
     fun myMemberList(

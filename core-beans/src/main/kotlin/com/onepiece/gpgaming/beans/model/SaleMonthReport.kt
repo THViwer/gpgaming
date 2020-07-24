@@ -41,6 +41,9 @@ data class SaleMonthReport(
         // 自己的顾客佣金
         val ownCustomerFee: BigDecimal,
 
+        // 自己新增会员总数
+        val ownMemberCount: Int,
+
         // 总充值
         val systemTotalDeposit: BigDecimal,
 
@@ -58,6 +61,9 @@ data class SaleMonthReport(
 
         // 系统的顾客佣金
         val systemCustomerFee: BigDecimal,
+
+        // 自己新增会员总数
+        val systemMemberCount: Int,
 
         // 创建时间
         val createdTime: LocalDateTime

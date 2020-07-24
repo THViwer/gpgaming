@@ -21,4 +21,12 @@ sealed class SalesmanValue {
 
     )
 
+    data class MemberAllocateInfo(
+
+            val ownMemberCount: Int,
+
+            val systemMemberCount:  Int
+
+    )
+
 }

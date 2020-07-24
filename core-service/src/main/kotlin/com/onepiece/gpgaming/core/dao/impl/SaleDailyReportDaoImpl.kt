@@ -28,6 +28,7 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
             val ownTotalRebate = rs.getBigDecimal("own_total_rebate")
             val ownCustomerScale = rs.getBigDecimal("own_customer_scale")
             val ownCustomerFee = rs.getBigDecimal("own_customer_fee")
+            val ownMemberCount = rs.getInt("own_member_count")
 
             val systemTotalDeposit = rs.getBigDecimal("system_total_deposit")
             val systemTotalWithdraw = rs.getBigDecimal("system_total_withdraw")
@@ -35,6 +36,7 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
             val systemTotalRebate = rs.getBigDecimal("system_total_rebate")
             val systemCustomerScale = rs.getBigDecimal("system_customer_scale")
             val systemCustomerFee = rs.getBigDecimal("system_customer_fee")
+            val systemMemberCount = rs.getInt("system_member_count")
 
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
@@ -42,7 +44,7 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
                     ownTotalDeposit = ownTotalDeposit, ownTotalWithdraw = ownTotalWithdraw, ownTotalPromotion = ownTotalPromotion, ownTotalRebate = ownTotalRebate,
                     ownCustomerFee = ownCustomerFee, ownCustomerScale = ownCustomerScale, systemCustomerFee = systemCustomerFee, systemCustomerScale = systemCustomerScale,
                     systemTotalDeposit = systemTotalDeposit, systemTotalWithdraw = systemTotalWithdraw, systemTotalPromotion = systemTotalPromotion, systemTotalRebate = systemTotalRebate,
-                    createdTime = createdTime)
+                    createdTime = createdTime, ownMemberCount = ownMemberCount, systemMemberCount = systemMemberCount)
         }
 
     override fun batch(data: List<SaleDailyReport>) {
@@ -60,7 +62,7 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
                 .set("own_total_rebate")
                 .set("own_customer_scale")
                 .set("own_customer_fee")
-
+                .set("own_member_count")
 
                 .set("system_total_deposit")
                 .set("system_total_withdraw")
@@ -68,6 +70,7 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
                 .set("system_total_rebate")
                 .set("system_customer_scale")
                 .set("system_customer_fee")
+                .set("system_member_count")
 
                 .execute { ps, entity ->
                     var x = 0
@@ -83,6 +86,7 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
                     ps.setBigDecimal(++x, entity.ownTotalRebate)
                     ps.setBigDecimal(++x, entity.ownCustomerScale)
                     ps.setBigDecimal(++x, entity.ownCustomerFee)
+                    ps.setInt(++x, entity.ownMemberCount)
 
                     ps.setBigDecimal(++x, entity.systemTotalDeposit)
                     ps.setBigDecimal(++x, entity.systemTotalWithdraw)
@@ -90,6 +94,7 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
                     ps.setBigDecimal(++x, entity.systemTotalRebate)
                     ps.setBigDecimal(++x, entity.systemCustomerScale)
                     ps.setBigDecimal(++x, entity.systemCustomerFee)
+                    ps.setInt(++x, entity.systemMemberCount)
                 }
     }
 
@@ -120,12 +125,14 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
                 sum(own_total_rebate) own_total_rebate,
                 sum(own_customer_scale) own_customer_scale,
                 sum(own_customer_fee) own_customer_fee,
+                sum(own_member_count) own_member_count,
                 sum(system_total_deposit) system_total_deposit,
                 sum(system_total_withdraw) system_total_withdraw,
                 sum(system_total_promotion) system_total_promotion,
                 sum(system_total_rebate) system_total_rebate,
                 sum(system_customer_scale) system_customer_scale,
-                sum(system_customer_fee) system_customer_fee
+                sum(system_customer_fee) system_customer_fee,
+                sum(system_member_count) system_member_count
             from sale_daily_report 
             where day >= '$startDate' and day < '$endDate' 
             group by boss_id, client_id, sale_id, sale_username;
@@ -143,6 +150,7 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
             val ownTotalRebate = rs.getBigDecimal("own_total_rebate")
             val ownCustomerScale = rs.getBigDecimal("own_customer_scale")
             val ownCustomerFee = rs.getBigDecimal("own_customer_fee")
+            val ownMemberCount = rs.getInt("own_member_count")
 
             val systemTotalDeposit = rs.getBigDecimal("system_total_deposit")
             val systemTotalWithdraw = rs.getBigDecimal("system_total_withdraw")
@@ -150,12 +158,13 @@ class SaleDailyReportDaoImpl : BasicDaoImpl<SaleDailyReport>("sale_daily_report"
             val systemTotalRebate = rs.getBigDecimal("system_total_rebate")
             val systemCustomerScale = rs.getBigDecimal("system_customer_scale")
             val systemCustomerFee = rs.getBigDecimal("system_customer_fee")
+            val systemMemberCount = rs.getInt("system_member_count")
 
             SaleMonthReport(bossId = bossId, clientId = clientId, saleId = saleId, saleUsername = saleUsername,
                     ownTotalDeposit = ownTotalDeposit, ownTotalWithdraw = ownTotalWithdraw, ownTotalPromotion = ownTotalPromotion, ownTotalRebate = ownTotalRebate,
                     ownCustomerScale = ownCustomerScale, ownCustomerFee = ownCustomerFee, systemCustomerScale = systemCustomerScale, systemCustomerFee = systemCustomerFee,
                     systemTotalDeposit = systemTotalDeposit, systemTotalWithdraw = systemTotalWithdraw, systemTotalPromotion = systemTotalPromotion, systemTotalRebate = systemTotalRebate,
-                    id = -1, day = startDate, createdTime = LocalDateTime.now())
+                    id = -1, day = startDate, createdTime = LocalDateTime.now(), ownMemberCount = ownMemberCount, systemMemberCount = systemMemberCount)
         }
 
     }

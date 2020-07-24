@@ -267,29 +267,32 @@ class ReportServiceImpl(
     override fun startSaleReport(startDate: LocalDate): List<SaleDailyReport> {
 
         val salesmanList = waiterService.all(role = Role.Sale)
-        val salesmanMap = salesmanList.map { it.id to it }.toMap()
 
         val query = MemberReportValue.MemberCollectQuery(day = startDate, saleId = null)
         val list = memberDailyReportDao.saleCollect(query)
 
 
-        return list.groupBy { it.saleId }.map {
+        // 查询会员数量
+        val owmSaleMap = memberDao.saleCount(saleId = null, startDate = startDate, endDate = startDate.plusDays(1), scope = SaleScope.Own)
+        val systemSaleMap =  memberDao.saleCount(saleId = null, startDate = startDate, endDate = startDate.plusDays(1), scope = SaleScope.System)
 
-            val saleId = it.key
-            val data = it.value
+        return salesmanList.map { sale ->
 
-            val sale = salesmanMap[saleId]
-            val username = sale?.username ?: "default_sale"
+            val saleId = sale.id
+            val data = list.filter { it.saleId == saleId }
+
+            val owmMemberCount = owmSaleMap[sale.id]?: 0
+            val systemMemberCount = systemSaleMap[sale.id]?: 0
 
             val ownSaleVo = data.firstOrNull { it.saleScope == SaleScope.Own } ?: MemberReportValue.SaleReportVo.empty(saleScope = SaleScope.Own)
             val systemSaleVo = data.firstOrNull { it.saleScope == SaleScope.System } ?: MemberReportValue.SaleReportVo.empty(saleScope = SaleScope.System)
 
-            val bossId = if (ownSaleVo.bossId != -1) ownSaleVo.bossId else systemSaleVo.bossId
-            val clientId = if (ownSaleVo.clientId != -1) ownSaleVo.clientId else systemSaleVo.clientId
+//            val bossId = if (ownSaleVo.bossId != -1) ownSaleVo.bossId else systemSaleVo.bossId
+//            val clientId = if (ownSaleVo.clientId != -1) ownSaleVo.clientId else systemSaleVo.clientId
 
 
-            val ownCustomerScale = sale?.ownCustomerScale ?: BigDecimal.ZERO
-            val systemCustomerScale = sale?.systemCustomerScale ?: BigDecimal.ZERO
+            val ownCustomerScale = sale.ownCustomerScale
+            val systemCustomerScale = sale.systemCustomerScale
 
             val ownCustomerFee = (ownSaleVo.totalDeposit.minus(ownSaleVo.totalPromotion).minus(ownSaleVo.totalRebate)).multiply(ownCustomerScale).divide(BigDecimal.valueOf(100))
                     .setScale(2, 2)
@@ -301,12 +304,14 @@ class ReportServiceImpl(
                     .let {
                         if (it < BigDecimal.ZERO) BigDecimal.ZERO else it
                     }
-            SaleDailyReport(bossId = bossId, clientId = clientId, saleId = saleId, saleUsername = username, ownCustomerScale = ownCustomerScale, ownCustomerFee = ownCustomerFee,
+            SaleDailyReport(bossId = sale.bossId, clientId = sale.clientId, saleId = saleId, saleUsername = sale.username, ownCustomerScale = ownCustomerScale, ownCustomerFee = ownCustomerFee,
                     ownTotalDeposit = ownSaleVo.totalDeposit, ownTotalPromotion = ownSaleVo.totalPromotion, ownTotalWithdraw = ownSaleVo.totalWithdraw, ownTotalRebate = ownSaleVo.totalRebate,
                     systemTotalDeposit = systemSaleVo.totalDeposit, systemCustomerFee = systemCustomerFee, systemCustomerScale = systemCustomerScale, systemTotalPromotion = systemSaleVo.totalPromotion,
-                    systemTotalRebate = systemSaleVo.totalRebate, systemTotalWithdraw = systemSaleVo.totalWithdraw, id = -1, day = startDate, createdTime = LocalDateTime.now())
+                    systemTotalRebate = systemSaleVo.totalRebate, systemTotalWithdraw = systemSaleVo.totalWithdraw, id = -1, day = startDate, createdTime = LocalDateTime.now(),
+                    ownMemberCount = owmMemberCount, systemMemberCount = systemMemberCount)
 
         }
+
     }
 
     override fun startSaleMonthReport(startDate: LocalDate): List<SaleMonthReport> {

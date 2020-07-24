@@ -44,6 +44,9 @@ data class SaleDailyReport (
         // 自己的顾客佣金
         val ownCustomerFee: BigDecimal,
 
+        // 自己新增会员总数
+        val ownMemberCount: Int,
+
         // 总充值
         val systemTotalDeposit: BigDecimal,
 
@@ -61,6 +64,9 @@ data class SaleDailyReport (
 
         // 系统的顾客佣金
         val systemCustomerFee: BigDecimal,
+
+        // 系统新增会员总数
+        val systemMemberCount: Int,
 
         // 创建时间
         val createdTime: LocalDateTime
