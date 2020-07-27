@@ -18,6 +18,10 @@ spring:
 #      enabled: always
 #  lifecycle:
 #    timeout-per-shutdown-phase: 10s
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 
 server:
   servlet:
