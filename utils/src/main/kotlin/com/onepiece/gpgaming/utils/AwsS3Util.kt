@@ -116,18 +116,18 @@ object AwsS3Util {
 }
 
 
-//fun main() {
-//    val file = File("/Users/cabbage/Downloads/gppay_logo")
-//    val list = file.listFiles().map { file ->
-//        val url = AwsS3Util.uploadLocalFile(file, "bank/logo/${file.name.replace(" ", "")}")
-//        file.name to url
-//    }
-//
-//    list.forEach {
-//        println("${it.first} -- ${it.second}")
-//    }
-//
-//}
+fun main() {
+    val file = File("/Users/cabbage/Downloads/bank_tmp")
+    val list = file.listFiles().map { file ->
+        val url = AwsS3Util.uploadLocalFile(file, "bank/logo/${file.name.replace(" ", "")}")
+        file.name to url
+    }
+
+    list.forEach {
+        println("${it.first} -- ${it.second}")
+    }
+
+}
 
 //
 //fun main() {

@@ -142,6 +142,13 @@ enum class Bank(
             mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/_0001_SCB_withdraw.png",
             mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/SCB_withdrawGray.png"
     ),
+    AGRO(
+            cname = "agro bank",
+            logo = "${SystemConstant.AWS_BANK_LOGO_URL}/AGRO_withdraw.png",
+            grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/AGRO_withdrawGray.png",
+            mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/AGRO_withdraw.png",
+            mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/AGRO_withdrawGray.png"
+    ),
 
 
     // 新加坡
@@ -172,7 +179,7 @@ enum class Bank(
         fun of(country: Country): List<Bank> {
             return when (country) {
                 Country.Malaysia -> {
-                    listOf(MBB, CIMB, HLB, PBB, RHB, AMB, UOB, RAKYAT, OCBC, HSBC, ISLAM, AFFIN, ALLIANCE, BSN, CITI, SCB)
+                    listOf(MBB, CIMB, HLB, PBB, RHB, AMB, UOB, RAKYAT, OCBC, HSBC, ISLAM, AFFIN, ALLIANCE, BSN, CITI, SCB, AGRO)
                 }
                 Country.Singapore -> {
                     listOf(DBS, OCBC, UOB, POSB, CIMB, SCB, MBB)
