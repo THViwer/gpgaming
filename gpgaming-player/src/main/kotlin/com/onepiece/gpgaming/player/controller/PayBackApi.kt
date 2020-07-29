@@ -16,4 +16,35 @@ interface PayBackApi  {
     @ApiOperation(tags = ["payment"], value = "gppay")
     fun gppay(@RequestBody req: PayBackApiController.MerchantNotifyReq)
 
+
+    @ApiOperation(tags = ["payment"], value = "instantpay")
+    fun instantpay(@RequestBody req: InstantPayResponse)
+
+
+    data class InstantPayResponse(
+            val amount: Int,
+
+            val charge: Int,
+
+            /**
+             * 0 Represent Pending
+             * 2 Represent Success
+             * 3 Represent Failed
+             */
+            val transactionStatus: Int,
+
+            val createdDateTime: String,
+
+            val modificationDateTime: String,
+
+            val transactionId: String,
+
+            val platformTransactionId: String,
+
+            val timestamp: Int,
+
+            val playerId: String,
+
+            val sign: String
+    )
 }

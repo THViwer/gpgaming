@@ -1,7 +1,9 @@
 package com.onepiece.gpgaming.player.controller
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.core.service.PayOrderService
 import org.slf4j.LoggerFactory
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -137,8 +139,18 @@ class PayBackApiController(
         } else {
             payOrderService.failed(orderId = req.orderId)
         }
+    }
 
 
+    @GetMapping("/instantpay")
+    override fun instantpay(@RequestBody req: PayBackApi.InstantPayResponse) {
+
+        log.info("----------------")
+        log.info("----------------")
+        log.info("instant pay 获得response:")
+        log.info("${jacksonObjectMapper().writeValueAsString(req)}")
+        log.info("----------------")
+        log.info("----------------")
 
     }
 }
