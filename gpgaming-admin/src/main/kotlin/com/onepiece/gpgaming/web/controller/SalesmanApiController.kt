@@ -176,7 +176,11 @@ class SalesmanApiController(
     ): List<SaleLog> {
         val current = this.current()
 
-        val tSaleId = saleId ?: current.id
+        val tSaleId = when (current.role) {
+            Role.Sale -> saleId ?: current.id
+            Role.Admin, Role.Client -> null
+            else -> error("401")
+        }
 
         val query = SaleLogValue.SaleLogQuery(bossId = current.bossId, clientId = current.clientId, saleId = tSaleId, memberId = memberId)
         return saleLogService.list(query)

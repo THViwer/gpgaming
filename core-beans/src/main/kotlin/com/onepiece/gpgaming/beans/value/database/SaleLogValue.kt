@@ -14,7 +14,7 @@ sealed class SaleLogValue {
             val clientId: Int,
 
             @JsonIgnore
-            val saleId: Int,
+            val saleId: Int? = null,
 
             val memberId: Int,
 
