@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigDecimal
 
@@ -49,6 +50,16 @@ class PlatformBindApiController(
 
         platformBindService.update(platformBindCo)
 
+    }
+
+    @GetMapping("/default/logo")
+    override fun getDefaultLogo(@RequestParam("platform") platform: Platform): PlatformBindSuValue.DefaultLogo {
+        val platformBind = platformBindService.find(clientId = 1, platform = platform)
+
+        return with(platformBind) {
+            PlatformBindSuValue.DefaultLogo(icon = icon, disableIcon = disableIcon, originIcon = originIcon, originIconOver = originIconOver, mobileIcon = mobileIcon,
+                    mobileDisableIcon = mobileDisableIcon, platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver)
+        }
     }
 
     private fun checkClientToken(platform: Platform, tokenJson: String) {
