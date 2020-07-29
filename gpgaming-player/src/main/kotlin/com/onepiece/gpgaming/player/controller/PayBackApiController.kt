@@ -145,12 +145,23 @@ class PayBackApiController(
     @GetMapping("/instantpay")
     override fun instantpay(@RequestBody req: PayBackApi.InstantPayResponse) {
 
+
         log.info("----------------")
         log.info("----------------")
         log.info("instant pay 获得response:")
-        log.info("${jacksonObjectMapper().writeValueAsString(req)}")
+        log.info(jacksonObjectMapper().writeValueAsString(req))
         log.info("----------------")
         log.info("----------------")
+
+        when (req.transactionStatus) {
+            2 -> {
+                payOrderService.successful(orderId = req.platformTransactionId, thirdOrderId = req.transactionId)
+            }
+            3  -> {
+                payOrderService.failed(orderId = req.platformTransactionId)
+            }
+        }
+
 
     }
 }
