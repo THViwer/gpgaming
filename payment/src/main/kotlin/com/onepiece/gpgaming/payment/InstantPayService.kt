@@ -2,10 +2,12 @@ package com.onepiece.gpgaming.payment
 
 import com.fengwenyi.javalib.util.RSAUtil
 import com.onepiece.gpgaming.beans.model.pay.InstantPayConfig
+import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.net.URLEncoder
 import java.util.*
 
+@Service
 class InstantPayService: PayService {
 
     override fun start(req: PayRequest): Map<String, Any> {
