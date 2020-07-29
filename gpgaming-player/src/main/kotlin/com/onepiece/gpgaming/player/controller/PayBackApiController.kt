@@ -142,7 +142,7 @@ class PayBackApiController(
     }
 
 
-    @GetMapping("/instantpay")
+    @PostMapping("/instantpay")
     override fun instantpay(@RequestBody req: PayBackApi.InstantPayResponse) {
 
 
