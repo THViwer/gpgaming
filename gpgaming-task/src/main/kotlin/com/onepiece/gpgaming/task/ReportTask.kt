@@ -37,11 +37,11 @@ class ReportTask(
     fun start() {
         val localDate = LocalDate.now().minusDays(1)
 
-        try {
-            this.startMemberPlatformDailyReport(localDate)
-        } catch (e: Exception) {
-            log.error("", e)
-        }
+//        try {
+//            this.startMemberPlatformDailyReport(localDate)
+//        } catch (e: Exception) {
+//            log.error("", e)
+//        }
 
         this.startMemberReport(startDate = localDate)
 
@@ -81,12 +81,12 @@ class ReportTask(
     }
 
     // 会员平台日报表
-    fun startMemberPlatformDailyReport(startDate: LocalDate) {
-        tryLock(localDate = startDate, type = TaskTimerType.MemberPlatformDaily) {
-            val data = reportService.startMemberPlatformDailyReport(startDate = startDate)
-            memberPlatformDailyReportService.create(data)
-        }
-    }
+//    fun startMemberPlatformDailyReport(startDate: LocalDate) {
+//        tryLock(localDate = startDate, type = TaskTimerType.MemberPlatformDaily) {
+//            val data = reportService.startMemberPlatformDailyReport(startDate = startDate)
+//            memberPlatformDailyReportService.create(data)
+//        }
+//    }
 
     // 会员日报表
     fun startMemberReport(startDate: LocalDate) {
