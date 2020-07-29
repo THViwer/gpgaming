@@ -127,7 +127,7 @@ class AnalysisDaoImpl(
             val thirdPayAmount = rs.getBigDecimal("third_pay_amount")
             val thirdPayCount = rs.getInt("third_pay_count")
             val artificialAmount = rs.getBigDecimal("artificial_amount")
-            val artificialCount  = rs.getInt("artificial_amount")
+            val artificialCount  = rs.getInt("artificial_count")
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
             val withdrawCount = rs.getInt("withdraw_count")
             val transferOut  = rs.getBigDecimal("transfer_out")
