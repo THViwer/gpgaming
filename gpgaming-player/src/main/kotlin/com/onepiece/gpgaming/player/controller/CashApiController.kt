@@ -23,6 +23,7 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.PlatformMember
 import com.onepiece.gpgaming.beans.model.pay.GPPayConfig
+import com.onepiece.gpgaming.beans.model.pay.InstantPayConfig
 import com.onepiece.gpgaming.beans.model.pay.SurePayConfig
 import com.onepiece.gpgaming.beans.value.database.DepositCo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
@@ -279,8 +280,15 @@ open class CashApiController(
                                 BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo, country = Country.Default)
                             }
                         }
-                        PayType.FPX, PayType.InstantPay -> {
+                        PayType.FPX -> {
                             val config =  it.getConfig(objectMapper) as GPPayConfig
+
+                            config.supportBanks.map { bank ->
+                                BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo, country = Country.Default)
+                            }
+                        }
+                        PayType.InstantPay -> {
+                            val config =  it.getConfig(objectMapper) as InstantPayConfig
 
                             config.supportBanks.map { bank ->
                                 BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo, country = Country.Default)
