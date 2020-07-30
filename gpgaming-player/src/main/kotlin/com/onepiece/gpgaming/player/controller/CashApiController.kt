@@ -279,7 +279,7 @@ open class CashApiController(
                                 BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo, country = Country.Default)
                             }
                         }
-                        PayType.FPX -> {
+                        PayType.FPX, PayType.InstantPay -> {
                             val config =  it.getConfig(objectMapper) as GPPayConfig
 
                             config.supportBanks.map { bank ->
