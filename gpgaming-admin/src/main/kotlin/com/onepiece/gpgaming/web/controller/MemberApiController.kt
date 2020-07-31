@@ -165,6 +165,7 @@ class MemberApiController(
     override fun excelMembers() {
 
         val user = this.current()
+        check(user.role == Role.Client)
 
         val today = LocalDate.now().toString().replace("-", "")
 
