@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.beans.value.database.WalletUo
 import com.onepiece.gpgaming.core.dao.PayOrderDao
 import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.WalletService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -17,9 +18,11 @@ import java.time.LocalDateTime
 
 @Service
 class PayOrderServiceImpl(
-        private val payOrderDao: PayOrderDao,
-        private val walletService: WalletService
+        private val payOrderDao: PayOrderDao
 ) : PayOrderService {
+
+    @Autowired
+    lateinit var walletService: WalletService
 
     override fun page(query: PayOrderValue.PayOrderQuery): Page<PayOrder> {
         val total = payOrderDao.total(query)

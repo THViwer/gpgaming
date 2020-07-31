@@ -2,14 +2,16 @@ package com.onepiece.gpgaming.task
 
 import com.onepiece.gpgaming.core.service.PayOrderService
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @Component
-class ThirdPayTask(
-        private val payOrderService: PayOrderService
-) {
+class ThirdPayTask {
+
+    @Autowired
+    lateinit var payOrderService: PayOrderService
 
     private val log = LoggerFactory.getLogger(ThirdPayTask::class.java)
 

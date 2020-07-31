@@ -25,9 +25,11 @@ import java.math.BigDecimal
 @Service
 class WalletServiceImpl(
         private val walletDao: WalletDao,
-        private val walletNoteDao: WalletNoteDao,
-        private val memberInfoService: MemberInfoService
+        private val walletNoteDao: WalletNoteDao
 ) : WalletService {
+
+    @Autowired
+    lateinit var memberInfoService: MemberInfoService
 
     @Autowired
     lateinit var vipUtil: VipUtil
