@@ -44,6 +44,8 @@ interface MemberApi {
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): MemberPage
 
+    @ApiOperation(tags = ["user"], value = "会员 -> 导出所有会员")
+    fun excelMembers()
 
     @ApiOperation(tags = ["user"], value = "会员 -> 风险详情")
     fun checkRiskDetail(

@@ -55,6 +55,20 @@ sealed class MemberValue {
 
         }
 
+        data class MemberExcelVo(
+                @ExcelProperty("用户名")
+                val username: String,
+
+                @ExcelProperty("姓名")
+                val name: String,
+
+                @ExcelProperty("电话")
+                val phone: String,
+
+                @ExcelProperty("邮箱")
+                val email: String?
+        )
+
         data class FollowVo(
 
                 @ExcelProperty("会员Id")

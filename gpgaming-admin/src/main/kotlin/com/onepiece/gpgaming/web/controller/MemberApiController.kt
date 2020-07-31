@@ -161,6 +161,31 @@ class MemberApiController(
         return MemberPage(total = page.total, data = data)
     }
 
+    @GetMapping("/member/excel")
+    override fun excelMembers() {
+
+        val user = this.current()
+
+        val today = LocalDate.now().toString().replace("-", "")
+
+        val response = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).response!!
+        val name = "members_$today"
+
+        response.contentType = "application/vnd.ms-excel";
+        response.characterEncoding = "utf-8";
+        response.setHeader("Content-disposition", "attachment;filename=$name.xlsx")
+
+        val memberQuery = MemberQuery(clientId = user.id, role = Role.Member)
+        val data = memberService.list(memberQuery)
+                .map {
+                    MemberValue.MemberExcelVo(username = it.username, name = it.name, phone = it.phone, email = it.email)
+                }
+
+        EasyExcel.write(response.outputStream, MemberValue.MemberExcelVo::class.java)
+                .autoCloseStream(false)
+                .sheet("member")
+                .doWrite(data)
+    }
 
     @GetMapping("/risk/detail/{memberId}")
     override fun checkRiskDetail(@PathVariable("memberId") memberId: Int): MemberValue.RiskDetail {
