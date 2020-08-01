@@ -379,13 +379,13 @@ class ReportServiceImpl(
                         Platform.Kiss918,
                         Platform.Pussy888,
                         Platform.Mega -> {
-                            transferData.copy(bet = BigDecimal.valueOf(-1), win = BigDecimal.valueOf(-1))
+                            transferData.copy(bet = BigDecimal.valueOf(-1), win = BigDecimal.valueOf(-1), activeCount = activeCount)
                         }
-                        else -> transferData.copy(bet = BigDecimal.ZERO, win = BigDecimal.ZERO)
+                        else -> transferData.copy(bet = BigDecimal.ZERO, win = BigDecimal.ZERO, activeCount = activeCount)
                     }
                 }
                 else -> {
-                    transferData.copy(bet = betOrderData.totalBet, win = betOrderData.totalWin)
+                    transferData.copy(bet = betOrderData.totalBet, win = betOrderData.totalWin, activeCount = activeCount)
 
                 }
             }
