@@ -34,6 +34,8 @@ interface TransferOrderDao: BasicDao<TransferOrder> {
 
     fun report(startDate: LocalDate): List<TransferOrderReportVo>
 
+    fun queryActiveCount(startDate: LocalDate, endDate: LocalDate): List<TransferActiveCount>
+
 //    fun reportByPlatform(memberId: Int?, from: Platform?, to: Platform?, startDate: LocalDate, endDate: LocalDate): List<MemberTransferPlatformReportVo>
 //
 //    fun report(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo>
@@ -43,6 +45,15 @@ interface TransferOrderDao: BasicDao<TransferOrder> {
 //    fun clientReportByPlatform(clientId: Int, startDate: LocalDate, endDate: LocalDate): List<ClientPlatformTransferReportVo>
 
 }
+
+data class TransferActiveCount(
+
+        val clientId: Int,
+
+        val platform:  Platform,
+
+        val count: Int
+)
 
 data class TransferReportQuery(
 

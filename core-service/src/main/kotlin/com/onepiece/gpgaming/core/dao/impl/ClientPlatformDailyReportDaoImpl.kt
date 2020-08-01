@@ -25,14 +25,15 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
             val win = rs.getBigDecimal("win")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
+            val activeCount = rs.getInt("active_count")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val status = rs.getString("status").let { Status.valueOf(it) }
 
 
-            ClientPlatformDailyReport(id = id, day = day, clientId = clientId, platform = platform,
-                    transferIn = transferIn, transferOut = transferOut, createdTime = createdTime, bet = bet, win = win, promotionAmount = promotionAmount,
-                    status = status)
+            ClientPlatformDailyReport(id = id, day = day, clientId = clientId, platform = platform, activeCount = activeCount,
+                    transferIn = transferIn, transferOut = transferOut, createdTime = createdTime, bet = bet, win = win,
+                    promotionAmount = promotionAmount, status = status)
         }
 
     override fun create(reports: List<ClientPlatformDailyReport>) {
@@ -44,6 +45,7 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
                 .set("transfer_out")
                 .set("bet")
                 .set("win")
+                .set("active_count")
                 .execute { ps, entity ->
                     var x = 0
                     ps.setDate(++x, Date.valueOf(entity.day))
@@ -53,6 +55,7 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
                     ps.setBigDecimal(++x, entity.transferOut)
                     ps.setBigDecimal(++x, entity.bet)
                     ps.setBigDecimal(++x, entity.win)
+                    ps.setInt(++x, entity.activeCount)
                 }
 
     }

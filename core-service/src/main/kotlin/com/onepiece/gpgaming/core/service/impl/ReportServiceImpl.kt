@@ -338,7 +338,7 @@ class ReportServiceImpl(
             ClientPlatformDailyReport(id = -1, clientId = first.clientId, day = startDate, platform = platform,
                     transferIn = transferInReport?.money ?: BigDecimal.ZERO, transferOut = transferOutReport?.money ?: BigDecimal.ZERO, createdTime = now,
                     win = BigDecimal.valueOf(-1), bet = BigDecimal.valueOf(-1), promotionAmount = transferOutReport?.promotionAmount ?: BigDecimal.ZERO,
-                    status = Status.Normal)
+                    status = Status.Normal, activeCount = 0)
         }
 
         // 盈利报表
@@ -350,17 +350,23 @@ class ReportServiceImpl(
         val betOrderKeys = betOrderReports.map { "${it.clientId}:${it.platform}" to it }.toMap()
         val keys = transferKeys.keys.plus(betOrderKeys.keys)
 
+        // 转账存活人数
+        val activeCountMap = transferOrderDao.queryActiveCount(startDate = startDate, endDate = endDate)
+                .map { "${it.clientId}:${it.platform}" to it.count }
+                .toMap()
+
         // 组合数据
         return keys.map { key ->
 
             val transferData = transferKeys[key]
             val betOrderData = betOrderKeys[key]
+            val activeCount  = activeCountMap[key]?: 0
 
             when {
                 transferData == null -> {
                     ClientPlatformDailyReport(id = -1, day = startDate, platform = betOrderData!!.platform, bet = betOrderData.totalBet, win = betOrderData.totalWin,
                             transferIn = BigDecimal.ZERO, transferOut = BigDecimal.ZERO, clientId = betOrderData.clientId, createdTime = now, promotionAmount = BigDecimal.ZERO,
-                            status = Status.Normal)
+                            status = Status.Normal, activeCount = activeCount)
                 }
                 betOrderData == null -> {
                     when(transferData.platform) {

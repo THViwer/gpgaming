@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.beans.value.database.TransferOrderCo
 import com.onepiece.gpgaming.beans.value.database.TransferOrderReportVo
 import com.onepiece.gpgaming.beans.value.database.TransferOrderUo
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
+import com.onepiece.gpgaming.core.dao.TransferActiveCount
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
 import com.onepiece.gpgaming.core.dao.TransferReportQuery
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
@@ -211,5 +212,27 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                     val promotionAmount = rs.getBigDecimal("promotion_amount")
                     TransferOrderReportVo(clientId = clientId, platform = platform, promotionId = promotionId, promotionAmount = promotionAmount)
                 }
+    }
+
+    override fun queryActiveCount(startDate: LocalDate, endDate: LocalDate): List<TransferActiveCount> {
+        val sql = """
+            select  client_id, `to`, count(member_id) count from (
+                select 
+                    distinct member_id, client_id, `to` 
+                from transfer_order 
+                where created_time > '$startDate' and created_time < '$endDate' and `to` != 'Center'
+            ) t group by client_id, `to`;
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql) { rs, _ ->
+            val clientId = rs.getInt("client_id")
+            val platform = rs.getString("to").let {
+                Platform.valueOf(it)
+            }
+            val count = rs.getInt("count")
+
+            TransferActiveCount(clientId = clientId, platform = platform, count = count)
+        }
+
     }
 }

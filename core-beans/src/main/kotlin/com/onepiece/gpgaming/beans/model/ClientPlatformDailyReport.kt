@@ -38,6 +38,9 @@ data class ClientPlatformDailyReport(
         // 返水金额
 //        val rebateAmount: BigDecimal,
 
+        // 存活人数(有金额转入平台)
+        val activeCount: Int,
+
         // 创建时间
         val createdTime: LocalDateTime,
 
