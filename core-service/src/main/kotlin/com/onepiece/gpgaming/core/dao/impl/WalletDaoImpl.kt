@@ -125,12 +125,10 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
 
     override fun transferOut(walletTransferOutUo: WalletTransferOutUo, frequency: Int): Boolean {
 
-        val frequencyStr = if (frequency > 0) " + 1" else " - 1"
-
         return update().asSet("balance = balance - ${walletTransferOutUo.money}")
                 .asSet("total_gift_balance = total_gift_balance + ${walletTransferOutUo.giftMoney}")
                 .set("process_id", UUID.randomUUID().toString())
-                .asSet("total_transfer_out_frequency = total_transfer_out_frequency $frequencyStr")
+                .asSet("total_transfer_out_frequency = total_transfer_out_frequency + $frequency")
                 .where("id", walletTransferOutUo.id)
                 .where("process_id", walletTransferOutUo.processId)
                 .asWhere("balance >= ${walletTransferOutUo.money}")
