@@ -354,6 +354,12 @@ class ReportServiceImpl(
         val activeCountMap = transferOrderDao.queryActiveCount(startDate = startDate, endDate = endDate)
                 .map { "${it.clientId}:${it.platform}" to it.count }
                 .toMap()
+        log.info("--------转账存活人数---------")
+        log.info("--------转账存活人数---------")
+        log.info("$activeCountMap")
+        log.info("--------转账存活人数---------")
+        log.info("--------转账存活人数---------")
+
 
         // 组合数据
         return keys.map { key ->
