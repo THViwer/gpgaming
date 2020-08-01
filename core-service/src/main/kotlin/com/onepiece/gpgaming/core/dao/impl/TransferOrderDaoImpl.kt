@@ -16,6 +16,7 @@ import com.onepiece.gpgaming.core.dao.TransferActiveCount
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
 import com.onepiece.gpgaming.core.dao.TransferReportQuery
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 import java.sql.ResultSet
@@ -214,6 +215,8 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 }
     }
 
+    private val log = LoggerFactory.getLogger(TransferOrderDaoImpl::class.java)
+
     override fun queryActiveCount(startDate: LocalDate, endDate: LocalDate): List<TransferActiveCount> {
         val sql = """
             select  client_id, `to`, count(member_id) count from (
@@ -224,7 +227,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
             ) t group by client_id, `to`;
         """.trimIndent()
 
-        return jdbcTemplate.query(sql) { rs, _ ->
+        val data = jdbcTemplate.query(sql) { rs, _ ->
             val clientId = rs.getInt("client_id")
             val platform = rs.getString("to").let {
                 Platform.valueOf(it)
@@ -233,6 +236,13 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
 
             TransferActiveCount(clientId = clientId, platform = platform, count = count)
         }
+        log.info("--------------------")
+        log.info("--------------------")
+        log.info("查询sql: ${sql}")
+        log.info("查询获得数据：${data}")
+        log.info("--------------------")
+        log.info("--------------------")
 
+        return data
     }
 }
