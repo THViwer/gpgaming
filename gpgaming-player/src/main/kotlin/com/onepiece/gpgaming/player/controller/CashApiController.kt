@@ -71,6 +71,7 @@ import com.onepiece.gpgaming.player.controller.value.DepositCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankUoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankVo
+import com.onepiece.gpgaming.player.controller.value.MemberDailyReportValue
 import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
 import com.onepiece.gpgaming.player.controller.value.WithdrawCoReq
 import com.onepiece.gpgaming.player.jwt.JwtUser
@@ -383,6 +384,27 @@ open class CashApiController(
         }
 
         return list1.plus(list2).sortedByDescending { it.createdTime }
+    }
+
+    @GetMapping("/daily/report")
+    override fun report(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
+    ): List<MemberDailyReportValue.ReportVo> {
+
+        val user = this.current()
+        val memberQuery = MemberReportQuery(clientId = user.clientId, memberId = user.id, startDate = startDate, endDate = endDate, agentId = null,
+                current = 0, size = 1000, minPromotionAmount = null, minRebateAmount = null)
+        val list = memberDailyReportService.query(memberQuery)
+        if (list.isEmpty())  return emptyList()
+
+        return list.map { report ->
+            with(report)  {
+                MemberDailyReportValue.ReportVo(memberId = memberId, day = day, settles = settles, totalMWin = totalMWin, totalBet = totalBet,
+                        depositAmount = depositAmount.plus(thirdPayAmount), withdrawAmount = withdrawAmount, promotionAmount = promotionAmount,
+                        rebateAmount = rebateAmount, rebateExecution = rebateExecution)
+            }
+        }
     }
 
     @PostMapping("/upload/proof")

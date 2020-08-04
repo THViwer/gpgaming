@@ -25,6 +25,7 @@ import com.onepiece.gpgaming.player.controller.value.DepositCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankUoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankVo
+import com.onepiece.gpgaming.player.controller.value.MemberDailyReportValue
 import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
 import com.onepiece.gpgaming.player.controller.value.WithdrawCoReq
 import io.swagger.annotations.Api
@@ -94,6 +95,12 @@ interface CashApi {
             @RequestParam(value = "orderId", required = false) orderId: String?,
             @RequestParam(value = "state", required = false) state: PayState?
     ): List<ThirdPayValue.OrderVo>
+
+    @ApiOperation(tags = ["cash"], value = "个人报表 -> 列表")
+    fun report(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
+    ): List<MemberDailyReportValue.ReportVo>
 
     @ApiOperation(tags = ["cash"], value = "充值列表")
     fun deposit(
