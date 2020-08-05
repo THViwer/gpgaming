@@ -177,8 +177,8 @@ class MemberApiController(
         val response = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).response!!
         val name = "members_$today"
 
-        response.contentType = "application/vnd.ms-excel";
-        response.characterEncoding = "utf-8";
+        response.contentType = "application/vnd.ms-excel"
+        response.characterEncoding = "utf-8"
         response.setHeader("Content-disposition", "attachment;filename=$name.xlsx")
 
         val memberQuery = MemberQuery(clientId = user.id, role = Role.Member)
@@ -312,8 +312,8 @@ class MemberApiController(
         val response = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).response!!
         val name = "follow_${startDate.toString().replace("-", "")}_${endDate.toString().replace("_", "")}"
 
-        response.contentType = "application/vnd.ms-excel";
-        response.characterEncoding = "utf-8";
+        response.contentType = "application/vnd.ms-excel"
+        response.characterEncoding = "utf-8"
         response.setHeader("Content-disposition", "attachment;filename=$name.xlsx")
 
         val data = this.follow(startDate = startDate, endDate = endDate)
@@ -493,7 +493,7 @@ class MemberApiController(
 
     @PutMapping("/vip")
     override fun vipUpdate(@RequestBody uo: VipValue.VipUo) {
-        val user = this.current()
+//        val user = this.current()
         vipService.update(uo)
     }
 
