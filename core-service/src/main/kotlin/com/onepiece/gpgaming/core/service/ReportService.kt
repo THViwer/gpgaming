@@ -20,7 +20,7 @@ interface ReportService {
     /**
      * 会员报表
      */
-    fun startMemberReport(startDate: LocalDate): List<MemberDailyReport>
+    fun startMemberReport(memberId: Int? = null, startDate: LocalDate): List<MemberDailyReport>
 
     /**
      * 代理日报表

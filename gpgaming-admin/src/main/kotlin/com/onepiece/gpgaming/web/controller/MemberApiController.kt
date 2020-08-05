@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.beans.value.database.LevelValue
 import com.onepiece.gpgaming.beans.value.database.MemberBankUo
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
+import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.beans.value.database.VipValue
@@ -38,9 +39,11 @@ import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberBankService
+import com.onepiece.gpgaming.core.service.MemberDailyReportService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
+import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.core.service.VipService
 import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.core.service.WalletService
@@ -86,7 +89,9 @@ class MemberApiController(
         private val bCryptPasswordEncoder: BCryptPasswordEncoder,
         private val okHttpUtil: OkHttpUtil,
 
-        private val vipService: VipService
+        private val vipService: VipService,
+        private val reportService: ReportService,
+        private val memberDailyReportService: MemberDailyReportService
 
 ) : BasicController(), MemberApi {
 
@@ -353,9 +358,16 @@ class MemberApiController(
                     pusername = platformMember.username, ppassword = platformMember.password, lastBet = lastBet, joinPromotionId = platformMember.joinPromotionId)
         }.collect(Collectors.toList()).toList().sortedByDescending { it.balance }
 
+        // 查询本同打码
+        val today = LocalDate.now()
+        val todayList = reportService.startMemberReport(memberId = memberId, startDate = today)
+        val mdrQuery = MemberReportQuery(clientId = clientId, agentId = null, memberId = memberId, startDate = today.minusDays(6), endDate = today, current = 0,
+                size = 10, minRebateAmount = null, minPromotionAmount = null)
+        val history = memberDailyReportService.query(mdrQuery)
+        val weekReports = todayList.plus(history).sortedByDescending { it.day }
 
         return MemberWalletInfo(memberId = memberId, wallet = wallet, lastFiveDeposit = depositHistory, lastFiveWithdraw = withdrawHistory,
-                balances = balances, lastPayOrders = lastPayOrders)
+                balances = balances, lastPayOrders = lastPayOrders, weekReports = weekReports)
 
     }
 

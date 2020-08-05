@@ -27,7 +27,9 @@ class AnalysisDaoImpl(
         return Query(jdbcTemplate, defaultTable, returnColumns)
     }
 
-    override fun memberReport(startDate: LocalDate, endDate: LocalDate): List<MemberDailyReport> {
+    override fun memberReport(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<MemberDailyReport> {
+
+        val tmq  = memberId?.let { " and m.id = $it" }?: ""
         val sql =  """
             select
                    m.boss_id,
@@ -108,7 +110,7 @@ class AnalysisDaoImpl(
                 ) t2 on m.id = t2.member_id
                 
                 left join member x on x.id = m.agent_id
-            where m.role  = 'Member';
+            where m.role  = 'Member' ${tmq};
         """.trimIndent()
 
         return jdbcTemplate.query(sql, RowMapper {  rs, _ ->
@@ -119,7 +121,7 @@ class AnalysisDaoImpl(
             val agentId =  rs.getInt("agent_id")
             val saleId = rs.getInt("sale_id")
             val saleScope = rs.getString("sale_scope").let { SaleScope.valueOf(it) }
-            val memberId = rs.getInt("id")
+            val tMemberId = rs.getInt("id")
             val levelId = rs.getInt("level_id")
             val username  = rs.getString("username")
             val totalDeposit = rs.getBigDecimal("total_deposit")
@@ -140,7 +142,7 @@ class AnalysisDaoImpl(
             val fishRequirementBet = rs.getBigDecimal("fish_requirement_bet")
 
 
-            val report = MemberDailyReport(id = -1, bossId = bossId, clientId = clientId, agentId = agentId, memberId = memberId, username = username, depositAmount = totalDeposit,
+            val report = MemberDailyReport(id = -1, bossId = bossId, clientId = clientId, agentId = agentId, memberId = tMemberId, username = username, depositAmount = totalDeposit,
                     depositCount = depositCount, thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, artificialAmount = artificialAmount, artificialCount = artificialCount,
                     withdrawAmount = totalWithdraw, withdrawCount = withdrawCount, transferOut = transferOut, promotionAmount = promotionAmount, transferIn = transferIn,
                     rebateAmount = BigDecimal.ZERO, rebateExecution = true, day = startDate, settles = emptyList(), totalBet = BigDecimal.ZERO, totalMWin = BigDecimal.ZERO,

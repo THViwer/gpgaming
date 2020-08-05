@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.beans.enums.RiskLevel
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Deposit
+import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.model.PayOrder
 import com.onepiece.gpgaming.beans.model.Wallet
 import com.onepiece.gpgaming.beans.model.Withdraw
@@ -350,7 +351,10 @@ data class MemberWalletInfo(
         val lastPayOrders: List<PayOrder>,
 
         // 最后5个取款信息
-        val lastFiveWithdraw: List<Withdraw>
+        val lastFiveWithdraw: List<Withdraw>,
+
+        // 本周日报表
+        val weekReports: List<MemberDailyReport>
 
 ) {
 

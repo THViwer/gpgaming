@@ -78,11 +78,11 @@ class ReportServiceImpl(
 
     }
 
-    override fun startMemberReport(startDate: LocalDate): List<MemberDailyReport> {
+    override fun startMemberReport(memberId: Int?, startDate: LocalDate): List<MemberDailyReport> {
         val endDate = startDate.plusDays(1)
 
         // 报表数据
-        val list = analysisDao.memberReport(startDate = startDate, endDate = endDate)
+        val list = analysisDao.memberReport(memberId = memberId, startDate = startDate, endDate = endDate)
 
         // 会员对应返水比例
         val levelIds = levelDao.all().map { it.id to it }.toMap()
@@ -149,13 +149,13 @@ class ReportServiceImpl(
 
             report.copy(rebateAmount = rebate, rebateExecution = rebateExecution, totalBet = totalBet, totalMWin = totalMWin, settles = settles)
         }.filter {
-
-            val x = it.isHasData()
-
-            if  (it.memberId == 179) {
-                println("11")
-            }
-            x
+            it.isHasData()
+//            val x = it.isHasData()
+//
+//            if  (it.memberId == 179) {
+//                println("11")
+//            }
+//            x
 
         } // 过滤空数据
     }

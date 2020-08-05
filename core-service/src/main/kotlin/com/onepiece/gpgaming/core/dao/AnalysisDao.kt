@@ -14,7 +14,7 @@ interface AnalysisDao  {
     /**
      * 会员日报表
      */
-    fun memberReport(startDate: LocalDate, endDate: LocalDate): List<MemberDailyReport>
+    fun memberReport(memberId: Int? =  null, startDate: LocalDate, endDate: LocalDate): List<MemberDailyReport>
 
     /**
      * 会员存活人数汇总
