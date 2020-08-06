@@ -101,7 +101,7 @@ class AgentApiController(
         val bossId = getBossId()
 
         val loginValue = LoginValue(bossId = bossId, username = loginReq.username, password = loginReq.password, ip = RequestUtil.getIpAddress())
-        val member = memberService.login(loginValue)
+        val member = memberService.login(loginValue, deviceType = "pc")
         check(member.role == Role.Agent) { OnePieceExceptionCode.LOGIN_FAIL }
         check(member.formal) { OnePieceExceptionCode.AGENT_PROCESS }
 
