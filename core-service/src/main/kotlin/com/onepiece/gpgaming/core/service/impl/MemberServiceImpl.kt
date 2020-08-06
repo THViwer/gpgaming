@@ -110,7 +110,7 @@ class MemberServiceImpl(
         return Page.of(total = total, data = data)
     }
 
-    override fun login(loginValue: LoginValue): Member {
+    override fun login(loginValue: LoginValue, deviceType: String): Member {
 
         // check username and password
         val member  = memberDao.getByBossIdAndUsername(loginValue.bossId, loginValue.username)
@@ -128,7 +128,7 @@ class MemberServiceImpl(
 
         // 登陆历史
         val historyCo = LoginHistoryValue.LoginHistoryCo(bossId = member.bossId, clientId = member.clientId, userId = member.id,
-                role = Role.Member, ip = loginValue.ip, country = "", username = loginValue.username)
+                role = Role.Member, ip = loginValue.ip, country = "", username = loginValue.username, deviceType = deviceType)
         loginHistoryService.create(historyCo)
 
         return member.copy(password = "")

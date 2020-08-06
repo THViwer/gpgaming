@@ -22,10 +22,11 @@ class LoginHistoryDaoImpl : BasicDaoImpl<LoginHistory>("login_history"), LoginHi
             val role = rs.getString("role").let { Role.valueOf(it) }
             val ip = rs.getString("ip")
             val country = rs.getString("country")
+            val deviceType = rs.getString("device_type")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             LoginHistory(id = id, bossId = bossId, clientId = clientId, userId = userId, role = role, ip = ip,
-                    country = country, createdTime = createdTime, username = username)
+                    country = country, createdTime = createdTime, username = username, deviceType = deviceType)
         }
 
     override fun create(co: LoginHistoryValue.LoginHistoryCo): Boolean {
@@ -37,6 +38,7 @@ class LoginHistoryDaoImpl : BasicDaoImpl<LoginHistory>("login_history"), LoginHi
                 .set("role", co.role)
                 .set("ip", co.ip)
                 .set("country", co.country)
+                .set("device_type", co.deviceType)
                 .executeOnlyOne()
     }
 

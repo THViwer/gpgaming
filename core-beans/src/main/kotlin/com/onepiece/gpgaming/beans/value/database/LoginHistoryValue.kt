@@ -25,7 +25,10 @@ class LoginHistoryValue {
             val ip: String,
 
             // 国家
-            val country: String = ""
+            val country: String = "",
+
+            // 渠道 pc、android、ios
+            val deviceType: String
 
     )
 

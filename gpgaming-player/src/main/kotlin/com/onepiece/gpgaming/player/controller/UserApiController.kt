@@ -29,6 +29,8 @@ import com.onepiece.gpgaming.player.controller.value.UserValue
 import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.player.jwt.JwtUser
 import com.onepiece.gpgaming.utils.RequestUtil
+import eu.bitwalker.useragentutils.DeviceType
+import eu.bitwalker.useragentutils.UserAgent
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.GetMapping
@@ -39,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+
 
 @RestController
 @RequestMapping("/user")
@@ -64,6 +67,25 @@ class UserApiController(
 
     }
 
+    fun getDeviceType(): String {
+        // ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        val agentString: String = getRequest().getHeader("User-Agent")
+        val userAgent = UserAgent.parseUserAgentString(agentString)
+        val operatingSystem = userAgent.operatingSystem // 操作系统信息
+        val deviceType = operatingSystem.deviceType // 设备类型
+        return when (deviceType) {
+            DeviceType.COMPUTER -> "PC"
+            DeviceType.TABLET -> {
+                if (agentString.contains("Android")) return "Android Pad"
+                if (agentString.contains("iOS")) "iPad" else "Unknown"
+            }
+            DeviceType.MOBILE -> {
+                if (agentString.contains("Android")) return "Android"
+                if (agentString.contains("iOS")) "IOS" else "Unknown"
+            }
+            else -> "Unknown"
+        }
+    }
 
     @PostMapping
     override fun login(@RequestBody loginReq: LoginReq): LoginResp {
@@ -72,8 +94,11 @@ class UserApiController(
         log.info("bossId = $bossId")
         val launch = getHeaderLaunch()
 
+
+        val deviceType = this.getDeviceType()
+
         val loginValue = LoginValue(bossId = bossId, username = loginReq.username, password = loginReq.password, ip = RequestUtil.getIpAddress())
-        val member = memberService.login(loginValue)
+        val member = memberService.login(loginValue, deviceType)
         check(member.role == Role.Member) { OnePieceExceptionCode.LOGIN_FAIL }
 
         val client = clientService.get(id = member.clientId)

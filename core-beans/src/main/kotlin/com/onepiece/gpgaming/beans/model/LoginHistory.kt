@@ -28,6 +28,9 @@ data class LoginHistory(
         // 国家
         val country: String,
 
+        // 登陆设备
+        val deviceType: String,
+
         // 创建时间
         val createdTime: LocalDateTime
 

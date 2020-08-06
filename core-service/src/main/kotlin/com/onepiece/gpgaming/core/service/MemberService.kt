@@ -31,7 +31,7 @@ interface MemberService {
 
     fun query(memberQuery: MemberQuery, current: Int, size: Int): Page<Member>
 
-    fun login(loginValue: LoginValue): Member
+    fun login(loginValue: LoginValue, deviceType: String): Member
 
     fun checkSafetyPassword(id: Int, safetyPassword: String)
 
