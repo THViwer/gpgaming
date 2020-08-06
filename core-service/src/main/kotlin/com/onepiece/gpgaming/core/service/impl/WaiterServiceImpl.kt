@@ -52,7 +52,7 @@ class WaiterServiceImpl(
         this.update(waiterUo)
 
         val historyCo = LoginHistoryValue.LoginHistoryCo(bossId = waiter.bossId, clientId = waiter.id, userId = waiter.id,
-                ip = loginValue.ip, role = waiter.role, username = loginValue.username, channel = "pc")
+                ip = loginValue.ip, role = waiter.role, username = loginValue.username, deviceType = "pc")
         loginHistoryService.create(historyCo)
 
         return waiter.copy(password = "")
