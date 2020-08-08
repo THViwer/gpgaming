@@ -668,11 +668,14 @@ open class CashApiController(
         check(cashTransferReq.from != cashTransferReq.to) { OnePieceExceptionCode.AUTHORITY_FAIL }
         check(cashTransferReq.amount.toDouble() > 0 || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.ILLEGAL_OPERATION }
 
-//        if (cashTransferReq.promotionId != null && cashTransferReq.promotionId!! > 0)  {
-//            val promotion = promotionService.get(id = cashTransferReq.promotionId!!)
-//            val member = memberService.getMember(current.id)
-//            check(promotion.category == PromotionCategory.First && !member.firstPromotion) { OnePieceExceptionCode.ILLEGAL_OPERATION }
-//        }
+        if (cashTransferReq.promotionId != null && cashTransferReq.promotionId!! > 0)  {
+            val promotion = promotionService.get(id = cashTransferReq.promotionId!!)
+            val member = memberService.getMember(current.id)
+
+            if   (promotion.category == PromotionCategory.First)  {
+                check(!member.firstPromotion) { OnePieceExceptionCode.ILLEGAL_OPERATION }
+            }
+        }
 
         if (cashTransferReq.from != Platform.Center) {
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.from, member = current)
