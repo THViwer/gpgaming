@@ -655,7 +655,7 @@ open class CashApiController(
         val watch = StopWatch()
         watch.start()
 
-        val language = getHeaderLanguage()
+        val current = this.current()
 
         log.info("用户：${current().username}，开始转账")
         // 如果转入的平台是918kiss、pussy、mega 则默认添加优惠为-100
@@ -668,7 +668,11 @@ open class CashApiController(
         check(cashTransferReq.from != cashTransferReq.to) { OnePieceExceptionCode.AUTHORITY_FAIL }
         check(cashTransferReq.amount.toDouble() > 0 || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.ILLEGAL_OPERATION }
 
-        val current = this.current()
+        cashTransferReq.promotionId?.apply {
+            val promotion = promotionService.get(id = this)
+            val member = memberService.getMember(current.id)
+            check(promotion.category == PromotionCategory.First && !member.firstPromotion) { OnePieceExceptionCode.ILLEGAL_OPERATION }
+        }
 
         if (cashTransferReq.from != Platform.Center) {
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.from, member = current)
