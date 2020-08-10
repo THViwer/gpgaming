@@ -194,6 +194,8 @@ open class ApiController(
                 .filter { it.show }
                 .filter { it.category != PromotionCategory.ActivationCode } // 优惠码Code类型不显示在前台
 
+        log.info("优惠列表：${allPromotion}")
+
         val promotions = arrayListOf<Promotion>()
 
         allPromotion.forEach { promotion ->
