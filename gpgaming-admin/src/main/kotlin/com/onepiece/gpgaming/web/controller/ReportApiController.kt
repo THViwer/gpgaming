@@ -231,7 +231,7 @@ class ReportApiController(
                         ReportValue.PlatformSettleVo(memberId = report.memberId, platform = platform, username = report.username, bet = settle.bet, validBet = settle.validBet,
                                 mwin = settle.mwin)
                     }
-        }
+        }.sortedByDescending { it.bet }
     }
 
     @GetMapping("/client")
