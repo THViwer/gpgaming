@@ -364,7 +364,7 @@ class ReportServiceImpl(
                             val transferOutVo = transferReports["${client.id}:${Platform.Center}:${platform}"]
                             val transferIn = transferInVo?.money ?: BigDecimal.ZERO
                             val transferOut = transferOutVo?.money ?: BigDecimal.ZERO
-                            val promotionAmount = transferInVo?.promotionAmount ?: BigDecimal.ZERO
+                            val promotionAmount = transferOutVo?.promotionAmount ?: BigDecimal.ZERO
 
                             val activeCount = activeCountMap["${client.id}:${platform}"] ?: 0
 
