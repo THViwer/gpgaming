@@ -346,29 +346,37 @@ class ReportServiceImpl(
             val memberQuery = MemberReportQuery(clientId = client.id, startDate = startDate, endDate = endDate, agentId = null, current = 0, size = 99999, memberId = null,
                     minRebateAmount = null, minPromotionAmount = null)
             val memberReports = memberDailyReportDao.query(memberQuery)
-            memberReports.map { x -> x.settles }
-                    .reduce { acc, list ->  acc.plus(list)}
-                    .groupBy { x -> x.platform }
-                    .map { x ->
+            if (memberReports.isEmpty()) {
+                emptyList()
+            } else {
+                memberReports.map { x -> x.settles }
+                        .reduce { acc, list ->  acc.plus(list)}
+                        .groupBy { x -> x.platform }
+                        .map { x ->
 
-                        val platform = x.key
-                        val list = x.value
+                            val platform = x.key
+                            val list = x.value
 
-                        val bet = list.sumByDouble { y -> y.bet.toDouble() }.toBigDecimal().setScale(2,  2)
-                        val win = list.sumByDouble { y -> y.mwin.toDouble() }.toBigDecimal().setScale(2,  2)
+                            val bet = list.sumByDouble { y -> y.bet.toDouble() }.toBigDecimal().setScale(2,  2)
+                            val win = list.sumByDouble { y -> y.mwin.toDouble() }.toBigDecimal().setScale(2,  2)
 
-                        val transferInVo = transferReports["${client.id}:${platform}:${Platform.Center}"]
-                        val transferOutVo = transferReports["${client.id}:${Platform.Center}:${platform}"]
-                        val transferIn = transferInVo?.money ?: BigDecimal.ZERO
-                        val transferOut = transferOutVo?.money ?: BigDecimal.ZERO
-                        val promotionAmount = transferInVo?.promotionAmount ?: BigDecimal.ZERO
+                            val transferInVo = transferReports["${client.id}:${platform}:${Platform.Center}"]
+                            val transferOutVo = transferReports["${client.id}:${Platform.Center}:${platform}"]
+                            val transferIn = transferInVo?.money ?: BigDecimal.ZERO
+                            val transferOut = transferOutVo?.money ?: BigDecimal.ZERO
+                            val promotionAmount = transferInVo?.promotionAmount ?: BigDecimal.ZERO
 
-                        val activeCount = activeCountMap["${client.id}:${platform}"] ?: 0
+                            val activeCount = activeCountMap["${client.id}:${platform}"] ?: 0
 
-                        ClientPlatformDailyReport(id = -1, day = startDate, clientId = client.id, activeCount = activeCount, bet = bet,  win = win, platform = platform,
-                                transferIn = transferIn, transferOut = transferOut, promotionAmount = promotionAmount, createdTime = LocalDateTime.now(), status = Status.Normal)
-                    }
-        }.reduce { acc, list ->  acc.plus(list)}
+                            ClientPlatformDailyReport(id = -1, day = startDate, clientId = client.id, activeCount = activeCount, bet = bet,  win = win, platform = platform,
+                                    transferIn = transferIn, transferOut = transferOut, promotionAmount = promotionAmount, createdTime = LocalDateTime.now(), status = Status.Normal)
+                        }
+            }
+
+
+        }.reduce { acc, list ->
+            acc.plus(list)
+        }
 
 
 //        val endDate = startDate.plusDays(1)
