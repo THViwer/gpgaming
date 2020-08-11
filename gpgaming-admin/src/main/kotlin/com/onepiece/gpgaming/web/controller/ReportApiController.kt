@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.value.database.ClientReportQuery
@@ -209,6 +210,28 @@ class ReportApiController(
 
         val data = clientPlatformDailyReportService.query(query).plus(todayData).sortedByDescending { it.day }
         return ReportValue.CPTotalReport(data)
+    }
+
+
+    @GetMapping("/client/member/report")
+    override fun platformMemberDaily(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @RequestParam("platform") platform:  Platform
+    ): List<ReportValue.PlatformSettleVo> {
+
+        val user = this.current()
+
+        val memberQuery = MemberReportQuery(clientId = user.clientId, agentId = null, memberId = null, startDate = startDate, endDate = startDate.plusDays(1),
+                minPromotionAmount = null, minRebateAmount = null, current = 0, size = 999999)
+        val list =  memberDailyReportDao.query(memberQuery)
+
+        return  list.mapNotNull{ report ->
+            report.settles.firstOrNull { it.platform == platform }
+                    ?.let { settle ->
+                        ReportValue.PlatformSettleVo(memberId = report.memberId, platform = platform, username = report.username, bet = settle.bet, validBet = settle.validBet,
+                                mwin = settle.mwin)
+                    }
+        }
     }
 
     @GetMapping("/client")

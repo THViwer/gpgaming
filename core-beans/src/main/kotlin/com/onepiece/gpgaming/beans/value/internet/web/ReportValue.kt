@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.ClientPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.PromotionPlatformDailyReport
@@ -308,6 +309,34 @@ sealed class ReportValue {
                 return data.sumByDouble { it.promotionAmount.toDouble() }.toBigDecimal().setScale(2, 2)
             }
 
+
+    }
+
+    data class PlatformSettleVo(
+
+            // 会员Id
+            val memberId:  Int,
+
+            // 用户名
+            val username: String,
+
+            // 平台
+            val platform: Platform,
+
+            // 下注
+            val bet: BigDecimal = BigDecimal.ZERO,
+
+            // 有效投注
+            val validBet: BigDecimal = BigDecimal.ZERO,
+
+            // 顾客盈利
+            val mwin: BigDecimal = BigDecimal.ZERO,
+
+            // 反水
+            val rebate: BigDecimal  = BigDecimal.ZERO
+    ) {
+
+        val cwin: BigDecimal = mwin.negate()
 
     }
 

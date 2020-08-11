@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.ReportValue
 import io.swagger.annotations.Api
@@ -45,12 +46,19 @@ interface ReportApi {
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
     ): ReportValue.CPTotalReport
 
+    @ApiOperation(tags = ["report"], value = "会员平台报表详情")
+    fun platformMemberDaily(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @RequestParam("platform") platform:  Platform
+    ): List<ReportValue.PlatformSettleVo>
+
 
     @ApiOperation(tags = ["report"], value = "厅主报表")
     fun clientDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
     ): ReportValue.CTotalReport
+
 
     @ApiOperation(tags = ["user"], value = "厅主平台报表 -> 导出excel")
     fun clientDailyExcel(
