@@ -17,6 +17,7 @@ import com.onepiece.gpgaming.beans.model.SaleDailyReport
 import com.onepiece.gpgaming.beans.model.SaleMonthReport
 import com.onepiece.gpgaming.beans.value.database.AnalysisValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
+import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.core.dao.BetOrderDao
@@ -28,6 +29,7 @@ import com.onepiece.gpgaming.core.dao.SaleDailyReportDao
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
 import com.onepiece.gpgaming.core.dao.TransferReportQuery
 import com.onepiece.gpgaming.core.service.BetOrderService
+import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.CommissionService
 import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.core.service.WaiterService
@@ -50,7 +52,8 @@ class ReportServiceImpl(
         private val otherPlatformReportDao: OtherPlatformReportDao,
         private val memberDailyReportDao: MemberDailyReportDao,
         private val waiterService: WaiterService,
-        private val saleDailyReportDao: SaleDailyReportDao
+        private val saleDailyReportDao: SaleDailyReportDao,
+        private val clientService: ClientService
 ) : ReportService {
 
     private val log = LoggerFactory.getLogger(ReportServiceImpl::class.java)
@@ -321,75 +324,121 @@ class ReportServiceImpl(
 
     override fun startClientPlatformReport(startDate: LocalDate): List<ClientPlatformDailyReport> {
 
-
         val endDate = startDate.plusDays(1)
-        val now = LocalDateTime.now()
 
-        // 转账报表
-        val transferQuery = TransferReportQuery(clientId = null, memberId = null, from = null, to = null, startDate = startDate, endDate = endDate)
-        val transferReports = transferOrderDao.clientPlatformReport(query = transferQuery)
-        val data = transferReports.groupBy { "${it.clientId}:${it.platform}" }.map { maps ->
+        // 业主列表
+        val clients = clientService.all().filter { it.status ==  Status.Normal }
 
-            val transferInReport = maps.value.find { it.from == Platform.Center }
-            val transferOutReport = maps.value.find { it.to == Platform.Center }
+        // 转账信息
+        val transferQuery = TransferReportQuery(startDate = startDate,  endDate = endDate, clientId = null, memberId = null, from = null, to = null)
+        val transferReports = transferOrderDao.clientPlatformReport(transferQuery)
+                .map { "${it.clientId}:${it.from}:${it.to}" to it }
+                .toMap()
 
-            val first = maps.value.first()
-            val platform = if (first.from == Platform.Center) first.to else first.from
-            ClientPlatformDailyReport(id = -1, clientId = first.clientId, day = startDate, platform = platform,
-                    transferIn = transferInReport?.money ?: BigDecimal.ZERO, transferOut = transferOutReport?.money ?: BigDecimal.ZERO, createdTime = now,
-                    win = BigDecimal.valueOf(-1), bet = BigDecimal.valueOf(-1), promotionAmount = transferOutReport?.promotionAmount ?: BigDecimal.ZERO,
-                    status = Status.Normal, activeCount = 0)
-        }
-
-        // 盈利报表
-        val betOrderReports = betOrderService.report(startDate = startDate, endDate = endDate)
-
-
-        // 组合
-        val transferKeys = data.map { "${it.clientId}:${it.platform}" to it }.toMap()
-        val betOrderKeys = betOrderReports.map { "${it.clientId}:${it.platform}" to it }.toMap()
-        val keys = transferKeys.keys.plus(betOrderKeys.keys)
-
-        // 转账存活人数
+        // 存活人数
         val activeCountMap = transferOrderDao.queryActiveCount(startDate = startDate, endDate = endDate)
                 .map { "${it.clientId}:${it.platform}" to it.count }
                 .toMap()
-        log.info("--------转账存活人数---------")
-        log.info("--------转账存活人数---------")
-        log.info("$activeCountMap")
-        log.info("--------转账存活人数---------")
-        log.info("--------转账存活人数---------")
 
 
-        // 组合数据
-        return keys.map { key ->
+        // 组装数据
+        return clients.map { client ->
+            val memberQuery = MemberReportQuery(clientId = client.id, startDate = startDate, endDate = endDate, agentId = null, current = 0, size = 99999, memberId = null,
+                    minRebateAmount = null, minPromotionAmount = null)
+            val memberReports = memberDailyReportDao.query(memberQuery)
+            memberReports.map { x -> x.settles }
+                    .reduce { acc, list ->  acc.plus(list)}
+                    .groupBy { x -> x.platform }
+                    .map { x ->
 
-            val transferData = transferKeys[key]
-            val betOrderData = betOrderKeys[key]
-            val activeCount  = activeCountMap[key]?: 0
+                        val platform = x.key
+                        val list = x.value
 
-            when {
-                transferData == null -> {
-                    ClientPlatformDailyReport(id = -1, day = startDate, platform = betOrderData!!.platform, bet = betOrderData.totalBet, win = betOrderData.totalWin,
-                            transferIn = BigDecimal.ZERO, transferOut = BigDecimal.ZERO, clientId = betOrderData.clientId, createdTime = now, promotionAmount = BigDecimal.ZERO,
-                            status = Status.Normal, activeCount = activeCount)
-                }
-                betOrderData == null -> {
-                    when(transferData.platform) {
-                        Platform.Kiss918,
-                        Platform.Pussy888,
-                        Platform.Mega -> {
-                            transferData.copy(bet = BigDecimal.valueOf(-1), win = BigDecimal.valueOf(-1), activeCount = activeCount)
-                        }
-                        else -> transferData.copy(bet = BigDecimal.ZERO, win = BigDecimal.ZERO, activeCount = activeCount)
+                        val bet = list.sumByDouble { y -> y.bet.toDouble() }.toBigDecimal().setScale(2,  2)
+                        val win = list.sumByDouble { y -> y.mwin.toDouble() }.toBigDecimal().setScale(2,  2)
+
+                        val transferInVo = transferReports["${client.id}:${platform}:${Platform.Center}"]
+                        val transferOutVo = transferReports["${client.id}:${Platform.Center}:${platform}"]
+                        val transferIn = transferInVo?.money ?: BigDecimal.ZERO
+                        val transferOut = transferOutVo?.money ?: BigDecimal.ZERO
+                        val promotionAmount = transferInVo?.promotionAmount ?: BigDecimal.ZERO
+
+                        val activeCount = activeCountMap["${client.id}:${platform}"] ?: 0
+
+                        ClientPlatformDailyReport(id = -1, day = startDate, clientId = client.id, activeCount = activeCount, bet = bet,  win = win, platform = platform,
+                                transferIn = transferIn, transferOut = transferOut, promotionAmount = promotionAmount, createdTime = LocalDateTime.now(), status = Status.Normal)
                     }
-                }
-                else -> {
-                    transferData.copy(bet = betOrderData.totalBet, win = betOrderData.totalWin, activeCount = activeCount)
+        }.reduce { acc, list ->  acc.plus(list)}
 
-                }
-            }
-        }
+
+//        val endDate = startDate.plusDays(1)
+//        val now = LocalDateTime.now()
+//
+//        // 转账报表
+//        val transferQuery = TransferReportQuery(clientId = null, memberId = null, from = null, to = null, startDate = startDate, endDate = endDate)
+//        val transferReports = transferOrderDao.clientPlatformReport(query = transferQuery)
+//        val data = transferReports.groupBy { "${it.clientId}:${it.platform}" }.map { maps ->
+//
+//            val transferInReport = maps.value.find { it.from == Platform.Center }
+//            val transferOutReport = maps.value.find { it.to == Platform.Center }
+//
+//            val first = maps.value.first()
+//            val platform = if (first.from == Platform.Center) first.to else first.from
+//            ClientPlatformDailyReport(id = -1, clientId = first.clientId, day = startDate, platform = platform,
+//                    transferIn = transferInReport?.money ?: BigDecimal.ZERO, transferOut = transferOutReport?.money ?: BigDecimal.ZERO, createdTime = now,
+//                    win = BigDecimal.valueOf(-1), bet = BigDecimal.valueOf(-1), promotionAmount = transferOutReport?.promotionAmount ?: BigDecimal.ZERO,
+//                    status = Status.Normal, activeCount = 0)
+//        }
+//
+//        // 盈利报表
+//        val betOrderReports = betOrderService.report(startDate = startDate, endDate = endDate)
+//
+//
+//        // 组合
+//        val transferKeys = data.map { "${it.clientId}:${it.platform}" to it }.toMap()
+//        val betOrderKeys = betOrderReports.map { "${it.clientId}:${it.platform}" to it }.toMap()
+//        val keys = transferKeys.keys.plus(betOrderKeys.keys)
+//
+//        // 转账存活人数
+//        val activeCountMap = transferOrderDao.queryActiveCount(startDate = startDate, endDate = endDate)
+//                .map { "${it.clientId}:${it.platform}" to it.count }
+//                .toMap()
+//        log.info("--------转账存活人数---------")
+//        log.info("--------转账存活人数---------")
+//        log.info("$activeCountMap")
+//        log.info("--------转账存活人数---------")
+//        log.info("--------转账存活人数---------")
+//
+//
+//        // 组合数据
+//        return keys.map { key ->
+//
+//            val transferData = transferKeys[key]
+//            val betOrderData = betOrderKeys[key]
+//            val activeCount  = activeCountMap[key]?: 0
+//
+//            when {
+//                transferData == null -> {
+//                    ClientPlatformDailyReport(id = -1, day = startDate, platform = betOrderData!!.platform, bet = betOrderData.totalBet, win = betOrderData.totalWin,
+//                            transferIn = BigDecimal.ZERO, transferOut = BigDecimal.ZERO, clientId = betOrderData.clientId, createdTime = now, promotionAmount = BigDecimal.ZERO,
+//                            status = Status.Normal, activeCount = activeCount)
+//                }
+//                betOrderData == null -> {
+//                    when(transferData.platform) {
+//                        Platform.Kiss918,
+//                        Platform.Pussy888,
+//                        Platform.Mega -> {
+//                            transferData.copy(bet = BigDecimal.valueOf(-1), win = BigDecimal.valueOf(-1), activeCount = activeCount)
+//                        }
+//                        else -> transferData.copy(bet = BigDecimal.ZERO, win = BigDecimal.ZERO, activeCount = activeCount)
+//                    }
+//                }
+//                else -> {
+//                    transferData.copy(bet = betOrderData.totalBet, win = betOrderData.totalWin, activeCount = activeCount)
+//
+//                }
+//            }
+//        }
     }
 
     override fun startClientReport(startDate: LocalDate): List<ClientDailyReport> {
