@@ -164,7 +164,10 @@ data class MemberDailyReport(
             val validBet: BigDecimal = BigDecimal.ZERO,
 
             // 顾客盈利
-            val mwin: BigDecimal = BigDecimal.ZERO
+            val mwin: BigDecimal = BigDecimal.ZERO,
+
+            // 反水
+            val rebate: BigDecimal  = BigDecimal.ZERO
     ) {
 
         // 业主盈利

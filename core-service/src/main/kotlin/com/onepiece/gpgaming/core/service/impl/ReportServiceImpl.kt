@@ -124,10 +124,11 @@ class ReportServiceImpl(
             val level = levelIds[report.levelId]
                     ?: Level(id = -1, clientId = -1, sportRebate = BigDecimal.ZERO, name = "", liveRebate = BigDecimal.ZERO, slotRebate = BigDecimal.ZERO,
                             fishRebate = BigDecimal.ZERO, status = Status.Normal, createdTime = LocalDateTime.now())
-            val rebate = settles.sumByDouble {
 
+
+            val settleList = settles.map {
                 // 公式 (有效打码-优惠金额需要打码) * 游戏平台返水比例
-                when (it.platform.category) {
+                val rebate =  when (it.platform.category) {
                     PlatformCategory.Fishing ->
                         (it.validBet.minus(report.fishRequirementBet))
                                 .multiply(level.fishRebate)
@@ -144,23 +145,22 @@ class ReportServiceImpl(
                         (it.validBet.minus(report.sportRequirementBet))
                                 .multiply(level.sportRebate)
                                 .divide(BigDecimal.valueOf(100))
-                }.toDouble()
-            }.toBigDecimal().setScale(2, 2).let {
-                if (it.toDouble() <= 0) BigDecimal.ZERO else it
+                }.let { x ->
+                    if (x.toDouble() <= 0) BigDecimal.ZERO else x
+                }
+                it.copy(rebate = rebate)
             }
-            val rebateExecution = rebate.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
-            report.copy(rebateAmount = rebate, rebateExecution = rebateExecution, totalBet = totalBet, totalMWin = totalMWin, settles = settles)
+            val totalRebate = settleList.sumByDouble { it.rebate.toDouble() }
+                    .toBigDecimal()
+                    .setScale(2, 2)
+
+            val rebateExecution = totalRebate.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
+
+            report.copy(rebateAmount = totalRebate, rebateExecution = rebateExecution, totalBet = totalBet, totalMWin = totalMWin, settles = settles)
         }.filter {
             it.isHasData()
-//            val x = it.isHasData()
-//
-//            if  (it.memberId == 179) {
-//                println("11")
-//            }
-//            x
-
-        } // 过滤空数据
+        }
     }
 
     override fun startAgentReport(startDate: LocalDate): List<AgentDailyReport> {
