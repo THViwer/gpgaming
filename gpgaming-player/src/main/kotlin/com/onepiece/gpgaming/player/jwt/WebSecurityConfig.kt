@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.player.jwt
 
 import com.onepiece.gpgaming.core.risk.VipUtil
+import com.onepiece.gpgaming.core.service.LoginHistoryService
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -48,6 +49,9 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
     lateinit var vipUtil: VipUtil
 
     @Autowired
+    lateinit var loginHistoryService: LoginHistoryService
+
+    @Autowired
     @Throws(Exception::class)
     fun authenticationManager(authenticationManagerBuilder: AuthenticationManagerBuilder) {
         authenticationManagerBuilder
@@ -89,7 +93,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
     @Throws(Exception::class)
     open fun authenticationTokenFilterBean(): JwtAuthenticationTokenFilter {
         return JwtAuthenticationTokenFilter(jwtTokenUtil = jwtTokenUtil, tokenStore = tokenStore, passwordEncoder = passwordEncoder(),
-                memberInfoService = memberInfoService, vipUtil = vipUtil)
+                memberInfoService = memberInfoService, vipUtil = vipUtil, loginHistoryService = loginHistoryService)
     }
 
     @Throws(Exception::class)

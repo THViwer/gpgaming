@@ -1,8 +1,11 @@
 package com.onepiece.gpgaming.player.jwt
 
+import com.onepiece.gpgaming.beans.value.database.LoginHistoryValue
 import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
 import com.onepiece.gpgaming.core.risk.VipUtil
+import com.onepiece.gpgaming.core.service.LoginHistoryService
 import com.onepiece.gpgaming.core.service.MemberInfoService
+import com.onepiece.gpgaming.utils.RequestUtil
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
@@ -11,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.filter.OncePerRequestFilter
+import java.lang.Exception
 import java.time.LocalDate
 import java.time.ZoneId
 import javax.servlet.FilterChain
@@ -23,6 +27,7 @@ open class JwtAuthenticationTokenFilter(
         private val tokenStore: TokenStore,
         private val passwordEncoder: PasswordEncoder,
         private val memberInfoService: MemberInfoService,
+        private val loginHistoryService: LoginHistoryService,
         private val vipUtil: VipUtil
 ) : OncePerRequestFilter() {
 
@@ -83,6 +88,14 @@ open class JwtAuthenticationTokenFilter(
             // 更新用户信息
             val infoUo = MemberInfoValue.MemberInfoUo.ofLogin(memberId = user.id)
             memberInfoService.asyncUpdate(uo = infoUo)
+
+            try {
+                val co = LoginHistoryValue.LoginHistoryCo(bossId = user.bossId, clientId = user.clientId, userId = user.id, role = user.role, ip = RequestUtil.getIpAddress(),
+                        username = user.username.split("@").last(), deviceType = "pc")
+                loginHistoryService.create(co)
+            } catch (e: Exception) {
+
+            }
 
 
             // 检查vip等级
