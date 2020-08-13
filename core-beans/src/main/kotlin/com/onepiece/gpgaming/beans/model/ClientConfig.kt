@@ -3,7 +3,7 @@ package com.onepiece.gpgaming.beans.model
 import com.onepiece.gpgaming.beans.enums.ShowPosition
 import java.time.LocalDateTime
 
-data class Seo(
+data class ClientConfig(
 
         // id
         val id: Int,
@@ -37,6 +37,9 @@ data class Seo(
 
         // asg 广告内容
         val asgContent: String,
+
+        // 短信注册模板
+        val registerMessageTemplate:  String,
 
         // 创建时间
         val createdTime: LocalDateTime

@@ -16,7 +16,7 @@ import com.onepiece.gpgaming.beans.model.Contact
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.PromotionRules
 import com.onepiece.gpgaming.beans.model.Recommended
-import com.onepiece.gpgaming.beans.model.Seo
+import com.onepiece.gpgaming.beans.model.ClientConfig
 import com.onepiece.gpgaming.beans.value.database.BannerCo
 import com.onepiece.gpgaming.beans.value.database.BannerUo
 import com.onepiece.gpgaming.beans.value.database.BlogValue
@@ -35,7 +35,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.PromotionRuleVo
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionVo
 import com.onepiece.gpgaming.beans.value.internet.web.RecommendedWebValue
-import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
+import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
 import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.BlogService
@@ -44,7 +44,7 @@ import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.core.service.RecommendedService
-import com.onepiece.gpgaming.core.service.SeoService
+import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
@@ -62,7 +62,7 @@ class IndexApiController(
         private val recommendedService: RecommendedService,
         private val hotGameService: HotGameService,
         private val indexUtil: IndexUtil,
-        private val seoService: SeoService,
+        private val seoService: ClientConfigService,
         private val blogService: BlogService,
         private val contactService: ContactService,
         private val objectMapper: ObjectMapper
@@ -71,7 +71,7 @@ class IndexApiController(
     private val log = LoggerFactory.getLogger(IndexApiController::class.java)
 
     @GetMapping("/seo")
-    override fun seo(): Seo {
+    override fun seo(): ClientConfig {
 
         val clientId = getClientId()
         return seoService.get(clientId)
@@ -91,7 +91,7 @@ class IndexApiController(
     ) {
         val clientId = getClientId()
 
-        val seoUo = SeoValue.SeoUo(clientId = clientId, title = title, keywords = keywords, description = description,
+        val seoUo = ClientConfigValue.ClientConfigUo(clientId = clientId, title = title, keywords = keywords, description = description,
                 liveChatId = liveChatId, googleStatisticsId = googleStatisticsId, facebookTr = facebookTr, liveChatTab = liveChatTab,
                 asgContent = asgContent, facebookShowPosition = facebookShowPosition)
         seoService.update(seoUo)

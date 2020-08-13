@@ -5,12 +5,11 @@ import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
-import com.onepiece.gpgaming.beans.model.AppVersion
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.value.database.AppVersionValue
 import com.onepiece.gpgaming.beans.value.database.BlogValue
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
-import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
+import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
 import com.onepiece.gpgaming.player.controller.value.ApiValue
 import com.onepiece.gpgaming.player.controller.value.BannerVo
 import com.onepiece.gpgaming.player.controller.value.CompileValue
@@ -26,11 +25,9 @@ import com.onepiece.gpgaming.player.controller.value.SlotCategoryVo
 import com.onepiece.gpgaming.player.controller.value.StartGameResp
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
-import java.util.*
 
 @Api(tags = ["api"], description = " ")
 interface Api {
@@ -122,7 +119,7 @@ interface Api {
     fun contactUs(): Contacts
 
     @ApiOperation(tags = ["api"], value = "seo配置")
-    fun seo(): SeoValue.SeoVo
+    fun seo(): ClientConfigValue.ClientConfigVo
 
     @ApiOperation(tags = ["api"], value = "改变国家")
     fun selectCountry(

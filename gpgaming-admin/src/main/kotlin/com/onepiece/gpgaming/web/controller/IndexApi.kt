@@ -9,7 +9,7 @@ import com.onepiece.gpgaming.beans.enums.ShowPosition
 import com.onepiece.gpgaming.beans.model.Contact
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Recommended
-import com.onepiece.gpgaming.beans.model.Seo
+import com.onepiece.gpgaming.beans.model.ClientConfig
 import com.onepiece.gpgaming.beans.value.database.BlogValue
 import com.onepiece.gpgaming.beans.value.database.HotGameValue
 import com.onepiece.gpgaming.beans.value.internet.web.BannerCoReq
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 interface IndexApi {
 
     @ApiOperation(tags = ["web setting"], value = "seo -> 获取")
-    fun seo(): Seo
+    fun seo(): ClientConfig
 
     @ApiOperation(tags = ["web setting"], value = "seo -> 更新")
     @ResponseStatus(HttpStatus.NO_CONTENT)
