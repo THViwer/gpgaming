@@ -12,6 +12,10 @@ class MarketServiceImpl(
         private val marketingDao: MarketDao
 ) : MarketService {
 
+    override fun get(id: Int): Market {
+        return  marketingDao.get(id  = id)
+    }
+
     override fun find(clientId: Int): List<Market> {
         return marketingDao.all(clientId)
     }

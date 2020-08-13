@@ -6,6 +6,8 @@ import com.onepiece.gpgaming.beans.value.database.MarketingValue
 
 interface MarketService {
 
+    fun get(id: Int): Market
+
     fun find(clientId: Int): List<Market>
 
     fun create(co: MarketingValue.MarketingCo)

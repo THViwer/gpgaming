@@ -2,14 +2,12 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.MarketDailyReport
-import com.onepiece.gpgaming.beans.model.WebSite
 import com.onepiece.gpgaming.beans.value.database.MarketDailyReportValue
 import com.onepiece.gpgaming.beans.value.database.MarketingValue
 import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.MarketDailyReportService
 import com.onepiece.gpgaming.core.service.MarketService
 import com.onepiece.gpgaming.core.service.PromotionService
-import com.onepiece.gpgaming.core.service.WebSiteService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
@@ -60,10 +58,19 @@ class MarketApiController(
         marketService.update(uo = uo)
     }
 
+    @GetMapping("/regMsgTemplate")
+    override fun getRegMsgTemplate(): MarketingValue.RegisterSmsTemplateReq {
+        val user = this.current()
+        val config = clientConfigService.get(clientId = user.clientId)
+        return MarketingValue.RegisterSmsTemplateReq(enableRegisterMessage = config.enableRegisterMessage, registerMessageTemplate = config.registerMessageTemplate)
+    }
+
     @PutMapping("/regMsgTemplate")
     override fun regMsgTemplate(@RequestBody req: MarketingValue.RegisterSmsTemplateReq) {
 
-        clientConfigService.update(id = req.id, enableRegisterMessage = req.enableRegisterMessage, registerMessageTemplate = req.registerMessageTemplate)
+        val user  = this.current()
+        val clientConfig  = clientConfigService.get(clientId = user.clientId)
+        clientConfigService.update(id = clientConfig.id, enableRegisterMessage = req.enableRegisterMessage, registerMessageTemplate = req.registerMessageTemplate)
 
     }
 

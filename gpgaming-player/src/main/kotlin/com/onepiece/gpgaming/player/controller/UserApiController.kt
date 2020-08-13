@@ -11,7 +11,9 @@ import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.core.MarketUtil
+import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.LevelService
+import com.onepiece.gpgaming.core.service.MarketService
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.VipService
@@ -29,6 +31,7 @@ import com.onepiece.gpgaming.player.controller.value.RegisterReq
 import com.onepiece.gpgaming.player.controller.value.UserValue
 import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.player.jwt.JwtUser
+import com.onepiece.gpgaming.player.sms.SmsService
 import com.onepiece.gpgaming.utils.RequestUtil
 import eu.bitwalker.useragentutils.DeviceType
 import eu.bitwalker.useragentutils.UserAgent
@@ -54,7 +57,10 @@ class UserApiController(
         private val passwordEncoder: PasswordEncoder,
         private val chainUtil: ChainUtil,
         private val vipService: VipService,
-        private val marketUtil:  MarketUtil
+        private val marketUtil:  MarketUtil,
+        private val smsService: SmsService,
+        private val marketService: MarketService,
+        private  val clientConfigService: ClientConfigService
 ) : BasicController(), UserApi {
 
     companion object {
@@ -233,6 +239,15 @@ class UserApiController(
         if (registerReq.marketId !=  null) {
             marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
         }
+
+        // 发送短信
+        val messageTemplate = registerReq.marketId?.let {
+            val market  = marketService.get(id = it)
+            marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
+            market.messageTemplate.replace("\${code}", market.promotionCode)
+        } ?: clientConfigService.get(clientId = clientId).registerMessageTemplate
+        smsService.start(mobile = registerReq.phone, message = messageTemplate)
+
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)
         return this.login(loginReq)

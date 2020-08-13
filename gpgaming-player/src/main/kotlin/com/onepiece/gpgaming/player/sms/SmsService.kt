@@ -3,8 +3,10 @@ package com.onepiece.gpgaming.player.sms
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.games.http.OkHttpUtil
 import com.onepiece.gpgaming.utils.StringUtil
+import org.springframework.stereotype.Service
 import java.util.*
 
+@Service
 class SmsService(
         private val okHttpUtil: OkHttpUtil
 ) {
