@@ -14,7 +14,8 @@ class LoginHistoryServiceImpl(
 ) : LoginHistoryService {
 
     override fun create(co: LoginHistoryValue.LoginHistoryCo) {
-        val flag = loginHistoryDao.create(co = co)
+        val username  = co.username.split("@").last()
+        val flag = loginHistoryDao.create(co = co.copy(username = username))
         check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 
