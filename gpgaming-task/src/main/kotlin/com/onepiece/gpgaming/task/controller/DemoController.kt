@@ -38,6 +38,7 @@ class DemoController(
             "clientPlatform" -> reportService.startClientPlatformReport(startDate)
             "sale" -> reportService.startSaleReport(startDate = startDate)
             "saleMonth" -> reportService.startSaleMonthReport(startDate = startDate)
+            "market" -> reportService.startMarkReport(startDate = startDate)
             else -> error("参数error")
         }
     }

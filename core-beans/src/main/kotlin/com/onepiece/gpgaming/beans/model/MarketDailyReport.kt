@@ -3,16 +3,19 @@ package com.onepiece.gpgaming.beans.model
 import java.math.BigDecimal
 import java.time.LocalDate
 
-data class MarketingDailyReport(
+data class MarketDailyReport(
 
         // id
         val id: Int,
+
+        // clientId
+        val clientId: Int,
 
         // 日期
         val day: LocalDate,
 
         // 营销Id
-        val marketingId:  Int,
+        val marketId:  Int,
 
         // 注册量
         val registerCount: Int,

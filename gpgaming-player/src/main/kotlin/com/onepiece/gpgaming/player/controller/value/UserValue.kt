@@ -120,6 +120,9 @@ data class RegisterReq(
         @ApiModelProperty("电销人员Id")
         val saleCode: String?,
 
+        @ApiModelProperty("营销Id")
+        val marketId: Int?,
+
         @ApiModelProperty("链路code")
         val chainCode: String?,
 

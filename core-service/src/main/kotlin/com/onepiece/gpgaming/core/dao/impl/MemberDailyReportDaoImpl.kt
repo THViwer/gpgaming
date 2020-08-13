@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
 import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
+import com.onepiece.gpgaming.beans.value.database.MarketDailyReportValue
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
@@ -29,9 +30,10 @@ class MemberDailyReportDaoImpl(
             val superiorAgentId = rs.getInt("superior_agent_id")
             val saleId = rs.getInt("sale_id")
             val saleScope = rs.getString("sale_scope").let { SaleScope.valueOf(it) }
+            val marketId = rs.getInt("market_id")
             val agentId = rs.getInt("agent_id")
             val memberId = rs.getInt("member_id")
-            val username  = rs.getString("username")
+            val username = rs.getString("username")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
             val depositAmount = rs.getBigDecimal("deposit_amount")
@@ -57,7 +59,7 @@ class MemberDailyReportDaoImpl(
                     depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, totalMWin = totalMWin,
                     thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, bossId = bossId,
                     rebateExecution = rebateExecution, promotionAmount = promotionAmount, agentId = agentId, superiorAgentId = superiorAgentId,
-                    saleId = saleId, saleScope = saleScope)
+                    saleId = saleId, saleScope = saleScope, marketId = marketId)
         }
 
     override fun create(reports: List<MemberDailyReport>) {
@@ -70,6 +72,7 @@ class MemberDailyReportDaoImpl(
                 .set("agent_id")
                 .set("sale_id")
                 .set("sale_scope")
+                .set("market_id")
                 .set("member_id")
                 .set("username")
                 .set("transfer_in")
@@ -97,6 +100,7 @@ class MemberDailyReportDaoImpl(
                     ps.setInt(++index, entity.agentId)
                     ps.setInt(++index, entity.saleId)
                     ps.setString(++index, entity.saleScope.name)
+                    ps.setInt(++index, entity.marketId)
                     ps.setInt(++index, entity.memberId)
                     ps.setString(++index, entity.username)
                     ps.setBigDecimal(++index, entity.transferIn)
@@ -366,5 +370,26 @@ class MemberDailyReportDaoImpl(
                     totalWithdraw = totalWithdraw, totalPromotion = totalPromotion, totalRebate = totalRebate, saleScope = saleScope)
 
         }
+    }
+
+    override fun markCollect(day: LocalDate): List<MarketDailyReportValue.MarketDailyReportCo> {
+        val sql = """
+            select 
+            	client_id,  market_id, sum(deposit_amount + third_pay_amount) deposit_amount, sum(withdraw_amount) withdraw_amount, sum(total_bet) bet 
+            from member_daily_report 
+            where day = '$day' and market_id != -1 group by client_id,  market_id;
+        """.trimIndent()
+
+        return jdbcTemplate.query(sql) { rs, _ ->
+            val clientId = rs.getInt("client_id")
+            val marketId = rs.getInt("market_id")
+            val depositAmount = rs.getBigDecimal("deposit_amount")
+            val withdrawAmount = rs.getBigDecimal("withdraw_amount")
+            val bet = rs.getBigDecimal("bet")
+
+            MarketDailyReportValue.MarketDailyReportCo(day = day, clientId = clientId, marketId = marketId, registerCount = 0, viewCount = 0, depositAmount = depositAmount,
+                    withdrawAmount = withdrawAmount, bet = bet)
+        }
+
     }
 }

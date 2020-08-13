@@ -10,8 +10,8 @@ import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.stereotype.Service
 
 @Service
-class SeoServiceImpl(
-        private val seoDao: ClientConfigDao,
+class ClientConfigServiceImpl(
+        private val clientConfigDao: ClientConfigDao,
         private val redisService: RedisService
 ) : ClientConfigService {
 
@@ -20,14 +20,14 @@ class SeoServiceImpl(
         val redisKey = OnePieceRedisKeyConstant.getSeo(clientId)
 
         return redisService.get(redisKey, ClientConfig::class.java) {
-            val list = seoDao.all(clientId)
+            val list = clientConfigDao.all(clientId)
 
             if (list.isEmpty()) {
                 val seoUo = ClientConfigValue.ClientConfigUo(clientId = clientId, title = "", keywords = "", description = "",
                         googleStatisticsId = "", liveChatId = "", facebookTr = "", liveChatTab = true, asgContent = "",
                         facebookShowPosition = ShowPosition.Index)
-                seoDao.create(seoUo)
-                seoDao.all(clientId).first()
+                clientConfigDao.create(seoUo)
+                clientConfigDao.all(clientId).first()
             } else {
                 list.first()
             }
@@ -36,9 +36,13 @@ class SeoServiceImpl(
     }
 
     override fun update(configUo: ClientConfigValue.ClientConfigUo) {
-        seoDao.update(configUo)
+        clientConfigDao.update(configUo)
 
         val redisKey = OnePieceRedisKeyConstant.getSeo(configUo.clientId)
         redisService.delete(redisKey)
+    }
+
+    override fun update(id: Int, enableRegisterMessage: Boolean, registerMessageTemplate: String) {
+        clientConfigDao.update(id = id, enableRegisterMessage = enableRegisterMessage, registerMessageTemplate = registerMessageTemplate)
     }
 }

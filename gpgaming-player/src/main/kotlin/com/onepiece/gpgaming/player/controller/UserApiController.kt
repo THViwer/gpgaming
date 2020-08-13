@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberUo
+import com.onepiece.gpgaming.core.MarketUtil
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberService
@@ -53,7 +54,8 @@ class UserApiController(
         private val memberInfoService: MemberInfoService,
         private val passwordEncoder: PasswordEncoder,
         private val chainUtil: ChainUtil,
-        private val vipService: VipService
+        private val vipService: VipService,
+        private val marketUtil:  MarketUtil
 ) : BasicController(), UserApi {
 
     companion object {
@@ -216,20 +218,32 @@ class UserApiController(
         } ?: memberService.getDefaultAgent(bossId = bossId)
 
         val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
+
+        val saleId = registerReq.saleCode?.toInt() ?: -1
+        val marketId = registerReq.marketId?.toInt() ?: -1
         val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
                 levelId = defaultLevel.id, name = registerReq.name, phone = registerReq.phone, promoteCode = registerReq.promoteCode, bossId = bossId, agentId = agent.id,
-                role = Role.Member, formal = true, saleId = registerReq.saleCode?.toInt(), registerIp = RequestUtil.getIpAddress(), birthday = registerReq.birthday,
-                email = registerReq.email)
+                role = Role.Member, formal = true, saleId = saleId, registerIp = RequestUtil.getIpAddress(), birthday = registerReq.birthday,
+                email = registerReq.email, marketId = marketId)
         memberService.create(memberCo)
 
         // 通知pv
         chainUtil.clickRv(registerReq.chainCode)
 
+        // 通知
+        if (registerReq.marketId !=  null) {
+            marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
+        }
+
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)
         return this.login(loginReq)
     }
 
-
+    @GetMapping("/market/view")
+    override fun addMarketView(@RequestParam("marketId") marketId: Int) {
+        val clientId = this.getClientId()
+        marketUtil.addPV(clientId = clientId, marketId = marketId)
+    }
 
     @GetMapping("/country")
     override fun countries(): List<Country> {

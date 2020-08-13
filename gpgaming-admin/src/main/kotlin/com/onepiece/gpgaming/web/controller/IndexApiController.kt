@@ -66,7 +66,7 @@ class IndexApiController(
         private val blogService: BlogService,
         private val contactService: ContactService,
         private val objectMapper: ObjectMapper
-): BasicController(), IndexApi {
+) : BasicController(), IndexApi {
 
     private val log = LoggerFactory.getLogger(IndexApiController::class.java)
 
@@ -154,7 +154,7 @@ class IndexApiController(
                 .groupBy { it.configId }
 
         return bannerService.all(getClientId()).map {
-            val contents = map[it.id]?: emptyList()
+            val contents = map[it.id] ?: emptyList()
 
             BannerVo(id = it.id, clientId = it.clientId, order = it.order, type = it.type, link = it.link, status = it.status,
                     createdTime = it.createdTime, updatedTime = it.updatedTime, contents = contents)
@@ -178,7 +178,6 @@ class IndexApiController(
     }
 
 
-
     @GetMapping("/promotion")
     override fun promotionList(): List<PromotionVo> {
         val clientId = getClientId()
@@ -191,15 +190,18 @@ class IndexApiController(
 
         return promotions.map { promotion ->
             val i18nContents = i18nContentMap[promotion.id] ?: emptyList()
-//            val defaultContent = i18nContents.first()
+            val defaultContent = i18nContents.firstOrNull()
+            val title = defaultContent?.getII18nContent(objectMapper)?.let {
+                it as I18nContent.PromotionI18n
+            }?.title ?: "-"
 
             val promotionRuleVo = PromotionRuleVo(ruleType = promotion.ruleType, ruleJson = promotion.ruleJson)
 
-            val code = if(promotion.code == "") "-" else promotion.code
+            val code = if (promotion.code == "") "-" else promotion.code
             PromotionVo(id = promotion.id, clientId = promotion.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
                     status = promotion.status, createdTime = promotion.createdTime, updatedTime = promotion.updatedTime, i18nContents = i18nContents,
                     promotionRuleVo = promotionRuleVo, platforms = promotion.platforms, period = promotion.period, periodMaxPromotion = promotion.periodMaxPromotion,
-                    levelId = promotion.levelId, sequence = promotion.sequence, show = promotion.show, code = code)
+                    levelId = promotion.levelId, sequence = promotion.sequence, show = promotion.show, code = code, title = title)
         }
     }
 
@@ -260,7 +262,7 @@ class IndexApiController(
                 recommended.i18nContents = contents
                 recommended
             }
-        }?: recommendeds
+        } ?: recommendeds
     }
 
     @PostMapping("/recommended")
@@ -339,12 +341,13 @@ class IndexApiController(
         when (create.type) {
             ContactType.Facebook,
             ContactType.Instagram,
-            ContactType.YouTuBe  -> {
-                val  has = contactService.list(clientId)
+            ContactType.YouTuBe -> {
+                val has = contactService.list(clientId)
                         .firstOrNull { it.clientId == clientId && it.role == create.role && it.type == create.type && it.status != Status.Delete }
-                check(has == null ) { OnePieceExceptionCode.DATA_FAIL }
+                check(has == null) { OnePieceExceptionCode.DATA_FAIL }
             }
-            else  -> {}
+            else -> {
+            }
         }
 
         check(create.role == Role.Member || create.role == Role.Agent) { OnePieceExceptionCode.DATA_FAIL }

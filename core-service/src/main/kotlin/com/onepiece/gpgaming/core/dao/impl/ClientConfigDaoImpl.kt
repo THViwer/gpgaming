@@ -27,11 +27,12 @@ class ClientConfigDaoImpl: BasicDaoImpl<ClientConfig>("client_config"), ClientCo
             val facebookShowPosition = rs.getString("facebook_show_position")
                     .let { ShowPosition.valueOf(it) }
             val asgContent = rs.getString("asg_content")
+            val enableRegisterMessage = rs.getBoolean("enable_register_message")
             val registerMessageTemplate = rs.getString("register_message_template")
             ClientConfig(id = id, clientId = clientId, keywords = keywords, description = description, createdTime = createdTime,
                     title = title, liveChatId = liveChatId, googleStatisticsId = googleStatisticsId, facebookTr = facebookTr,
                     liveChatTab = liveChatTab, asgContent = asgContent, facebookShowPosition = facebookShowPosition,
-                    registerMessageTemplate = registerMessageTemplate)
+                    enableRegisterMessage = enableRegisterMessage, registerMessageTemplate = registerMessageTemplate)
 
         }
 
@@ -61,6 +62,14 @@ class ClientConfigDaoImpl: BasicDaoImpl<ClientConfig>("client_config"), ClientCo
                 .set("facebook_show_position", configUo.facebookShowPosition)
                 .set("asg_content", configUo.asgContent)
                 .where("client_id", configUo.clientId)
+                .executeOnlyOne()
+    }
+
+    override fun update(id: Int, enableRegisterMessage: Boolean, registerMessageTemplate: String): Boolean {
+        return  update()
+                .set("enable_register_message", enableRegisterMessage)
+                .set("register_message_template", registerMessageTemplate)
+                .where("id", id)
                 .executeOnlyOne()
     }
 }

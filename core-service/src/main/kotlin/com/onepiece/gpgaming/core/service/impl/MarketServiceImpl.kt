@@ -1,18 +1,18 @@
 package com.onepiece.gpgaming.core.service.impl
 
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.gpgaming.beans.model.Marketing
+import com.onepiece.gpgaming.beans.model.Market
 import com.onepiece.gpgaming.beans.value.database.MarketingValue
-import com.onepiece.gpgaming.core.dao.MarketingDao
-import com.onepiece.gpgaming.core.service.MarketingService
+import com.onepiece.gpgaming.core.dao.MarketDao
+import com.onepiece.gpgaming.core.service.MarketService
 import org.springframework.stereotype.Service
 
 @Service
-class MarketingServiceImpl(
-        private val marketingDao: MarketingDao
-) : MarketingService {
+class MarketServiceImpl(
+        private val marketingDao: MarketDao
+) : MarketService {
 
-    override fun find(clientId: Int): List<Marketing> {
+    override fun find(clientId: Int): List<Market> {
         return marketingDao.all(clientId)
     }
 

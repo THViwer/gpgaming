@@ -28,7 +28,6 @@ interface UserApi {
     @ApiOperation(tags = ["user"], value = "登陆(admin)")
     fun login(@RequestBody req: LoginByAdminReq): LoginByAdminResponse
 
-
     @ApiOperation(tags = ["user"], value = "查看登陆信息")
     fun loginDetail(): LoginResp
 
@@ -38,6 +37,10 @@ interface UserApi {
 
     @ApiOperation(tags = ["user"], value = "注册")
     fun register(@RequestBody registerReq: RegisterReq): LoginResp
+
+    @ApiOperation(tags = ["user"], value = "添加营销点击量")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun addMarketView(@RequestParam("marketId") marketId: Int)
 
     @ApiOperation(tags = ["user"], value = "可选国家列表")
     fun countries(): List<Country>

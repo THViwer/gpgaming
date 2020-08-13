@@ -16,9 +16,11 @@ import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.SaleDailyReport
 import com.onepiece.gpgaming.beans.model.SaleMonthReport
 import com.onepiece.gpgaming.beans.value.database.AnalysisValue
+import com.onepiece.gpgaming.beans.value.database.MarketDailyReportValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
+import com.onepiece.gpgaming.core.MarketUtil
 import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.core.dao.BetOrderDao
 import com.onepiece.gpgaming.core.dao.LevelDao
@@ -53,7 +55,8 @@ class ReportServiceImpl(
         private val memberDailyReportDao: MemberDailyReportDao,
         private val waiterService: WaiterService,
         private val saleDailyReportDao: SaleDailyReportDao,
-        private val clientService: ClientService
+        private val clientService: ClientService,
+        private val marketUtil: MarketUtil
 ) : ReportService {
 
     private val log = LoggerFactory.getLogger(ReportServiceImpl::class.java)
@@ -115,7 +118,7 @@ class ReportServiceImpl(
             // 平台下注金额
             val settles = (betMap[report.memberId]?.map {
                 MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, mwin = it.totalWin, validBet = it.validBet)
-            }?: emptyList()).plus(otherSettles)
+            } ?: emptyList()).plus(otherSettles)
 
             val totalBet = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额
             val totalMWin = settles.sumByDouble { it.mwin.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
@@ -128,7 +131,7 @@ class ReportServiceImpl(
 
             val settleList = settles.map {
                 // 公式 (有效打码-优惠金额需要打码) * 游戏平台返水比例
-                val rebate =  when (it.platform.category) {
+                val rebate = when (it.platform.category) {
                     PlatformCategory.Fishing ->
                         (it.validBet.minus(report.fishRequirementBet))
                                 .multiply(level.fishRebate)
@@ -165,7 +168,7 @@ class ReportServiceImpl(
 
     override fun startAgentReport(startDate: LocalDate): List<AgentDailyReport> {
 
-        val endDate =  startDate.plusDays(1)
+        val endDate = startDate.plusDays(1)
         return analysisDao.agentReport(startDate = startDate, endDate = endDate)
     }
 
@@ -176,7 +179,7 @@ class ReportServiceImpl(
 
         // 查询代理列表
         val memberQuery = MemberQuery(bossId = null, role = Role.Agent, clientId = null, agentId = null, username = null,
-                name = null, phone = null, status = null, levelId = null, promoteCode = null, startTime = null,  endTime = null)
+                name = null, phone = null, status = null, levelId = null, promoteCode = null, startTime = null, endTime = null)
         val agents = memberDao.query(query = memberQuery, current = 0, size = 999999)
 
         // 代理佣金配置
@@ -227,7 +230,7 @@ class ReportServiceImpl(
 
                 memberCommission.copy(bossId = agent.bossId, clientId = agent.clientId, memberCommission = memberCommissionAmount, memberCommissionScale = mCommission.scale,
                         memberActiveCount = memberActive.activeCount, commissionExecution = commissionExecution, agencyMonthFee = agent.agencyMonthFee, username = agent.username)
-            } catch (e: Exception)  {
+            } catch (e: Exception) {
                 log.error("agent month report error: ", e)
                 null
             }
@@ -243,7 +246,7 @@ class ReportServiceImpl(
                     val agentCommissions = commissions.filter { report.bossId == it.bossId }.filter { it.type == CommissionType.AgentCommission }
 
                     report.let {
-                        val flag  = agentActive != null && agentGroup.containsKey(report.agentId)
+                        val flag = agentActive != null && agentGroup.containsKey(report.agentId)
 
                         if (flag) it else null
 
@@ -252,7 +255,7 @@ class ReportServiceImpl(
 
                         if (aCommission != null) aCommission to it else null
                     }?.let { (aCommission, report) ->
-                        val sCommissionAmount = agentGroup[report.agentId]!!.sumByDouble { x -> x.memberCommission.toDouble() }.toBigDecimal().setScale(2,  2)
+                        val sCommissionAmount = agentGroup[report.agentId]!!.sumByDouble { x -> x.memberCommission.toDouble() }.toBigDecimal().setScale(2, 2)
                         val agentCommissionAmount = sCommissionAmount.multiply(aCommission.scale).divide(BigDecimal.valueOf(100))
                                 .setScale(2, 2)
 
@@ -277,15 +280,15 @@ class ReportServiceImpl(
 
         // 查询会员数量
         val owmSaleMap = memberDao.saleCount(saleId = null, startDate = startDate, endDate = startDate.plusDays(1), scope = SaleScope.Own)
-        val systemSaleMap =  memberDao.saleCount(saleId = null, startDate = startDate, endDate = startDate.plusDays(1), scope = SaleScope.System)
+        val systemSaleMap = memberDao.saleCount(saleId = null, startDate = startDate, endDate = startDate.plusDays(1), scope = SaleScope.System)
 
         return salesmanList.map { sale ->
 
             val saleId = sale.id
             val data = list.filter { it.saleId == saleId }
 
-            val owmMemberCount = owmSaleMap[sale.id]?: 0
-            val systemMemberCount = systemSaleMap[sale.id]?: 0
+            val owmMemberCount = owmSaleMap[sale.id] ?: 0
+            val systemMemberCount = systemSaleMap[sale.id] ?: 0
 
             val ownSaleVo = data.firstOrNull { it.saleScope == SaleScope.Own } ?: MemberReportValue.SaleReportVo.empty(saleScope = SaleScope.Own)
             val systemSaleVo = data.firstOrNull { it.saleScope == SaleScope.System } ?: MemberReportValue.SaleReportVo.empty(saleScope = SaleScope.System)
@@ -317,6 +320,17 @@ class ReportServiceImpl(
 
     }
 
+    override fun startMarkReport(startDate: LocalDate): List<MarketDailyReportValue.MarketDailyReportCo> {
+
+        val list = memberDailyReportDao.markCollect(day = startDate)
+
+        return list.map { report ->
+            val pv = marketUtil.getPV(clientId = report.clientId, marketId = report.marketId, day = startDate)
+            val rv = marketUtil.getPV(clientId = report.clientId, marketId = report.marketId, day = startDate)
+            report.copy(viewCount = pv,  registerCount = rv)
+        }
+    }
+
     override fun startSaleMonthReport(startDate: LocalDate): List<SaleMonthReport> {
         val endDate = startDate.plusMonths(1)
         return saleDailyReportDao.collect(startDate = startDate, endDate = endDate)
@@ -327,10 +341,10 @@ class ReportServiceImpl(
         val endDate = startDate.plusDays(1)
 
         // 业主列表
-        val clients = clientService.all().filter { it.status ==  Status.Normal }
+        val clients = clientService.all().filter { it.status == Status.Normal }
 
         // 转账信息
-        val transferQuery = TransferReportQuery(startDate = startDate,  endDate = endDate, clientId = null, memberId = null, from = null, to = null)
+        val transferQuery = TransferReportQuery(startDate = startDate, endDate = endDate, clientId = null, memberId = null, from = null, to = null)
         val transferReports = transferOrderDao.clientPlatformReport(transferQuery)
                 .map { "${it.clientId}:${it.from}:${it.to}" to it }
                 .toMap()
@@ -350,15 +364,15 @@ class ReportServiceImpl(
                 emptyList()
             } else {
                 memberReports.map { x -> x.settles }
-                        .reduce { acc, list ->  acc.plus(list)}
+                        .reduce { acc, list -> acc.plus(list) }
                         .groupBy { x -> x.platform }
                         .map { x ->
 
                             val platform = x.key
                             val list = x.value
 
-                            val bet = list.sumByDouble { y -> y.bet.toDouble() }.toBigDecimal().setScale(2,  2)
-                            val win = list.sumByDouble { y -> y.mwin.toDouble() }.toBigDecimal().setScale(2,  2)
+                            val bet = list.sumByDouble { y -> y.bet.toDouble() }.toBigDecimal().setScale(2, 2)
+                            val win = list.sumByDouble { y -> y.mwin.toDouble() }.toBigDecimal().setScale(2, 2)
 
                             val transferInVo = transferReports["${client.id}:${platform}:${Platform.Center}"]
                             val transferOutVo = transferReports["${client.id}:${Platform.Center}:${platform}"]
@@ -369,7 +383,7 @@ class ReportServiceImpl(
 
                             val activeCount = activeCountMap["${client.id}:${platform}"] ?: 0
 
-                            ClientPlatformDailyReport(id = -1, day = startDate, clientId = client.id, activeCount = activeCount, bet = bet,  win = win, platform = platform,
+                            ClientPlatformDailyReport(id = -1, day = startDate, clientId = client.id, activeCount = activeCount, bet = bet, win = win, platform = platform,
                                     transferIn = transferIn, transferOut = transferOut, promotionAmount = promotionAmount, createdTime = LocalDateTime.now(), status = Status.Normal)
                         }
             }
@@ -452,7 +466,7 @@ class ReportServiceImpl(
 
     override fun startClientReport(startDate: LocalDate): List<ClientDailyReport> {
         val endDate = startDate.plusDays(1)
-        val list =  analysisDao.clientReport(startDate = startDate, endDate = endDate)
+        val list = analysisDao.clientReport(startDate = startDate, endDate = endDate)
 
         val map = analysisDao.activeCount(startDate = startDate, endDate = startDate.plusDays(1))
 

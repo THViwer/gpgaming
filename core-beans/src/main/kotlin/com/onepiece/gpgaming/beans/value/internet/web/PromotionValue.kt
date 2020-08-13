@@ -47,8 +47,8 @@ data class PromotionVo(
 //        @ApiModelProperty("图标")
 //        val icon: String,
 //
-//        @ApiModelProperty("标题")
-//        val title: String,
+        @ApiModelProperty("标题")
+        val title: String,
 //
 //        @ApiModelProperty("简介")
 //        val synopsis: String?,
