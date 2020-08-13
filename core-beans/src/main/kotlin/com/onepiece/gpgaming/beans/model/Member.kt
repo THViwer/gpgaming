@@ -31,6 +31,9 @@ data class Member(
         // 电销类型
         val saleScope: SaleScope,
 
+        // 营销Id
+//        val marketingId: Int?,
+
         // 用户名
         val username: String,
 

@@ -20,19 +20,19 @@ import com.onepiece.gpgaming.beans.model.Promotion
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.AppVersionValue
 import com.onepiece.gpgaming.beans.value.database.BlogValue
+import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
-import com.onepiece.gpgaming.beans.value.internet.web.SeoValue
 import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.core.IndexUtil
 import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.AppVersionService
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.BlogService
+import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
-import com.onepiece.gpgaming.core.service.SeoService
 import com.onepiece.gpgaming.core.service.SlotGameService
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
@@ -75,7 +75,7 @@ open class ApiController(
         private val activeConfig: ActiveConfig,
         private val objectMapper: ObjectMapper,
         private val hotGameService: HotGameService,
-        private val seoService: SeoService,
+        private val seoService: ClientConfigService,
         private val blogService: BlogService,
         private val indexUtil: IndexUtil,
         private val appVersionService: AppVersionService
@@ -578,7 +578,7 @@ open class ApiController(
     }
 
     @GetMapping("/seo")
-    override fun seo(): SeoValue.SeoVo {
+    override fun seo(): ClientConfigValue.ClientConfigVo {
 
         val webSite = this.getWebSite()
         val clientId = when (webSite.country) {
@@ -587,7 +587,7 @@ open class ApiController(
         }
 
         val seo = seoService.get(clientId = clientId)
-        return SeoValue.SeoVo(title = seo.title, keywords = seo.keywords, description = seo.description, liveChatId = seo.liveChatId,
+        return ClientConfigValue.ClientConfigVo(title = seo.title, keywords = seo.keywords, description = seo.description, liveChatId = seo.liveChatId,
                 googleStatisticsId = seo.googleStatisticsId, facebookTr = seo.facebookTr, liveChatTab = seo.liveChatTab, asgContent = seo.asgContent,
                 facebookShowPosition = seo.facebookShowPosition)
     }

@@ -2,9 +2,9 @@ package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.ShowPosition
 
-sealed class SeoValue {
+sealed class ClientConfigValue {
 
-    data class SeoUo(
+    data class ClientConfigUo(
             val clientId: Int,
 
             val title: String,
@@ -33,7 +33,7 @@ sealed class SeoValue {
 
     )
 
-    data class SeoVo(
+    data class ClientConfigVo(
             val title: String,
 
             val keywords: String,
