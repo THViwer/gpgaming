@@ -62,8 +62,6 @@ class MarketingValue {
 
     data class RegisterSmsTemplateReq(
 
-            val id: Int,
-
             // 是否开启注册消息通知
             val enableRegisterMessage: Boolean,
 

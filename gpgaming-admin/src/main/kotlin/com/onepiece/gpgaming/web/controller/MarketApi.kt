@@ -25,6 +25,8 @@ interface MarketApi {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun marketUpdate(@RequestBody uo: MarketingValue.MarketingUo)
 
+    @ApiOperation(tags = ["market"], value = "营销 -> 注册短信提示")
+    fun getRegMsgTemplate(): MarketingValue.RegisterSmsTemplateReq
 
     @ApiOperation(tags = ["market"], value = "营销 -> 注册短信提示")
     @ResponseStatus(HttpStatus.NO_CONTENT)

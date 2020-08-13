@@ -44,5 +44,9 @@ class ClientConfigServiceImpl(
 
     override fun update(id: Int, enableRegisterMessage: Boolean, registerMessageTemplate: String) {
         clientConfigDao.update(id = id, enableRegisterMessage = enableRegisterMessage, registerMessageTemplate = registerMessageTemplate)
+
+        val config =  clientConfigDao.get(id = id)
+        val redisKey = OnePieceRedisKeyConstant.getSeo(config.clientId)
+        redisService.delete(redisKey)
     }
 }
