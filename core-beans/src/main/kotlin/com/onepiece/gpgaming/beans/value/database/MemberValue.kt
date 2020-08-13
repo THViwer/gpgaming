@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 
 sealed class MemberValue {
 
-    data  class AnalysisData(
+    data class AnalysisData(
 
             val id: Int,
 
@@ -68,7 +68,10 @@ data class MemberCo(
         val agentId: Int,
 
         // 电销Id
-        val saleId: Int? = -1,
+        val saleId: Int = -1,
+
+        // 营销Id
+        val marketId: Int = -1,
 
         // 电销类型
         val saleScope: SaleScope = SaleScope.System,

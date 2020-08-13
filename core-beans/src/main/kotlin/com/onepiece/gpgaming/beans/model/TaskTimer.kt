@@ -61,6 +61,9 @@ enum class TaskTimerType {
     // 电销月报表
     SaleMonth,
 
+    // 营销日报表
+    MarketDaily
+
 }
 
 enum class TaskTimerState {

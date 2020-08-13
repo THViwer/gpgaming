@@ -39,6 +39,7 @@ class AnalysisDaoImpl(
                    m.sale_id,
                    m.sale_scope,
                    m.id,
+                   m.market_id,
                    m.level_id,
                    m.username,
                    IFNULL(d.total_deposit,0) total_deposit,
@@ -122,6 +123,7 @@ class AnalysisDaoImpl(
             val saleId = rs.getInt("sale_id")
             val saleScope = rs.getString("sale_scope").let { SaleScope.valueOf(it) }
             val tMemberId = rs.getInt("id")
+            val marketId =  rs.getInt("market_id")
             val levelId = rs.getInt("level_id")
             val username  = rs.getString("username")
             val totalDeposit = rs.getBigDecimal("total_deposit")
@@ -146,7 +148,7 @@ class AnalysisDaoImpl(
                     depositCount = depositCount, thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, artificialAmount = artificialAmount, artificialCount = artificialCount,
                     withdrawAmount = totalWithdraw, withdrawCount = withdrawCount, transferOut = transferOut, promotionAmount = promotionAmount, transferIn = transferIn,
                     rebateAmount = BigDecimal.ZERO, rebateExecution = true, day = startDate, settles = emptyList(), totalBet = BigDecimal.ZERO, totalMWin = BigDecimal.ZERO,
-                    status = Status.Normal, createdTime = LocalDateTime.now(), superiorAgentId = superiorAgentId, saleId = saleId, saleScope = saleScope)
+                    status = Status.Normal, createdTime = LocalDateTime.now(), superiorAgentId = superiorAgentId, saleId = saleId, saleScope = saleScope, marketId = marketId)
 
             report.expand(levelId = levelId, slotRequirementBet = slotRequirementBet, liveRequirementBet = liveRequirementBet, sportRequirementBet = sportRequirementBet,
                     fishRequirementBet = fishRequirementBet)

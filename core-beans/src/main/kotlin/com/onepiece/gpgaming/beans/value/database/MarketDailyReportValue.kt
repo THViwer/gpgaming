@@ -3,9 +3,9 @@ package com.onepiece.gpgaming.beans.value.database
 import java.math.BigDecimal
 import java.time.LocalDate
 
-sealed class MarketingDailyReportValue {
+sealed class MarketDailyReportValue {
 
-    data class MarketingDailyReportQuery(
+    data class MarketDailyReportQuery(
 
             val clientId: Int,
 
@@ -14,12 +14,15 @@ sealed class MarketingDailyReportValue {
             val endDate: LocalDate
     )
 
-    data class MarketingDailyReportCo(
+    data class MarketDailyReportCo(
+
+            val clientId: Int,
+
             // 日期
             val day: LocalDate,
 
             // 营销Id
-            val marketingId: Int,
+            val marketId: Int,
 
             // 注册量
             val registerCount: Int,

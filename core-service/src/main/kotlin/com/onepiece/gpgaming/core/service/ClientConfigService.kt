@@ -10,4 +10,6 @@ interface ClientConfigService {
 
     fun update(configUo: ClientConfigValue.ClientConfigUo)
 
+    fun update(id: Int, enableRegisterMessage: Boolean, registerMessageTemplate: String)
+
 }

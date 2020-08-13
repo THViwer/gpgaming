@@ -1,12 +1,12 @@
 package com.onepiece.gpgaming.core.service
 
-import com.onepiece.gpgaming.beans.model.Marketing
+import com.onepiece.gpgaming.beans.model.Market
 import com.onepiece.gpgaming.beans.value.database.MarketingValue
 
 
-interface MarketingService {
+interface MarketService {
 
-    fun find(clientId: Int): List<Marketing>
+    fun find(clientId: Int): List<Market>
 
     fun create(co: MarketingValue.MarketingCo)
 

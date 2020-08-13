@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao
 
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
+import com.onepiece.gpgaming.beans.value.database.MarketDailyReportValue
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import java.math.BigDecimal
@@ -26,6 +27,6 @@ interface MemberDailyReportDao  {
 
     fun saleCollect(query: MemberReportValue.MemberCollectQuery): List<MemberReportValue.SaleReportVo>
 
-
+    fun markCollect(day: LocalDate): List<MarketDailyReportValue.MarketDailyReportCo>
 
 }

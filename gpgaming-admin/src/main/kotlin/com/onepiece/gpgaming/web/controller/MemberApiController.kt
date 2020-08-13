@@ -398,10 +398,11 @@ class MemberApiController(
         val agentId = memberCoReq.agentId ?:
         memberService.getDefaultAgent(bossId = bossId).id
 
+        val saleId = memberCoReq.saleCode?.toInt() ?: -1
 
         val memberCo = MemberCo(clientId = clientId, username = memberCoReq.username, password = memberCoReq.password, promoteCode = promoteCode,
                 safetyPassword = memberCoReq.safetyPassword, levelId = memberCoReq.levelId, name = memberCoReq.name, phone = memberCoReq.phone, bossId = bossId,
-                agentId = agentId, role = memberCoReq.role, formal = true, saleId = memberCoReq.saleCode?.toInt(), registerIp = "admin:register",
+                agentId = agentId, role = memberCoReq.role, formal = true, saleId = saleId, registerIp = "admin:register",
                 birthday = memberCoReq.birthday, email = memberCoReq.email)
         memberService.create(memberCo)
     }

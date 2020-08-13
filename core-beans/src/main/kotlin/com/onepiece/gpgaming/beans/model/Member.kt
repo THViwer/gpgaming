@@ -32,7 +32,7 @@ data class Member(
         val saleScope: SaleScope,
 
         // 营销Id
-//        val marketingId: Int?,
+        val marketId: Int,
 
         // 用户名
         val username: String,

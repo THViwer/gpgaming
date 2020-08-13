@@ -38,6 +38,10 @@ data class ClientConfig(
         // asg 广告内容
         val asgContent: String,
 
+
+        // 是否开启注册消息
+        val enableRegisterMessage: Boolean,
+
         // 短信注册模板
         val registerMessageTemplate:  String,
 

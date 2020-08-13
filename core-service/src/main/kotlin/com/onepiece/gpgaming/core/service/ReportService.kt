@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.model.MemberPlatformDailyReport
 import com.onepiece.gpgaming.beans.model.SaleDailyReport
 import com.onepiece.gpgaming.beans.model.SaleMonthReport
+import com.onepiece.gpgaming.beans.value.database.MarketDailyReportValue
 import java.time.LocalDate
 
 interface ReportService {
@@ -36,6 +37,11 @@ interface ReportService {
      * 电销日报表
      */
     fun startSaleReport(startDate: LocalDate): List<SaleDailyReport>
+
+    /**
+     * 营销日报表
+     */
+    fun startMarkReport(startDate: LocalDate): List<MarketDailyReportValue.MarketDailyReportCo>
 
     /**
      * 电销月报表e

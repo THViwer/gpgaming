@@ -29,6 +29,9 @@ data class MemberDailyReport(
         // 电销人员Id
         val saleId: Int,
 
+        // 营销Id
+        val marketId:  Int,
+
         // 电销类型
         val saleScope: SaleScope,
 
