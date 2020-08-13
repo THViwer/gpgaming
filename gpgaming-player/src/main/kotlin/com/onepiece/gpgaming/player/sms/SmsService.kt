@@ -1,6 +1,8 @@
 package com.onepiece.gpgaming.player.sms
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.value.database.SmsContentValue
+import com.onepiece.gpgaming.core.service.SmsContentService
 import com.onepiece.gpgaming.games.http.OkHttpUtil
 import com.onepiece.gpgaming.utils.StringUtil
 import org.springframework.stereotype.Service
@@ -8,7 +10,8 @@ import java.util.*
 
 @Service
 class SmsService(
-        private val okHttpUtil: OkHttpUtil
+        private val okHttpUtil: OkHttpUtil,
+        private val smsContentService: SmsContentService
 ) {
 
     companion object {
@@ -38,6 +41,9 @@ class SmsService(
         ).joinToString(separator = "&")
         val url =  "$path?$param"
         okHttpUtil.doGet(platform = Platform.Center, url = url,  clz = String::class.java)
+
+        val co = SmsContentValue.SmsContentCo(levelId = null, memberIds = null, phones = mobile,  content = message)
+        smsContentService.create(co =  co)
     }
 
 
