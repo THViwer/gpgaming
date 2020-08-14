@@ -50,12 +50,17 @@ class MarketApiController(
     @PostMapping
     override fun createCo(@RequestBody co: MarketingValue.MarketingCo) {
         val user = this.current()
-        marketService.create(co.copy(clientId = user.clientId))
+
+        val  promotion = promotionService.get(co.promotionId)
+
+        marketService.create(co.copy(clientId = user.clientId, promotionCode = "${promotion.id}"))
     }
 
     @PutMapping
     override fun marketUpdate(@RequestBody uo: MarketingValue.MarketingUo) {
-        marketService.update(uo = uo)
+
+        val  promotion = promotionService.get(uo.promotionId)
+        marketService.update(uo = uo.copy(promotionCode = "${promotion.id}"))
     }
 
     @GetMapping("/regMsgTemplate")
