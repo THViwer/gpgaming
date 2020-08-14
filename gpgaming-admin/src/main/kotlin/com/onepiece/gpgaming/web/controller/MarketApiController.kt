@@ -43,7 +43,7 @@ class MarketApiController(
 
             val links = webSites.map { s -> "https://www.${s.domain}/market/${market.id}" }
             MarketingValue.MarketVo(promotionId = market.promotionId, promotionCode = market.promotionCode, messageTemplate = market.messageTemplate,
-                    name = market.name, links = links)
+                    name = market.name, links = links, id = market.id)
         }
     }
 
