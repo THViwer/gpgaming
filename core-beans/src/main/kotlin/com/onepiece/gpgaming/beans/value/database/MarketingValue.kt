@@ -43,6 +43,8 @@ class MarketingValue {
 
     data class MarketVo(
 
+            val id: Int,
+
             // 名称
             val name: String,
 
