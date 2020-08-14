@@ -16,7 +16,8 @@ class MarketingValue {
             val promotionId: Int,
 
             // 优惠码
-            val promotionCode: String,
+            @JsonIgnore
+            val promotionCode: String = "",
 
             // 消息模板
             val messageTemplate: String
@@ -33,6 +34,7 @@ class MarketingValue {
             val promotionId: Int,
 
             // 优惠码
+            @JsonIgnore
             val promotionCode: String,
 
             // 消息模板
