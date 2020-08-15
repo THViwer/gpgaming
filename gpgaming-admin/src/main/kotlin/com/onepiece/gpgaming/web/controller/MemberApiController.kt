@@ -360,14 +360,14 @@ class MemberApiController(
 
         // 查询本同打码
         val today = LocalDate.now()
-        val todayList = reportService.startMemberReport(memberId = memberId, startDate = today)
+//        val todayList = reportService.startMemberReport(memberId = memberId, startDate = today)
         val mdrQuery = MemberReportQuery(clientId = clientId, agentId = null, memberId = memberId, startDate = today.minusDays(6), endDate = today, current = 0,
                 size = 10, minRebateAmount = null, minPromotionAmount = null)
         val history = memberDailyReportService.query(mdrQuery)
-        val weekReports = todayList.plus(history).sortedByDescending { it.day }
+//        val weekReports = todayList.plus(history).sortedByDescending { it.day }
 
         return MemberWalletInfo(memberId = memberId, wallet = wallet, lastFiveDeposit = depositHistory, lastFiveWithdraw = withdrawHistory,
-                balances = balances, lastPayOrders = lastPayOrders, weekReports = weekReports)
+                balances = balances, lastPayOrders = lastPayOrders)
 
     }
 
