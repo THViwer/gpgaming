@@ -33,6 +33,7 @@ import eu.bitwalker.useragentutils.DeviceType
 import eu.bitwalker.useragentutils.UserAgent
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.util.StopWatch
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -233,12 +234,30 @@ class UserApiController(
     @GetMapping("/country")
     override fun countries(): List<Country> {
 
+
+
         val bossId = getBossId()
         val clientId = getClientId()
 
+        val watch = StopWatch()
+        watch.start()
+
         val clients = clientService.all().filter { it.bossId == bossId }
 
-        return clients.filter { it.country != Country.Default }.map {
+        watch.stop()
+        log.info("------------------------")
+        log.info("------------------------")
+        log.info("------------------------")
+        log.info("------------------------")
+        log.info("查询client耗时:${watch.lastTaskTimeMillis} ms")
+        log.info("------------------------")
+        log.info("------------------------")
+        log.info("------------------------")
+        log.info("------------------------")
+
+        watch.start()
+
+        val list = clients.filter { it.country != Country.Default }.map {
 
             if (it.id == clientId) {
                 0 to it.country
@@ -247,6 +266,19 @@ class UserApiController(
             }
         }.sortedBy { it.first }
                 .map { it.second }
+
+        watch.stop()
+        log.info("------------------------")
+        log.info("------------------------")
+        log.info("------------------------")
+        log.info("------------------------")
+        log.info("总耗时:${watch.totalTimeMillis} ms")
+        log.info("------------------------")
+        log.info("------------------------")
+        log.info("------------------------")
+        log.info("------------------------")
+
+        return  list
     }
 
     @GetMapping("/check/{username}")
