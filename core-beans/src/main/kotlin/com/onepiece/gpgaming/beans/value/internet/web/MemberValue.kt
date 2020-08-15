@@ -351,10 +351,10 @@ data class MemberWalletInfo(
         val lastPayOrders: List<PayOrder>,
 
         // 最后5个取款信息
-        val lastFiveWithdraw: List<Withdraw>,
+        val lastFiveWithdraw: List<Withdraw>
 
         // 本周日报表
-        val weekReports: List<MemberDailyReport>
+//        val weekReports: List<MemberDailyReport>
 
 ) {
 
