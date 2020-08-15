@@ -9,6 +9,7 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Client
 import com.onepiece.gpgaming.beans.model.WebSite
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
+import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService
@@ -164,7 +165,8 @@ abstract class BasicController {
 
 
 //            gameApi(clientId = member.clientId, memberId = member.id, platform = platform, name = member.musername)
-            gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = member.username)
+            val realname = member.username.split("@").last()
+            gameApi.register(clientId = member.clientId, memberId = member.id, platform = platform, name = realname)
 
             return this.getPlatformMember(platform, member, code + 1)
         }
