@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.ShowPosition
+import java.math.BigDecimal
 
 sealed class ClientConfigValue {
 
@@ -57,6 +58,25 @@ sealed class ClientConfigValue {
 
             // asg content
             val asgContent: String
+    )
+
+    data class IntroduceUo(
+
+            val clientId: Int,
+
+            /** 会员推广佣金 */
+            // 是否开启会员介绍
+            val enableIntroduce: Boolean,
+            // 会员介绍优惠活动Id(category=Introduce)
+            val introducePromotionId: Int,
+            // 注册佣金
+            val registerCommission: BigDecimal,
+            // 周期内需要充值金额
+            val depositPeriod: BigDecimal,
+            // 充值周期
+            val commissionPeriod: Int,
+            // 充值佣金
+            val depositCommission: BigDecimal
     )
 
 }

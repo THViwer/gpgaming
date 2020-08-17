@@ -37,7 +37,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.PromotionUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionVo
 import com.onepiece.gpgaming.beans.value.internet.web.RecommendedWebValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
-import com.onepiece.gpgaming.core.IndexUtil
+import com.onepiece.gpgaming.core.utils.IndexUtil
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.BlogService
 import com.onepiece.gpgaming.core.service.ContactService

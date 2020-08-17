@@ -21,7 +21,7 @@ import com.onepiece.gpgaming.beans.value.database.LevelValue
 import com.onepiece.gpgaming.beans.value.database.LoginHistoryValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.RecommendedValue
-import com.onepiece.gpgaming.core.IndexUtil
+import com.onepiece.gpgaming.core.utils.IndexUtil
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.ClientDao
 import com.onepiece.gpgaming.core.service.BalanceService

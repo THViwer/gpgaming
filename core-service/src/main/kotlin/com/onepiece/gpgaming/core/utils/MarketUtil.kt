@@ -1,4 +1,4 @@
-package com.onepiece.gpgaming.core
+package com.onepiece.gpgaming.core.utils
 
 import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.stereotype.Component
