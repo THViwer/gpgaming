@@ -11,7 +11,7 @@ import com.onepiece.gpgaming.beans.model.token.MegaClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.SlotGame
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
-import com.onepiece.gpgaming.core.PlatformUsernameUtil
+import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.PlatformMemberService

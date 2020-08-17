@@ -9,7 +9,6 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Client
 import com.onepiece.gpgaming.beans.model.WebSite
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
-import com.onepiece.gpgaming.core.PlatformUsernameUtil
 import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService

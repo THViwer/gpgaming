@@ -33,7 +33,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
 import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.WalletNoteValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
-import com.onepiece.gpgaming.core.OrderIdBuilder
+import com.onepiece.gpgaming.core.utils.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.ArtificialOrderService
 import com.onepiece.gpgaming.core.service.ClientBankService
 import com.onepiece.gpgaming.core.service.ClientService

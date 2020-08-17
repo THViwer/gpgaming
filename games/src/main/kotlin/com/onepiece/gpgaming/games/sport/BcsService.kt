@@ -7,7 +7,7 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.BcsClientToken
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
-import com.onepiece.gpgaming.core.PlatformUsernameUtil.prefixPlatformUsername
+import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil.prefixPlatformUsername
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.DEFAULT_DATETIMEFORMATTER

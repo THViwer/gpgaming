@@ -23,7 +23,7 @@ import com.onepiece.gpgaming.beans.value.database.BlogValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.core.ActiveConfig
-import com.onepiece.gpgaming.core.IndexUtil
+import com.onepiece.gpgaming.core.utils.IndexUtil
 import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.AppVersionService
 import com.onepiece.gpgaming.core.service.BannerService

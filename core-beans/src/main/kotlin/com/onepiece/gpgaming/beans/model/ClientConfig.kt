@@ -47,10 +47,10 @@ data class ClientConfig(
         val introducePromotionId: Int,
         // 注册佣金
         val registerCommission: BigDecimal,
-        // 需要充值金额
-        val needDeposit: BigDecimal,
-        // 充值周期
+        // 周期内需要充值金额
         val depositPeriod: BigDecimal,
+        // 充值周期
+        val commissionPeriod: Int,
         // 充值佣金
         val depositCommission: BigDecimal,
 

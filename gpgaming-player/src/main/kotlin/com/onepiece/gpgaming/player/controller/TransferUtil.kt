@@ -17,7 +17,7 @@ import com.onepiece.gpgaming.beans.value.database.TransferOrderUo
 import com.onepiece.gpgaming.beans.value.database.WalletUo
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
-import com.onepiece.gpgaming.core.OrderIdBuilder
+import com.onepiece.gpgaming.core.utils.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.PlatformMemberService

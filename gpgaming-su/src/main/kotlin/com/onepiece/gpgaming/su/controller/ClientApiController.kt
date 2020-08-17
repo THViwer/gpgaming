@@ -7,7 +7,7 @@ import com.onepiece.gpgaming.beans.value.database.ClientCo
 import com.onepiece.gpgaming.beans.value.database.ClientUo
 import com.onepiece.gpgaming.beans.value.database.WebSiteCo
 import com.onepiece.gpgaming.beans.value.database.WebSiteUo
-import com.onepiece.gpgaming.core.IndexUtil
+import com.onepiece.gpgaming.core.utils.IndexUtil
 import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.WebSiteService
 import com.onepiece.gpgaming.su.controller.value.ClientSuValue

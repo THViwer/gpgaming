@@ -42,7 +42,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.beans.value.internet.web.SelectPayVo
 import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
-import com.onepiece.gpgaming.core.OrderIdBuilder
+import com.onepiece.gpgaming.core.utils.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ClientBankService
 import com.onepiece.gpgaming.core.service.DepositService

@@ -5,7 +5,7 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.PlatformBind
 import com.onepiece.gpgaming.beans.value.database.PlatformBindCo
 import com.onepiece.gpgaming.beans.value.database.PlatformBindUo
-import com.onepiece.gpgaming.core.IndexUtil
+import com.onepiece.gpgaming.core.utils.IndexUtil
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.PlatformBindDao
 import com.onepiece.gpgaming.core.service.PlatformBindService

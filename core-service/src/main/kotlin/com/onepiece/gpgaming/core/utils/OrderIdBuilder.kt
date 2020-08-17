@@ -1,7 +1,8 @@
-package com.onepiece.gpgaming.core
+package com.onepiece.gpgaming.core.utils
 
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.model.token.TTGClientToken
+import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.utils.RedisService
 import com.onepiece.gpgaming.utils.StringUtil
