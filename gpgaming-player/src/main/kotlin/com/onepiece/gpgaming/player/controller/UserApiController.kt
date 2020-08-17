@@ -251,16 +251,14 @@ class UserApiController(
         }
 
         // 发送短信
-        val config = clientConfigService.get(clientId = clientId)
-        if (config.enableRegisterMessage) {
-            val messageTemplate = registerReq.marketId?.let {
-                val market = marketService.get(id = it)
-                marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
-                market.messageTemplate.replace("\${code}", market.promotionCode)
-            } ?: clientConfigService.get(clientId = clientId).registerMessageTemplate
+        val messageTemplate = registerReq.marketId?.let {
+            val market = marketService.get(id = it)
+            marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
+            market.messageTemplate.replace("\${code}", market.promotionCode)
+        } ?: clientConfigService.get(clientId = clientId).registerMessageTemplate
+        smsService.start(mobile = registerReq.phone, message = messageTemplate)
 
             smsService.send(clientId = clientId,mobile = registerReq.phone, message = messageTemplate.replace("\${username}", registerReq.username))
-        }
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)
         return this.login(loginReq)
@@ -275,29 +273,12 @@ class UserApiController(
     @GetMapping("/country")
     override fun countries(): List<Country> {
 
-
         val bossId = getBossId()
         val clientId = getClientId()
 
-        val watch = StopWatch()
-        watch.start()
-
         val clients = clientService.all().filter { it.bossId == bossId }
 
-        watch.stop()
-        log.info("------------------------")
-        log.info("------------------------")
-        log.info("------------------------")
-        log.info("------------------------")
-        log.info("查询client耗时:${watch.lastTaskTimeMillis} ms")
-        log.info("------------------------")
-        log.info("------------------------")
-        log.info("------------------------")
-        log.info("------------------------")
-
-        watch.start()
-
-        val list = clients.filter { it.country != Country.Default }.map {
+        return clients.filter { it.country != Country.Default }.map {
 
             if (it.id == clientId) {
                 0 to it.country
@@ -306,19 +287,6 @@ class UserApiController(
             }
         }.sortedBy { it.first }
                 .map { it.second }
-
-        watch.stop()
-        log.info("------------------------")
-        log.info("------------------------")
-        log.info("------------------------")
-        log.info("------------------------")
-        log.info("总耗时:${watch.totalTimeMillis} ms")
-        log.info("------------------------")
-        log.info("------------------------")
-        log.info("------------------------")
-        log.info("------------------------")
-
-        return list
     }
 
     @GetMapping("/check/{username}")
