@@ -52,7 +52,7 @@ class MarketApiController(
     override fun createCo(@RequestBody co: MarketingValue.MarketingCo) {
         val user = this.current()
 
-        val  promotion = promotionService.get(co.promotionId)
+        val promotion = promotionService.get(co.promotionId)
 
         marketService.create(co.copy(clientId = user.clientId, promotionCode = promotion.code))
     }
@@ -60,8 +60,8 @@ class MarketApiController(
     @PutMapping
     override fun marketUpdate(@RequestBody uo: MarketingValue.MarketingUo) {
 
-        val  promotion = promotionService.get(uo.promotionId)
-        marketService.update(uo = uo.copy(promotionCode = "${promotion.id}"))
+        val promotion = promotionService.get(uo.promotionId)
+        marketService.update(uo = uo.copy(promotionCode = promotion.code))
     }
 
     @GetMapping("/regMsgTemplate")
@@ -74,8 +74,8 @@ class MarketApiController(
     @PutMapping("/regMsgTemplate")
     override fun regMsgTemplate(@RequestBody req: MarketingValue.RegisterSmsTemplateReq) {
 
-        val user  = this.current()
-        val clientConfig  = clientConfigService.get(clientId = user.clientId)
+        val user = this.current()
+        val clientConfig = clientConfigService.get(clientId = user.clientId)
         clientConfigService.update(id = clientConfig.id, enableRegisterMessage = req.enableRegisterMessage, registerMessageTemplate = req.registerMessageTemplate)
 
     }
