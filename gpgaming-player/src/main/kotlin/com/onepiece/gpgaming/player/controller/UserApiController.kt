@@ -58,10 +58,10 @@ class UserApiController(
         private val passwordEncoder: PasswordEncoder,
         private val chainUtil: ChainUtil,
         private val vipService: VipService,
-        private val marketUtil:  MarketUtil,
+        private val marketUtil: MarketUtil,
         private val smsService: SmsService,
         private val marketService: MarketService,
-        private  val clientConfigService: ClientConfigService
+        private val clientConfigService: ClientConfigService
 ) : BasicController(), UserApi {
 
     companion object {
@@ -226,9 +226,18 @@ class UserApiController(
         val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
 
         val saleId = registerReq.saleCode?.toInt() ?: -1
-        val marketId = registerReq.marketId?.toInt() ?: -1
+        val marketId = registerReq.marketId ?: -1
+        val phone = registerReq.phone.let {
+            val firstPhone = it.substring(0, 3)
+            if (firstPhone == "600") {
+                val lastPhone = it.substring(3, it.length)
+                "60$lastPhone"
+            } else {
+                it
+            }
+        }
         val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
-                levelId = defaultLevel.id, name = registerReq.name, phone = registerReq.phone, promoteCode = registerReq.promoteCode, bossId = bossId, agentId = agent.id,
+                levelId = defaultLevel.id, name = registerReq.name, phone = phone, promoteCode = registerReq.promoteCode, bossId = bossId, agentId = agent.id,
                 role = Role.Member, formal = true, saleId = saleId, registerIp = RequestUtil.getIpAddress(), birthday = registerReq.birthday,
                 email = registerReq.email, marketId = marketId)
         memberService.create(memberCo)
@@ -237,13 +246,13 @@ class UserApiController(
         chainUtil.clickRv(registerReq.chainCode)
 
         // 通知
-        if (registerReq.marketId !=  null) {
+        if (registerReq.marketId != null) {
             marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
         }
 
         // 发送短信
         val messageTemplate = registerReq.marketId?.let {
-            val market  = marketService.get(id = it)
+            val market = marketService.get(id = it)
             marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
             market.messageTemplate.replace("\${code}", market.promotionCode)
         } ?: clientConfigService.get(clientId = clientId).registerMessageTemplate
@@ -262,7 +271,6 @@ class UserApiController(
 
     @GetMapping("/country")
     override fun countries(): List<Country> {
-
 
 
         val bossId = getBossId()
@@ -307,7 +315,7 @@ class UserApiController(
         log.info("------------------------")
         log.info("------------------------")
 
-        return  list
+        return list
     }
 
     @GetMapping("/check/{username}")
@@ -349,7 +357,7 @@ class UserApiController(
     @GetMapping("/platform")
     override fun platformUsers(): List<PlatformMemberVo> {
         val current = this.currentUser()
-        val platformMembers = platformMemberService.findPlatformMember(memberId =  current.id)
+        val platformMembers = platformMemberService.findPlatformMember(memberId = current.id)
 
 
 
