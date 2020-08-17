@@ -17,6 +17,9 @@ enum class PromotionCategory(
     // 优惠码 (不显示在前台)
     ActivationCode("ActivationCode", "优惠码"),
 
+    // 会员介绍
+    Introduce("Introduce","会员介绍"),
+
     // 其它(来显示在前台)
     Other("other", "其它"),
 
