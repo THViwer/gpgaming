@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.web.controller
 import com.onepiece.gpgaming.beans.enums.HotGameType
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.PromotionCategory
 import com.onepiece.gpgaming.beans.enums.RecommendedType
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.ShowPosition
@@ -84,7 +85,7 @@ interface IndexApi {
 
 
     @ApiOperation(tags = ["web setting"], value = "优惠活动 -> 列表")
-    fun promotionList(): List<PromotionVo>
+    fun promotionList(@RequestParam("category",  required = false) category: PromotionCategory? = null): List<PromotionVo>
 
     @ApiOperation(tags = ["web setting"], value = "优惠活动 -> 创建")
     @ResponseStatus(HttpStatus.NO_CONTENT)

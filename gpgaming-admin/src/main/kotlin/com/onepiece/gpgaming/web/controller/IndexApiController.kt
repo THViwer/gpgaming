@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.ContactType
 import com.onepiece.gpgaming.beans.enums.HotGameType
 import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.PromotionCategory
 import com.onepiece.gpgaming.beans.enums.PromotionRuleType
 import com.onepiece.gpgaming.beans.enums.RecommendedType
 import com.onepiece.gpgaming.beans.enums.Role
@@ -179,7 +180,7 @@ class IndexApiController(
 
 
     @GetMapping("/promotion")
-    override fun promotionList(): List<PromotionVo> {
+    override fun promotionList(@RequestParam("category",  required = false) category: PromotionCategory?): List<PromotionVo> {
         val clientId = getClientId()
 
         val promotions = promotionService.all(clientId = clientId)
@@ -202,7 +203,7 @@ class IndexApiController(
                     status = promotion.status, createdTime = promotion.createdTime, updatedTime = promotion.updatedTime, i18nContents = i18nContents,
                     promotionRuleVo = promotionRuleVo, platforms = promotion.platforms, period = promotion.period, periodMaxPromotion = promotion.periodMaxPromotion,
                     levelId = promotion.levelId, sequence = promotion.sequence, show = promotion.show, code = code, title = title)
-        }
+        }.filter { category == null || category == it.category }
     }
 
     @PostMapping("/promotion")

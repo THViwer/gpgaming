@@ -62,7 +62,6 @@ data class Promotion (
         val show: Boolean,
 
         // 优惠码
-        @Deprecated("使用id字段")
         val code: String,
 
         // 创建时间

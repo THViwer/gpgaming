@@ -54,7 +54,7 @@ class MarketApiController(
 
         val  promotion = promotionService.get(co.promotionId)
 
-        marketService.create(co.copy(clientId = user.clientId, promotionCode = "${promotion.id}"))
+        marketService.create(co.copy(clientId = user.clientId, promotionCode = promotion.code))
     }
 
     @PutMapping
