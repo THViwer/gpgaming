@@ -51,7 +51,10 @@ enum class PermissionType(
     AGENT_MANAGER("-1", "6000", "代理", "代理"),
 
     // 电销系统
-    SALE_MANAGER("-1", "7000", "电销", "电销")
+    SALE_MANAGER("-1", "7000", "电销", "电销"),
+
+    // 营销
+    MARKET_MANAGE("-1", "8000", "营销", "营销")
 
 
     ;
