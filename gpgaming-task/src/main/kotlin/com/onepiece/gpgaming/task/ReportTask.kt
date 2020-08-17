@@ -51,6 +51,8 @@ class ReportTask(
 
 //        this.startAgentMonthReport(startDate = localDate)
 
+        this.startMarkReport(startDate = localDate)
+
         this.startSaleReport(startDate = localDate)
 
         this.startClientPlatformReport(localDate)
