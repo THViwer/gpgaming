@@ -45,6 +45,14 @@ data class ClientConfig(
         // 短信注册模板
         val registerMessageTemplate:  String,
 
+
+        // 是否开启会员介绍
+        val enableIntroduce:  Boolean,
+
+        // 会员介绍优惠活动Id(category=Introduce)
+        val introducePromotionId: Int,
+
+
         // 创建时间
         val createdTime: LocalDateTime
 )
