@@ -8,6 +8,8 @@ interface MarketService {
 
     fun get(id: Int): Market
 
+    fun list(): List<Market>
+
     fun find(clientId: Int): List<Market>
 
     fun create(co: MarketingValue.MarketingCo)

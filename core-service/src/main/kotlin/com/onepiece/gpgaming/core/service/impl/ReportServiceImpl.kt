@@ -33,6 +33,7 @@ import com.onepiece.gpgaming.core.dao.TransferReportQuery
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.CommissionService
+import com.onepiece.gpgaming.core.service.MarketService
 import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.core.service.WaiterService
 import org.slf4j.LoggerFactory
@@ -56,7 +57,8 @@ class ReportServiceImpl(
         private val waiterService: WaiterService,
         private val saleDailyReportDao: SaleDailyReportDao,
         private val clientService: ClientService,
-        private val marketUtil: MarketUtil
+        private val marketUtil: MarketUtil,
+        private val marketService: MarketService
 ) : ReportService {
 
     private val log = LoggerFactory.getLogger(ReportServiceImpl::class.java)
@@ -322,12 +324,29 @@ class ReportServiceImpl(
 
     override fun startMarkReport(startDate: LocalDate): List<MarketDailyReportValue.MarketDailyReportCo> {
 
-        val list = memberDailyReportDao.markCollect(day = startDate)
+        val markets = marketService.list()
 
-        return list.map { report ->
-            val pv = marketUtil.getPV(clientId = report.clientId, marketId = report.marketId, day = startDate)
-            val rv = marketUtil.getPV(clientId = report.clientId, marketId = report.marketId, day = startDate)
-            report.copy(viewCount = pv,  registerCount = rv)
+        val list = memberDailyReportDao.markCollect(day = startDate)
+                .map { it.marketId to it }
+                .toMap()
+
+        return markets.mapNotNull { market ->
+
+            val report = list[market.id]
+
+            val pv = marketUtil.getPV(clientId = market.clientId, marketId = market.id, day = startDate)
+            val rv = marketUtil.getPV(clientId = market.clientId, marketId = market.id, day = startDate)
+
+            when {
+                report != null -> {
+                    report.copy(viewCount = pv, registerCount = rv)
+                }
+                pv != 0 || rv != 0 -> {
+                    MarketDailyReportValue.MarketDailyReportCo(clientId = market.clientId, day = startDate, marketId = market.id, bet = BigDecimal.ZERO,
+                            depositAmount = BigDecimal.ZERO, withdrawAmount = BigDecimal.ZERO, registerCount = rv, viewCount = pv)
+                }
+                else -> null
+            }
         }
     }
 
