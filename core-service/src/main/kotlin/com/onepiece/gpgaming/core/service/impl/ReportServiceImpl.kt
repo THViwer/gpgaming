@@ -335,7 +335,7 @@ class ReportServiceImpl(
             val report = list[market.id]
 
             val pv = marketUtil.getPV(clientId = market.clientId, marketId = market.id, day = startDate)
-            val rv = marketUtil.getPV(clientId = market.clientId, marketId = market.id, day = startDate)
+            val rv = marketUtil.getRV(clientId = market.clientId, marketId = market.id, day = startDate)
 
             when {
                 report != null -> {

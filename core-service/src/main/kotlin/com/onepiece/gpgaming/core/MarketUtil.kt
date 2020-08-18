@@ -20,12 +20,12 @@ class MarketUtil(
     }
 
     fun getRV(clientId: Int, marketId:  Int, day: LocalDate): Int {
-        val redisKey = "market:rv:$clientId:$marketId:${LocalDate.now()}"
+        val redisKey = "market:rv:$clientId:$marketId:${day}"
         return redisService.get(redisKey, Int::class.java) ?: 0
     }
 
     fun getPV(clientId: Int, marketId:  Int, day: LocalDate): Int {
-        val redisKey = "market:pv:$clientId:$marketId:${LocalDate.now()}"
+        val redisKey = "market:pv:$clientId:$marketId:${day}"
         return redisService.get(redisKey, Int::class.java) ?: 0
     }
 
