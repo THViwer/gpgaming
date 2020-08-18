@@ -34,6 +34,9 @@ data class Member(
         // 营销Id
         val marketId: Int,
 
+        // 介绍人员Id
+        val introduceId: Int,
+
         // 用户名
         val username: String,
 

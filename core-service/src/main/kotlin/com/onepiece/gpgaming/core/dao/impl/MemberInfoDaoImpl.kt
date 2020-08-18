@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository
 import java.sql.ResultSet
 
 @Repository
-class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao {
+class MemberInfoDaoImpl : BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao {
 
     override val mapper: (rs: ResultSet) -> MemberInfo
-        get() = {  rs ->
+        get() = { rs ->
 
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
@@ -23,7 +23,6 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
             val totalDeposit = rs.getBigDecimal("total_deposit")
             val lastDepositTime = rs.getTimestamp("last_deposit_time")?.toLocalDateTime()
             val totalDepositCount = rs.getInt("total_deposit_count")
-
 
 
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
@@ -40,13 +39,14 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
             val saleCount = rs.getInt("sale_count")
 
             val nextCallTime = rs.getTimestamp("next_call_time")?.toLocalDateTime()
+            val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
 
             MemberInfo(bossId = bossId, clientId = clientId, agentId = agentId, saleId = saleId, memberId = memberId, username = username,
                     totalDeposit = totalDeposit, lastDepositTime = lastDepositTime, totalDepositCount = totalDepositCount,
                     totalWithdraw = totalWithdraw, lastWithdrawTime = lastWithdrawTime, totalWithdrawCount = totalWithdrawCount,
                     registerTime = registerTime, lastLoginTime = lastLoginTime, loginCount = loginCount,
-                    lastSaleTime = lastSaleTime, saleCount = saleCount, nextCallTime = nextCallTime)
+                    lastSaleTime = lastSaleTime, saleCount = saleCount, nextCallTime = nextCallTime, createdTime = createdTime)
         }
 
 
@@ -96,7 +96,7 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
     override fun count(query: MemberInfoValue.MemberCountQuery): Int {
 
 
-        val neverCallSql= if (query.neverCall) " last_sale_time is null" else " 1 = 1"
+        val neverCallSql = if (query.neverCall) " last_sale_time is null" else " 1 = 1"
 
         return query("count(*)")
                 .where("client_id", query.clientId)

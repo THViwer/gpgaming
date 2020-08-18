@@ -192,7 +192,7 @@ abstract class BasicController {
     }
 
     fun currentUsername(): String {
-        return this.current().username.split("@")[3]
+        return this.current().username.split("@").last()
     }
 
 }

@@ -76,6 +76,9 @@ data class MemberCo(
         // 电销类型
         val saleScope: SaleScope = SaleScope.System,
 
+        // 介绍Id
+        val introduceId: Int = -1,
+
         // 角色
         val role: Role,
 

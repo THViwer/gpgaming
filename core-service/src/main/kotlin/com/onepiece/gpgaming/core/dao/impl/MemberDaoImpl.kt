@@ -16,7 +16,7 @@ import java.sql.ResultSet
 import java.time.LocalDate
 
 @Repository
-class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
+class MemberDaoImpl : BasicDaoImpl<Member>("member"), MemberDao {
 
     override val mapper: (rs: ResultSet) -> Member
         get() = { rs ->
@@ -25,12 +25,13 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
             val clientId = rs.getInt("client_id")
             val saleId = rs.getInt("sale_id")
             val marketId = rs.getInt("market_id")
-            val saleScope = rs.getString("sale_scope").let{ SaleScope.valueOf(it) }
+            val saleScope = rs.getString("sale_scope").let { SaleScope.valueOf(it) }
             val role = rs.getString("role").let { Role.valueOf(it) }
             val agentId = rs.getInt("agent_id")
+            val introduceId = rs.getInt("introduce_id")
             val username = rs.getString("username")
             val name = rs.getString("name")
-            val phone= rs.getString("phone")
+            val phone = rs.getString("phone")
             val password = rs.getString("password")
             val safetyPassword = rs.getString("safety_password")
             val firstPromotion = rs.getBoolean("first_promotion")
@@ -57,7 +58,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                     autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = "$id",
                     formal = formal, agencyMonthFee = agencyMonthFee, saleId = saleId, saleScope = saleScope,
                     registerIp = registerIp, riskLevel = riskLevel, vipId = vipId, birthday = birthday, idCard = idCard,
-                    address = address, email = email, marketId = marketId)
+                    address = address, email = email, marketId = marketId, introduceId = introduceId)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -68,6 +69,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
                 .set("sale_id", memberCo.saleId)
                 .set("sale_scope", memberCo.saleScope)
                 .set("market_id", memberCo.marketId)
+                .set("introduce_id", memberCo.introduceId)
                 .set("role", memberCo.role)
                 .set("username", memberCo.username)
                 .set("name", memberCo.name)
@@ -170,7 +172,7 @@ class MemberDaoImpl: BasicDaoImpl<Member>("member"), MemberDao {
     }
 
     override fun saleCount(saleId: Int?, startDate: LocalDate, endDate: LocalDate, scope: SaleScope): Map<Int, Int> {
-        return  query("sale_id, count(*) count")
+        return query("sale_id, count(*) count")
                 .where("sale_id", saleId)
                 .asWhere("created_time  > ?", startDate)
                 .asWhere("created_time  < ?", endDate)
