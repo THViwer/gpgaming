@@ -26,9 +26,6 @@ import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.games.GameApi
 import com.onepiece.gpgaming.games.GameValue
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
@@ -74,42 +71,32 @@ open class TransferUtil(
         val platformMembers = this.platformMemberService.myPlatforms(memberId = memberId)
         if (platformMembers.isEmpty()) return emptyList()
 
-        val list = kAsync(clientId = clientId, username = username, amount = amount, pms = platformMembers)
+        val list = platformMembers.parallelStream().filter { exceptPlatform == null || exceptPlatform != it.platform }.map { platformMember ->
+            val req = CashValue.CashTransferReq(from = platformMember.platform, to = Platform.Center, amount = amount, promotionId = null)
+            try {
+                val resp = this.singleTransfer(clientId = clientId, platform = platformMember.platform, cashTransferReq = req, type = "in", platformMemberVo = platformMember, username = username)
+                val balance = if (resp.balance.toInt() <= 0) BigDecimal.ZERO else resp.balance
+
+                CashValue.BalanceAllInVo(platform = platformMember.platform, balance = balance)
+            } catch (e: Exception) {
+//                log.error("转账平台错误:", e)
+
+                try {
+                    val balance = gameApi.balance(clientId = clientId, platformUsername = platformMember.platformUsername,
+                            platform = platformMember.platform, platformPassword = platformMember.platformPassword)
+                    CashValue.BalanceAllInVo(platform = platformMember.platform, balance = balance)
+                } catch (e1: Exception) {
+                    CashValue.BalanceAllInVo(platform = platformMember.platform, balance = BigDecimal.valueOf(-1))
+                }
+            }
+        }.collect(Collectors.toList())
 
         val wallet = walletService.getMemberWallet(memberId)
         val centerBalance = CashValue.BalanceAllInVo(platform = Platform.Center, balance = wallet.balance)
 
-        return list.plus(centerBalance)
-    }
+        list.add(centerBalance)
 
-    fun kAsync(clientId: Int, username: String, amount: BigDecimal, pms: List<PlatformMemberVo>) = runBlocking {
-        GlobalScope.async {
-            pms.map { platformMember ->
-                async {
-
-                    val req = CashValue.CashTransferReq(from = platformMember.platform, to = Platform.Center, amount = amount, promotionId = null)
-                    try {
-                        val resp = singleTransfer(clientId = clientId, platform = platformMember.platform, cashTransferReq = req, type = "in",
-                                platformMemberVo = platformMember, username = username)
-                        val balance = if (resp.balance.toInt() <= 0) BigDecimal.ZERO else resp.balance
-
-                        CashValue.BalanceAllInVo(platform = platformMember.platform, balance = balance)
-                    } catch (e: Exception) {
-//                log.error("转账平台错误:", e)
-
-                        try {
-                            val balance = gameApi.balance(clientId = clientId, platformUsername = platformMember.platformUsername,
-                                    platform = platformMember.platform, platformPassword = platformMember.platformPassword)
-                            CashValue.BalanceAllInVo(platform = platformMember.platform, balance = balance)
-                        } catch (e1: Exception) {
-                            CashValue.BalanceAllInVo(platform = platformMember.platform, balance = BigDecimal.valueOf(-1))
-                        }
-                    }
-                }
-            }.map {
-                it.await()
-            }
-        }.await()
+        return list
     }
 
     /**
@@ -119,14 +106,14 @@ open class TransferUtil(
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     override fun transfer(clientId: Int, username: String, cashTransferReq: CashValue.CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp {
         val (type, platform) = if (cashTransferReq.from == Platform.Center) "out" to cashTransferReq.to else "in" to cashTransferReq.from
-        return singleTransfer(clientId = clientId, platform =  platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo, username = username)
+        return singleTransfer(clientId = clientId, platform = platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo, username = username)
     }
 
 
-    private fun singleTransfer(clientId: Int, username: String, platform: Platform, cashTransferReq: CashValue.CashTransferReq, platformMemberVo: PlatformMemberVo, type: String): GameValue.TransferResp{
+    private fun singleTransfer(clientId: Int, username: String, platform: Platform, cashTransferReq: CashValue.CashTransferReq, platformMemberVo: PlatformMemberVo, type: String): GameValue.TransferResp {
 
         val platformMember = platformMemberService.get(platformMemberVo.id)
-        val platformBalance  = gameApi.balance(clientId = clientId, platformUsername = platformMemberVo.platformUsername, platform = platform, platformPassword = platformMember.password)
+        val platformBalance = gameApi.balance(clientId = clientId, platformUsername = platformMemberVo.platformUsername, platform = platform, platformPassword = platformMember.password)
 
         return when (type) {
 
@@ -178,7 +165,7 @@ open class TransferUtil(
         }
 
         // 如果是首充优惠 更新用户已使用过首充
-        if (promotionId != null && promotionId != -100 ) {
+        val promotion = if (promotionId != null && promotionId != -100) {
             val promotion = promotionService.get(promotionId)
 
             if (promotion.category == PromotionCategory.First) {
@@ -186,7 +173,9 @@ open class TransferUtil(
                 val memberUo = MemberUo(id = platformMember.memberId, firstPromotion = true)
                 memberService.update(memberUo)
             }
-        }
+
+            promotion
+        } else null
 
         // 检查保证金是否足够
         platformBindService.updateEarnestBalance(clientId = clientId, platform = platform, earnestBalance = amount.negate())
@@ -195,15 +184,16 @@ open class TransferUtil(
         val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "out", platformUsername = platformMember.username)
 
         // 中心钱包扣款
-        val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_OUT, money = amount,
+        val event = if (promotion?.category == PromotionCategory.Introduce) WalletEvent.INTRODUCE else WalletEvent.TRANSFER_OUT
+        val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = event, money = amount,
                 remarks = "Center => $platform", waiterId = null, eventId = transferOrderId, giftBalance = platformMemberTransferUo?.promotionAmount)
         walletService.update(walletUo)
 
         // 生成转账订单
-        val promotionAmount = platformMemberTransferUo?.promotionAmount?: BigDecimal.ZERO
+        val promotionAmount = platformMemberTransferUo?.promotionAmount ?: BigDecimal.ZERO
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = promotionAmount,
                 from = from, to = to, joinPromotionId = platformMemberTransferUo?.joinPromotionId, promotionJson = platformMemberTransferUo?.promotionJson, username = username,
-                requirementBet = platformMemberTransferUo?.requirementBet?: BigDecimal.ZERO, promotionPreMoney = platformMemberTransferUo?.promotionPreMoney?: amount)
+                requirementBet = platformMemberTransferUo?.requirementBet ?: BigDecimal.ZERO, promotionPreMoney = platformMemberTransferUo?.promotionPreMoney ?: amount)
         transferOrderService.create(transferOrderCo)
 
         // 平台钱包更改信息
@@ -276,7 +266,7 @@ open class TransferUtil(
             PromotionPeriod.getOverPromotionAmount(promotion = promotion, historyOrders = history)
         } else overPromotionAmount
 
-        val transferUo = promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount =  amount,
+        val transferUo = promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount = amount,
                 platformBalance = platformBalance, promotionId = promotion.id, overPromotionAmount = overPromotionAmountNotNull)
 
         // 检查当前平台是否是参加活动的平台
@@ -289,7 +279,7 @@ open class TransferUtil(
      */
     override fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal, transferOutAmount: BigDecimal): Boolean {
 
-        val state = when{
+        val state = when {
             platformBalance.toDouble() <= promotion.rule.ignoreTransferOutAmount.toDouble() -> true
             promotion.ruleType == PromotionRuleType.Bet -> {
                 platformMember.currentBet.toDouble() >= platformMember.requirementBet.toDouble()
@@ -305,7 +295,7 @@ open class TransferUtil(
             //TODO 记录clean事件 本次优惠使用多少打码量等
 
             // 记录本次优惠内转出多少钱
-            transferOrderService.logPromotionEnd(clientId =  promotion.clientId, memberId = platformMember.memberId, promotionId = promotion.id, transferOutAmount = transferOutAmount)
+            transferOrderService.logPromotionEnd(clientId = promotion.clientId, memberId = platformMember.memberId, promotionId = promotion.id, transferOutAmount = transferOutAmount)
 
             // 清理平台会员优惠信息
             platformMemberService.cleanTransferIn(memberId = platformMember.memberId, platform = platformMember.platform)

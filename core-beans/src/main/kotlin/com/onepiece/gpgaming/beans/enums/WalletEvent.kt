@@ -23,6 +23,12 @@ enum class WalletEvent {
     // 转张回滚
     TRANSFER_IN_ROLLBACK,
 
+    // 介绍首次入金
+    INTRODUCE,
+
+    // 介绍充值佣金
+    INTRODUCE_DEPOSIT_COMMISSION,
+
     // 转出
     TRANSFER_OUT,
 

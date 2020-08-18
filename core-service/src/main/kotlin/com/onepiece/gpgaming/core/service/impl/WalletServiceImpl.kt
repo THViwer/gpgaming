@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.enums.WalletEvent
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Wallet
 import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
+import com.onepiece.gpgaming.beans.value.database.MemberIntroduceValue
 import com.onepiece.gpgaming.beans.value.database.WalletCo
 import com.onepiece.gpgaming.beans.value.database.WalletDepositUo
 import com.onepiece.gpgaming.beans.value.database.WalletFreezeUo
@@ -16,11 +17,14 @@ import com.onepiece.gpgaming.beans.value.database.WalletWithdrawUo
 import com.onepiece.gpgaming.core.dao.WalletDao
 import com.onepiece.gpgaming.core.dao.WalletNoteDao
 import com.onepiece.gpgaming.core.risk.VipUtil
+import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.MemberInfoService
+import com.onepiece.gpgaming.core.service.MemberIntroduceService
 import com.onepiece.gpgaming.core.service.WalletService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.LocalDateTime
 
 @Service
 class WalletServiceImpl(
@@ -32,7 +36,13 @@ class WalletServiceImpl(
     lateinit var memberInfoService: MemberInfoService
 
     @Autowired
+    lateinit var memberIntroduceService: MemberIntroduceService
+
+    @Autowired
     lateinit var vipUtil: VipUtil
+
+    @Autowired
+    lateinit var clientConfigService: ClientConfigService
 
     override fun getMemberWallet(memberId: Int): Wallet {
         return walletDao.getMemberWallet(memberId)
@@ -52,7 +62,8 @@ class WalletServiceImpl(
             WalletEvent.Rebate,
             WalletEvent.Commission,
             WalletEvent.ThirdPay,
-            WalletEvent.DEPOSIT -> {
+            WalletEvent.DEPOSIT,
+            WalletEvent.INTRODUCE_DEPOSIT_COMMISSION -> {
                 val walletDepositUo = WalletDepositUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
                 walletDao.deposit(walletDepositUo)
             }
@@ -77,7 +88,7 @@ class WalletServiceImpl(
                 walletDao.transferOut(transferOutUo, 0)
             }
             WalletEvent.TRANSFER_OUT -> {
-                check(wallet.balance >= walletUo.money) { OnePieceExceptionCode.BALANCE_NOT_WORTH}
+                check(wallet.balance >= walletUo.money) { OnePieceExceptionCode.BALANCE_NOT_WORTH }
 
                 val transferOutUo = WalletTransferOutUo(id = wallet.id, processId = wallet.processId, money = walletUo.money, giftMoney = walletUo.giftBalance ?: BigDecimal.ZERO)
                 walletDao.transferOut(transferOutUo, 1)
@@ -85,6 +96,10 @@ class WalletServiceImpl(
             WalletEvent.TRANSFER_OUT_ROLLBACK -> {
                 val transferInUo = WalletTransferInUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
                 walletDao.transferIn(transferInUo)
+            }
+            WalletEvent.INTRODUCE -> {
+                // NOTHING
+                true
             }
         }
 
@@ -102,6 +117,7 @@ class WalletServiceImpl(
             WalletEvent.WITHDRAW_FAIL,
             WalletEvent.TRANSFER_IN,
             WalletEvent.Artificial,
+            WalletEvent.INTRODUCE_DEPOSIT_COMMISSION,
             WalletEvent.TRANSFER_OUT_ROLLBACK -> {
                 money = walletUo.money
                 afterMoney = wallet.balance.plus(walletUo.money)
@@ -110,6 +126,10 @@ class WalletServiceImpl(
             WalletEvent.TRANSFER_OUT -> {
                 money = walletUo.money.negate()
                 afterMoney = wallet.balance.minus(walletUo.money)
+            }
+            WalletEvent.INTRODUCE -> {
+                money = walletUo.money.negate()
+                afterMoney = wallet.balance
             }
             WalletEvent.WITHDRAW -> {
                 money = walletUo.money.negate()
@@ -120,11 +140,13 @@ class WalletServiceImpl(
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // 更新会员信息
-        when (walletUo.event){
+        when (walletUo.event) {
             WalletEvent.DEPOSIT,
             WalletEvent.ThirdPay -> {
                 val infoUo = MemberInfoValue.MemberInfoUo.ofDeposit(memberId = walletUo.memberId, amount = walletUo.money)
                 memberInfoService.asyncUpdate(uo = infoUo)
+
+                this.checkIntroduce(clientId = wallet.clientId, memberId = wallet.memberId)
 
                 // 刷新vip等级
                 vipUtil.checkAndUpdateVip(clientId = walletUo.clientId, memberId = walletUo.memberId, amount = walletUo.money)
@@ -133,7 +155,8 @@ class WalletServiceImpl(
                 val infoUo = MemberInfoValue.MemberInfoUo.ofWithdraw(memberId = walletUo.memberId, amount = walletUo.money)
                 memberInfoService.asyncUpdate(uo = infoUo)
             }
-            else -> {}
+            else -> {
+            }
         }
 
 
@@ -145,6 +168,31 @@ class WalletServiceImpl(
         check(wnState) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         return wallet.balance.plus(walletUo.money)
+    }
+
+    private fun checkIntroduce(clientId: Int, memberId: Int) {
+        val memberInfo = memberInfoService.get(memberId = memberId)
+        memberIntroduceService.get(memberId = memberId)?.let { introduce ->
+            if (!introduce.depositActivity) {
+                val config = clientConfigService.get(clientId = clientId)
+
+                val endDay = memberInfo.createdTime.plusDays(config.commissionPeriod.toLong())
+                if (endDay >= LocalDateTime.now() && memberInfo.totalDeposit.toDouble() > config.depositPeriod.toDouble()) {
+
+                    val commission = config.depositCommission
+
+                    val walletUo = WalletUo(clientId = clientId, waiterId = null, memberId = introduce.memberId, money = commission, giftBalance = null,
+                            eventId = null, event = WalletEvent.INTRODUCE_DEPOSIT_COMMISSION, remarks = "introduce deposit commission")
+                    this.update(walletUo)
+
+                    val myWalletUo = walletUo.copy(memberId = introduce.introduceMemberId)
+                    this.update(myWalletUo)
+
+                    val introduceUo = MemberIntroduceValue.MemberIntroduceUo(id = introduce.id, depositActivity = true, registerActivity = null)
+                    memberIntroduceService.update(introduceUo)
+                }
+            }
+        }
     }
 
     override fun query(walletQuery: WalletQuery): List<Wallet> {

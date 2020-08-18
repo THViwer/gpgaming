@@ -4,16 +4,17 @@ import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
 import io.swagger.annotations.ApiModelProperty
+import java.math.BigDecimal
 import java.time.LocalDate
 
 sealed class UserValue {
 
-        data class UserInfoUo(
+    data class UserInfoUo(
 
-                val email: String?,
+            val email: String?,
 
-                val birthday: LocalDate?
-        )
+            val birthday: LocalDate?
+    )
 
 }
 
@@ -56,9 +57,36 @@ data class LoginResp(
         val country: Country,
 
         @ApiModelProperty("是否需要国家跳转")
-        val successful: Boolean
+        val successful: Boolean,
 
-)
+        @ApiModelProperty("推荐注册金活动")
+        val registerActivity: Boolean,
+
+        @ApiModelProperty("推荐注册金活动")
+        val registerActivityVo: RegisterActivityVo?,
+
+        @ApiModelProperty("推荐充值金活动")
+        val depositActivity: Boolean
+
+) {
+
+    data class RegisterActivityVo(
+
+            @ApiModelProperty("金额")
+            val amount: BigDecimal,
+
+            @ApiModelProperty("标题")
+            val title:  String,
+
+            @ApiModelProperty("平台")
+            val platforms: List<Platform>,
+
+            @ApiModelProperty("优惠活动Id")
+            val promotionId: Int
+
+    )
+
+}
 
 data class CheckUsernameResp(
         @ApiModelProperty("是否存在")
@@ -123,6 +151,9 @@ data class RegisterReq(
         @ApiModelProperty("营销Id")
         val marketId: Int?,
 
+        @ApiModelProperty("介绍Id")
+        val introduceId: Int?,
+
         @ApiModelProperty("链路code")
         val chainCode: String?,
 
@@ -160,11 +191,11 @@ data class PlatformMemberVo(
         val sort: Int
 ) {
 
-        val pname: String
-                @ApiModelProperty("平台名称")
-                get() {
-                        return platform.pname
-                }
+    val pname: String
+        @ApiModelProperty("平台名称")
+        get() {
+            return platform.pname
+        }
 }
 
 data class PlatformMemberUo(

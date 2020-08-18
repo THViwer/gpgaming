@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.beans.value.database.LoginHistoryValue
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
+import com.onepiece.gpgaming.beans.value.database.MemberIntroduceValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.database.WalletCo
@@ -19,6 +20,7 @@ import com.onepiece.gpgaming.core.dao.MemberRelationDao
 import com.onepiece.gpgaming.core.risk.RiskUtil
 import com.onepiece.gpgaming.core.service.LoginHistoryService
 import com.onepiece.gpgaming.core.service.MemberInfoService
+import com.onepiece.gpgaming.core.service.MemberIntroduceService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.core.service.WalletService
@@ -46,10 +48,13 @@ class MemberServiceImpl(
     @Autowired
     lateinit var walletService: WalletService
 
+    @Autowired
+    lateinit var memberIntroduceService: MemberIntroduceService
+
 
     override fun getAgentByCode(bossId: Int, clientId: Int, code: String): Member? {
 
-        val query = MemberQuery(bossId = bossId, clientId = clientId,  role = Role.Agent, username = null, name = null, phone = null,
+        val query = MemberQuery(bossId = bossId, clientId = clientId, role = Role.Agent, username = null, name = null, phone = null,
                 levelId = null, promoteCode = code, startTime = null, status = null, agentId = null, endTime = null)
         return memberDao.list(query).firstOrNull()
     }
@@ -78,7 +83,8 @@ class MemberServiceImpl(
 
     override fun findByBossIdAndUsername(bossId: Int, username: String?): Member? {
         if (username.isNullOrBlank()) return null
-        return memberDao.getByBossIdAndUsername(bossId, username)?.copy(password = "", safetyPassword = "")    }
+        return memberDao.getByBossIdAndUsername(bossId, username)?.copy(password = "", safetyPassword = "")
+    }
 
     override fun findByPhone(clientId: Int, phone: String?): Member? {
         if (phone.isNullOrBlank()) return null
@@ -113,8 +119,8 @@ class MemberServiceImpl(
     override fun login(loginValue: LoginValue, deviceType: String): Member {
 
         // check username and password
-        val member  = memberDao.getByBossIdAndUsername(loginValue.bossId, loginValue.username)
-        checkNotNull(member) { OnePieceExceptionCode.LOGIN_FAIL}
+        val member = memberDao.getByBossIdAndUsername(loginValue.bossId, loginValue.username)
+        checkNotNull(member) { OnePieceExceptionCode.LOGIN_FAIL }
         check(bCryptPasswordEncoder.matches(loginValue.password, member.password)) { OnePieceExceptionCode.LOGIN_FAIL }
         check(member.status == Status.Normal) { OnePieceExceptionCode.USER_STOP }
 
@@ -169,7 +175,6 @@ class MemberServiceImpl(
     @Transactional(rollbackFor = [Exception::class])
     override fun create(memberCo: MemberCo): Int {
 
-
         // check username exist
         val hasMember = memberDao.getByUsername(memberCo.clientId, memberCo.username)
         check(hasMember == null) { OnePieceExceptionCode.USERNAME_EXISTENCE }
@@ -195,6 +200,14 @@ class MemberServiceImpl(
         val memberInfoCo = MemberInfoValue.MemberInfoCo(bossId = memberCo.bossId, clientId = memberCo.clientId, agentId = memberCo.agentId, saleId = saleId,
                 memberId = id, username = memberCo.username)
         memberInfoService.create(memberInfoCo)
+
+        // 创建介绍人信息
+        if (memberCo.introduceId > 0) {
+            // TODO 进行风控
+            val memberIntroduceCo = MemberIntroduceValue.MemberIntroduceCo(memberId = id, introduceMemberId = memberCo.introduceId, name = memberCo.name,
+                    registerIp = memberCo.registerIp, introducePromotionId = null)
+            memberIntroduceService.create(memberIntroduceCo)
+        }
 
         return id
 

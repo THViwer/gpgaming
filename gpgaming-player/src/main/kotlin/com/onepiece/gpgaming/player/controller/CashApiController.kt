@@ -29,6 +29,7 @@ import com.onepiece.gpgaming.beans.value.database.DepositCo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.MemberBankCo
 import com.onepiece.gpgaming.beans.value.database.MemberBankUo
+import com.onepiece.gpgaming.beans.value.database.MemberIntroduceValue
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.beans.value.database.WalletNoteQuery
@@ -45,10 +46,12 @@ import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
 import com.onepiece.gpgaming.core.utils.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ClientBankService
+import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.MemberBankService
 import com.onepiece.gpgaming.core.service.MemberDailyReportService
+import com.onepiece.gpgaming.core.service.MemberIntroduceService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PayBindService
 import com.onepiece.gpgaming.core.service.PayOrderService
@@ -118,7 +121,9 @@ open class CashApiController(
         private val payOrderService: PayOrderService,
         private val payGateway: PayGateway,
         private val memberDailyReportService: MemberDailyReportService,
-        private val betOrderService: BetOrderService
+        private val betOrderService: BetOrderService,
+        private val memberIntroduceService: MemberIntroduceService,
+        private val clientConfigService: ClientConfigService
 ) : BasicController(), CashApi {
 
     private val log = LoggerFactory.getLogger(CashApiController::class.java)
@@ -716,6 +721,19 @@ open class CashApiController(
 //            }
 //        }
 
+        // 如果是首存 则提示金额
+        val memberIntroduce = cashTransferReq.promotionId?.let { promotionId ->
+            val promotion = promotionService.get(id = promotionId)
+            if (promotion.category == PromotionCategory.Introduce) {
+                val memberIntroduce = memberIntroduceService.get(memberId = current.id) ?: error(OnePieceExceptionCode.ILLEGAL_OPERATION)
+                check(!memberIntroduce.registerActivity) { OnePieceExceptionCode.ILLEGAL_OPERATION }
+
+                val clientConfig = clientConfigService.get(current.clientId)
+                check(clientConfig.registerCommission == cashTransferReq.amount) { OnePieceExceptionCode.ILLEGAL_OPERATION }
+                memberIntroduce
+            } else null
+        }
+
         if (cashTransferReq.from != Platform.Center) {
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.from, member = current)
             val toCenterTransferReq = cashTransferReq.copy(to = Platform.Center)
@@ -728,6 +746,11 @@ open class CashApiController(
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.to, member = current)
             val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = currentUsername())
             check(result.transfer) { OnePieceExceptionCode.TRANSFER_FAILED }
+
+            memberIntroduce?.let {
+                val uo = MemberIntroduceValue.MemberIntroduceUo(id = it.id, registerActivity = true, depositActivity = null)
+                memberIntroduceService.update(uo)
+            }
         }
 
         watch.stop()

@@ -5,6 +5,8 @@ import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
 
 interface MemberInfoService {
 
+    fun get(memberId: Int): MemberInfo
+
     fun create(co: MemberInfoValue.MemberInfoCo)
 
     fun count(query: MemberInfoValue.MemberCountQuery): Int
@@ -13,5 +15,5 @@ interface MemberInfoService {
 
     fun asyncUpdate(uo: MemberInfoValue.MemberInfoUo)
 
-    fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int)
+//    fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int)
 }

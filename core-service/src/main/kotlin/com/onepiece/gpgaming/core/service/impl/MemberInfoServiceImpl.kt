@@ -16,6 +16,18 @@ class MemberInfoServiceImpl(
         private val memberDao: MemberDao
 ) : MemberInfoService {
 
+    override fun get(memberId: Int): MemberInfo {
+        val has = memberInfoDao.has(memberId = memberId)
+        if (has == null) {
+            val member = memberDao.get(id = memberId)
+            val co = MemberInfoValue.MemberInfoCo(bossId = member.bossId, clientId = member.clientId, agentId = member.agentId,
+                    saleId = member.saleId, memberId = memberId, username = member.username, registerTime = member.createdTime)
+            this.create(co)
+        }
+
+        return this.get(memberId = memberId)
+    }
+
     override fun create(co: MemberInfoValue.MemberInfoCo) {
         val flag = memberInfoDao.create(co = co)
         check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
@@ -32,19 +44,13 @@ class MemberInfoServiceImpl(
     @Transactional(rollbackFor = [NoRollbackException::class])
     override fun asyncUpdate(uo: MemberInfoValue.MemberInfoUo) {
 
-        val has = memberInfoDao.has(memberId = uo.memberId)
-        if (has == null) {
-            val member = memberDao.get(id = uo.memberId)
-            val co = MemberInfoValue.MemberInfoCo(bossId = member.bossId, clientId = member.clientId, agentId = member.agentId,
-                    saleId = member.saleId, memberId = uo.memberId, username = member.username, registerTime = member.createdTime)
-            this.create(co)
-        }
+        val info = this.get(memberId = uo.memberId)
 
         val flag = memberInfoDao.update(uo = uo)
         check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 
-    override fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int) {
-        TODO("Not yet implemented")
-    }
+//    override fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int) {
+//        TODO("Not yet implemented")
+//    }
 }
