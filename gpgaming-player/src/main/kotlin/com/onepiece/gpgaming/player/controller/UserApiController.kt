@@ -256,7 +256,8 @@ class UserApiController(
             marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
             market.messageTemplate.replace("\${code}", market.promotionCode)
         } ?: clientConfigService.get(clientId = clientId).registerMessageTemplate
-        smsService.start(mobile = registerReq.phone, message = messageTemplate)
+
+        smsService.send(mobile = registerReq.phone, message = messageTemplate.replace("\${username}", registerReq.username))
 
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)

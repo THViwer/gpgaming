@@ -43,7 +43,7 @@ class SmsService(
     )
 
 
-    fun start(mobile: String, message: String) {
+    fun send(mobile: String, message: String) {
         val param = """
             {
                 "user": "$username",
