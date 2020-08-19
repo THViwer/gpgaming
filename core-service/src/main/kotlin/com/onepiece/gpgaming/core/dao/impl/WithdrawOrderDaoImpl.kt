@@ -15,6 +15,7 @@ import com.onepiece.gpgaming.core.dao.WithdrawDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import com.onepiece.gpgaming.core.dao.basic.getIntOrNull
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
 import java.sql.ResultSet
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -155,5 +156,10 @@ class WithdrawOrderDaoImpl : BasicDaoImpl<Withdraw>("withdraw"), WithdrawDao {
                     val money = rs.getBigDecimal("money")
                     ClientWithdrawReportVo(clientId = clientId, count = count, money = money)
                 }
+    }
+
+    override fun getTotalWithdraw(clientId: Int, memberId: Int, startDate: LocalDate): BigDecimal {
+        val sql = "select COALESCE(sum(money), 0) from  withdraw where  client_id = $clientId and  member_id = $memberId and created_time > '$startDate'"
+        return jdbcTemplate.queryForObject(sql, BigDecimal::class.java) ?: BigDecimal.ZERO
     }
 }

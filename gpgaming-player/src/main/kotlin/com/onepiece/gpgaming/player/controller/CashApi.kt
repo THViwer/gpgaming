@@ -21,6 +21,7 @@ import com.onepiece.gpgaming.player.controller.value.CashWithdrawResp
 import com.onepiece.gpgaming.player.controller.value.CheckBankResp
 import com.onepiece.gpgaming.player.controller.value.CheckBetResp
 import com.onepiece.gpgaming.player.controller.value.CheckPromotinResp
+import com.onepiece.gpgaming.player.controller.value.CheckWithdrawDetail
 import com.onepiece.gpgaming.player.controller.value.DepositCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankUoReq
@@ -130,6 +131,9 @@ interface CashApi {
 
     @ApiOperation(tags = ["cash"], value = "取款")
     fun withdraw(@RequestBody withdrawCoReq: WithdrawCoReq): CashWithdrawResp
+
+    @ApiOperation(tags = ["cash"], value = "取款 -> 检查")
+    fun checkWithdrawDetail(): CheckWithdrawDetail
 
     @ApiOperation(tags = ["cash"], value = "中心 -> 平台 检查是否有优惠活动并提示")
     fun checkPromotion(

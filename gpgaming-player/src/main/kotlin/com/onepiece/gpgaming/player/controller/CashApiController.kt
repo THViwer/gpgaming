@@ -67,6 +67,7 @@ import com.onepiece.gpgaming.player.controller.value.CheckBankResp
 import com.onepiece.gpgaming.player.controller.value.CheckBetResp
 import com.onepiece.gpgaming.player.controller.value.CheckPromotinResp
 import com.onepiece.gpgaming.player.controller.value.CheckPromotionVo
+import com.onepiece.gpgaming.player.controller.value.CheckWithdrawDetail
 import com.onepiece.gpgaming.player.controller.value.DepositCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankUoReq
@@ -191,15 +192,16 @@ open class CashApiController(
 
     @GetMapping("/checkBet")
     override fun checkBet(): CheckBetResp {
-        val memberId = this.current().id
+        val user = this.current()
+        val memberId = user.id
 
         val wallet = walletService.getMemberWallet(memberId)
 
         val platforms = platformMemberService.findPlatformMember(memberId)
 
-        val kiss918Deposit = platforms.firstOrNull { it.platform == Platform.Kiss918 }?.totalAmount?: BigDecimal.ZERO
-        val pussyDeposit = platforms.find { it.platform == Platform.Pussy888 }?.totalAmount?: BigDecimal.ZERO
-        val megaDeposit = platforms.find { it.platform == Platform.Mega }?.totalAmount?: BigDecimal.ZERO
+        val kiss918Deposit = platforms.firstOrNull { it.platform == Platform.Kiss918 }?.totalAmount ?: BigDecimal.ZERO
+        val pussyDeposit = platforms.find { it.platform == Platform.Pussy888 }?.totalAmount ?: BigDecimal.ZERO
+        val megaDeposit = platforms.find { it.platform == Platform.Mega }?.totalAmount ?: BigDecimal.ZERO
 
         val currentBet = platforms.sumByDouble { it.totalBet.toDouble() }
                 .let { BigDecimal.valueOf(it) }
@@ -216,7 +218,23 @@ open class CashApiController(
 
         log.info("用户:${memberId}, 检查打码量，当前打码量：$currentBet, 需要打码量:$needBet, 剩余打码量：$overBet")
 
-        return CheckBetResp(currentBet = currentBet, needBet = needBet, overBet = overBet)
+
+        val now = LocalDateTime.now()
+        val startDate = when {
+            now.hour < 5 -> LocalDate.now().minusDays(1)
+            else -> LocalDate.now()
+        }
+
+
+        val today = LocalDate.now()
+        val memberDailyReportQuery = MemberReportQuery(clientId = user.clientId, memberId = user.id, startDate = today.minusDays(1),
+                agentId = null, endDate = today, current = 0, size = 1, minRebateAmount = null, minPromotionAmount = null)
+        val rebate = memberDailyReportService.query(memberDailyReportQuery).firstOrNull()?.rebateAmount ?: BigDecimal.ZERO
+        val todayBet = betOrderService.getTotalBet(clientId = user.clientId, memberId = user.id, startDate = startDate)
+        val todayWithdraw = withdrawService.getTotalWithdraw(clientId = user.clientId, memberId = user.id, startDate = startDate)
+        val lastWithdraw = wallet.balance.minus(todayWithdraw).minus(rebate)
+
+        return CheckBetResp(currentBet = currentBet, needBet = needBet, overBet = overBet, yesRebate = rebate, todayBet = todayBet, lastWithdraw = lastWithdraw)
     }
 
     @PostMapping("/bank/my")
@@ -239,7 +257,7 @@ open class CashApiController(
     override fun payList(): SelectPayVo {
 
         val banks = this.clientBanks()
-        val thirdPays  = this.thirdPay()
+        val thirdPays = this.thirdPay()
 
         return SelectPayVo(banks = banks, thirdPays = thirdPays)
     }
@@ -252,7 +270,8 @@ open class CashApiController(
         return clientBankService.findClientBank(current().clientId)
                 .filter {
                     it.status == Status.Normal &&
-                            (it.levelId == null || it.levelId == 0 || it.levelId == member.levelId) }
+                            (it.levelId == null || it.levelId == 0 || it.levelId == member.levelId)
+                }
                 .map {
                     with(it) {
                         ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
@@ -274,25 +293,25 @@ open class CashApiController(
                     // 支持的银行列表
                     val banks = when (it.payType) {
                         PayType.SurePay -> {
-                            val config =  it.getConfig(objectMapper) as SurePayConfig
+                            val config = it.getConfig(objectMapper) as SurePayConfig
 
                             config.supportBanks.map { sb ->
-                                val bank =  sb.bank
-                                BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo, country = Country.Default)
+                                val bank = sb.bank
+                                BankVo(bank = bank, name = bank.cname, logo = bank.logo, grayLogo = bank.grayLogo, country = Country.Default)
                             }
                         }
                         PayType.FPX -> {
-                            val config =  it.getConfig(objectMapper) as GPPayConfig
+                            val config = it.getConfig(objectMapper) as GPPayConfig
 
                             config.supportBanks.map { bank ->
-                                BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo, country = Country.Default)
+                                BankVo(bank = bank, name = bank.cname, logo = bank.logo, grayLogo = bank.grayLogo, country = Country.Default)
                             }
                         }
                         PayType.InstantPay -> {
-                            val config =  it.getConfig(objectMapper) as InstantPayConfig
+                            val config = it.getConfig(objectMapper) as InstantPayConfig
 
                             config.supportBanks.map { bank ->
-                                BankVo(bank = bank, name = bank.cname, logo = bank.logo,  grayLogo = bank.grayLogo, country = Country.Default)
+                                BankVo(bank = bank, name = bank.cname, logo = bank.logo, grayLogo = bank.grayLogo, country = Country.Default)
                             }
                         }
                         else -> null
@@ -307,7 +326,7 @@ open class CashApiController(
             @RequestParam("payId") payId: Int,
             @RequestParam("amount") amount: BigDecimal,
             @RequestParam("responseUrl") responseUrl: String,
-            @RequestParam("selectBank",  required = false) selectBank: Bank?
+            @RequestParam("selectBank", required = false) selectBank: Bank?
     ): ThirdPayValue.SelectPayResult {
 
         val language = getHeaderLanguage()
@@ -396,10 +415,10 @@ open class CashApiController(
         val memberQuery = MemberReportQuery(clientId = user.clientId, memberId = user.id, startDate = startDate, endDate = endDate, agentId = null,
                 current = 0, size = 1000, minPromotionAmount = null, minRebateAmount = null)
         val list = memberDailyReportService.query(memberQuery)
-        if (list.isEmpty())  return emptyList()
+        if (list.isEmpty()) return emptyList()
 
         return list.map { report ->
-            with(report)  {
+            with(report) {
                 MemberDailyReportValue.ReportVo(memberId = memberId, day = day, settles = settles, totalMWin = totalMWin, totalBet = totalBet,
                         depositAmount = depositAmount.plus(thirdPayAmount), withdrawAmount = withdrawAmount, promotionAmount = promotionAmount,
                         rebateAmount = rebateAmount, rebateExecution = rebateExecution)
@@ -550,6 +569,25 @@ open class CashApiController(
         return CashWithdrawResp(orderId = orderId)
     }
 
+    @GetMapping("/withdraw/check")
+    override fun checkWithdrawDetail(): CheckWithdrawDetail {
+
+        val user = this.current()
+
+        val now = LocalDateTime.now()
+        val startDate = when {
+            now.hour < 5 -> LocalDate.now().minusDays(1)
+            else -> LocalDate.now()
+        }
+        val totalBet = betOrderService.getTotalBet(clientId = user.clientId, memberId = user.id, startDate = startDate)
+
+        val withdraw = withdrawService.getTotalWithdraw(clientId = user.clientId, memberId = user.id, startDate = startDate)
+
+        return CheckWithdrawDetail(totalBet = totalBet, withdraw = withdraw)
+
+        TODO("Not yet implemented")
+    }
+
     @GetMapping("/check/promotion")
     override fun checkPromotion(
             @RequestParam("platform") platform: Platform,
@@ -681,14 +719,14 @@ open class CashApiController(
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.from, member = current)
             val toCenterTransferReq = cashTransferReq.copy(to = Platform.Center)
             val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toCenterTransferReq, username = currentUsername())
-            check(result.transfer) {OnePieceExceptionCode.TRANSFER_FAILED}
+            check(result.transfer) { OnePieceExceptionCode.TRANSFER_FAILED }
         }
 
         if (cashTransferReq.to != Platform.Center) {
             val toPlatformTransferReq = cashTransferReq.copy(from = Platform.Center)
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.to, member = current)
             val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = currentUsername())
-            check(result.transfer) {OnePieceExceptionCode.TRANSFER_FAILED}
+            check(result.transfer) { OnePieceExceptionCode.TRANSFER_FAILED }
         }
 
         watch.stop()
@@ -802,7 +840,7 @@ open class CashApiController(
 
         return when (platform) {
             Platform.Center -> {
-                BalanceVo(platform = platform, balance = walletBalance, transfer = true, tips= null, centerBalance = walletBalance, totalBet = BigDecimal.ZERO)
+                BalanceVo(platform = platform, balance = walletBalance, transfer = true, tips = null, centerBalance = walletBalance, totalBet = BigDecimal.ZERO)
             }
             else -> {
                 // 判断用户是否有参加活动
@@ -853,7 +891,7 @@ open class CashApiController(
 //        val todayReport = betOrderService.report(memberId = memberId, startDate = today, endDate = today.plusDays(1))
 //                .map { it.platform to it.totalBet }.toMap()
         val reportMap = if (reports.isNotEmpty()) {
-            reports.map { it.settles }.reduce { acc, list ->  acc.plus(list)}.groupBy { it.platform }
+            reports.map { it.settles }.reduce { acc, list -> acc.plus(list) }.groupBy { it.platform }
                     .map { it.key to (it.value.sumByDouble { a -> a.bet.toDouble() }.toBigDecimal().setScale(2, 2)) }.toMap()
         } else {
             emptyMap()

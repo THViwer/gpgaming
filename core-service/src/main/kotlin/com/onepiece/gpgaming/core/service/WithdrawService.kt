@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.beans.value.database.WithdrawCo
 import com.onepiece.gpgaming.beans.value.database.WithdrawQuery
 import com.onepiece.gpgaming.beans.value.database.WithdrawReportVo
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
+import java.math.BigDecimal
 import java.time.LocalDate
 
 interface WithdrawService {
@@ -27,5 +28,7 @@ interface WithdrawService {
     fun report(startDate: LocalDate, endDate: LocalDate): List<WithdrawReportVo>
 
     fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientWithdrawReportVo>
+
+    fun getTotalWithdraw(clientId: Int, memberId: Int, startDate: LocalDate): BigDecimal
 
 }

@@ -18,6 +18,7 @@ import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @Service
@@ -63,7 +64,7 @@ class WithdrawServiceImpl(
     override fun check(withdrawUoReq: WithdrawValue.WithdrawUoReq) {
 
         val order = withdrawDao.findWithdraw(withdrawUoReq.clientId, withdrawUoReq.orderId)
-        check( order.state == WithdrawState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
+        check(order.state == WithdrawState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
 
         val withdrawUo = WithdrawUo(orderId = withdrawUoReq.orderId, processId = order.processId, state = withdrawUoReq.state,
                 remarks = withdrawUoReq.remarks, clientId = withdrawUoReq.clientId, waiterId = withdrawUoReq.waiterId)
@@ -92,10 +93,14 @@ class WithdrawServiceImpl(
     }
 
     override fun report(startDate: LocalDate, endDate: LocalDate): List<WithdrawReportVo> {
-         return withdrawDao.report(clientId = null, memberId = null, startDate = startDate, endDate = endDate)
+        return withdrawDao.report(clientId = null, memberId = null, startDate = startDate, endDate = endDate)
     }
 
     override fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientWithdrawReportVo> {
         return withdrawDao.reportByClient(startDate, endDate)
+    }
+
+    override fun getTotalWithdraw(clientId: Int, memberId: Int, startDate: LocalDate): BigDecimal {
+        return withdrawDao.getTotalWithdraw(clientId = clientId, memberId = memberId, startDate = startDate)
     }
 }

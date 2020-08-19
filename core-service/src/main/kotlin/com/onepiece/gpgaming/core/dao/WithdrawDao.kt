@@ -8,6 +8,7 @@ import com.onepiece.gpgaming.beans.value.database.WithdrawUo
 import com.onepiece.gpgaming.beans.value.database.ClientWithdrawReportVo
 import com.onepiece.gpgaming.beans.value.database.WithdrawReportVo
 import com.onepiece.gpgaming.core.dao.basic.BasicDao
+import java.math.BigDecimal
 import java.time.LocalDate
 
 interface WithdrawDao: BasicDao<Withdraw> {
@@ -27,5 +28,7 @@ interface WithdrawDao: BasicDao<Withdraw> {
     fun report(clientId: Int?, memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<WithdrawReportVo>
 
     fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientWithdrawReportVo>
+
+    fun getTotalWithdraw(clientId: Int, memberId: Int, startDate: LocalDate): BigDecimal
 
 }

@@ -66,7 +66,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 .asSet("settle_time")
                 .build()
 
-        jdbcTemplate.batchUpdate(sql, object: BatchPreparedStatementSetter {
+        jdbcTemplate.batchUpdate(sql, object : BatchPreparedStatementSetter {
             override fun setValues(ps: PreparedStatement, index: Int) {
                 val order = orders[index]
                 var x = 0
@@ -117,7 +117,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 .asWhere("id > ?", startId)
                 .where("mark", false)
                 .limit(0, 5000)
-                .execute {  rs ->
+                .execute { rs ->
                     val id = rs.getInt("id")
                     val clientId = rs.getInt("client_id")
                     val memberId = rs.getInt("member_id")
@@ -146,12 +146,12 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 .limit(0, 1)
                 .executeMaybeOne { rs ->
                     rs.getInt("id")
-                }?: 0
+                } ?: 0
     }
 
     override fun report(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<BetOrderReport> {
         return (0 until 8).map { index ->
-            query(returnColumns = "client_id, platform, sum(bet_amount) as totalBet, sum(win_amount) as totalWin" ,defaultTable = "bet_order_$index")
+            query(returnColumns = "client_id, platform, sum(bet_amount) as totalBet, sum(win_amount) as totalWin", defaultTable = "bet_order_$index")
                     .asWhere("settle_time > ?", startDate)
                     .asWhere("settle_time < ?", endDate)
                     .where("member_id", memberId)
@@ -164,7 +164,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                         val totalWin = rs.getBigDecimal("totalWin")
                         BetOrderReport(clientId = clientId, platform = platform, totalBet = totalBet, totalWin = totalWin)
                     }
-        }.reduce { acc, list ->  acc.plus(list)}
+        }.reduce { acc, list -> acc.plus(list) }
                 .groupBy { "${it.clientId}:${it.platform}" }
                 .map {
                     val totalBet = it.value.sumByDouble { it.totalBet.toDouble() }.toBigDecimal().setScale(2, 2)
@@ -191,7 +191,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
 
                         BetReportValue.MBetReport(clientId = xClientId, memberId = xMemberId, platform = platform, totalBet = totalBet, totalWin = totalWin, validBet = validAmount)
                     }
-        }.reduce{ a, b -> a.plus(b) }
+        }.reduce { a, b -> a.plus(b) }
     }
 
 
@@ -208,12 +208,21 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
 
                         BetReportValue.CBetReport(clientId = clientId, totalBet = totalBet, totalWin = totalWin)
                     }
-        }.reduce{ a, b -> a.plus(b) }.groupBy { it.clientId }.values.map {
+        }.reduce { a, b -> a.plus(b) }.groupBy { it.clientId }.values.map {
             val clientId = it.first().clientId
             val totalBet = it.sumByDouble { it.totalBet.toDouble() }.toBigDecimal()
             val totalWin = it.sumByDouble { it.totalWin.toDouble() }.toBigDecimal()
 
             BetReportValue.CBetReport(clientId = clientId, totalBet = totalBet, totalWin = totalWin)
         }
+    }
+
+    override fun getTotalBet(clientId: Int, memberId: Int, startDate: LocalDate): BigDecimal {
+        return (0..7).map { index ->
+            val sql = "select COALESCE(sum(bet_amount), 0) from  bet_order_$index where  client_id  = $clientId and  member_id = $memberId and created_time  > '$startDate'"
+            jdbcTemplate.queryForObject(sql, BigDecimal::class.java) ?: BigDecimal.ZERO
+        }.sumByDouble { it.toDouble() }
+                .toBigDecimal()
+                .setScale(2, 2)
     }
 }

@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.model.BetOrder
 import com.onepiece.gpgaming.beans.value.database.BetOrderReport
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
+import java.math.BigDecimal
 import java.time.LocalDate
 
 interface BetOrderService {
@@ -17,5 +18,7 @@ interface BetOrderService {
     fun getNotMarkBets(tableSequence: Int): List<BetOrderValue.BetMarkVo>
 
     fun report(memberId: Int? = null, startDate: LocalDate, endDate: LocalDate): List<BetOrderReport>
+
+    fun getTotalBet(clientId: Int, memberId: Int, startDate: LocalDate): BigDecimal
 
 }

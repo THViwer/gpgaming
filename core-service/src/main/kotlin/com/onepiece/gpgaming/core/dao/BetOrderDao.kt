@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.value.database.BetOrderReport
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.beans.value.database.BetReportValue
 import com.onepiece.gpgaming.core.dao.basic.BasicDao
+import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.math.absoluteValue
 
@@ -42,5 +43,7 @@ interface BetOrderDao: BasicDao<BetOrder> {
     fun mreport(clientId: Int?, memberId: Int?, startDate: LocalDate): List<BetReportValue.MBetReport>
 
     fun creport(startDate: LocalDate): List<BetReportValue.CBetReport>
+
+    fun getTotalBet(clientId: Int, memberId: Int, startDate: LocalDate): BigDecimal
 
 }

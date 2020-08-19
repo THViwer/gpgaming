@@ -159,6 +159,22 @@ data class CashWithdrawResp(
         val orderId: String
 
 )
+
+data class CheckWithdrawDetail(
+
+        @ApiModelProperty("今日打码")
+        val totalBet: BigDecimal,
+
+        @ApiModelProperty("今日取款金额")
+        val withdraw: BigDecimal
+) {
+    val maxWithdraw: BigDecimal
+        @ApiModelProperty("今日最大取款金额")
+        get() {
+            return totalBet.minus(withdraw)
+        }
+}
+
 data class CheckPromotionVo(
 
         @ApiModelProperty("优惠活动Id")
@@ -177,9 +193,9 @@ data class CheckPromotinResp(
         @ApiModelProperty("优惠活动列表")
         val promotions: List<CheckPromotionVo>
 ) {
-        val promotion: Boolean
-                @ApiModelProperty("是否有优惠活动")
-                get() = promotions.isNotEmpty()
+    val promotion: Boolean
+        @ApiModelProperty("是否有优惠活动")
+        get() = promotions.isNotEmpty()
 
 }
 
@@ -219,17 +235,17 @@ data class BalanceVo(
 //        val transferIn: Boolean
 
 ) {
-        val category: PlatformCategory
-                @ApiModelProperty("平台类型")
-                get() {
-                        return platform.category
-                }
+    val category: PlatformCategory
+        @ApiModelProperty("平台类型")
+        get() {
+            return platform.category
+        }
 
-        val pname: String
-                @ApiModelProperty("平台名称")
-                get() {
-                        return platform.pname
-                }
+    val pname: String
+        @ApiModelProperty("平台名称")
+        get() {
+            return platform.pname
+        }
 
 }
 

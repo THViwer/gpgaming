@@ -9,6 +9,7 @@ import com.onepiece.gpgaming.core.dao.BetOrderDao
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @Service
@@ -37,7 +38,7 @@ class BetOrderServiceImpl(
         val lastMarkIdKey = OnePieceRedisKeyConstant.getLastMarkBetId(table)
         val lastMarkId = redisService.get(lastMarkIdKey, Int::class.java) {
             betOrderDao.getLastNotMarkId(table)
-        }?: 0
+        } ?: 0
 
         // 查询未被标记的数据
         val orders = betOrderDao.getNotMarkBets(table = table, startId = lastMarkId)
@@ -67,5 +68,9 @@ class BetOrderServiceImpl(
 
     override fun report(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<BetOrderReport> {
         return betOrderDao.report(memberId = memberId, startDate = startDate, endDate = endDate)
+    }
+
+    override fun getTotalBet(clientId: Int, memberId: Int, startDate: LocalDate): BigDecimal {
+        return betOrderDao.getTotalBet(clientId = clientId, memberId = memberId, startDate = startDate)
     }
 }
