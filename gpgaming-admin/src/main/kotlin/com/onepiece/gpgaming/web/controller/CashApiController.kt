@@ -280,7 +280,7 @@ class CashApiController(
         val current = current()
         val orderId = orderIdBuilder.generatorArtificialOrderId()
 
-        check(current.role == Role.Admin || artificialCoReq.money.toDouble() <= 500) { OnePieceExceptionCode.AUTHORITY_FAIL}
+        check(current.role == Role.Admin || artificialCoReq.money.toDouble() <= 5000) { OnePieceExceptionCode.AUTHORITY_FAIL}
 
         val member = memberService.getMember(artificialCoReq.memberId)
         check(member.clientId == current.clientId)
