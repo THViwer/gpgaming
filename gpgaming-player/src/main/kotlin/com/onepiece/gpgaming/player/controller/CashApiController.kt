@@ -226,6 +226,7 @@ open class CashApiController(
         }
 
 
+        // 检查返水必需 < 打码量
         val today = LocalDate.now()
         val memberDailyReportQuery = MemberReportQuery(clientId = user.clientId, memberId = user.id, startDate = today.minusDays(1),
                 agentId = null, endDate = today, current = 0, size = 1, minRebateAmount = null, minPromotionAmount = null)
