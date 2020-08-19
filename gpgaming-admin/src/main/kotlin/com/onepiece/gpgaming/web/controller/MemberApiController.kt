@@ -149,7 +149,7 @@ class MemberApiController(
         val data = page.data.map {
 
             val agent = agentMap[it.agentId]
-            val (agentId, agentUsername) = (agent?.id?: -1) to (agent?.username?: "-")
+            val (agentId, agentUsername) = (agent?.id ?: -1) to (agent?.username ?: "-")
 
             val sale = saleMap[it.saleId]
             val saleUsername = sale?.username ?: "-"
@@ -159,7 +159,8 @@ class MemberApiController(
                         balance = memberMap[it.id]?.balance ?: BigDecimal.valueOf(-1), status = it.status, createdTime = createdTime,
                         loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteCode = it.promoteCode, idCard = it.idCard,
                         country = client.country, agentId = agentId, agentUsername = agentUsername, saleId = it.saleId, saleUsername = saleUsername,
-                        registerIp = it.registerIp, riskLevel = it.riskLevel, address = it.address, email = it.email, birthday = it.birthday)
+                        registerIp = it.registerIp, riskLevel = it.riskLevel, address = it.address, email = it.email, birthday = it.birthday,
+                        marketId = it.marketId, saleScope = it.saleScope)
             }
         }
 
@@ -208,11 +209,11 @@ class MemberApiController(
         } ?: emptyList()
 
         val sameNameList = theSameNames.map {
-            MemberValue.RiskDetail.RiskMemberVo(memberId = it.id,  username = it.username, name = it.name, loginIp = it.loginIp?: "-", registerIp = it.registerIp)
+            MemberValue.RiskDetail.RiskMemberVo(memberId = it.id, username = it.username, name = it.name, loginIp = it.loginIp ?: "-", registerIp = it.registerIp)
         }
 
         val registerIpList = theRegisterIps.map {
-            MemberValue.RiskDetail.RiskMemberVo(memberId = it.id,  username = it.username, name = it.name, loginIp = it.loginIp?: "-", registerIp = it.registerIp)
+            MemberValue.RiskDetail.RiskMemberVo(memberId = it.id, username = it.username, name = it.name, loginIp = it.loginIp ?: "-", registerIp = it.registerIp)
         }
 
         return MemberValue.RiskDetail(sameNameList = sameNameList, sameRegisterIpList = registerIpList)
@@ -260,7 +261,7 @@ class MemberApiController(
         val deposits = depositDao.query(depositQuery, 0, 9999)
                 .groupBy { it.memberId }
 
-        val payQuery  = PayOrderValue.PayOrderQuery(clientId = clientId, memberId = null, startDate = startDate, endDate = endDate, current = 0,
+        val payQuery = PayOrderValue.PayOrderQuery(clientId = clientId, memberId = null, startDate = startDate, endDate = endDate, current = 0,
                 size = 99999, orderId = null, payType = null, state = null, username = null, memberIds = memberIds)
         val pays = payOrderDao.query(payQuery)
                 .groupBy { it.memberId }
@@ -273,8 +274,8 @@ class MemberApiController(
 
         return members.map { member ->
 
-            val mDeposits = deposits[member.id]?: emptyList()
-            val mPays = pays[member.id]?: emptyList()
+            val mDeposits = deposits[member.id] ?: emptyList()
+            val mPays = pays[member.id] ?: emptyList()
 
             val depositCount = mDeposits.count().plus(mPays.count())
             val depositMoney = mDeposits.sumByDouble { it.money.toDouble() }.plus(mPays.sumByDouble { it.amount.toDouble() })
@@ -290,7 +291,7 @@ class MemberApiController(
             }
 
 
-            val mWithdraws = withdraws[member.id]?: emptyList()
+            val mWithdraws = withdraws[member.id] ?: emptyList()
             val withdrawCount = mWithdraws.count()
             val withdrawMoney = mWithdraws.sumByDouble { it.money.toDouble() }
                     .toBigDecimal().setScale(2, 2)
@@ -392,11 +393,10 @@ class MemberApiController(
         check(memberCoReq.levelId > 0) { OnePieceExceptionCode.DATA_FAIL }
 
         //TODO 校验是否已存在
-        val promoteCode = memberCoReq.promoteCode?: StringUtil.generateNonce(6)
+        val promoteCode = memberCoReq.promoteCode ?: StringUtil.generateNonce(6)
 
         // 代理Id
-        val agentId = memberCoReq.agentId ?:
-        memberService.getDefaultAgent(bossId = bossId).id
+        val agentId = memberCoReq.agentId ?: memberService.getDefaultAgent(bossId = bossId).id
 
         val saleId = memberCoReq.saleCode?.toInt() ?: -1
 
@@ -438,7 +438,7 @@ class MemberApiController(
     override fun bankUo(@RequestBody req: MemberBankValue.MemberBankUo) {
 
         val banks = memberBankService.query(memberId = req.memberId)
-        val existBank = banks.firstOrNull{ it.bank == req.bank && it.id != req.id }
+        val existBank = banks.firstOrNull { it.bank == req.bank && it.id != req.id }
         check(existBank == null) { OnePieceExceptionCode.MEMBER_BANK_EXIST }
 
         val uo = MemberBankUo(id = req.id, bank = req.bank, bankCardNumber = req.bankCardNumber, status = null)
@@ -521,7 +521,7 @@ class MemberApiController(
                         || minTotalDepositBalance == null || maxTotalDepositBalance == null
                         || minTotalWithdrawBalance == null || maxTotalWithdrawBalance == null
                         || minTotalDepositFrequency == null || maxTotalDepositFrequency == null
-                        || minTotalWithdrawFrequency == null || maxTotalWithdrawFrequency == null) { OnePieceExceptionCode.QUERY_COUNT_TOO_SMALL}
+                        || minTotalWithdrawFrequency == null || maxTotalWithdrawFrequency == null) { OnePieceExceptionCode.QUERY_COUNT_TOO_SMALL }
 
         val memberId = when (username != null) {
             true -> memberService.findByUsername(clientId, username)?.id ?: return emptyList()
@@ -536,7 +536,7 @@ class MemberApiController(
         val wallets = walletService.query(walletQuery)
         if (wallets.isEmpty()) return emptyList()
         val memberIds = wallets.map { it.memberId }
-        val walletMap = wallets.map{ it.memberId to it}.toMap()
+        val walletMap = wallets.map { it.memberId to it }.toMap()
 
         // 查询用户信息
         val members = memberService.findByIds(levelId = levelId, ids = memberIds)
@@ -548,7 +548,7 @@ class MemberApiController(
         return members.filter { walletMap[it.id] != null }.map { member ->
             val wallet = walletMap[member.id] ?: error(OnePieceExceptionCode.DATA_FAIL)
 
-            val level = levels[member.levelId]?: error(OnePieceExceptionCode.DATA_FAIL)
+            val level = levels[member.levelId] ?: error(OnePieceExceptionCode.DATA_FAIL)
 
             LevelMemberVo(memberId = member.id, username = member.username, balance = wallet.balance, freezeBalance = wallet.freezeBalance, totalDepositBalance = wallet.totalDepositBalance,
                     totalWithdrawBalance = wallet.totalWithdrawBalance, totalGiftBalance = wallet.totalGiftBalance, totalWithdrawFrequency = wallet.totalWithdrawFrequency,
