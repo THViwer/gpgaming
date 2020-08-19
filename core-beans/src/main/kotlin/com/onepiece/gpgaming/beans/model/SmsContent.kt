@@ -9,6 +9,8 @@ class SmsContent (
 
         val id:  Int,
 
+        val clientId:  Int,
+
         // 层级 id
         val levelId: Int?,
 

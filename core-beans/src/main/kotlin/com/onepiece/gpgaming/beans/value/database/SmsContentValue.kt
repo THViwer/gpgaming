@@ -4,6 +4,8 @@ sealed class SmsContentValue {
 
     data class SmsContentCo(
 
+            val clientId:  Int,
+
             // 层级 id
             val levelId: Int?,
 

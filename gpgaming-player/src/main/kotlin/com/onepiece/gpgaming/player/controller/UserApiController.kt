@@ -251,14 +251,16 @@ class UserApiController(
         }
 
         // 发送短信
-        val messageTemplate = registerReq.marketId?.let {
-            val market = marketService.get(id = it)
-            marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
-            market.messageTemplate.replace("\${code}", market.promotionCode)
-        } ?: clientConfigService.get(clientId = clientId).registerMessageTemplate
+        val config = clientConfigService.get(clientId = clientId)
+        if (config.enableRegisterMessage) {
+            val messageTemplate = registerReq.marketId?.let {
+                val market = marketService.get(id = it)
+                marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
+                market.messageTemplate.replace("\${code}", market.promotionCode)
+            } ?: clientConfigService.get(clientId = clientId).registerMessageTemplate
 
-        smsService.send(mobile = registerReq.phone, message = messageTemplate.replace("\${username}", registerReq.username))
-
+            smsService.send(clientId = clientId,mobile = registerReq.phone, message = messageTemplate.replace("\${username}", registerReq.username))
+        }
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)
         return this.login(loginReq)

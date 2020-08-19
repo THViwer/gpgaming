@@ -43,7 +43,7 @@ class SmsService(
     )
 
 
-    fun send(mobile: String, message: String) {
+    fun send(clientId: Int, mobile: String, message: String) {
         val param = """
             {
                 "user": "$username",
@@ -56,7 +56,7 @@ class SmsService(
         val response = okHttpUtil.doPostJson(platform = Platform.Center, url = path, data = param, clz = SmsResponse::class.java)
         log.info("send sms message response: $response")
 
-        val co = SmsContentValue.SmsContentCo(levelId = null, memberIds = null, phones = mobile,  content = message)
+        val co = SmsContentValue.SmsContentCo(clientId = clientId, levelId = null, memberIds = null, phones = mobile,  content = message)
         smsContentService.create(co =  co)
 
     }

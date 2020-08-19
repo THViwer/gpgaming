@@ -13,6 +13,7 @@ class SmsContentDaoImpl : SmsContentDao, BasicDaoImpl<SmsContent>("sms_content")
     override val mapper: (rs: ResultSet) -> SmsContent
         get() = { rs ->
             val id = rs.getInt("id")
+            val clientId = rs.getInt("client_id")
             val levelId = rs.getInt("level_id")
             val memberIds = rs.getString("member_ids")
             val phones = rs.getString("phones")
@@ -20,11 +21,12 @@ class SmsContentDaoImpl : SmsContentDao, BasicDaoImpl<SmsContent>("sms_content")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             SmsContent(id = id, levelId = levelId, memberIds = memberIds, phones = phones, content = content,
-                    createdTime = createdTime)
+                    createdTime = createdTime, clientId = clientId)
         }
 
     override fun create(smsContentCo: SmsContentValue.SmsContentCo): Boolean {
         return insert()
+                .set("client_id", smsContentCo.clientId)
                 .set("level_id", smsContentCo.levelId)
                 .set("member_ids", smsContentCo.memberIds)
                 .set("phones", smsContentCo.phones)
