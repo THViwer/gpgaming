@@ -36,6 +36,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
 import com.onepiece.gpgaming.core.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.ArtificialOrderService
 import com.onepiece.gpgaming.core.service.ClientBankService
+import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MemberService
@@ -68,15 +69,15 @@ class CashApiController(
         private val waiterService: WaiterService,
         private val transferOrderService: TransferOrderService,
         private val memberService: MemberService,
-        private val walletService: WalletService,
         private val transferUtil: TransferUtil,
         private val payOrderService: PayOrderService,
         private val payBindService: PayBindService,
         private val platformMemberService: PlatformMemberService,
         private val walletNoteService: WalletNoteService,
         private val clientBankService: ClientBankService,
-        private val levelService: LevelService
-): BasicController(), CashApi {
+        private val levelService: LevelService,
+        private val clientService: ClientService
+) : BasicController(), CashApi {
 
     @GetMapping("/clientBank/default/bank")
     override fun banks(): List<BankVo> {
@@ -94,7 +95,7 @@ class CashApiController(
 
         return clientBankService.findClientBank(clientId).map {
             with(it) {
-                val levelName = levelMap[it.levelId]?: "-"
+                val levelName = levelMap[it.levelId] ?: "-"
 
                 ClientBankVo(id = id, bank = bank, bankName = bank.cname, name = name, bankCardNumber = bankCardNumber,
                         status = status, createdTime = createdTime, levelId = levelId, levelName = levelName, logo = bank.logo,
@@ -119,7 +120,6 @@ class CashApiController(
                 maxAmount = clientBankUoReq.maxAmount)
         clientBankService.update(clientBankUo)
     }
-
 
 
     @GetMapping("/cash/check")
@@ -147,7 +147,7 @@ class CashApiController(
         when (req.type) {
             CashValue.Type.Deposit -> {
                 val order = depositService.findDeposit(current.clientId, orderId)
-                check(order.state ==  DepositState.Close || order.state == DepositState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
+                check(order.state == DepositState.Close || order.state == DepositState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
 
                 val depositLockUo = DepositLockUo(clientId = current.clientId, orderId = orderId, processId = order.processId, lockWaiterId = current.id,
                         lockWaiterName = current.username)
@@ -155,7 +155,7 @@ class CashApiController(
             }
             CashValue.Type.Withdraw -> {
                 val order = withdrawService.findWithdraw(current.clientId, orderId)
-                check( order.state == WithdrawState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
+                check(order.state == WithdrawState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
 
                 val depositLockUo = DepositLockUo(clientId = current.clientId, orderId = orderId, processId = order.processId, lockWaiterId = current.id,
                         lockWaiterName = current.musername)
@@ -210,7 +210,7 @@ class CashApiController(
 
         val query = DepositQuery(clientId = user.clientId, startTime = null, endTime = null, memberId = null, orderId = null,
                 state = DepositState.Process, lockWaiterId = getCurrentWaiterId(), clientBankIdList = clientBankIdList)
-        return depositService.query(query).map{
+        return depositService.query(query).map {
             with(it) {
                 DepositValue.DepositVo(id = it.id, orderId = it.orderId, money = money, memberName = memberName, memberBankCardNumber = memberBankCardNumber,
                         memberBank = memberBank, imgPath = imgPath, createdTime = createdTime, remark = remarks, endTime = it.endTime,
@@ -261,7 +261,7 @@ class CashApiController(
     override fun tryLock(@RequestParam("orderId") orderId: String) {
         val current = current()
         val order = depositService.findDeposit(current.clientId, orderId)
-        check(order.state ==  DepositState.Close || order.state == DepositState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
+        check(order.state == DepositState.Close || order.state == DepositState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
 
         val depositLockUo = DepositLockUo(clientId = current.clientId, orderId = orderId, processId = order.processId, lockWaiterId = current.id,
                 lockWaiterName = current.username)
@@ -280,11 +280,18 @@ class CashApiController(
         val current = current()
         val orderId = orderIdBuilder.generatorArtificialOrderId()
 
-        check(current.role == Role.Admin || artificialCoReq.money.toDouble() <= 5000) { OnePieceExceptionCode.AUTHORITY_FAIL}
+        check(current.role == Role.Admin || artificialCoReq.money.toDouble() <= 5000) { OnePieceExceptionCode.AUTHORITY_FAIL }
 
         val member = memberService.getMember(artificialCoReq.memberId)
         check(member.clientId == current.clientId)
 
+        val checkPwdFlag = when (current.role) {
+            Role.Client -> clientService.checkPassword(id = current.id, password = artificialCoReq.password)
+            Role.Waiter -> waiterService.checkPassword(id = current.id, password = artificialCoReq.password)
+            Role.Admin -> true
+            else -> false
+        }
+        check(checkPwdFlag) { OnePieceExceptionCode.PASSWORD_FAIL }
 
         val artificialOrderCo = ArtificialOrderCo(orderId = orderId, clientId = current.clientId, memberId = artificialCoReq.memberId, money = artificialCoReq.money,
                 remarks = artificialCoReq.remarks, operatorId = current.id, operatorRole = current.role, operatorUsername = current.username, username = member.username)
@@ -302,7 +309,7 @@ class CashApiController(
         val currentLogin = this.current()
         val clientId = currentLogin.clientId
 
-        val memberId = if( username != null) {
+        val memberId = if (username != null) {
             memberService.findByUsername(clientId = clientId, username = username)?.id ?: return Page.empty()
         } else null
 
@@ -393,7 +400,7 @@ class CashApiController(
     override fun withdrawLock(@RequestParam("orderId") orderId: String) {
         val current = this.current()
         val order = withdrawService.findWithdraw(current.clientId, orderId)
-        check( order.state == WithdrawState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
+        check(order.state == WithdrawState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
 
         val depositLockUo = DepositLockUo(clientId = current.clientId, orderId = orderId, processId = order.processId, lockWaiterId = current.id,
                 lockWaiterName = current.musername)
@@ -509,8 +516,6 @@ class CashApiController(
         val uo = PayOrderValue.ConstraintUo(orderId = orderId, operatorId = user.id, operatorUsername = user.username, remark = remark)
         payOrderService.check(uo)
     }
-
-
 
 
 }

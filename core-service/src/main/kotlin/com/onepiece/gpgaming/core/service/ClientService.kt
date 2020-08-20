@@ -19,6 +19,8 @@ interface ClientService {
 
     fun update(clientUo: ClientUo)
 
+    fun checkPassword(id: Int, password: String): Boolean
+
 //    fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal)
 
 }

@@ -105,4 +105,9 @@ class WaiterServiceImpl(
             waiterDao.get(saleId)
         } ?: selectNext()
     }
+
+    override fun checkPassword(id: Int, password: String): Boolean {
+        val waiter = waiterDao.get(id = id)
+        return bCryptPasswordEncoder.matches(password, waiter.password)
+    }
 }

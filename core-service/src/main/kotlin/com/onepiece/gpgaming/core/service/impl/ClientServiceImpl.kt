@@ -125,7 +125,6 @@ class ClientServiceImpl(
 //        balanceService.create(balanceCo)
 
 
-
         // 配置首页内容
         this.indexDefaultConfig(clientId = id)
 
@@ -319,10 +318,14 @@ class ClientServiceImpl(
 
         val redisKey = OnePieceRedisKeyConstant.getClient(clientUo.id)
         redisService.delete(redisKey)
-
     }
 
-//    override fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal) {
+    override fun checkPassword(id: Int, password: String): Boolean {
+        val client = clientDao.get(id = id)
+        return bCryptPasswordEncoder.matches(password, client.password)
+    }
+
+    //    override fun updateEarnestBalance(id: Int, earnestBalance: BigDecimal) {
 //        val state =  this.tryUpdateEarnestBalance(index = 0, id = id, earnestBalance = earnestBalance)
 //        check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 //    }

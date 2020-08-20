@@ -23,4 +23,6 @@ interface WaiterService {
 
     fun selectSale(bossId: Int, clientId: Int, saleId: Int?): Waiter?
 
+    fun checkPassword(id: Int, password: String): Boolean
+
 }
