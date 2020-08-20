@@ -16,6 +16,14 @@ sealed class UserValue {
             val birthday: LocalDate?
     )
 
+    data class MyIntroduceDetail(
+
+            // 介绍总数
+            val introduceCount: Int,
+
+            // 介绍佣金
+            val commission: BigDecimal
+    )
 }
 
 data class LoginResp(
@@ -76,7 +84,7 @@ data class LoginResp(
             val amount: BigDecimal,
 
             @ApiModelProperty("标题")
-            val title:  String,
+            val title: String,
 
             @ApiModelProperty("平台")
             val platforms: List<Platform>,

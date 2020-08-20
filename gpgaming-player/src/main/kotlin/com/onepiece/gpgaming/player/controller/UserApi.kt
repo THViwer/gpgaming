@@ -14,6 +14,7 @@ import com.onepiece.gpgaming.player.controller.value.UserValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
@@ -65,5 +66,8 @@ interface UserApi {
     @ApiOperation(tags = ["user"], value = "平台用户 -> 修改")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     fun platformUser(@RequestBody platformMemberUo: PlatformMemberUo)
+
+    @ApiOperation(tags = ["user"], value = "平台用户 -> 当前推广信息")
+    fun myIntroduceDetail(): UserValue.MyIntroduceDetail
 
 }
