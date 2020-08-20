@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.service.impl
 
 import com.onepiece.gpgaming.beans.enums.ShowPosition
+import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.ClientConfig
 import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
@@ -45,8 +46,13 @@ class ClientConfigServiceImpl(
     override fun update(id: Int, enableRegisterMessage: Boolean, registerMessageTemplate: String) {
         clientConfigDao.update(id = id, enableRegisterMessage = enableRegisterMessage, registerMessageTemplate = registerMessageTemplate)
 
-        val config =  clientConfigDao.get(id = id)
+        val config = clientConfigDao.get(id = id)
         val redisKey = OnePieceRedisKeyConstant.getSeo(config.clientId)
         redisService.delete(redisKey)
+    }
+
+    override fun update(uo: ClientConfigValue.IntroduceUo) {
+        val flag = clientConfigDao.update(uo = uo)
+        check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 }

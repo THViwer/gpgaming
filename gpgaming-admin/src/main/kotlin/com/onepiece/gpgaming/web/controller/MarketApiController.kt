@@ -2,10 +2,12 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.model.ClientConfig
 import com.onepiece.gpgaming.beans.model.MarketDailyReport
 import com.onepiece.gpgaming.beans.value.database.MarketDailyReportValue
 import com.onepiece.gpgaming.beans.value.database.MarketingValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
+import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
 import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.MarketDailyReportService
 import com.onepiece.gpgaming.core.service.MarketService
@@ -119,5 +121,17 @@ class MarketApiController(
         }
 
         smsService.send(clientId = user.id, mobiles = mobileList, message = content)
+    }
+
+    @GetMapping("/member/introduce")
+    override fun getClientConfig(): ClientConfig {
+        val user = this.current()
+        return clientConfigService.get(clientId = user.clientId)
+    }
+
+    @PutMapping("/member/introduce")
+    override fun introduceUo(@RequestBody introduceUo: ClientConfigValue.IntroduceUo) {
+        val user  =  this.current()
+        clientConfigService.update(uo = introduceUo.copy(clientId = user.clientId))
     }
 }
