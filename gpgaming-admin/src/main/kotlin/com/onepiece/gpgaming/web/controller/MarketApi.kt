@@ -37,4 +37,11 @@ interface MarketApi {
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = true) startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = true) endDate: LocalDate
     ): List<MarketDailyReport>
+
+    @ApiOperation(tags = ["market"], value = "营销 -> 短信发送")
+    fun sendSms(
+            @RequestParam("levelId", required = false) levelId: Int?,
+            @RequestParam("mobiles", required = false) mobiles: String?,
+            @RequestParam("content") content: String
+    )
 }

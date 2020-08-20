@@ -1,14 +1,18 @@
 package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Status
+import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.MarketDailyReport
 import com.onepiece.gpgaming.beans.value.database.MarketDailyReportValue
 import com.onepiece.gpgaming.beans.value.database.MarketingValue
+import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.MarketDailyReportService
 import com.onepiece.gpgaming.core.service.MarketService
+import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
+import com.onepiece.gpgaming.web.sms.SmsService
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -25,7 +29,9 @@ class MarketApiController(
         private val marketService: MarketService,
         private val marketDailyReportService: MarketDailyReportService,
         private val promotionService: PromotionService,
-        private val clientConfigService: ClientConfigService
+        private val clientConfigService: ClientConfigService,
+        private val memberService: MemberService,
+        private val smsService: SmsService
 ) : BasicController(), MarketApi {
 
     @GetMapping
@@ -90,5 +96,28 @@ class MarketApiController(
 
         val query = MarketDailyReportValue.MarketDailyReportQuery(clientId = user.clientId, startDate = startDate, endDate = endDate)
         return marketDailyReportService.list(query)
+    }
+
+    @GetMapping("/send/smss")
+    override fun sendSms(
+            @RequestParam("levelId", required = false) levelId: Int?,
+            @RequestParam("mobiles", required = false) mobiles: String?,
+            @RequestParam("content") content: String
+    ) {
+        val user = this.current()
+
+        val mobileList = when {
+            levelId != null -> {
+                val memberQuery = MemberQuery(bossId = user.bossId, clientId = user.clientId, levelId = levelId)
+                val members = memberService.query(memberQuery, 0, 5000)
+                check(members.total > 500) { OnePieceExceptionCode.SMS_SMS_COUNT_MORE_THAN_500 }
+
+                members.data.map { it.phone }
+            }
+            mobiles != null -> mobiles.split(",")
+            else -> error(OnePieceExceptionCode.ILLEGAL_OPERATION)
+        }
+
+        smsService.send(clientId = user.id, mobiles = mobileList, message = content)
     }
 }

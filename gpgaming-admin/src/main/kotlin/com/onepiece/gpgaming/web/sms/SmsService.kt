@@ -1,4 +1,4 @@
-package com.onepiece.gpgaming.player.sms
+package com.onepiece.gpgaming.web.sms
 
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonIgnore

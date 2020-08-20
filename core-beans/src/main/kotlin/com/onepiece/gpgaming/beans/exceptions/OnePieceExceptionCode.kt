@@ -18,6 +18,7 @@ object OnePieceExceptionCode {
     const val ILLEGAL_OPERATION = "1006" // 非法操作
     const val IP_ILLEGAL = "1008" // ip非法
     const val DATA_EXIST = "1009" // 数据已存在
+    const val SMS_SMS_COUNT_MORE_THAN_500 = "1010" // 短信发布数量不能超过1000
 
     // 2000 verification error
 
