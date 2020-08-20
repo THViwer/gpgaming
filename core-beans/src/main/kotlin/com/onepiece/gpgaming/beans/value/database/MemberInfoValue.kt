@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.database
 
+import com.onepiece.gpgaming.beans.enums.SaleScope
 import java.math.BigDecimal
 import java.time.Duration
 import java.time.LocalDate
@@ -174,7 +175,9 @@ sealed class MemberInfoValue {
             val minCall: LocalDate? = null,
 
             // 最大打电话时间
-            val maxCall: LocalDate? = null
+            val maxCall: LocalDate? = null,
+
+            val saleId: Int? = null
 
     )
 
@@ -185,6 +188,9 @@ sealed class MemberInfoValue {
 
             // 电销用户名
             val saleUsername :String,
+
+            // 电销来源
+            val saleScope: SaleScope,
 
             // 用户Id
             val memberId: Int,

@@ -43,7 +43,7 @@ class SalesmanApiController(
         private val waiterService: WaiterService,
         private val memberDailyReportDao: MemberDailyReportDao,
         private val memberDao: MemberDao
-): BasicController(), SalesmanApi {
+) : BasicController(), SalesmanApi {
 
     @GetMapping("/info")
     override fun info(): SalesmanValue.SaleInfo {
@@ -62,8 +62,9 @@ class SalesmanApiController(
         }
         val saleLink = "https://www.${webSite.domain}?saleCode=${saleCode}"
 
+        val saleId = if (current.role == Role.Sale) current.id else null
 
-        val infoQuery = MemberInfoValue.MemberCountQuery(clientId = current.clientId, neverCall = true)
+        val infoQuery = MemberInfoValue.MemberCountQuery(clientId = current.clientId, neverCall = true, saleId = saleId)
         val neverCallCount = memberInfoService.count(infoQuery)
 
         val today = LocalDate.now()
@@ -165,7 +166,7 @@ class SalesmanApiController(
                     totalDeposit = info.totalDeposit, lastDepositTime = info.lastDepositTime, totalDepositCount = info.totalDepositCount,
                     totalWithdraw = info.totalWithdraw, lastWithdrawTime = info.lastWithdrawTime, totalWithdrawCount = info.totalWithdrawCount,
                     registerTime = info.registerTime, lastLoginTime = info.lastLoginTime, loginCount = info.loginCount, lastSaleTime = info.lastSaleTime,
-                    saleCount = info.saleCount, phone = phone, name = name, nextCallTime = info.nextCallTime)
+                    saleCount = info.saleCount, phone = phone, name = name, nextCallTime = info.nextCallTime, saleScope = member?.saleScope ?: SaleScope.System)
         }
     }
 

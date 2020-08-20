@@ -103,6 +103,7 @@ class MemberInfoDaoImpl: BasicDaoImpl<MemberInfo>("member_info"), MemberInfoDao 
                 .asWhere(neverCallSql)
                 .asWhere("next_call_time > ?", query.minCall)
                 .asWhere("next_call_time < ?", query.maxCall)
+                .where("sale_id", query.saleId)
                 .count()
 
     }
