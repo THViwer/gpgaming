@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class MemberIntroduce(
@@ -11,7 +12,7 @@ data class MemberIntroduce(
         val memberId: Int,
 
         // 介绍会员Id
-        val introduceMemberId: Int,
+        val introduceId: Int,
 
         // 是否已完成注册活动
         val registerActivity: Boolean,
@@ -19,8 +20,11 @@ data class MemberIntroduce(
         // 是否已完成充值活动
         val depositActivity: Boolean,
 
+        // 介绍获得的佣金
+        val introduceCommission: BigDecimal,
+
         // 介绍人员操作优惠活动Id(如果没有，则需要会员选择优惠并进行自动转账)
-        val introducePromotionId: Int,
+//        val introducePromotionId: Int,
 
         // 会员姓名
         val name: String,

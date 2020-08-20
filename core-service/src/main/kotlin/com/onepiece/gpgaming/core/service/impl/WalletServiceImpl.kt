@@ -185,10 +185,11 @@ class WalletServiceImpl(
                             eventId = null, event = WalletEvent.INTRODUCE_DEPOSIT_COMMISSION, remarks = "introduce deposit commission")
                     this.update(walletUo)
 
-                    val myWalletUo = walletUo.copy(memberId = introduce.introduceMemberId)
+                    val myWalletUo = walletUo.copy(memberId = introduce.introduceId)
                     this.update(myWalletUo)
 
-                    val introduceUo = MemberIntroduceValue.MemberIntroduceUo(id = introduce.id, depositActivity = true, registerActivity = null)
+                    val introduceUo = MemberIntroduceValue.MemberIntroduceUo(id = introduce.id, depositActivity = true, registerActivity = null,
+                            introduceCommission = BigDecimal.ZERO)
                     memberIntroduceService.update(introduceUo)
                 }
             }

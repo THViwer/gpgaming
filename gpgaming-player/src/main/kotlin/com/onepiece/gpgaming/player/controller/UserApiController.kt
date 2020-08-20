@@ -13,6 +13,7 @@ import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
+import com.onepiece.gpgaming.beans.value.database.MemberIntroduceValue
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.core.utils.MarketUtil
 import com.onepiece.gpgaming.core.service.ClientConfigService
@@ -61,7 +62,6 @@ class UserApiController(
         private val memberService: MemberService,
         private val authService: AuthService,
         private val levelService: LevelService,
-        private val memberInfoService: MemberInfoService,
         private val passwordEncoder: PasswordEncoder,
         private val chainUtil: ChainUtil,
         private val vipService: VipService,
@@ -403,5 +403,24 @@ class UserApiController(
         }
 
         platformMemberService.updatePassword(id = platformMemberVo.id, password = platformMemberUo.password)
+    }
+
+    @GetMapping("/introduce")
+    override fun myIntroduceDetail(): UserValue.MyIntroduceDetail {
+        val user = this.currentUser()
+
+        val introduceQuery = MemberIntroduceValue.MemberIntroduceQuery(introduceId = user.id)
+        val data = memberIntroduceService.list(introduceQuery)
+
+        val introduceCount = data.count()
+        val overIntroduceCount = data.count { it.depositActivity }
+
+        val introduceCommission = data.sumByDouble { it.introduceCommission.toDouble() }
+                .toBigDecimal()
+                .setScale(2, 2)
+
+        val webSite = webSiteService.getDataByBossId(bossId = user.bossId).first { it.clientId == user.clientId }
+        val link = "https://www.${webSite.domain}/?introduceId=${user.id}"
+        return UserValue.MyIntroduceDetail(link = link, introduceCount = introduceCount, overIntroduceCount = overIntroduceCount, commission = introduceCommission)
     }
 }

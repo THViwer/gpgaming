@@ -1,5 +1,7 @@
 package com.onepiece.gpgaming.beans.value.database
 
+import java.math.BigDecimal
+
 sealed class MemberIntroduceValue {
 
     data class MemberIntroduceCo(
@@ -8,10 +10,10 @@ sealed class MemberIntroduceValue {
             val memberId: Int,
 
             // 介绍会员Id
-            val introduceMemberId: Int,
+            val introduceId: Int,
 
             // 介绍人员操作优惠活动Id(如果没有，则需要会员选择优惠并进行自动转账)
-            val introducePromotionId: Int?,
+//            val introducePromotionId: Int?,
 
             // 会员姓名
             val name: String,
@@ -25,7 +27,9 @@ sealed class MemberIntroduceValue {
 
             val registerActivity: Boolean?,
 
-            val depositActivity: Boolean?
+            val depositActivity: Boolean?,
+
+            val introduceCommission: BigDecimal
 
             // 介绍人员操作优惠活动Id(如果没有，则需要会员选择优惠并进行自动转账)
 //            val introducePromotionId: Int
@@ -34,7 +38,7 @@ sealed class MemberIntroduceValue {
     data class MemberIntroduceQuery(
 
             // 介绍会员Id
-            val introduceMemberId: Int
+            val introduceId: Int
 
     )
 

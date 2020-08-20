@@ -43,7 +43,6 @@ import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.beans.value.internet.web.SelectPayVo
 import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
-import com.onepiece.gpgaming.core.utils.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ClientBankService
 import com.onepiece.gpgaming.core.service.ClientConfigService
@@ -60,6 +59,7 @@ import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.core.service.WalletNoteService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.core.service.WithdrawService
+import com.onepiece.gpgaming.core.utils.OrderIdBuilder
 import com.onepiece.gpgaming.payment.PayGateway
 import com.onepiece.gpgaming.payment.PayRequest
 import com.onepiece.gpgaming.player.controller.basic.BasicController
@@ -575,24 +575,24 @@ open class CashApiController(
         return CashWithdrawResp(orderId = orderId)
     }
 
-    @GetMapping("/withdraw/check")
-    override fun checkWithdrawDetail(): CheckWithdrawDetail {
-
-        val user = this.current()
-
-        val now = LocalDateTime.now()
-        val startDate = when {
-            now.hour < 5 -> LocalDate.now().minusDays(1)
-            else -> LocalDate.now()
-        }
-        val totalBet = betOrderService.getTotalBet(clientId = user.clientId, memberId = user.id, startDate = startDate)
-
-        val withdraw = withdrawService.getTotalWithdraw(clientId = user.clientId, memberId = user.id, startDate = startDate)
-
-        return CheckWithdrawDetail(totalBet = totalBet, withdraw = withdraw)
-
-        TODO("Not yet implemented")
-    }
+//    @GetMapping("/withdraw/check")
+//    override fun checkWithdrawDetail(): CheckWithdrawDetail {
+//
+//        val user = this.current()
+//
+//        val now = LocalDateTime.now()
+//        val startDate = when {
+//            now.hour < 5 -> LocalDate.now().minusDays(1)
+//            else -> LocalDate.now()
+//        }
+//        val totalBet = betOrderService.getTotalBet(clientId = user.clientId, memberId = user.id, startDate = startDate)
+//
+//        val withdraw = withdrawService.getTotalWithdraw(clientId = user.clientId, memberId = user.id, startDate = startDate)
+//
+//        return CheckWithdrawDetail(totalBet = totalBet, withdraw = withdraw)
+//
+//        TODO("Not yet implemented")
+//    }
 
     @GetMapping("/check/promotion")
     override fun checkPromotion(
@@ -748,7 +748,7 @@ open class CashApiController(
             check(result.transfer) { OnePieceExceptionCode.TRANSFER_FAILED }
 
             memberIntroduce?.let {
-                val uo = MemberIntroduceValue.MemberIntroduceUo(id = it.id, registerActivity = true, depositActivity = null)
+                val uo = MemberIntroduceValue.MemberIntroduceUo(id = it.id, registerActivity = true, depositActivity = null, introduceCommission = BigDecimal.ZERO)
                 memberIntroduceService.update(uo)
             }
         }
@@ -985,8 +985,6 @@ open class CashApiController(
     }
 
 }
-
-
 
 
 

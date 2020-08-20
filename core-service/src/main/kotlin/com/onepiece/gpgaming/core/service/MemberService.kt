@@ -41,6 +41,8 @@ interface MemberService {
 
     fun getLevelCount(clientId: Int): Map<Int, Int>
 
+//    fun introduceCount(clientId: Int,  memberId:  Int): Int
+
     fun moveLevel(clientId: Int, levelId: Int, memberIds: List<Int>)
 
     fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int)
