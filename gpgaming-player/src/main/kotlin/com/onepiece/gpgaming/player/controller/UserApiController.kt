@@ -1,21 +1,28 @@
 package com.onepiece.gpgaming.player.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.enums.Country
+import com.onepiece.gpgaming.beans.enums.I18nConfig
+import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.core.utils.MarketUtil
 import com.onepiece.gpgaming.core.service.ClientConfigService
+import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MarketService
 import com.onepiece.gpgaming.core.service.MemberInfoService
+import com.onepiece.gpgaming.core.service.MemberIntroduceService
 import com.onepiece.gpgaming.core.service.MemberService
+import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.core.service.VipService
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.chain.ChainUtil
@@ -37,7 +44,6 @@ import eu.bitwalker.useragentutils.DeviceType
 import eu.bitwalker.useragentutils.UserAgent
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.util.StopWatch
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -46,6 +52,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.util.function.BiFunction
 
 
 @RestController
@@ -61,7 +68,11 @@ class UserApiController(
         private val marketUtil: MarketUtil,
         private val smsService: SmsService,
         private val marketService: MarketService,
-        private val clientConfigService: ClientConfigService
+        private val clientConfigService: ClientConfigService,
+        private val memberIntroduceService: MemberIntroduceService,
+        private val promotionService: PromotionService,
+        private val i18nContentService: I18nContentService,
+        private val objectMapper: ObjectMapper
 ) : BasicController(), UserApi {
 
     companion object {
@@ -102,7 +113,7 @@ class UserApiController(
         val bossId = getBossId()
         log.info("bossId = $bossId")
         val launch = getHeaderLaunch()
-
+        val language = getHeaderLanguage()
 
         val deviceType = this.getDeviceType()
 
@@ -132,14 +143,34 @@ class UserApiController(
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
 
         return if (currentWebSite.clientId == member.clientId) {
+
+            //  推荐介绍活动
+            val introduce = memberIntroduceService.get(memberId = member.id)
+            val registerActivity = introduce?.registerActivity ?: true
+            val depositActivity = introduce?.depositActivity ?: true
+            val registerActivityVo = if (!registerActivity) {
+                val clientConfig = clientConfigService.get(clientId = member.clientId)
+                val promotion = promotionService.get(introduce!!.id)
+
+                val contents = i18nContentService.getConfigType(clientId = member.clientId, configType = I18nConfig.Promotion)
+                        .filter { it.id == promotion.id }
+                val content = (contents.firstOrNull { it.id == promotion.id && it.language == language }
+                        ?: contents.first { it.id == promotion.id && it.language == Language.EN }
+                                .getII18nContent(objectMapper = objectMapper)) as I18nContent.PromotionI18n
+
+                LoginResp.RegisterActivityVo(promotionId = promotion.id, amount = clientConfig.registerCommission,
+                        platforms = promotion.platforms, title = content.title)
+            } else null
+
+
             val token = authService.login(bossId = bossId, clientId = member.clientId, username = loginReq.username, role = member.role)
             LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name, autoTransfer = member.autoTransfer,
                     domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = true, vipLogo = vipLogo, vipName = vipName,
-                    levelId = member.levelId, vipId = member.vipId)
+                    levelId = member.levelId, vipId = member.vipId, registerActivity = registerActivity, depositActivity = depositActivity, registerActivityVo = registerActivityVo)
         } else {
             LoginResp(id = member.id, role = Role.Member, username = member.username, token = "", name = member.name, autoTransfer = member.autoTransfer,
                     domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = false, vipLogo = vipLogo, vipName = vipName,
-                    levelId = member.levelId, vipId = member.vipId)
+                    levelId = member.levelId, vipId = member.vipId, registerActivity = false, registerActivityVo = null, depositActivity = false)
         }
     }
 
@@ -197,7 +228,7 @@ class UserApiController(
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
         return LoginResp(id = member.id, role = Role.Member, username = member.username, token = authToken, name = member.name, autoTransfer = member.autoTransfer,
                 domain = "https://www.${webSite.domain}${isMobile}", country = client.country, successful = true, levelId = member.levelId, vipName = vipName,
-                vipLogo = vipLogo, vipId = member.vipId)
+                vipLogo = vipLogo, vipId = member.vipId, registerActivity = false, depositActivity = false, registerActivityVo = null)
 
     }
 
@@ -227,6 +258,8 @@ class UserApiController(
 
         val saleId = registerReq.saleCode?.toInt() ?: -1
         val marketId = registerReq.marketId ?: -1
+        val introduceId = registerReq.introduceId ?: -1
+
         val phone = registerReq.phone.let {
             val firstPhone = it.substring(0, 3)
             if (firstPhone == "600") {
@@ -239,7 +272,7 @@ class UserApiController(
         val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
                 levelId = defaultLevel.id, name = registerReq.name, phone = phone, promoteCode = registerReq.promoteCode, bossId = bossId, agentId = agent.id,
                 role = Role.Member, formal = true, saleId = saleId, registerIp = RequestUtil.getIpAddress(), birthday = registerReq.birthday,
-                email = registerReq.email, marketId = marketId)
+                email = registerReq.email, marketId = marketId, introduceId = introduceId)
         memberService.create(memberCo)
 
         // 通知pv
@@ -256,9 +289,8 @@ class UserApiController(
             marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
             market.messageTemplate.replace("\${code}", market.promotionCode)
         } ?: clientConfigService.get(clientId = clientId).registerMessageTemplate
-        smsService.start(mobile = registerReq.phone, message = messageTemplate)
 
-            smsService.send(clientId = clientId,mobile = registerReq.phone, message = messageTemplate.replace("\${username}", registerReq.username))
+        smsService.send(clientId = clientId, mobile = registerReq.phone, message = messageTemplate.replace("\${username}", registerReq.username))
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)
         return this.login(loginReq)
