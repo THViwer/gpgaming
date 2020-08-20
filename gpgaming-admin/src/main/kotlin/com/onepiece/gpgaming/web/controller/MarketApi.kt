@@ -39,6 +39,7 @@ interface MarketApi {
     ): List<MarketDailyReport>
 
     @ApiOperation(tags = ["market"], value = "营销 -> 短信发送")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun sendSms(
             @RequestParam("levelId", required = false) levelId: Int?,
             @RequestParam("mobiles", required = false) mobiles: String?,
