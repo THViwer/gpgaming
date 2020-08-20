@@ -15,6 +15,9 @@ sealed class SmsContentValue {
             // 手机号(用，分割)
             val phones: String?,
 
+            // 是否成功
+            val successful: Boolean,
+
             // 内容
             val content:  String
 

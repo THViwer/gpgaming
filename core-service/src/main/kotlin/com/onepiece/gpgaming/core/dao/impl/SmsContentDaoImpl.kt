@@ -18,10 +18,11 @@ class SmsContentDaoImpl : SmsContentDao, BasicDaoImpl<SmsContent>("sms_content")
             val memberIds = rs.getString("member_ids")
             val phones = rs.getString("phones")
             val content = rs.getString("content")
+            val successful = rs.getBoolean("successful")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             SmsContent(id = id, levelId = levelId, memberIds = memberIds, phones = phones, content = content,
-                    createdTime = createdTime, clientId = clientId)
+                    createdTime = createdTime, clientId = clientId, successful = successful)
         }
 
     override fun create(smsContentCo: SmsContentValue.SmsContentCo): Boolean {
@@ -31,6 +32,7 @@ class SmsContentDaoImpl : SmsContentDao, BasicDaoImpl<SmsContent>("sms_content")
                 .set("member_ids", smsContentCo.memberIds)
                 .set("phones", smsContentCo.phones)
                 .set("content", smsContentCo.content)
+                .set("successful", smsContentCo.successful)
                 .executeOnlyOne()
     }
 
