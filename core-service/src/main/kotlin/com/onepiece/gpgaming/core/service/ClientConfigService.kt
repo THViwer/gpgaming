@@ -12,4 +12,6 @@ interface ClientConfigService {
 
     fun update(id: Int, enableRegisterMessage: Boolean, registerMessageTemplate: String)
 
+    fun update(uo: ClientConfigValue.IntroduceUo)
+
 }

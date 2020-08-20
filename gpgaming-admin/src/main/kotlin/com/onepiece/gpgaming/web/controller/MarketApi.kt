@@ -1,7 +1,9 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.onepiece.gpgaming.beans.model.ClientConfig
 import com.onepiece.gpgaming.beans.model.MarketDailyReport
 import com.onepiece.gpgaming.beans.value.database.MarketingValue
+import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
@@ -45,4 +47,12 @@ interface MarketApi {
             @RequestParam("mobiles", required = false) mobiles: String?,
             @RequestParam("content") content: String
     )
+
+
+    @ApiOperation(tags = ["market"], value = "会员介绍 -> 配置")
+    fun getClientConfig(): ClientConfig
+
+    @ApiOperation(tags = ["market"], value = "会员介绍 -> 配置")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun introduceUo(@RequestBody introduceUo: ClientConfigValue.IntroduceUo)
 }

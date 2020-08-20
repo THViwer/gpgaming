@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.onepiece.gpgaming.beans.enums.ShowPosition
 import java.math.BigDecimal
 
@@ -62,6 +63,7 @@ sealed class ClientConfigValue {
 
     data class IntroduceUo(
 
+            @JsonIgnore
             val clientId: Int,
 
             /** 会员推广佣金 */
