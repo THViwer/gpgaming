@@ -98,7 +98,7 @@ class MarketApiController(
         return marketDailyReportService.list(query)
     }
 
-    @GetMapping("/send/smss")
+    @GetMapping("/send/sms")
     override fun sendSms(
             @RequestParam("levelId", required = false) levelId: Int?,
             @RequestParam("mobiles", required = false) mobiles: String?,
