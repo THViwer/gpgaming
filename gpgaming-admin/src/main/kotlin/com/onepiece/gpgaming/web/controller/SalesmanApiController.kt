@@ -80,9 +80,9 @@ class SalesmanApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
     ): SalesmanValue.MemberAllocateInfo {
         val user = this.current()
-        val ownMap = memberDao.saleCount(startDate = startDate, endDate = endDate, saleId = user.id, scope = SaleScope.Own)
+        val ownMap = memberDao.saleCount(startDate = startDate, endDate = endDate.plusDays(1), saleId = user.id, scope = SaleScope.Own)
 
-        val systemMap = memberDao.saleCount(startDate = startDate, endDate = endDate, saleId = user.id, scope = SaleScope.System)
+        val systemMap = memberDao.saleCount(startDate = startDate, endDate = endDate.plusDays(1), saleId = user.id, scope = SaleScope.System)
 
         return SalesmanValue.MemberAllocateInfo(
                 ownMemberCount = ownMap[user.id] ?: 0,
