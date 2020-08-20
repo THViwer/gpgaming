@@ -18,8 +18,12 @@ sealed class UserValue {
 
     data class MyIntroduceDetail(
 
+            val link: String,
+
             // 介绍总数
             val introduceCount: Int,
+
+            val overIntroduceCount:  Int,
 
             // 介绍佣金
             val commission: BigDecimal

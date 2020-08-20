@@ -252,6 +252,14 @@ class MemberDaoImpl : BasicDaoImpl<Member>("member"), MemberDao {
                 }.toMap()
     }
 
+    override fun introduceCount(clientId:  Int, memberId: Int): Int {
+        return query("count(*) count")
+                .where("client_id", clientId)
+                .where("introduce_id", memberId)
+                .executeMaybeOne { rs -> rs.getInt("count") }
+                ?: 0
+    }
+
     override fun moveLevel(clientId: Int, levelId: Int, memberIds: List<Int>) {
         update()
                 .set("level_id", levelId)

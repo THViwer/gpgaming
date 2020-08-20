@@ -16,7 +16,6 @@ import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.database.WalletCo
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.MemberDao
-import com.onepiece.gpgaming.core.dao.MemberRelationDao
 import com.onepiece.gpgaming.core.risk.RiskUtil
 import com.onepiece.gpgaming.core.service.LoginHistoryService
 import com.onepiece.gpgaming.core.service.MemberInfoService
@@ -36,7 +35,6 @@ class MemberServiceImpl(
         private val memberDao: MemberDao,
         private val redisService: RedisService,
         private val bCryptPasswordEncoder: BCryptPasswordEncoder,
-        private val memberRelationDao: MemberRelationDao,
         private val waiterService: WaiterService,
         private val memberInfoService: MemberInfoService,
         private val loginHistoryService: LoginHistoryService
@@ -204,8 +202,8 @@ class MemberServiceImpl(
         // 创建介绍人信息
         if (memberCo.introduceId > 0) {
             // TODO 进行风控
-            val memberIntroduceCo = MemberIntroduceValue.MemberIntroduceCo(memberId = id, introduceMemberId = memberCo.introduceId, name = memberCo.name,
-                    registerIp = memberCo.registerIp, introducePromotionId = null)
+            val memberIntroduceCo = MemberIntroduceValue.MemberIntroduceCo(memberId = id, introduceId = memberCo.introduceId, name = memberCo.name,
+                    registerIp = memberCo.registerIp)
             memberIntroduceService.create(memberIntroduceCo)
         }
 
@@ -253,6 +251,10 @@ class MemberServiceImpl(
     override fun getLevelCount(clientId: Int): Map<Int, Int> {
         return memberDao.getLevelCount(clientId)
     }
+
+//    override fun introduceCount(clientId: Int, memberId: Int): Int {
+//        return memberDao.introduceCount(clientId = clientId, memberId = memberId)
+//    }
 
     override fun moveLevel(clientId: Int, levelId: Int, memberIds: List<Int>) {
         return memberDao.moveLevel(clientId, levelId, memberIds)
