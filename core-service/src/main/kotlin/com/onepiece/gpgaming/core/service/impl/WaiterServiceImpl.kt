@@ -88,8 +88,6 @@ class WaiterServiceImpl(
 
     override fun selectSale(bossId: Int, clientId: Int, saleId: Int?): Waiter? {
 
-        if (saleId != null && saleId <= 0) return null
-
         fun selectNext(): Waiter? {
             val redisKey = "salesman:id:$clientId"
             val cacheSaleId = redisService.get(key = redisKey, clz = Int::class.java) ?: -1
@@ -101,9 +99,12 @@ class WaiterServiceImpl(
                     }
         }
 
-        return saleId?.let {
-            waiterDao.get(saleId)
-        } ?: selectNext()
+        return when {
+            saleId != null && saleId > 0 -> {
+                waiterDao.get(saleId)
+            }
+            else -> selectNext()
+        }
     }
 
     override fun checkPassword(id: Int, password: String): Boolean {

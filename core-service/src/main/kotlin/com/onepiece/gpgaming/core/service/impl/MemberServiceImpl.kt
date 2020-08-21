@@ -247,7 +247,5 @@ class MemberServiceImpl(
 
     override fun moveSale(clientId: Int, fromSaleId: Int, toSaleId: Int) {
         memberDao.moveSale(clientId = clientId, fromSaleId = fromSaleId, toSaleId = toSaleId)
-
-        memberInfoService
     }
 }
