@@ -2,7 +2,7 @@ package com.onepiece.gpgaming.beans.enums
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.onepiece.gpgaming.beans.model.pay.GPPayConfig
+import com.onepiece.gpgaming.beans.model.pay.MaxiPayConfig
 import com.onepiece.gpgaming.beans.model.pay.InstantPayConfig
 import com.onepiece.gpgaming.beans.model.pay.M3PayConfig
 import com.onepiece.gpgaming.beans.model.pay.PayConfig
@@ -40,7 +40,7 @@ enum class PayType(
         return when  (this) {
             M3Pay -> objectMapper.readValue<M3PayConfig>(data)
             SurePay -> objectMapper.readValue<SurePayConfig>(data)
-            MaxiPay -> objectMapper.readValue<GPPayConfig>(data)
+            MaxiPay -> objectMapper.readValue<MaxiPayConfig>(data)
             InstantPay -> objectMapper.readValue<InstantPayConfig>(data)
         }
     }

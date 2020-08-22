@@ -22,7 +22,7 @@ import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.PlatformMember
-import com.onepiece.gpgaming.beans.model.pay.GPPayConfig
+import com.onepiece.gpgaming.beans.model.pay.MaxiPayConfig
 import com.onepiece.gpgaming.beans.model.pay.InstantPayConfig
 import com.onepiece.gpgaming.beans.model.pay.SurePayConfig
 import com.onepiece.gpgaming.beans.value.database.DepositCo
@@ -70,7 +70,6 @@ import com.onepiece.gpgaming.player.controller.value.CheckBankResp
 import com.onepiece.gpgaming.player.controller.value.CheckBetResp
 import com.onepiece.gpgaming.player.controller.value.CheckPromotinResp
 import com.onepiece.gpgaming.player.controller.value.CheckPromotionVo
-import com.onepiece.gpgaming.player.controller.value.CheckWithdrawDetail
 import com.onepiece.gpgaming.player.controller.value.DepositCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankUoReq
@@ -306,8 +305,8 @@ open class CashApiController(
                                 BankVo(bank = bank, name = bank.cname, logo = bank.logo, grayLogo = bank.grayLogo, country = Country.Default)
                             }
                         }
-                        PayType.FPX -> {
-                            val config = it.getConfig(objectMapper) as GPPayConfig
+                        PayType.MaxiPay -> {
+                            val config = it.getConfig(objectMapper) as MaxiPayConfig
 
                             config.supportBanks.map { bank ->
                                 BankVo(bank = bank, name = bank.cname, logo = bank.logo, grayLogo = bank.grayLogo, country = Country.Default)

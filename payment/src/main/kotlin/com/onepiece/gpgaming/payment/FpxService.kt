@@ -2,7 +2,7 @@ package com.onepiece.gpgaming.payment
 
 import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.gpgaming.beans.model.pay.GPPayConfig
+import com.onepiece.gpgaming.beans.model.pay.MaxiPayConfig
 import com.onepiece.gpgaming.payment.http.PayOkHttpUtil
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.stereotype.Service
@@ -56,7 +56,7 @@ class FpxService(
 ) : PayService {
 
     override fun start(req: PayRequest): Map<String, Any> {
-        val config = req.payConfig as GPPayConfig
+        val config = req.payConfig as MaxiPayConfig
 
         //TODO 签名暂定
 //        val signParam = ""
