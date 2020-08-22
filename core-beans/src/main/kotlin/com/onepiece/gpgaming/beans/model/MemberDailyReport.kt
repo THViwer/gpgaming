@@ -30,7 +30,7 @@ data class MemberDailyReport(
         val saleId: Int,
 
         // 营销Id
-        val marketId:  Int,
+        val marketId: Int,
 
         // 电销类型
         val saleScope: SaleScope,
@@ -136,8 +136,8 @@ data class MemberDailyReport(
 
     fun isHasData(): Boolean {
         return depositCount > 0 || thirdPayCount > 0 || withdrawCount > 0 || rebateAmount.toDouble() > 0 && promotionAmount.toDouble() > 0 || totalBet.toDouble() > 0
+                || settles.isNotEmpty()
     }
-
 
 
     // 下注金额
@@ -170,7 +170,7 @@ data class MemberDailyReport(
             val mwin: BigDecimal = BigDecimal.ZERO,
 
             // 反水
-            val rebate: BigDecimal  = BigDecimal.ZERO
+            val rebate: BigDecimal = BigDecimal.ZERO
     ) {
 
         // 业主盈利
