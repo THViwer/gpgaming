@@ -217,7 +217,7 @@ class   DreamGamingService : PlatformService() {
                     .set("orderId", "id")
                     .set("username", "userName")
                     .set("betAmount", "betPoints")
-                    .set("availableBet", "availableBet")
+                    .set("validAmount", "availableBet")
                     .set("winAmount", "winOrLoss")
                     .set("betTime", "betTime", dateTimeFormat)
                     .set("settleTime", "calTime", dateTimeFormat)
