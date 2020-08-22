@@ -33,6 +33,6 @@ data class MemberIntroduce(
         val registerIp: String,
 
         // 创建时间
-        val createTime: LocalDateTime
+        val createdTime: LocalDateTime
 
 )

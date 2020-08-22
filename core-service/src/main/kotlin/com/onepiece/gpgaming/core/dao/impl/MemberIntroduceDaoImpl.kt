@@ -27,7 +27,7 @@ class MemberIntroduceDaoImpl : BasicDaoImpl<MemberIntroduce>("member_introduce")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             MemberIntroduce(id = id, memberId = memberId, introduceId = introduceId, registerActivity = registerActivity, depositActivity = depositActivity,
-                    introduceCommission = introduceCommission, registerIp = registerIp, name = name, createTime = createdTime)
+                    introduceCommission = introduceCommission, registerIp = registerIp, name = name, createdTime = createdTime)
 
         }
 
