@@ -24,8 +24,8 @@ enum class PayType(
             sort = 100
     ),
 
-    FPX(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/FPXpay_gray.png",
-            logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/FPXpay_ori.png",
+    FPX(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/Maxipay_gray.png",
+            logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/Maxipay_ori.png",
             sort = 1
     ),
 
