@@ -17,7 +17,7 @@ class PayGateway(
         return  when (req.payType) {
             PayType.M3Pay -> m3PayService.start(req)
             PayType.SurePay -> surePayService.start(req)
-            PayType.FPX -> fpxService.start(req)
+            PayType.MaxiPay -> fpxService.start(req)
             PayType.InstantPay -> instantPayService.start(req)
         }
     }
