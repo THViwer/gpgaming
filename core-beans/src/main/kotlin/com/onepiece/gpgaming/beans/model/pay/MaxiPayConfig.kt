@@ -2,7 +2,7 @@ package com.onepiece.gpgaming.beans.model.pay
 
 import com.onepiece.gpgaming.beans.enums.Bank
 
-data class GPPayConfig (
+data class MaxiPayConfig (
 
         // api地址
         val apiPath: String = "https://gppay.gpgming88.com",
