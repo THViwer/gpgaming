@@ -24,7 +24,7 @@ enum class PayType(
             sort = 100
     ),
 
-    FPX(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/Maxipay_gray.png",
+    MaxiPay(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/Maxipay_gray.png",
             logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/Maxipay_ori.png",
             sort = 1
     ),
@@ -40,7 +40,7 @@ enum class PayType(
         return when  (this) {
             M3Pay -> objectMapper.readValue<M3PayConfig>(data)
             SurePay -> objectMapper.readValue<SurePayConfig>(data)
-            FPX -> objectMapper.readValue<GPPayConfig>(data)
+            MaxiPay -> objectMapper.readValue<GPPayConfig>(data)
             InstantPay -> objectMapper.readValue<InstantPayConfig>(data)
         }
     }

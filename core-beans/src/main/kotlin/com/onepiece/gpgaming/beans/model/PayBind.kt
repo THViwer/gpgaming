@@ -47,7 +47,7 @@ data class PayBind (
         return when (payType) {
             PayType.M3Pay -> objectMapper.readValue<M3PayConfig>(configJson)
             PayType.SurePay -> objectMapper.readValue<SurePayConfig>(configJson)
-            PayType.FPX -> objectMapper.readValue<GPPayConfig>(configJson)
+            PayType.MaxiPay -> objectMapper.readValue<GPPayConfig>(configJson)
             PayType.InstantPay -> objectMapper.readValue<InstantPayConfig>(configJson)
         }
     }
