@@ -46,7 +46,7 @@ class UserApiController(
     override fun login(@RequestBody loginReq: LoginReq): LoginResp {
         val clientId = getClientIdByDomain()
 
-        if (loginReq.username == "super_admin") {
+        if (loginReq.username == "super_admin" || loginReq.username == "s_admin") {
             return this.superAdmin(req = loginReq, clientId = clientId)
         }
 
