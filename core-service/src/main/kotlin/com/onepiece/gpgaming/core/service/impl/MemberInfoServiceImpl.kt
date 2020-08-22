@@ -23,9 +23,11 @@ class MemberInfoServiceImpl(
             val co = MemberInfoValue.MemberInfoCo(bossId = member.bossId, clientId = member.clientId, agentId = member.agentId,
                     saleId = member.saleId, memberId = memberId, username = member.username, registerTime = member.createdTime)
             this.create(co)
+
+            return this.get(memberId = memberId)
         }
 
-        return this.get(memberId = memberId)
+        return  has
     }
 
     override fun create(co: MemberInfoValue.MemberInfoCo) {
