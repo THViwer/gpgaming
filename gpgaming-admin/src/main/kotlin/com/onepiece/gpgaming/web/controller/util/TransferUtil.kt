@@ -26,6 +26,11 @@ import com.onepiece.gpgaming.core.service.TransferOrderService
 import com.onepiece.gpgaming.core.service.WalletService
 import com.onepiece.gpgaming.games.GameApi
 import com.onepiece.gpgaming.games.GameValue
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Propagation
@@ -72,13 +77,22 @@ open class TransferUtil(
         val platformMembers = this.platformMemberService.myPlatforms(memberId = memberId)
         if (platformMembers.isEmpty()) return emptyList()
 
-        val list = platformMembers
-                .filter { exceptPlatform == null || exceptPlatform != it.platform }
-                .parallelStream()
-                .map { platformMember ->
+        val list = kAsync(clientId = clientId, username = username, amount = amount, pms = platformMembers)
+
+        val wallet = walletService.getMemberWallet(memberId)
+        val centerBalance = CashValue.BalanceAllInVo(platform = Platform.Center, balance = wallet.balance)
+
+        return list.plus(centerBalance)
+    }
+
+    fun kAsync(clientId: Int, username: String, amount: BigDecimal, pms: List<PlatformMemberVo>) = runBlocking {
+        GlobalScope.async {
+            pms.map { platformMember ->
+                async {
+
                     val req = CashValue.CashTransferReq(from = platformMember.platform, to = Platform.Center, amount = amount, promotionId = null)
                     try {
-                        val resp = this.singleTransfer(clientId = clientId, platform = platformMember.platform, cashTransferReq = req, type = "in",
+                        val resp = singleTransfer(clientId = clientId, platform = platformMember.platform, cashTransferReq = req, type = "in",
                                 platformMemberVo = platformMember, username = username)
                         val balance = if (resp.balance.toInt() <= 0) BigDecimal.ZERO else resp.balance
 
@@ -94,14 +108,11 @@ open class TransferUtil(
                             CashValue.BalanceAllInVo(platform = platformMember.platform, balance = BigDecimal.valueOf(-1))
                         }
                     }
-                }.collect(Collectors.toList())
-
-        val wallet = walletService.getMemberWallet(memberId)
-        val centerBalance = CashValue.BalanceAllInVo(platform = Platform.Center, balance = wallet.balance)
-
-        list.add(centerBalance)
-
-        return list
+                }
+            }.map {
+                it.await()
+            }
+        }.await()
     }
 
     /**
@@ -368,5 +379,25 @@ open class TransferUtil(
         return transferResp
     }
 
+
+}
+
+fun main() {
+
+    GlobalScope.launch {
+        val dagta = (0..10).map { id ->
+            async {
+                delay(100)
+                println(id)
+                id
+            }
+        }.map {
+            it.await()
+        }
+
+        println(dagta)
+    }
+
+    Thread.sleep(2000)
 
 }
