@@ -381,23 +381,3 @@ open class TransferUtil(
 
 
 }
-
-fun main() {
-
-    GlobalScope.launch {
-        val dagta = (0..10).map { id ->
-            async {
-                delay(100)
-                println(id)
-                id
-            }
-        }.map {
-            it.await()
-        }
-
-        println(dagta)
-    }
-
-    Thread.sleep(2000)
-
-}
