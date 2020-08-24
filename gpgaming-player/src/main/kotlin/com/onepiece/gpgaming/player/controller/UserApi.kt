@@ -70,4 +70,7 @@ interface UserApi {
     @ApiOperation(tags = ["user"], value = "平台用户 -> 当前推广信息")
     fun myIntroduceDetail(): UserValue.MyIntroduceDetail
 
+    @ApiOperation(tags = ["user"], value = "平台用户 -> 当前推广列表")
+    fun myIntroduceList(): List<UserValue.MyIntroduceVo>
+
 }

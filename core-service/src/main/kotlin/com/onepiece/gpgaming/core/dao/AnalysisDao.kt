@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.model.ClientDailyReport
 import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.value.database.AgentValue
 import com.onepiece.gpgaming.beans.value.database.AnalysisValue
+import java.math.BigDecimal
 import java.time.LocalDate
 
 interface AnalysisDao  {
@@ -62,6 +63,11 @@ interface AnalysisDao  {
      * 统计存人数
      */
     fun activeCount(startDate: LocalDate, endDate: LocalDate): Map<Int, Int>
+
+    /**
+     * 统计会员 充值金额
+     */
+    fun findDeposits(memberIds: List<Int>): Map<Int, BigDecimal>
 
 
 

@@ -62,6 +62,7 @@ class MemberIntroduceDaoImpl : BasicDaoImpl<MemberIntroduce>("member_introduce")
     override fun list(query: MemberIntroduceValue.MemberIntroduceQuery): List<MemberIntroduce> {
         return query()
                 .where("introduce_id", query.introduceId)
+                .sort("created_time desc")
                 .execute(mapper)
     }
 }

@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.Role
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 sealed class UserValue {
 
@@ -23,10 +24,37 @@ sealed class UserValue {
             // 介绍总数
             val introduceCount: Int,
 
-            val overIntroduceCount:  Int,
+            val overIntroduceCount: Int,
 
             // 介绍佣金
             val commission: BigDecimal
+    )
+
+    data class MyIntroduceVo(
+
+            // 会员Id
+            val memberId: Int,
+
+            // 介绍会员Id
+            val introduceId: Int,
+
+            // 用户名
+            val username: String,
+
+            // 总充值
+            val totalDeposit: BigDecimal,
+
+            // 是否已完成注册活动
+            val registerActivity: Boolean,
+
+            // 是否已完成充值活动
+            val depositActivity: Boolean,
+
+            // 介绍获得的佣金
+            val introduceCommission: BigDecimal,
+
+            // 注册时间
+            val createdTime: LocalDateTime
     )
 }
 

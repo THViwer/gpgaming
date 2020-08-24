@@ -29,8 +29,8 @@ class AnalysisDaoImpl(
 
     override fun memberReport(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<MemberDailyReport> {
 
-        val tmq  = memberId?.let { " and m.id = $it" }?: ""
-        val sql =  """
+        val tmq = memberId?.let { " and m.id = $it" } ?: ""
+        val sql = """
             select
                    m.boss_id,
                    m.client_id,
@@ -114,29 +114,29 @@ class AnalysisDaoImpl(
             where m.role  = 'Member' ${tmq};
         """.trimIndent()
 
-        return jdbcTemplate.query(sql, RowMapper {  rs, _ ->
+        return jdbcTemplate.query(sql, RowMapper { rs, _ ->
 
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val superiorAgentId = rs.getInt("superior_agent_id")
-            val agentId =  rs.getInt("agent_id")
+            val agentId = rs.getInt("agent_id")
             val saleId = rs.getInt("sale_id")
             val saleScope = rs.getString("sale_scope").let { SaleScope.valueOf(it) }
             val tMemberId = rs.getInt("id")
-            val marketId =  rs.getInt("market_id")
+            val marketId = rs.getInt("market_id")
             val levelId = rs.getInt("level_id")
-            val username  = rs.getString("username")
+            val username = rs.getString("username")
             val totalDeposit = rs.getBigDecimal("total_deposit")
             val depositCount = rs.getInt("deposit_count")
             val thirdPayAmount = rs.getBigDecimal("third_pay_amount")
             val thirdPayCount = rs.getInt("third_pay_count")
             val artificialAmount = rs.getBigDecimal("artificial_amount")
-            val artificialCount  = rs.getInt("artificial_count")
+            val artificialCount = rs.getInt("artificial_count")
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
             val withdrawCount = rs.getInt("withdraw_count")
-            val transferOut  = rs.getBigDecimal("transfer_out")
+            val transferOut = rs.getBigDecimal("transfer_out")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
-            val transferIn =  rs.getBigDecimal("transfer_in")
+            val transferIn = rs.getBigDecimal("transfer_in")
 
             val slotRequirementBet = rs.getBigDecimal("slot_requirement_bet")
             val liveRequirementBet = rs.getBigDecimal("live_requirement_bet")
@@ -217,13 +217,13 @@ class AnalysisDaoImpl(
             val clientId = rs.getInt("client_id")
             val agentId = rs.getInt("agent_id")
             val usernaem = rs.getString("username")
-            val superiorAgentId =  rs.getInt("superior_agent_id")
+            val superiorAgentId = rs.getInt("superior_agent_id")
             val totalBet = rs.getBigDecimal("total_bet")
             val totalMWin = rs.getBigDecimal("total_m_win")
-            val totalDeposit  = rs.getBigDecimal("total_deposit")
+            val totalDeposit = rs.getBigDecimal("total_deposit")
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
-            val totalRebate  = rs.getBigDecimal("total_rebate")
-            val totalPromotion  = rs.getBigDecimal("total_promotion")
+            val totalRebate = rs.getBigDecimal("total_rebate")
+            val totalPromotion = rs.getBigDecimal("total_promotion")
             val newMemberCount = rs.getInt("new_member_count")
 
             AgentDailyReport(id = -1, bossId = bossId, clientId = clientId, agentId = agentId, totalBet = totalBet, totalMWin = totalMWin,
@@ -269,7 +269,7 @@ class AnalysisDaoImpl(
             group by boss_id, client_id, superior_agent_id;
         """.trimIndent()
 
-        return  jdbcTemplate.query(sql) { rs, _ ->
+        return jdbcTemplate.query(sql) { rs, _ ->
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val username = rs.getString("username")
@@ -291,7 +291,7 @@ class AnalysisDaoImpl(
     override fun agentMonthReport(agentId: Int?, startDate: LocalDate, endDate: LocalDate): List<AgentMonthReport> {
 
         val append = if (agentId != null) " and agent_id = $agentId" else ""
-        val sql  = """
+        val sql = """
             select
                    boss_id,
                    client_id,
@@ -318,12 +318,12 @@ class AnalysisDaoImpl(
             val totalDeposit = rs.getBigDecimal("total_deposit")
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
             val totalBet = rs.getBigDecimal("total_bet")
-            val totalMWin  = rs.getBigDecimal("total_m_win")
+            val totalMWin = rs.getBigDecimal("total_m_win")
             val totalRebate = rs.getBigDecimal("total_rebate")
             val totalPromotion = rs.getBigDecimal("total_promotion")
-            val newMemberCount =  rs.getInt("new_member_count")
+            val newMemberCount = rs.getInt("new_member_count")
 
-            AgentMonthReport(id  = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = mAgentId, totalDeposit = totalDeposit,
+            AgentMonthReport(id = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = mAgentId, totalDeposit = totalDeposit,
                     totalWithdraw = totalWithdraw, totalBet = totalBet, totalMWin = totalMWin, totalPromotion = totalPromotion, totalRebate = totalRebate,
                     day = startDate, agentCommissionScale = BigDecimal.ZERO, agentActiveCount = 0, agentCommission = BigDecimal.ZERO,
                     memberCommissionScale = BigDecimal.ZERO, memberActiveCount = 0, memberCommission = BigDecimal.ZERO,
@@ -360,7 +360,7 @@ class AnalysisDaoImpl(
             where  r.day >= '$startDate' and r.day < '$endDate' group  by boss_id, client_id
         """.trimIndent()
 
-        return jdbcTemplate.query(sql) {  rs, _ ->
+        return jdbcTemplate.query(sql) { rs, _ ->
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val totalBet = rs.getBigDecimal("total_bet")
@@ -530,4 +530,27 @@ class AnalysisDaoImpl(
         }.toMap()
     }
 
+    override fun findDeposits(memberIds: List<Int>): Map<Int, BigDecimal> {
+        val sql = "select member_id, sum(money) money from deposit where state = 'Successful' and member_id in (${memberIds.joinToString(separator = ",")}) group by member_id"
+        val deposits = jdbcTemplate.query(sql) { rs, _ ->
+            val memberId = rs.getInt("member_id")
+            val deposit = rs.getBigDecimal("money")
+            memberId to deposit
+        }.toMap()
+
+        val paySql = "select member_id, sum(amount) amount from pay_order where state = 'Successful' and member_id in (${memberIds.joinToString(separator = ",")}) group by member_id"
+        val pays = jdbcTemplate.query(paySql) { rs, _ ->
+            val memberId = rs.getInt("member_id")
+            val amount = rs.getBigDecimal("amount")
+            memberId to amount
+        }.toMap()
+
+        return memberIds.map {
+            val p1 = deposits[it] ?: BigDecimal.ZERO
+            val p2 = pays[it] ?: BigDecimal.ZERO
+
+            it to p1.plus(p2)
+        }.toMap()
+
+    }
 }

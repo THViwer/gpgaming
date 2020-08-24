@@ -15,16 +15,16 @@ import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
 import com.onepiece.gpgaming.beans.value.database.MemberIntroduceValue
 import com.onepiece.gpgaming.beans.value.database.MemberUo
-import com.onepiece.gpgaming.core.utils.MarketUtil
+import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.LevelService
 import com.onepiece.gpgaming.core.service.MarketService
-import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberIntroduceService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.core.service.VipService
+import com.onepiece.gpgaming.core.utils.MarketUtil
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.chain.ChainUtil
 import com.onepiece.gpgaming.player.controller.value.ChangePwdReq
@@ -53,7 +53,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.util.function.BiFunction
+import java.math.BigDecimal
 
 
 @RestController
@@ -72,7 +72,8 @@ class UserApiController(
         private val memberIntroduceService: MemberIntroduceService,
         private val promotionService: PromotionService,
         private val i18nContentService: I18nContentService,
-        private val objectMapper: ObjectMapper
+        private val objectMapper: ObjectMapper,
+        private val analysisDao: AnalysisDao
 ) : BasicController(), UserApi {
 
     companion object {
@@ -423,4 +424,28 @@ class UserApiController(
         val link = "https://www.${webSite.domain}/?introduceId=${user.id}"
         return UserValue.MyIntroduceDetail(link = link, introduceCount = introduceCount, overIntroduceCount = overIntroduceCount, commission = introduceCommission)
     }
+
+    @GetMapping("/introduce/list")
+    override fun myIntroduceList(): List<UserValue.MyIntroduceVo> {
+
+        val user = this.currentUser()
+
+        val query = MemberIntroduceValue.MemberIntroduceQuery(introduceId = user.id)
+        val data = memberIntroduceService.list(query = query)
+        if (data.isEmpty()) return emptyList()
+
+        val memberIds = data.map { it.memberId }
+        val members = memberService.findByIds(ids = memberIds)
+        val memberMap = members.map { it.id to it }.toMap()
+
+        val deposit = analysisDao.findDeposits(memberIds = memberIds)
+
+        return data.map { introduce ->
+            val username = memberMap[introduce.memberId]?.username ?: ""
+            val totalDeposit = deposit[introduce.memberId] ?: BigDecimal.ZERO
+            UserValue.MyIntroduceVo(memberId = introduce.memberId, username = username, depositActivity = introduce.depositActivity, registerActivity = introduce.registerActivity,
+                    introduceId = introduce.introduceId, totalDeposit = totalDeposit, introduceCommission = introduce.introduceCommission, createdTime = introduce.createdTime)
+        }
+    }
+
 }
