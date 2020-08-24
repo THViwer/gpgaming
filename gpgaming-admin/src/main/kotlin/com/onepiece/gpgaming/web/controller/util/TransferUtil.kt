@@ -17,7 +17,7 @@ import com.onepiece.gpgaming.beans.value.database.TransferOrderUo
 import com.onepiece.gpgaming.beans.value.database.WalletUo
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
-import com.onepiece.gpgaming.core.utils.OrderIdBuilder
+import com.onepiece.gpgaming.core.OrderIdBuilder
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
@@ -28,8 +28,6 @@ import com.onepiece.gpgaming.games.GameApi
 import com.onepiece.gpgaming.games.GameValue
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -37,7 +35,6 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.stream.Collectors
 
 
 interface ITransferUtil {
@@ -122,14 +119,14 @@ open class TransferUtil(
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     override fun transfer(clientId: Int, username: String, cashTransferReq: CashValue.CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp {
         val (type, platform) = if (cashTransferReq.from == Platform.Center) "out" to cashTransferReq.to else "in" to cashTransferReq.from
-        return singleTransfer(clientId = clientId, platform =  platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo, username = username)
+        return singleTransfer(clientId = clientId, platform = platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo, username = username)
     }
 
 
-    private fun singleTransfer(clientId: Int, username: String, platform: Platform, cashTransferReq: CashValue.CashTransferReq, platformMemberVo: PlatformMemberVo, type: String): GameValue.TransferResp{
+    private fun singleTransfer(clientId: Int, username: String, platform: Platform, cashTransferReq: CashValue.CashTransferReq, platformMemberVo: PlatformMemberVo, type: String): GameValue.TransferResp {
 
         val platformMember = platformMemberService.get(platformMemberVo.id)
-        val platformBalance  = gameApi.balance(clientId = clientId, platformUsername = platformMemberVo.platformUsername, platform = platform, platformPassword = platformMember.password)
+        val platformBalance = gameApi.balance(clientId = clientId, platformUsername = platformMemberVo.platformUsername, platform = platform, platformPassword = platformMember.password)
 
         return when (type) {
 
@@ -181,7 +178,7 @@ open class TransferUtil(
         }
 
         // 如果是首充优惠 更新用户已使用过首充
-        if (promotionId != null && promotionId != -100 ) {
+        val promotion = if (promotionId != null && promotionId != -100) {
             val promotion = promotionService.get(promotionId)
 
             if (promotion.category == PromotionCategory.First) {
@@ -189,7 +186,9 @@ open class TransferUtil(
                 val memberUo = MemberUo(id = platformMember.memberId, firstPromotion = true)
                 memberService.update(memberUo)
             }
-        }
+
+            promotion
+        } else null
 
         // 检查保证金是否足够
         platformBindService.updateEarnestBalance(clientId = clientId, platform = platform, earnestBalance = amount.negate())
@@ -203,10 +202,10 @@ open class TransferUtil(
         walletService.update(walletUo)
 
         // 生成转账订单
-        val promotionAmount = platformMemberTransferUo?.promotionAmount?: BigDecimal.ZERO
+        val promotionAmount = platformMemberTransferUo?.promotionAmount ?: BigDecimal.ZERO
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = promotionAmount,
                 from = from, to = to, joinPromotionId = platformMemberTransferUo?.joinPromotionId, promotionJson = platformMemberTransferUo?.promotionJson, username = username,
-                requirementBet = platformMemberTransferUo?.requirementBet?: BigDecimal.ZERO, promotionPreMoney = platformMemberTransferUo?.promotionPreMoney?: amount)
+                requirementBet = platformMemberTransferUo?.requirementBet ?: BigDecimal.ZERO, promotionPreMoney = platformMemberTransferUo?.promotionPreMoney ?: amount)
         transferOrderService.create(transferOrderCo)
 
         // 平台钱包更改信息
@@ -279,7 +278,7 @@ open class TransferUtil(
             PromotionPeriod.getOverPromotionAmount(promotion = promotion, historyOrders = history)
         } else overPromotionAmount
 
-        val transferUo = promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount =  amount,
+        val transferUo = promotion.getPlatformMemberTransferUo(platformMemberId = platformMember.id, amount = amount,
                 platformBalance = platformBalance, promotionId = promotion.id, overPromotionAmount = overPromotionAmountNotNull)
 
         // 检查当前平台是否是参加活动的平台
@@ -292,7 +291,7 @@ open class TransferUtil(
      */
     override fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal, transferOutAmount: BigDecimal): Boolean {
 
-        val state = when{
+        val state = when {
             platformBalance.toDouble() <= promotion.rule.ignoreTransferOutAmount.toDouble() -> true
             promotion.ruleType == PromotionRuleType.Bet -> {
                 platformMember.currentBet.toDouble() >= platformMember.requirementBet.toDouble()
@@ -308,7 +307,7 @@ open class TransferUtil(
             //TODO 记录clean事件 本次优惠使用多少打码量等
 
             // 记录本次优惠内转出多少钱
-            transferOrderService.logPromotionEnd(clientId =  promotion.clientId, memberId = platformMember.memberId, promotionId = promotion.id, transferOutAmount = transferOutAmount)
+            transferOrderService.logPromotionEnd(clientId = promotion.clientId, memberId = platformMember.memberId, promotionId = promotion.id, transferOutAmount = transferOutAmount)
 
             // 清理平台会员优惠信息
             platformMemberService.cleanTransferIn(memberId = platformMember.memberId, platform = platformMember.platform)
