@@ -54,5 +54,8 @@ class ClientConfigServiceImpl(
     override fun update(uo: ClientConfigValue.IntroduceUo) {
         val flag = clientConfigDao.update(uo = uo)
         check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+        val redisKey = OnePieceRedisKeyConstant.getSeo(uo.clientId)
+        redisService.delete(redisKey)
     }
 }
