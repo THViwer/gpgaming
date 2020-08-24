@@ -207,7 +207,7 @@ class GameApi(
                 getPlatformApi(platform).updatePassword(updatePasswordReq)
 
             }
-            else -> error( OnePieceExceptionCode.DATA_FAIL )
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
 
@@ -327,7 +327,7 @@ class GameApi(
             Platform.GamePlay,
             Platform.SimplePlay,
             Platform.Pragmatic -> getPlatformApi(platform).startSlotDemo(startSlotReq)
-            else  -> error(OnePieceExceptionCode.DATA_FAIL)
+            else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
     }
@@ -415,7 +415,7 @@ class GameApi(
 
     }
 
-    private fun checkTransfer(platform: Platform, checkTransferReq: GameValue.CheckTransferReq, index: Int = 0): GameValue.TransferResp {
+    fun checkTransfer(platform: Platform, checkTransferReq: GameValue.CheckTransferReq, index: Int = 0): GameValue.TransferResp {
 
 //        if (platform == Platform.Kiss918 || platform == Platform.Pussy888) {
 //
@@ -424,7 +424,7 @@ class GameApi(
 //            GameValue.TransferResp(transfer = true, platformOrderId = "-", balance = balance)
 //        }
         try {
-            if (index > 2) return GameValue.TransferResp.Companion.failed()
+            if (index > 2) return GameValue.TransferResp.failed()
 
             return this.getPlatformApi(platform).checkTransfer(checkTransferReq)
         } catch (e: Exception) {
@@ -440,7 +440,7 @@ class GameApi(
     fun queryBetOrder(clientId: Int, platformUsername: String, platform: Platform, startTime: LocalDateTime, endTime: LocalDateTime): List<BetOrderValue.BetOrderCo> {
         val clientToken = getClientToken(clientId = clientId, platform = platform)
 
-        return when(platform) {
+        return when (platform) {
             Platform.Kiss918, Platform.Mega, Platform.Pussy888, Platform.SexyGaming, Platform.Bcs, Platform.AllBet, Platform.TTG -> {
                 val betOrderReq = GameValue.BetOrderReq(token = clientToken, startTime = startTime, endTime = endTime, username = platformUsername)
                 getPlatformApi(platform).queryBetOrder(betOrderReq)
@@ -510,7 +510,7 @@ class GameApi(
     fun getAppDownload(clientId: Int, platform: Platform): String {
         val clientToken = getClientToken(clientId = clientId, platform = platform)
 
-        return when(platform) {
+        return when (platform) {
             Platform.Mega -> megaService.downApp(clientToken = clientToken as MegaClientToken)
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -523,7 +523,7 @@ class GameApi(
 
     // 生成用户名
     private fun generatorUsername(clientId: Int, memberId: Int): String {
-        return when  {
+        return when {
             clientId < 10 -> "00$clientId"
             clientId < 100 -> "0$clientId"
             else -> "$clientId"

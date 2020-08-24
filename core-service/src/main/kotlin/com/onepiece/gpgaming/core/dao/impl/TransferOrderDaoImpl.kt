@@ -85,12 +85,12 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .where("state", TransferState.Successful)
                 .where("member_id", query.memberId)
                 .group("client_id, member_id, `from`, `to`")
-                .execute {  rs ->
+                .execute { rs ->
 
                     val clientId = rs.getInt("client_id")
                     val memberId = rs.getInt("member_id")
                     val from = rs.getString("from").let { Platform.valueOf(it) }
-                    val to = rs.getString("to").let{ Platform.valueOf(it) }
+                    val to = rs.getString("to").let { Platform.valueOf(it) }
                     val money = rs.getBigDecimal("money")
                     val promotionAmount = rs.getBigDecimal("promotion_amount")
                     val requirementBet = rs.getBigDecimal("requirement_bet")
@@ -109,7 +109,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .where("to", query.to)
                 .where("member_id", query.memberId)
                 .group("client_id, member_id")
-                .execute {  rs ->
+                .execute { rs ->
 
                     val clientId = rs.getInt("client_id")
                     val memberId = rs.getInt("member_id")
@@ -128,11 +128,11 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .where("state", TransferState.Successful)
                 .where("client_id", query.clientId)
                 .group("client_id, `from`, `to`")
-                .execute {  rs ->
+                .execute { rs ->
 
                     val clientId = rs.getInt("client_id")
                     val from = rs.getString("from").let { Platform.valueOf(it) }
-                    val to = rs.getString("to").let{ Platform.valueOf(it) }
+                    val to = rs.getString("to").let { Platform.valueOf(it) }
                     val money = rs.getBigDecimal("money")
                     val promotionAmount = rs.getBigDecimal("promotion_amount")
 
@@ -151,7 +151,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .where("to", query.to)
                 .where("client_id", query.clientId)
                 .group("client_id")
-                .execute {  rs ->
+                .execute { rs ->
 
                     val clientId = rs.getInt("client_id")
                     val money = rs.getBigDecimal("money")
@@ -227,7 +227,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
             ) t group by client_id, `to`;
         """.trimIndent()
 
-        val data = jdbcTemplate.query(sql) { rs, _ ->
+        return jdbcTemplate.query(sql) { rs, _ ->
             val clientId = rs.getInt("client_id")
             val platform = rs.getString("to").let {
                 Platform.valueOf(it)
@@ -236,13 +236,14 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
 
             TransferActiveCount(clientId = clientId, platform = platform, count = count)
         }
-        log.info("--------------------")
-        log.info("--------------------")
-        log.info("查询sql: ${sql}")
-        log.info("查询获得数据：${data}")
-        log.info("--------------------")
-        log.info("--------------------")
+    }
 
-        return data
+    override fun queryProcessOrder(startDate: LocalDate, endDate: LocalDate): List<TransferOrder> {
+        return query()
+                .asWhere("created_time > ?", startDate)
+                .asWhere("created_time < ?", startDate)
+                .where("state", "Process")
+                .where("to", "Center")
+                .execute(mapper)
     }
 }

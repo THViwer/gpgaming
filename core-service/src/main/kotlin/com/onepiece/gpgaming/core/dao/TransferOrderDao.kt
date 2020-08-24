@@ -36,6 +36,8 @@ interface TransferOrderDao: BasicDao<TransferOrder> {
 
     fun queryActiveCount(startDate: LocalDate, endDate: LocalDate): List<TransferActiveCount>
 
+    fun queryProcessOrder(startDate: LocalDate, endDate: LocalDate): List<TransferOrder>
+
 //    fun reportByPlatform(memberId: Int?, from: Platform?, to: Platform?, startDate: LocalDate, endDate: LocalDate): List<MemberTransferPlatformReportVo>
 //
 //    fun report(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo>
