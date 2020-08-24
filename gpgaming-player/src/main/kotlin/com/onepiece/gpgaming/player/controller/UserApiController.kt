@@ -420,9 +420,12 @@ class UserApiController(
                 .toBigDecimal()
                 .setScale(2, 2)
 
+        val config = clientConfigService.get(clientId = user.clientId)
+
         val webSite = webSiteService.getDataByBossId(bossId = user.bossId).first { it.clientId == user.clientId }
         val link = "https://www.${webSite.domain}/?introduceId=${user.id}"
-        return UserValue.MyIntroduceDetail(link = link, introduceCount = introduceCount, overIntroduceCount = overIntroduceCount, commission = introduceCommission)
+        return UserValue.MyIntroduceDetail(link = link, introduceCount = introduceCount, overIntroduceCount = overIntroduceCount, commission = introduceCommission,
+                registerCommission = config.registerCommission, depositCommission = config.depositCommission)
     }
 
     @GetMapping("/introduce/list")

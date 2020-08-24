@@ -26,7 +26,13 @@ sealed class UserValue {
 
             val overIntroduceCount: Int,
 
-            // 介绍佣金
+            // 注册佣金
+            val registerCommission: BigDecimal,
+
+            // 推荐佣金
+            val depositCommission: BigDecimal,
+
+            // 已获得介绍佣金
             val commission: BigDecimal
     )
 
