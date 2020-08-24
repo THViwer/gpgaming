@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Component
 class TransferTask(
@@ -33,8 +34,8 @@ class TransferTask(
     @Scheduled(cron = "0 0/1 *  * * ? ")
     fun start() {
 
-        val startDate = LocalDate.now().minusDays(1)
-        val endDate = startDate.plusDays(2)
+        val endDate = LocalDateTime.now().minusHours(1)
+        val startDate = endDate.minusDays(1)
         val orders = transferOrderDao.queryProcessOrder(startDate = startDate, endDate = endDate)
         if (orders.isEmpty()) return
 

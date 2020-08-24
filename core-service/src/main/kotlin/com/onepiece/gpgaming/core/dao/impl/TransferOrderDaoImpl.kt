@@ -238,7 +238,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
         }
     }
 
-    override fun queryProcessOrder(startDate: LocalDate, endDate: LocalDate): List<TransferOrder> {
+    override fun queryProcessOrder(startDate: LocalDateTime, endDate: LocalDateTime): List<TransferOrder> {
         return query()
                 .asWhere("created_time > ?", startDate)
                 .asWhere("created_time < ?", startDate)
