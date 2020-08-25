@@ -152,6 +152,8 @@ class UserApiController(
 
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
 
+        val clientConfig = clientConfigService.get(clientId = client.id)
+
         return if (currentWebSite.clientId == member.clientId) {
 
             //  推荐介绍活动
@@ -176,11 +178,13 @@ class UserApiController(
             val token = authService.login(bossId = bossId, clientId = member.clientId, username = loginReq.username, role = member.role)
             LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name, autoTransfer = member.autoTransfer,
                     domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = true, vipLogo = vipLogo, vipName = vipName,
-                    levelId = member.levelId, vipId = member.vipId, registerActivity = registerActivity, depositActivity = depositActivity, registerActivityVo = registerActivityVo)
+                    levelId = member.levelId, vipId = member.vipId, registerActivity = registerActivity, depositActivity = depositActivity, registerActivityVo = registerActivityVo,
+                    enableIntroduce = clientConfig.enableIntroduce)
         } else {
             LoginResp(id = member.id, role = Role.Member, username = member.username, token = "", name = member.name, autoTransfer = member.autoTransfer,
                     domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = false, vipLogo = vipLogo, vipName = vipName,
-                    levelId = member.levelId, vipId = member.vipId, registerActivity = false, registerActivityVo = null, depositActivity = false)
+                    levelId = member.levelId, vipId = member.vipId, registerActivity = false, registerActivityVo = null, depositActivity = false,
+                    enableIntroduce = clientConfig.enableIntroduce)
         }
     }
 
@@ -234,11 +238,13 @@ class UserApiController(
             "-" to "-"
         }
 
+        val config = clientConfigService.get(clientId = client.id)
+
 
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
         return LoginResp(id = member.id, role = Role.Member, username = member.username, token = authToken, name = member.name, autoTransfer = member.autoTransfer,
                 domain = "https://www.${webSite.domain}${isMobile}", country = client.country, successful = true, levelId = member.levelId, vipName = vipName,
-                vipLogo = vipLogo, vipId = member.vipId, registerActivity = false, depositActivity = false, registerActivityVo = null)
+                vipLogo = vipLogo, vipId = member.vipId, registerActivity = false, depositActivity = false, registerActivityVo = null, enableIntroduce = config.enableIntroduce)
 
     }
 

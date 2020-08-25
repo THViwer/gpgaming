@@ -131,6 +131,9 @@ data class LoginResp(
         @ApiModelProperty("是否需要国家跳转")
         val successful: Boolean,
 
+        @ApiModelProperty("是否开启会员推荐")
+        val enableIntroduce: Boolean,
+
         @ApiModelProperty("推荐注册金活动")
         val registerActivity: Boolean,
 
