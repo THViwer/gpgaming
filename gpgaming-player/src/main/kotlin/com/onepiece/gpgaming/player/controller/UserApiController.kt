@@ -419,6 +419,12 @@ class UserApiController(
     override fun myIntroduceDetail(): UserValue.MyIntroduceDetail {
         val user = this.currentUser()
 
+        val config = clientConfigService.get(clientId = user.clientId)
+        if (!config.enableIntroduce) {
+            return UserValue.MyIntroduceDetail.empty()
+        }
+
+
         val introduceQuery = MemberIntroduceValue.MemberIntroduceQuery(introduceId = user.id)
         val data = memberIntroduceService.list(introduceQuery)
 
@@ -429,11 +435,10 @@ class UserApiController(
                 .toBigDecimal()
                 .setScale(2, 2)
 
-        val config = clientConfigService.get(clientId = user.clientId)
 
         val promotion = promotionService.get(config.introducePromotionId)
-        val bet = when {
-            promotion.rule is PromotionRules.BetRule -> {
+        val bet = when (promotion.rule) {
+            is PromotionRules.BetRule -> {
                 val rule = promotion.rule as PromotionRules.BetRule
                 config.registerCommission.multiply(rule.betMultiple)
             }
@@ -446,7 +451,8 @@ class UserApiController(
         val webSite = webSiteService.getDataByBossId(bossId = user.bossId).first { it.clientId == user.clientId }
         val link = "https://www.${webSite.domain}/?introduceId=${user.id}"
         return UserValue.MyIntroduceDetail(link = link, introduceCount = introduceCount, overIntroduceCount = overIntroduceCount, commission = introduceCommission,
-                registerCommission = config.registerCommission, depositCommission = config.depositCommission, introducePromotionId = promotion.id, bet = bet)
+                registerCommission = config.registerCommission, depositCommission = config.depositCommission, introducePromotionId = promotion.id, bet = bet,
+                enableIntroduce = config.enableIntroduce, commissionPeriod = config.commissionPeriod, depositPeriod = config.depositPeriod)
     }
 
     @GetMapping("/introduce/list")

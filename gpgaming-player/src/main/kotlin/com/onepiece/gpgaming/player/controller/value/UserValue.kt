@@ -19,6 +19,9 @@ sealed class UserValue {
 
     data class MyIntroduceDetail(
 
+            // 是否开启会员介绍
+            val enableIntroduce: Boolean,
+
             val link: String,
 
             // 介绍总数
@@ -39,8 +42,25 @@ sealed class UserValue {
             val depositCommission: BigDecimal,
 
             // 已获得介绍佣金
-            val commission: BigDecimal
-    )
+            val commission: BigDecimal,
+
+
+            // 周期内需要充值金额
+            val depositPeriod: BigDecimal,
+
+            // 充值周期
+            val commissionPeriod: Int
+    ) {
+        companion object {
+
+            fun empty(): MyIntroduceDetail {
+                return MyIntroduceDetail(enableIntroduce = false, link = "", introducePromotionId = 0, overIntroduceCount = 0, introduceCount = 0, bet = BigDecimal.ZERO,
+                        registerCommission = BigDecimal.ZERO, depositCommission = BigDecimal.ZERO, commission = BigDecimal.ZERO, depositPeriod = BigDecimal.ZERO,
+                        commissionPeriod = 0)
+            }
+
+        }
+    }
 
     data class MyIntroduceVo(
 
