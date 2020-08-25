@@ -161,7 +161,7 @@ class UserApiController(
             val registerActivity = introduce?.registerActivity ?: true
             val depositActivity = introduce?.depositActivity ?: true
             val registerActivityVo = if (!registerActivity) {
-                val clientConfig = clientConfigService.get(clientId = member.clientId)
+//                val clientConfig = clientConfigService.get(clientId = member.clientId)
                 val promotion = promotionService.get(clientConfig.introducePromotionId)
 
                 val contents = i18nContentService.getConfigType(clientId = member.clientId, configType = I18nConfig.Promotion)
