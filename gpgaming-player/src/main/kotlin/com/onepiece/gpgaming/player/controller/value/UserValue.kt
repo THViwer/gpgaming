@@ -26,6 +26,12 @@ sealed class UserValue {
 
             val overIntroduceCount: Int,
 
+            // 优惠活动Id
+            val introducePromotionId: Int,
+
+            // 打码要求
+            val bet: BigDecimal,
+
             // 注册佣金
             val registerCommission: BigDecimal,
 

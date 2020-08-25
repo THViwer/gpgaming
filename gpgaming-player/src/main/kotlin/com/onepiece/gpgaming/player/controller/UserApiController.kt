@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
+import com.onepiece.gpgaming.beans.model.PromotionRules
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.LoginValue
 import com.onepiece.gpgaming.beans.value.database.MemberCo
@@ -159,7 +160,7 @@ class UserApiController(
             val depositActivity = introduce?.depositActivity ?: true
             val registerActivityVo = if (!registerActivity) {
                 val clientConfig = clientConfigService.get(clientId = member.clientId)
-                val promotion = promotionService.get(introduce!!.id)
+                val promotion = promotionService.get(clientConfig.introducePromotionId)
 
                 val contents = i18nContentService.getConfigType(clientId = member.clientId, configType = I18nConfig.Promotion)
                         .filter { it.id == promotion.id }
@@ -430,10 +431,22 @@ class UserApiController(
 
         val config = clientConfigService.get(clientId = user.clientId)
 
+        val promotion = promotionService.get(config.introducePromotionId)
+        val bet = when {
+            promotion.rule is PromotionRules.BetRule -> {
+                val rule = promotion.rule as PromotionRules.BetRule
+                config.registerCommission.multiply(rule.betMultiple)
+            }
+            else -> {
+                val rule = promotion.rule as PromotionRules.WithdrawRule
+                config.registerCommission.multiply(rule.transferMultiplied)
+            }
+        }
+
         val webSite = webSiteService.getDataByBossId(bossId = user.bossId).first { it.clientId == user.clientId }
         val link = "https://www.${webSite.domain}/?introduceId=${user.id}"
         return UserValue.MyIntroduceDetail(link = link, introduceCount = introduceCount, overIntroduceCount = overIntroduceCount, commission = introduceCommission,
-                registerCommission = config.registerCommission, depositCommission = config.depositCommission)
+                registerCommission = config.registerCommission, depositCommission = config.depositCommission, introducePromotionId = promotion.id, bet = bet)
     }
 
     @GetMapping("/introduce/list")
