@@ -93,16 +93,24 @@ class UserApiController(
         val agentString: String = getRequest().getHeader("User-Agent")
         val userAgent = UserAgent.parseUserAgentString(agentString)
         val operatingSystem = userAgent.operatingSystem // 操作系统信息
-        val deviceType = operatingSystem.deviceType // 设备类型
-        return when (deviceType) {
+        return when (operatingSystem.deviceType) {
             DeviceType.COMPUTER -> "PC"
             DeviceType.TABLET -> {
-                if (agentString.contains("Android")) return "Android Pad"
-                if (agentString.contains("iOS")) "iPad" else "Unknown"
+                when (agentString) {
+                    "Android" -> "Android Pad"
+                    "iOS",
+                    "Darwin" -> "iPad"
+                    else -> "Unknown"
+                }
             }
             DeviceType.MOBILE -> {
-                if (agentString.contains("Android")) return "Android"
-                if (agentString.contains("iOS")) "IOS" else "Unknown"
+
+                when (agentString) {
+                    "Android" -> "Android"
+                    "iOS",
+                    "Darwin" -> "iOS"
+                    else -> "Unknown"
+                }
             }
             else -> "Unknown"
         }
