@@ -167,11 +167,10 @@ class UserApiController(
                 val contents = i18nContentService.getConfigType(clientId = member.clientId, configType = I18nConfig.Promotion)
                         .filter { it.id == promotion.id }
                 val content = (contents.firstOrNull { it.id == promotion.id && it.language == language }
-                        ?: contents.first { it.id == promotion.id && it.language == Language.EN }
-                                .getII18nContent(objectMapper = objectMapper)) as I18nContent.PromotionI18n
+                        ?: contents.firstOrNull { it.id == promotion.id && it.language == Language.EN }?.getII18nContent(objectMapper = objectMapper))?.let { it as I18nContent.PromotionI18n }
 
                 LoginResp.RegisterActivityVo(promotionId = promotion.id, amount = clientConfig.registerCommission,
-                        platforms = promotion.platforms, title = content.title)
+                        platforms = promotion.platforms, title = content?.title?: "")
             } else null
 
 
