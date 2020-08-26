@@ -728,7 +728,9 @@ open class CashApiController(
                 check(!memberIntroduce.registerActivity) { OnePieceExceptionCode.ILLEGAL_OPERATION }
 
                 val clientConfig = clientConfigService.get(current.clientId)
-                check(clientConfig.registerCommission == cashTransferReq.amount) { OnePieceExceptionCode.ILLEGAL_OPERATION }
+                check(clientConfig.registerCommission.setScale(2, 2) == cashTransferReq.amount.setScale(2, 2)) {
+                    OnePieceExceptionCode.ILLEGAL_OPERATION
+                }
                 memberIntroduce
             } else null
         }
