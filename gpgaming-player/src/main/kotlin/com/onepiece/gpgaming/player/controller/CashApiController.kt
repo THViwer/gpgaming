@@ -749,7 +749,7 @@ open class CashApiController(
             check(result.transfer) { OnePieceExceptionCode.TRANSFER_FAILED }
 
             memberIntroduce?.let {
-                val uo = MemberIntroduceValue.MemberIntroduceUo(id = it.id, registerActivity = true, depositActivity = null, introduceCommission = BigDecimal.ZERO)
+                val uo = MemberIntroduceValue.MemberIntroduceUo(id = it.id, registerActivity = true, depositActivity = null, introduceCommission = null)
                 memberIntroduceService.update(uo)
             }
         }

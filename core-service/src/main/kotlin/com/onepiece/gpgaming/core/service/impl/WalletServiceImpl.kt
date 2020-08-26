@@ -189,7 +189,7 @@ class WalletServiceImpl(
                     this.update(myWalletUo)
 
                     val introduceUo = MemberIntroduceValue.MemberIntroduceUo(id = introduce.id, depositActivity = true, registerActivity = null,
-                            introduceCommission = BigDecimal.ZERO)
+                            introduceCommission = config.depositCommission)
                     memberIntroduceService.update(introduceUo)
                 }
             }

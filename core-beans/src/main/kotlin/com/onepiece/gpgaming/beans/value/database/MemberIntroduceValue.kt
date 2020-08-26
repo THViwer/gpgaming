@@ -29,7 +29,7 @@ sealed class MemberIntroduceValue {
 
             val depositActivity: Boolean?,
 
-            val introduceCommission: BigDecimal
+            val introduceCommission: BigDecimal?
 
             // 介绍人员操作优惠活动Id(如果没有，则需要会员选择优惠并进行自动转账)
 //            val introducePromotionId: Int
