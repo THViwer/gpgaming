@@ -341,8 +341,9 @@ class GameApi(
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
+
         val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername, password = platformPassword)
-        return this.getPlatformApi(platform).balance(balanceReq).setScale(2, 2)
+        return this.getPlatformApi(platform).balance(balanceReq).setScale(2, BigDecimal.ROUND_DOWN)
     }
 
 
