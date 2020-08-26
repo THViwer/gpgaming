@@ -196,7 +196,8 @@ open class TransferUtil(
         val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "out", platformUsername = platformMember.username)
 
         // 中心钱包扣款
-        val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_OUT, money = amount,
+        val event = if (promotion?.category == PromotionCategory.Introduce) WalletEvent.INTRODUCE else WalletEvent.TRANSFER_OUT
+        val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = event, money = amount,
                 remarks = "Center => $platform", waiterId = null, eventId = transferOrderId, giftBalance = platformMemberTransferUo?.promotionAmount)
         walletService.update(walletUo)
 
