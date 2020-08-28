@@ -22,8 +22,8 @@ import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.PlatformMember
-import com.onepiece.gpgaming.beans.model.pay.MaxiPayConfig
 import com.onepiece.gpgaming.beans.model.pay.InstantPayConfig
+import com.onepiece.gpgaming.beans.model.pay.MaxiPayConfig
 import com.onepiece.gpgaming.beans.model.pay.SurePayConfig
 import com.onepiece.gpgaming.beans.value.database.DepositCo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
@@ -548,6 +548,7 @@ open class CashApiController(
         val memberId = current.id
 
         // 检查打码量
+        check(withdrawCoReq.money.toDouble() >= 50) { OnePieceExceptionCode.SYSTEM } // 最低出款金额为50
         check(this.checkBet().overBet.toDouble() <= 0) { "打码量不足" }
 
         val memberBankId = this.bindMemberBank(bankId = withdrawCoReq.memberBankId, bank = withdrawCoReq.bank, bankCardNumber = withdrawCoReq.bankCardNumber)
