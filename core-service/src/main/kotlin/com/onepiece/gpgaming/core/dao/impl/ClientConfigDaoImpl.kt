@@ -37,6 +37,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
             val depositPeriod = rs.getBigDecimal("deposit_period")
             val commissionPeriod = rs.getInt("commission_period")
             val depositCommission = rs.getBigDecimal("deposit_commission")
+            val shareTemplate = rs.getString("share_template")
 
 
             ClientConfig(id = id, clientId = clientId, keywords = keywords, description = description, createdTime = createdTime,
@@ -44,7 +45,8 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                     liveChatTab = liveChatTab, asgContent = asgContent, facebookShowPosition = facebookShowPosition,
                     enableRegisterMessage = enableRegisterMessage, registerMessageTemplate = registerMessageTemplate,
                     enableIntroduce = enableIntroduce, introducePromotionId = introducePromotionId, registerCommission = registerCommission,
-                    depositPeriod = depositPeriod, commissionPeriod = commissionPeriod, depositCommission = depositCommission)
+                    depositPeriod = depositPeriod, commissionPeriod = commissionPeriod, depositCommission = depositCommission,
+                    shareTemplate = shareTemplate)
         }
 
     override fun create(configUo: ClientConfigValue.ClientConfigUo): Boolean {
@@ -65,6 +67,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("deposit_period", 0)
                 .set("commission_period", 0)
                 .set("deposit_commission", 0)
+                .set("share_template", "")
 
                 .executeOnlyOne()
     }
@@ -93,13 +96,14 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
     }
 
     override fun update(uo: ClientConfigValue.IntroduceUo): Boolean {
-        return  update()
+        return update()
                 .set("enable_introduce", uo.enableIntroduce)
                 .set("introduce_promotion_id", uo.introducePromotionId)
                 .set("register_commission", uo.registerCommission)
                 .set("deposit_period", uo.depositPeriod)
                 .set("commission_period", uo.commissionPeriod)
                 .set("deposit_commission", uo.depositCommission)
+                .set("share_template", uo.shareTemplate)
                 .where("client_id", uo.clientId)
                 .executeOnlyOne()
     }

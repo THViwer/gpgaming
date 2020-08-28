@@ -457,7 +457,7 @@ class UserApiController(
         val link = "https://www.${webSite.domain}/?introduceId=${user.id}"
         return UserValue.MyIntroduceDetail(link = link, introduceCount = introduceCount, overIntroduceCount = overIntroduceCount, commission = introduceCommission,
                 registerCommission = config.registerCommission, depositCommission = config.depositCommission, introducePromotionId = promotion.id, bet = bet,
-                enableIntroduce = config.enableIntroduce, commissionPeriod = config.commissionPeriod, depositPeriod = config.depositPeriod)
+                enableIntroduce = config.enableIntroduce, commissionPeriod = config.commissionPeriod, depositPeriod = config.depositPeriod, shareTemplate = config.shareTemplate)
     }
 
     @GetMapping("/introduce/list")

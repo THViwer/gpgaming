@@ -53,6 +53,8 @@ data class ClientConfig(
         val commissionPeriod: Int,
         // 充值佣金
         val depositCommission: BigDecimal,
+        // 分享消息模板
+        val shareTemplate: String,
 
 
         // 创建时间

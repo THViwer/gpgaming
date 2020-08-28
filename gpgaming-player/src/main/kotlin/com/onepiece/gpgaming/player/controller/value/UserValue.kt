@@ -49,14 +49,17 @@ sealed class UserValue {
             val depositPeriod: BigDecimal,
 
             // 充值周期
-            val commissionPeriod: Int
+            val commissionPeriod: Int,
+
+            // 介绍消息模板
+            val shareTemplate: String
     ) {
         companion object {
 
             fun empty(): MyIntroduceDetail {
                 return MyIntroduceDetail(enableIntroduce = false, link = "", introducePromotionId = 0, overIntroduceCount = 0, introduceCount = 0, bet = BigDecimal.ZERO,
                         registerCommission = BigDecimal.ZERO, depositCommission = BigDecimal.ZERO, commission = BigDecimal.ZERO, depositPeriod = BigDecimal.ZERO,
-                        commissionPeriod = 0)
+                        commissionPeriod = 0, shareTemplate = "")
             }
 
         }

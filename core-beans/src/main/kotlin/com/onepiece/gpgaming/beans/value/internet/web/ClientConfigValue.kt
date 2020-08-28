@@ -78,7 +78,9 @@ sealed class ClientConfigValue {
             // 充值周期
             val commissionPeriod: Int,
             // 充值佣金
-            val depositCommission: BigDecimal
+            val depositCommission: BigDecimal,
+            // 分享模板
+            val shareTemplate: String
     )
 
 }
