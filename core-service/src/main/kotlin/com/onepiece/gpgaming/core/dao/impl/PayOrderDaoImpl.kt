@@ -35,7 +35,7 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
             val remark = rs.getString("remark")
             val state = rs.getString("state").let { PayState.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
-            val updatedTime =  rs.getTimestamp("updated_time").toLocalDateTime()
+            val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
 
             PayOrder(id = id, clientId = clientId, memberId = memberId, username = username, amount = amount,
                     orderId = orderId, thirdOrderId = thirdOrderId, operatorId = operatorId, operatorUsername = operatorUsername,
@@ -181,9 +181,9 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
                 .asWhere("operator_id != null", constraint)
                 .where("state", PayState.Successful)
                 .group("client_id, pay_type")
-                .execute { rs  ->
+                .execute { rs ->
                     val clientId = rs.getInt("client_id")
-                    val payType  =  rs.getString("pay_type").let { PayType.valueOf(it) }
+                    val payType = rs.getString("pay_type").let { PayType.valueOf(it) }
                     val amount = rs.getBigDecimal("amount")
 
                     PayOrderValue.PayOrderCPReport(clientId = clientId, payType = payType, totalAmount = amount)
@@ -198,7 +198,7 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
                 .asWhere("operator_id != null", constraint)
                 .where("state", PayState.Successful)
                 .group("client_id")
-                .execute { rs  ->
+                .execute { rs ->
                     val clientId = rs.getInt("client_id")
 //                    val payType  =  rs.getString("pay_type").let { PayType.valueOf(it) }
                     val amount = rs.getBigDecimal("amount")
@@ -221,4 +221,10 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
                     rs.getBigDecimal("deposit_amount")
                 } ?: BigDecimal.ZERO
     }
+
+    override fun delOldOrder(startDate: LocalDate) {
+        val sql = "delete  from pay_order  where  created_time > ? and `state`  != 'Successful'"
+        jdbcTemplate.update(sql, startDate)
+    }
+
 }

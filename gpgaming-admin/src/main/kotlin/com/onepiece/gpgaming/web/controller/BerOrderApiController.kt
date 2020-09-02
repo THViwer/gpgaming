@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @RestController
@@ -68,8 +69,10 @@ class BerOrderApiController(
     override fun last500(@RequestParam("username") username: String): List<BetOrder> {
 
         val clientId = getClientId()
-        val member = memberService.findByUsername(clientId, username) ?: return emptyList<BetOrder>()
+        val member = memberService.findByUsername(clientId, username) ?: return emptyList()
 
-        return betOrderService.last500(clientId = getClientId(), memberId = member.id)
+        val endDate = LocalDate.now()
+        val startDate = endDate.minusWeeks(1)
+        return betOrderService.last500(clientId = getClientId(), memberId = member.id, startDate = startDate, endDate = endDate)
     }
 }

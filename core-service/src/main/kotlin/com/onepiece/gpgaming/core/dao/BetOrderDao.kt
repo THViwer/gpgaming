@@ -30,7 +30,7 @@ interface BetOrderDao: BasicDao<BetOrder> {
 
     fun getBets(clientId: Int, memberId: Int, platform: Platform): List<BetOrder>
 
-    fun last500(clientId: Int, memberId: Int): List<BetOrder>
+    fun last500(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): List<BetOrder>
 
     fun getNotMarkBets(table: String, startId: Int): List<BetOrderValue.BetMarkVo>
 
@@ -45,5 +45,7 @@ interface BetOrderDao: BasicDao<BetOrder> {
     fun creport(startDate: LocalDate): List<BetReportValue.CBetReport>
 
     fun getTotalBet(clientId: Int, memberId: Int, startDate: LocalDate): BigDecimal
+
+    fun delOldBet(startDate: LocalDate)
 
 }

@@ -13,7 +13,7 @@ interface BetOrderService {
 
     fun getBets(clientId: Int, memberId: Int, platform: Platform): List<BetOrder>
 
-    fun last500(clientId: Int, memberId: Int): List<BetOrder>
+    fun last500(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): List<BetOrder>
 
     fun getNotMarkBets(tableSequence: Int): List<BetOrderValue.BetMarkVo>
 

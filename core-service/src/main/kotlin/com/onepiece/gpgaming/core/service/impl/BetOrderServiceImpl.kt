@@ -26,8 +26,8 @@ class BetOrderServiceImpl(
         return betOrderDao.getBets(clientId, memberId, platform)
     }
 
-    override fun last500(clientId: Int, memberId: Int): List<BetOrder> {
-        return betOrderDao.last500(clientId, memberId)
+    override fun last500(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): List<BetOrder> {
+        return betOrderDao.last500(clientId, memberId, startDate, endDate)
     }
 
     override fun getNotMarkBets(tableSequence: Int): List<BetOrderValue.BetMarkVo> {

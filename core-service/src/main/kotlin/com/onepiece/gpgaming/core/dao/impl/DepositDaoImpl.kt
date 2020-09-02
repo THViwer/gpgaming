@@ -186,4 +186,9 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                     ClientDepositReportVo(clientId = clientId, count = count, money = money, depositSequence = depositSequence)
                 }
     }
+
+    override fun delOldOrder(startDate: LocalDate) {
+        val sql = "delete  from deposit  where  created_time > ? and `state`  != 'Successful'"
+        jdbcTemplate.update(sql, startDate)
+    }
 }

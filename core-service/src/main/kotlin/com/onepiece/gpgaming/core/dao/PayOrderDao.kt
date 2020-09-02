@@ -36,4 +36,7 @@ interface PayOrderDao {
     fun cReport(startDate: LocalDate, constraint: Boolean): List<PayOrderValue.PayOrderCReport>
 
     fun sumSuccessful(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): BigDecimal
+
+    fun delOldOrder(startDate: LocalDate)
+
 }

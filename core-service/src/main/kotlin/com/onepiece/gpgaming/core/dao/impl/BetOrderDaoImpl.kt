@@ -102,9 +102,11 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 .execute(mapper)
     }
 
-    override fun last500(clientId: Int, memberId: Int): List<BetOrder> {
+    override fun last500(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): List<BetOrder> {
         val table = this.getRuleTable(clientId, memberId)
         return query(defaultTable = table)
+                .asWhere("settle_time > ?", startDate)
+                .asWhere("settle_time < ?", endDate)
                 .where("client_id", clientId)
                 .where("member_id", memberId)
                 .sort("bet_time desc")
@@ -176,10 +178,10 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
     override fun mreport(clientId: Int?, memberId: Int?, startDate: LocalDate): List<BetReportValue.MBetReport> {
         return (0 until 8).map { x ->
             query(returnColumns = "client_id, member_id, platform, sum(bet_amount) as bet, sum(valid_amount) as valid_amount, sum(win_amount) as win", defaultTable = "bet_order_$x")
+                    .asWhere("settle_time >= ?", startDate)
+                    .asWhere("settle_time < ?", startDate.plusDays(1))
                     .where("client_id", clientId)
                     .where("member_id", memberId)
-                    .asWhere("created_time >= ?", startDate.toString())
-                    .asWhere("created_time < ?", startDate.plusDays(1).toString())
                     .group("client_id, member_id, platform")
                     .execute { rs ->
                         val xClientId = rs.getInt("client_id")
@@ -198,8 +200,8 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
     override fun creport(startDate: LocalDate): List<BetReportValue.CBetReport> {
         return (0 until 8).map { x ->
             query(returnColumns = "client_id, sum(bet_amount) as bet, sum(win_amount) as win", defaultTable = "bet_order_$x")
-                    .asWhere("created_time >= ?", startDate)
-                    .asWhere("created_time < ?", startDate.plusDays(1))
+                    .asWhere("settle_time >= ?", startDate)
+                    .asWhere("settle_time < ?", startDate.plusDays(1))
                     .group("client_id")
                     .execute { rs ->
                         val clientId = rs.getInt("client_id")
@@ -224,5 +226,12 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
         }.sumByDouble { it.toDouble() }
                 .toBigDecimal()
                 .setScale(2, 2)
+    }
+
+    override fun delOldBet(startDate: LocalDate) {
+        (0..7).forEach { x ->
+            val sql = "delete from bet_order_$x where created_time  < '$startDate'"
+            jdbcTemplate.execute(sql)
+        }
     }
 }

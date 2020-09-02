@@ -914,8 +914,8 @@ open class CashApiController(
         val query = MemberReportQuery(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate, minRebateAmount = null, minPromotionAmount = null, current = 0,
                 size = 999999, agentId = null)
         val reports = memberDailyReportService.query(query)
-//        val todayReport = betOrderService.report(memberId = memberId, startDate = today, endDate = today.plusDays(1))
-//                .map { it.platform to it.totalBet }.toMap()
+        val todayReport = betOrderService.report(memberId = memberId, startDate = today, endDate = today.plusDays(1))
+                .map { it.platform to it.totalBet }.toMap()
         val reportMap = if (reports.isNotEmpty()) {
             reports.map { it.settles }.reduce { acc, list -> acc.plus(list) }.groupBy { it.platform }
                     .map { it.key to (it.value.sumByDouble { a -> a.bet.toDouble() }.toBigDecimal().setScale(2, 2)) }.toMap()
@@ -948,12 +948,12 @@ open class CashApiController(
 
                     // 查询本周下注金额
                     val historyBet = reportMap[it.platform] ?: BigDecimal.ZERO
-//                    val todayBet = todayReport[it.platform] ?: BigDecimal.ZERO
+                    val todayBet = todayReport[it.platform] ?: BigDecimal.ZERO
 
 
                     val (transfer, tips) = this.checkCanTransferOutAndTips(platformMember = platformMember, platformBalance = platformBalance, language = language)
                     BalanceVo(platform = it.platform, balance = platformBalance, transfer = transfer, tips = tips, centerBalance = wallet.balance, totalBet = totalBet,
-                            weekBet = historyBet)
+                            weekBet = historyBet.plus(todayBet))
                 }
             }.let {
                 log.info("平台：${it.platform}, 查询余额耗时：${System.currentTimeMillis() - watch}ms")

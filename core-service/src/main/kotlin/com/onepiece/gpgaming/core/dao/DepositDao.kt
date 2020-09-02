@@ -31,4 +31,6 @@ interface DepositDao: BasicDao<Deposit> {
 
     fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo>
 
+    fun delOldOrder(startDate: LocalDate)
+
 }
