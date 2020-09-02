@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: su
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      username: myuser
+      password: B6SvmXnrG@Rse5ab
+      url: jdbc:mysql://mydb2.cnzohpwidxge.ap-southeast-1.rds.amazonaws.com:3306/gpgaming?useUnicode=true&characterEncoding=UTF-8
+  profiles:
+    active: dev
+
+  redis:
+    host: 172.168.11.10
+    port: 6379
+  output:
+    ansi:
+      enabled: always
+
+server:
+  servlet:
+    context-path: /api/v1/su
+  port: 8004
+
+jwt:
+  header: Authorization
+  secret: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCFljRsWfgyl3+k
+  expiration: 7
+  tokenHead: "Bearer "
+  route:
+    authentication:
+      path: auth
+      refresh: refresh
+      register: "auth/register"
