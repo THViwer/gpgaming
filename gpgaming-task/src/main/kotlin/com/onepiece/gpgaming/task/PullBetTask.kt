@@ -1,12 +1,15 @@
 package com.onepiece.gpgaming.task
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.PlatformBind
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
+import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService
+import com.onepiece.gpgaming.core.utils.PolUtil
 import com.onepiece.gpgaming.games.GameApi
 import com.onepiece.gpgaming.utils.RedisService
 import org.slf4j.LoggerFactory
@@ -23,7 +26,9 @@ class PullBetTask(
         private val gameApi: GameApi,
         private val betOrderService: BetOrderService,
         private val redisService: RedisService,
-        private val gamePlatformService: GamePlatformService
+        private val gamePlatformService: GamePlatformService,
+        private val polUtil: PolUtil,
+        private val objectMapper: ObjectMapper
 ) {
 
     private val log = LoggerFactory.getLogger(PullBetTask::class.java)
@@ -42,13 +47,13 @@ class PullBetTask(
         betOrderService.batch(orders)
     }
 
-    @Scheduled(cron="0/20 * *  * * ? ")
+    @Scheduled(cron = "0/20 * *  * * ? ")
     fun start20Second() {
         val redisKey = "pull:task:running"
         this.execute(redisKey = redisKey, time = "")
     }
 
-    @Scheduled(cron="0 0 0/1  * * ? ")
+    @Scheduled(cron = "0 0 0/1  * * ? ")
     fun startOneHour() {
         val redisKey = "pull:task:running:hour"
         this.execute(redisKey = redisKey, time = ":hour")
@@ -61,7 +66,7 @@ class PullBetTask(
         log.info("定时任务执行中，现在时间：${LocalDateTime.now()}")
         try {
 
-            val gps = gamePlatformService.all().map { it.platform to  it }.toMap()
+            val gps = gamePlatformService.all().map { it.platform to it }.toMap()
 
             // TODO 暂时用AllBet
             val binds = platformBindService.all()
@@ -71,7 +76,7 @@ class PullBetTask(
                     .filter { gps[it.platform]?.status == Status.Normal }
 
             val list = binds.filter { it.platform != Platform.PlaytechLive }.parallelStream().map { bind ->
-                    this.executePlatform(bind, time)
+                this.executePlatform(bind, time)
             }.collect(Collectors.toList())
 
             log.info("执行成功个数：${list.filter { it }.size}个")
@@ -84,14 +89,26 @@ class PullBetTask(
     private fun executePlatform(bind: PlatformBind, time: String): Boolean {
         return try {
             this.handler(bind = bind, time = time) { startTime, endTime ->
-                gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
+                val data = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
+
+                val log = PolUtil.PullOrderLog(clientId = bind.clientId, platform = bind.platform, flag = true, executeTime = LocalDateTime.now(),
+                        response = objectMapper.writeValueAsString(data))
+                polUtil.pol(log)
+
+                data
             }
             true
         } catch (e: Exception) {
             log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 执行任务失败", e)
+
+            val log = PolUtil.PullOrderLog(clientId = bind.clientId, platform = bind.platform, flag = false, executeTime = LocalDateTime.now(),
+                    response = e.message ?: "")
+            polUtil.pol(log)
+
             false
         }
     }
+
 
     private fun handler(
             bind: PlatformBind,
@@ -114,7 +131,7 @@ class PullBetTask(
                     val hour = Duration.between(it, LocalDateTime.now()).toHours()
                     if (hour > 20) {
                         LocalDateTime.now().minusHours(20)
-                    }else {
+                    } else {
                         it
                     }
                 }
@@ -178,7 +195,7 @@ class PullBetTask(
             Platform.Bcs,
             Platform.CMD,
             Platform.Lbc,
-            Platform.Fgg  -> {
+            Platform.Fgg -> {
                 time != ":hour"
             }
             else -> {

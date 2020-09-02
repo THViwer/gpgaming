@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 class OkHttpUtil(
         private val objectMapper: ObjectMapper,
         private val xmlMapper: XmlMapper
-)  {
+) {
 
     private val log = LoggerFactory.getLogger(OkHttpUtil::class.java)
 
@@ -54,7 +54,7 @@ class OkHttpUtil(
         }
     }
 
-    fun <T> doGet(platform: Platform, url: String, clz: Class<T>,  headers: Map<String, String> = emptyMap()): T {
+    fun <T> doGet(platform: Platform, url: String, clz: Class<T>, headers: Map<String, String> = emptyMap()): T {
         val id = UUID.randomUUID().toString()
         log.info("okHttp post request, platform: $platform, requestId = $id, url = $url, headers = $headers")
 
@@ -75,7 +75,9 @@ class OkHttpUtil(
         }
 
         val json = response.body!!.string()
-        log.info("okHttp post request, platform: $platform, requestId = $id, response = $json")
+        if (json.length < 200) {
+            log.info("okHttp post request, platform: $platform, requestId = $id, response = $json")
+        }
 
         if (clz == String::class.java)
             return json as T
@@ -104,7 +106,9 @@ class OkHttpUtil(
         }
 
         val json = response.body!!.string()
-        log.info("okHttp post request, platform: $platform, requestId = $id, response = $json")
+        if (json.length < 200) {
+            log.info("okHttp post request, platform: $platform, requestId = $id, response = $json")
+        }
 
         if (clz == String::class.java)
             return json as T
@@ -113,7 +117,7 @@ class OkHttpUtil(
     }
 
 
-    fun doPostForm(platform: Platform, url: String, body: FormBody, headers: Map<String, String> = emptyMap()){
+    fun doPostForm(platform: Platform, url: String, body: FormBody, headers: Map<String, String> = emptyMap()) {
         doPostForm(platform, url, body, String::class.java, headers) { code, response ->
             OnePieceExceptionCode.PLATFORM_METHOD_FAIL
         }
@@ -121,7 +125,7 @@ class OkHttpUtil(
 
     fun <T> doPostForm(platform: Platform, url: String, body: FormBody, clz: Class<T>, headers: Map<String, String> = emptyMap()): T {
         return doPostForm(platform = platform, url = url, body = body, clz = clz, headers = headers) { code, response ->
-            error (OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
+            error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
     }
 
@@ -156,7 +160,11 @@ class OkHttpUtil(
             }
             else -> {
                 val json = response.body!!.bytes()
-                log.info("okHttp post request, platform: $platform, requestId = $id, response = ${String(json)}")
+                String(json).let {
+                    if (it.length < 200) {
+                        log.info("okHttp post request, platform: $platform, requestId = $id, response = ${String(json)}")
+                    }
+                }
 
                 objectMapper.readValue(json, clz)
             }
@@ -194,8 +202,11 @@ class OkHttpUtil(
         val request = builder.build()
         val response = getOkHttpClient(url).newCall(request).execute()
         if (response.code != 200) {
-            val message = response.body?.string()
-            log.error("post error, platform = $platform: $message")
+            response.body?.string()?.let {
+                if (it.length < 200) {
+                    log.error("post error, platform = $platform: $it")
+                }
+            }
             error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
@@ -225,13 +236,18 @@ class OkHttpUtil(
 
         val response = getOkHttpClient(url).newCall(request.build()).execute()
         if (response.code != 200 && response.code != 201) {
-            val message = response.body?.string()
-            log.error("post error, code = ${response.code}, platform = $platform: $message")
+            response.body?.string()?.let {
+                if (it.length < 200) {
+                    log.error("post error, code = ${response.code}, platform = $platform: $it")
+                }
+            }
             error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
         }
 
         val responseData = response.body!!.string()
-        log.info("okHttp post request, platform: $platform, requestId = $id, response = $responseData")
+        if (responseData.length < 200) {
+            log.info("okHttp post request, platform: $platform, requestId = $id, response = $responseData")
+        }
 
         return if (clz != String::class.java) {
             xmlMapper.readValue(responseData, clz)

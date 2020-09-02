@@ -57,4 +57,6 @@ object OnePieceRedisKeyConstant {
     fun getPayBinds(clientId: Int) = "pay:bind:$clientId"
 
     fun indexCacheConfig(clientId: Int, language: Language) = "index:config:${clientId}:$language"
+
+    fun getPOL(clientId: Int, platform: Platform) = "POL:$clientId:$platform"
 }
