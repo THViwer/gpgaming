@@ -903,6 +903,7 @@ open class CashApiController(
 
         // 查询厅主开通的平台列表
         val platforms = platformBindService.findClientPlatforms(clientId)
+                .filter { it.status != Status.Delete }
 
         // 查询用户开通的平台列表
         val platformMemberMap = platformMemberService.findPlatformMember(memberId = memberId).map { it.platform to it }.toMap()
