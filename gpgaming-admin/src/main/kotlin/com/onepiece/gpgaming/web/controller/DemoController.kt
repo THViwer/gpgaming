@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
+import com.onepiece.gpgaming.beans.value.database.PlatformBindUo
 import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberService
@@ -51,7 +52,7 @@ class DemoController(
     fun initMemberInfo() {
 
         val memberQuery = MemberQuery()
-        val list =  memberService.list(memberQuery)
+        val list = memberService.list(memberQuery)
 
         list.forEach {
             val infoQuery = MemberInfoValue.MemberInfoQuery(bossId = it.bossId, clientId = it.clientId, memberId = it.id)
@@ -91,6 +92,26 @@ class DemoController(
 
             val sql2 = "update member_info set sale_id = $saleId where member_id in (${memberIds.joinToString(separator = ",")})"
             jdbcTemplate.update(sql2)
+        }
+    }
+
+    @GetMapping("/logo/copy")
+    fun copyIcon(
+            @RequestParam("fid") fid: Int,
+            @RequestParam("tid") tid: Int
+    ) {
+
+        val fList = platformBindService.findClientPlatforms(clientId = fid)
+        val t2List = platformBindService.findClientPlatforms(clientId = tid)
+
+        t2List.forEach { bind ->
+            val copy = fList.firstOrNull { it.platform == bind.platform } ?: return@forEach
+
+            val bindUo = PlatformBindUo(id = bind.id, icon = copy.icon, mobileIcon = copy.mobileIcon, mobileDisableIcon = copy.mobileDisableIcon,
+                    disableIcon = copy.disableIcon, originIcon = copy.originIcon, originIconOver = copy.originIconOver, platformDetailIcon = copy.platformDetailIcon,
+                    platformDetailIconOver = copy.platformDetailIconOver)
+            platformBindService.update(bindUo)
+
         }
     }
 
