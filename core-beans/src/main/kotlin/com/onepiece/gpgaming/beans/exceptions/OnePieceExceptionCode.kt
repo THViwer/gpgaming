@@ -1,7 +1,5 @@
 package com.onepiece.gpgaming.beans.exceptions
 
-import java.lang.RuntimeException
-
 //class LogicException(code: String): RuntimeException()
 
 //class BusinessException(code: Int): RuntimeException()
@@ -38,6 +36,9 @@ object OnePieceExceptionCode {
     const val PLATFORM_DATA_FAIL = "4010" // 平台返回数据错误
     const val MEMBER_BANK_EXIST = "4011" // 用户该银行已有银行卡
     const val AGENT_PROCESS = "4012" // 代理审核中
+    const val PHONE_NEVER_REGISTER = "4013" // 该手机 未注册
+    const val SMS_CODE_ERROR = "4014" // 验证码失败
+    const val SMS_CODE_TIMEOUT = "4015" // 验证码超时
 
     // 5000 cash error
     const val ORDER_EXPIRED = "5001" // 订单操作过期

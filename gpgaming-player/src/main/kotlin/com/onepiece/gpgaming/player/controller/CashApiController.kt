@@ -557,7 +557,7 @@ open class CashApiController(
         // 校验用户是否有充值
         val config = clientConfigService.get(clientId = current.clientId)
         val wallet = walletService.getMemberWallet(memberId = current.id)
-        check(wallet.totalDepositBalance.toDouble() > config.minWithdrawRequire.toDouble()) { OnePieceExceptionCode.NEVER_DEPOSIT }
+        check(wallet.totalDepositBalance.toDouble() >= config.minWithdrawRequire.toDouble()) { OnePieceExceptionCode.NEVER_DEPOSIT }
 
         // 用户银行卡Id
         val memberBankId = this.bindMemberBank(bankId = withdrawCoReq.memberBankId, bank = withdrawCoReq.bank, bankCardNumber = withdrawCoReq.bankCardNumber)

@@ -73,4 +73,11 @@ interface UserApi {
     @ApiOperation(tags = ["user"], value = "平台用户 -> 当前推广列表")
     fun myIntroduceList(): List<UserValue.MyIntroduceVo>
 
+    @ApiOperation(tags = ["user"], value = "平台用户 -> 找回密码(发短信）")
+    fun sendMsgByRegain(@RequestParam("phone") phone: String): UserValue.RegainVo
+
+    @ApiOperation(tags = ["user"], value = "平台用户 -> 找回密码")
+    fun regain(@RequestBody req: UserValue.RegainReq)
+
+
 }

@@ -35,7 +35,7 @@ class SmsService(
     )
 
 
-    fun send(clientId: Int, message: String, mobiles: List<String>) {
+    fun send(clientId: Int, message: String, mobiles: List<String>, code: String? = null, memberIds: Int? = null) {
 
         repeat(mobiles.size) { x ->
             val start = x * MAX_SPLIT
@@ -57,7 +57,10 @@ class SmsService(
                 false
             }
 
-            val co = SmsContentValue.SmsContentCo(clientId = clientId, levelId = null, memberIds = null, phones = data.joinToString(separator = ","), content = message, successful = successful)
+            val co = SmsContentValue.SmsContentCo(clientId = clientId, levelId = null, memberIds = memberIds, phones = data.joinToString(separator = ","),
+                    content = message, successful = successful,
+                    code = code
+            )
             smsContentService.create(co = co)
 
             if (mobiles.size <= end) return
@@ -69,6 +72,9 @@ class SmsService(
         this.send(clientId = clientId, mobiles = listOf(mobile), message = message)
     }
 
+    fun send(clientId: Int, mobile: String, memberId: Int, message: String, code: String? = null) {
+        this.send(clientId = clientId, mobiles = listOf(mobile), message = message, code = code, memberIds = memberId)
+    }
 
 }
 

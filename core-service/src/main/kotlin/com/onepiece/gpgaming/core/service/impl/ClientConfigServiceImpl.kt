@@ -43,8 +43,9 @@ class ClientConfigServiceImpl(
         redisService.delete(redisKey)
     }
 
-    override fun update(id: Int, enableRegisterMessage: Boolean, registerMessageTemplate: String) {
-        clientConfigDao.update(id = id, enableRegisterMessage = enableRegisterMessage, registerMessageTemplate = registerMessageTemplate)
+    override fun update(id: Int, enableRegisterMessage: Boolean, registerMessageTemplate: String, regainMessageTemplate: String) {
+        clientConfigDao.update(id = id, enableRegisterMessage = enableRegisterMessage, registerMessageTemplate = registerMessageTemplate,
+                regainMessageTemplate = regainMessageTemplate)
 
         val config = clientConfigDao.get(id = id)
         val redisKey = OnePieceRedisKeyConstant.getSeo(config.clientId)

@@ -10,7 +10,7 @@ interface ClientConfigDao: BasicDao<ClientConfig> {
 
     fun update(configUo: ClientConfigValue.ClientConfigUo): Boolean
 
-    fun update(id: Int, enableRegisterMessage: Boolean, registerMessageTemplate: String): Boolean
+    fun update(id: Int, enableRegisterMessage: Boolean, registerMessageTemplate: String, regainMessageTemplate: String): Boolean
 
     fun update(uo: ClientConfigValue.IntroduceUo): Boolean
 }

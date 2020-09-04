@@ -24,6 +24,7 @@ import com.onepiece.gpgaming.core.service.MarketService
 import com.onepiece.gpgaming.core.service.MemberIntroduceService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PromotionService
+import com.onepiece.gpgaming.core.service.SmsContentService
 import com.onepiece.gpgaming.core.service.VipService
 import com.onepiece.gpgaming.core.utils.MarketUtil
 import com.onepiece.gpgaming.player.controller.basic.BasicController
@@ -42,9 +43,11 @@ import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.player.jwt.JwtUser
 import com.onepiece.gpgaming.player.sms.SmsService
 import com.onepiece.gpgaming.utils.RequestUtil
+import com.onepiece.gpgaming.utils.StringUtil
 import eu.bitwalker.useragentutils.DeviceType
 import eu.bitwalker.useragentutils.UserAgent
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -53,8 +56,11 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigDecimal
+import java.time.Duration
+import java.time.LocalDateTime
 
 
 @RestController
@@ -74,7 +80,8 @@ class UserApiController(
         private val promotionService: PromotionService,
         private val i18nContentService: I18nContentService,
         private val objectMapper: ObjectMapper,
-        private val analysisDao: AnalysisDao
+        private val analysisDao: AnalysisDao,
+        private val smsContentService: SmsContentService
 ) : BasicController(), UserApi {
 
     companion object {
@@ -82,7 +89,8 @@ class UserApiController(
                 "127.0.0.1",
                 "localhost",
                 "185.232.92.67",
-                "13.251.241.87"
+                "13.251.241.87",
+                "18.136.230.58"
         )
         private const val HASH_CODE = "28b419c9-08aa-40d1-9bc1-ea59ddf751f0"
         private val log = LoggerFactory.getLogger(UserApiController::class.java)
@@ -170,7 +178,7 @@ class UserApiController(
                         ?: contents.firstOrNull { it.id == promotion.id && it.language == Language.EN }?.getII18nContent(objectMapper = objectMapper))?.let { it as I18nContent.PromotionI18n }
 
                 LoginResp.RegisterActivityVo(promotionId = promotion.id, amount = clientConfig.registerCommission,
-                        platforms = promotion.platforms, title = content?.title?: "")
+                        platforms = promotion.platforms, title = content?.title ?: "")
             } else null
 
 
@@ -483,4 +491,35 @@ class UserApiController(
         }
     }
 
+    @GetMapping("/regain")
+    override fun sendMsgByRegain(@RequestParam("phone") phone: String): UserValue.RegainVo {
+
+        val clientId = this.getClientId()
+        val member = memberService.findByPhone(clientId, phone) ?: error(OnePieceExceptionCode.PHONE_NEVER_REGISTER)
+
+        val config = clientConfigService.get(clientId = clientId)
+        val code = StringUtil.generateNumNonce(6)
+        val message = config.regainMessageTemplate.replace("\${code}", code)
+
+        smsService.send(clientId = clientId, memberId = member.id, mobile = phone, message = message, code = code)
+
+        return UserValue.RegainVo(memberId = member.id, phone = phone)
+    }
+
+    @PutMapping("/regain")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    override fun regain(@RequestBody req: UserValue.RegainReq) {
+
+        val smsContent = smsContentService.findLastSms(memberId = req.memberId)
+        checkNotNull(smsContent) { OnePieceExceptionCode.SYSTEM }
+        check(req.code == smsContent.code) { OnePieceExceptionCode.SMS_CODE_ERROR }
+
+        // 检查时间
+        val duration = Duration.between(smsContent.createdTime, LocalDateTime.now())
+        check(duration.seconds <= 60) { OnePieceExceptionCode.SMS_CODE_TIMEOUT }
+
+        // 修改妈妈
+        val memberUo  = MemberUo(id = req.memberId, password = req.password)
+        memberService.update(memberUo)
+    }
 }

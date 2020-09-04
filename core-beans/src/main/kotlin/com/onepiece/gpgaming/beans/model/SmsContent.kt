@@ -23,6 +23,9 @@ class SmsContent (
         // 内容
         val content:  String,
 
+        // 验证码
+        val code: String?,
+
         // 是否成功
         val successful: Boolean,
 

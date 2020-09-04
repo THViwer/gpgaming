@@ -70,7 +70,10 @@ class MarketingValue {
             val enableRegisterMessage: Boolean,
 
             // 注册消息模板
-            val registerMessageTemplate: String
+            val registerMessageTemplate: String,
+
+            // 恢复密码模板
+            val regainMessageTemplate: String
     )
 
 }

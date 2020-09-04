@@ -76,7 +76,8 @@ class MarketApiController(
     override fun getRegMsgTemplate(): MarketingValue.RegisterSmsTemplateReq {
         val user = this.current()
         val config = clientConfigService.get(clientId = user.clientId)
-        return MarketingValue.RegisterSmsTemplateReq(enableRegisterMessage = config.enableRegisterMessage, registerMessageTemplate = config.registerMessageTemplate)
+        return MarketingValue.RegisterSmsTemplateReq(enableRegisterMessage = config.enableRegisterMessage, registerMessageTemplate = config.registerMessageTemplate,
+                regainMessageTemplate = config.regainMessageTemplate)
     }
 
     @PutMapping("/regMsgTemplate")
@@ -84,7 +85,8 @@ class MarketApiController(
 
         val user = this.current()
         val clientConfig = clientConfigService.get(clientId = user.clientId)
-        clientConfigService.update(id = clientConfig.id, enableRegisterMessage = req.enableRegisterMessage, registerMessageTemplate = req.registerMessageTemplate)
+        clientConfigService.update(id = clientConfig.id, enableRegisterMessage = req.enableRegisterMessage, registerMessageTemplate = req.registerMessageTemplate,
+                regainMessageTemplate = req.regainMessageTemplate)
 
     }
 
@@ -131,7 +133,7 @@ class MarketApiController(
 
     @PutMapping("/member/introduce")
     override fun introduceUo(@RequestBody introduceUo: ClientConfigValue.IntroduceUo) {
-        val user  =  this.current()
+        val user = this.current()
         clientConfigService.update(uo = introduceUo.copy(clientId = user.clientId))
     }
 }

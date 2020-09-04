@@ -91,6 +91,29 @@ sealed class UserValue {
             // 注册时间
             val createdTime: LocalDateTime
     )
+
+    data class RegainVo(
+
+            // 会员Id
+            val memberId: Int,
+
+            // 手机号
+            val phone: String
+    )
+
+    data  class RegainReq(
+            // 会员Id
+            val memberId: Int,
+
+            // 手机
+            val phone: String,
+
+            // 验证码
+            val code: String,
+
+            // 密码
+            val password: String
+    )
 }
 
 data class LoginResp(

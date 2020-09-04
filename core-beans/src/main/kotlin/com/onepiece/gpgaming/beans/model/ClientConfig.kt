@@ -38,6 +38,8 @@ data class ClientConfig(
         val enableRegisterMessage: Boolean,
         // 短信注册模板
         val registerMessageTemplate: String,
+        // 找加密码模板
+        val regainMessageTemplate: String,
 
 
         /** 会员推广佣金 */

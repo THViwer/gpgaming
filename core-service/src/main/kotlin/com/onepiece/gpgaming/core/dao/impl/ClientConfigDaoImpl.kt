@@ -30,6 +30,8 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
             val asgContent = rs.getString("asg_content")
             val enableRegisterMessage = rs.getBoolean("enable_register_message")
             val registerMessageTemplate = rs.getString("register_message_template")
+                val regainMessageTemplate = rs.getString("regain_message_template")
+
 
             val enableIntroduce = rs.getBoolean("enable_introduce")
             val introducePromotionId = rs.getInt("introduce_promotion_id")
@@ -47,7 +49,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                     enableRegisterMessage = enableRegisterMessage, registerMessageTemplate = registerMessageTemplate,
                     enableIntroduce = enableIntroduce, introducePromotionId = introducePromotionId, registerCommission = registerCommission,
                     depositPeriod = depositPeriod, commissionPeriod = commissionPeriod, depositCommission = depositCommission,
-                    shareTemplate = shareTemplate, minWithdrawRequire = minWithdrawRequire)
+                    shareTemplate = shareTemplate, minWithdrawRequire = minWithdrawRequire, regainMessageTemplate = regainMessageTemplate)
         }
 
     override fun create(configUo: ClientConfigValue.ClientConfigUo): Boolean {
@@ -71,6 +73,8 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("share_template", "")
                 .set("min_withdraw_require", BigDecimal.ZERO)
 
+                .set("regain_message_template", "Your valid code is \${code}")
+
                 .executeOnlyOne()
     }
 
@@ -90,10 +94,11 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .executeOnlyOne()
     }
 
-    override fun update(id: Int, enableRegisterMessage: Boolean, registerMessageTemplate: String): Boolean {
+    override fun update(id: Int, enableRegisterMessage: Boolean, registerMessageTemplate: String, regainMessageTemplate: String): Boolean {
         return update()
                 .set("enable_register_message", enableRegisterMessage)
                 .set("register_message_template", registerMessageTemplate)
+                .set("regain_message_template", regainMessageTemplate)
                 .where("id", id)
                 .executeOnlyOne()
     }
