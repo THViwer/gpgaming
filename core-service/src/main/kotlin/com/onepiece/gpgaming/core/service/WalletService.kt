@@ -12,7 +12,7 @@ interface WalletService {
 
     fun create(walletCo: WalletCo)
 
-    fun update(walletUo: WalletUo): BigDecimal
+    fun update(walletUo: WalletUo, time: Int = 0): BigDecimal
 
     fun query(walletQuery: WalletQuery): List<Wallet>
 

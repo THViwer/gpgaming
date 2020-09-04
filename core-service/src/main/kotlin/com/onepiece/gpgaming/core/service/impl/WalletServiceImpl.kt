@@ -53,7 +53,17 @@ class WalletServiceImpl(
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 
-    override fun update(walletUo: WalletUo): BigDecimal {
+    override fun update(walletUo: WalletUo, time: Int): BigDecimal {
+        if (time > 3) error(OnePieceExceptionCode.DB_CHANGE_FAIL)
+
+        return try {
+            this.update(walletUo)
+        } catch (e: Exception) {
+            this.update(walletUo, time + 1)
+        }
+    }
+
+    fun update(walletUo: WalletUo): BigDecimal {
 
         val wallet = this.getMemberWallet(walletUo.memberId)
 
