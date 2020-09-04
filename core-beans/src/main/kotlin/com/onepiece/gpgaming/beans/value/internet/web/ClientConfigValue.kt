@@ -32,7 +32,6 @@ sealed class ClientConfigValue {
 
             // asg content
             val asgContent: String
-
     )
 
     data class ClientConfigVo(
@@ -80,7 +79,10 @@ sealed class ClientConfigValue {
             // 充值佣金
             val depositCommission: BigDecimal,
             // 分享模板
-            val shareTemplate: String
+            val shareTemplate: String,
+
+            // 最低出款要求 (出款必须有充值 且充值过的金额 大于 该值)
+            val minWithdrawRequire: BigDecimal
     )
 
 }

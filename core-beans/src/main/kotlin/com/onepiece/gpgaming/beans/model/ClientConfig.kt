@@ -56,6 +56,9 @@ data class ClientConfig(
         // 分享消息模板
         val shareTemplate: String,
 
+        // 最低出款要求 (出款必须有充值 且充值过的金额 大于 该值)
+        val minWithdrawRequire: BigDecimal,
+
 
         // 创建时间
         val createdTime: LocalDateTime

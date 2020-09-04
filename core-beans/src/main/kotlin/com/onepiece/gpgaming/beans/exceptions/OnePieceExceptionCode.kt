@@ -54,6 +54,7 @@ object OnePieceExceptionCode {
     const val BANK_CARD_ERROR = "5012" // 银行卡错误 不为数字或长度不够
     const val TRANSFER_TIME_FAST = "5013" // 转账时间过快
     const val PROMOTION_CODE_EXIST = "5014" // 优惠码已存在
+    const val NEVER_DEPOSIT = "5015" // 从未充值 不能出款
 
 
     // 60000 platform method error

@@ -38,6 +38,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
             val commissionPeriod = rs.getInt("commission_period")
             val depositCommission = rs.getBigDecimal("deposit_commission")
             val shareTemplate = rs.getString("share_template")
+            val minWithdrawRequire = rs.getBigDecimal("min_withdraw_require")
 
 
             ClientConfig(id = id, clientId = clientId, keywords = keywords, description = description, createdTime = createdTime,
@@ -46,7 +47,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                     enableRegisterMessage = enableRegisterMessage, registerMessageTemplate = registerMessageTemplate,
                     enableIntroduce = enableIntroduce, introducePromotionId = introducePromotionId, registerCommission = registerCommission,
                     depositPeriod = depositPeriod, commissionPeriod = commissionPeriod, depositCommission = depositCommission,
-                    shareTemplate = shareTemplate)
+                    shareTemplate = shareTemplate, minWithdrawRequire = minWithdrawRequire)
         }
 
     override fun create(configUo: ClientConfigValue.ClientConfigUo): Boolean {
@@ -68,6 +69,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("commission_period", 0)
                 .set("deposit_commission", 0)
                 .set("share_template", "")
+                .set("min_withdraw_require", BigDecimal.ZERO)
 
                 .executeOnlyOne()
     }
@@ -83,6 +85,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("facebook_tr", configUo.facebookTr)
                 .set("facebook_show_position", configUo.facebookShowPosition)
                 .set("asg_content", configUo.asgContent)
+
                 .where("client_id", configUo.clientId)
                 .executeOnlyOne()
     }
@@ -104,6 +107,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("commission_period", uo.commissionPeriod)
                 .set("deposit_commission", uo.depositCommission)
                 .set("share_template", uo.shareTemplate)
+                .set("min_withdraw_require", uo.minWithdrawRequire)
                 .where("client_id", uo.clientId)
                 .executeOnlyOne()
     }

@@ -239,7 +239,10 @@ open class CashApiController(
         val todayWithdraw = withdrawService.getTotalWithdraw(clientId = user.clientId, memberId = user.id, startDate = startDate)
         val lastWithdraw = wallet.balance.minus(todayWithdraw).minus(rebate)
 
-        return CheckBetResp(currentBet = currentBet, needBet = needBet, overBet = overBet, yesRebate = rebate, todayBet = todayBet, lastWithdraw = lastWithdraw)
+
+        val clientConfig = clientConfigService.get(clientId = user.clientId)
+        return CheckBetResp(currentBet = currentBet, needBet = needBet, overBet = overBet, yesRebate = rebate, todayBet = todayBet, lastWithdraw = lastWithdraw,
+                totalDeposit = wallet.totalDepositBalance, minWithdrawRequire = clientConfig.minWithdrawRequire)
     }
 
     @PostMapping("/bank/my")
@@ -551,6 +554,12 @@ open class CashApiController(
         check(withdrawCoReq.money.toDouble() >= 50) { OnePieceExceptionCode.SYSTEM } // 最低出款金额为50
         check(this.checkBet().overBet.toDouble() <= 0) { "打码量不足" }
 
+        // 校验用户是否有充值
+        val config = clientConfigService.get(clientId = current.clientId)
+        val wallet = walletService.getMemberWallet(memberId = current.id)
+        check(wallet.totalDepositBalance.toDouble() > config.minWithdrawRequire.toDouble()) { OnePieceExceptionCode.NEVER_DEPOSIT }
+
+        // 用户银行卡Id
         val memberBankId = this.bindMemberBank(bankId = withdrawCoReq.memberBankId, bank = withdrawCoReq.bank, bankCardNumber = withdrawCoReq.bankCardNumber)
 
         // check bank id
