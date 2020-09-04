@@ -57,7 +57,8 @@ class SmsService(
                 false
             }
 
-            val co = SmsContentValue.SmsContentCo(clientId = clientId, levelId = null, memberIds = null, phones = data.joinToString(separator = ","), content = message, successful = successful)
+            val co = SmsContentValue.SmsContentCo(clientId = clientId, levelId = null, memberIds = null, phones = data.joinToString(separator = ","), content = message, successful = successful,
+                    code = null)
             smsContentService.create(co = co)
 
             if (mobiles.size <= end) return
