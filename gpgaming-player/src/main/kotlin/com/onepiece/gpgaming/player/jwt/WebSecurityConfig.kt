@@ -152,6 +152,8 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/api/auth",
                         "/api/auth/",
 
+                        "/user/regain",
+
                         "/pay/**"
                 ).permitAll()
                 .antMatchers(HttpMethod.POST, "/order").permitAll()
