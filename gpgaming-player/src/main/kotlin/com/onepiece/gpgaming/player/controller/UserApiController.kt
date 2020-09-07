@@ -503,7 +503,7 @@ class UserApiController(
 
         smsService.send(clientId = clientId, memberId = member.id, mobile = phone, message = message, code = code)
 
-        return UserValue.RegainVo(memberId = member.id, phone = phone)
+        return UserValue.RegainVo(memberId = member.id, phone = phone, username = member.username)
     }
 
     @PutMapping("/regain")

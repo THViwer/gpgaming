@@ -97,6 +97,9 @@ sealed class UserValue {
             // 会员Id
             val memberId: Int,
 
+            //  用户名
+            val username: String,
+
             // 手机号
             val phone: String
     )
