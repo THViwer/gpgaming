@@ -136,8 +136,9 @@ class AllBetService : PlatformService() {
         val allBetClientToken = checkTransferReq.token as AllBetClientToken
 
         // query_transfer_state
+        val allBetOrderId = "${allBetClientToken.propertyId}${checkTransferReq.platformOrderId}"
         val data = listOf(
-                "sn=${checkTransferReq.platformOrderId}",
+                "sn=${allBetOrderId}",
                 "random=${UUID.randomUUID()}"
         )
         val urlParam = data.joinToString(separator = "&")
