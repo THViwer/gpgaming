@@ -136,7 +136,7 @@ class AllBetService : PlatformService() {
         val allBetClientToken = checkTransferReq.token as AllBetClientToken
 
         // query_transfer_state
-        val allBetOrderId = "${allBetClientToken.propertyId}${checkTransferReq.platformOrderId}"
+        val allBetOrderId = "${allBetClientToken.propertyId}${checkTransferReq.orderId}"
         val data = listOf(
                 "sn=${allBetOrderId}",
                 "random=${UUID.randomUUID()}"
