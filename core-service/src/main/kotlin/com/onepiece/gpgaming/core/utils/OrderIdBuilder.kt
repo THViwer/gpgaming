@@ -57,7 +57,7 @@ class OrderIdBuilder(
 
             }
 //            Platform.AllBet -> "T${platform.name.substring(0, 1)}${getCurrentTime(dateTimeFormat2)}${StringUtil.generateNumNonce(5)}"
-            Platform.AllBet -> "${getCurrentTime(dateTimeFormat4)}${StringUtil.generateNumNonce(6)}"
+            Platform.AllBet -> "${getCurrentTime(dateTimeFormat2)}${StringUtil.generateNumNonce(7)}"
 
             Platform.TTG -> {
                 val clientToken = platformBindService.find(clientId = clientId, platform = platform).clientToken as TTGClientToken
