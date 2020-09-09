@@ -362,7 +362,6 @@ class GameApi(
     ): GameValue.TransferResp {
 
         check(gamePlatformService.all().first { it.platform == platform }.status == Status.Normal) { OnePieceExceptionCode.PLATFORM_MAINTAIN }
-        check(amount.toDouble() >= 1) { OnePieceExceptionCode.SYSTEM }
 
         val msg = if (amount.toDouble() > 0) {
             "中心 => $platform"
