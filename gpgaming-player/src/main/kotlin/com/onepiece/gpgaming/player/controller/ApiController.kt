@@ -118,6 +118,10 @@ open class ApiController(
                 .let {
                     if (it.isEmpty()) hotGameService.list(1) else it
                 }
+                .let {
+                    if (it.isEmpty()) hotGameService.list(10001) else it
+
+                }
 
         if (games.isEmpty()) return emptyList()
 
