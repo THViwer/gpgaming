@@ -79,7 +79,7 @@ class PullBetTask(
                     }
                 }
 
-        binds.forEach { bind ->
+        binds.parallelStream().forEach { bind ->
 
             val preExecuteTime = this.getExecuteCacheKey(bind = bind)
 
@@ -131,7 +131,7 @@ class PullBetTask(
                     }
                 }
 
-        binds.forEach { bind ->
+        binds.parallelStream().forEach { bind ->
             val startTime = LocalDateTime.now().minusHours(1)
             val endTime = startTime.plusMinutes(13)
 
@@ -169,7 +169,7 @@ class PullBetTask(
                     }
                 }
 
-        binds.forEach { bind ->
+        binds.parallelStream().forEach { bind ->
             val startTime = LocalDateTime.now().minusHours(5)
             val endTime = startTime.plusMinutes(28)
 
