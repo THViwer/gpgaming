@@ -619,7 +619,7 @@ open class ApiController(
         val sites = webSiteService.all().filter { it.bossId == bossId }
                 .filter { !requestURL.contains(it.domain) }
 
-        val clients = clientService.all().filter { it.status == Status.Normal && bossId == bossId }
+        val clients = clientService.all().filter { it.status == Status.Normal && it.bossId == bossId }
 
         val defaultClient = clients.first { it.main }
 
