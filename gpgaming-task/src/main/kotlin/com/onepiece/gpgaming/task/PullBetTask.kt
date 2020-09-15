@@ -188,6 +188,7 @@ class PullBetTask(
         } catch (e: Exception) {
             log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 执行任务失败", e)
 
+            val okResponse = gameResponse.okResponse.copy(message = e.message?: "")
             this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = gameResponse.okResponse, taskType = taskType)
         }
 
