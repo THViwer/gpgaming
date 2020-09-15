@@ -665,7 +665,7 @@ open class CashApiController(
         val checkPromotions = joinPromotions.parallelStream().map { promotion ->
 
             val platformMemberVo = getPromotionPlatformMember(platform, current)
-            val platformBalance = gameApi.balance(clientId = member.clientId, platform = platform, platformUsername = platformMemberVo.platformUsername,
+            val platformBalance = gameApi.balance(clientId = member.clientId, memberId = platformMemberVo.memberId, platform = platform, platformUsername = platformMemberVo.platformUsername,
                     platformPassword = platformMemberVo.platformPassword)
 
             val platformMember = platformMemberService.get(platformMemberVo.id)
@@ -884,7 +884,7 @@ open class CashApiController(
                 val platformMemberVo = getPlatformMember(platform, member)
                 val platformMember = platformMemberService.get(platformMemberVo.id)
 
-                val platformBalance = gameApi.balance(clientId = member.clientId, platformUsername = platformMemberVo.platformUsername, platform = platform,
+                val platformBalance = gameApi.balance(clientId = member.clientId, memberId = platformMemberVo.memberId, platformUsername = platformMemberVo.platformUsername, platform = platform,
                         platformPassword = platformMember.password)
                 val (transfer, tips) = this.checkCanTransferOutAndTips(platformMember = platformMember, platformBalance = platformBalance, language = language)
 
@@ -946,7 +946,7 @@ open class CashApiController(
                 true -> BalanceVo(platform = it.platform, balance = BigDecimal.ZERO, transfer = true, tips = null, centerBalance = wallet.balance, totalBet = BigDecimal.ZERO)
                 else -> {
                     val platformBalance = try {
-                        gameApi.balance(clientId = clientId, platformUsername = platformMember.username, platform = it.platform,
+                        gameApi.balance(clientId = clientId, memberId = platformMember.memberId, platformUsername = platformMember.username, platform = it.platform,
                                 platformPassword = platformMember.password)
                     } catch (e: Exception) {
                         BigDecimal.valueOf(-1)

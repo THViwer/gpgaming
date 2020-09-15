@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.games.combination
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
@@ -10,6 +11,9 @@ import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.DesECBUtil
 import com.onepiece.gpgaming.games.bet.MapUtil
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
 import com.onepiece.gpgaming.utils.StringUtil
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
@@ -25,23 +29,27 @@ class AsiaGamingService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(AsiaGamingService::class.java)
 
-    fun startGetXml(data: List<String>, clientToken: AsiaGamingClientToken): AsiaGamingValue.Result {
-
-
+    fun doGetXml(data: List<String>, clientToken: AsiaGamingClientToken): OKResponse {
         val signData = data.joinToString(separator = "/\\\\/")
         val params = DesECBUtil.encrypt(data = signData, key = clientToken.desSecret)
-//                .let { URLEncoder.encode(it, "utf-8") }
         val key = DigestUtils.md5Hex("$params${clientToken.md5Secret}")
 
         val headers = mapOf(
                 "headers" to "WEB_LIB_GI_${clientToken.agentCode}"
         )
-        val apiPath = "${clientToken.apiPath}/doBusiness.do?params=${params.let { URLEncoder.encode(it, "utf-8") }}&key=$key"
-        return okHttpUtil.doGetXml(platform = Platform.AsiaGamingLive, url = apiPath, clz = AsiaGamingValue.Result::class.java, headers = headers)
+
+        val url = "${clientToken.apiPath}/doBusiness.do"
+        val param = "params=${params.let { URLEncoder.encode(it, "utf-8") }}&key=$key"
+
+        val okParam = OKParam.ofGetXml(url = url, param = param, headers = headers)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
+        if (!okResponse.ok) return okResponse
+
+        return okResponse
     }
 
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
         val clientToken = registerReq.token as AsiaGamingClientToken
 
         val data = listOf(
@@ -54,18 +62,19 @@ class AsiaGamingService : PlatformService() {
                 "cur=${clientToken.currency}"
         )
 
-        val result = this.startGetXml(data = data, clientToken = clientToken)
-        check(result.info == "0") {
-            log.error("asiaGaming register error: ${result.info}, ${result.msg}")
-            result.msg
+        val okResponse = this.doGetXml(data = data, clientToken = clientToken)
+        val ok = try {
+            okResponse.asInt("info") == 0
+        } catch (e: Exception) {
+            false
         }
-
-        return registerReq.username
+        return this.bindGameResponse(okResponse = okResponse.copy(ok = ok)) {
+            registerReq.username
+        }
     }
 
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
         val clientToken = balanceReq.token as AsiaGamingClientToken
-
 
         val data = listOf(
                 "cagent=${clientToken.agentCode}",
@@ -76,16 +85,13 @@ class AsiaGamingService : PlatformService() {
                 "cur=${clientToken.currency}"
         )
 
-        val result = this.startGetXml(data = data, clientToken = clientToken)
-        return try {
-            result.info.toBigDecimal()
-        } catch (e: Exception) {
-            log.info("asiaGaming get balance error: ${result.info}, ${result.msg}")
-            error(result.msg)
+        val okResponse = this.doGetXml(data = data, clientToken = clientToken)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asBigDecimal("info")
         }
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
 
         val clientToken = transferReq.token as AsiaGamingClientToken
 
@@ -106,9 +112,11 @@ class AsiaGamingService : PlatformService() {
                 "password=${transferReq.password}",
                 "cur=${clientToken.currency}"
         )
-        val preResult = this.startGetXml(data = preData, clientToken = clientToken)
-        check(preResult.info == "0") { preResult.msg }
-
+        val preOkResponse = this.doGetXml(data = preData, clientToken = clientToken)
+        val preOk = preOkResponse.asString("info") == "0"
+        if (!preOk) return this.bindGameResponse(okResponse = preOkResponse.copy(ok = preOk)) {
+            GameValue.TransferResp.failed()
+        }
 
         val data = listOf(
                 "cagent=${clientToken.agentCode}",
@@ -122,16 +130,18 @@ class AsiaGamingService : PlatformService() {
                 "password=${transferReq.password}",
                 "cur=${clientToken.currency}"
         )
-        val result = this.startGetXml(data = data, clientToken = clientToken)
-        check(result.info == "0") {
-            log.info("asiaGaming transfer error: ${result.info}, ${result.msg}")
-            result.msg
+        val okResponse = this.doGetXml(data = data, clientToken = clientToken)
+        val ok = try {
+            okResponse.asString("info") == "0"
+        } catch (e: Exception) {
+            false
         }
-
-        return GameValue.TransferResp.successful(platformOrderId = transferReq.orderId)
+        return this.bindGameResponse(okResponse = okResponse.copy(ok = ok)) {
+            GameValue.TransferResp.successful()
+        }
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
 
         val clientToken = checkTransferReq.token as AsiaGamingClientToken
 
@@ -142,13 +152,15 @@ class AsiaGamingService : PlatformService() {
                 "actype=1",
                 "cur=${clientToken.currency}"
         )
-        val result = this.startGetXml(data = data, clientToken = clientToken)
-        check(result.info == "0") {
-            log.info("asiaGaming check transfer error: ${result.info}, ${result.msg}")
-            result.msg
+        val okResponse = this.doGetXml(data = data, clientToken = clientToken)
+        val ok = try {
+            okResponse.asString("info") == "0"
+        } catch (e: Exception) {
+            false
         }
-
-        return GameValue.TransferResp.successful(platformOrderId = checkTransferReq.orderId)
+        return this.bindGameResponse(okResponse = okResponse.copy(ok = ok)) {
+            GameValue.TransferResp.successful()
+        }
     }
 
     private fun getLang(language: Language): String {
@@ -162,7 +174,7 @@ class AsiaGamingService : PlatformService() {
         }
     }
 
-    override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
+    override fun startSlot(startSlotReq: GameValue.StartSlotReq): GameResponse<String> {
 
         val clientToken = startSlotReq.token as AsiaGamingClientToken
 
@@ -185,11 +197,11 @@ class AsiaGamingService : PlatformService() {
         val params = DesECBUtil.encrypt(data = signData, key = clientToken.desSecret)
         val key = DigestUtils.md5Hex("$params${clientToken.md5Secret}")
 
-
-        return "${clientToken.gamePath}/forwardGame.do?params=${params}&key=${key}"
+        val path = "${clientToken.gamePath}/forwardGame.do?params=${params}&key=${key}"
+        return GameResponse.of(data = path)
     }
 
-    override fun start(startReq: GameValue.StartReq): String {
+    override fun start(startReq: GameValue.StartReq): GameResponse<String> {
         val clientToken = startReq.token as AsiaGamingClientToken
 
         val mh5 = if (startReq.launch == LaunchMethod.Wap) "mh5=y" else ""
@@ -212,8 +224,8 @@ class AsiaGamingService : PlatformService() {
         val params = DesECBUtil.encrypt(data = signData, key = clientToken.desSecret)
         val key = DigestUtils.md5Hex("$params${clientToken.md5Secret}")
 
-
-        return "${clientToken.gamePath}/forwardGame.do?params=${params}&key=${key}"
+        val path = "${clientToken.gamePath}/forwardGame.do?params=${params}&key=${key}"
+        return GameResponse.of(data = path)
     }
 
 
@@ -258,7 +270,7 @@ class AsiaGamingService : PlatformService() {
     }
 
 
-    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
 
         val clientToken = pullBetOrderReq.token as AsiaGamingClientToken
 
@@ -270,6 +282,7 @@ class AsiaGamingService : PlatformService() {
         var page = 1
         var totalPage = 1
 
+        var gameResponse: GameResponse<List<BetOrderValue.BetOrderCo>>
         do {
             val data = mapOf(
                     "cagent" to clientToken.orderAgentCode,
@@ -286,22 +299,31 @@ class AsiaGamingService : PlatformService() {
 
             val urlParam = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
 
-            val url =  "http://gdpfb8.gdcapi.com:3333/${path}?$urlParam&key=$sign"
-            val result = okHttpUtil.doGetXml(platform = Platform.AsiaGamingLive, url = url, clz = AsiaGamingValue.BetResult::class.java)
+            val url = "http://gdpfb8.gdcapi.com:3333/${path}"
+            val param = "$urlParam&key=$sign"
 
-            val list = result.row.map {  row ->
-                val bet = row.mapUtil
-                val handle = handleBet()
-                handle(pullBetOrderReq.platform, bet)
+            val okParam = OKParam.ofGetXml(url = url, param = param)
+            val okResponse = u9HttpRequest.startRequest(okParam)
+
+            gameResponse = this.bindGameResponse(okResponse = okResponse) {
+                val result = xmlMapper.readValue<AsiaGamingValue.BetResult>(okResponse.response)
+                val list = result.row.map { row ->
+                    val bet = row.mapUtil
+                    val handle = handleBet()
+                    handle(pullBetOrderReq.platform, bet)
+                }
+
+                orders.addAll(list)
+
+                page += 1
+                totalPage = result.addition.totalpage
+
+                list
             }
 
-            orders.addAll(list)
-
-            page += 1
-            totalPage = result.addition.totalpage
         } while (totalPage > page)
 
-        return orders
+        return gameResponse.copy(data = orders)
     }
 }
 

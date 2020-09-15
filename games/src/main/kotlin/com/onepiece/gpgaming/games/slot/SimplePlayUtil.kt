@@ -1,15 +1,12 @@
 package com.onepiece.gpgaming.games.slot
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.beans.enums.GameCategory
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
-import com.onepiece.gpgaming.beans.value.internet.web.SlotCategory
 import com.onepiece.gpgaming.beans.value.internet.web.SlotGame
 import com.onepiece.gpgaming.utils.AwsS3Util
 import java.io.File
-import java.util.*
 import java.util.stream.Collectors
 
 object SimplePlayUtil {

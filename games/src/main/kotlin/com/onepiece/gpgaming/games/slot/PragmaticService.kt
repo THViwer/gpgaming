@@ -5,7 +5,6 @@ import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
-import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.PragmaticClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
@@ -14,6 +13,9 @@ import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -21,12 +23,12 @@ import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
 
 @Service
-class PragmaticService: PlatformService() {
+class PragmaticService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(PragmaticService::class.java)
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    fun startDoPostForm(method: String, clientToken: PragmaticClientToken, data: Map<String, Any>): MapUtil {
+    fun doGet(method: String, clientToken: PragmaticClientToken, data: Map<String, Any>): OKResponse {
 
         val param = data.map { "${it.key}=${it.value}" }.sorted().joinToString("&")
         val signParam = "$param${clientToken.secret}"
@@ -35,17 +37,21 @@ class PragmaticService: PlatformService() {
         val urlParam = "$param&hash=$sign"
         val url = "${clientToken.apiPath}/IntegrationService/v3/http/CasinoGameAPI${method}"
 
-        val result = okHttpUtil.doGet(platform = Platform.Pragmatic, url = "$url?$urlParam", clz = PragmaticValue.Result::class.java)
-        check(result.error == 0) {
-            log.error("pragmatic network error: error = ${result.error}, msg = $result")
+        val okParam = OKParam.ofGet(url = url, param = urlParam)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
 
-            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        if (!okResponse.ok) return okResponse
+
+        val ok = try {
+            val error = okResponse.asInt("error")
+            error == 0
+        } catch (e: Exception) {
+            false
         }
-
-        return result.mapUtil
+        return okResponse.copy(ok = ok)
     }
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
         val clientToken = registerReq.token as PragmaticClientToken
 
         val data = hashMapOf(
@@ -54,23 +60,26 @@ class PragmaticService: PlatformService() {
                 "currency" to clientToken.currency
         )
 
-        this.startDoPostForm(method = "/player/account/create", clientToken = clientToken, data = data)
-
-        return registerReq.username
+        val okResponse = this.doGet(method = "/player/account/create", clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            registerReq.username
+        }
     }
 
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
         val clientToken = balanceReq.token as PragmaticClientToken
 
         val data = hashMapOf(
                 "secureLogin" to clientToken.secureLogin,
                 "externalPlayerId" to balanceReq.username
         )
-        val mapUtil = this.startDoPostForm(method = "/balance/current", clientToken = clientToken, data = data)
-        return mapUtil.asBigDecimal("balance")
+        val okResponse = this.doGet(method = "/balance/current", clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asBigDecimal("balance")
+        }
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = transferReq.token as PragmaticClientToken
 
         val data = hashMapOf(
@@ -79,22 +88,28 @@ class PragmaticService: PlatformService() {
                 "externalTransactionId" to transferReq.orderId,
                 "amount" to transferReq.amount.setScale(2, 2)
         )
-        val mapUtil = this.startDoPostForm(method = "/balance/transfer", clientToken = clientToken, data = data)
-        val balance = mapUtil.asBigDecimal("balance")
-        return GameValue.TransferResp.successful(balance = balance)
+        val okResponse = this.doGet(method = "/balance/transfer", clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            val balance = it.asBigDecimal("balance")
+            GameValue.TransferResp.successful(balance = balance)
+        }
+
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = checkTransferReq.token as PragmaticClientToken
 
         val data = hashMapOf(
                 "secureLogin" to clientToken.secureLogin,
                 "externalTransactionId" to checkTransferReq.orderId
         )
-        val mapUtil = this.startDoPostForm(method = "/balance/transfer/status/", clientToken = clientToken, data = data)
-        val successful = mapUtil.asString("status") == "Success"
-        val balance = mapUtil.asBigDecimal("balance")
-        return GameValue.TransferResp.of(successful = successful, balance = balance)
+        val okResponse = this.doGet(method = "/balance/transfer/status/", clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            val successful = it.asString("status") == "Success"
+            val balance = it.asBigDecimal("balance")
+            GameValue.TransferResp.of(successful = successful, balance = balance)
+        }
+
     }
 
 
@@ -104,9 +119,9 @@ class PragmaticService: PlatformService() {
         val data = hashMapOf(
                 "secureLogin" to clientToken.secureLogin
         )
-        val mapUtil = this.startDoPostForm(method = "/getCasinoGames", clientToken = clientToken, data = data)
+        val okResponse = this.doGet(method = "/getCasinoGames", clientToken = clientToken, data = data)
 
-        return mapUtil.asList("gameList").filter {
+        return okResponse.asList("gameList").filter {
             // MOBILE,DOWNLOAD,WEB
             when (launch) {
                 LaunchMethod.Wap -> it.asString("platform").contains("MOBILE")
@@ -154,7 +169,7 @@ class PragmaticService: PlatformService() {
     }
 
 
-    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
+    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): GameResponse<String> {
         val lang = when (startSlotReq.language) {
             // de, en, es, fr, it, ja, ru, th, tr, vi, zh
             Language.CN -> "zh"
@@ -165,12 +180,12 @@ class PragmaticService: PlatformService() {
             else -> "en"
         }
 
-        return "http://demogamesfree.pragmaticplay.net/gs2c/openGame.do?gameSymbol=${startSlotReq.gameId}&lang=$lang&cur=MYR&lobbyUrl=${startSlotReq.redirectUrl}"
+        val path = "http://demogamesfree.pragmaticplay.net/gs2c/openGame.do?gameSymbol=${startSlotReq.gameId}&lang=$lang&cur=MYR&lobbyUrl=${startSlotReq.redirectUrl}"
+        return GameResponse.of(data = path)
     }
 
 
-
-    override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
+    override fun startSlot(startSlotReq: GameValue.StartSlotReq): GameResponse<String> {
 
         val clientToken = startSlotReq.token as PragmaticClientToken
 
@@ -198,11 +213,13 @@ class PragmaticService: PlatformService() {
                 "lobbyURL" to startSlotReq.redirectUrl
         )
 
-        val mapUtil = this.startDoPostForm(method = "/game/start", data = data, clientToken = clientToken)
-        return mapUtil.asString("gameURL")
+        val okResponse = this.doGet(method = "/game/start", data = data, clientToken = clientToken)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asString("gameURL")
+        }
     }
 
-    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
         val clientToken = pullBetOrderReq.token as PragmaticClientToken
 
         val timepoint = System.currentTimeMillis()
@@ -214,10 +231,15 @@ class PragmaticService: PlatformService() {
             ).joinToString(separator = "&")
 
 //            val url = "${gameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/DataFeeds/transactions?$urlParam"
-            val url = "${clientToken.apiPath}/IntegrationService/v3/DataFeeds/gamerounds/finished/?$urlParam"
-            val csv = okHttpUtil.doGet(platform = Platform.Pragmatic, url = url, clz = String::class.java)
-            val orders = parseCsv(csv = csv)
-            "$timepoint" to orders
+            val url = "${clientToken.apiPath}/IntegrationService/v3/DataFeeds/gamerounds/finished/"
+
+            val okParam = OKParam.ofGet(url = url, param = urlParam).copy(serialization = false)
+            val okResponse = u9HttpRequest.startRequest(okParam)
+
+            val gameResponse = this.bindGameResponse(okResponse) {
+                parseCsv(csv = okResponse.response)
+            }
+            BetNextIdData(nextId = "$timepoint", gameResponse = gameResponse)
         }
 
     }
@@ -226,7 +248,8 @@ class PragmaticService: PlatformService() {
         val list = arrayListOf<MapUtil>()
         csv.lines().forEachIndexed { index, s ->
             when (index) {
-                0, 1 -> {}
+                0, 1 -> {
+                }
                 else -> {
                     if (s.isBlank()) return@forEachIndexed
                     val data = s.split(",")

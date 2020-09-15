@@ -1,9 +1,9 @@
 package com.onepiece.gpgaming.games.sport
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
-import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.BcsClientToken
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
@@ -11,7 +11,9 @@ import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil.prefixPlatformUsern
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.DEFAULT_DATETIMEFORMATTER
-import com.onepiece.gpgaming.games.bet.MapUtil
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -44,25 +46,25 @@ class BcsService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(BcsService::class.java)
 
+    fun doGetXml(clientToken: BcsClientToken, method: String, data: Map<String, Any>): OKResponse {
 
-    fun getRequestPath(clientToken: BcsClientToken, path: String, data: Map<String, Any>): String {
-        val urlParam = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-        return "${clientToken.apiPath}${path}?$urlParam"
-    }
+        val url = "${clientToken.apiPath}${method}"
+        val param = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
 
-    fun startDoGetXml(url: String): MapUtil {
-        val result = okHttpUtil.doGetXml(platform = Platform.Bcs, url = url, clz = BcsValue.Result::class.java)
-        check(result.errorCode == "000000") {
-            log.error("amzbet sport platform error: $url" )
-            log.error("amzbet sport platform error: errorCode = ${result.errorCode}")
-            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        val okParam = OKParam.ofGetXml(url = url, param = param)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
+        if (!okResponse.ok) return okResponse
+
+        val ok = try {
+            val errcode = okResponse.asString("errcode")
+            errcode == "000000"
+        } catch (e: Exception) {
+            false
         }
-
-        return MapUtil.instance(result.data)
-
+        return okResponse.copy(ok = ok)
     }
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
 
         val token = registerReq.token as BcsClientToken
         val param = mapOf(
@@ -72,14 +74,13 @@ class BcsService : PlatformService() {
                 "Currency" to token.currency
         )
 
-
-        val url = this.getRequestPath(token,"/ThirdApi.asmx/Register", param)
-
-        this.startDoGetXml(url = url)
-        return registerReq.username
+        val okResponse = this.doGetXml(clientToken = token, method = "/ThirdApi.asmx/Register", data = param)
+        return this.bindGameResponse(okResponse = okResponse) {
+            registerReq.username
+        }
     }
 
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
 
         val token = balanceReq.token as BcsClientToken
         val param = mapOf(
@@ -87,18 +88,19 @@ class BcsService : PlatformService() {
                 "MemberAccount" to balanceReq.username
         )
 
-        val url = this.getRequestPath(clientToken = token, path = "/ThirdApi.asmx/GetBalance", data = param)
-        val mapUtil = this.startDoGetXml(url = url)
-        return mapUtil.asMap("result").asBigDecimal("Balance")
+        val okResponse = this.doGetXml(clientToken = token, method = "/ThirdApi.asmx/GetBalance", data = param)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asMap("result").asBigDecimal("Balance")
+        }
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
 
         val token = transferReq.token as BcsClientToken
         val transferType = if (transferReq.amount.toDouble() > 0) 0 else 1
 
         // :MD5(APIPassword+MemberAccount+Amount)
-        val signKey = "${token.key}${transferReq.username}${transferReq.amount.abs().setScale(4,2)}".toLowerCase()
+        val signKey = "${token.key}${transferReq.username}${transferReq.amount.abs().setScale(4, 2)}".toLowerCase()
         val sign = DigestUtils.md5Hex(signKey)
         log.info("签名key=$signKey")
         val signLast6 = sign.substring(sign.length - 6, sign.length)
@@ -113,14 +115,15 @@ class BcsService : PlatformService() {
                 "Key" to signLast6
         )
 
-        val url = this.getRequestPath(token, "/ThirdApi.asmx/Transfer", param)
-        val mapUtil = this.startDoGetXml(url)
-        val platformOrderId =  mapUtil.asMap("result").asString("SerialNumber")
-        val balance = mapUtil.asMap("result").asBigDecimal("Balance")
-        return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
+        val okResponse = this.doGetXml(clientToken = token, method = "/ThirdApi.asmx/Transfer", data = param)
+        return this.bindGameResponse(okResponse = okResponse) {
+            val platformOrderId = it.asMap("result").asString("SerialNumber")
+            val balance = it.asMap("result").asBigDecimal("Balance")
+            GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
+        }
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
 
         val token = checkTransferReq.token as BcsClientToken
 
@@ -129,16 +132,13 @@ class BcsService : PlatformService() {
                 "SerialNumber" to checkTransferReq.orderId
         )
 
-        val url = this.getRequestPath(token, "/ThirdApi.asmx/CheckTransfer", param)
-        return try {
-            val mapUtil = this.startDoGetXml(url)
+        val okResponse = this.doGetXml(clientToken = token, method = "/ThirdApi.asmx/CheckTransfer", data = param)
+        return this.bindGameResponse(okResponse = okResponse) {
             GameValue.TransferResp.successful()
-        } catch (e: Exception) {
-            GameValue.TransferResp.failed()
         }
     }
 
-    override fun start(startReq: GameValue.StartReq): String {
+    override fun start(startReq: GameValue.StartReq): GameResponse<String> {
 
         val webType = when (startReq.launch) {
             LaunchMethod.Web -> "PC"
@@ -165,13 +165,13 @@ class BcsService : PlatformService() {
                 "PageStyle" to "SP3" // SP1:TBS SP2:SBO SP3:LBC SP4:HG
 
         )
-        val url = this.getRequestPath(token, "/ThirdApi.asmx/Login", param)
-        val mapUtil = this.startDoGetXml(url)
-
-        return mapUtil.asString("result")
+        val okResponse = this.doGetXml(clientToken = token, method = "/ThirdApi.asmx/Login", data = param)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asString("result")
+        }
     }
 
-    override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {
+    override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): GameResponse<String> {
         val webType = when (launch) {
             LaunchMethod.Web -> "PC"
             LaunchMethod.Wap -> "Smart"
@@ -186,30 +186,12 @@ class BcsService : PlatformService() {
             else -> "EN"
         }
 
-        return "https://sport.ballcrown.com/?WebType=$webType&Language=$lang"
+        val path = "https://sport.ballcrown.com/?WebType=$webType&Language=$lang"
+        return GameResponse.of(data = path)
 
     }
 
-//    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): Any {
-//
-//        val token = betOrderReq.token as BcsClientToken
-//
-//        val param = mapOf(
-//                "APIPassword" to token.key,
-//                "MemberAccount" to betOrderReq.username,
-//                "Status" to "0",
-//                "ReportDate" to "${betOrderReq.startTime.toLocalDate()}"
-//        )
-//
-//        val url = getRequestUrl(path = "/ThirdApi.asmx/GetBetSheetByReport", data = param)
-//
-//        val betResult = okHttpUtil.doGetXml(url = url, clz = BcsValue.BetResult::class.java)
-//        check(betResult.errorCode == "000000") { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
-//
-//        return betResult.result.betlist
-//    }
-
-    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
 
         val token = pullBetOrderReq.token as BcsClientToken
 
@@ -221,14 +203,13 @@ class BcsService : PlatformService() {
                     "Rows" to 1000
             )
 
-            val url = getRequestPath(clientToken = token, path = "/ThirdApi.asmx/GetBetSheetBySort", data = param)
-            val result = okHttpUtil.doGetXml(platform = Platform.Bcs, url = url, clz = BcsValue.PullBetResult::class.java)
+            val okResponse = this.doGetXml(clientToken = token, method = "/ThirdApi.asmx/GetBetSheetBySort", data = param)
+            var nextId = "0"
 
-            if (result.result.isNullOrEmpty()) {
-                nowId to emptyList()
-            } else {
-                var nextId = "0"
-                val orders = result.result.filter { it.data["Status"] == "2" }.map { bet1 ->
+            val gameResponse = this.bindGameResponse(okResponse = okResponse) {
+                val result = xmlMapper.readValue<BcsValue.PullBetResult>(okResponse.response)
+
+                result.result?.filter { it.data["Status"] == "2" }?.map { bet1 ->
                     val bet = bet1.getMapUtil()
                     val orderId = bet.asString("BetID")
                     val username = bet.asString("Account")
@@ -245,10 +226,11 @@ class BcsService : PlatformService() {
                     val originData = objectMapper.writeValueAsString(bet.data)
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Bcs, orderId = orderId, betAmount = betAmount,
                             winAmount = winAmount, betTime = betTime, settleTime = settleTime, originData = originData, validAmount = turnover)
-                }
-
-                nextId to orders
+                }?: emptyList()
             }
+
+            BetNextIdData(nextId = nextId, gameResponse = gameResponse)
+
         }
 
     }

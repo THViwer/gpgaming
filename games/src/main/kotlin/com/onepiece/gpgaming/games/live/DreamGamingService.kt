@@ -3,13 +3,14 @@ package com.onepiece.gpgaming.games.live
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
-import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.DreamGamingClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.BetOrderUtil
-import com.onepiece.gpgaming.games.bet.MapUtil
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -18,21 +19,29 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Service
-class   DreamGamingService : PlatformService() {
+class DreamGamingService : PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     private val log = LoggerFactory.getLogger(DreamGamingService::class.java)
 
-    fun doStartPostJson(clientToken: DreamGamingClientToken, method: String, data: String): MapUtil {
+    fun doPost(clientToken: DreamGamingClientToken, method: String, data: String): OKResponse {
 
         val url = "${clientToken.apiPath}$method"
-        val result = okHttpUtil.doPostJson(platform = Platform.DreamGaming, url = url, data = data, clz = DreamGamingValue.Result::class.java)
 
-        check(result.codeId == 0) {
-            log.error("dreamGaming network error: codeId = ${result.codeId}")
-            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+
+        val okParam = OKParam.ofPost(url = url, param = data)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
+
+        if (!okResponse.ok) return okResponse
+
+        val ok = try {
+            val codeId = okResponse.asInt("codeId")
+            codeId == 0
+        } catch (e: Exception) {
+            false
         }
-        return result.mapUtil
+
+        return okResponse.copy(ok = ok)
     }
 
     private fun getToken(clientToken: DreamGamingClientToken): Pair<String, String> {
@@ -42,7 +51,7 @@ class   DreamGamingService : PlatformService() {
     }
 
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
         val clientToken = registerReq.token as DreamGamingClientToken
 
         val md5Password = DigestUtils.md5Hex(registerReq.password)
@@ -61,11 +70,13 @@ class   DreamGamingService : PlatformService() {
             }
         """.trimIndent()
 
-        this.doStartPostJson(clientToken = clientToken, method = "/user/signup/${clientToken.agentName}", data = data)
-        return registerReq.username
+        val okResponse = this.doPost(clientToken = clientToken, method = "/user/signup/${clientToken.agentName}", data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            registerReq.username
+        }
     }
 
-    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq) {
+    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq): GameResponse<Unit> {
         val clientToken = updatePasswordReq.token as DreamGamingClientToken
 
         val md5Password = DigestUtils.md5Hex(updatePasswordReq.password)
@@ -83,10 +94,11 @@ class   DreamGamingService : PlatformService() {
             }
         """.trimIndent()
 
-        this.doStartPostJson(clientToken = clientToken, method = "/user/update/${clientToken.agentName}", data = data)
+        val okResponse = this.doPost(clientToken = clientToken, method = "/user/update/${clientToken.agentName}", data = data)
+        return this.bindGameResponse(okResponse = okResponse) { }
     }
 
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
         val clientToken = balanceReq.token as DreamGamingClientToken
         val (random, sign) = this.getToken(clientToken)
 
@@ -98,12 +110,13 @@ class   DreamGamingService : PlatformService() {
             } 
         """.trimIndent()
 
-        val mapUtil = this.doStartPostJson(clientToken = clientToken,  method = "/user/getBalance/${clientToken.agentName}", data = data)
-
-        return mapUtil.asMap("member").asBigDecimal("balance")
+        val okResponse = this.doPost(clientToken = clientToken, method = "/user/getBalance/${clientToken.agentName}", data = data)
+        return this.bindGameResponse(okResponse = okResponse) { mapUtil ->
+            mapUtil.asMap("member").asBigDecimal("balance")
+        }
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = transferReq.token as DreamGamingClientToken
         val (random, sign) = this.getToken(clientToken)
 
@@ -119,13 +132,15 @@ class   DreamGamingService : PlatformService() {
             } 
         """.trimIndent()
 
-        val mapUtil = this.doStartPostJson(clientToken = clientToken, method = "/account/transfer/${clientToken.agentName}", data = data)
-        val platformOrderId = mapUtil.asString("data")
-        val balance = mapUtil.asMap("member").asBigDecimal("balance")
-        return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
+        val okResponse = this.doPost(clientToken = clientToken, method = "/account/transfer/${clientToken.agentName}", data = data)
+        return this.bindGameResponse(okResponse = okResponse) { mapUtil ->
+            val platformOrderId = mapUtil.asString("data")
+            val balance = mapUtil.asMap("member").asBigDecimal("balance")
+            GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
+        }
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = checkTransferReq.token as DreamGamingClientToken
         val (random, sign) = this.getToken(clientToken)
 
@@ -137,15 +152,14 @@ class   DreamGamingService : PlatformService() {
             } 
         """.trimIndent()
 
-
-        val url = "${clientToken.apiPath}/account/checkTransfer/${clientToken.agentName}"
-        val result = okHttpUtil.doPostJson(platform = Platform.DreamGaming, url = url, data = data, clz = DreamGamingValue.Result::class.java)
-        val successful = result.codeId == 0
-        return GameValue.TransferResp.of(successful)
+        val okResponse = this.doPost(clientToken = clientToken, method = "/account/checkTransfer/${clientToken.agentName}", data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            GameValue.TransferResp.of(true)
+        }
     }
 
 
-    override fun start(startReq: GameValue.StartReq): String {
+    override fun start(startReq: GameValue.StartReq): GameResponse<String> {
         val clientToken = startReq.token as DreamGamingClientToken
 
         val lang = when (startReq.language) {
@@ -166,41 +180,22 @@ class   DreamGamingService : PlatformService() {
                 }
             }
         """.trimIndent()
-        val mapUtil = this.doStartPostJson(clientToken = clientToken, method = "/user/login/${clientToken.agentName}", data = data)
-        val list = mapUtil.data["list"] as List<String>
+        val okResponse = this.doPost(clientToken = clientToken, method = "/user/login/${clientToken.agentName}", data = data)
+        return this.bindGameResponse(okResponse = okResponse) { mapUtil ->
+            val list = mapUtil.data["list"] as List<String>
 
-        val token = mapUtil.asString("token")
-        return when (startReq.launch) {
-            LaunchMethod.Web -> list[0]
-            LaunchMethod.Wap -> list[1]
-            else -> list[2]
-        }.plus(token)
+            val token = mapUtil.asString("token")
+            when (startReq.launch) {
+                LaunchMethod.Web -> list[0]
+                LaunchMethod.Wap -> list[1]
+                else -> list[2]
+            }.plus(token)
+        }
+
     }
 
-//
-//    override fun startSlotDemo(token: ClientToken, startPlatform: LaunchMethod): String {
-//        val param = DGBuild.instance(token, "/user/free")
-//        val data = """
-//            {
-//                "token":"${param.token}",
-//                "random":"${param.random}",
-//                "lang":"$lang",
-//                "device": 1
-//            }
-//        """.trimIndent()
-//
-//        val result = okHttpUtil.doPostJson(param.url, data, DGValue.LoginResult::class.java)
-//        checkCode(result.codeId)
-//
-//        return when (startPlatform) {
-//            LaunchMethod.Web -> result.list[0]
-//            LaunchMethod.Wap -> result.list[1]
-//            else -> result.list[2]
-//        }.plus(result.token)
-//    }
 
-
-    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
         val clientToken = pullBetOrderReq.token as DreamGamingClientToken
         val (random, sign) = this.getToken(clientToken)
 
@@ -211,23 +206,25 @@ class   DreamGamingService : PlatformService() {
             } 
         """.trimIndent()
 
-        val mapUtil = this.doStartPostJson(clientToken = clientToken, method = "/game/getReport/${clientToken.agentName}", data = data)
-        val orders = mapUtil.asList("list").map { bet ->
-            BetOrderUtil.instance(platform = Platform.DreamGaming, mapUtil = bet)
-                    .set("orderId", "id")
-                    .set("username", "userName")
-                    .set("betAmount", "betPoints")
-                    .set("validAmount", "availableBet")
-                    .set("winAmount", "winOrLoss")
-                    .set("betTime", "betTime", dateTimeFormat)
-                    .set("settleTime", "calTime", dateTimeFormat)
-                    .build(objectMapper)
+        val okResponse = this.doPost(clientToken = clientToken, method = "/game/getReport/${clientToken.agentName}", data = data)
+        return this.bindGameResponse(okResponse = okResponse) { mapUtil ->
+            val orders = mapUtil.asList("list").map { bet ->
+                BetOrderUtil.instance(platform = Platform.DreamGaming, mapUtil = bet)
+                        .set("orderId", "id")
+                        .set("username", "userName")
+                        .set("betAmount", "betPoints")
+                        .set("validAmount", "availableBet")
+                        .set("winAmount", "winOrLoss")
+                        .set("betTime", "betTime", dateTimeFormat)
+                        .set("settleTime", "calTime", dateTimeFormat)
+                        .build(objectMapper)
+            }
+
+            val ids = orders.map { it.orderId.toLong() }
+            this.mark(clientToken = clientToken, ids = ids)
+
+            orders
         }
-
-        val ids = orders.map { it.orderId.toLong() }
-        this.mark(clientToken = clientToken, ids = ids)
-
-        return orders
     }
 
     private fun mark(clientToken: DreamGamingClientToken, ids: List<Long>) {
@@ -243,7 +240,7 @@ class   DreamGamingService : PlatformService() {
             } 
         """.trimIndent()
 
-        this.doStartPostJson(clientToken = clientToken, method = "/game/markReport/${clientToken.agentName}", data = data)
+        this.doPost(clientToken = clientToken, method = "/game/markReport/${clientToken.agentName}", data = data)
     }
 
 }

@@ -71,7 +71,7 @@ class TransferTask(
 
         val checkTransferReq = GameValue.CheckTransferReq(orderId = order.orderId, amount = amount, platformOrderId = order.orderId, token = bind.clientToken,
                 type = "withdraw", username = platformMember.username)
-        val transferResp = gameApi.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
+        val transferResp = gameApi.checkTransfer(clientId = bind.clientId, memberId = memberId, platform = platform, checkTransferReq = checkTransferReq)
 
         // 中心钱包加钱
         val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_IN, money = amount,

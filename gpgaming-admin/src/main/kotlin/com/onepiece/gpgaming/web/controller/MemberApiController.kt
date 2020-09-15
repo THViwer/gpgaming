@@ -344,7 +344,7 @@ class MemberApiController(
         val balances = platformMembers.stream().map { platformMember ->
 
             val balance = try {
-                gameApi.balance(clientId = platformMember.clientId, platform = platformMember.platform, platformUsername = platformMember.username,
+                gameApi.balance(clientId = platformMember.clientId, memberId = platformMember.memberId, platform = platformMember.platform, platformUsername = platformMember.username,
                         platformPassword = platformMember.password)
             } catch (e: Exception) {
                 BigDecimal.valueOf(-1)

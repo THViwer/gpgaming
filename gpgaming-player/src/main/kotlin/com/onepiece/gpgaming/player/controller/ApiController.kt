@@ -338,7 +338,7 @@ open class ApiController(
                 ))
             }
             else -> {
-                val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
+                val gameUrl = gameApi.start(clientId = member.clientId, memberId = member.id, platformUsername = platformMember.platformUsername, platform = platform,
                         launch = launch, language = language, platformPassword = platformMember.platformPassword)
                 StartGameResp(path = gameUrl, username = "-", password = "-")
             }
@@ -381,7 +381,7 @@ open class ApiController(
                 ))
             }
             else -> {
-                val gameUrl = gameApi.start(clientId = member.clientId, platformUsername = platformMember.platformUsername, platform = platform,
+                val gameUrl = gameApi.start(clientId = member.clientId, memberId = member.id, platformUsername = platformMember.platformUsername, platform = platform,
                         gameId = gameId, language = language, launchMethod = launch, platformPassword = platformMember.platformPassword)
                 StartGameResp(path = gameUrl, username = "-", password = "-")
             }
@@ -412,7 +412,7 @@ open class ApiController(
                 .filter { platform == null || it.platform == platform }
                 .map {
                     val bind = bindMap[it.platform]
-                    DownloadAppVo(platform = it.platform, icon = bind?.icon?: "", iosPath = it.iosPath, androidPath = it.androidPath)
+                    DownloadAppVo(platform = it.platform, icon = bind?.icon ?: "", iosPath = it.iosPath, androidPath = it.androidPath)
                 }
     }
 
@@ -476,7 +476,7 @@ open class ApiController(
 
     @GetMapping("/banner")
     override fun banners(
-            @RequestParam(value =  "type") type: BannerType
+            @RequestParam(value = "type") type: BannerType
     ): List<BannerVo> {
         val (language, _) = getLanguageAndLaunchFormHeader()
 
@@ -504,7 +504,7 @@ open class ApiController(
 
     @GetMapping("/{category}")
     override fun categories(
-            @PathVariable(value =  "category") category: PlatformCategory
+            @PathVariable(value = "category") category: PlatformCategory
     ): PlatformCategoryDetail {
 
         val (language, launch) = getLanguageAndLaunchFormHeader()
@@ -555,7 +555,7 @@ open class ApiController(
 //            this.slotMenu(language = language, launch = LaunchMethod.Web, platform = Platform.Pragmatic)["url"]
 //        } else null
 
-        return PlatformCategoryDetail(platforms = platforms, banners = banners )
+        return PlatformCategoryDetail(platforms = platforms, banners = banners)
     }
 
     @GetMapping("/contactUs")
@@ -569,9 +569,9 @@ open class ApiController(
         val wechatContact = contacts[ContactType.Wechat]?.let { MathUtil.getRandom(it) }
         val whatContact = contacts[ContactType.Whatsapp]?.let { MathUtil.getRandom(it) }
 
-        val  facebook = list.firstOrNull { it.type == ContactType.Facebook }
-        val  youTuBe = list.firstOrNull { it.type == ContactType.YouTuBe }
-        val  instagram = list.firstOrNull { it.type == ContactType.Instagram }
+        val facebook = list.firstOrNull { it.type == ContactType.Facebook }
+        val youTuBe = list.firstOrNull { it.type == ContactType.YouTuBe }
+        val instagram = list.firstOrNull { it.type == ContactType.Instagram }
 
         return Contacts(wechatContact = wechatContact, whatsappContact = whatContact, facebook = facebook, youtube = youTuBe,
                 instagram = instagram)
@@ -647,7 +647,7 @@ open class ApiController(
     @GetMapping("/application/version")
     override fun checkVersion(): Map<String, AppVersionValue.AppVersionVo> {
         val mainClientId = getMainClient().id
-        val list =  appVersionService.getVersions(mainClientId = mainClientId)
+        val list = appVersionService.getVersions(mainClientId = mainClientId)
                 .map {
                     AppVersionValue.AppVersionVo(id = it.id, launch = it.launch, url = it.url, version = it.version, content = it.content, constraint = it.constraint)
                 }
@@ -655,12 +655,12 @@ open class ApiController(
         val ios = list.firstOrNull { it.launch == LaunchMethod.Ios }
 
         return mapOf(
-            "android" to android,
+                "android" to android,
                 "ios" to ios
         ).filter { it.value != null }.map { it.key to it.value!! }.toMap()
     }
 
-    fun <T> getRandom(list: List<T>?) : T? {
+    fun <T> getRandom(list: List<T>?): T? {
         return list?.let { list[Random.nextInt(list.size)] }
     }
 

@@ -3,17 +3,18 @@ package com.onepiece.gpgaming.games.sport
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
-import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.LbcClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
-import com.onepiece.gpgaming.games.bet.MapUtil
-import okhttp3.FormBody
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.lang.Exception
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -25,92 +26,109 @@ class LbcService : PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 
-    fun startGetJson(clientToken: LbcClientToken, method: String, formBody: FormBody): MapUtil {
+    fun doPostForm(clientToken: LbcClientToken, method: String, formParam: Map<String, Any>): OKResponse {
         val url = "${clientToken.apiPath}/api/${method}"
-        val result = okHttpUtil.doPostForm(platform = Platform.Lbc, url = url, body = formBody, clz = LbcValue.Result::class.java)
 
-        check(result.errorCode == 0) {
-            log.error("lbc network error: errorCode = ${result.errorCode}, msg = ${result.message}")
-            OnePieceExceptionCode.DATA_FAIL
+        val okParam = OKParam.ofPost(url = url, param = "", formParam = formParam)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
+        if (!okResponse.ok) return okResponse
+
+        val ok = try {
+            val errorCode = okResponse.asInt("error_code")
+            errorCode == 0
+        } catch (e: Exception) {
+            false
         }
-        return result.mapUtil
+
+        return okResponse.copy(ok = ok)
     }
 
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
         val clientToken = registerReq.token as LbcClientToken
 
 
         /**
          * 1 马来盘 2 香港盘 3 欧洲盘 4 印尼盘 5 美国盘
          */
-        val body = FormBody.Builder()
-                .add("vendor_id", clientToken.vendorId)
-                .add("Vendor_Member_ID", "${clientToken.memberCode}_${registerReq.username}")
-                .add("OperatorId", clientToken.memberCode)
-                .add("UserName", "${clientToken.memberCode}_${registerReq.username}")
-                .add("Currency", clientToken.currency) //TODO 测试环境只能先用20(UUS) 以后替换成2(MYR)
-                .add("OddsType", "1")
-                .add("MaxTransfer", "999999")
-                .add("MinTransfer", "1")
-                .build()
-        this.startGetJson(clientToken = clientToken, method = "CreateMember", formBody = body)
-        return registerReq.username
+        val param = mapOf(
+                "vendor_id" to clientToken.vendorId,
+                "Vendor_Member_ID" to "${clientToken.memberCode}_${registerReq.username}",
+                "OperatorId" to clientToken.memberCode,
+                "UserName" to "${clientToken.memberCode}_${registerReq.username}",
+                "Currency" to clientToken.currency, //TODO 测试环境只能先用20(UUS) 以后替换成2(MYR)
+                "OddsType" to "1",
+                "MaxTransfer" to "999999",
+                "MinTransfer"  to "1"
+        )
+
+        val okResponse = this.doPostForm(clientToken = clientToken, method = "CreateMember", formParam = param)
+        return this.bindGameResponse(okResponse) {
+            registerReq.username
+        }
     }
 
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
         val clientToken = balanceReq.token as LbcClientToken
 
-        val body = FormBody.Builder()
-                .add("vendor_id", clientToken.vendorId)
-                .add("vendor_member_ids", "${clientToken.memberCode}_${balanceReq.username}")
-                .add("wallet_id", "1") // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
-                .build()
+        val param = mapOf(
+                "vendor_id" to clientToken.vendorId,
+                "vendor_member_ids" to "${clientToken.memberCode}_${balanceReq.username}",
+                "wallet_id" to "1" // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
 
-        val mapUtil = this.startGetJson(clientToken = clientToken, method = "CheckUserBalance", formBody = body)
-        return mapUtil.asList("Data").first().data["balance"]?.toString()?.toBigDecimal() ?: BigDecimal.ZERO
+        )
+
+        val okResponse = this.doPostForm(clientToken = clientToken, method = "CheckUserBalance", formParam = param)
+        return this.bindGameResponse(okResponse) {
+            it.asList("Data").first().data["balance"]?.toString()?.toBigDecimal() ?: BigDecimal.ZERO
+        }
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = transferReq.token as LbcClientToken
 
         val direction = if (transferReq.amount.toDouble() > 0) 1 else 0
-        val body = FormBody.Builder()
-                .add("vendor_id", clientToken.vendorId)
-                .add("vendor_member_id", "${clientToken.memberCode}_${transferReq.username}")
-                .add("vendor_trans_id", "${clientToken.memberCode}_${transferReq.orderId}")
-                .add("amount", "${transferReq.amount.abs()}")
-                .add("currency", clientToken.currency) // 固定
-                .add("direction", "$direction")
-                .add("wallet_id", "1") // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
-                .build()
 
-        val mapUtil = this.startGetJson(clientToken = clientToken, method = "FundTransfer", formBody = body)
-        val platformOrderId = mapUtil.asMap("Data").asString("trans_id")
-        return GameValue.TransferResp.successful()
+        val param = mapOf(
+                "vendor_id" to clientToken.vendorId,
+                "vendor_member_id" to "${clientToken.memberCode}_${transferReq.username}",
+                "vendor_trans_id" to "${clientToken.memberCode}_${transferReq.orderId}",
+                "amount" to "${transferReq.amount.abs()}",
+                "currency" to clientToken.currency, // 固定
+                "direction" to "$direction",
+                "wallet_id" to "1" // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
+        )
+
+        val okResponse = this.doPostForm(clientToken = clientToken, method = "FundTransfer", formParam = param)
+        return this.bindGameResponse(okResponse = okResponse) {
+            GameValue.TransferResp.successful()
+        }
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = checkTransferReq.token as LbcClientToken
 
-        val body = FormBody.Builder()
-                .add("vendor_id", clientToken.vendorId)
-                .add("vendor_trans_id", "${clientToken.memberCode}_${checkTransferReq.orderId}")
-                .add("wallet_id", "1") // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
-                .build()
-        val mapUtil = this.startGetJson(clientToken = clientToken, method = "CheckFundTransfer", formBody = body)
-        val successful = mapUtil.asMap("Data").data["status"] == 0
-        return GameValue.TransferResp.of(successful)
+        val param = mapOf(
+                "vendor_id" to clientToken.vendorId,
+                "vendor_trans_id" to "${clientToken.memberCode}_${checkTransferReq.orderId}",
+                "wallet_id" to "1" // 钱包识别码, 1: Sportsbook/ 5: AG/ 6: GD
+        )
+        val okResponse = this.doPostForm(clientToken = clientToken, method = "CheckFundTransfer", formParam = param)
+        return this.bindGameResponse(okResponse) {
+            val successful = it.asMap("Data").data["status"] == 0
+            GameValue.TransferResp.of(successful)
+        }
     }
 
-    override fun start(startReq: GameValue.StartReq): String {
+    override fun start(startReq: GameValue.StartReq): GameResponse<String> {
         val clientToken = startReq.token as LbcClientToken
 
-        val body = FormBody.Builder()
-                .add("vendor_id", clientToken.vendorId)
-                .add("vendor_member_id", "${clientToken.memberCode}_${startReq.username}")
-                .build()
-        val mapUtil = this.startGetJson(clientToken = clientToken, method = "Login", formBody = body)
+        val param = mapOf(
+                "vendor_id" to clientToken.vendorId,
+                "vendor_member_id" to "${clientToken.memberCode}_${startReq.username}"
+        )
+
+        val mapUtil = this.doPostForm(clientToken = clientToken, method = "Login", formParam = param)
         val token = mapUtil.asString("Data")
 
         val lang = when (startReq.language) {
@@ -122,15 +140,14 @@ class LbcService : PlatformService() {
             else -> "en"
         }
 
-        return when (startReq.launch) {
+        val path = when (startReq.launch) {
             LaunchMethod.Wap -> "https://ismart.l0030.ig128.com/deposit_processlogin.aspx?lang=${lang}&token=${token}&skincolor=bl001"
             else -> "https://mkt.l0030.ig128.com/deposit_processlogin.aspx?lang=${lang}&token=${token}&skincolor=bl001"
         }
-
-//        return "https://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&token=${token}&skincolor=bl001"
+        return GameResponse.of(data = path)
     }
 
-    override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): String {
+    override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): GameResponse<String> {
         val lang = when (language) {
             Language.CN -> "cs"
             Language.TH -> "th"
@@ -140,66 +157,71 @@ class LbcService : PlatformService() {
             else -> "en"
         }
 
-        return when (launch) {
+        val path = when (launch) {
             LaunchMethod.Wap -> "https://ismart.l0030.ig128.com/DepositLogin/bfindex?lang=${lang}&OType=1&skincolor=bl00"
             else -> "https://mkt.l0030.ig128.com/NewIndex"
         }
-//        return when (launch) {
-//            LaunchMethod.Wap -> "https://c.gsoft888.net/vender.aspx?lang=${lang}&OType=1&skincolor=bl00"
-//            else -> "https://smartsbtest.gpgaming88.com/deposit_processlogin.aspx?lang=${lang}&skincolor=bl001"
-//        }
+        return GameResponse.of(data = path)
 
     }
 
-    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
         val clientToken = pullBetOrderReq.token as LbcClientToken
 
         return this.pullByNextId(clientId = pullBetOrderReq.clientId, platform = Platform.Lbc) { startId ->
-            val body = FormBody.Builder()
-                    .add("vendor_id", clientToken.vendorId)
-                    .add("version_key", startId)
-                    .build()
-            val mapUtil = startGetJson(clientToken = clientToken, method = "GetBetDetail", formBody = body)
-            val d = mapUtil.asMap("Data")
-            val lastVersionKey = d.asString("last_version_key")
-            val orders = d.asList("BetDetails").filter {
-                val ticketStatus = it.asString("ticket_status")
 
-                ticketStatus != "waiting" && ticketStatus != "running" && ticketStatus != "reject" && ticketStatus != "refund"
-                // ticketStatus == "half won" || ticketStatus == "half lose" || ticketStatus == "won"
-            }.map { bet ->
-                val orderId = bet.asString("trans_id")
-                val username = bet.asString("vendor_member_id")
-                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Lbc, platformUsername = username, prefix = clientToken.memberCode)
-                val betAmount = bet.asBigDecimal("stake")
-                val winAmount = bet.asBigDecimal("winlost_amount")
-                val betTime = bet.asLocalDateTime("transaction_time")
-                val settleTime = bet.asLocalDateTime("winlost_datetime")
+            val param = mapOf(
+                    "vendor_id" to clientToken.vendorId,
+                    "version_key" to startId
+            )
 
-                val originData = objectMapper.writeValueAsString(bet.data)
-                BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount,
-                        platform = Platform.Lbc, betTime = betTime, settleTime = settleTime, originData = originData, validAmount = betAmount)
+            val okResponse = doPostForm(clientToken = clientToken, method = "GetBetDetail", formParam = param)
+            var lastVersionKey: String = ""
+
+            val gameResponse = this.bindGameResponse(okResponse = okResponse) { mapUtil ->
+                val d = mapUtil.asMap("Data")
+                lastVersionKey = d.asString("last_version_key")
+                val orders = d.asList("BetDetails").filter {
+                    val ticketStatus = it.asString("ticket_status")
+
+                    ticketStatus != "waiting" && ticketStatus != "running" && ticketStatus != "reject" && ticketStatus != "refund"
+                    // ticketStatus == "half won" || ticketStatus == "half lose" || ticketStatus == "won"
+                }.map { bet ->
+                    val orderId = bet.asString("trans_id")
+                    val username = bet.asString("vendor_member_id")
+                    val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Lbc, platformUsername = username, prefix = clientToken.memberCode)
+                    val betAmount = bet.asBigDecimal("stake")
+                    val winAmount = bet.asBigDecimal("winlost_amount")
+                    val betTime = bet.asLocalDateTime("transaction_time")
+                    val settleTime = bet.asLocalDateTime("winlost_datetime")
+
+                    val originData = objectMapper.writeValueAsString(bet.data)
+                    BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount,
+                            platform = Platform.Lbc, betTime = betTime, settleTime = settleTime, originData = originData, validAmount = betAmount)
+                }
+
+                val virtualSportDetails = d.asList("BetVirtualSportDetails").filter {
+                    val ticketStatus = it.asString("ticket_status")
+                    // ticketStatus == "half won" || ticketStatus == "half lose" || ticketStatus == "won"
+                    ticketStatus != "waiting" && ticketStatus != "running" && ticketStatus != "reject" && ticketStatus != "refund"
+                }.map { bet ->
+                    val orderId = bet.asString("trans_id")
+                    val username = bet.asString("vendor_member_id")
+                    val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Lbc, platformUsername = username, prefix = clientToken.memberCode)
+                    val betAmount = bet.asBigDecimal("stake")
+                    val winAmount = bet.asBigDecimal("winlost_amount")
+                    val betTime = bet.asString("transaction_time").substring(0, 19).let { LocalDateTime.parse(it) }
+                    val settleTime = bet.asString("winlost_datetime").substring(0, 19).let { LocalDateTime.parse(it) }
+
+                    val originData = objectMapper.writeValueAsString(bet.data)
+                    BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount,
+                            platform = Platform.Lbc, betTime = betTime, settleTime = settleTime, originData = originData, validAmount = betAmount)
+                }
+
+                orders.plus(virtualSportDetails)
             }
 
-            val virtualSportDetails = d.asList("BetVirtualSportDetails").filter {
-                val ticketStatus = it.asString("ticket_status")
-                // ticketStatus == "half won" || ticketStatus == "half lose" || ticketStatus == "won"
-                ticketStatus != "waiting" && ticketStatus != "running" && ticketStatus != "reject" && ticketStatus != "refund"
-            }.map { bet ->
-                val orderId = bet.asString("trans_id")
-                val username = bet.asString("vendor_member_id")
-                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Lbc, platformUsername = username, prefix = clientToken.memberCode)
-                val betAmount = bet.asBigDecimal("stake")
-                val winAmount = bet.asBigDecimal("winlost_amount")
-                val betTime = bet.asString("transaction_time").substring(0, 19).let { LocalDateTime.parse(it) }
-                val settleTime = bet.asString("winlost_datetime").substring(0, 19).let { LocalDateTime.parse(it) }
-
-                val originData = objectMapper.writeValueAsString(bet.data)
-                BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount,
-                        platform = Platform.Lbc, betTime = betTime, settleTime = settleTime, originData = originData, validAmount = betAmount)
-            }
-
-            lastVersionKey to orders.plus(virtualSportDetails)
+            BetNextIdData(nextId = lastVersionKey, gameResponse = gameResponse)
         }
 
     }

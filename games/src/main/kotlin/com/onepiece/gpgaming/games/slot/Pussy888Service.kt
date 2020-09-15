@@ -6,7 +6,9 @@ import com.onepiece.gpgaming.beans.model.token.Pussy888ClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
-import com.onepiece.gpgaming.games.bet.MapUtil
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -28,32 +30,35 @@ import java.time.format.DateTimeFormatter
  */
 @Service
 class Pussy888Service(
-        val queue:  FifoMap<String, Long> = FifoMap(100),
-        val balanceQueue:  FifoMap<String, String> = FifoMap(100)
+        val queue: FifoMap<String, Long> = FifoMap(100),
+        val balanceQueue: FifoMap<String, String> = FifoMap(100)
 ) : PlatformService() {
 
     private val log = LoggerFactory.getLogger(Pussy888Service::class.java)
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     private fun sign(beforeParam: String?, username: String, time: Long, token: Pussy888ClientToken): String {
-        val signStr = "${beforeParam?: ""}${token.autoCode}${username}${time}${token.key}".toLowerCase()
+        val signStr = "${beforeParam ?: ""}${token.autoCode}${username}${time}${token.key}".toLowerCase()
         return DigestUtils.md5Hex(signStr).toUpperCase()
     }
 
 
-    private fun startGetJson(url: String, beforeParam: String = "", username: String, data: List<String>, clientToken: Pussy888ClientToken): MapUtil {
+    private fun doGet(url: String, beforeParam: String = "", username: String, data: List<String>, clientToken: Pussy888ClientToken): OKResponse {
         val time = System.currentTimeMillis()
         val sign = this.sign(beforeParam = beforeParam, username = username, time = time, token = clientToken)
 
         val param = data.joinToString(separator = "&")
-        val requestUrl = "$url?sign=${sign}&time=$time&authcode=${clientToken.autoCode}&$param"
 
-        val result = okHttpUtil.doGet(platform = Platform.Pussy888, url = requestUrl, clz = Kiss918Value.Result::class.java)
-        check(result.success) {
-            log.error("pussy888 network error: errorMsgId = ${result.success}, msg = ${result.msg}")
-            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        val okParam = OKParam.ofGet(url = url, param = "sign=${sign}&time=$time&authcode=${clientToken.autoCode}&$param")
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
+        if (!okResponse.ok) return okResponse
+
+        val ok = try {
+            okResponse.asBoolean("success")
+        } catch (e: Exception) {
+            false
         }
-        return result.mapUtil
+        return okResponse.copy(ok = ok)
     }
 
     private fun generatorUsername(registerReq: GameValue.RegisterReq): String {
@@ -68,12 +73,12 @@ class Pussy888Service(
         )
 
         val url = "${clientToken.apiPath}/ashx/account/account.ashx"
-        val mapUtil = this.startGetJson(url = url, beforeParam = agentName, username = agentName, clientToken = clientToken, data = data)
-        return mapUtil.asString("account")
+        val okResponse = this.doGet(url = url, beforeParam = agentName, username = agentName, clientToken = clientToken, data = data)
+        return okResponse.asString("account")
     }
 
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
         val clientToken = registerReq.token as Pussy888ClientToken
 
         val agentName = clientToken.agentName
@@ -93,12 +98,14 @@ class Pussy888Service(
                 "pwdtype=1"
         )
         val url = "${clientToken.apiPath}/ashx/account/account.ashx"
-        this.startGetJson(url = url, username = username, clientToken = clientToken, data = data)
-        return username
+        val okResponse = this.doGet(url = url, username = username, clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            username
+        }
     }
 
 
-    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq) {
+    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq): GameResponse<Unit> {
         val clientToken = updatePasswordReq.token as Pussy888ClientToken
         val agentName = clientToken.agentName
 
@@ -117,17 +124,19 @@ class Pussy888Service(
         )
 
         val url = "${clientToken.apiPath}/ashx/account/account.ashx"
-        this.startGetJson(url = url, username = updatePasswordReq.username, clientToken = clientToken, data = data)
+        val okResponse = this.doGet(url = url, username = updatePasswordReq.username, clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {}
     }
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
         val clientToken = balanceReq.token as Pussy888ClientToken
 
         log.info("查询余额. 请求ip: ${getRequestIp()}, " +
                 "上次请求时间：${balanceQueue[balanceReq.username]}, " +
                 "本次请求时间：${System.currentTimeMillis()}")
-        val (balance, time) = (balanceQueue[balanceReq.username]?: "0_0").split("_")
+        val (balance, time) = (balanceQueue[balanceReq.username] ?: "0_0").split("_")
         if (time != "0" && (System.currentTimeMillis() - time.toLong()) < 16000) {
-            return balance.toBigDecimal()
+            return GameResponse.of(data = balance.toBigDecimal())
         }
 
         val data = listOf(
@@ -136,20 +145,22 @@ class Pussy888Service(
         )
 
         val url = "${clientToken.apiPath}/ashx/account/account.ashx"
-        val mapUtil = this.startGetJson(url = url , username = balanceReq.username, clientToken = clientToken, data = data)
-        return mapUtil.asBigDecimal("MoneyNum")
+        val okResponse = this.doGet(url = url, username = balanceReq.username, clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asBigDecimal("MoneyNum")
+        }
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = transferReq.token as Pussy888ClientToken
 
         log.info("请求ip: ${getRequestIp()}, " +
                 "上次请求时间：${queue[transferReq.username]}, " +
                 "本次请求时间：${System.currentTimeMillis()}, " +
-                "时间相差:${System.currentTimeMillis() - (queue[transferReq.username]?: 0) / 1000}秒")
+                "时间相差:${System.currentTimeMillis() - (queue[transferReq.username] ?: 0) / 1000}秒")
         val prev = queue[transferReq.username]?.let {
             (System.currentTimeMillis() - it) > 15000
-        }?: true
+        } ?: true
         check(prev) { OnePieceExceptionCode.TRANSFER_TIME_FAST }
 
         val data = listOf(
@@ -163,22 +174,25 @@ class Pussy888Service(
 
         return try {
             val url = "${clientToken.apiPath}/ashx/account/setScore.ashx"
-            val mapUtil = this.startGetJson(url = url, username = transferReq.username, clientToken = clientToken, data = data)
-            val balance = mapUtil.asBigDecimal("money")
+            val okResponse = this.doGet(url = url, username = transferReq.username, clientToken = clientToken, data = data)
+            this.bindGameResponse(okResponse = okResponse) {
+                val balance = it.asBigDecimal("money")
 
-            queue[transferReq.username] = System.currentTimeMillis()
+                queue[transferReq.username] = System.currentTimeMillis()
 
-            GameValue.TransferResp.successful(balance = balance)
+                GameValue.TransferResp.successful(balance = balance)
+            }
+
         } catch (e: Exception) {
             if (e.message?.contains("fail,money not enough,") != null) {
-                GameValue.TransferResp.failed()
+                GameResponse.of(data = GameValue.TransferResp.failed())
             } else {
                 throw e
             }
         }
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
 
         val clientToken = checkTransferReq.token as Pussy888ClientToken
 
@@ -192,13 +206,15 @@ class Pussy888Service(
         )
 
         val url = "${clientToken.apiOrderPath}/ashx/UserscoreLog.ashx"
-        val mapUtil = this.startGetJson(url = url, username = checkTransferReq.username, clientToken = clientToken, data = data)
+        val okResponse = this.doGet(url = url, username = checkTransferReq.username, clientToken = clientToken, data = data)
 
-        val flag = mapUtil.asList("results").firstOrNull()?.asBigDecimal("ScoreNum")?.setScale(2, 2) == checkTransferReq.amount.setScale(2, 2)
-        return GameValue.TransferResp.of(successful = flag)
+        return this.bindGameResponse(okResponse = okResponse) {
+            val flag = it.asList("results").firstOrNull()?.asBigDecimal("ScoreNum")?.setScale(2, 2) == checkTransferReq.amount.setScale(2, 2)
+            GameValue.TransferResp.of(successful = flag)
+        }
     }
 
-    override fun queryReport(reportQueryReq: GameValue.ReportQueryReq): List<GameValue.PlatformReportData> {
+    override fun queryReport(reportQueryReq: GameValue.ReportQueryReq): GameResponse<List<GameValue.PlatformReportData>> {
 
         val clientToken = reportQueryReq.token as Pussy888ClientToken
 
@@ -210,21 +226,24 @@ class Pussy888Service(
         )
 
         val url = "${clientToken.apiOrderPath}/ashx/AgentTotalReport.ashx"
-        val mapUtil = this.startGetJson(url = url, username = clientToken.agentName, clientToken = clientToken, data = data)
+        val okResponse = this.doGet(url = url, username = clientToken.agentName, clientToken = clientToken, data = data)
 
-        return mapUtil.asList("results").map {
-            val username = it.asString("Account")
-            val bet = BigDecimal.valueOf(-1)
-            val win = it.asBigDecimal("win")
-            val originData = objectMapper.writeValueAsString(it.data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asList("results").map {
+                val username = it.asString("Account")
+                val bet = BigDecimal.valueOf(-1)
+                val win = it.asBigDecimal("win")
+                val originData = objectMapper.writeValueAsString(it.data)
 
-            GameValue.PlatformReportData(username = username, platform = Platform.Pussy888, bet = bet, win = win,
-                    originData = originData)
+                GameValue.PlatformReportData(username = username, platform = Platform.Pussy888, bet = bet, win = win,
+                        originData = originData)
 
+            }
         }
+
     }
 
-    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
+    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
         val clientToken = betOrderReq.token as Pussy888ClientToken
 
         val endTime = LocalDateTime.now()
@@ -240,21 +259,24 @@ class Pussy888Service(
         )
 
         val url = "${clientToken.apiOrderPath}/ashx/GameLog.ashx"
-        val mapUtils = this.startGetJson(url = url, username = betOrderReq.username, clientToken = clientToken, data = data)
+        val okResponse = this.doGet(url = url, username = betOrderReq.username, clientToken = clientToken, data = data)
 
-        val clientId = -1
-        val memberId = -1
-        return mapUtils.asList("results").map { bet ->
-            val orderId = bet.asString("uuid")
+        return this.bindGameResponse(okResponse = okResponse) {
+            val clientId = -1
+            val memberId = -1
+            it.asList("results").map { bet ->
+                val orderId = bet.asString("uuid")
 //            val betAmount = bet.asBigDecimal("bet")
-            val betAmount = BigDecimal.ZERO
-            val winAmount = bet.asBigDecimal("Win").negate()
-            val betTime = bet.asLocalDateTime("CreateTime", dateTimeFormatter)
+                val betAmount = BigDecimal.ZERO
+                val winAmount = bet.asBigDecimal("Win").negate()
+                val betTime = bet.asLocalDateTime("CreateTime", dateTimeFormatter)
 
-            val originData = objectMapper.writeValueAsString(bet.data)
+                val originData = objectMapper.writeValueAsString(bet.data)
 
-            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Kiss918, orderId = orderId, betAmount = betAmount,
-                    winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
+                BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Kiss918, orderId = orderId, betAmount = betAmount,
+                        winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
+            }
         }
+
     }
 }

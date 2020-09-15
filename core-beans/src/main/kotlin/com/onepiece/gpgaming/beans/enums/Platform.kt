@@ -13,7 +13,7 @@ enum class Platform(
     Center(PlatformCategory.Slot, "gpgaming"),
 
     // slot
-    Joker(PlatformCategory.Slot, "Joker"),
+    Joker(PlatformCategory.Slot, "Joker"), //TODO 已删除
     Kiss918(PlatformCategory.Slot, "918kiss"),
     Pussy888(PlatformCategory.Slot, "Pussy888", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/pussy888.png"),
     Mega(PlatformCategory.Slot, "Mega888", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/mega888.png"),
@@ -28,12 +28,12 @@ enum class Platform(
     AsiaGamingSlot(PlatformCategory.Slot, "Asia Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
 
     // live video
-    CT(PlatformCategory.LiveVideo, "ct"),
+    CT(PlatformCategory.LiveVideo, "ct"), //TODO 已删除
     DreamGaming(PlatformCategory.LiveVideo, "Dream Gaming"),
     Evolution(PlatformCategory.LiveVideo, "Evolution"),
-    GoldDeluxe(PlatformCategory.LiveVideo, "Gold Deluxe"),
+    GoldDeluxe(PlatformCategory.LiveVideo, "Gold Deluxe"), //TODO 已删除
     SexyGaming(PlatformCategory.LiveVideo, "Sexy Gaming"),
-    Fgg(PlatformCategory.LiveVideo, "FGG Gaming"),
+    Fgg(PlatformCategory.LiveVideo, "FGG Gaming"), //TODO 已删除
     AllBet(PlatformCategory.LiveVideo, "Allbet"),
     SaGaming(PlatformCategory.LiveVideo, "SA Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"),
     AsiaGamingLive(PlatformCategory.LiveVideo, "Asia Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),

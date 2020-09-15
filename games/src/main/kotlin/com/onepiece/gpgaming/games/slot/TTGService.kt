@@ -1,6 +1,5 @@
 package com.onepiece.gpgaming.games.slot
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
@@ -13,7 +12,10 @@ import com.onepiece.gpgaming.beans.value.internet.web.SlotGame
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
-import com.onepiece.gpgaming.games.bet.MapUtil
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
+import com.onepiece.gpgaming.games.http.U9HttpRequest
 import okhttp3.MediaType.Companion.toMediaType
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -23,65 +25,80 @@ import java.util.*
 
 @Suppress("UNCHECKED_CAST")
 @Service
-class TTGService(
-        private val xmlMapper: XmlMapper
-): PlatformService() {
+class TTGService : PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss")
     private val log = LoggerFactory.getLogger(TTGService::class.java)
 
-    private fun startPostXml(clientToken: TTGClientToken, method: String, data: String): MapUtil {
+    private fun doPostXml(clientToken: TTGClientToken, method: String, data: String): OKResponse {
 
         val url = "${clientToken.apiPath}${method}"
-        val xmlData = okHttpUtil.doPostXml(platform = Platform.TTG, url = url, data = data, clz = Map::class.java)
-        return MapUtil.instance(data = xmlData as Map<String, Any>)
+
+        val okParam = OKParam.ofPostXml(url = url, param = data)
+        return u9HttpRequest.startRequest(okParam = okParam)
     }
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    private fun doGetXml(url: String, data: String): OKResponse {
+
+        val okParam = OKParam.ofGetXml(url = url, param = data)
+        return u9HttpRequest.startRequest(okParam = okParam)
+    }
+
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
 
         val tokenClient = registerReq.token as TTGClientToken
 
         val newUsername = "${tokenClient.agentName}_${registerReq.username}"
-        this.login(username = newUsername, tokenClient = tokenClient)
-
-        return newUsername
+        val okResponse = this.login(username = newUsername, tokenClient = tokenClient)
+        return this.bindGameResponse(okResponse = okResponse) {
+            newUsername
+        }
     }
 
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
         val clientToken = balanceReq.token as TTGClientToken
 
         val url = "${clientToken.apiPath}/cip/player/${balanceReq.username}/balance"
-        val xml = okHttpUtil.doGetXml(platform = Platform.TTG, url = url, clz = Map::class.java)
-        val mapUtil = MapUtil.instance(xml as Map<String, Any>)
-        return mapUtil.asBigDecimal("real")
+
+
+        val okResponse = this.doGetXml(url = url, data = "")
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asBigDecimal("real")
+        }
+
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
 
         val tokenClient = transferReq.token as TTGClientToken
 
         val data = """
             <transactiondetail uid="${transferReq.username}" amount="${transferReq.amount}" />
         """.trimIndent()
-        val mapUtil = this.startPostXml(clientToken = tokenClient, method = "/cip/transaction/${tokenClient.agentName}/${transferReq.orderId}", data = data)
-        check(mapUtil.asString("retry") == "0") {
-            log.error("ttgService network error: errorMsgId = ${mapUtil.asString("retry")}, errorMsg = ${mapUtil.data}")
-            OnePieceExceptionCode.PLATFORM_DATA_FAIL
-        }
+        val okResponse = this.doPostXml(clientToken = tokenClient, method = "/cip/transaction/${tokenClient.agentName}/${transferReq.orderId}", data = data)
 
-        return GameValue.TransferResp.successful()
+        return this.bindGameResponse(okResponse = okResponse) {
+            val flag = it.asString("retry") == "0"
+            GameValue.TransferResp.of(successful = flag)
+        }
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
         val tokenClient = checkTransferReq.token as TTGClientToken
         val url = "${tokenClient.apiPath}/cip/transaction/${tokenClient.agentName}/${checkTransferReq.orderId}"
-        val xml = okHttpUtil.doGetXml(platform = Platform.TTG, url = url, clz = String::class.java)
-        val map = xmlMapper.readValue<Map<String, Any>>(xml)
-        val successful = map["amount"] != null
-        return GameValue.TransferResp.of(successful = successful, balance = map["amount"]?.toString()?.toBigDecimal()?: BigDecimal.valueOf(-1))
+
+        val okResponse = this.doGetXml(url = url, data = "")
+        return this.bindGameResponse(okResponse = okResponse) {
+            try {
+                val balance = it.asBigDecimal("amount")
+                GameValue.TransferResp.successful(balance = balance)
+            } catch (e: Exception) {
+                GameValue.TransferResp.failed()
+            }
+        }
     }
 
-    private fun login(username: String, tokenClient: TTGClientToken): MapUtil {
+    private fun login(username: String, tokenClient: TTGClientToken): OKResponse {
         val data = """
             <?xml version="1.0" encoding="UTF-8"?>
             <logindetail>
@@ -93,7 +110,7 @@ class TTGService(
                </partners>
             </logindetail>
         """.trimIndent()
-        return this.startPostXml(clientToken = tokenClient, method = "/cip/gametoken/${username}", data = data)
+        return this.doPostXml(clientToken = tokenClient, method = "/cip/gametoken/${username}", data = data)
     }
 
     override fun slotGames(token: ClientToken, launch: LaunchMethod, language: Language): List<SlotGame> {
@@ -104,17 +121,16 @@ class TTGService(
         }
     }
 
-    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
-        val tokenClient = startSlotReq.token as TTGClientToken
-        /**
-         * Language = Simplified Chinese (zh-cn)
-         * Language = Traditional Chinese (zh-tw)
-         * Language = Vietnamese (vi)
-         * Language = Korean (ko)
-         * Language = Japanese (ja)
-         * Language = Thai (th)
-         * Language = English (en)
-         */
+    /**
+     * Language = Simplified Chinese (zh-cn)
+     * Language = Traditional Chinese (zh-tw)
+     * Language = Vietnamese (vi)
+     * Language = Korean (ko)
+     * Language = Japanese (ja)
+     * Language = Thai (th)
+     * Language = English (en)
+     */
+    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): GameResponse<String> {
         val lang = when (startSlotReq.language) {
             Language.CN -> "zh-cn"
             Language.VI -> "vi"
@@ -135,10 +151,11 @@ class TTGService(
                 "lang=$lang"
         ).joinToString(separator = "&")
 
-        return "http://ams-games.stg.ttms.co/casino/default/game/game.html?$data"
+        val path = "http://ams-games.stg.ttms.co/casino/default/game/game.html?$data"
+        return GameResponse.of(data = path)
     }
 
-    override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
+    override fun startSlot(startSlotReq: GameValue.StartSlotReq): GameResponse<String> {
         val tokenClient = startSlotReq.token as TTGClientToken
         val mapUtil = this.login(username = startSlotReq.username, tokenClient = tokenClient)
         val token = mapUtil.asString("token")
@@ -172,10 +189,11 @@ class TTGService(
                 "lang=$lang"
         ).joinToString(separator = "&")
 
-        return "${tokenClient.gamePath}?$data"
+        val path = "${tokenClient.gamePath}?$data"
+        return GameResponse.of(data = path)
     }
 
-    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
+    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
         val tokenClient = betOrderReq.token as TTGClientToken
 
         val startDate = betOrderReq.startTime.toLocalDate().toString().replace("-", "")
@@ -199,11 +217,18 @@ class TTGService(
         )
 
         val mediaType = "text/xml".toMediaType()
-        val result = okHttpUtil.doPostXml(platform = Platform.TTG, url = url, data = data, clz = TTGValue.BetResult::class.java, headers = headers, mediaType = mediaType)
-        return this.handlerBetResult(result = result).map { it.copy(originData = "") }
+
+        val okParam = OKParam.ofPostXml(url = url, param = data, headers = headers)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
+
+        return this.bindGameResponse(okResponse = okResponse) {
+            val content = okResponse.response
+            val result = xmlMapper.readValue<TTGValue.BetResult>(content)
+            this.handlerBetResult(result = result).map { it.copy(originData = "") }
+        }
     }
 
-    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
 
         val tokenClient = pullBetOrderReq.token as TTGClientToken
 
@@ -232,16 +257,21 @@ class TTGService(
                 "Content-Type" to "text/xml"
         )
 
-        val mediaType = "text/xml".toMediaType()
-        val result = okHttpUtil.doPostXml(platform = Platform.TTG, url = url, data = data, clz = TTGValue.BetResult::class.java, headers = headers, mediaType = mediaType)
-        return this.handlerBetResult(result = result)
+        val okParam = OKParam.ofPostXml(url = url, param = data, headers = headers).copy(mediaType = U9HttpRequest.MEDIA_TEXT_XML)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
+
+        return this.bindGameResponse(okResponse = okResponse) {
+            val content = okResponse.response
+            val result = xmlMapper.readValue<TTGValue.BetResult>(content)
+            this.handlerBetResult(result = result).map { it.copy(originData = "") }
+        }
     }
 
     private fun handlerBetResult(result: TTGValue.BetResult): List<BetOrderValue.BetOrderCo> {
         return result.orders.map {
 
-                val player = it.asMap("player")
-                val username = player.asString("playerId")
+            val player = it.asMap("player")
+            val username = player.asString("playerId")
 
             try {
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.TTG, platformUsername = username)
@@ -287,7 +317,6 @@ class TTGService(
 //            }.second
 //        }
     }
-
 
 
 }

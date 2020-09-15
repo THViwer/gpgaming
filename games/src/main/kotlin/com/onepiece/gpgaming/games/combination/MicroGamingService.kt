@@ -8,8 +8,9 @@ import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
-import com.onepiece.gpgaming.games.bet.MapUtil
-import okhttp3.FormBody
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
 import org.apache.commons.codec.binary.Base64
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -39,19 +40,23 @@ class MicroGamingService : PlatformService() {
                     "X-DAS-LANG" to "en"
             )
 
-            val body = FormBody.Builder()
-                    .add("grant_type", "password")
-                    .add("username", clientToken.username)
-                    .add("password", clientToken.password)
-                    .build()
+            val param = mapOf(
+                    "grant_type" to "password",
+                    "username" to clientToken.username,
+                    "password" to clientToken.password
+            )
 
             val url = "${clientToken.apiPath}/oauth/token"
-            val oauthToken = okHttpUtil.doPostForm(platform = Platform.MicroGaming, url = url, body = body, headers = headers, clz = MicroGamingValue.OauthToken::class.java)
-            oauthToken.access_token
+
+            val okParam = OKParam.ofPost(url = url, headers = headers, param = "", formParam = param)
+            val okResponse = u9HttpRequest.startRequest(okParam = okParam)
+            check(okResponse.ok)
+
+            okResponse.asString("access_token")
         }!!
     }
 
-    fun startPostJson(clientToken: MicroGamingClientToken, method: String, data: String): MapUtil {
+    fun doPost(clientToken: MicroGamingClientToken, method: String, data: String): OKResponse {
 
         val accessToken = this.getOauthToken(clientToken)
         val header = mapOf(
@@ -62,12 +67,14 @@ class MicroGamingService : PlatformService() {
                 "X-DAS-LANG" to "en"
         )
 
-            val url = "${clientToken.apiPath}$method"
-        val result = okHttpUtil.doPostJson(platform = Platform.MicroGaming, url = url, headers = header, data = data, clz = MicroGamingValue.Result::class.java)
-        return result.mapUtil
+        val url = "${clientToken.apiPath}$method"
+
+        val okParam = OKParam.ofPost(url = url, param = data, headers = header)
+        return u9HttpRequest.startRequest(okParam = okParam)
     }
 
-    fun startGetJson(clientToken: MicroGamingClientToken, method: String, urlParam: String): MapUtil {
+
+    fun doGet(clientToken: MicroGamingClientToken, method: String, urlParam: String): OKResponse {
 
         val accessToken = this.getOauthToken(clientToken)
         val header = mapOf(
@@ -78,13 +85,13 @@ class MicroGamingService : PlatformService() {
                 "X-DAS-LANG" to "en"
         )
 
-        val url = "${clientToken.apiPath}$method?$urlParam"
-        val result = okHttpUtil.doGet(platform = Platform.MicroGaming, url = url, headers = header, clz = MicroGamingValue.Result::class.java)
-        return result.mapUtil
+        val url = "${clientToken.apiPath}$method"
+        val okParam = OKParam.ofGet(url = url, param = urlParam, headers = header)
+        return u9HttpRequest.startRequest(okParam = okParam)
     }
 
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
         val clientToken = registerReq.token as MicroGamingClientToken
 
         val data = """
@@ -95,11 +102,13 @@ class MicroGamingService : PlatformService() {
                 "ext_ref": "${registerReq.username}"
             }
         """.trimIndent()
-        this.startPostJson(method = "/v1/account/member", clientToken = clientToken, data = data)
-        return registerReq.username
+        val okResponse = this.doPost(method = "/v1/account/member", clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            registerReq.username
+        }
     }
 
-    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq) {
+    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq): GameResponse<Unit> {
         val clientToken = updatePasswordReq.token as MicroGamingClientToken
 
         val data = """
@@ -108,17 +117,20 @@ class MicroGamingService : PlatformService() {
                 "password": "${updatePasswordReq.password}"
             }
         """.trimIndent()
-        this.startPostJson(method = "/v1/account/member/password", clientToken = clientToken, data = data)
+        val okResponse = this.doPost(method = "/v1/account/member/password", clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {}
     }
 
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
         val clientToken = balanceReq.token as MicroGamingClientToken
 
-        val mapUtil = this.startGetJson(clientToken = clientToken, method = "/v1/wallet", urlParam = "account_ext_ref=${balanceReq.username}")
-        return mapUtil.asList("data").first().asBigDecimal("cash_balance")
+        val okResponse = this.doGet(clientToken = clientToken, method = "/v1/wallet", urlParam = "account_ext_ref=${balanceReq.username}")
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asList("data").first().asBigDecimal("cash_balance")
+        }
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = transferReq.token as MicroGamingClientToken
 
         val type = if (transferReq.amount.toDouble() > 0) "CREDIT" else "DEBIT"
@@ -132,22 +144,29 @@ class MicroGamingService : PlatformService() {
             }]
         """.trimIndent()
 
-        val mapUtil = this.startPostJson(method = "/v1/transaction", clientToken = clientToken, data = data)
-        val platformOrderId =  mapUtil.asList("data").first().asString("parent_transaction_id")
-        val balance = mapUtil.asList("data").first().asBigDecimal("balance")
-        return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
+        val okResponse = this.doPost(method = "/v1/transaction", clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            val platformOrderId = it.asList("data").first().asString("parent_transaction_id")
+            val balance = it.asList("data").first().asBigDecimal("balance")
+            GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
+        }
+
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = checkTransferReq.token as MicroGamingClientToken
         val urlParam = "ext_ref=${checkTransferReq.orderId}&account_ext_ref=${checkTransferReq.username}"
-        val mapUtil = this.startGetJson(clientToken = clientToken, method = "/v1/transaction", urlParam = urlParam)
-        val successful = mapUtil.asList("data").firstOrNull() != null
-        val balance = mapUtil.asList("data").firstOrNull()?.asBigDecimal("balance") ?: BigDecimal.valueOf(-1)
-        return GameValue.TransferResp.of(successful = successful, balance = balance)
+        val okResponse = this.doGet(clientToken = clientToken, method = "/v1/transaction", urlParam = urlParam)
+
+        return this.bindGameResponse(okResponse = okResponse) {
+            val successful = it.asList("data").firstOrNull() != null
+            val balance = it.asList("data").firstOrNull()?.asBigDecimal("balance") ?: BigDecimal.valueOf(-1)
+            GameValue.TransferResp.of(successful = successful, balance = balance)
+        }
+
     }
 
-    override fun start(startReq: GameValue.StartReq): String {
+    override fun start(startReq: GameValue.StartReq): GameResponse<String> {
 
         // 70577
         val itemId = 1930
@@ -183,12 +202,15 @@ class MicroGamingService : PlatformService() {
                 }
             }
         """.trimIndent()
-        val mapUtil = this.startPostJson(clientToken = clientToken, method = "/v1/launcher/item", data = data)
-        return mapUtil.asString("data")
+        val okResponse = this.doPost(clientToken = clientToken, method = "/v1/launcher/item", data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asString("data")
+        }
+
     }
 
 
-    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
+    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): GameResponse<String> {
 
         val clientToken = startSlotReq.token as MicroGamingClientToken
 
@@ -213,12 +235,14 @@ class MicroGamingService : PlatformService() {
                 }
             }
         """.trimIndent()
-        val mapUtil = this.startPostJson(clientToken = clientToken, method = "/v1/launcher/item", data = data)
-        return mapUtil.asString("data")
+        val okResponse = this.doPost(clientToken = clientToken, method = "/v1/launcher/item", data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asString("data")
+        }
     }
 
 
-    override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
+    override fun startSlot(startSlotReq: GameValue.StartSlotReq): GameResponse<String> {
         val clientToken = startSlotReq.token as MicroGamingClientToken
 
         val (itemId, appId) = startSlotReq.gameId.split("_")
@@ -249,11 +273,13 @@ class MicroGamingService : PlatformService() {
                 }
             }
         """.trimIndent()
-        val mapUtil = this.startPostJson(clientToken = clientToken, method = "/v1/launcher/item", data = data)
-        return mapUtil.asString("data")
+        val okResponse = this.doPost(clientToken = clientToken, method = "/v1/launcher/item", data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asString("data")
+        }
     }
 
-    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
         val clientToken = pullBetOrderReq.token as MicroGamingClientToken
 
         val data = listOf(
@@ -266,35 +292,39 @@ class MicroGamingService : PlatformService() {
         )
 
         val urlParam = data.joinToString(separator = "&")
-        val mapUtil = this.startGetJson(clientToken = clientToken, method = "/v1/feed/transaction", urlParam = urlParam)
+        val okResponse = this.doGet(clientToken = clientToken, method = "/v1/feed/transaction", urlParam = urlParam)
 
-        return mapUtil.asList("data").map { bet ->
+        return this.bindGameResponse(okResponse = okResponse) { mapUtil ->
+            mapUtil.asList("data").map { bet ->
 
-            val orderId = bet.asString("external_ref")
-            val username = bet.asString("account_ext_ref")
-            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.MicroGaming, platformUsername = username)
-            val category = bet.asString("category")
-            val amount = bet.asBigDecimal("amount")
-            val betAmount: BigDecimal
-            val winAmount: BigDecimal
-            if (category == "WAGER") {
-                betAmount = amount
-                winAmount = BigDecimal.ZERO
-            } else {
-                betAmount = BigDecimal.ZERO
-                winAmount = amount
+                val orderId = bet.asString("external_ref")
+                val username = bet.asString("account_ext_ref")
+                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.MicroGaming, platformUsername = username)
+                val category = bet.asString("category")
+                val amount = bet.asBigDecimal("amount")
+                val betAmount: BigDecimal
+                val winAmount: BigDecimal
+                if (category == "WAGER") {
+                    betAmount = amount
+                    winAmount = BigDecimal.ZERO
+                } else {
+                    betAmount = BigDecimal.ZERO
+                    winAmount = amount
+                }
+                val betTime = bet.asLocalDateTime("transaction_time", betDateTimeFormat)
+
+                val platform = when (bet.asMap("meta_data").asString("item_id")) {
+                    "1930", "1921", "2048", "2049", "1931", "1922", "1936", "1912" -> Platform.MicroGamingLive
+                    else -> Platform.MicroGaming
+                }
+
+
+                val originData = objectMapper.writeValueAsString(bet.data)
+                BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, platform = platform, betAmount = betAmount,
+                        winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
             }
-            val betTime = bet.asLocalDateTime("transaction_time", betDateTimeFormat)
-
-            val platform = when (bet.asMap("meta_data").asString("item_id")) {
-                "1930", "1921", "2048", "2049", "1931", "1922", "1936", "1912" -> Platform.MicroGamingLive
-                else -> Platform.MicroGaming
-            }
-
-
-            val originData = objectMapper.writeValueAsString(bet.data)
-            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, platform = platform, betAmount = betAmount,
-                    winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
         }
+
+
     }
 }

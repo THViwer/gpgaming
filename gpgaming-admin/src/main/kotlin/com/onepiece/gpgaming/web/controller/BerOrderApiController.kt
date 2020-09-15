@@ -45,7 +45,7 @@ class BerOrderApiController(
             Platform.Pussy888 -> {
                 val platformMember = platformMemberService.find(memberId = member.id, platform = platform) ?: return emptyList<String>()
                 val list = gameApi.queryBetOrder(clientId = clientId, platformUsername = platformMember.platformUsername,
-                        platform = platform, startTime = startTime, endTime = endTime)
+                        platform = platform, startTime = startTime, endTime = endTime, memberId = member.id)
                 return list.map {
                     BetOrder(id = -1, clientId = it.clientId, memberId = it.memberId, betTime = it.betTime, settleTime = it.settleTime, betAmount = it.betAmount,
                             winAmount = it.winAmount, mark = true, orderId = it.orderId, createdTime = it.betTime, originData = it.originData, platform = it.platform,

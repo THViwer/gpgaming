@@ -11,24 +11,22 @@ import com.onepiece.gpgaming.beans.model.token.MegaClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.SlotGame
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
-import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
+import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.combination.AsiaGamingService
 import com.onepiece.gpgaming.games.combination.MicroGamingService
 import com.onepiece.gpgaming.games.combination.PlaytechService
 import com.onepiece.gpgaming.games.fishing.GGFishingService
+import com.onepiece.gpgaming.games.http.GameResponse
 import com.onepiece.gpgaming.games.live.AllBetService
 import com.onepiece.gpgaming.games.live.DreamGamingService
 import com.onepiece.gpgaming.games.live.EBetService
 import com.onepiece.gpgaming.games.live.EvolutionService
-import com.onepiece.gpgaming.games.live.FggService
-import com.onepiece.gpgaming.games.live.GoldDeluxeService
 import com.onepiece.gpgaming.games.live.SaGamingService
 import com.onepiece.gpgaming.games.live.SexyGamingService
 import com.onepiece.gpgaming.games.slot.GamePlayService
-import com.onepiece.gpgaming.games.slot.JokerService
 import com.onepiece.gpgaming.games.slot.Kiss918Service
 import com.onepiece.gpgaming.games.slot.MegaService
 import com.onepiece.gpgaming.games.slot.PNGService
@@ -56,7 +54,7 @@ class GameApi(
         private val gamePlatformService: GamePlatformService,
 
         // slot
-        private val jokerService: JokerService,
+//        private val jokerService: JokerService,
         private val kiss918Service: Kiss918Service,
         private val pussy888Service: Pussy888Service,
         private val megaService: MegaService,
@@ -68,10 +66,10 @@ class GameApi(
         private val simplePlayService: SimplePlayService,
 
         // live game
-        private val goldDeluxeService: GoldDeluxeService,
+//        private val goldDeluxeService: GoldDeluxeService,
         private val evolutionService: EvolutionService,
         private val sexyGamingService: SexyGamingService,
-        private val fggService: FggService,
+//        private val fggService: FggService,
         private val allBetService: AllBetService,
         private val dreamGamingService: DreamGamingService,
         private val pngService: PNGService,
@@ -99,7 +97,7 @@ class GameApi(
         return when (platform) {
 
             // slot
-            Platform.Joker -> jokerService
+//            Platform.Joker -> jokerService
             Platform.Kiss918 -> kiss918Service
             Platform.Pussy888 -> pussy888Service
             Platform.Mega -> megaService
@@ -110,11 +108,11 @@ class GameApi(
             Platform.SimplePlay -> simplePlayService
 
             // live game
-            Platform.Fgg -> fggService
+//            Platform.Fgg -> fggService
             Platform.Evolution -> evolutionService
             Platform.AllBet -> allBetService
             Platform.DreamGaming -> dreamGamingService
-            Platform.GoldDeluxe -> goldDeluxeService
+//            Platform.GoldDeluxe -> goldDeluxeService
             Platform.SexyGaming -> sexyGamingService
             Platform.PNG -> pngService
             Platform.SaGaming -> saGamingService
@@ -137,6 +135,76 @@ class GameApi(
             Platform.PlaytechLive -> playtechService
 
             else -> error(OnePieceExceptionCode.PLATFORM_METHOD_FAIL)
+        }
+    }
+
+    private fun bindLogHead(clientId: Int, memberId: Int, platform: Platform, method: String): String {
+        return "clientId=$clientId,memberId=$memberId,platform=$platform => $method"
+    }
+
+    private fun <T> useRemoteLog(head: String, gameResponse: GameResponse<T>): T {
+
+        val okResponse = gameResponse.okResponse
+
+        if (okResponse.ok) {
+            log.info("\r\n--------start--------\r\n" +
+                    "---- use remote $head ---- \r\n" +
+                    "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
+                    "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
+                    "---- 请求地址: ${okResponse.url} ---- \r\n" +
+                    "---- 请求参数: ${okResponse.param} ---- \r\n" +
+                    "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
+                    "---- 响应参数: ${okResponse.response} ---- \r\n" +
+                    "--------end--------\r\n"
+            )
+
+            return gameResponse.data!!
+        }
+
+        log.error("\r\n--------start--------\r\n" +
+                "---- use remote $head ---- \r\n" +
+                "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
+                "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
+                "---- 请求地址: ${okResponse.url} ---- \r\n" +
+                "---- 请求参数: ${okResponse.param} ---- \r\n" +
+                "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
+                "---- 响应参数: ${okResponse.response} ---- \r\n" +
+                "--------end--------\r\n"
+        )
+
+
+        error(OnePieceExceptionCode.PLATFORM_REQUEST_ERROR)
+    }
+
+    private fun <T> useRemoteLogByPull(head: String, gameResponse: GameResponse<T>) {
+
+        val okResponse = gameResponse.okResponse
+
+        if (okResponse.ok) {
+            log.info("\r\n--------start--------\r\n" +
+                    "---- use remote $head ---- \r\n" +
+                    "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
+                    "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
+                    "---- 请求地址: ${okResponse.url} ---- \r\n" +
+                    "---- 请求参数: ${okResponse.param} ---- \r\n" +
+                    "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
+                    "---- 响应参数: ${okResponse.response} ---- \r\n" +
+                    "--------end--------\r\n"
+            )
+
+        } else {
+
+            log.info("\r\n--------start--------\r\n" +
+                    "--- use remote $head ---- \r\n" +
+                    "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
+                    "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
+                    "---- 请求地址: ${okResponse.url} ---- \r\n" +
+                    "---- 请求参数: ${okResponse.param} ---- \r\n" +
+                    "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
+                    "---- 响应参数: ${okResponse.response} ---- \r\n"  +
+                    "--------end--------\r\n"
+            )
+
         }
     }
 
@@ -167,9 +235,10 @@ class GameApi(
             // 注册账号
             val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = name,
                     clientId = clientId, memberId = memberId)
-            val platformUsername = getPlatformApi(platform).register(registerReq)
+            val gameResponse = getPlatformApi(platform).register(registerReq)
 
             try {
+                val platformUsername = this.useRemoteLog(head = bindLogHead(clientId, memberId, platform, "register"), gameResponse = gameResponse)
                 platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
             } catch (e: Exception) {
 
@@ -240,7 +309,7 @@ class GameApi(
     /**
      * 开始游戏(平台)
      */
-    fun start(clientId: Int, platformUsername: String, platformPassword: String, platform: Platform, launch: LaunchMethod = LaunchMethod.Web, language: Language): String {
+    fun start(clientId: Int, memberId: Int, platformUsername: String, platformPassword: String, platform: Platform, launch: LaunchMethod = LaunchMethod.Web, language: Language): String {
 
         check(gamePlatformService.all().first { it.platform == platform }.status == Status.Normal) { OnePieceExceptionCode.PLATFORM_MAINTAIN }
 
@@ -262,7 +331,8 @@ class GameApi(
             Platform.EBet,
             Platform.Bcs -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, launch = launch, language = language, password = platformPassword, redirectUrl = getRequestDomain())
-                this.getPlatformApi(platform).start(startReq)
+                val gameResponse = this.getPlatformApi(platform).start(startReq)
+                this.useRemoteLog(head = bindLogHead(clientId, memberId, platform, "start"), gameResponse = gameResponse)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -277,7 +347,10 @@ class GameApi(
         return when (platform) {
             Platform.Lbc,
             Platform.Bcs,
-            Platform.CMD -> this.getPlatformApi(platform).startDemo(token = clientToken, language = language, launch = launch)
+            Platform.CMD -> {
+                val gameResponse = this.getPlatformApi(platform).startDemo(token = clientToken, language = language, launch = launch)
+                this.useRemoteLog(head = this.bindLogHead(clientId, -1, platform, "start sport demo"), gameResponse = gameResponse)
+            }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
@@ -285,7 +358,7 @@ class GameApi(
     /**
      * 开始游戏(老虎机)
      */
-    fun start(clientId: Int, platformUsername: String, platformPassword: String, platform: Platform, gameId: String, language: Language,
+    fun start(clientId: Int, memberId: Int, platformUsername: String, platformPassword: String, platform: Platform, gameId: String, language: Language,
               launchMethod: LaunchMethod): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
@@ -303,7 +376,11 @@ class GameApi(
             Platform.GamePlay,
             Platform.SimplePlay,
             Platform.SpadeGaming,
-            Platform.AsiaGamingSlot -> getPlatformApi(platform).startSlot(startSlotReq)
+            Platform.AsiaGamingSlot -> {
+                val gameResponse = getPlatformApi(platform).startSlot(startSlotReq)
+
+                this.useRemoteLog(head = bindLogHead(clientId, memberId, platform, "start"), gameResponse = gameResponse)
+            }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
     }
@@ -326,7 +403,10 @@ class GameApi(
             Platform.PNG,
             Platform.GamePlay,
             Platform.SimplePlay,
-            Platform.Pragmatic -> getPlatformApi(platform).startSlotDemo(startSlotReq)
+            Platform.Pragmatic -> {
+                val gameResponse = getPlatformApi(platform).startSlotDemo(startSlotReq)
+                gameResponse.data ?: error(OnePieceExceptionCode.SYSTEM)
+            }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
@@ -336,14 +416,17 @@ class GameApi(
     /**
      * 查询会员余额
      */
-    fun balance(clientId: Int, platformUsername: String, platformPassword: String, platform: Platform): BigDecimal {
+    fun balance(clientId: Int, memberId: Int, platformUsername: String, platformPassword: String, platform: Platform): BigDecimal {
         check(gamePlatformService.all().first { it.platform == platform }.status == Status.Normal) { OnePieceExceptionCode.PLATFORM_MAINTAIN }
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
 
         val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername, password = platformPassword)
-        return this.getPlatformApi(platform).balance(balanceReq).setScale(2, BigDecimal.ROUND_DOWN)
+        val gameResponse = this.getPlatformApi(platform).balance(balanceReq)
+
+        return this.useRemoteLog(head = bindLogHead(clientId, memberId, platform, "balance"), gameResponse = gameResponse)
+                .setScale(2, BigDecimal.ROUND_DOWN)
     }
 
 
@@ -379,12 +462,12 @@ class GameApi(
             // 检查转账是否成功
             val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = orderId,
                     amount = amount, type = type)
-            return this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
+            return this.checkTransfer(clientId = clientId, memberId = memberId, platform = platform, checkTransferReq = checkTransferReq)
         }
 
         return try {
-            val resp = this.getPlatformApi(platform).transfer(transferReq)
-//            return resp
+            val gameResponse = this.getPlatformApi(platform).transfer(transferReq)
+            val resp = this.useRemoteLog(head = this.bindLogHead(clientId, memberId, platform, "transfer"), gameResponse = gameResponse)
 
             val type = if (amount.toDouble() > 0) "deposit" else "withdraw"
             val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = resp.platformOrderId,
@@ -392,8 +475,8 @@ class GameApi(
 
             //TODO 如果是kiss918和Pussy888 则不能check
             val checkResp = when (platform) {
-                Platform.Kiss918, Platform.Pussy888 -> if (resp.transfer) resp else this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
-                else -> this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
+                Platform.Kiss918, Platform.Pussy888 -> if (resp.transfer) resp else this.checkTransfer(clientId = clientId, memberId = memberId, platform = platform, checkTransferReq = checkTransferReq)
+                else -> this.checkTransfer(clientId = clientId, memberId = memberId, platform = platform, checkTransferReq = checkTransferReq)
             }
 //            val checkResp = this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
 
@@ -416,7 +499,7 @@ class GameApi(
 
     }
 
-    fun checkTransfer(platform: Platform, checkTransferReq: GameValue.CheckTransferReq, index: Int = 0): GameValue.TransferResp {
+    fun checkTransfer(clientId: Int, memberId: Int, platform: Platform, checkTransferReq: GameValue.CheckTransferReq, index: Int = 0): GameValue.TransferResp {
 
 //        if (platform == Platform.Kiss918 || platform == Platform.Pussy888) {
 //
@@ -427,10 +510,11 @@ class GameApi(
         try {
             if (index > 2) return GameValue.TransferResp.failed()
 
-            return this.getPlatformApi(platform).checkTransfer(checkTransferReq)
+            val gameResponse = this.getPlatformApi(platform).checkTransfer(checkTransferReq)
+            return this.useRemoteLog(head = this.bindLogHead(clientId, memberId, platform, "check transfer"), gameResponse = gameResponse)
         } catch (e: Exception) {
             log.error("查询转账失败第${index}次，请求参数：$checkTransferReq ", e)
-            return this.checkTransfer(platform, checkTransferReq, index + 1)
+            return this.checkTransfer(clientId, memberId, platform, checkTransferReq, index + 1)
         }
     }
 
@@ -438,13 +522,14 @@ class GameApi(
     /**
      * 查询下注订单
      */
-    fun queryBetOrder(clientId: Int, platformUsername: String, platform: Platform, startTime: LocalDateTime, endTime: LocalDateTime): List<BetOrderValue.BetOrderCo> {
+    fun queryBetOrder(clientId: Int, memberId: Int, platformUsername: String, platform: Platform, startTime: LocalDateTime, endTime: LocalDateTime): List<BetOrderValue.BetOrderCo> {
         val clientToken = getClientToken(clientId = clientId, platform = platform)
 
         return when (platform) {
             Platform.Kiss918, Platform.Mega, Platform.Pussy888, Platform.SexyGaming, Platform.Bcs, Platform.AllBet, Platform.TTG -> {
                 val betOrderReq = GameValue.BetOrderReq(token = clientToken, startTime = startTime, endTime = endTime, username = platformUsername)
-                getPlatformApi(platform).queryBetOrder(betOrderReq)
+                val gameResponse = getPlatformApi(platform).queryBetOrder(betOrderReq)
+                this.useRemoteLog(head = this.bindLogHead(clientId, memberId, platform, "query bet order"), gameResponse = gameResponse)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -459,7 +544,8 @@ class GameApi(
         return when (platform) {
             Platform.Kiss918, Platform.Pussy888, Platform.Mega -> {
                 val req = GameValue.ReportQueryReq(token = clientToken, startDate = startDate)
-                getPlatformApi(platform).queryReport(req)
+                val gameResponse = getPlatformApi(platform).queryReport(req)
+                this.useRemoteLog(head = this.bindLogHead(clientId, -1, platform, "query report"), gameResponse = gameResponse)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -468,7 +554,7 @@ class GameApi(
     /**
      * 同步订单
      */
-    fun pullBets(platformBind: PlatformBind, startTime: LocalDateTime, endTime: LocalDateTime): List<BetOrderValue.BetOrderCo> {
+    fun pullBets(platformBind: PlatformBind, startTime: LocalDateTime, endTime: LocalDateTime): GameResponse<List<BetOrderValue.BetOrderCo>> {
 
         return when (platformBind.platform) {
             Platform.SpadeGaming,
@@ -497,7 +583,10 @@ class GameApi(
             Platform.PlaytechLive -> {
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken,
                         platform = platformBind.platform)
-                getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)
+                val gameResponse = getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)
+                this.useRemoteLogByPull(head = "clientId=${platformBind.clientId},platform=${platformBind.platform} -> pullBets", gameResponse = gameResponse)
+
+                gameResponse
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }

@@ -7,6 +7,9 @@ import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapUtil
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -42,22 +45,25 @@ class Kiss918Service (
     }
 
 
-    private fun startGetJson(url: String, beforeParam: String = "", username: String, data: List<String>, clientToken: Kiss918ClientToken): MapUtil {
+    private fun doGet(url: String, beforeParam: String = "", username: String, data: List<String>, clientToken: Kiss918ClientToken): OKResponse {
         val time = System.currentTimeMillis()
         val sign = this.sign(beforeParam = beforeParam, username = username, time = time, token = clientToken)
 
-        val param = data.joinToString(separator = "&")
-        val requestUrl = "$url?$param&sign=${sign}&time=$time&authcode=${clientToken.autoCode}".replace(" ", "%20")
+        val param = "${data.joinToString(separator = "&")}&sign=${sign}&time=$time&authcode=${clientToken.autoCode}".replace(" ", "%20")
+        val okParam = OKParam.ofGet(url = url, param = param)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
 
-        val result = okHttpUtil.doGet(platform = Platform.Kiss918, url = requestUrl, clz = Kiss918Value.Result::class.java)
-        check(result.success) {
-            log.error("kiss918 network error: success = ${result.success}, msg = ${result.msg}")
-            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        if (!okResponse.ok) return okResponse
+
+        val ok = try {
+            okResponse.asBoolean("success")
+        } catch (e: Exception) {
+            false
         }
-        return result.mapUtil
+        return okResponse.copy(ok = ok)
     }
 
-    private fun generatorUsername(registerReq: GameValue.RegisterReq): String {
+    private fun generatorUsername(registerReq: GameValue.RegisterReq): GameResponse<String> {
         val clientToken = registerReq.token as Kiss918ClientToken
         val agentName = clientToken.agentName
         val data = listOf(
@@ -68,16 +74,22 @@ class Kiss918Service (
         )
 
         val url = "${clientToken.apiPath}/ashx/account/account.ashx"
-        val mapUtil = this.startGetJson(url = url, beforeParam = agentName, username = agentName, clientToken = clientToken, data = data)
-        return mapUtil.asString("account")
+        val okResponse = this.doGet(url = url, beforeParam = agentName, username = agentName, clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asString("account")
+        }
     }
 
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
         val clientToken = registerReq.token as Kiss918ClientToken
 
         val agentName = clientToken.agentName
-        val username = this.generatorUsername(registerReq)
+        val gResponse = this.generatorUsername(registerReq)
+        if (!gResponse.okResponse.ok) return gResponse
+
+        val username = gResponse.data!!
+
 
         val data = listOf(
                 "action=AddUser",
@@ -92,11 +104,13 @@ class Kiss918Service (
                 "pwdtype=1"
         )
         val url = "${clientToken.apiPath}/ashx/account/account.ashx"
-        this.startGetJson(url = url, username = username, clientToken = clientToken, data = data)
-        return username
+        val okResponse = this.doGet(url = url, username = username, clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            username
+        }
     }
 
-    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq) {
+    override fun updatePassword(updatePasswordReq: GameValue.UpdatePasswordReq): GameResponse<Unit> {
         val clientToken = updatePasswordReq.token as Kiss918ClientToken
         val agentName = clientToken.agentName
 
@@ -114,10 +128,11 @@ class Kiss918Service (
                 "pwdtype=1"
         )
         val url = "${clientToken.apiPath}/ashx/account/account.ashx"
-        this.startGetJson(url = url, username = updatePasswordReq.username, clientToken = clientToken, data = data)
+        val okResponse = this.doGet(url = url, username = updatePasswordReq.username, clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse) {}
     }
 
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
         val clientToken = balanceReq.token as Kiss918ClientToken
 
         log.info("查询余额. 请求ip: ${getRequestIp()}, " +
@@ -125,7 +140,7 @@ class Kiss918Service (
                 "本次请求时间：${System.currentTimeMillis()}")
         val (balance, time) = (balanceQueue[balanceReq.username]?: "0_0").split("_")
         if (time != "0" && (System.currentTimeMillis() - time.toLong()) < 16000) {
-            return balance.toBigDecimal()
+            return GameResponse.of(data = balance.toBigDecimal())
         }
 
         val data = listOf(
@@ -134,13 +149,16 @@ class Kiss918Service (
         )
 
         val url = "${clientToken.apiPath}/ashx/account/account.ashx"
-        val mapUtil = this.startGetJson(url = url, username = balanceReq.username, clientToken = clientToken, data = data)
-        val amount =  mapUtil.asBigDecimal("MoneyNum")
-        balanceQueue[balanceReq.username] = "${amount}_${System.currentTimeMillis()}"
-        return amount
+        val okResponse = this.doGet(url = url, username = balanceReq.username, clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            val amount =  it.asBigDecimal("MoneyNum")
+            balanceQueue[balanceReq.username] = "${amount}_${System.currentTimeMillis()}"
+            amount
+        }
+
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = transferReq.token as Kiss918ClientToken
 
         log.info("转账.请求ip: ${getRequestIp()}, " +
@@ -164,22 +182,26 @@ class Kiss918Service (
 
         return try {
             val url = "${clientToken.apiPath}/ashx/account/setScore.ashx"
-            val mapUtil = this.startGetJson(url = url, username = transferReq.username, clientToken = clientToken, data = data)
-            val balance = mapUtil.asBigDecimal("money")
+            val okResponse = this.doGet(url = url, username = transferReq.username, clientToken = clientToken, data = data)
 
-            queue[transferReq.username] = System.currentTimeMillis()
+            this.bindGameResponse(okResponse = okResponse) {
+                val balance = it.asBigDecimal("money")
 
-            GameValue.TransferResp.successful(balance)
+                queue[transferReq.username] = System.currentTimeMillis()
+
+                GameValue.TransferResp.successful(balance)
+            }
+
         } catch (e: Exception) {
             if (e.message?.contains("fail,money not enough,") != null) {
-                GameValue.TransferResp.failed()
+                GameResponse.of(GameValue.TransferResp.failed())
             } else {
                 throw e
             }
         }
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
 
         val clientToken = checkTransferReq.token as Kiss918ClientToken
 
@@ -193,13 +215,16 @@ class Kiss918Service (
         )
 
         val url = "${clientToken.apiOrderPath}/ashx/UserscoreLog.ashx"
-        val mapUtil = this.startGetJson(url = url, username = checkTransferReq.username, clientToken = clientToken, data = data)
+        val okResponse = this.doGet(url = url, username = checkTransferReq.username, clientToken = clientToken, data = data)
 
-        val flag = mapUtil.asList("results").firstOrNull()?.asBigDecimal("ScoreNum")?.setScale(2, 2) == checkTransferReq.amount.setScale(2, 2)
-        return GameValue.TransferResp.of(successful = flag)
+        return this.bindGameResponse(okResponse = okResponse) {
+            val flag = it.asList("results").firstOrNull()?.asBigDecimal("ScoreNum")?.setScale(2, 2) == checkTransferReq.amount.setScale(2, 2)
+            GameValue.TransferResp.of(successful = flag)
+        }
+
     }
 
-    override fun queryReport(reportQueryReq: GameValue.ReportQueryReq): List<GameValue.PlatformReportData> {
+    override fun queryReport(reportQueryReq: GameValue.ReportQueryReq): GameResponse<List<GameValue.PlatformReportData>> {
 
         val clientToken = reportQueryReq.token as Kiss918ClientToken
 
@@ -211,23 +236,24 @@ class Kiss918Service (
         )
 
         val url = "${clientToken.apiOrderPath}/ashx/AgentTotalReport.ashx"
-        val mapUtil = this.startGetJson(url = url, username = clientToken.agentName, clientToken = clientToken, data = data)
+        val okResponse = this.doGet(url = url, username = clientToken.agentName, clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse) {
+            it.asList("results").map {
+                val username = it.asString("Account")
+                val bet = BigDecimal.valueOf(-1)
+                val win = it.asBigDecimal("win")
+                val originData = objectMapper.writeValueAsString(it.data)
 
-        return mapUtil.asList("results").map {
-            val username = it.asString("Account")
-            val bet = BigDecimal.valueOf(-1)
-            val win = it.asBigDecimal("win")
-            val originData = objectMapper.writeValueAsString(it.data)
+                GameValue.PlatformReportData(username = username, platform = Platform.Kiss918, bet = bet, win = win,
+                        originData = originData)
 
-            GameValue.PlatformReportData(username = username, platform = Platform.Kiss918, bet = bet, win = win,
-                    originData = originData)
-
+            }
         }
     }
 
 
 
-    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): List<BetOrderValue.BetOrderCo> {
+    override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
         val clientToken = betOrderReq.token as Kiss918ClientToken
 
         val endTime = LocalDateTime.now()
@@ -243,22 +269,25 @@ class Kiss918Service (
         )
 
         val url = "${clientToken.apiOrderPath}/ashx/GameLog.ashx"
-        val mapUtils = this.startGetJson(url = url, username = betOrderReq.username, clientToken = clientToken, data = data)
-
-        val clientId = -1
-        val memberId = -1
-        return mapUtils.asList("results").map { bet ->
-            val orderId = bet.asString("uuid")
+        val okResponse = this.doGet(url = url, username = betOrderReq.username, clientToken = clientToken, data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            val clientId = -1
+            val memberId = -1
+            it.asList("results").map { bet ->
+                val orderId = bet.asString("uuid")
 //            val betAmount = bet.asBigDecimal("bet")
-            val betAmount = BigDecimal.ZERO
-            val winAmount = bet.asBigDecimal("Win").negate()
-            val betTime = bet.asLocalDateTime("CreateTime", dateTimeFormatter)
+                val betAmount = BigDecimal.ZERO
+                val winAmount = bet.asBigDecimal("Win").negate()
+                val betTime = bet.asLocalDateTime("CreateTime", dateTimeFormatter)
 
-            val originData = objectMapper.writeValueAsString(bet.data)
+                val originData = objectMapper.writeValueAsString(bet.data)
 
-            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Kiss918, orderId = orderId, betAmount = betAmount,
-                    winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
+                BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Kiss918, orderId = orderId, betAmount = betAmount,
+                        winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
+            }
         }
+
+
     }
 
 }

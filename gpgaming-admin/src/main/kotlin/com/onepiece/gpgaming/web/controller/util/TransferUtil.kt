@@ -98,7 +98,7 @@ open class TransferUtil(
 //                log.error("转账平台错误:", e)
 
                         try {
-                            val balance = gameApi.balance(clientId = clientId, platformUsername = platformMember.platformUsername,
+                            val balance = gameApi.balance(clientId = clientId, memberId = platformMember.memberId, platformUsername = platformMember.platformUsername,
                                     platform = platformMember.platform, platformPassword = platformMember.platformPassword)
                             CashValue.BalanceAllInVo(platform = platformMember.platform, balance = balance)
                         } catch (e1: Exception) {
@@ -126,7 +126,8 @@ open class TransferUtil(
     private fun singleTransfer(clientId: Int, username: String, platform: Platform, cashTransferReq: CashValue.CashTransferReq, platformMemberVo: PlatformMemberVo, type: String): GameValue.TransferResp {
 
         val platformMember = platformMemberService.get(platformMemberVo.id)
-        val platformBalance = gameApi.balance(clientId = clientId, platformUsername = platformMemberVo.platformUsername, platform = platform, platformPassword = platformMember.password)
+        val platformBalance = gameApi.balance(clientId = clientId, memberId = platformMemberVo.memberId, platformUsername = platformMemberVo.platformUsername,
+                platform = platform, platformPassword = platformMember.password)
 
         return when (type) {
 

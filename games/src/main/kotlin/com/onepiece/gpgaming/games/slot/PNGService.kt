@@ -2,35 +2,36 @@ package com.onepiece.gpgaming.games.slot
 
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
-import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.PNGClientToken
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
-import com.onepiece.gpgaming.games.bet.MapUtil
-import com.onepiece.gpgaming.games.http.OkHttpUtil
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
+import com.onepiece.gpgaming.games.http.U9HttpRequest
 import okhttp3.Credentials
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDate
 
 @Service
-class PNGService: PlatformService() {
+class PNGService : PlatformService() {
 
-    fun startPostXml(clientToken: PNGClientToken, data: String, action: String): MapUtil {
+    fun doPostXml(clientToken: PNGClientToken, data: String, action: String): OKResponse {
         val basicAuth = Credentials.basic(clientToken.username, clientToken.password)
         val headers = mapOf(
                 "Authorization" to basicAuth,
                 "SOAPAction" to action
         )
 
-        val result = okHttpUtil.doPostXml(platform = Platform.PNG, url = clientToken.apiPath, data = data, mediaType = OkHttpUtil.TEXT_XML,
-                headers = headers, clz = PNGValue.Result::class.java)
-        //TODO check
-        return result.mapUtil
+        val okParam = OKParam.ofPostXml(url = clientToken.apiPath, param = data, headers = headers)
+                .copy(mediaType = U9HttpRequest.MEDIA_TEXT_XML, clz = PNGValue.Result::class.java)
+
+        return u9HttpRequest.startRequest(okParam = okParam)
     }
 
-    private fun getLang(language: Language) : String {
+    private fun getLang(language: Language): String {
         return when (language) {
             Language.CN -> "zh_CN"
             Language.EN -> "en_US"
@@ -42,7 +43,7 @@ class PNGService: PlatformService() {
         }
     }
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
         val clientToken = registerReq.token as PNGClientToken
 
         val data = """
@@ -67,13 +68,14 @@ class PNGService: PlatformService() {
             </soapenv:Envelope>
         """.trimIndent()
 
-        this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/RegisterUser")
-
-        return registerReq.username
+        val okResponse = this.doPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/RegisterUser")
+        return this.bindGameResponse(okResponse = okResponse) {
+            registerReq.username
+        }
     }
 
 
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
 
         val clientToken = balanceReq.token as PNGClientToken
         val data = """
@@ -87,14 +89,17 @@ class PNGService: PlatformService() {
             </soapenv:Envelope>
         """.trimIndent()
 
-        val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/Balance")
-        return mapUtil.asMap("Body").asMap("BalanceResponse").asMap("UserBalance").asBigDecimal("Real")
+        val okResponse = this.doPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/Balance")
+
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asMap("Body").asMap("BalanceResponse").asMap("UserBalance").asBigDecimal("Real")
+        }
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = transferReq.token as PNGClientToken
 
-        return when (transferReq.amount.toDouble() > 0) {
+        val okResponse = when (transferReq.amount.toDouble() > 0) {
             true -> {
                 val data = """
                     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://playngo.com/v1">  
@@ -110,8 +115,7 @@ class PNGService: PlatformService() {
                     </soapenv:Envelope>
                 """.trimIndent()
 
-                val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/Credit")
-                GameValue.TransferResp.successful()
+                this.doPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/Credit")
             }
             false -> {
                 val data = """
@@ -127,13 +131,16 @@ class PNGService: PlatformService() {
                       </soapenv:Body> 
                     </soapenv:Envelope>
                 """.trimIndent()
-                val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/Debit")
-                GameValue.TransferResp.successful()
+                this.doPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/Debit")
             }
+        }
+
+        return this.bindGameResponse(okResponse = okResponse) {
+            GameValue.TransferResp.successful()
         }
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = checkTransferReq.token as PNGClientToken
 
         return when (checkTransferReq.type) {
@@ -150,9 +157,12 @@ class PNGService: PlatformService() {
                        </soapenv:Body>
                     </soapenv:Envelope>
             """.trimIndent()
-                val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/CreditAccount")
-                val successful = mapUtil.asMap("Body").asMap("CreditAccountResponse").asMap("UserAccount").data["TransactionId"] != null
-                GameValue.TransferResp.of(successful = successful)
+                val okResponse = this.doPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/CreditAccount")
+                this.bindGameResponse(okResponse = okResponse) {
+                    val successful = it.asMap("Body").asMap("CreditAccountResponse").asMap("UserAccount").data["TransactionId"] != null
+                    GameValue.TransferResp.of(successful = successful)
+                }
+
             }
             "withdraw" -> {
                 val data = """
@@ -167,10 +177,12 @@ class PNGService: PlatformService() {
                        </soapenv:Body>
                     </soapenv:Envelope>
             """.trimIndent()
-                val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/DebitAccount")
-                val successful = mapUtil.asMap("Body").asMap("DebitAccountResponse").asMap("UserAccount").data["TransactionId"] != null
-                val balance = mapUtil.asMap("Body").asMap("DebitAccountResponse").asMap("UserAccount").asBigDecimal("Real")
-                GameValue.TransferResp.of(successful = successful, balance = balance)
+                val okResponse = this.doPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/DebitAccount")
+                this.bindGameResponse(okResponse = okResponse) {
+                    val successful = it.asMap("Body").asMap("DebitAccountResponse").asMap("UserAccount").data["TransactionId"] != null
+                    val balance = it.asMap("Body").asMap("DebitAccountResponse").asMap("UserAccount").asBigDecimal("Real")
+                    GameValue.TransferResp.of(successful = successful, balance = balance)
+                }
             }
             else -> error(OnePieceExceptionCode.PLATFORM_DATA_FAIL)
         }
@@ -191,11 +203,11 @@ class PNGService: PlatformService() {
 
         """.trimIndent()
 
-        val mapUtil = this.startPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/GetTicket")
-        return mapUtil.asMap("Body").asMap("GetTicketResponse").asString("Ticket")
+        val okResponse = this.doPostXml(clientToken = clientToken, data = data, action = "http://playngo.com/v1/CasinoGameService/GetTicket")
+        return okResponse.asMap("Body").asMap("GetTicketResponse").asString("Ticket")
     }
 
-    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): String {
+    override fun startSlotDemo(startSlotReq: GameValue.StartSlotReq): GameResponse<String> {
 
         val lang = when (startSlotReq.language) {
             Language.MY -> "ms_MY"
@@ -219,14 +231,15 @@ class PNGService: PlatformService() {
                 "lang=$lang"
         ).joinToString("&")
 
-        return "https://bsistage.playngonetwork.com/casino/ContainerLauncher?$urlParam"
+        val path = "https://bsistage.playngonetwork.com/casino/ContainerLauncher?$urlParam"
+        return GameResponse.of(data = path)
     }
 
-    override fun startSlot(startSlotReq: GameValue.StartSlotReq): String {
+    override fun startSlot(startSlotReq: GameValue.StartSlotReq): GameResponse<String> {
 
         val clientToken = startSlotReq.token as PNGClientToken
 
-        val token = this.getToken(clientToken =  clientToken, username = startSlotReq.username)
+        val token = this.getToken(clientToken = clientToken, username = startSlotReq.username)
 
         val lang = when (startSlotReq.language) {
             Language.MY -> "ms_MY"
@@ -254,14 +267,14 @@ class PNGService: PlatformService() {
         ).filter { it.isNotBlank() }.joinToString("&")
 
 
-
 //        val domain = when (startSlotReq.launchMethod) {
 //            LaunchMethod.Web -> "https://bsistage.playngonetwork.com/casino/ContainerLauncher"
 //            LaunchMethod.Wap -> "https://bsistage.playngonetwork.com/casino/PlayMobile"
 //            else -> "https://bsistage.playngonetwork.com/casino/ContainerLauncher"
 //        }
 
-        return "${clientToken.gamePath}?$urlParam"
+        val path = "${clientToken.gamePath}?$urlParam"
+        return GameResponse.of(data = path)
     }
 
 }

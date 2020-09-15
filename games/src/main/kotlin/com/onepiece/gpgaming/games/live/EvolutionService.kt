@@ -10,6 +10,9 @@ import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.MapResultUtil
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
 import com.onepiece.gpgaming.utils.RequestUtil
 import org.apache.commons.codec.binary.Base64
 import org.slf4j.LoggerFactory
@@ -21,28 +24,36 @@ import java.util.*
 class EvolutionService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(EvolutionService::class.java)
+//
+//    private fun getRequestPath(clientToken: EvolutionClientToken, path: String, data: Map<String, Any>): String {
+//        val params = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
+//        return "${clientToken.apiPath}${path}?$params"
+//    }
+//
+//    fun doGetResult(url: String, pojo: String): Map<String, Any> {
+//        val result = okHttpUtil.doGet(platform = Platform.Evolution, url = url, clz = EvolutionValue.Result::class.java)
+//        //TODO check
+//        return MapResultUtil.asMap(result.data, pojo)
+//    }
 
-    private fun getRequestPath(clientToken: EvolutionClientToken, path: String, data: Map<String, Any>): String {
-        val params = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-        return "${clientToken.apiPath}${path}?$params"
+    fun doGet(clientToken: EvolutionClientToken, method: String, data: Map<String, Any>): OKResponse {
+
+        val url = "${clientToken.apiPath}${method}"
+        val param = data.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
+        val okParam = OKParam.ofGet(url = url, param = param)
+
+        return u9HttpRequest.startRequest(okParam = okParam)
     }
 
-    fun doGetResult(url: String, pojo: String): Map<String, Any> {
-        val result = okHttpUtil.doGet(platform = Platform.Evolution, url = url, clz = EvolutionValue.Result::class.java)
-        //TODO check
-        return MapResultUtil.asMap(result.data, pojo)
-    }
 
-
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
         val startReq = GameValue.StartReq(token = registerReq.token, username = registerReq.username, launch = LaunchMethod.Web,
                 language = Language.EN, password = "-", redirectUrl = RequestUtil.getRequest().requestURI)
-        this.start(startReq)
-
-        return registerReq.username
+        val responseGame = this.start(startReq)
+        return responseGame.copy(data = registerReq.username)
     }
 
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
 
         val token = balanceReq.token as EvolutionClientToken
 
@@ -52,12 +63,14 @@ class EvolutionService : PlatformService() {
                 "euID" to balanceReq.username,
                 "output" to 0
         )
-        val url = this.getRequestPath(clientToken = token, path = "/api/ecashier", data = data)
-        val result = this.doGetResult(url, "userbalance")
-        return MapResultUtil.asBigDecimal(result, "abalance")
+
+        val okResponse = this.doGet(clientToken = token, data = data, method = "/api/ecashier")
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asMap("userbalance").asBigDecimal("abalance")
+        }
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
 
         val token = transferReq.token as EvolutionClientToken
         val cCode = if (transferReq.amount.toDouble() > 0) "ECR" else "EDB"
@@ -72,14 +85,17 @@ class EvolutionService : PlatformService() {
                 "output" to 0
         )
 
-        val url = this.getRequestPath(clientToken = token, path = "/api/ecashier", data = data)
-        val result = doGetResult(url, "transfer")
-        val platformOrderId = MapResultUtil.asString(result, "etransid")
-        val balance = MapResultUtil.asBigDecimal(result, "balance")
-        return GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
+        val okResponse = this.doGet(clientToken = token, data = data, method = "/api/ecashier")
+        return this.bindGameResponse(okResponse = okResponse) {
+            val map = it.asMap("transfer")
+
+            val platformOrderId = map.asString("etransid")
+            val balance = map.asBigDecimal("etransid")
+            GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
+        }
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
         val token = checkTransferReq.token as EvolutionClientToken
 
         val data = hashMapOf(
@@ -89,13 +105,15 @@ class EvolutionService : PlatformService() {
                 "output" to 0,
                 "eTransID" to checkTransferReq.orderId
         )
-        val url = this.getRequestPath(clientToken =  token, path = "/api/ecashier", data = data)
-        val result = this.doGetResult(url, "transaction")
-        val successful =  MapResultUtil.asString(result, "result") == "Y"
-        return GameValue.TransferResp.of(successful)
+        val okResponse = this.doGet(clientToken = token, data = data, method = "/api/ecashier")
+        return this.bindGameResponse(okResponse = okResponse) {
+            val map = it.asMap("transaction")
+            val successful = map.asString("result") == "Y"
+            GameValue.TransferResp.of(successful)
+        }
     }
 
-    override fun start(startReq: GameValue.StartReq): String {
+    override fun start(startReq: GameValue.StartReq): GameResponse<String> {
         val token = startReq.token as EvolutionClientToken
 
         val ip = RequestUtil.getIpAddress()
@@ -159,23 +177,39 @@ class EvolutionService : PlatformService() {
         """.trimIndent()
 
         val url = "${token.apiPath}/ua/v1/${token.appId}/${token.key}"
-        val result= okHttpUtil.doPostJson(platform = Platform.Evolution, url = url, data = json, clz = EvolutionValue.Result::class.java)
-        return MapResultUtil.asString(result.data, "entry")
+
+        val okParam = OKParam.ofPost(url = url, param = json)
+        val okResponse = u9HttpRequest.startRequest(okParam)
+        return this.bindGameResponse(okResponse) {
+            it.asString("entry")
+        }
     }
 
-    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
         val token = pullBetOrderReq.token as EvolutionClientToken
         val authorization = Base64.encodeBase64String("${token.appId}:${token.key}".toByteArray())
 
         val utcStartTime = pullBetOrderReq.startTime.minusHours(8) // 设置UTC时间 所以要减8小时
         val utcEndTime = pullBetOrderReq.endTime.minusHours(8) // 设置UTC时间 所以要减8小时
-        val url = "${token.apiOrderPath}/api/gamehistory/v1/casino/games?startDate=${utcStartTime}&endDate=${utcEndTime}"
-        val headers = mapOf( "Authorization" to  "Basic $authorization")
-        val jsonValue = okHttpUtil.doGet(Platform.Evolution, url, String::class.java, headers)
+        val url = "${token.apiOrderPath}/api/gamehistory/v1/casino/games"
+        val param = "startDate=${utcStartTime}&endDate=${utcEndTime}"
+        val headers = mapOf("Authorization" to "Basic $authorization")
 
-        if (jsonValue.contains("Data could not be found.")) return emptyList()
+        val okParam = OKParam.ofGet(url = url, param = param, headers = headers)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
 
-        val result = objectMapper.readValue<EvolutionValue.BetResult>(jsonValue)
+
+        return this.bindGameResponse(okResponse = okResponse) {
+            val content = okResponse.response
+            loadData(content)
+        }
+
+    }
+
+    fun loadData(content: String): List<BetOrderValue.BetOrderCo> {
+        if (content.contains("Data could not be found.")) return emptyList()
+
+        val result = objectMapper.readValue<EvolutionValue.BetResult>(content)
         if (result.data.isEmpty()) return emptyList()
 
         return result.data.first().games.filter { MapResultUtil.asString(it.data, "status") == "Resolved" }.map {

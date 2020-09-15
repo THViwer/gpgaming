@@ -2,13 +2,14 @@ package com.onepiece.gpgaming.games.live
 
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Platform
-import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.EBetClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
-import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -17,17 +18,14 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.HashMap
 
 @Service
-class EBetService(
-        private val activeConfig: ActiveConfig
-) : PlatformService() {
+class EBetService : PlatformService() {
 
     private val log = LoggerFactory.getLogger(EBetService::class.java)
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    private fun doStartPost(data: HashMap<String, Any>, clientToken: EBetClientToken, path: String): EBetValue.Result {
+    private fun doPost(data: HashMap<String, Any>, clientToken: EBetClientToken, path: String): OKResponse {
 
         val username = data["username"]?.toString() ?: ""
         val timestamp = data["timestamp"]?.toString() ?: ""
@@ -35,21 +33,23 @@ class EBetService(
         val sign = EBetSignUtil.sign(signKey, clientToken.privateKey)
         data["signature"] = sign
 
-//        val url = if (activeConfig.profile == "dev") {
-//            "http://94.237.64.70:2011"
-//        } else {
-//            clientToken.apiUrl
-//        }
-//        val url = clientToken.apiUrl
-        val result = okHttpUtil.doPostJson(platform = Platform.EBet, url = "${clientToken.apiPath}$path", data = data, clz = EBetValue.Result::class.java)
-        check(result.status == "200") {
-            log.error("eBet request error: url = ${clientToken.apiPath}, request = $data, response: $result")
-            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+        val url = "${clientToken.apiPath}$path"
+
+        val param = objectMapper.writeValueAsString(data)
+        val okParam = OKParam.ofPost(url = url, param = param)
+
+        val okResponse = u9HttpRequest.startRequest(okParam)
+        if (!okResponse.ok) return okResponse
+
+        val ok = try {
+            okResponse.asString("status") == "200"
+        } catch (e: Exception) {
+            false
         }
-        return result
+        return okResponse.copy(ok = ok)
     }
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
         val clientToken = registerReq.token as EBetClientToken
         val data = hashMapOf<String, Any>(
                 "channelId" to clientToken.channelId,
@@ -58,23 +58,26 @@ class EBetService(
                 "currency" to clientToken.currency
         )
 
-        this.doStartPost(data = data, clientToken = clientToken, path = "/api/syncuser")
-
-        return registerReq.username
+        val okResponse = this.doPost(data = data, clientToken = clientToken, path = "/api/syncuser")
+        return this.bindGameResponse(okResponse = okResponse) {
+            registerReq.username
+        }
     }
 
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
         val clientToken = balanceReq.token as EBetClientToken
         val data: HashMap<String, Any> = hashMapOf(
                 "channelId" to clientToken.channelId,
                 "username" to balanceReq.username,
                 "currency" to clientToken.currency
         )
-        val result = this.doStartPost(data = data, clientToken = clientToken, path = "/api/getusermoney")
-        return result.mapUtil.asList("results").first().asBigDecimal("money")
+        val okResponse = this.doPost(data = data, clientToken = clientToken, path = "/api/getusermoney")
+        return this.bindGameResponse(okResponse) {
+            it.asList("results").first().asBigDecimal("money")
+        }
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
 
         val clientToken = transferReq.token as EBetClientToken
 
@@ -88,12 +91,14 @@ class EBetService(
                 "typeId" to 0
         )
 
-        val result = this.doStartPost(data = data, clientToken = clientToken, path = "/api/recharge")
-        val successful = result.mapUtil.asBigDecimal("money").toDouble() > 0
-        return GameValue.TransferResp.of(successful = successful)
+        val okResponse = this.doPost(data = data, clientToken = clientToken, path = "/api/recharge")
+        return this.bindGameResponse(okResponse = okResponse) {
+            val successful = it.asBigDecimal("money").toDouble() > 0
+            GameValue.TransferResp.of(successful = successful)
+        }
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
 
         val clientToken = checkTransferReq.token as EBetClientToken
         val data = hashMapOf<String, Any>(
@@ -104,12 +109,14 @@ class EBetService(
                 "username" to checkTransferReq.orderId
         )
 
-        val result = this.doStartPost(data = data, clientToken = clientToken, path = "/api/rechargestatus")
-        val successful = result.mapUtil.asString("rechargeReqId") == checkTransferReq.orderId
-        return GameValue.TransferResp.of(successful = successful)
+        val okResponse = this.doPost(data = data, clientToken = clientToken, path = "/api/rechargestatus")
+        return this.bindGameResponse(okResponse = okResponse) {
+            val successful = it.asString("rechargeReqId") == checkTransferReq.orderId
+            GameValue.TransferResp.of(successful = successful)
+        }
     }
 
-    override fun start(startReq: GameValue.StartReq): String {
+    override fun start(startReq: GameValue.StartReq): GameResponse<String> {
         val clientToken = startReq.token as EBetClientToken
 
         val language = when (startReq.language) {
@@ -124,10 +131,11 @@ class EBetService(
 //        val orientation = if (startReq.launch == LaunchMethod.Wap) "&orientation=1" else ""
 
         val accessToken = DigestUtils.md5Hex("${startReq.username}:ebet:1:${UUID.randomUUID().toString().replace("-", "")}")
-        return "${clientToken.gameUrl}&username=${startReq.username}&accessToken=$accessToken&language=$language&gameType=0,1,2,7"
+        val path = "${clientToken.gameUrl}&username=${startReq.username}&accessToken=$accessToken&language=$language&gameType=0,1,2,7"
+        return GameResponse.of(data = path)
     }
 
-    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): List<BetOrderValue.BetOrderCo> {
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
 
         val clientToken = pullBetOrderReq.token as EBetClientToken
 
@@ -137,32 +145,35 @@ class EBetService(
                 "startTimeStr" to pullBetOrderReq.startTime.format(dateTimeFormat),
                 "endTimeStr" to pullBetOrderReq.endTime.format(dateTimeFormat)
         )
-        val result = this.doStartPost(data = data, clientToken = clientToken, path = "/api/userbethistory")
+        val okResponse = this.doPost(data = data, clientToken = clientToken, path = "/api/userbethistory")
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asList("betHistories").map { mapUtil ->
+                val bet = mapUtil.asBigDecimal("bet")
+                val validBet = mapUtil.asBigDecimal("validBet")
+                val win = mapUtil.asBigDecimal("payout")
+                val orderId = mapUtil.asString("roundNo")
+                val username = mapUtil.asString("username")
 
-        return result.mapUtil.asList("betHistories").map { mapUtil ->
-            val bet = mapUtil.asBigDecimal("bet")
-            val validBet = mapUtil.asBigDecimal("validBet")
-            val win = mapUtil.asBigDecimal("payout")
-            val orderId = mapUtil.asString("roundNo")
-            val username = mapUtil.asString("username")
+                val betTime = mapUtil.asLong("createTime").div(1000)
+                        .let { Instant.ofEpochMilli(it) }
+                        .atZone(ZoneId.of("Asia/Shanghai"))
+                        .toLocalDateTime()
 
-            val betTime = mapUtil.asLong("createTime").div(1000)
-                    .let { Instant.ofEpochMilli(it) }
-                    .atZone(ZoneId.of("Asia/Shanghai"))
-                    .toLocalDateTime()
-
-            val settleTime = mapUtil.asLong("createTime").div(1000)
-                    .let { Instant.ofEpochMilli(it) }
-                    .atZone(ZoneId.of("Asia/Shanghai"))
-                    .toLocalDateTime()
+                val settleTime = mapUtil.asLong("createTime").div(1000)
+                        .let { Instant.ofEpochMilli(it) }
+                        .atZone(ZoneId.of("Asia/Shanghai"))
+                        .toLocalDateTime()
 
 
-            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.EBet, platformUsername = username)
+                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.EBet, platformUsername = username)
 
-            val originData = objectMapper.writeValueAsString(mapUtil.data)
-            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = bet, winAmount = win, orderId = orderId, betTime = betTime, settleTime = settleTime,
-                    originData = originData, platform = Platform.EBet, validAmount = validBet)
+                val originData = objectMapper.writeValueAsString(mapUtil.data)
+                BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = bet, winAmount = win, orderId = orderId, betTime = betTime, settleTime = settleTime,
+                        originData = originData, platform = Platform.EBet, validAmount = validBet)
+            }
         }
+
+
     }
 
 }

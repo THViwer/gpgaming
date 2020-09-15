@@ -1,17 +1,17 @@
 package com.onepiece.gpgaming.games.slot
 
 import com.onepiece.gpgaming.beans.enums.Platform
-import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
-import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.MegaClientToken
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
-import com.onepiece.gpgaming.games.bet.MapUtil
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.lang.Exception
 import java.math.BigDecimal
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -28,7 +28,7 @@ class MegaService : PlatformService() {
     }
 
 
-    fun startPostJson(method: String, data: Map<String, Any>, clientToken: MegaClientToken): MapUtil {
+    fun doPost(method: String, data: Map<String, Any>, clientToken: MegaClientToken): OKResponse {
         val param = hashMapOf(
                 "id" to "${UUID.randomUUID()}",
                 "sn" to clientToken.appId,
@@ -38,17 +38,23 @@ class MegaService : PlatformService() {
         )
 
         val url = "${clientToken.apiPath}/mega-cloud/api/"
-        val result = okHttpUtil.doPostJson(platform = Platform.Mega, url = url, data = param, clz = MegaValue.Result::class.java)
-        check(result.error.isNullOrBlank()) {
-            log.error("mega network error: errorMsgId = ${result.error}, $result")
-            OnePieceExceptionCode.PLATFORM_DATA_FAIL
+
+        val okParam = OKParam.ofPost(url = url, param = objectMapper.writeValueAsString(param))
+        val okResponse = u9HttpRequest.startRequest(okParam)
+        if (!okResponse.ok) return okResponse
+
+        val ok = try {
+            val error = okResponse.mapUtil.data["error"]?.toString()
+            error.isNullOrBlank()
+        } catch (e: Exception) {
+            false
         }
 
-        return result.mapUtil
+        return okResponse.copy(ok = ok)
     }
 
 
-    override fun register(registerReq: GameValue.RegisterReq): String {
+    override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
         val clientToken = registerReq.token as MegaClientToken
 
         val random = UUID.randomUUID().toString()
@@ -60,11 +66,13 @@ class MegaService : PlatformService() {
                 "sn" to clientToken.appId,
                 "digest" to digest
         )
-        val mapUtil = this.startPostJson(method = "open.mega.user.create", data = data, clientToken = clientToken)
-        return mapUtil.asMap("result").asString("loginId")
+        val okResponse = this.doPost(method = "open.mega.user.create", data = data, clientToken = clientToken)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asMap("result").asString("loginId")
+        }
     }
 
-    override fun balance(balanceReq: GameValue.BalanceReq): BigDecimal {
+    override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
         val clientToken = balanceReq.token as MegaClientToken
         val random = UUID.randomUUID().toString()
         val digest = this.sign(random = random, loginId = balanceReq.username, clientToken = clientToken)
@@ -74,11 +82,13 @@ class MegaService : PlatformService() {
                 "sn" to clientToken.appId,
                 "digest" to digest
         )
-        val mapUtil = this.startPostJson(method = "open.mega.balance.get", data = data, clientToken = clientToken)
-        return mapUtil.asBigDecimal("result")
+        val okResponse = this.doPost(method = "open.mega.balance.get", data = data, clientToken = clientToken)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asBigDecimal("result")
+        }
     }
 
-    override fun transfer(transferReq: GameValue.TransferReq): GameValue.TransferResp {
+    override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = transferReq.token as MegaClientToken
         val random = UUID.randomUUID().toString()
 
@@ -91,12 +101,14 @@ class MegaService : PlatformService() {
                 "sn" to clientToken.appId,
                 "digest" to digest
         )
-        val mapUtil = this.startPostJson(method = "open.mega.balance.transfer", data = data, clientToken = clientToken)
-        val balance = mapUtil.asBigDecimal("result")
-        return GameValue.TransferResp.successful(balance = balance)
+        val okResponse = this.doPost(method = "open.mega.balance.transfer", data = data, clientToken = clientToken)
+        return this.bindGameResponse(okResponse = okResponse) {
+            val balance = it.asBigDecimal("result")
+            GameValue.TransferResp.successful(balance = balance)
+        }
     }
 
-    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameValue.TransferResp {
+    override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
         val clientToken = checkTransferReq.token as MegaClientToken
         val random = UUID.randomUUID().toString()
         val digest = this.sign(random = random, clientToken = clientToken)
@@ -109,10 +121,12 @@ class MegaService : PlatformService() {
                 "sn" to clientToken.appId,
                 "digest" to digest
         )
-        val mapUtil = this.startPostJson(method = "open.mega.balance.transfer.query", data = data, clientToken = clientToken)
+        val okResponse = this.doPost(method = "open.mega.balance.transfer.query", data = data, clientToken = clientToken)
         //TODO 判断是否转账成功
-        val successful = mapUtil.asMap("result").asInt("total") > 0
-        return GameValue.TransferResp.of(successful)
+        return this.bindGameResponse(okResponse = okResponse) {
+            val successful = it.asMap("result").asInt("total") > 0
+            GameValue.TransferResp.of(successful)
+        }
     }
 
     fun downApp(clientToken: MegaClientToken): String {
@@ -125,11 +139,11 @@ class MegaService : PlatformService() {
                 "sn" to clientToken.appId,
                 "digest" to digest
         )
-        val mapUtil = this.startPostJson(method = "open.mega.app.url.download", data = data, clientToken = clientToken)
-        return mapUtil.asString("result")
+        val okResponse = this.doPost(method = "open.mega.app.url.download", data = data, clientToken = clientToken)
+        return okResponse.asString("result")
     }
 
-    open fun getBetOrderHtml(betOrderReq: GameValue.BetOrderReq): String {
+    open fun getBetOrderHtml(betOrderReq: GameValue.BetOrderReq): GameResponse<String> {
         val clientToken = betOrderReq.token as MegaClientToken
         val random = UUID.randomUUID().toString()
         val digest = this.sign(random = random, loginId = betOrderReq.username, clientToken = clientToken)
@@ -142,11 +156,13 @@ class MegaService : PlatformService() {
                 "sn" to clientToken.appId,
                 "digest" to digest
         )
-        val mapUtil = this.startPostJson(method = "open.mega.player.game.log.url.get", data = data, clientToken = clientToken)
-        return mapUtil.asString("result")
+        val okResponse = this.doPost(method = "open.mega.player.game.log.url.get", data = data, clientToken = clientToken)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asString("result")
+        }
     }
 
-    override fun queryReport(reportQueryReq: GameValue.ReportQueryReq): List<GameValue.PlatformReportData> {
+    override fun queryReport(reportQueryReq: GameValue.ReportQueryReq): GameResponse<List<GameValue.PlatformReportData>> {
 
         val clientToken = reportQueryReq.token as MegaClientToken
 
@@ -165,40 +181,40 @@ class MegaService : PlatformService() {
                 "sn" to clientToken.appId,
                 "digest" to digest
         )
-        val mapUtil = this.startPostJson(method = "open.mega.player.total.report", data = data, clientToken = clientToken)
+        val okResponse = this.doPost(method = "open.mega.player.total.report", data = data, clientToken = clientToken)
 
-        return mapUtil.asList("result").map {
-//            val bet = it.asBigDecimal("bet")
-            val bet = BigDecimal.ZERO
-            val win = it.asBigDecimal("win").negate()
-            val username = it.asString("loginId")
-            val originData = objectMapper.writeValueAsString(it.data)
-            GameValue.PlatformReportData(username = username, platform = Platform.Mega, bet = bet, win = win, originData = originData)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asList("result").map {
+                val bet = BigDecimal.ZERO
+                val win = it.asBigDecimal("win").negate()
+                val username = it.asString("loginId")
+                val originData = objectMapper.writeValueAsString(it.data)
+                GameValue.PlatformReportData(username = username, platform = Platform.Mega, bet = bet, win = win, originData = originData)
+            }
         }
     }
 
 
-    fun queryBetReport(token: ClientToken, username: String, startTime: LocalDateTime): BigDecimal {
-
-        val clientToken = token as MegaClientToken
-
-        val random = UUID.randomUUID().toString()
-        val digest = this.sign(random = random, loginId = username, clientToken = clientToken)
-
-        val endTime = LocalDateTime.now()
-        val data = mapOf(
-                "loginId" to username,
-                "startTime" to startTime.format(dateTimeFormat),
-                "endTime" to endTime.format(dateTimeFormat),
-                "random" to random,
-                "sn" to clientToken.appId,
-                "digest" to digest
-        )
-        val mapUtil = this.startPostJson(method = "open.mega.player.total.report", data = data, clientToken = clientToken)
-        return BigDecimal.ZERO
-
-
-
-    }
+//    fun queryBetReport(token: ClientToken, username: String, startTime: LocalDateTime): BigDecimal {
+//
+//        val clientToken = token as MegaClientToken
+//
+//        val random = UUID.randomUUID().toString()
+//        val digest = this.sign(random = random, loginId = username, clientToken = clientToken)
+//
+//        val endTime = LocalDateTime.now()
+//        val data = mapOf(
+//                "loginId" to username,
+//                "startTime" to startTime.format(dateTimeFormat),
+//                "endTime" to endTime.format(dateTimeFormat),
+//                "random" to random,
+//                "sn" to clientToken.appId,
+//                "digest" to digest
+//        )
+//        val mapUtil = this.startPostJson(method = "open.mega.player.total.report", data = data, clientToken = clientToken)
+//        return BigDecimal.ZERO
+//
+//
+//    }
 
 }

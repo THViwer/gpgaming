@@ -36,7 +36,8 @@ class DemoController(
         return when (platform) {
             Platform.Kiss918, Platform.Pussy888, Platform.Mega, Platform.Bcs, Platform.AllBet, Platform.TTG -> {
                 val platformMember = platformMemberService.find(memberId = 1, platform = platform) ?: return emptyList<Any>()
-                gameApi.queryBetOrder(clientId = 1, platformUsername = platformMember.platformUsername, platform = platform, startTime = startTime, endTime = endTime)
+                gameApi.queryBetOrder(clientId = 1, platformUsername = platformMember.platformUsername, platform = platform, startTime = startTime, endTime = endTime,
+                        memberId = platformMember.memberId)
             }
             else -> betOrderService.getBets(clientId = 1, memberId = 1, platform = platform)
 

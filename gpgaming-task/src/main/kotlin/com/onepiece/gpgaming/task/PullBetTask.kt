@@ -1,208 +1,204 @@
 package com.onepiece.gpgaming.task
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.PlatformBind
+import com.onepiece.gpgaming.beans.model.PullOrderTask
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
-import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
+import com.onepiece.gpgaming.core.dao.PullOrderTaskDao
 import com.onepiece.gpgaming.core.service.BetOrderService
-import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService
-import com.onepiece.gpgaming.core.utils.PolUtil
 import com.onepiece.gpgaming.games.GameApi
+import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKResponse
 import com.onepiece.gpgaming.utils.RedisService
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.Duration
 import java.time.LocalDateTime
-import java.util.stream.Collectors
 
 
 @Component
 class PullBetTask(
         private val platformBindService: PlatformBindService,
-        private val gameApi: GameApi,
-        private val betOrderService: BetOrderService,
         private val redisService: RedisService,
-        private val gamePlatformService: GamePlatformService,
-        private val polUtil: PolUtil,
-        private val objectMapper: ObjectMapper
+        private val gameApi: GameApi,
+        private val orderTaskDao: PullOrderTaskDao,
+        private val betOrderService: BetOrderService
 ) {
 
-    private val log = LoggerFactory.getLogger(PullBetTask::class.java)
+    companion object {
+        // 默认拉取5分钟的订单
+        const val PULL_ORDER_FIVE_MINUTE = 5L
 
-//    private fun startTask(platform: Platform, startTime: LocalDateTime, endTime: LocalDateTime) {
-//        val binds = platformBindService.find(platform)
-//        binds.forEach { bind ->
-//            log.info("厅主Id:${bind.clientId}, 平台：${bind.platform}, 开始执行拉取订单任务")
-//            val orders = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
-//            asyncBatch(orders)
-//        }
-//    }
+        //        const val PULL_ORDER_FIVE_MINUTE = 1L
+        val log = LoggerFactory.getLogger(PullBetTask::class.java)
 
-    private fun asyncBatch(orders: List<BetOrderValue.BetOrderCo>) {
-        if (orders.isEmpty()) return
-        betOrderService.batch(orders)
     }
 
-    @Scheduled(cron = "0/20 * *  * * ? ")
-    fun start20Second() {
-        val redisKey = "pull:task:running"
-        this.execute(redisKey = redisKey, time = "")
-    }
+    @Scheduled(cron = "* 0/5 *  * * ? ")
+//    @Scheduled(cron = "0/10 * *  * * ? ")
+    fun startByMinute() {
+        val binds = platformBindService.all()
+//                .filter { it.clientId == 1 } //TODO 这里主要为了测试
+//                .filter {
+//                    when (it.platform) {
+////                        Platform.GamePlay
+////                        Platform.AsiaGamingSlot
+////                        Platform.AsiaGamingLive
+//                        -> true
+//                        else -> false
+//                    }
+//                }
 
-    @Scheduled(cron = "0 0 0/1  * * ? ")
-    fun startOneHour() {
-        val redisKey = "pull:task:running:hour"
-        this.execute(redisKey = redisKey, time = ":hour")
-    }
+                .filter { it.status != Status.Delete }
+                .filter {
+                    // 这些平台不能同步订单
+                    when (it.platform) {
+                        // 这些平台没有同步功能
+                        Platform.Kiss918,
+                        Platform.Pussy888,
+                        Platform.Mega,
+                        Platform.PNG -> false
 
-    fun execute(redisKey: String, time: String) {
-        val running = redisService.get(redisKey, Boolean::class.java) ?: false
-        if (running) return else redisService.put(redisKey, true, 5 * 60)
+                        // 这些平台已被删除
+                        Platform.GoldDeluxe,
+                        Platform.CT,
+                        Platform.Fgg,
+                        Platform.Joker -> false
 
-        log.info("定时任务执行中，现在时间：${LocalDateTime.now()}")
-        try {
-
-            val gps = gamePlatformService.all().map { it.platform to it }.toMap()
-
-            // TODO 暂时用AllBet
-            val binds = platformBindService.all()
-//                    .filter { it.clientId == 1 && it.platform == Platform.AllBet }
-                    .filter { it.clientId != 4 } //TODO 暂时先关闭BWClub88
-                    .filter { it.status != Status.Delete }
-                    .filter { gps[it.platform]?.status == Status.Normal }
-
-            val list = binds.filter { it.platform != Platform.PlaytechLive }.parallelStream().map { bind ->
-                this.executePlatform(bind, time)
-            }.collect(Collectors.toList())
-
-            log.info("执行成功个数：${list.filter { it }.size}个")
-
-        } finally {
-            redisService.put(redisKey, false)
-        }
-    }
-
-    private fun executePlatform(bind: PlatformBind, time: String): Boolean {
-        return try {
-            this.handler(bind = bind, time = time) { startTime, endTime ->
-                val data = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
-
-                val log = PolUtil.PullOrderLog(clientId = bind.clientId, platform = bind.platform, flag = true, executeTime = LocalDateTime.now(),
-                        response = objectMapper.writeValueAsString(data))
-                polUtil.pol(log)
-
-                data
-            }
-            true
-        } catch (e: Exception) {
-            log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 执行任务失败", e)
-
-            val log = PolUtil.PullOrderLog(clientId = bind.clientId, platform = bind.platform, flag = false, executeTime = LocalDateTime.now(),
-                    response = e.message ?: "")
-            polUtil.pol(log)
-
-            false
-        }
-    }
-
-
-    private fun handler(
-            bind: PlatformBind,
-            time: String,
-            pull: (startTime: LocalDateTime, endTime: LocalDateTime) -> List<BetOrderValue.BetOrderCo>
-    ) {
-
-        val redisKey = "pull:task:${bind.clientId}:${bind.platform}${time}"
-
-        val startTime = redisService.get(key = redisKey, clz = String::class.java) {
-            //TODO 暂时10分钟 线上用30分钟
-            if (time == ":hour") {
-                "${LocalDateTime.now().minusMinutes(90)}"
-            } else {
-                "${LocalDateTime.now().minusMinutes(30)}"
-            }
-        }!!.let { LocalDateTime.parse(it) }
-                .let {
-                    // 如果时间大于20小时 则取最新的20小时内的数据
-                    val hour = Duration.between(it, LocalDateTime.now()).toHours()
-                    if (hour > 20) {
-                        LocalDateTime.now().minusHours(20)
-                    } else {
-                        it
+                        else -> true
                     }
                 }
 
-        if (!this.canExecutePlatform(startTime = startTime, platform = bind.platform, time = time)) return
+        binds.forEach { bind ->
 
-        // 如果距离现在超过30分钟 则每次取10分钟数据
-        val duration = Duration.between(startTime, LocalDateTime.now()).toMinutes()
-        val addMinus = if (duration > 30) 10L else 3L
+            val preExecuteTime = this.getExecuteCacheKey(bind = bind)
 
-        val pqStartTime = startTime.minusMinutes(10)
-        val pqEndTime = pqStartTime.plusMinutes(addMinus)
+            // 判断是否操作10分钟
+            val duration = Duration.between(preExecuteTime, LocalDateTime.now())
+            val minute = duration.toMinutes()
 
-        log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 开始时间任务：${LocalDateTime.now()}, 查询开始时间：$pqStartTime, 查询结束时间${pqEndTime}")
-        val orders = pull(pqStartTime, pqEndTime)
-        this.asyncBatch(orders)
+            // 获得拉取订单的结束时间
+            val endTime = when {
+                minute <= 15 -> preExecuteTime.plusMinutes(PULL_ORDER_FIVE_MINUTE)
+                minute <= 60 -> preExecuteTime.plusMinutes(15L)
+                else -> preExecuteTime.plusMinutes(30L)
+            }.let { // 判断如果拉取的时候
+                if (Duration.between(it, LocalDateTime.now()).toMinutes() > PULL_ORDER_FIVE_MINUTE) it else LocalDateTime.now().minusMinutes(PULL_ORDER_FIVE_MINUTE)
+            }
 
-        val v = if (bind.platform == Platform.Pragmatic) {
-            LocalDateTime.now().minusMinutes(5)
-        } else {
-            startTime.plusMinutes(addMinus - 1)
+            execute(bind = bind, startTime = preExecuteTime, endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE)
+
+            this.putExecuteCacheKey(bind = bind, endTime = endTime)
         }
-
-        redisService.put(key = redisKey, value = v)
     }
 
-    private fun canExecutePlatform(startTime: LocalDateTime, platform: Platform, time: String): Boolean {
-        return when (platform) {
-            Platform.Evolution,
-            Platform.Joker,
-            Platform.TTG,
-            Platform.AllBet,
-            Platform.DreamGaming,
-            Platform.SpadeGaming,
-            Platform.SexyGaming,
-            Platform.GoldDeluxe,
-            Platform.SaGaming,
-            Platform.SimplePlay,
-            Platform.GamePlay,
-            Platform.MicroGaming,
-            Platform.MicroGamingLive,
-            Platform.AsiaGamingSlot,
-            Platform.AsiaGamingLive,
-            Platform.PlaytechSlot,
-            Platform.EBet,
-            Platform.PlaytechLive -> {
-                val duration = Duration.between(startTime, LocalDateTime.now())
-                val minutes: Long = duration.toMinutes() //相差的分钟数
+    @Scheduled(cron = "* 0/13 *  * * ? ")
+    fun startByHour() {
+        val binds = platformBindService.all()
+                .filter { it.status != Status.Delete }
+                .filter {
+                    // 这些平台不能同步订单
+                    when (it.platform) {
+                        Platform.Kiss918,
+                        Platform.Pussy888,
+                        Platform.Mega,
+                        Platform.PNG -> false
 
-                val v = if (time == ":hour") 60 else 2
-                minutes > v
-            }
-            Platform.Pragmatic -> {
-                val duration = Duration.between(startTime, LocalDateTime.now())
-                val minutes: Long = duration.toMinutes() //相差的分钟数
-                minutes > 5
-            }
-            // 不需要判断时间
-//            Platform.Pragmatic,
-            Platform.GGFishing,
-            Platform.Bcs,
-            Platform.CMD,
-            Platform.Lbc,
-            Platform.Fgg -> {
-                time != ":hour"
-            }
-            else -> {
-                log.warn("该平台不支持同步订单:${platform}")
-                false
-            }
+                        // 这些平台不需要补单
+                        Platform.GGFishing,
+                        Platform.Bcs,
+                        Platform.CMD,
+                        Platform.Lbc,
+                        Platform.Fgg -> false
+
+                        else -> true
+                    }
+                }
+
+        binds.forEach { bind ->
+            val startTime = LocalDateTime.now().minusHours(1)
+            val endTime = startTime.plusMinutes(13)
+
+            execute(bind = bind, startTime = startTime, endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE_13)
         }
+
+    }
+
+    @Scheduled(cron = "* 0/28 *  * * ? ")
+    fun startByHour2() {
+        val binds = platformBindService.all()
+                .filter { it.status != Status.Delete }
+                .filter {
+                    // 这些平台不能同步订单
+                    when (it.platform) {
+                        Platform.Kiss918,
+                        Platform.Pussy888,
+                        Platform.Mega,
+                        Platform.PNG -> false
+
+                        // 这些平台不需要补单
+                        Platform.GGFishing,
+                        Platform.Bcs,
+                        Platform.CMD,
+                        Platform.Lbc,
+                        Platform.Fgg -> false
+
+                        else -> true
+                    }
+                }
+
+        binds.forEach { bind ->
+            val startTime = LocalDateTime.now().minusHours(5)
+            val endTime = startTime.plusMinutes(28)
+
+            execute(bind = bind, startTime = startTime, endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE_13)
+        }
+
+    }
+
+    private fun getExecuteCacheKey(bind: PlatformBind): LocalDateTime {
+        val redisKey = "order:task:${bind.clientId}:${bind.platform}"
+
+        val time = redisService.get(redisKey, String::class.java) {
+            LocalDateTime.now().minusHours(2).toString()
+        } ?: LocalDateTime.now().minusHours(2).toString()
+
+        return LocalDateTime.parse(time)
+    }
+
+    private fun putExecuteCacheKey(bind: PlatformBind, endTime: LocalDateTime) {
+        val redisKey = "order:task:${bind.clientId}:${bind.platform}"
+        redisService.put(redisKey, endTime.toString())
+    }
+
+    fun execute(bind: PlatformBind, taskType: PullOrderTask.OrderTaskType, startTime: LocalDateTime, endTime: LocalDateTime) {
+
+        var gameResponse : GameResponse<List<BetOrderValue.BetOrderCo>> = GameResponse.of(emptyList())
+        try {
+            gameResponse = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
+            this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = gameResponse.okResponse, taskType = taskType)
+
+            val orders = gameResponse.data ?: emptyList()
+            if (orders.isNotEmpty()) {
+                betOrderService.batch(orders = orders)
+            }
+        } catch (e: Exception) {
+            log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 执行任务失败", e)
+
+            this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = gameResponse.okResponse, taskType = taskType)
+        }
+
+    }
+
+    private fun saveOrderTask(bind: PlatformBind, taskType: PullOrderTask.OrderTaskType, startTime: LocalDateTime, endTime: LocalDateTime, okResponse: OKResponse) {
+        val task = PullOrderTask(id = -1, clientId = bind.clientId, platform = bind.platform, param = okResponse.param,
+                path = okResponse.url, response = okResponse.response, type = taskType, ok = okResponse.ok,
+                startTime = startTime, endTime = endTime, message = okResponse.message ?: "")
+        orderTaskDao.create(task)
+
     }
 
 }
