@@ -39,8 +39,8 @@ class PullBetTask(
 
     }
 
-    //    @Scheduled(cron = "0 0/5 *  * * ? ")
-    @Scheduled(cron = "* 0/1 *  * * ? ")
+        @Scheduled(cron = "0 0/5 *  * * ? ")
+//    @Scheduled(cron = "* 0/1 *  * * ? ")
     fun startByMinute() {
         val binds = platformBindService.all()
                 .filter { it.platform == Platform.GamePlay } //TODO 测试
