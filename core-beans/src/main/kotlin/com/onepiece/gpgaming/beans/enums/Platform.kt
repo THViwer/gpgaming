@@ -48,7 +48,7 @@ enum class Platform(
     CMD(PlatformCategory.Sport, "C-Sport"),
 
     // fishing
-    GGFishing(PlatformCategory.Fishing, "GGFisning")
+    GGFishing(PlatformCategory.Fishing, "GGFishing")
 
     ;
 
