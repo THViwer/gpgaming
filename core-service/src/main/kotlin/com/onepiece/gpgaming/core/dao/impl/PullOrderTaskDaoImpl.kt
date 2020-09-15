@@ -16,7 +16,9 @@ class PullOrderTaskDaoImpl : PullOrderTaskDao, BasicDaoImpl<PullOrderTask>("pull
             val clientId = rs.getInt("client_id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
             val path = rs.getString("path")
+            val headers = rs.getString("headers")
             val param = rs.getString("param")
+            val formParam = rs.getString("form_param")
             val response = rs.getString("response")
             val message = rs.getString("message")
             val type = rs.getString("type").let { PullOrderTask.OrderTaskType.valueOf(it) }
@@ -25,7 +27,8 @@ class PullOrderTaskDaoImpl : PullOrderTaskDao, BasicDaoImpl<PullOrderTask>("pull
             val endTime = rs.getTimestamp("end_time").toLocalDateTime()
 
             PullOrderTask(id = id, clientId = clientId, platform = platform, path = path, param = param, response = response,
-                    type = type, ok = ok, startTime = startTime, endTime = endTime, message = message)
+                    type = type, ok = ok, startTime = startTime, endTime = endTime, message = message, headers = headers,
+                    formParam = formParam)
 
         }
 
@@ -34,7 +37,9 @@ class PullOrderTaskDaoImpl : PullOrderTaskDao, BasicDaoImpl<PullOrderTask>("pull
                 .set("client_id", task.clientId)
                 .set("platform", task.platform)
                 .set("path", task.path)
+                .set("headers", task.headers)
                 .set("param", task.param)
+                .set("form_param", task.formParam)
                 .set("response", task.response)
                 .set("type", task.type)
                 .set("ok", task.ok)

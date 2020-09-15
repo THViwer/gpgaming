@@ -13,11 +13,17 @@ data class PullOrderTask(
         // 平台
         val platform: Platform,
 
+        // head信息
+        val headers: String,
+
         // 请求地址
         val path: String,
 
         // 请求参数
         val param: String,
+
+        // 表单数据
+        val formParam: String,
 
         // 响应参数
         val response: String,

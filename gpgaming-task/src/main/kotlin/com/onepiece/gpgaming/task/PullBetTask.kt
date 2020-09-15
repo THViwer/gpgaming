@@ -39,27 +39,18 @@ class PullBetTask(
 
     }
 
-    @Scheduled(cron = "0 0/5 *  * * ? ")
-//    @Scheduled(cron = "* 0/1 *  * * ? ")
+    //    @Scheduled(cron = "0 0/5 *  * * ? ")
+    @Scheduled(cron = "* 0/1 *  * * ? ")
     fun startByMinute() {
         val binds = platformBindService.all()
-//                .filter {
-//                    when (it.platform) {
-//                        Platform.GamePlay
-////                        Platform.AsiaGamingSlot
-////                        Platform.AsiaGamingLive
-//                        -> true
-//                        else -> false
-//                    }
-//                }
-
+                .filter { it.platform == Platform.GamePlay } //TODO 测试
                 .filter { it.status == Status.Normal }
                 .filter {
                     when (activeConfig.profile) {
                         "dev" -> it.clientId == 1
                         else -> true
                     }
-                } //TODO 这里主要为了测试
+                }
                 .filter {
                     // 这些平台不能同步订单
                     when (it.platform) {
@@ -124,8 +115,13 @@ class PullBetTask(
                         Platform.GGFishing,
                         Platform.Bcs,
                         Platform.CMD,
-                        Platform.Lbc,
-                        Platform.Fgg -> false
+                        Platform.Lbc -> false
+
+                        // 这些平台已被删除
+                        Platform.GoldDeluxe,
+                        Platform.CT,
+                        Platform.Fgg,
+                        Platform.Joker -> false
 
                         else -> true
                     }
@@ -162,8 +158,13 @@ class PullBetTask(
                         Platform.GGFishing,
                         Platform.Bcs,
                         Platform.CMD,
-                        Platform.Lbc,
-                        Platform.Fgg -> false
+                        Platform.Lbc -> false
+
+                        // 这些平台已被删除
+                        Platform.GoldDeluxe,
+                        Platform.CT,
+                        Platform.Fgg,
+                        Platform.Joker -> false
 
                         else -> true
                     }
@@ -200,7 +201,7 @@ class PullBetTask(
 
     fun execute(bind: PlatformBind, taskType: PullOrderTask.OrderTaskType, startTime: LocalDateTime, endTime: LocalDateTime) {
 
-        var gameResponse : GameResponse<List<BetOrderValue.BetOrderCo>> = GameResponse.of(emptyList())
+        var gameResponse: GameResponse<List<BetOrderValue.BetOrderCo>> = GameResponse.of(emptyList())
         try {
             gameResponse = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
             this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = gameResponse.okResponse, taskType = taskType)
@@ -212,16 +213,22 @@ class PullBetTask(
         } catch (e: Exception) {
             log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 执行任务失败", e)
 
-            val okResponse = gameResponse.okResponse.copy(message = e.message?: "")
+            val message = e.message ?: e.localizedMessage
+            val okResponse = gameResponse.okResponse.copy(message = message, ok = false)
             this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = okResponse, taskType = taskType)
         }
 
     }
 
     private fun saveOrderTask(bind: PlatformBind, taskType: PullOrderTask.OrderTaskType, startTime: LocalDateTime, endTime: LocalDateTime, okResponse: OKResponse) {
+
+        val formParam = okResponse.okParam.formParam.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
+        val headers = okResponse.okParam.headers.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
+
         val task = PullOrderTask(id = -1, clientId = bind.clientId, platform = bind.platform, param = okResponse.param,
                 path = okResponse.url, response = okResponse.response, type = taskType, ok = okResponse.ok,
-                startTime = startTime, endTime = endTime, message = okResponse.message ?: "")
+                startTime = startTime, endTime = endTime, message = okResponse.message ?: "", formParam = formParam,
+                headers = headers)
         orderTaskDao.create(task)
 
     }

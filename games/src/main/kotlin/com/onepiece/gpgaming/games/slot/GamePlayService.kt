@@ -50,7 +50,7 @@ class GamePlayService : PlatformService() {
     fun startGetBetXml(clientToken: GamePlayClientToken, method: String, data: List<String>): OKResponse {
 
         val urlParam = data.joinToString("&")
-        val url = "${clientToken.apiPath}${method}?$urlParam".let {
+        val url = "${clientToken.apiOrderPath}${method}?$urlParam".let {
             URLEncoder.encode(it, "UTF-8")
         }
 
