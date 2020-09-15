@@ -181,11 +181,16 @@ class PullBetTask(
     private fun getExecuteCacheKey(bind: PlatformBind): LocalDateTime {
         val redisKey = "order:task:${bind.clientId}:${bind.platform}"
 
-        val time = redisService.get(redisKey, String::class.java) {
-            LocalDateTime.now().minusHours(2).toString()
-        } ?: LocalDateTime.now().minusHours(2).toString()
+        val now = LocalDateTime.now()
 
-        return LocalDateTime.parse(time)
+        val time = redisService.get(redisKey, String::class.java) {
+            now.minusHours(2).toString()
+        } ?: now.minusHours(2).toString()
+
+        return LocalDateTime.parse(time).let {
+            val duration = Duration.between(it, now)
+            if (duration.toMinutes() <= 5) now.minusMinutes(10) else it
+        }
     }
 
     private fun putExecuteCacheKey(bind: PlatformBind, endTime: LocalDateTime) {
