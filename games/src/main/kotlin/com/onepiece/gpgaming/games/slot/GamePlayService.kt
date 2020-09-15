@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.games.slot
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
@@ -223,7 +224,12 @@ class GamePlayService : PlatformService() {
         val okResponse = this.startGetBetXml(clientToken = clientToken, method = "/csnbo/api/gateway/betDetail.html", data = data)
 
         return this.bindGameResponse(okResponse = okResponse) {
-            it.asList("items").map { mapUtil ->
+
+            val content = okResponse.response
+            val result = xmlMapper.readValue<GamePlayValue.BetResult>(content)
+
+            result.betDetailList?.map { x ->
+                val mapUtil = x.mapUtil
                 val username = mapUtil.asString("user_id")
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.GamePlay, platformUsername = username)
                 val orderId = mapUtil.asString("bet_id")
@@ -235,7 +241,7 @@ class GamePlayService : PlatformService() {
 
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.GamePlay, orderId = orderId, betAmount = betAmount,
                         winAmount = betAmount.plus(winLose), betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
-            }
+            }?: emptyList<BetOrderValue.BetOrderCo>()
         }
     }
 
