@@ -40,15 +40,9 @@ class PullBetTask(
     }
 
     @Scheduled(cron = "* 0/5 *  * * ? ")
-//    @Scheduled(cron = "0/10 * *  * * ? ")
+//    @Scheduled(cron = "* 0/1 *  * * ? ")
     fun startByMinute() {
         val binds = platformBindService.all()
-                .filter {
-                    when (activeConfig.profile) {
-                        "dev" -> it.clientId == 1
-                        else -> true
-                    }
-                } //TODO 这里主要为了测试
 //                .filter {
 //                    when (it.platform) {
 //                        Platform.GamePlay
@@ -59,7 +53,13 @@ class PullBetTask(
 //                    }
 //                }
 
-                .filter { it.status != Status.Delete }
+                .filter { it.status == Status.Normal }
+                .filter {
+                    when (activeConfig.profile) {
+                        "dev" -> it.clientId == 1
+                        else -> true
+                    }
+                } //TODO 这里主要为了测试
                 .filter {
                     // 这些平台不能同步订单
                     when (it.platform) {
@@ -96,7 +96,7 @@ class PullBetTask(
                 if (Duration.between(it, LocalDateTime.now()).toMinutes() > PULL_ORDER_FIVE_MINUTE) it else LocalDateTime.now().minusMinutes(PULL_ORDER_FIVE_MINUTE)
             }
 
-            execute(bind = bind, startTime = preExecuteTime, endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE)
+            execute(bind = bind, startTime = preExecuteTime.minusMinutes(1), endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE)
 
             this.putExecuteCacheKey(bind = bind, endTime = endTime)
         }
@@ -106,6 +106,12 @@ class PullBetTask(
     fun startByHour() {
         val binds = platformBindService.all()
                 .filter { it.status != Status.Delete }
+                .filter {
+                    when (activeConfig.profile) {
+                        "dev" -> it.clientId == 1
+                        else -> true
+                    }
+                } //TODO 这里主要为了测试
                 .filter {
                     // 这些平台不能同步订单
                     when (it.platform) {
@@ -129,7 +135,7 @@ class PullBetTask(
             val startTime = LocalDateTime.now().minusHours(1)
             val endTime = startTime.plusMinutes(13)
 
-            execute(bind = bind, startTime = startTime, endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE_13)
+            execute(bind = bind, startTime = startTime.minusMinutes(1), endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE_13)
         }
 
     }
@@ -138,6 +144,12 @@ class PullBetTask(
     fun startByHour2() {
         val binds = platformBindService.all()
                 .filter { it.status != Status.Delete }
+                .filter {
+                    when (activeConfig.profile) {
+                        "dev" -> it.clientId == 1
+                        else -> true
+                    }
+                } //TODO 这里主要为了测试
                 .filter {
                     // 这些平台不能同步订单
                     when (it.platform) {
@@ -161,7 +173,7 @@ class PullBetTask(
             val startTime = LocalDateTime.now().minusHours(5)
             val endTime = startTime.plusMinutes(28)
 
-            execute(bind = bind, startTime = startTime, endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE_13)
+            execute(bind = bind, startTime = startTime.minusMinutes(1), endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE_13)
         }
 
     }
@@ -196,7 +208,7 @@ class PullBetTask(
             log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 执行任务失败", e)
 
             val okResponse = gameResponse.okResponse.copy(message = e.message?: "")
-            this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = gameResponse.okResponse, taskType = taskType)
+            this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = okResponse, taskType = taskType)
         }
 
     }

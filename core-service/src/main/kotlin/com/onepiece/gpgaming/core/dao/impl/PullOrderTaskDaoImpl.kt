@@ -38,8 +38,8 @@ class PullOrderTaskDaoImpl : PullOrderTaskDao, BasicDaoImpl<PullOrderTask>("pull
                 .set("response", task.response)
                 .set("type", task.type)
                 .set("ok", task.ok)
-                .set("start_time", task.startTime)
-                .set("end_time", task.endTime)
+                .set("start_time", "${task.startTime}")
+                .set("end_time", "${task.endTime}")
                 .executeOnlyOne()
 
     }

@@ -47,14 +47,14 @@ class GamePlayService : PlatformService() {
         return okResponse.copy(ok = ok)
     }
 
-    fun startGetBetXml(url: String, data: List<String>): OKResponse {
+    fun startGetBetXml(clientToken: GamePlayClientToken, method: String, data: List<String>): OKResponse {
 
         val urlParam = data.joinToString("&")
-
-        val path = "$url?$urlParam".let {
+        val url = "${clientToken.apiPath}${method}?$urlParam".let {
             URLEncoder.encode(it, "UTF-8")
         }
-        val okParam = OKParam.ofGetXml(url = "https://proxy.u996.com/api/v1/proxy/get/xml", param = "path=${path}")
+
+        val okParam = OKParam.ofGetXml(url = "https://proxy.u996.com/api/v1/proxy/get/xml", param = "path=${url}")
         val okResponse = u9HttpRequest.startRequest(okParam = okParam)
 
         if (!okResponse.ok) return okResponse
@@ -220,11 +220,7 @@ class GamePlayService : PlatformService() {
                 "product=slots"
         )
 
-        val urlParam = data.joinToString("&")
-        val path = URLEncoder.encode("${clientToken.apiOrderPath}/csnbo/api/gateway/betDetail.html?$urlParam")
-
-//        val okResponse = this.startGetBetXml(url = "${clientToken.apiOrderPath}/csnbo/api/gateway/betDetail.html", data = data)
-        val okResponse = this.startGetBetXml(url = "https://proxy.u996.com/api/v1/proxy/get/xml", data = listOf("path=${path}"))
+        val okResponse = this.startGetBetXml(clientToken = clientToken, method = "/csnbo/api/gateway/betDetail.html", data = data)
 
         return this.bindGameResponse(okResponse = okResponse) {
             it.asList("items").map { mapUtil ->
