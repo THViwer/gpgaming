@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.PlatformBind
 import com.onepiece.gpgaming.beans.model.PullOrderTask
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
+import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.core.dao.PullOrderTaskDao
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.PlatformBindService
@@ -25,7 +26,8 @@ class PullBetTask(
         private val redisService: RedisService,
         private val gameApi: GameApi,
         private val orderTaskDao: PullOrderTaskDao,
-        private val betOrderService: BetOrderService
+        private val betOrderService: BetOrderService,
+        private val activeConfig: ActiveConfig
 ) {
 
     companion object {
@@ -41,16 +43,21 @@ class PullBetTask(
 //    @Scheduled(cron = "0/10 * *  * * ? ")
     fun startByMinute() {
         val binds = platformBindService.all()
-//                .filter { it.clientId == 1 } //TODO 这里主要为了测试
-//                .filter {
-//                    when (it.platform) {
-////                        Platform.GamePlay
+                .filter {
+                    when (activeConfig.profile) {
+                        "dev" -> it.clientId == 1
+                        else -> true
+                    }
+                } //TODO 这里主要为了测试
+                .filter {
+                    when (it.platform) {
+                        Platform.GamePlay
 ////                        Platform.AsiaGamingSlot
 ////                        Platform.AsiaGamingLive
-//                        -> true
-//                        else -> false
-//                    }
-//                }
+                        -> true
+                        else -> false
+                    }
+                }
 
                 .filter { it.status != Status.Delete }
                 .filter {
