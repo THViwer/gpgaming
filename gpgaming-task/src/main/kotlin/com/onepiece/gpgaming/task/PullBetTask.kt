@@ -39,7 +39,7 @@ class PullBetTask(
 
     }
 
-    @Scheduled(cron = "* 0/5 *  * * ? ")
+    @Scheduled(cron = "0 0/5 *  * * ? ")
 //    @Scheduled(cron = "* 0/1 *  * * ? ")
     fun startByMinute() {
         val binds = platformBindService.all()
@@ -102,7 +102,7 @@ class PullBetTask(
         }
     }
 
-    @Scheduled(cron = "* 0/13 *  * * ? ")
+    @Scheduled(cron = "0 0/13 *  * * ? ")
     fun startByHour() {
         val binds = platformBindService.all()
                 .filter { it.status != Status.Delete }
@@ -140,7 +140,7 @@ class PullBetTask(
 
     }
 
-    @Scheduled(cron = "* 0/28 *  * * ? ")
+    @Scheduled(cron = "0 0/28 *  * * ? ")
     fun startByHour2() {
         val binds = platformBindService.all()
                 .filter { it.status != Status.Delete }
