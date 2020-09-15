@@ -49,15 +49,15 @@ class PullBetTask(
                         else -> true
                     }
                 } //TODO 这里主要为了测试
-                .filter {
-                    when (it.platform) {
-                        Platform.GamePlay
+//                .filter {
+//                    when (it.platform) {
+//                        Platform.GamePlay
 ////                        Platform.AsiaGamingSlot
 ////                        Platform.AsiaGamingLive
-                        -> true
-                        else -> false
-                    }
-                }
+//                        -> true
+//                        else -> false
+//                    }
+//                }
 
                 .filter { it.status != Status.Delete }
                 .filter {
