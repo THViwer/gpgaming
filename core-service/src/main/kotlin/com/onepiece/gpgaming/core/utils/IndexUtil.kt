@@ -99,21 +99,19 @@ class IndexUtil(
 
 
         // 推荐列表
-        val recommendeds= recommendedService.all(clientId).filter { it.status == Status.Normal }
+        val recommendeds = recommendedService.all(clientId).filter { it.status == Status.Normal }
 
         // 首页推荐平台
         val recommendedPlatforms = recommendeds.first { it.type == RecommendedType.IndexPlatform }.let {
             val content = it.getRecommendedContent(objectMapper) as Recommended.RecommendedPlatform
             content.platforms.mapNotNull { platform ->
-                platformBindMap[platform]?.let {
-                    log.info("-----------------------")
-                    log.info("-----------------------")
-                    log.info("clientId=${client.id}")
-                    log.info("当前平台:${platform}")
-                    log.info("平台列表:${gamePlatforms}")
-                    log.info("-----------------------")
-                    log.info("-----------------------")
-                    Index.RecommendedPlatform(platform = platform, gamePlatform = platform.getGamePlatform(gamePlatforms), platformBind = it)
+                try {
+                    platformBindMap[platform]?.let {
+                        Index.RecommendedPlatform(platform = platform, gamePlatform = platform.getGamePlatform(gamePlatforms), platformBind = it)
+                    }
+                } catch (e: Exception) {
+                    log.error("", e)
+                    null
                 }
             }
         }
@@ -122,15 +120,14 @@ class IndexUtil(
         Language.values().toList().forEach { language ->
 
             // 公告
-            val announcement = (announcements.firstOrNull{ it.language == language }
+            val announcement = (announcements.firstOrNull { it.language == language }
                     ?: announcements.first { it.language == Language.EN })
                     .let { it.getII18nContent(objectMapper) as I18nContent.AnnouncementI18n }
 
             // 公告弹窗
-            val announcementDialog = (announcementDialogs.firstOrNull{ it.language == language }
+            val announcementDialog = (announcementDialogs.firstOrNull { it.language == language }
                     ?: announcements.firstOrNull { it.language == Language.EN })?.let { it.getII18nContent(objectMapper) as I18nContent.AnnouncementDialogI18n }
                     ?: I18nContent.AnnouncementDialogI18n(title = "", content = "", nonce = UUID.randomUUID().toString())
-
 
 
             // banner
