@@ -211,13 +211,15 @@ class PullBetTask(
             var flag = true
             var cutTime = startTime
             while (flag) {
+                val cutStartTime = cutTime
+
                 cutTime = cutTime.plusMinutes(10)
                 flag = cutTime.plusSeconds(1).isBefore(endTime)
 
-                val useCutTime = if (flag) endTime else cutTime
+                val catEndTime = if (flag) endTime else cutTime
 
-                gameResponse = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = useCutTime)
-                this.saveOrderTask(bind = bind, startTime = startTime, endTime = useCutTime, okResponse = gameResponse.okResponse, taskType = taskType)
+                gameResponse = gameApi.pullBets(platformBind = bind, startTime = cutStartTime, endTime = catEndTime)
+                this.saveOrderTask(bind = bind, startTime = cutStartTime, endTime = catEndTime, okResponse = gameResponse.okResponse, taskType = taskType)
 
                 val orders = gameResponse.data ?: emptyList()
                 if (orders.isNotEmpty()) {
