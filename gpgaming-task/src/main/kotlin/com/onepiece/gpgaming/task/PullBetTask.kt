@@ -216,7 +216,7 @@ class PullBetTask(
                 val useCutTime = if (flag) endTime else cutTime
 
                 gameResponse = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = useCutTime)
-                this.saveOrderTask(bind = bind, startTime = useCutTime, endTime = endTime, okResponse = gameResponse.okResponse, taskType = taskType)
+                this.saveOrderTask(bind = bind, startTime = startTime, endTime = useCutTime, okResponse = gameResponse.okResponse, taskType = taskType)
 
                 val orders = gameResponse.data ?: emptyList()
                 if (orders.isNotEmpty()) {
