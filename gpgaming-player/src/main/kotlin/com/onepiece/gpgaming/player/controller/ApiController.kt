@@ -185,7 +185,7 @@ open class ApiController(
                         platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new)
                 //TODO 设置图标
             } catch (e: Exception) {
-                e.printStackTrace()
+                log.error("", e)
                 null
             }
         }.sortedBy { it.name }
