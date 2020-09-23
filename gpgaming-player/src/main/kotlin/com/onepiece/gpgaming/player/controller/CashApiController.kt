@@ -991,7 +991,7 @@ open class CashApiController(
                         "转出需要打码量:${platformMember.requirementBet}, 当前打码量:${platformMember.currentBet}"
                     }
                     else -> {
-                        "转出需要打码量:${platformMember.requirementBet}, 当前打码量:${platformMember.currentBet}"
+                        "Turnover Requirement:${platformMember.requirementBet}, Current Total Bet:${platformMember.currentBet}\n"
                     }
                 }
                 transfer to tips
@@ -1003,7 +1003,7 @@ open class CashApiController(
                         "转出需要最小金额:${platformMember.requirementTransferOutAmount.toDouble()}, 当前平台金额:${platformBalance.toDouble()}"
                     }
                     else -> {
-                        "转出需要最小金额:${platformMember.requirementTransferOutAmount.toDouble()}, 当前平台金额:${platformBalance.toDouble()}"
+                        "Minimum Balance Requirement:${platformMember.requirementTransferOutAmount.toDouble()}, Current Balance:${platformBalance.toDouble()}\n"
                     }
                 }
                 transfer to tips
