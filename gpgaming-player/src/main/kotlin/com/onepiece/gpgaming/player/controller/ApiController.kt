@@ -167,22 +167,27 @@ open class ApiController(
         val platformBinds = platformBindService.findClientPlatforms(clientId)
                 .filter { it.status != Status.Delete }
 
-        return platformBinds.map {
-            val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
+        return platformBinds.mapNotNull {
+            try {
+                val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
 
-            val status = when (gamePlatform.status) {
-                Status.Normal -> it.status
-                else -> gamePlatform.status
+                val status = when (gamePlatform.status) {
+                    Status.Normal -> it.status
+                    else -> gamePlatform.status
+                }
+
+                val icon = if (launch == LaunchMethod.Wap) it.mobileIcon else it.icon
+                val disableIcon = if (launch == LaunchMethod.Wap) it.mobileDisableIcon else it.disableIcon
+
+                PlatformVo(id = it.id, name = it.name, category = it.platform.category, status = status, icon = icon,
+                        launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo, disableIcon = disableIcon, originIcon = it.originIcon,
+                        originIconOver = it.originIconOver, categoryDetailIcon = it.icon, platformDetailIcon = it.platformDetailIcon,
+                        platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new)
+                //TODO 设置图标
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
             }
-
-            val icon = if (launch == LaunchMethod.Wap) it.mobileIcon else it.icon
-            val disableIcon = if (launch == LaunchMethod.Wap) it.mobileDisableIcon else it.disableIcon
-
-            PlatformVo(id = it.id, name = it.name, category = it.platform.category, status = status, icon = icon,
-                    launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo, disableIcon = disableIcon, originIcon = it.originIcon,
-                    originIconOver = it.originIconOver, categoryDetailIcon = it.icon, platformDetailIcon = it.platformDetailIcon,
-                    platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new)
-            //TODO 设置图标
         }.sortedBy { it.name }
     }
 
