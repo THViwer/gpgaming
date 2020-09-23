@@ -165,6 +165,7 @@ open class ApiController(
 
         // 平台信息
         val platformBinds = platformBindService.findClientPlatforms(clientId)
+                .filter { it.status != Status.Delete }
 
         return platformBinds.map {
             val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
@@ -182,7 +183,7 @@ open class ApiController(
                     originIconOver = it.originIconOver, categoryDetailIcon = it.icon, platformDetailIcon = it.platformDetailIcon,
                     platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new)
             //TODO 设置图标
-        }.filter { it.status != Status.Delete }.sortedBy { it.name }
+        }.sortedBy { it.name }
     }
 
     @GetMapping("/promotion")
