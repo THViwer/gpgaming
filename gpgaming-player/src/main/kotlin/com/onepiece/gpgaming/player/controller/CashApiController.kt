@@ -986,12 +986,26 @@ open class CashApiController(
             promotion.rule.ignoreTransferOutAmount.toDouble() >= platformBalance.toDouble() -> true to null
             promotion.ruleType == PromotionRuleType.Bet -> {
                 val transfer = platformMember.currentBet.toDouble() > platformMember.requirementBet.toDouble()
-                val tips = "转出需要打码量:${platformMember.requirementBet}, 当前打码量:${platformMember.currentBet}"
+                val tips = when (language) {
+                    Language.CN -> {
+                        "转出需要打码量:${platformMember.requirementBet}, 当前打码量:${platformMember.currentBet}"
+                    }
+                    else -> {
+                        "转出需要打码量:${platformMember.requirementBet}, 当前打码量:${platformMember.currentBet}"
+                    }
+                }
                 transfer to tips
             }
             promotion.ruleType == PromotionRuleType.Withdraw -> {
                 val transfer = platformMember.requirementTransferOutAmount.toDouble() <= platformBalance.toDouble()
-                val tips = "转出需要最小金额:${platformMember.requirementTransferOutAmount.toDouble()}, 当前平台金额:${platformBalance.toDouble()}"
+                val tips = when (language) {
+                    Language.CN -> {
+                        "转出需要最小金额:${platformMember.requirementTransferOutAmount.toDouble()}, 当前平台金额:${platformBalance.toDouble()}"
+                    }
+                    else -> {
+                        "转出需要最小金额:${platformMember.requirementTransferOutAmount.toDouble()}, 当前平台金额:${platformBalance.toDouble()}"
+                    }
+                }
                 transfer to tips
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)

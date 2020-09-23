@@ -55,7 +55,8 @@ interface IndexApi {
     fun languages(): List<Language>
 
     @ApiOperation(tags = ["web setting"], value = "公告 -> 列表")
-    fun announcementList(): List<I18nContent>
+    fun announcementList(@RequestParam("configType", defaultValue = "Announcement") configType: I18nConfig): List<I18nContent>
+
 
     @ApiOperation(tags = ["web setting"], value = "国际化 -> 内容创建")
     @ResponseStatus(HttpStatus.NO_CONTENT)

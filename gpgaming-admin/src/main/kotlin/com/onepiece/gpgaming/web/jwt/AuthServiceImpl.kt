@@ -34,6 +34,7 @@ class AuthServiceImpl(
         val password = "123456"
 
         val clientId = when (role) {
+            Role.Admin,
             Role.Client -> id
             Role.Waiter, Role.Sale -> {
                 val waiter = waiterService.get(id)

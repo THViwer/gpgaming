@@ -8,6 +8,9 @@ enum class I18nConfig {
     // 公告
     Announcement,
 
+    // 彈窗公告
+    AnnouncementDialog,
+
     // 优惠活动
     Promotion,
 

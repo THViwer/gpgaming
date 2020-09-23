@@ -104,9 +104,9 @@ class IndexApiController(
     }
 
     @GetMapping("/i18n/announcement")
-    override fun announcementList(): List<I18nContent> {
+    override fun announcementList(@RequestParam("configType", defaultValue = "Announcement") configType: I18nConfig): List<I18nContent> {
         val clientId = getClientId()
-        return i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Announcement)
+        return i18nContentService.getConfigType(clientId = clientId, configType = configType)
     }
 
     @PostMapping("/i18n")

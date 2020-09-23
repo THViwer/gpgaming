@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
+import java.util.*
 
 
 /**
@@ -44,6 +45,7 @@ data class I18nContent (
     fun getII18nContent(objectMapper: ObjectMapper): II18nContent {
         return when (configType) {
             I18nConfig.Announcement -> objectMapper.readValue<AnnouncementI18n>(contentJson)
+            I18nConfig.AnnouncementDialog -> objectMapper.readValue<AnnouncementDialogI18n>(contentJson)
             I18nConfig.Banner -> objectMapper.readValue<BannerI18n>(contentJson)
             I18nConfig.IndexVideo -> objectMapper.readValue<IndexVideoI18n>(contentJson)
             I18nConfig.Promotion -> objectMapper.readValue<PromotionI18n>(contentJson)
@@ -78,6 +80,15 @@ data class I18nContent (
 
             val content: String
 
+    ): II18nContent
+
+    data class AnnouncementDialogI18n(
+
+            val title: String,
+
+            val content: String,
+
+            val nonce: String = UUID.randomUUID().toString()
     ): II18nContent
 
     /**

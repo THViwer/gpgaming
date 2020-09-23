@@ -23,6 +23,9 @@ data class Index(
         @ApiModelProperty("公告")
         val announcement: I18nContent.AnnouncementI18n,
 
+        @ApiModelProperty("弹窗公告公告")
+        val announcementDialog: I18nContent.AnnouncementDialogI18n,
+
 //        @ApiModelProperty("平台列表")
 //        val platforms: List<PlatformVo>,
 

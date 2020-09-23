@@ -78,6 +78,8 @@ class IndexUtil(
         // 公告
         val announcements = contents.filter { it.configType == I18nConfig.Announcement }
 
+        val announcementDialogs = contents.filter { it.configType == I18nConfig.AnnouncementDialog }
+
         // 开通的平台列表
 //        val binds = platformBindService.findClientPlatforms(clientId)
         val gamePlatforms = gamePlatformService.all()
@@ -112,6 +114,13 @@ class IndexUtil(
             val announcement = (announcements.firstOrNull{ it.language == language }
                     ?: announcements.first { it.language == Language.EN })
                     .let { it.getII18nContent(objectMapper) as I18nContent.AnnouncementI18n }
+
+            // 公告弹窗
+            val announcementDialog = (announcementDialogs.firstOrNull{ it.language == language }
+                    ?: announcements.firstOrNull { it.language == Language.EN })?.let { it.getII18nContent(objectMapper) as I18nContent.AnnouncementDialogI18n }
+                    ?: I18nContent.AnnouncementDialogI18n(title = "", content = "", nonce = UUID.randomUUID().toString())
+
+
 
             // banner
             val bannerVoList = banners.mapNotNull { banner ->
@@ -171,7 +180,7 @@ class IndexUtil(
 
             val index = Index(logo = logo, announcement = announcement, recommendedPlatforms = recommendedPlatforms, lives = recommendLives,
                     banners = bannerVoList, sports = recommendSports, hotGameUrl = hotGameUrl, recommendedVideos = recommendVideos, name = client.name,
-                    shortcutLogo = client.shortcutLogo, affSite = affSite)
+                    shortcutLogo = client.shortcutLogo, affSite = affSite, announcementDialog = announcementDialog)
 
             // 放到缓存中
 //            val redisKey = OnePieceRedisKeyConstant.indexCacheConfig(clientId = clientId, language = language)
