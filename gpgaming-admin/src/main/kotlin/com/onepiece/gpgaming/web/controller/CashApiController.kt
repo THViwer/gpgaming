@@ -191,7 +191,7 @@ class CashApiController(
         val user = current()
 
         val clientBankIdList = when (user.role) {
-            Role.Client -> {
+            Role.Client, Role.Admin -> {
                 null
             }
             Role.Waiter -> {
