@@ -126,7 +126,7 @@ class IndexUtil(
 
             // 公告弹窗
             val announcementDialog = (announcementDialogs.firstOrNull { it.language == language }
-                    ?: announcements.firstOrNull { it.language == Language.EN })?.let { it.getII18nContent(objectMapper) as I18nContent.AnnouncementDialogI18n }
+                    ?: announcementDialogs.firstOrNull { it.language == Language.EN })?.let { it.getII18nContent(objectMapper) as I18nContent.AnnouncementDialogI18n }
                     ?: I18nContent.AnnouncementDialogI18n(title = "", content = "", nonce = UUID.randomUUID().toString())
 
 
