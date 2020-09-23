@@ -209,8 +209,9 @@ class PullBetTask(
 //            val add = if (cutMinute % 10 == 0L) 0 else 1
 
             var flag = true
+            var cutTime = startTime
             while (flag) {
-                val cutTime = startTime.plusMinutes(10)
+                cutTime = cutTime.plusMinutes(10)
                 flag = cutTime.minusSeconds(1).isAfter(endTime)
 
                 val useCutTime = if (flag) endTime else cutTime
