@@ -203,12 +203,25 @@ class PullBetTask(
 
         var gameResponse: GameResponse<List<BetOrderValue.BetOrderCo>> = GameResponse.of(emptyList())
         try {
-            gameResponse = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
-            this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = gameResponse.okResponse, taskType = taskType)
+            //            val cut = Duration.between(startTime, endTime)
+//            val cutMinute = cut.toMinutes()
+//            val curTime = cutMinute / 10
+//            val add = if (cutMinute % 10 == 0L) 0 else 1
 
-            val orders = gameResponse.data ?: emptyList()
-            if (orders.isNotEmpty()) {
-                betOrderService.batch(orders = orders)
+            var flag = true
+            while (flag) {
+                val cutTime = startTime.plusMinutes(10)
+                flag = cutTime.minusSeconds(1).isAfter(endTime)
+
+                val useCutTime = if (flag) endTime else cutTime
+
+                gameResponse = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = useCutTime)
+                this.saveOrderTask(bind = bind, startTime = useCutTime, endTime = endTime, okResponse = gameResponse.okResponse, taskType = taskType)
+
+                val orders = gameResponse.data ?: emptyList()
+                if (orders.isNotEmpty()) {
+                    betOrderService.batch(orders = orders)
+                }
             }
         } catch (e: Exception) {
             log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 执行任务失败", e)
