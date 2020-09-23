@@ -154,15 +154,12 @@ class EBetService : PlatformService() {
                 val orderId = mapUtil.asString("roundNo")
                 val username = mapUtil.asString("username")
 
-                val betTime = mapUtil.asLong("createTime").div(1000)
+                val betTime = (mapUtil.asLong("createTime") * 1000)
                         .let { Instant.ofEpochMilli(it) }
                         .atZone(ZoneId.of("Asia/Shanghai"))
                         .toLocalDateTime()
 
-                val settleTime = mapUtil.asLong("createTime").div(1000)
-                        .let { Instant.ofEpochMilli(it) }
-                        .atZone(ZoneId.of("Asia/Shanghai"))
-                        .toLocalDateTime()
+                val settleTime = betTime
 
 
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.EBet, platformUsername = username)
@@ -175,5 +172,16 @@ class EBetService : PlatformService() {
 
 
     }
+
+}
+
+fun main() {
+
+    val t = 1599635054L * 1000
+    val d = t.let { b -> Instant.ofEpochMilli(b) }
+            .atZone(ZoneId.of("Asia/Shanghai"))
+            .toLocalDateTime()
+
+    println(d)
 
 }
