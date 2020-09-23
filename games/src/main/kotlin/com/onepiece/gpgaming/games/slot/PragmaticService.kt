@@ -284,7 +284,9 @@ class PragmaticService : PlatformService() {
             val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(Platform.Pragmatic, username)
             val orderId = bet.asString("playSessionID")
             val betTime = bet.asLocalDateTime("startDate", dateTimeFormat)
+                    .plusHours(8) // 加8小时
             val settleTime = bet.asLocalDateTime("endDate", dateTimeFormat)
+                    .plusHours(8) // 加8小时
             val betAmount = bet.asBigDecimal("bet")
             val winAmount = bet.asBigDecimal("win")
 
