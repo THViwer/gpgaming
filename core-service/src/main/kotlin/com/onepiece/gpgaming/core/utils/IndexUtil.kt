@@ -21,6 +21,7 @@ import com.onepiece.gpgaming.core.service.RecommendedService
 import com.onepiece.gpgaming.core.service.WebSiteService
 import com.onepiece.gpgaming.utils.AwsS3Util
 import com.onepiece.gpgaming.utils.RedisService
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
@@ -38,6 +39,8 @@ class IndexUtil(
         private val webSiteService: WebSiteService,
         private val redisService: RedisService
 ) {
+
+    private val log = LoggerFactory.getLogger(IndexUtil::class.java)
 
     @Autowired
     lateinit var clientService: ClientService
@@ -75,6 +78,7 @@ class IndexUtil(
         val platformBinds = platformBindService.findClientPlatforms(clientId = clientId)
         val platformBindMap = platformBinds.map { it.platform to it }.toMap()
 
+
         // 公告
         val announcements = contents.filter { it.configType == I18nConfig.Announcement }
 
@@ -102,6 +106,13 @@ class IndexUtil(
             val content = it.getRecommendedContent(objectMapper) as Recommended.RecommendedPlatform
             content.platforms.mapNotNull { platform ->
                 platformBindMap[platform]?.let {
+                    log.info("-----------------------")
+                    log.info("-----------------------")
+                    log.info("clientId=${client.id}")
+                    log.info("当前平台:${platform}")
+                    log.info("平台列表:${gamePlatforms}")
+                    log.info("-----------------------")
+                    log.info("-----------------------")
                     Index.RecommendedPlatform(platform = platform, gamePlatform = platform.getGamePlatform(gamePlatforms), platformBind = it)
                 }
             }
