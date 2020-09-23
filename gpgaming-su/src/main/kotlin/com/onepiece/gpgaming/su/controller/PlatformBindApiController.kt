@@ -54,7 +54,13 @@ class PlatformBindApiController(
 
     @GetMapping("/default/logo")
     override fun getDefaultLogo(@RequestParam("platform") platform: Platform): PlatformBindSuValue.DefaultLogo {
-        val platformBind = platformBindService.find(clientId = 1, platform = platform)
+
+
+        val platformBind = try {
+            platformBindService.find(clientId = 1, platform = platform)
+        } catch (e: Exception) {
+            platformBindService.find(clientId = 1000, platform = platform)
+        }
 
         return with(platformBind) {
             PlatformBindSuValue.DefaultLogo(icon = icon, disableIcon = disableIcon, originIcon = originIcon, originIconOver = originIconOver, mobileIcon = mobileIcon,

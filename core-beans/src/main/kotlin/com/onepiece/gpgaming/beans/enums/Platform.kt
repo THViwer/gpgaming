@@ -28,7 +28,7 @@ enum class Platform(
     AsiaGamingSlot(PlatformCategory.Slot, "Asia Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
 
     // live video
-    CT(PlatformCategory.LiveVideo, "ct"), //TODO 已删除
+    CT(PlatformCategory.LiveVideo, "ct"), //TODO 已删除getGamePlatform
     DreamGaming(PlatformCategory.LiveVideo, "Dream Gaming"),
     Evolution(PlatformCategory.LiveVideo, "Evolution"),
     GoldDeluxe(PlatformCategory.LiveVideo, "Gold Deluxe"), //TODO 已删除
