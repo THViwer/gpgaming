@@ -254,6 +254,7 @@ class PlatformAuthApiController(
             val username = bet.asString("ExternalUserId")
             val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.PNG, platformUsername = username)
             val betTime = bet.asLocalDateTime("Time")
+                    .plusHours(8) // 下注时间+8时区
 
             val originData = objectMapper.writeValueAsString(bet)
             BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, platform = Platform.PNG, betAmount = betAmount, winAmount = winAmount,
