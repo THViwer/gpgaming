@@ -39,7 +39,7 @@ class PullBetTask(
 
     }
 
-//    @Scheduled(cron = "0 0/1 *  * * ? ")
+    //    @Scheduled(cron = "0 0/1 *  * * ? ")
     @Scheduled(cron = "0 0,5,10,15,20,25,30,35,40,45,50,55 *  * * ? ")
     fun startByMinute() {
         val binds = platformBindService.all()
@@ -65,6 +65,9 @@ class PullBetTask(
                         Platform.CT,
                         Platform.Fgg,
                         Platform.Joker -> false
+
+                        // 同AG Live所以不需要拉订单
+                        Platform.AsiaGamingSlot -> false
 
                         else -> true
                     }
@@ -123,6 +126,9 @@ class PullBetTask(
                         Platform.Fgg,
                         Platform.Joker -> false
 
+                        // 同AG Live所以不需要拉订单
+                        Platform.AsiaGamingSlot -> false
+
                         else -> true
                     }
                 }
@@ -166,6 +172,9 @@ class PullBetTask(
                         Platform.Fgg,
                         Platform.Joker -> false
 
+                        // 同AG Live所以不需要拉订单
+                        Platform.AsiaGamingSlot -> false
+
                         else -> true
                     }
                 }
@@ -208,24 +217,40 @@ class PullBetTask(
 //            val curTime = cutMinute / 10
 //            val add = if (cutMinute % 10 == 0L) 0 else 1
 
-            var flag = true
-            var cutTime = startTime
-            while (flag) {
-                val cutStartTime = cutTime
+            when (bind.platform) {
+                Platform.AsiaGamingSlot,
+                Platform.AsiaGamingLive -> {
+                    var flag = true
+                    var cutTime = startTime
+                    while (flag) {
+                        val cutStartTime = cutTime
 
-                cutTime = cutTime.plusMinutes(10)
-                flag = cutTime.plusSeconds(1).isBefore(endTime)
+                        cutTime = cutTime.plusMinutes(10)
+                        flag = cutTime.plusSeconds(1).isBefore(endTime)
 
-                val catEndTime = if (flag) endTime else cutTime
+                        val catEndTime = if (flag) endTime else cutTime
 
-                gameResponse = gameApi.pullBets(platformBind = bind, startTime = cutStartTime, endTime = catEndTime)
-                this.saveOrderTask(bind = bind, startTime = cutStartTime, endTime = catEndTime, okResponse = gameResponse.okResponse, taskType = taskType)
+                        gameResponse = gameApi.pullBets(platformBind = bind, startTime = cutStartTime, endTime = catEndTime)
+                        this.saveOrderTask(bind = bind, startTime = cutStartTime, endTime = catEndTime, okResponse = gameResponse.okResponse, taskType = taskType)
 
-                val orders = gameResponse.data ?: emptyList()
-                if (orders.isNotEmpty()) {
-                    betOrderService.batch(orders = orders)
+                        val orders = gameResponse.data ?: emptyList()
+                        if (orders.isNotEmpty()) {
+                            betOrderService.batch(orders = orders)
+                        }
+                    }
+                }
+                else -> {
+                    gameResponse = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
+                    this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = gameResponse.okResponse, taskType = taskType)
+
+                    val orders = gameResponse.data ?: emptyList()
+                    if (orders.isNotEmpty()) {
+                        betOrderService.batch(orders = orders)
+                    }
                 }
             }
+
+
         } catch (e: Exception) {
             log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 执行任务失败", e)
 
