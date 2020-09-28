@@ -334,8 +334,9 @@ class PullBetTask(
 
     private fun saveOrderTask(bind: PlatformBind, taskType: PullOrderTask.OrderTaskType, startTime: LocalDateTime, endTime: LocalDateTime, okResponse: OKResponse) {
 
-        // TODO 请求平台 失败的时候才记录
-        if (!okResponse.ok) {
+        //TODO 请求平台 失败的时候才记录
+        //TODO 测试阶段 u996所有的情况都记录一下
+        if (!okResponse.ok || bind.clientId == 1) {
             val formParam = okResponse.okParam.formParam.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
             val headers = okResponse.okParam.headers.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
 
