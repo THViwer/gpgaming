@@ -46,7 +46,7 @@ class PullOrderTaskDaoImpl : PullOrderTaskDao, BasicDaoImpl<PullOrderTask>("pull
                 .set("form_param", task.formParam)
                 .set("response", task.response)
                 .set("type", task.type)
-                .set("status", task.status)
+                .set("u9_status", task.status)
                 .set("start_time", "${task.startTime}")
                 .set("end_time", "${task.endTime}")
                 .executeOnlyOne()
