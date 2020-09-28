@@ -299,7 +299,7 @@ class PullBetTask(
                         cutTime = cutTime.plusMinutes(10)
                         flag = cutTime.plusSeconds(1).isBefore(endTime)
 
-                        val catEndTime = if (flag) endTime else cutTime
+                        val catEndTime = if (flag) cutTime else endTime
 
                         gameResponse = gameApi.pullBets(platformBind = bind, startTime = cutStartTime, endTime = catEndTime)
                         this.saveOrderTask(bind = bind, startTime = cutStartTime, endTime = catEndTime, okResponse = gameResponse.okResponse, taskType = taskType)
