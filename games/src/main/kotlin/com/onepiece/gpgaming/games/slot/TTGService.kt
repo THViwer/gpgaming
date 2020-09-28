@@ -312,11 +312,11 @@ class TTGService : PlatformService() {
                         winAmount = winAmount, originData = originData, platform = Platform.TTG, settleTime = betTime, validAmount = betAmount)
             } catch (e: Exception) {
 
-                if (e is java.lang.NumberFormatException) {
-                    null
-                } else {
+//                if (e is java.lang.NumberFormatException) {
+//                    null
+//                } else {
                     throw e
-                }
+//                }
             }
         }
 //                .groupBy { it.first }.map {
