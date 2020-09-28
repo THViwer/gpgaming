@@ -229,12 +229,16 @@ class U9HttpRequest(
 
         val body = response.body?.string() ?: "无法从{response.body}中获得返回"
 
-        val mapUtil = when {
-            !okParam.serialization -> null
-            response.code == 200 || response.code == 201 -> {
-                objectMapper?.readValue(body, okParam.clz)
+        val mapUtil = try {
+            when {
+                !okParam.serialization -> null
+                response.code == 200 || response.code == 201 -> {
+                    objectMapper?.readValue(body, okParam.clz)
+                }
+                else -> null
             }
-            else -> null
+        } catch (e: Exception) {
+            null
         }
 
         val status = when (response.code) {
