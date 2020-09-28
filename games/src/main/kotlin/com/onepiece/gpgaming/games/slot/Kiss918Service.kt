@@ -55,15 +55,19 @@ class Kiss918Service(
 
         if (!okResponse.ok) return okResponse
 
+        var message = okResponse.message
         val status = try {
             when (okResponse.asBoolean("success")) {
                 true -> U9RequestStatus.OK
-                false -> U9RequestStatus.Fail
+                false -> {
+                    message = okResponse.asString("msg")
+                    U9RequestStatus.Fail
+                }
             }
         } catch (e: Exception) {
             U9RequestStatus.Fail
         }
-        return okResponse.copy(status = status)
+        return okResponse.copy(status = status, message = message)
     }
 
     private fun generatorUsername(registerReq: GameValue.RegisterReq): GameResponse<String> {
