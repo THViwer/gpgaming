@@ -90,7 +90,7 @@ class EvolutionService : PlatformService() {
             val map = it.asMap("transfer")
 
             val platformOrderId = map.asString("etransid")
-            val balance = map.asBigDecimal("etransid")
+            val balance = map.asBigDecimal("balance")
             GameValue.TransferResp.successful(balance = balance, platformOrderId = platformOrderId)
         }
     }
