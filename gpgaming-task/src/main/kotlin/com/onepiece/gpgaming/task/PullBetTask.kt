@@ -212,6 +212,13 @@ class PullBetTask(
 
     fun execute(bind: PlatformBind, taskType: PullOrderTask.OrderTaskType, startTime: LocalDateTime, endTime: LocalDateTime) {
 
+        // TODO AG用的是同一套配置 如果除了clientId=1和clientId=10001 其它都不执行AG的定时任务
+        if (bind.clientId != 1 && bind.clientId != 10001) {
+            if (bind.platform == Platform.AsiaGamingLive || bind.platform == Platform.AsiaGamingSlot) {
+                return
+            }
+        }
+
         var gameResponse: GameResponse<List<BetOrderValue.BetOrderCo>> = GameResponse.of(emptyList())
         try {
             //            val cut = Duration.between(startTime, endTime)
