@@ -186,8 +186,8 @@ class SaGamingService : PlatformService() {
 
         val okResponse = this.doGetXml(clientToken = clientToken, data = data, time = time)
         return this.bindGameResponse(okResponse = okResponse) {
-            val balance = it.asBigDecimal("CreditAmount")
-            GameValue.TransferResp.successful(balance = balance)
+//            val balance = it.asBigDecimal("CreditAmount")
+            GameValue.TransferResp.successful()
         }
     }
 
