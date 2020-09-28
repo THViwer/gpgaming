@@ -297,7 +297,7 @@ class TTGService : PlatformService() {
                 val winAmount: BigDecimal
                 when (transactionSubType) {
                     "Wager" -> {
-                        betAmount = detail.asBigDecimal("amount")
+                        betAmount = detail.asBigDecimal("amount").abs()
                         winAmount = BigDecimal.ZERO
                     }
                     else -> {
