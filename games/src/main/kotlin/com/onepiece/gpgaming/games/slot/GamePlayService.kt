@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.GamePlayClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
@@ -39,13 +40,15 @@ class GamePlayService : PlatformService() {
 
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val errorCode = okResponse.asInt("error_code")
-            errorCode == 0
+        val status = try {
+            when (okResponse.asInt("error_code")) {
+                0 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
     fun startGetBetXml(clientToken: GamePlayClientToken, method: String, data: List<String>): OKResponse {
@@ -60,20 +63,15 @@ class GamePlayService : PlatformService() {
 
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val errorCode = okResponse.asInt("error_code")
-            errorCode == 0
+        val status = try {
+            when (okResponse.asInt("error_code")) {
+                0 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return okResponse.copy(ok = ok)
-//        val urlParam = data.joinToString("&")
-//        val result = okHttpUtil.doGetXml(platform = Platform.GamePlay, url = "$url?$urlParam", clz = GamePlayValue.BetResult::class.java)
-
-//        check(result.error_code == 0) { OnePieceExceptionCode.PLATFORM_DATA_FAIL }
-//        log.info("result: $result")
-//        return result.mapUtil
-//        return result
+        return okResponse.copy(status = status)
     }
 
     override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {

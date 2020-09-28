@@ -1,11 +1,15 @@
 package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import java.time.LocalDateTime
 
 data class PullOrderTask(
         // id
         val id: Int,
+
+        // 线程号
+        val nonce: String,
 
         // 业主Id
         val clientId: Int,
@@ -34,8 +38,8 @@ data class PullOrderTask(
         // 执行类型
         val type: OrderTaskType,
 
-        // 是否成功
-        val ok: Boolean,
+        // 请求状态
+        val status: U9RequestStatus,
 
         // 开始时间
         val startTime: LocalDateTime,
@@ -44,7 +48,26 @@ data class PullOrderTask(
         val endTime: LocalDateTime
 ) {
 
+    // 是否成功
+    val ok: Boolean = status == U9RequestStatus.OK
+
     enum class OrderTaskType {
+
+        API_REGISTER,
+
+        API_BALANCE,
+
+        API_TRANSFER,
+
+        API_TRANSFER_CHECK,
+
+        API_LAUNCH_GAME,
+
+        API_QUERY_BET,
+
+        API_QUERY_REPORT,
+
+        API_PULL_BET,
 
         MINUTE,
 

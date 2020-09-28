@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.games.live
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.SexyGamingClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
@@ -40,14 +41,16 @@ class SexyGamingService : PlatformService() {
         val okResponse = u9HttpRequest.startRequest(okParam = okParam)
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val status = okResponse.asString("status")
-            status == "0000" || status == "1"
+        val status = try {
+            when (okResponse.asString("status")) {
+                "0000", "1" -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
 
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
     override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {

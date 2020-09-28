@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.games.live
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.DreamGamingClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.games.GameValue
@@ -34,14 +35,16 @@ class DreamGamingService : PlatformService() {
 
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val codeId = okResponse.asInt("codeId")
-            codeId == 0
+        val status = try {
+            when (okResponse.asInt("codeId")) {
+                0 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
 
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
     private fun getToken(clientToken: DreamGamingClientToken): Pair<String, String> {

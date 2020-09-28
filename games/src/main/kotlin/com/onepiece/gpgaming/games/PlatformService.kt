@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
@@ -57,7 +58,7 @@ abstract class PlatformService {
             GameResponse(okResponse = okResponse, data = resultData)
 
         } catch (e: Exception) {
-            GameResponse(okResponse = okResponse.copy(ok = false, message = e.message), data = null)
+            GameResponse(okResponse = okResponse.copy(status = U9RequestStatus.Fail, message = e.message), data = null)
         }
     }
 

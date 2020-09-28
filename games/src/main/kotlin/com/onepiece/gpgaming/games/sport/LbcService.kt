@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.games.sport
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.LbcClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
@@ -14,7 +15,6 @@ import com.onepiece.gpgaming.games.http.OKParam
 import com.onepiece.gpgaming.games.http.OKResponse
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.lang.Exception
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -33,14 +33,15 @@ class LbcService : PlatformService() {
         val okResponse = u9HttpRequest.startRequest(okParam = okParam)
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val errorCode = okResponse.asInt("error_code")
-            errorCode == 0
+        val status = try {
+            when (okResponse.asInt("error_code")) {
+                0 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
 
@@ -59,7 +60,7 @@ class LbcService : PlatformService() {
                 "Currency" to clientToken.currency, //TODO 测试环境只能先用20(UUS) 以后替换成2(MYR)
                 "OddsType" to "1",
                 "MaxTransfer" to "999999",
-                "MinTransfer"  to "1"
+                "MinTransfer" to "1"
         )
 
         val okResponse = this.doPostForm(clientToken = clientToken, method = "CreateMember", formParam = param)

@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.games.slot
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.Pussy888ClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
@@ -53,12 +54,15 @@ class Pussy888Service(
         val okResponse = u9HttpRequest.startRequest(okParam = okParam)
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            okResponse.asBoolean("success")
+        val status = try {
+            when (okResponse.asBoolean("success")) {
+                true -> U9RequestStatus.OK
+                false -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
     private fun generatorUsername(registerReq: GameValue.RegisterReq): String {

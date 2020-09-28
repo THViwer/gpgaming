@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.games.live
 
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.AllBetClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
@@ -40,20 +41,16 @@ class AllBetService : PlatformService() {
 
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val errorCode = okResponse.asString("error_code")
-            errorCode == "OK"
+        val status = try {
+            when (okResponse.asString("error_code")) {
+                "OK" -> U9RequestStatus.OK
+                "SYSTEM_MATAINING" -> U9RequestStatus.Maintain
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return okResponse.copy(ok = ok)
-
-//        val result = okHttpUtil.doGet(platform = Platform.AllBet, url = "${allBetClientToken.apiPath}${method}?$param", clz = AllBetValue.Result::class.java)
-//        check(result.errorCode == "OK") {
-//            log.error("allBet network error: ${result.errorCode}, ${result.message}")
-//            OnePieceExceptionCode.PLATFORM_DATA_FAIL
-//        }
-//        return result.mapUtil
+        return okResponse.copy(status = status)
     }
 
     override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {

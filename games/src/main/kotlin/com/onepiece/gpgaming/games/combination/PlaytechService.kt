@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.games.combination
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.ActiveConfig
@@ -75,8 +76,15 @@ class PlaytechService(
         )
         val okResponse = this.doGet(clientToken = clientToken, path = "/backoffice/player/serverBalance", data = data)
 
-        val ok = okResponse.asInt("code") == 200
-        return this.bindGameResponse(okResponse = okResponse.copy(ok = ok)) {
+        val status = try {
+            when (okResponse.asInt("code")) {
+                200 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
+        } catch (e: Exception) {
+            U9RequestStatus.Fail
+        }
+        return this.bindGameResponse(okResponse = okResponse.copy(status = status)) {
             val wallet = clientToken.serverName
             it.asMap("data").asMap("wallets").asBigDecimal(wallet)
         }
@@ -118,8 +126,15 @@ class PlaytechService(
             }
         }
 
-        val ok = okResponse.asInt("code") == 200
-        return this.bindGameResponse(okResponse = okResponse.copy(ok = ok)) {
+        val status = try {
+            when (okResponse.asInt("code")) {
+                200 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
+        } catch (e: Exception) {
+            U9RequestStatus.Fail
+        }
+        return this.bindGameResponse(okResponse = okResponse.copy(status = status)) {
             val platformOrderId = it.asMap("data").asString("reference_no")
             GameValue.TransferResp.successful(platformOrderId = platformOrderId)
         }
@@ -134,8 +149,15 @@ class PlaytechService(
         )
         val okResponse = this.doGet(clientToken = clientToken, path = "/backoffice/transfer/player/status", data = data)
 
-        val ok = okResponse.asInt("code") == 200
-        return this.bindGameResponse(okResponse = okResponse.copy(ok = ok)) {
+        val status = try {
+            when (okResponse.asInt("code")) {
+                200 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
+        } catch (e: Exception) {
+            U9RequestStatus.Fail
+        }
+        return this.bindGameResponse(okResponse = okResponse.copy(status = status)) {
             GameValue.TransferResp.successful()
         }
     }

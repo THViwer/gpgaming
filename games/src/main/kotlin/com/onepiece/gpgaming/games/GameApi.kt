@@ -6,11 +6,13 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.PlatformBind
+import com.onepiece.gpgaming.beans.model.PullOrderTask
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.MegaClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.SlotGame
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
+import com.onepiece.gpgaming.core.dao.PullOrderTaskDao
 import com.onepiece.gpgaming.core.service.GamePlatformService
 import com.onepiece.gpgaming.core.service.PlatformBindService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
@@ -20,6 +22,7 @@ import com.onepiece.gpgaming.games.combination.MicroGamingService
 import com.onepiece.gpgaming.games.combination.PlaytechService
 import com.onepiece.gpgaming.games.fishing.GGFishingService
 import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKResponse
 import com.onepiece.gpgaming.games.live.AllBetService
 import com.onepiece.gpgaming.games.live.DreamGamingService
 import com.onepiece.gpgaming.games.live.EBetService
@@ -87,8 +90,9 @@ class GameApi(
         // slot and live
         private val playtechService: PlaytechService,
         private val saGamingService: SaGamingService,
-        private val asiaGamingService: AsiaGamingService
+        private val asiaGamingService: AsiaGamingService,
 
+        private val pullOrderTaskDao: PullOrderTaskDao
 ) {
 
     private val log = LoggerFactory.getLogger(GameApi::class.java)
@@ -142,13 +146,29 @@ class GameApi(
         return "clientId=$clientId,memberId=$memberId,platform=$platform => $method"
     }
 
-    private fun <T> useRemoteLog(head: String, gameResponse: GameResponse<T>): T {
+    private fun <T> useRemoteLog(
+            clientId: Int,
+            platform: Platform,
+            taskType: PullOrderTask.OrderTaskType,
+            head: String,
+            gameResponse: GameResponse<T>,
+            save: Boolean = true
+    ): T {
 
         val okResponse = gameResponse.okResponse
+
+        if (save) {
+            try {
+                this.saveErrMsg(clientId = clientId, platform = platform, taskType = taskType, okResponse = gameResponse.okResponse)
+            } catch (e: Exception) {
+                log.error("保存异常信息失败", e)
+            }
+        }
 
         if (okResponse.ok) {
             log.info("\r\n--------start--------\r\n" +
                     "---- use remote $head ---- \r\n" +
+                    "---- nonce： ${gameResponse.okResponse.okParam.nonce} ---- \r\n" +
                     "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
                     "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
                     "---- 请求地址: ${okResponse.url} ---- \r\n" +
@@ -163,6 +183,7 @@ class GameApi(
 
         log.error("\r\n--------start--------\r\n" +
                 "---- use remote $head ---- \r\n" +
+                "---- nonce： ${gameResponse.okResponse.okParam.nonce} ---- \r\n" +
                 "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
                 "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
                 "---- 请求地址: ${okResponse.url} ---- \r\n" +
@@ -176,13 +197,21 @@ class GameApi(
         error(OnePieceExceptionCode.PLATFORM_REQUEST_ERROR)
     }
 
-    private fun <T> useRemoteLogByPull(head: String, gameResponse: GameResponse<T>) {
+    private fun <T> useRemoteLogByPull(
+            clientId: Int,
+            platform: Platform,
+            taskType: PullOrderTask.OrderTaskType,
+            head: String,
+            gameResponse: GameResponse<T>,
+            save: Boolean = true
+    ) {
 
         val okResponse = gameResponse.okResponse
 
         if (okResponse.ok) {
             log.info("\r\n--------start--------\r\n" +
                     "---- use remote $head ---- \r\n" +
+                    "---- nonce： ${gameResponse.okResponse.okParam.nonce} ---- \r\n" +
                     "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
                     "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
                     "---- 请求地址: ${okResponse.url} ---- \r\n" +
@@ -196,15 +225,39 @@ class GameApi(
 
             log.info("\r\n--------start--------\r\n" +
                     "--- use remote $head ---- \r\n" +
+                    "---- nonce： ${gameResponse.okResponse.okParam.nonce} ---- \r\n" +
                     "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
                     "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
                     "---- 请求地址: ${okResponse.url} ---- \r\n" +
                     "---- 请求参数: ${okResponse.param} ---- \r\n" +
                     "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
-                    "---- 响应参数: ${okResponse.response} ---- \r\n"  +
+                    "---- 响应参数: ${okResponse.response} ---- \r\n" +
                     "--------end--------\r\n"
             )
+        }
 
+        if (save) {
+            try {
+                this.saveErrMsg(clientId = clientId, platform = platform, taskType = taskType, okResponse = gameResponse.okResponse)
+            } catch (e: Exception) {
+                log.error("保存异常信息失败", e)
+            }
+        }
+
+    }
+
+    private fun saveErrMsg(clientId: Int, platform: Platform, okResponse: OKResponse, taskType: PullOrderTask.OrderTaskType) {
+        // TODO 请求平台 失败的时候才记录
+        if (!okResponse.ok) {
+            val formParam = okResponse.okParam.formParam.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
+            val headers = okResponse.okParam.headers.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
+
+            val now = LocalDateTime.now()
+            val task = PullOrderTask(id = -1, clientId = clientId, platform = platform, param = okResponse.param,
+                    path = okResponse.url, response = okResponse.response, type = taskType, status = okResponse.status,
+                    startTime = now, endTime = now, message = okResponse.message ?: "", formParam = formParam,
+                    headers = headers, nonce = okResponse.okParam.nonce)
+            pullOrderTaskDao.create(task)
         }
     }
 
@@ -238,7 +291,8 @@ class GameApi(
             val gameResponse = getPlatformApi(platform).register(registerReq)
 
             try {
-                val platformUsername = this.useRemoteLog(head = bindLogHead(clientId, memberId, platform, "register"), gameResponse = gameResponse)
+                val platformUsername = this.useRemoteLog(clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "register"),
+                        gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_REGISTER)
                 platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
             } catch (e: Exception) {
 
@@ -332,7 +386,8 @@ class GameApi(
             Platform.Bcs -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, launch = launch, language = language, password = platformPassword, redirectUrl = getRequestDomain())
                 val gameResponse = this.getPlatformApi(platform).start(startReq)
-                this.useRemoteLog(head = bindLogHead(clientId, memberId, platform, "start"), gameResponse = gameResponse)
+                this.useRemoteLog(clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "start"), gameResponse = gameResponse,
+                        taskType = PullOrderTask.OrderTaskType.API_LAUNCH_GAME)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -349,7 +404,8 @@ class GameApi(
             Platform.Bcs,
             Platform.CMD -> {
                 val gameResponse = this.getPlatformApi(platform).startDemo(token = clientToken, language = language, launch = launch)
-                this.useRemoteLog(head = this.bindLogHead(clientId, -1, platform, "start sport demo"), gameResponse = gameResponse)
+                this.useRemoteLog(clientId = clientId, platform = platform, head = this.bindLogHead(clientId, -1, platform, "start sport demo"),
+                        gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_LAUNCH_GAME)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -379,7 +435,8 @@ class GameApi(
             Platform.AsiaGamingSlot -> {
                 val gameResponse = getPlatformApi(platform).startSlot(startSlotReq)
 
-                this.useRemoteLog(head = bindLogHead(clientId, memberId, platform, "start"), gameResponse = gameResponse)
+                this.useRemoteLog(clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "start"), gameResponse = gameResponse,
+                        taskType = PullOrderTask.OrderTaskType.API_LAUNCH_GAME)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -425,7 +482,8 @@ class GameApi(
         val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername, password = platformPassword)
         val gameResponse = this.getPlatformApi(platform).balance(balanceReq)
 
-        return this.useRemoteLog(head = bindLogHead(clientId, memberId, platform, "balance"), gameResponse = gameResponse)
+        return this.useRemoteLog(clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "balance"),
+                gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_BALANCE)
                 .setScale(2, BigDecimal.ROUND_DOWN)
     }
 
@@ -467,7 +525,8 @@ class GameApi(
 
         return try {
             val gameResponse = this.getPlatformApi(platform).transfer(transferReq)
-            val resp = this.useRemoteLog(head = this.bindLogHead(clientId, memberId, platform, "transfer"), gameResponse = gameResponse)
+            val resp = this.useRemoteLog(clientId = clientId, platform = platform, head = this.bindLogHead(clientId, memberId, platform, "transfer"),
+                    gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_TRANSFER)
 
             val type = if (amount.toDouble() > 0) "deposit" else "withdraw"
             val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = resp.platformOrderId,
@@ -511,7 +570,8 @@ class GameApi(
             if (index > 2) return GameValue.TransferResp.failed()
 
             val gameResponse = this.getPlatformApi(platform).checkTransfer(checkTransferReq)
-            return this.useRemoteLog(head = this.bindLogHead(clientId, memberId, platform, "check transfer"), gameResponse = gameResponse)
+            return this.useRemoteLog(clientId = clientId, platform = platform, head = this.bindLogHead(clientId, memberId, platform, "check transfer"),
+                    gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_TRANSFER_CHECK)
         } catch (e: Exception) {
             log.error("查询转账失败第${index}次，请求参数：$checkTransferReq ", e)
             return this.checkTransfer(clientId, memberId, platform, checkTransferReq, index + 1)
@@ -529,7 +589,8 @@ class GameApi(
             Platform.Kiss918, Platform.Mega, Platform.Pussy888, Platform.SexyGaming, Platform.Bcs, Platform.AllBet, Platform.TTG -> {
                 val betOrderReq = GameValue.BetOrderReq(token = clientToken, startTime = startTime, endTime = endTime, username = platformUsername)
                 val gameResponse = getPlatformApi(platform).queryBetOrder(betOrderReq)
-                this.useRemoteLog(head = this.bindLogHead(clientId, memberId, platform, "query bet order"), gameResponse = gameResponse)
+                this.useRemoteLog(clientId = clientId, platform = platform, head = this.bindLogHead(clientId, memberId, platform, "query bet order"), gameResponse = gameResponse,
+                        taskType = PullOrderTask.OrderTaskType.API_QUERY_BET)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -545,7 +606,8 @@ class GameApi(
             Platform.Kiss918, Platform.Pussy888, Platform.Mega -> {
                 val req = GameValue.ReportQueryReq(token = clientToken, startDate = startDate)
                 val gameResponse = getPlatformApi(platform).queryReport(req)
-                this.useRemoteLog(head = this.bindLogHead(clientId, -1, platform, "query report"), gameResponse = gameResponse)
+                this.useRemoteLog(clientId = clientId, platform = platform, head = this.bindLogHead(clientId, -1, platform, "query report"),
+                        gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_QUERY_REPORT)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -584,7 +646,8 @@ class GameApi(
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken,
                         platform = platformBind.platform)
                 val gameResponse = getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)
-                this.useRemoteLogByPull(head = "clientId=${platformBind.clientId},platform=${platformBind.platform} -> pullBets", gameResponse = gameResponse)
+                this.useRemoteLogByPull(clientId = platformBind.clientId, platform = platformBind.platform, head = "clientId=${platformBind.clientId},platform=${platformBind.platform} -> pullBets",
+                        gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_PULL_BET, save = false)
 
                 gameResponse
             }

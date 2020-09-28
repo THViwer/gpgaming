@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.task
 
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.PlatformBind
 import com.onepiece.gpgaming.beans.model.PullOrderTask
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
@@ -30,12 +31,13 @@ class PullBetTask(
         private val activeConfig: ActiveConfig
 ) {
 
+    private val log = LoggerFactory.getLogger(PullBetTask::class.java)
+
     companion object {
         // 默认拉取5分钟的订单
         const val PULL_ORDER_FIVE_MINUTE = 5L
 
         //        const val PULL_ORDER_FIVE_MINUTE = 1L
-        val log = LoggerFactory.getLogger(PullBetTask::class.java)
 
     }
 
@@ -255,7 +257,7 @@ class PullBetTask(
             log.info("厅主：${bind.clientId}, 平台：${bind.platform}, 执行任务失败", e)
 
             val message = e.message ?: e.localizedMessage
-            val okResponse = gameResponse.okResponse.copy(message = message, ok = false)
+            val okResponse = gameResponse.okResponse.copy(message = message, status = U9RequestStatus.Fail)
             this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = okResponse, taskType = taskType)
         }
 
@@ -263,14 +265,17 @@ class PullBetTask(
 
     private fun saveOrderTask(bind: PlatformBind, taskType: PullOrderTask.OrderTaskType, startTime: LocalDateTime, endTime: LocalDateTime, okResponse: OKResponse) {
 
-        val formParam = okResponse.okParam.formParam.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
-        val headers = okResponse.okParam.headers.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
+        // TODO 请求平台 失败的时候才记录
+        if (!okResponse.ok) {
+            val formParam = okResponse.okParam.formParam.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
+            val headers = okResponse.okParam.headers.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
 
-        val task = PullOrderTask(id = -1, clientId = bind.clientId, platform = bind.platform, param = okResponse.param,
-                path = okResponse.url, response = okResponse.response, type = taskType, ok = okResponse.ok,
-                startTime = startTime, endTime = endTime, message = okResponse.message ?: "", formParam = formParam,
-                headers = headers)
-        orderTaskDao.create(task)
+            val task = PullOrderTask(id = -1, clientId = bind.clientId, platform = bind.platform, param = okResponse.param,
+                    path = okResponse.url, response = okResponse.response, type = taskType, status = okResponse.status,
+                    startTime = startTime, endTime = endTime, message = okResponse.message ?: "", formParam = formParam,
+                    headers = headers, nonce = okResponse.okParam.nonce)
+            orderTaskDao.create(task)
+        }
 
     }
 

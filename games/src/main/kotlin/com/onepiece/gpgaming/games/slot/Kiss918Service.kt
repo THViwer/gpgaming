@@ -1,12 +1,12 @@
 package com.onepiece.gpgaming.games.slot
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.Kiss918ClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
-import com.onepiece.gpgaming.games.bet.MapUtil
 import com.onepiece.gpgaming.games.http.GameResponse
 import com.onepiece.gpgaming.games.http.OKParam
 import com.onepiece.gpgaming.games.http.OKResponse
@@ -31,16 +31,16 @@ import java.time.format.DateTimeFormatter
  */
 
 @Service
-class Kiss918Service (
-        val queue:  FifoMap<String, Long> = FifoMap(100),
-        val balanceQueue:  FifoMap<String, String> = FifoMap(100)
-): PlatformService() {
+class Kiss918Service(
+        val queue: FifoMap<String, Long> = FifoMap(100),
+        val balanceQueue: FifoMap<String, String> = FifoMap(100)
+) : PlatformService() {
 
     private val log = LoggerFactory.getLogger(Kiss918Service::class.java)
     private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
     private fun sign(beforeParam: String?, username: String, time: Long, token: Kiss918ClientToken): String {
-        val signStr = "${beforeParam?: ""}${token.autoCode}${username}${time}${token.key}".toLowerCase()
+        val signStr = "${beforeParam ?: ""}${token.autoCode}${username}${time}${token.key}".toLowerCase()
         return DigestUtils.md5Hex(signStr).toUpperCase()
     }
 
@@ -55,12 +55,15 @@ class Kiss918Service (
 
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            okResponse.asBoolean("success")
+        val status = try {
+            when (okResponse.asBoolean("success")) {
+                true -> U9RequestStatus.OK
+                false -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
     private fun generatorUsername(registerReq: GameValue.RegisterReq): GameResponse<String> {
@@ -138,7 +141,7 @@ class Kiss918Service (
         log.info("查询余额. 请求ip: ${getRequestIp()}, " +
                 "上次请求时间：${balanceQueue[balanceReq.username]}, " +
                 "本次请求时间：${System.currentTimeMillis()}")
-        val (balance, time) = (balanceQueue[balanceReq.username]?: "0_0").split("_")
+        val (balance, time) = (balanceQueue[balanceReq.username] ?: "0_0").split("_")
         if (time != "0" && (System.currentTimeMillis() - time.toLong()) < 16000) {
             return GameResponse.of(data = balance.toBigDecimal())
         }
@@ -151,7 +154,7 @@ class Kiss918Service (
         val url = "${clientToken.apiPath}/ashx/account/account.ashx"
         val okResponse = this.doGet(url = url, username = balanceReq.username, clientToken = clientToken, data = data)
         return this.bindGameResponse(okResponse = okResponse) {
-            val amount =  it.asBigDecimal("MoneyNum")
+            val amount = it.asBigDecimal("MoneyNum")
             balanceQueue[balanceReq.username] = "${amount}_${System.currentTimeMillis()}"
             amount
         }
@@ -164,11 +167,11 @@ class Kiss918Service (
         log.info("转账.请求ip: ${getRequestIp()}, " +
                 "上次请求时间：${queue[transferReq.username]}, " +
                 "本次请求时间：${System.currentTimeMillis()}, " +
-                "时间相差:${System.currentTimeMillis() - (queue[transferReq.username]?: 0) / 1000}秒")
+                "时间相差:${System.currentTimeMillis() - (queue[transferReq.username] ?: 0) / 1000}秒")
 
         val prev = queue[transferReq.username]?.let {
             (System.currentTimeMillis() - it) > 15000
-        }?: true
+        } ?: true
         check(prev) { OnePieceExceptionCode.TRANSFER_TIME_FAST }
 
         val data = listOf(
@@ -250,7 +253,6 @@ class Kiss918Service (
             }
         }
     }
-
 
 
     override fun queryBetOrder(betOrderReq: GameValue.BetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {

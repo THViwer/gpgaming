@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.SaGamingClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
@@ -72,14 +73,16 @@ class SaGamingService : PlatformService() {
         val okResponse = u9HttpRequest.startRequest(okParam = okParam)
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val errorMsgId = okResponse.asInt("ErrorMsgId")
-            errorMsgId == 0
+        val status = try {
+            when (okResponse.asInt("ErrorMsgId")) {
+                0 -> U9RequestStatus.OK
+                129 -> U9RequestStatus.Maintain
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
     fun doGetBetXml(clientToken: SaGamingClientToken, data: List<String>, time: String): OKResponse {
@@ -98,13 +101,16 @@ class SaGamingService : PlatformService() {
 
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val errorMsgId = okResponse.asInt("ErrorMsgId")
-            errorMsgId == 0
+        val status = try {
+            when (okResponse.asInt("ErrorMsgId")) {
+                0 -> U9RequestStatus.OK
+                129 -> U9RequestStatus.Maintain
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
 
 //        val betResult = okHttpUtil.doGetXml(platform = Platform.SaGaming, url = url, clz = SaGamingValue.BetResult::class.java)
 //
@@ -300,7 +306,7 @@ class SaGamingService : PlatformService() {
                 BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, platform = Platform.SaGaming, betTime = betTime,
                         settleTime = settleTime, betAmount = betAmount, winAmount = winAmount, originData = originData, validAmount = rolling)
 
-            }?: emptyList()
+            } ?: emptyList()
         }
 
 

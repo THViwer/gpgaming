@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.AsiaGamingClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
@@ -63,12 +64,16 @@ class AsiaGamingService : PlatformService() {
         )
 
         val okResponse = this.doGetXml(data = data, clientToken = clientToken)
-        val ok = try {
-            okResponse.asInt("info") == 0
+
+        val status = try {
+            when (okResponse.asInt("info")) {
+                0 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return this.bindGameResponse(okResponse = okResponse.copy(ok = ok)) {
+        return this.bindGameResponse(okResponse = okResponse.copy(status = status)) {
             registerReq.username
         }
     }
@@ -113,8 +118,15 @@ class AsiaGamingService : PlatformService() {
                 "cur=${clientToken.currency}"
         )
         val preOkResponse = this.doGetXml(data = preData, clientToken = clientToken)
-        val preOk = preOkResponse.asString("info") == "0"
-        if (!preOk) return this.bindGameResponse(okResponse = preOkResponse.copy(ok = preOk)) {
+        val preStatus = try {
+            when (preOkResponse.asInt("info")) {
+                0 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
+        } catch (e: Exception) {
+            U9RequestStatus.Fail
+        }
+        if (preStatus != U9RequestStatus.OK) return this.bindGameResponse(okResponse = preOkResponse.copy(status = preStatus)) {
             GameValue.TransferResp.failed()
         }
 
@@ -131,12 +143,15 @@ class AsiaGamingService : PlatformService() {
                 "cur=${clientToken.currency}"
         )
         val okResponse = this.doGetXml(data = data, clientToken = clientToken)
-        val ok = try {
-            okResponse.asString("info") == "0"
+        val status = try {
+            when (okResponse.asInt("info")) {
+                0 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return this.bindGameResponse(okResponse = okResponse.copy(ok = ok)) {
+        return this.bindGameResponse(okResponse = okResponse.copy(status = status)) {
             GameValue.TransferResp.successful()
         }
     }
@@ -153,12 +168,15 @@ class AsiaGamingService : PlatformService() {
                 "cur=${clientToken.currency}"
         )
         val okResponse = this.doGetXml(data = data, clientToken = clientToken)
-        val ok = try {
-            okResponse.asString("info") == "0"
+        val status = try {
+            when (okResponse.asInt("info")) {
+                0 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return this.bindGameResponse(okResponse = okResponse.copy(ok = ok)) {
+        return this.bindGameResponse(okResponse = okResponse.copy(status = status)) {
             GameValue.TransferResp.successful()
         }
     }

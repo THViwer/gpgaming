@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.games.live
 
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.EBetClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
@@ -41,12 +42,15 @@ class EBetService : PlatformService() {
         val okResponse = u9HttpRequest.startRequest(okParam)
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            okResponse.asString("status") == "200"
+        val status = try {
+            when (okResponse.asString("status")) {
+                "200" -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
     override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {

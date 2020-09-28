@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.games.sport
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.CMDClientToken
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
@@ -15,7 +16,6 @@ import com.onepiece.gpgaming.games.http.OKResponse
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.lang.Exception
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDateTime
@@ -38,14 +38,15 @@ class CMDService : PlatformService() {
         val okResponse = u9HttpRequest.startRequest(okParam = okParam)
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val code = okResponse.asInt("Code")
-            code == 0 || code == -102
+        val status = try {
+            when (okResponse.asInt("Code")) {
+                0, -102 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
 

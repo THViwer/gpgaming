@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.games.slot
 
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.MegaClientToken
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
@@ -43,14 +44,16 @@ class MegaService : PlatformService() {
         val okResponse = u9HttpRequest.startRequest(okParam)
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val error = okResponse.mapUtil.data["error"]?.toString()
-            error.isNullOrBlank()
-        } catch (e: Exception) {
-            false
-        }
 
-        return okResponse.copy(ok = ok)
+        val status = try {
+            when {
+                okResponse.mapUtil.data["error"]?.toString().isNullOrBlank() -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
+        } catch (e: Exception) {
+            U9RequestStatus.Fail
+        }
+        return okResponse.copy(status = status)
     }
 
 

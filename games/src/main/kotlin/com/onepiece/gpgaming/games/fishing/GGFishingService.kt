@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.games.fishing
 
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.GGFishingClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
@@ -37,13 +38,15 @@ class GGFishingService : PlatformService() {
 
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val status = okResponse.asInt("status")
-             status == 1 || status == 1003
+        val status = try {
+            when (okResponse.asInt("status")) {
+                1, 1003 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
 
     }
 

@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.games.slot
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.SpadeGamingClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.ActiveConfig
@@ -39,13 +40,15 @@ class SpadeGamingService(
         val okResponse = u9HttpRequest.startRequest(okParam)
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val code = okResponse.asInt("code")
-            code == 0
+        val status = try {
+            when (okResponse.asInt("code")) {
+                0 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
     override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {

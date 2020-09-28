@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.games.http
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.games.bet.DEFAULT_DATETIMEFORMATTER
 import com.onepiece.gpgaming.games.bet.JacksonMapUtil
 import com.onepiece.gpgaming.games.bet.MapUtil
@@ -18,9 +19,13 @@ import org.springframework.stereotype.Component
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 data class OKParam private constructor(
+
+        // 线程号
+        val nonce: String = UUID.randomUUID().toString(),
 
         // 请求地址
         val url: String,
@@ -81,7 +86,7 @@ data class GameResponse<T>(
         fun <T> of(data: T): GameResponse<T> {
             val okParam = OKParam.ofGet(url = "", param = "")
 
-            val okResponse = OKResponse(url = "", method = HttpMethod.PATCH, param = "", response = "", message = "start demo game", eMapUtil = null, ok = true,
+            val okResponse = OKResponse(url = "", method = HttpMethod.PATCH, param = "", response = "", message = "start demo game", eMapUtil = null, status = U9RequestStatus.OK,
                     okParam = okParam)
             return GameResponse(okResponse = okResponse, data = data)
         }
@@ -92,22 +97,35 @@ data class GameResponse<T>(
 
 data class OKResponse(
 
+        // 请求参数
         val okParam: OKParam,
 
+        // 请求地址
         val url: String,
 
+        // 请求方式
         val method: HttpMethod,
 
+        // 参数
         val param: String,
 
+        // 响应参数
         val response: String,
 
-        val ok: Boolean,
+        // 是否维护
+        val maintain: Boolean = false,
 
+        // 请求状态
+        val status: U9RequestStatus,
+
+        // 失败消息
         val message: String?,
 
         val eMapUtil: JacksonMapUtil?
 ) {
+
+    // 请求是否成功
+    val ok = status == U9RequestStatus.OK
 
     val mapUtil: MapUtil
         get() = eMapUtil!!.mapUtil
@@ -219,8 +237,11 @@ class U9HttpRequest(
             else -> null
         }
 
-        val ok = response.code == 200 || response.code == 201
-        return OKResponse(okParam = okParam, url = okParam.url, method = okParam.method, param = okParam.param, ok = ok, eMapUtil = mapUtil,
+        val status = when (response.code) {
+            200, 201 -> U9RequestStatus.OK
+            else -> U9RequestStatus.Fail
+        }
+        return OKResponse(okParam = okParam, url = okParam.url, method = okParam.method, param = okParam.param, status = status, eMapUtil = mapUtil,
                 response = body, message = response.message)
     }
 

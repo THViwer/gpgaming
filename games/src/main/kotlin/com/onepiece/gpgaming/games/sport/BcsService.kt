@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.BcsClientToken
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
@@ -55,13 +56,16 @@ class BcsService : PlatformService() {
         val okResponse = u9HttpRequest.startRequest(okParam = okParam)
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val errcode = okResponse.asString("errcode")
-            errcode == "000000"
+
+        val status = try {
+            when (okResponse.asString("errcode")) {
+                "000000" -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
     override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
@@ -226,7 +230,7 @@ class BcsService : PlatformService() {
                     val originData = objectMapper.writeValueAsString(bet.data)
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Bcs, orderId = orderId, betAmount = betAmount,
                             winAmount = winAmount, betTime = betTime, settleTime = settleTime, originData = originData, validAmount = turnover)
-                }?: emptyList()
+                } ?: emptyList()
             }
 
             BetNextIdData(nextId = nextId, gameResponse = gameResponse)

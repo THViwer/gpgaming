@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.PragmaticClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
@@ -42,13 +43,15 @@ class PragmaticService : PlatformService() {
 
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val error = okResponse.asInt("error")
-            error == 0
+        val status = try {
+            when (okResponse.asInt("error")) {
+                0 -> U9RequestStatus.OK
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
     override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {

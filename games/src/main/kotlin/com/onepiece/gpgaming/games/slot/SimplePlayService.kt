@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.SimplePlayClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
@@ -72,14 +73,16 @@ class SimplePlayService : PlatformService() {
         val okResponse = u9HttpRequest.startRequest(okParam = okParam)
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val errorMsgId = okResponse.asInt("ErrorMsgId")
-            errorMsgId == 0
+        val status = try {
+            when (okResponse.asInt("ErrorMsgId")) {
+                0 -> U9RequestStatus.OK
+                129 -> U9RequestStatus.Maintain
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
     fun doGetBetXml(clientToken: SimplePlayClientToken, data: List<String>, time: String): OKResponse {
@@ -98,14 +101,16 @@ class SimplePlayService : PlatformService() {
         val okResponse = u9HttpRequest.startRequest(okParam = okParam)
         if (!okResponse.ok) return okResponse
 
-        val ok = try {
-            val errorMsgId = okResponse.asInt("ErrorMsgId")
-            errorMsgId == 0 || errorMsgId == 112
+        val status = try {
+            when (okResponse.asInt("ErrorMsgId")) {
+                0 -> U9RequestStatus.OK
+                129 -> U9RequestStatus.Maintain
+                else -> U9RequestStatus.Fail
+            }
         } catch (e: Exception) {
-            false
+            U9RequestStatus.Fail
         }
-
-        return okResponse.copy(ok = ok)
+        return okResponse.copy(status = status)
     }
 
 
