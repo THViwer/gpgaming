@@ -172,6 +172,7 @@ class GameApi(
                     "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
                     "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
                     "---- 请求地址: ${okResponse.url} ---- \r\n" +
+                    "---- 请求头: ${okResponse.headers} ---- \r\n" +
                     "---- 请求参数: ${okResponse.param} ---- \r\n" +
                     "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
                     "---- 响应参数: ${okResponse.response} ---- \r\n" +
@@ -187,6 +188,7 @@ class GameApi(
                 "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
                 "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
                 "---- 请求地址: ${okResponse.url} ---- \r\n" +
+                "---- 请求头: ${okResponse.headers} ---- \r\n" +
                 "---- 请求参数: ${okResponse.param} ---- \r\n" +
                 "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
                 "---- 响应参数: ${okResponse.response} ---- \r\n" +
@@ -215,6 +217,7 @@ class GameApi(
                     "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
                     "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
                     "---- 请求地址: ${okResponse.url} ---- \r\n" +
+                    "---- 请求头: ${okResponse.headers} ---- \r\n" +
                     "---- 请求参数: ${okResponse.param} ---- \r\n" +
                     "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
                     "---- 响应参数: ${okResponse.response} ---- \r\n" +
@@ -229,6 +232,7 @@ class GameApi(
                     "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
                     "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
                     "---- 请求地址: ${okResponse.url} ---- \r\n" +
+                    "---- 请求头: ${okResponse.headers} ---- \r\n" +
                     "---- 请求参数: ${okResponse.param} ---- \r\n" +
                     "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
                     "---- 响应参数: ${okResponse.response} ---- \r\n" +

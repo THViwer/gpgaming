@@ -127,6 +127,12 @@ data class OKResponse(
     // 请求是否成功
     val ok = status == U9RequestStatus.OK
 
+    // 请求头信息
+    val headers: String
+        get() {
+            return okParam.headers.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
+        }
+
     val mapUtil: MapUtil
         get() = eMapUtil!!.mapUtil
 
