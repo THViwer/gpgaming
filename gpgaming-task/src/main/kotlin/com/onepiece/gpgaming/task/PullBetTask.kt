@@ -77,7 +77,7 @@ class PullBetTask(
 
         binds.parallelStream().forEach { bind ->
 
-            val preExecuteTime = this.getExecuteCacheKey(bind = bind)
+            val preExecuteTime = this.getExecuteCacheKey(bind = bind, taskType = PullOrderTask.OrderTaskType.ORDER_MINUTE)
 
             // 判断是否操作10分钟
             val duration = Duration.between(preExecuteTime, LocalDateTime.now())
@@ -92,35 +92,34 @@ class PullBetTask(
                 if (Duration.between(it, LocalDateTime.now()).toMinutes() > PULL_ORDER_FIVE_MINUTE) it else LocalDateTime.now().minusMinutes(PULL_ORDER_FIVE_MINUTE)
             }
 
-            execute(bind = bind, startTime = preExecuteTime.minusMinutes(1), endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE)
+            execute(bind = bind, startTime = preExecuteTime.minusMinutes(1), endTime = endTime, taskType = PullOrderTask.OrderTaskType.ORDER_MINUTE)
 
             this.putExecuteCacheKey(bind = bind, endTime = endTime)
         }
     }
 
-    @Scheduled(cron = "0 0/13 *  * * ? ")
-    fun startByHour() {
+
+
+    //    @Scheduled(cron = "0 0/1 *  * * ? ")
+    @Scheduled(cron = "0 3,8,13,18,23,28,33,38,43,48,53,58 *  * * ? ")
+    fun startPreHour() {
         val binds = platformBindService.all()
-                .filter { it.status != Status.Delete }
+//                .filter { it.platform == Platform.GamePlay } //TODO 测试
+                .filter { it.status == Status.Normal }
                 .filter {
                     when (activeConfig.profile) {
                         "dev" -> it.clientId == 1
                         else -> true
                     }
-                } //TODO 这里主要为了测试
+                }
                 .filter {
                     // 这些平台不能同步订单
                     when (it.platform) {
+                        // 这些平台没有同步功能
                         Platform.Kiss918,
                         Platform.Pussy888,
                         Platform.Mega,
                         Platform.PNG -> false
-
-                        // 这些平台不需要补单
-                        Platform.GGFishing,
-                        Platform.Bcs,
-                        Platform.CMD,
-                        Platform.Lbc -> false
 
                         // 这些平台已被删除
                         Platform.GoldDeluxe,
@@ -136,62 +135,125 @@ class PullBetTask(
                 }
 
         binds.parallelStream().forEach { bind ->
-            val startTime = LocalDateTime.now().minusHours(1)
-            val endTime = startTime.plusMinutes(13)
 
-            execute(bind = bind, startTime = startTime.minusMinutes(1), endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE_13)
+            val preExecuteTime = this.getExecuteCacheKey(bind = bind, taskType = PullOrderTask.OrderTaskType.ORDER_PRE_HOUR)
+
+            // 判断是否操作10分钟
+            val duration = Duration.between(preExecuteTime, LocalDateTime.now())
+            val minute = duration.toMinutes()
+
+            // 获得拉取订单的结束时间
+            val endTime = when {
+                minute <= 15 -> preExecuteTime.plusMinutes(PULL_ORDER_FIVE_MINUTE)
+                minute <= 60 -> preExecuteTime.plusMinutes(15L)
+                else -> preExecuteTime.plusMinutes(30L)
+            }.let { // 判断如果拉取的时候
+                if (Duration.between(it, LocalDateTime.now()).toMinutes() > PULL_ORDER_FIVE_MINUTE) it else LocalDateTime.now().minusMinutes(PULL_ORDER_FIVE_MINUTE)
+            }
+
+            execute(bind = bind, startTime = preExecuteTime.minusMinutes(1).minusHours(1), endTime = endTime.minusHours(1),
+                    taskType = PullOrderTask.OrderTaskType.ORDER_PRE_HOUR)
+
+            this.putExecuteCacheKey(bind = bind, endTime = endTime)
         }
-
     }
 
-    @Scheduled(cron = "0 0/28 *  * * ? ")
-    fun startByHour2() {
-        val binds = platformBindService.all()
-                .filter { it.status != Status.Delete }
-                .filter {
-                    when (activeConfig.profile) {
-                        "dev" -> it.clientId == 1
-                        else -> true
-                    }
-                } //TODO 这里主要为了测试
-                .filter {
-                    // 这些平台不能同步订单
-                    when (it.platform) {
-                        Platform.Kiss918,
-                        Platform.Pussy888,
-                        Platform.Mega,
-                        Platform.PNG -> false
 
-                        // 这些平台不需要补单
-                        Platform.GGFishing,
-                        Platform.Bcs,
-                        Platform.CMD,
-                        Platform.Lbc -> false
 
-                        // 这些平台已被删除
-                        Platform.GoldDeluxe,
-                        Platform.CT,
-                        Platform.Fgg,
-                        Platform.Joker -> false
+//    @Scheduled(cron = "0 0/13 *  * * ? ")
+//    fun startByHour() {
+//        val binds = platformBindService.all()
+//                .filter { it.status != Status.Delete }
+//                .filter {
+//                    when (activeConfig.profile) {
+//                        "dev" -> it.clientId == 1
+//                        else -> true
+//                    }
+//                } //TODO 这里主要为了测试
+//                .filter {
+//                    // 这些平台不能同步订单
+//                    when (it.platform) {
+//                        Platform.Kiss918,
+//                        Platform.Pussy888,
+//                        Platform.Mega,
+//                        Platform.PNG -> false
+//
+//                        // 这些平台不需要补单
+//                        Platform.GGFishing,
+//                        Platform.Bcs,
+//                        Platform.CMD,
+//                        Platform.Lbc -> false
+//
+//                        // 这些平台已被删除
+//                        Platform.GoldDeluxe,
+//                        Platform.CT,
+//                        Platform.Fgg,
+//                        Platform.Joker -> false
+//
+//                        // 同AG Live所以不需要拉订单
+//                        Platform.AsiaGamingSlot -> false
+//
+//                        else -> true
+//                    }
+//                }
+//
+//        binds.parallelStream().forEach { bind ->
+//            val startTime = LocalDateTime.now().minusHours(1)
+//            val endTime = startTime.plusMinutes(13)
+//
+//            execute(bind = bind, startTime = startTime.minusMinutes(1), endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE_13)
+//        }
+//
+//    }
+//
+//    @Scheduled(cron = "0 0/28 *  * * ? ")
+//    fun startByHour2() {
+//        val binds = platformBindService.all()
+//                .filter { it.status != Status.Delete }
+//                .filter {
+//                    when (activeConfig.profile) {
+//                        "dev" -> it.clientId == 1
+//                        else -> true
+//                    }
+//                } //TODO 这里主要为了测试
+//                .filter {
+//                    // 这些平台不能同步订单
+//                    when (it.platform) {
+//                        Platform.Kiss918,
+//                        Platform.Pussy888,
+//                        Platform.Mega,
+//                        Platform.PNG -> false
+//
+//                        // 这些平台不需要补单
+//                        Platform.GGFishing,
+//                        Platform.Bcs,
+//                        Platform.CMD,
+//                        Platform.Lbc -> false
+//
+//                        // 这些平台已被删除
+//                        Platform.GoldDeluxe,
+//                        Platform.CT,
+//                        Platform.Fgg,
+//                        Platform.Joker -> false
+//
+//                        // 同AG Live所以不需要拉订单
+//                        Platform.AsiaGamingSlot -> false
+//
+//                        else -> true
+//                    }
+//                }
+//
+//        binds.parallelStream().forEach { bind ->
+//            val startTime = LocalDateTime.now().minusHours(5)
+//            val endTime = startTime.plusMinutes(28)
+//
+//            execute(bind = bind, startTime = startTime.minusMinutes(1), endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE_13)
+//        }
+//
+//    }
 
-                        // 同AG Live所以不需要拉订单
-                        Platform.AsiaGamingSlot -> false
-
-                        else -> true
-                    }
-                }
-
-        binds.parallelStream().forEach { bind ->
-            val startTime = LocalDateTime.now().minusHours(5)
-            val endTime = startTime.plusMinutes(28)
-
-            execute(bind = bind, startTime = startTime.minusMinutes(1), endTime = endTime, taskType = PullOrderTask.OrderTaskType.MINUTE_13)
-        }
-
-    }
-
-    private fun getExecuteCacheKey(bind: PlatformBind): LocalDateTime {
-        val redisKey = "order:task:${bind.clientId}:${bind.platform}"
+    private fun getExecuteCacheKey(bind: PlatformBind, taskType: PullOrderTask.OrderTaskType): LocalDateTime {
+        val redisKey = "order:task:${bind.clientId}:${taskType}:${bind.platform}"
 
         val now = LocalDateTime.now()
 

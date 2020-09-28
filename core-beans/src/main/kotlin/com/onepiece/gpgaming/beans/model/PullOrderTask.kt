@@ -69,7 +69,10 @@ data class PullOrderTask(
 
         API_PULL_BET,
 
-        MINUTE,
+        ORDER_MINUTE,
+
+        ORDER_PRE_HOUR,
+
 
         MINUTE_13,
 
