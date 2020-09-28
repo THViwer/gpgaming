@@ -545,7 +545,7 @@ class GameApi(
                 checkResp.transfer -> checkResp.balance
                 else -> BigDecimal.valueOf(-1)
             }
-            return checkResp.copy(balance = balance)
+            return checkResp.copy(balance = balance, msg = gameResponse.okResponse.message?: "")
         } catch (e: Exception) {
             log.error("转账失败第${index}次，请求参数：$transferReq ", e)
 

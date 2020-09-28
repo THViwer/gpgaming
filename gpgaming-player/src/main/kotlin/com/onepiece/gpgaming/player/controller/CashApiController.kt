@@ -751,14 +751,18 @@ open class CashApiController(
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.from, member = current)
             val toCenterTransferReq = cashTransferReq.copy(to = Platform.Center)
             val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toCenterTransferReq, username = currentUsername())
-            check(result.transfer) { OnePieceExceptionCode.TRANSFER_FAILED }
+            check(result.transfer) {
+                if (result.msg.isBlank()) OnePieceExceptionCode.TRANSFER_FAILED else result.msg
+            }
         }
 
         if (cashTransferReq.to != Platform.Center) {
             val toPlatformTransferReq = cashTransferReq.copy(from = Platform.Center)
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.to, member = current)
             val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = currentUsername())
-            check(result.transfer) { OnePieceExceptionCode.TRANSFER_FAILED }
+            check(result.transfer) {
+                if (result.msg.isBlank()) OnePieceExceptionCode.TRANSFER_FAILED else result.msg
+            }
 
             memberIntroduce?.let {
                 val uo = MemberIntroduceValue.MemberIntroduceUo(id = it.id, registerActivity = true, depositActivity = null, introduceCommission = null)

@@ -87,7 +87,10 @@ sealed class GameValue {
             val platformOrderId: String,
 
             // 转账后余额
-            val balance: BigDecimal
+            val balance: BigDecimal,
+
+            // 转账错误信息
+            val msg: String = ""
     ) {
 
         companion object {
