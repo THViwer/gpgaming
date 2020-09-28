@@ -216,7 +216,9 @@ class EvolutionService : PlatformService() {
 
             val games = it.data
             val settleTime = MapResultUtil.asLocalDateTime(games, "settledAt")
+                    .plusHours(8) // 需要+8小时
             val betTime = MapResultUtil.asLocalDateTime(games, "startedAt")
+                    .plusHours(8) // 需要+8小时
             val bets = MapResultUtil.asList(games, "participants")
 
             bets.map { bet ->
