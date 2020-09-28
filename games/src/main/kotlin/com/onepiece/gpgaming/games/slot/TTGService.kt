@@ -286,7 +286,7 @@ class TTGService : PlatformService() {
             val username = player.asString("playerId")
 
             try {
-                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.TTG, platformUsername = username, prefix = "${clientToken.agentName}")
+                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.TTG, platformUsername = username, prefix = clientToken.agentName)
 
                 val detail = it.asMap("detail")
                 val orderId = detail.asString("transactionId")
