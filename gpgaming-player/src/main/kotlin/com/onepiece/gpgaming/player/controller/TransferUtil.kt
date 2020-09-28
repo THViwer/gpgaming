@@ -141,7 +141,7 @@ open class TransferUtil(
                 val amount = if (cashTransferReq.amount.toInt() == -1) platformBalance else cashTransferReq.amount
 
                 // 如果平台没有钱 则直接返回
-                if (amount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)) {
+                if (amount.toDouble() < 1) {
                     GameValue.TransferResp.successful()
                 } else {
                     this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = amount, username = username)
@@ -163,7 +163,7 @@ open class TransferUtil(
         // 检查余额
         val wallet = walletService.getMemberWallet(platformMember.memberId)
         val amount = if (transferAmount.toInt() == -1) wallet.balance else transferAmount
-        if (amount.toDouble() <= 0) return GameValue.TransferResp.successful() // 如果金额小于等于0 返回
+        if (amount.toDouble() < 1) return GameValue.TransferResp.successful() // 如果金额小于等于0 返回
 //        check(wallet.balance.toDouble() - amount.toDouble() > 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
 
         // 优惠活动赠送金额
