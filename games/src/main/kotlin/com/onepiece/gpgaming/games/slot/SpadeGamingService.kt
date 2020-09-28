@@ -43,6 +43,7 @@ class SpadeGamingService(
         val status = try {
             when (okResponse.asInt("code")) {
                 0 -> U9RequestStatus.OK
+                101 -> U9RequestStatus.OK // TODO 相同商户code 导致订单拉取可能周时进行
                 else -> U9RequestStatus.Fail
             }
         } catch (e: Exception) {
