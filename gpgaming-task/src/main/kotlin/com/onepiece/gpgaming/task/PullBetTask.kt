@@ -94,7 +94,7 @@ class PullBetTask(
 
             execute(bind = bind, startTime = preExecuteTime.minusMinutes(1), endTime = endTime, taskType = PullOrderTask.OrderTaskType.ORDER_MINUTE)
 
-            this.putExecuteCacheKey(bind = bind, endTime = endTime)
+            this.putExecuteCacheKey(bind = bind, endTime = endTime, taskType = PullOrderTask.OrderTaskType.ORDER_MINUTE)
         }
     }
 
@@ -154,7 +154,7 @@ class PullBetTask(
             execute(bind = bind, startTime = preExecuteTime.minusMinutes(1).minusHours(1), endTime = endTime.minusHours(1),
                     taskType = PullOrderTask.OrderTaskType.ORDER_PRE_HOUR)
 
-            this.putExecuteCacheKey(bind = bind, endTime = endTime)
+            this.putExecuteCacheKey(bind = bind, endTime = endTime, taskType = PullOrderTask.OrderTaskType.ORDER_PRE_HOUR)
         }
     }
 
@@ -267,8 +267,8 @@ class PullBetTask(
         }
     }
 
-    private fun putExecuteCacheKey(bind: PlatformBind, endTime: LocalDateTime) {
-        val redisKey = "order:task:${bind.clientId}:${bind.platform}"
+    private fun putExecuteCacheKey(bind: PlatformBind, endTime: LocalDateTime, taskType: PullOrderTask.OrderTaskType) {
+        val redisKey = "order:task:${bind.clientId}:${taskType}:${bind.platform}"
         redisService.put(redisKey, endTime.toString())
     }
 
