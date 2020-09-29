@@ -279,6 +279,9 @@ class PullBetTask(
             }
         }
 
+        //TODO clientId=4暂时不执行 因为有太多错误
+        if (bind.clientId == 4) return
+
         var gameResponse: GameResponse<List<BetOrderValue.BetOrderCo>> = GameResponse.of(emptyList())
         try {
             //            val cut = Duration.between(startTime, endTime)
