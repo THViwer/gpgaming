@@ -233,7 +233,6 @@ class PragmaticService : PlatformService() {
                     "timepoint=$startId"
             ).joinToString(separator = "&")
 
-//            val url = "${gameConstant.getDomain(Platform.Pragmatic)}/IntegrationService/v3/DataFeeds/transactions?$urlParam"
             val url = "${clientToken.apiPath}/IntegrationService/v3/DataFeeds/gamerounds/finished/"
 
             val okParam = OKParam.ofGet(url = url, param = urlParam).copy(serialization = false)

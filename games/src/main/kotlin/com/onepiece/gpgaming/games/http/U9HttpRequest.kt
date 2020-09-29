@@ -247,6 +247,7 @@ class U9HttpRequest(
                 else -> null
             }
         } catch (e: Exception) {
+            log.error("nonce:${okParam.nonce} 出现异常解析", e)
             null
         }
 

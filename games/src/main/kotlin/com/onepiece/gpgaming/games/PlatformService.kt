@@ -48,8 +48,21 @@ abstract class PlatformService {
 
     fun <T> bindGameResponse(okResponse: OKResponse, gameResponseHandle: (mapUtil: MapUtil) -> T): GameResponse<T> {
 
+        val logInfo = "\r\n--------start--------\r\n" +
+                "---- use remote ${okResponse.okParam.headers} ---- \r\n" +
+                "---- nonce： ${okResponse.okParam.nonce} ---- \r\n" +
+                "---- 请求是否成功: ${okResponse.ok} ---- \r\n" +
+                "---- 请求方式: ${okResponse.method} ---- \r\n" +
+                "---- 请求地址: ${okResponse.url} ---- \r\n" +
+                "---- 请求头: ${okResponse.headers} ---- \r\n" +
+                "---- 请求参数: ${okResponse.param} ---- \r\n" +
+                "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
+                "---- 响应参数: ${okResponse.response} ---- \r\n" +
+                "--------end--------\r\n"
+
         if (!okResponse.ok) {
-            return GameResponse(okResponse = okResponse, data = null)
+            log.info(logInfo)
+            return GameResponse(okResponse = okResponse, data = null, logInfo = logInfo)
         }
 
         return try {
@@ -58,7 +71,8 @@ abstract class PlatformService {
             GameResponse(okResponse = okResponse, data = resultData)
 
         } catch (e: Exception) {
-            GameResponse(okResponse = okResponse.copy(status = U9RequestStatus.Fail, message = e.message), data = null)
+            log.error(logInfo, e)
+            GameResponse(okResponse = okResponse.copy(status = U9RequestStatus.Fail, message = e.message), data = null, logInfo = logInfo)
         }
     }
 
