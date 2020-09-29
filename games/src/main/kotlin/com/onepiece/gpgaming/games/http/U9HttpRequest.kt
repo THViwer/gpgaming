@@ -78,7 +78,10 @@ data class GameResponse<T>(
 
         val okResponse: OKResponse,
 
-        val data: T?
+        val data: T?,
+
+        // log消息
+        val logInfo: String = ""
 ) {
 
     companion object {

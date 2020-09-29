@@ -157,32 +157,7 @@ class GameApi(
 
         val okResponse = gameResponse.okResponse
 
-        if (save) {
-            try {
-                this.saveErrMsg(clientId = clientId, platform = platform, taskType = taskType, okResponse = gameResponse.okResponse)
-            } catch (e: Exception) {
-                log.error("保存异常信息失败", e)
-            }
-        }
-
-        if (okResponse.ok) {
-            log.info("\r\n--------start--------\r\n" +
-                    "---- use remote $head ---- \r\n" +
-                    "---- nonce： ${gameResponse.okResponse.okParam.nonce} ---- \r\n" +
-                    "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
-                    "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
-                    "---- 请求地址: ${okResponse.url} ---- \r\n" +
-                    "---- 请求头: ${okResponse.headers} ---- \r\n" +
-                    "---- 请求参数: ${okResponse.param} ---- \r\n" +
-                    "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
-                    "---- 响应参数: ${okResponse.response} ---- \r\n" +
-                    "--------end--------\r\n"
-            )
-
-            return gameResponse.data!!
-        }
-
-        log.error("\r\n--------start--------\r\n" +
+        val logInfo = "\r\n--------start--------\r\n" +
                 "---- use remote $head ---- \r\n" +
                 "---- nonce： ${gameResponse.okResponse.okParam.nonce} ---- \r\n" +
                 "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
@@ -193,10 +168,24 @@ class GameApi(
                 "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
                 "---- 响应参数: ${okResponse.response} ---- \r\n" +
                 "--------end--------\r\n"
-        )
+
+        if (save) {
+            try {
+                this.saveErrMsg(clientId = clientId, platform = platform, taskType = taskType, okResponse = gameResponse.okResponse, logInfo = logInfo)
+            } catch (e: Exception) {
+                log.error("保存异常信息失败", e)
+            }
+        }
 
 
+        if (okResponse.ok) {
+            log.info(logInfo)
+            return gameResponse.data!!
+        }
+
+        log.error(logInfo)
         error(OnePieceExceptionCode.PLATFORM_REQUEST_ERROR)
+
     }
 
     private fun <T> useRemoteLogByPull(
@@ -206,51 +195,40 @@ class GameApi(
             head: String,
             gameResponse: GameResponse<T>,
             save: Boolean = true
-    ) {
+    ): String {
 
         val okResponse = gameResponse.okResponse
 
-        if (okResponse.ok) {
-            log.info("\r\n--------start--------\r\n" +
-                    "---- use remote $head ---- \r\n" +
-                    "---- nonce： ${gameResponse.okResponse.okParam.nonce} ---- \r\n" +
-                    "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
-                    "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
-                    "---- 请求地址: ${okResponse.url} ---- \r\n" +
-                    "---- 请求头: ${okResponse.headers} ---- \r\n" +
-                    "---- 请求参数: ${okResponse.param} ---- \r\n" +
-                    "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
-                    "---- 响应参数: ${okResponse.response} ---- \r\n" +
-                    "--------end--------\r\n"
-            )
-
-        } else {
-
-            log.info("\r\n--------start--------\r\n" +
-                    "--- use remote $head ---- \r\n" +
-                    "---- nonce： ${gameResponse.okResponse.okParam.nonce} ---- \r\n" +
-                    "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
-                    "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
-                    "---- 请求地址: ${okResponse.url} ---- \r\n" +
-                    "---- 请求头: ${okResponse.headers} ---- \r\n" +
-                    "---- 请求参数: ${okResponse.param} ---- \r\n" +
-                    "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
-                    "---- 响应参数: ${okResponse.response} ---- \r\n" +
-                    "--------end--------\r\n"
-            )
-        }
+        val logInfo = "\r\n--------start--------\r\n" +
+                "---- use remote $head ---- \r\n" +
+                "---- nonce： ${gameResponse.okResponse.okParam.nonce} ---- \r\n" +
+                "---- 请求是否成功: ${gameResponse.okResponse.ok} ---- \r\n" +
+                "---- 请求方式: ${gameResponse.okResponse.method} ---- \r\n" +
+                "---- 请求地址: ${okResponse.url} ---- \r\n" +
+                "---- 请求头: ${okResponse.headers} ---- \r\n" +
+                "---- 请求参数: ${okResponse.param} ---- \r\n" +
+                "---- 表单数据: ${okResponse.okParam.formParam} ---- \r\n" +
+                "---- 响应参数: ${okResponse.response} ---- \r\n" +
+                "--------end--------\r\n"
 
         if (save) {
             try {
-                this.saveErrMsg(clientId = clientId, platform = platform, taskType = taskType, okResponse = gameResponse.okResponse)
+                this.saveErrMsg(clientId = clientId, platform = platform, taskType = taskType, okResponse = gameResponse.okResponse, logInfo = logInfo)
             } catch (e: Exception) {
                 log.error("保存异常信息失败", e)
             }
         }
 
+        if (okResponse.ok) {
+            log.info(logInfo)
+        } else {
+            log.error(logInfo)
+        }
+
+        return logInfo
     }
 
-    private fun saveErrMsg(clientId: Int, platform: Platform, okResponse: OKResponse, taskType: PullOrderTask.OrderTaskType) {
+    private fun saveErrMsg(clientId: Int, platform: Platform, okResponse: OKResponse, taskType: PullOrderTask.OrderTaskType, logInfo: String) {
         // TODO 请求平台 失败的时候才记录
         if (!okResponse.ok) {
             val formParam = okResponse.okParam.formParam.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
@@ -260,7 +238,7 @@ class GameApi(
             val task = PullOrderTask(id = -1, clientId = clientId, platform = platform, param = okResponse.param,
                     path = okResponse.url, response = okResponse.response, type = taskType, status = okResponse.status,
                     startTime = now, endTime = now, message = okResponse.message ?: "", formParam = formParam,
-                    headers = headers, nonce = okResponse.okParam.nonce)
+                    headers = headers, nonce = okResponse.okParam.nonce, logInfo = logInfo)
             pullOrderTaskDao.create(task)
         }
     }
@@ -650,10 +628,10 @@ class GameApi(
                 val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken,
                         platform = platformBind.platform)
                 val gameResponse = getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)
-                this.useRemoteLogByPull(clientId = platformBind.clientId, platform = platformBind.platform, head = "clientId=${platformBind.clientId},platform=${platformBind.platform} -> pullBets",
+                val logInfo = this.useRemoteLogByPull(clientId = platformBind.clientId, platform = platformBind.platform, head = "clientId=${platformBind.clientId},platform=${platformBind.platform} -> pullBets",
                         gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_PULL_BET, save = false)
 
-                gameResponse
+                gameResponse.copy(logInfo = logInfo)
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }

@@ -32,6 +32,9 @@ data class PullOrderTask(
         // 响应参数
         val response: String,
 
+        // log 消息
+        val logInfo: String,
+
         // 错误消息
         val message: String,
 

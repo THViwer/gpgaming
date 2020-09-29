@@ -18,6 +18,7 @@ class PullOrderTaskDaoImpl : PullOrderTaskDao, BasicDaoImpl<PullOrderTask>("pull
             val clientId = rs.getInt("client_id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
             val path = rs.getString("path")
+            val logInfo = rs.getString("log_info")
             val headers = rs.getString("headers")
             val param = rs.getString("param")
             val formParam = rs.getString("form_param")
@@ -31,7 +32,7 @@ class PullOrderTaskDaoImpl : PullOrderTaskDao, BasicDaoImpl<PullOrderTask>("pull
 
             PullOrderTask(id = id, clientId = clientId, platform = platform, path = path, param = param, response = response,
                     type = type, status = status, startTime = startTime, endTime = endTime, message = message, headers = headers,
-                    formParam = formParam, nonce = nonce)
+                    formParam = formParam, nonce = nonce, logInfo = logInfo)
 
         }
 
@@ -41,6 +42,7 @@ class PullOrderTaskDaoImpl : PullOrderTaskDao, BasicDaoImpl<PullOrderTask>("pull
                 .set("client_id", task.clientId)
                 .set("platform", task.platform)
                 .set("path", task.path)
+                .set("log_info", task.logInfo)
                 .set("headers", task.headers)
                 .set("param", task.param)
                 .set("form_param", task.formParam)

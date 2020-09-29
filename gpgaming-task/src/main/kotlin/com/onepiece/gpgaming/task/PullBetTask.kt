@@ -99,7 +99,6 @@ class PullBetTask(
     }
 
 
-
     //    @Scheduled(cron = "0 0/1 *  * * ? ")
     @Scheduled(cron = "0 3,8,13,18,23,28,33,38,43,48,53,58 *  * * ? ")
     fun startPreHour() {
@@ -157,7 +156,6 @@ class PullBetTask(
             this.putExecuteCacheKey(bind = bind, endTime = endTime, taskType = PullOrderTask.OrderTaskType.ORDER_PRE_HOUR)
         }
     }
-
 
 
 //    @Scheduled(cron = "0 0/13 *  * * ? ")
@@ -302,7 +300,8 @@ class PullBetTask(
                         val catEndTime = if (flag) cutTime else endTime
 
                         gameResponse = gameApi.pullBets(platformBind = bind, startTime = cutStartTime, endTime = catEndTime)
-                        this.saveOrderTask(bind = bind, startTime = cutStartTime, endTime = catEndTime, okResponse = gameResponse.okResponse, taskType = taskType)
+                        this.saveOrderTask(bind = bind, startTime = cutStartTime, endTime = catEndTime, okResponse = gameResponse.okResponse, taskType = taskType,
+                                logInfo = gameResponse.logInfo)
 
                         val orders = gameResponse.data ?: emptyList()
                         if (orders.isNotEmpty()) {
@@ -312,7 +311,8 @@ class PullBetTask(
                 }
                 else -> {
                     gameResponse = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
-                    this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = gameResponse.okResponse, taskType = taskType)
+                    this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = gameResponse.okResponse, taskType = taskType,
+                            logInfo = gameResponse.logInfo)
 
                     val orders = gameResponse.data ?: emptyList()
                     if (orders.isNotEmpty()) {
@@ -327,12 +327,13 @@ class PullBetTask(
 
             val message = e.message ?: e.localizedMessage
             val okResponse = gameResponse.okResponse.copy(message = message, status = U9RequestStatus.Fail)
-            this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = okResponse, taskType = taskType)
+            this.saveOrderTask(bind = bind, startTime = startTime, endTime = endTime, okResponse = okResponse, taskType = taskType, logInfo = gameResponse.logInfo)
         }
 
     }
 
-    private fun saveOrderTask(bind: PlatformBind, taskType: PullOrderTask.OrderTaskType, startTime: LocalDateTime, endTime: LocalDateTime, okResponse: OKResponse) {
+    private fun saveOrderTask(bind: PlatformBind, taskType: PullOrderTask.OrderTaskType, startTime: LocalDateTime, endTime: LocalDateTime, okResponse: OKResponse,
+                              logInfo: String) {
 
         //TODO 请求平台 失败的时候才记录
         //TODO 测试阶段 u996所有的情况都记录一下
@@ -343,7 +344,7 @@ class PullBetTask(
             val task = PullOrderTask(id = -1, clientId = bind.clientId, platform = bind.platform, param = okResponse.param,
                     path = okResponse.url, response = okResponse.response, type = taskType, status = okResponse.status,
                     startTime = startTime, endTime = endTime, message = okResponse.message ?: "", formParam = formParam,
-                    headers = headers, nonce = okResponse.okParam.nonce)
+                    headers = headers, nonce = okResponse.okParam.nonce, logInfo = logInfo)
             orderTaskDao.create(task)
         }
 
