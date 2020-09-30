@@ -68,9 +68,6 @@ class PullBetTask(
                         Platform.Fgg,
                         Platform.Joker -> false
 
-                        // 同AG Live所以不需要拉订单
-                        Platform.AsiaGamingSlot -> false
-
                         else -> true
                     }
                 }
@@ -125,9 +122,6 @@ class PullBetTask(
                         Platform.CT,
                         Platform.Fgg,
                         Platform.Joker -> false
-
-                        // 同AG Live所以不需要拉订单
-                        Platform.AsiaGamingSlot -> false
 
                         else -> true
                     }
