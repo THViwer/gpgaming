@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.ActiveConfig
+import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
@@ -20,7 +21,7 @@ import java.time.format.DateTimeFormatter
 
 @Service
 class PlaytechService(
-        private val activeConfig: ActiveConfig
+        private val platformMemberService: PlatformMemberService
 ) : PlatformService() {
 
     private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -206,7 +207,19 @@ class PlaytechService(
                     val originData = objectMapper.writeValueAsString(bet.data)
 
                     val gameType = bet.asString("game_type")
-                    val platform = if (gameType.toLowerCase().contains("slot")) Platform.PlaytechSlot else Platform.PlaytechLive
+                    val platform = when  {
+                        gameType.contains("Live Games") -> Platform.PlaytechLive
+                        gameType.contains("slot") -> Platform.PlaytechSlot
+                        gameType.contains("Card Games") -> Platform.PlaytechSlot
+                        else -> {
+                            platformMemberService.findPlatformMember(memberId)
+                                    .firstOrNull { username.toLowerCase().contains(it.username.toLowerCase()) }
+                                    ?.platform
+                                    ?: Platform.PlaytechLive
+                        }
+                    }
+//                    val gameType = bet.asString("game_type")
+//                    val platform = if (gameType.toLowerCase().contains("slot")) Platform.PlaytechSlot else Platform.PlaytechLive
 
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform, orderId = orderId, betAmount = betAmount,
                             winAmount = winAmount, originData = originData, betTime = betTime, settleTime = betTime, validAmount = betAmount)

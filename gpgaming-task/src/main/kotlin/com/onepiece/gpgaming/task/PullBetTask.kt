@@ -68,6 +68,9 @@ class PullBetTask(
                         Platform.Fgg,
                         Platform.Joker -> false
 
+                        // 同playtechLive 所以不需要
+                        Platform.PlaytechSlot -> false
+
                         else -> true
                     }
                 }
@@ -122,6 +125,9 @@ class PullBetTask(
                         Platform.CT,
                         Platform.Fgg,
                         Platform.Joker -> false
+
+                        // 同playtechLive 所以不需要
+                        Platform.PlaytechSlot -> false
 
                         else -> true
                     }
