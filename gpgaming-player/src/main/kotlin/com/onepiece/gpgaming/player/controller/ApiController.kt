@@ -649,7 +649,7 @@ open class ApiController(
             }
         }
 
-        val logo = defaultClient.logo
+        val logo = defaultClient.shortcutLogo
 
         return ApiValue.GuideConfigVo(logo = logo, countries = countries, mainPath = mainPath)
     }
