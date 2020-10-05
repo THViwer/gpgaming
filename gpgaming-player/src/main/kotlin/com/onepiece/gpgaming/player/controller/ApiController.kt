@@ -649,9 +649,7 @@ open class ApiController(
             }
         }
 
-        val logo = defaultClient.shortcutLogo
-
-        return ApiValue.GuideConfigVo(logo = logo, countries = countries, mainPath = mainPath)
+        return ApiValue.GuideConfigVo(logo = defaultClient.logo, countries = countries, mainPath = mainPath, shortcutLogo = defaultClient.shortcutLogo)
     }
 
     @GetMapping("/application/version")

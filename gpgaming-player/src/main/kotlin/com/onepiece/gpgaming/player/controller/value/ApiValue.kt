@@ -15,6 +15,9 @@ sealed class ApiValue {
                 @ApiModelProperty("logo")
                 val logo: String,
 
+                @ApiModelProperty("shortcutLogo")
+                val shortcutLogo: String,
+
                 @ApiModelProperty("主站的域名")
                 val mainPath: String,
 
