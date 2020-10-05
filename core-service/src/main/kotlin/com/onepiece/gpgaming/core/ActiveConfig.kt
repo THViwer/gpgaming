@@ -11,4 +11,11 @@ class ActiveConfig {
 
     @Value("\${spring.profiles.active}")
     lateinit var profile: String
+
+    fun isProd(): Boolean {
+        return when (this.profile) {
+            "prod", "prods2" -> true
+            else -> false
+        }
+    }
 }

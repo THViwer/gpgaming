@@ -236,7 +236,7 @@ class SpadeGamingService(
                 "menumode=on"
         ).joinToString(separator = "&")
 
-        val path = if (activeConfig.profile == "prod") {
+        val path = if (activeConfig.isProd()) {
             "http://lobby.silverkirinplay.com/${clientToken.memberCode}/auth?$urlParam"
         } else {
             "http://lobby-egame-staging.sgplay.net/${clientToken.memberCode}/auth?$urlParam"
