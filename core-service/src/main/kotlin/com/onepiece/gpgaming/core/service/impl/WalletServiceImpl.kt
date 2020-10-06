@@ -21,6 +21,7 @@ import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberIntroduceService
 import com.onepiece.gpgaming.core.service.WalletService
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -31,6 +32,8 @@ class WalletServiceImpl(
         private val walletDao: WalletDao,
         private val walletNoteDao: WalletNoteDao
 ) : WalletService {
+
+    private val log = LoggerFactory.getLogger(WalletServiceImpl::class.java)
 
     @Autowired
     lateinit var memberInfoService: MemberInfoService
@@ -59,6 +62,7 @@ class WalletServiceImpl(
         return try {
             this.update(walletUo)
         } catch (e: Exception) {
+            log.info("更新用户余额失败,memberId=${walletUo}", e)
             throw e
 //            this.update(walletUo, time + 1)
         }
