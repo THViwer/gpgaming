@@ -59,7 +59,8 @@ class WalletServiceImpl(
         return try {
             this.update(walletUo)
         } catch (e: Exception) {
-            this.update(walletUo, time + 1)
+            throw e
+//            this.update(walletUo, time + 1)
         }
     }
 
