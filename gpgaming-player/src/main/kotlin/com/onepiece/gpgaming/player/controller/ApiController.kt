@@ -628,6 +628,7 @@ open class ApiController(
         val requestURL = getRequest().requestURL.toString()
         val sites = webSiteService.all().filter { it.bossId == bossId }
                 .filter { !requestURL.contains(it.domain) }
+                .filter { it.status == Status.Normal }
 
         val clients = clientService.all().filter { it.status == Status.Normal && it.bossId == bossId }
 
