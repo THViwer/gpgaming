@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: player
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      username: gp
+      password: GPGaming88!@#
+      url: jdbc:mysql://45.153.129.188:3306/gpgaming?useUnicode=true&characterEncoding=UTF-8
+  profiles:
+    active: dev
+
+  redis:
+    host: localhost
+    port: 6379
+#  output:
+#    ansi:
+#      enabled: always
+#  lifecycle:
+#    timeout-per-shutdown-phase: 10s
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+server:
+  servlet:
+    context-path: /api/v1/async/mr
+  port: 8005
+  max-http-header-size: 102400
+  shutdown: graceful
+
+jwt:
+  header: Authorization
+  secret: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCFljRsWfgyl3+k
+  expiration: 7
+  tokenHead: "Bearer "
+  hashSecret: ZmVhZ3dVSW9pMTIzMTBLSEgyMWZ3ZndmYQ==
+  route:
+    authentication:
+      path: auth
+      refresh: refresh
+      register: "auth/register"

@@ -17,6 +17,8 @@
 		<module>core-service</module>
 		<module>gpgaming-admin</module>
 		<module>gpgaming-player</module>
+		<module>gpgaming-async-mr</module>
+
 		<module>core-beans</module>
 
 		<!-- 暂时关闭 如果不发布 可以不打开 -->

@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.core.service.MemberService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component
 class RiskUtil{
 
     @Autowired
+    @Lazy
     lateinit var memberService: MemberService
 
 
