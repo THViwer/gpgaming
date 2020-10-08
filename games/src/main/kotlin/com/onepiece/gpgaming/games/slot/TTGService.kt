@@ -311,7 +311,7 @@ class TTGService : PlatformService() {
         val clientToken = reportQueryReq.token as TTGClientToken
 
         val data = """
-            <searchdetail startIndexKey="" requestId="0"> 
+            <searchdetail requestId="${UUID.randomUUID().toString()}"> 
               <daterange startDate="${reportQueryReq.startDate}" endDate="${reportQueryReq.startDate.plusDays(1)}"/>  
               <account currency="MYR"/>  
               <partner partnerId="${clientToken.agentName}" includeSubPartner="Y"/> 
