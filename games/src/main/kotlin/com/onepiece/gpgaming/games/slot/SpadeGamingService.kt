@@ -305,8 +305,41 @@ class SpadeGamingService(
                         settleTime = betTime, betAmount = betAmount, winAmount = winAmount, originData = originData, validAmount = betAmount)
             }
         }
-
     }
 
+    override fun queryReport(reportQueryReq: GameValue.ReportQueryReq): GameResponse<List<GameValue.PlatformReportData>> {
+        val clientToken = reportQueryReq.token as SpadeGamingClientToken
+
+        val data = """
+            {
+                "beginDate": "${reportQueryReq.startDate.toString().replace("-", "")}T000000",
+                "endDate": "${reportQueryReq.startDate.plusDays(1).toString().replace("-", "")}T000000",
+                "pageIndex": 1,
+                "merchantCode": "${clientToken.memberCode}",
+                "serialNo": "${UUID.randomUUID()}"
+            }
+        """.trimIndent()
+
+        val okResponse = this.doPost(clientToken = clientToken, method = "playerDailySumByGame", data = data)
+        return this.bindGameResponse(okResponse) {
+            val list = it.asList("list")
+            list.map { line ->
+                val username = line.asString("acctId")
+                val _list = line.asList("list")
+
+                val _list2 = _list.map { x ->
+                    val betAmount = x.asBigDecimal("betAmount")
+                    val winLoss = x.asBigDecimal("winLoss")
+                    betAmount to winLoss
+                }
+
+                val totalBet = _list2.sumByDouble { it.first.toDouble() }.toBigDecimal()
+                val winLoss = _list2.sumByDouble { it.second.toDouble() }.toBigDecimal()
+
+                val originData = objectMapper.writeValueAsString(line.data)
+                GameValue.PlatformReportData(username = username, platform = Platform.SpadeGaming, bet = totalBet, win = winLoss, originData = originData)
+            }
+        }
+    }
 }
 

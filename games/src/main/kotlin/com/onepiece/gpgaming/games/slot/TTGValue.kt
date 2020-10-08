@@ -18,4 +18,9 @@ sealed class TTGValue {
 
     }
 
+//    data class ReportResult(
+//
+//    )
+
+
 }

@@ -1,16 +1,8 @@
 package com.onepiece.gpgaming.games.slot
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
@@ -28,8 +20,6 @@ import com.onepiece.gpgaming.games.http.OKResponse
 import com.onepiece.gpgaming.games.http.U9HttpRequest
 import okhttp3.MediaType.Companion.toMediaType
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.format.DateTimeFormatter
@@ -305,111 +295,91 @@ class TTGService : PlatformService() {
                         winAmount = detail.asBigDecimal("amount").abs()
                     }
                 }
-//            val handId = detail.asString("handId")
 
                 val originData = objectMapper.writeValueAsString(it.data)
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, betTime = betTime, betAmount = betAmount,
                         winAmount = winAmount, originData = originData, platform = Platform.TTG, settleTime = betTime, validAmount = betAmount)
             } catch (e: Exception) {
-
-//                if (e is java.lang.NumberFormatException) {
-//                    null
-//                } else {
-                    throw e
-//                }
+                throw e
             }
         }
-//                .groupBy { it.first }.map {
-//            it.value.reduce { acc, pair ->
-//                val betAmount = acc.second.betAmount.plus(pair.second.betAmount)
-//                val winAmount = acc.second.winAmount.plus(pair.second.winAmount)
-//                val origin = acc.second.copy(betAmount = betAmount, winAmount = winAmount)
-//                val originData = objectMapper.writeValueAsString(origin)
-//                "" to origin.copy(originData = originData)
-//            }.second
-//        }
     }
 
+    override fun queryReport(reportQueryReq: GameValue.ReportQueryReq): GameResponse<List<GameValue.PlatformReportData>> {
+
+
+        val clientToken = reportQueryReq.token as TTGClientToken
+
+        val data = """
+            <searchdetail startIndexKey="" requestId="0"> 
+              <daterange startDate="${reportQueryReq.startDate}" endDate="${reportQueryReq.startDate.plusDays(1)}"/>  
+              <account currency="MYR"/>  
+              <partner partnerId="${clientToken.agentName}" includeSubPartner="Y"/> 
+            </searchdetail>
+        """.trimIndent()
+
+        val url = "${clientToken.apiOrderPath}/dataservice/datafeed/playernetwin/"
+
+        val headers = mapOf(
+                "Affiliate-Login" to clientToken.affiliateLogin,
+                "Affiliate-Id" to clientToken.agentName,
+                "Content-Type" to "text/xml"
+        )
+
+        val okParam = OKParam.ofPostXml(url = url, param = data, headers = headers).copy(mediaType = U9HttpRequest.MEDIA_TEXT_XML)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
+
+
+        return this.bindGameResponse(okResponse = okResponse) {
+            val content = okResponse.response
+            val result = xmlMapper.readValue<TTGValue.BetResult>(content)
+
+            result.orders.map {
+                val username = it.asMap("player").asString("playerId")
+                val totalBet = it.asMap("summary").asBigDecimal("totalWager")
+                val totalWin = it.asMap("summary").asBigDecimal("totalWin")
+//              it.asMap("summary").asBigDecimal("winPercent") // 勝率
+//              it.asMap("summary").asBigDecimal("avgWagerHand") // 平臺下注金額
+
+                val originData = objectMapper.writeValueAsString(it.data)
+                GameValue.PlatformReportData(username = username, platform = Platform.TTG, bet = totalBet, win = totalWin, originData = originData)
+            }
+        }
+    }
 
 }
-//
+
+
 //fun main() {
+//    val xml = """
+//        <searchdetail requestId="100000" startIndexKey="" isMore="N" pageSize="10000" totalRecords="1">
+//          <details>
+//            <netwin>
+//              <player country="US" partnerId="zero" playerId="9000"/>
+//              <summary avgWagerHand="0.51" winPercent="79.00" totalWin="10.39" totalWager="13.20" numHands="26" numWagers="26" currency="USD"/>
+//            </netwin>
+//          </details>
+//        </searchdetail>
 //
+//    """.trimIndent()
 //
-//    val content = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?><searchdetail totalRecords="66" pageSize="66" requestId="ef6f71bd-e9f7-4753-8c56-bfa6670d3af3"><details><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957254" transactionDate="20200928 15:29:03" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791599" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957256" transactionDate="20200928 15:29:03" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791599" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957323" transactionDate="20200928 15:29:06" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791603" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957325" transactionDate="20200928 15:29:06" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791603" amount="1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957352" transactionDate="20200928 15:29:07" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791604" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957354" transactionDate="20200928 15:29:07" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791604" amount="0.60"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957384" transactionDate="20200928 15:29:08" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791606" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957386" transactionDate="20200928 15:29:08" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791606" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957422" transactionDate="20200928 15:29:09" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791608" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957424" transactionDate="20200928 15:29:09" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791608" amount="5.70"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957460" transactionDate="20200928 15:29:10" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791611" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957462" transactionDate="20200928 15:29:10" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791611" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957492" transactionDate="20200928 15:29:11" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791612" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957494" transactionDate="20200928 15:29:11" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791612" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957531" transactionDate="20200928 15:29:12" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791614" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957533" transactionDate="20200928 15:29:12" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791614" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957584" transactionDate="20200928 15:29:14" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791616" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957586" transactionDate="20200928 15:29:14" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791616" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957614" transactionDate="20200928 15:29:15" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791617" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957616" transactionDate="20200928 15:29:15" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791617" amount="0.84"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957653" transactionDate="20200928 15:29:16" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791620" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957655" transactionDate="20200928 15:29:16" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791620" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957683" transactionDate="20200928 15:29:17" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791621" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957685" transactionDate="20200928 15:29:17" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791621" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957728" transactionDate="20200928 15:29:18" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791623" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957730" transactionDate="20200928 15:29:18" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791623" amount="1.08"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957765" transactionDate="20200928 15:29:19" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791625" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957767" transactionDate="20200928 15:29:19" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791625" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957783" transactionDate="20200928 15:29:20" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791626" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957785" transactionDate="20200928 15:29:20" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791626" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957835" transactionDate="20200928 15:29:21" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791628" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957837" transactionDate="20200928 15:29:21" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791628" amount="2.64"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957883" transactionDate="20200928 15:29:23" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791631" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957885" transactionDate="20200928 15:29:23" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791631" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957917" transactionDate="20200928 15:29:24" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791632" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957919" transactionDate="20200928 15:29:24" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791632" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957945" transactionDate="20200928 15:29:25" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791633" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957947" transactionDate="20200928 15:29:25" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791633" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957982" transactionDate="20200928 15:29:26" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791637" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290957985" transactionDate="20200928 15:29:26" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791637" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958004" transactionDate="20200928 15:29:27" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791638" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958006" transactionDate="20200928 15:29:27" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791638" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958056" transactionDate="20200928 15:29:28" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791640" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958059" transactionDate="20200928 15:29:28" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791640" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958093" transactionDate="20200928 15:29:29" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791642" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958095" transactionDate="20200928 15:29:29" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791642" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958125" transactionDate="20200928 15:29:30" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791646" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958127" transactionDate="20200928 15:29:30" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791646" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958163" transactionDate="20200928 15:29:32" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791647" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958165" transactionDate="20200928 15:29:32" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791647" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958194" transactionDate="20200928 15:29:33" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791648" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958196" transactionDate="20200928 15:29:33" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791648" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958223" transactionDate="20200928 15:29:34" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791651" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958225" transactionDate="20200928 15:29:34" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791651" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958268" transactionDate="20200928 15:29:35" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945791652" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290958270" transactionDate="20200928 15:29:35" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945791652" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290960507" transactionDate="20200928 15:30:44" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945795198" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290960509" transactionDate="20200928 15:30:44" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945795198" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290960569" transactionDate="20200928 15:30:45" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945795203" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290960571" transactionDate="20200928 15:30:45" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945795203" amount="0.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290960617" transactionDate="20200928 15:30:46" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945795205" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290960619" transactionDate="20200928 15:30:46" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945795205" amount="1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290960660" transactionDate="20200928 15:30:48" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945795206" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290960663" transactionDate="20200928 15:30:48" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945795206" amount="3.00"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290960699" transactionDate="20200928 15:30:49" currency="MYR" game="MadMonkeyH5" transactionSubType="Wager" handId="5945795210" amount="-1.50"/></transaction><transaction><player playerId="U996_01008067pg" partnerId="U996"/><detail transactionId="18290960701" transactionDate="20200928 15:30:49" currency="MYR" game="MadMonkeyH5" transactionSubType="Resolve" handId="5945795210" amount="3.00"/></transaction></details></searchdetail>"""
-//
-//    val result = xmlMapper.readValue<TTGValue.BetResult>(content)
-//    val x = handlerBetResult2(result = result).map { it.copy(originData = "") }
-//    println(x)
-//
-//}
-//
-//private val dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss")
-//fun objectMapper(): ObjectMapper {
-//    val objectMapper = jacksonObjectMapper()
-//            .registerModule(ParameterNamesModule())
-//            .registerModule(Jdk8Module())
-//            .registerModule(JavaTimeModule())
-//
-//    objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
-//    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-//    objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-////        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-//
-//    return objectMapper
-//
-//}
-//
-//
-//fun xmlMapper(): XmlMapper {
 //    val xmlMapper = XmlMapper()
-//    xmlMapper.registerModule(KotlinModule())
-//    return xmlMapper
-//}
-//val objectMapper = objectMapper()
-//val xmlMapper = xmlMapper()
+//            .registerKotlinModule()
+//    val result = xmlMapper.readValue<TTGValue.BetResult>(xml)
 //
-//private fun handlerBetResult2(result: TTGValue.BetResult): List<BetOrderValue.BetOrderCo> {
-//    return result.orders.mapNotNull {
+//    val reports = result.orders.map {
+//        val username = it.asMap("player").asString("playerId")
+//        val totalBet = it.asMap("summary").asBigDecimal("totalWager")
+//        val totalWin = it.asMap("summary").asBigDecimal("totalWin")
+////        it.asMap("summary").asBigDecimal("winPercent") // 勝率
+////        it.asMap("summary").asBigDecimal("avgWagerHand") // 平臺下注金額
 //
-//        val player = it.asMap("player")
-//        val username = player.asString("playerId")
-//
-//        try {
-//            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.TTG, platformUsername = username, prefix = "U996")
-//
-//            val detail = it.asMap("detail")
-//            val orderId = detail.asString("transactionId")
-//            val betTime = detail.asLocalDateTime("transactionDate", dateTimeFormat)
-//            val transactionSubType = detail.asString("transactionSubType")
-//
-//            val betAmount: BigDecimal
-//            val winAmount: BigDecimal
-//            when (transactionSubType) {
-//                "Wager" -> {
-//                    betAmount = detail.asBigDecimal("amount")
-//                    winAmount = BigDecimal.ZERO
-//                }
-//                else -> {
-//                    betAmount = BigDecimal.ZERO
-//                    winAmount = detail.asBigDecimal("amount").abs()
-//                }
-//            }
-////            val handId = detail.asString("handId")
-//
-//            val originData = objectMapper.writeValueAsString(it.data)
-//            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, betTime = betTime, betAmount = betAmount,
-//                    winAmount = winAmount, originData = originData, platform = Platform.TTG, settleTime = betTime, validAmount = betAmount)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            if (e is java.lang.NumberFormatException) {
-//                null
-//            } else {
-//                throw e
-//            }
-//        }
+//        GameValue.PlatformReportData(username = username, platform = Platform.TTG, bet = totalBet, win = totalWin, originData = "")
 //    }
 //
+//    println(reports)
+//    println("--------")
+//    println("--------")
+//    println("--------")
+//    println("--------")
 //}
-//
-

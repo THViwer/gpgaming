@@ -585,7 +585,7 @@ class GameApi(
         val clientToken = getClientToken(clientId = clientId, platform = platform)
 
         return when (platform) {
-            Platform.Kiss918, Platform.Pussy888, Platform.Mega -> {
+            Platform.Kiss918, Platform.Pussy888, Platform.Mega, Platform.TTG, Platform.SpadeGaming-> {
                 val req = GameValue.ReportQueryReq(token = clientToken, startDate = startDate)
                 val gameResponse = getPlatformApi(platform).queryReport(req)
                 this.useRemoteLog(clientId = clientId, platform = platform, head = this.bindLogHead(clientId, -1, platform, "query report"),

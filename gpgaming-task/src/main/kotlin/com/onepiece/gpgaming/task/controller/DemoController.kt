@@ -1,6 +1,9 @@
 package com.onepiece.gpgaming.task.controller
 
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.core.service.ReportService
+import com.onepiece.gpgaming.games.GameApi
+import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.task.PromotionTask
 import com.onepiece.gpgaming.task.RebateTask
 import com.onepiece.gpgaming.task.ReportTask
@@ -17,7 +20,8 @@ class DemoController(
         private val reportTask: ReportTask,
         private val promotionTask: PromotionTask,
         private val sexyGamingTask: SexyGamingTask,
-        private val rebateTask: RebateTask
+        private val rebateTask: RebateTask,
+        private val gameApi: GameApi
 ) {
 
     @GetMapping("/sexyGaming")
@@ -112,6 +116,11 @@ class DemoController(
 //        val b = kiss918GameReportApi.clientReport(startDate, endDate)
 //
 
+    }
+
+    @GetMapping("/otherReport")
+    fun otherReport(@RequestParam("platform") platform: Platform, @RequestParam("startDate") startDate: String): List<GameValue.PlatformReportData>  {
+        return gameApi.queryReport(clientId = 1, platform = platform, startDate = LocalDate.parse(startDate))
     }
 
 }
