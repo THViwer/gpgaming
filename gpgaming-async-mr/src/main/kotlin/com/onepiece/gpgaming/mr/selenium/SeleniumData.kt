@@ -19,10 +19,10 @@ data class SeleniumData (
         // 会员获利(当前时间段)
         val memberProfit: BigDecimal,
 
-        // 代理获利(当前时间段)
-        val agentProfit: BigDecimal,
+        // 代理获利(当前时间段) 如果没有值 则用默认值 -1
+        val agentProfit: BigDecimal = BigDecimal.valueOf(-1),
 
-        // 公司获利(当前时间段)
-        val companyProfit: BigDecimal
+        // 公司获利(当前时间段) 如果没有值 则用默认值 -1
+        val companyProfit: BigDecimal = BigDecimal.valueOf(-1)
 
 )
