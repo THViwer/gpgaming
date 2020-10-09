@@ -312,7 +312,7 @@ class TTGService : PlatformService() {
 
         val data = """
             <searchdetail requestId="${UUID.randomUUID().toString()}"> 
-              <daterange startDate="${reportQueryReq.startDate}" endDate="${reportQueryReq.startDate.plusDays(1)}"/>  
+              <daterange startDate="${reportQueryReq.startDate.toString().replace("-", "")}" endDate="${reportQueryReq.startDate.plusDays(1).toString().replace("-", "")}"/>  
               <account currency="MYR"/>  
               <partner partnerId="${clientToken.agentName}" includeSubPartner="Y"/> 
             </searchdetail>
