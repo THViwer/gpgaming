@@ -188,7 +188,7 @@ class MegaService : PlatformService() {
 
         return this.bindGameResponse(okResponse = okResponse) {
             it.asList("result").map {
-                val bet = BigDecimal.ZERO
+                val bet = BigDecimal.valueOf(-1)
                 val win = it.asBigDecimal("win").negate()
                 val username = it.asString("loginId")
                 val originData = objectMapper.writeValueAsString(it.data)
