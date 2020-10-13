@@ -107,17 +107,25 @@ class ReportApiController(
         return ReportValue.MemberTotalReport(list)
     }
 
-    @GetMapping("/analysis")
+
+
+    @GetMapping("/analysis", "/member/month")
     override fun analysis(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = true) startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = true) endDate: LocalDate,
-            @RequestParam(value = "sort", required = true) sort: MemberAnalysisSort,
+            username: String?,
+            @RequestParam(value = "sort", required = false, defaultValue = "DepositMax") sort: MemberAnalysisSort,
             @RequestParam(value = "size", required = true) size: Int
     ): List<MemberReportValue.AnalysisVo> {
 
+        val clientId = this.current().clientId
+
+        val memberId = if (!username.isNullOrBlank()) {
+            memberService.findByUsername(clientId = clientId, username = username)?.id ?: return emptyList()
+        } else null
 
         val query = MemberReportValue.AnalysisQuery(clientId = this.getClientId(), startDate = startDate, endDate = endDate,
-                sort = sort, size = size)
+                sort = sort, size = size, memberId = memberId)
         val list = memberDailyReportDao.analysis(query)
         if (list.isEmpty()) return emptyList()
 

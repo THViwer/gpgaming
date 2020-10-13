@@ -36,7 +36,8 @@ interface ReportApi {
     fun analysis(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = true) startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = true) endDate: LocalDate,
-            @RequestParam(value = "sort", required = true) sort: MemberAnalysisSort,
+            username: String?,
+            @RequestParam(value = "sort", required = false, defaultValue = "DepositMax") sort: MemberAnalysisSort,
             @RequestParam(value = "size", required = true) size: Int
     ): List<MemberReportValue.AnalysisVo>
 

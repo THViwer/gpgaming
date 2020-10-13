@@ -231,10 +231,12 @@ class MemberDailyReportDaoImpl(
             MemberAnalysisSort.PromotionMax -> "promotion_amount"
         }
 
+        val memberColumn = if (query.memberId != null) " and member_id = ${query.memberId}" else ""
         val sql = """
             select * from (
             	select 
             		member_id,
+                    username,
             		sum(total_bet) total_bet,
             		sum(total_m_win) total_m_win,
             		sum(total_bet-total_m_win) total_m_loss,
@@ -247,11 +249,12 @@ class MemberDailyReportDaoImpl(
             		sum(rebate_amount) rebate_amount,
             		sum(promotion_amount) promotion_amount
             	from member_daily_report 
-            	where day >= '${query.startDate}' and day < '${query.endDate}' and client_id = ${query.clientId} group by member_id
+            	where day >= '${query.startDate}' and day < '${query.endDate}' and client_id = ${query.clientId} $memberColumn group by member_id, username
             ) as t order by t.${sortBy} desc limit ${query.size};
         """.trimIndent()
         return jdbcTemplate.query(sql) { rs, _ ->
             val memberId = rs.getInt("member_id")
+            val username = rs.getString("username")
             val totalBet = rs.getBigDecimal("total_bet")
             val totalMWin = rs.getBigDecimal("total_m_win")
             val totalMLoss = rs.getBigDecimal("total_m_loss")
@@ -264,7 +267,7 @@ class MemberDailyReportDaoImpl(
             val rebateAmount = rs.getBigDecimal("rebate_amount")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
 
-            MemberReportValue.AnalysisVo(memberId = memberId, totalBet = totalBet, totalMWin = totalMWin, totalMLoss = totalMLoss,
+            MemberReportValue.AnalysisVo(memberId = memberId, username = username, totalBet = totalBet, totalMWin = totalMWin, totalMLoss = totalMLoss,
                     depositAmount = depositAmount, depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount,
                     artificialAmount = artificialAmount, artificialCount = artificialCount, rebateAmount = rebateAmount,
                     promotionAmount = promotionAmount, clientId = query.clientId)

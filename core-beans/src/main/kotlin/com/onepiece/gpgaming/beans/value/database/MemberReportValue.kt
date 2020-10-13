@@ -65,6 +65,8 @@ sealed class MemberReportValue {
 
             val clientId: Int,
 
+            val memberId: Int?,
+
             val sort: MemberAnalysisSort,
 
             val size: Int
