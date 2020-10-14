@@ -711,7 +711,8 @@ open class CashApiController(
         val current = this.current()
 
         log.info("用户：${current().username}，开始转账")
-        check(cashTransferReq.amount.toDouble() >= 1 || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.SYSTEM}
+        check(cashTransferReq.amount.toDouble() >= 1 || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.SYSTEM }
+        check(cashTransferReq.to == Platform.Center || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.SYSTEM }
 
         // 如果转入的平台是918kiss、pussy、mega 则默认添加优惠为-100
         if (cashTransferReq.to == Platform.Kiss918 || cashTransferReq.to == Platform.Pussy888 || cashTransferReq.to == Platform.Mega) {
