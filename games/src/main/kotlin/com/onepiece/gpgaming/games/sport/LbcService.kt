@@ -81,7 +81,9 @@ class LbcService : PlatformService() {
 
         val okResponse = this.doPostForm(clientToken = clientToken, method = "CheckUserBalance", formParam = param)
         return this.bindGameResponse(okResponse) {
-            it.asList("Data").first().data["balance"]?.toString()?.toBigDecimal() ?: BigDecimal.ZERO
+            val balance= it.asList("Data").first().data["balance"]?.toString()?.toBigDecimal() ?: BigDecimal.ZERO
+            val outstanding = it.asList("Data").first().data["outstanding"]?.toString()?.toBigDecimal() ?: BigDecimal.ZERO
+            balance.plus(outstanding)
         }
     }
 
