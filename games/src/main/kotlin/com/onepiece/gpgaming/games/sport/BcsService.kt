@@ -94,9 +94,28 @@ class BcsService : PlatformService() {
 
         val okResponse = this.doGetXml(clientToken = token, method = "/ThirdApi.asmx/GetBalance", data = param)
         return this.bindGameResponse(okResponse = okResponse) {
-            it.asMap("result").asBigDecimal("Balance")
+            val balance = it.asMap("result").asBigDecimal("Balance")
+
+            val outstanding = queryOutstanding(balanceReq = balanceReq)
+
+            balance.plus(outstanding)
         }
     }
+
+    private fun queryOutstanding(balanceReq: GameValue.BalanceReq): BigDecimal {
+
+        val token = balanceReq.token as BcsClientToken
+        val param = mapOf(
+                "APIPassword" to token.key,
+                "MemberAccounts" to "[${balanceReq.username}]"
+        )
+
+        val okResponse = this.doGetXml(clientToken = token, method = "/ThirdApi.asmx/GetBetTotalByUnSettlement", data = param)
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asList("Data").first().asBigDecimal("DeductAmount")
+        }.data ?: error("not find outstanding")
+    }
+
 
     override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
 
