@@ -59,7 +59,7 @@ class PlatformBindApiController(
         val platformBind = try {
             platformBindService.find(clientId = 1, platform = platform)
         } catch (e: Exception) {
-            platformBindService.find(clientId = 1001, platform = platform)
+            platformBindService.find(clientId = 10004, platform = platform)
         }
 
         return with(platformBind) {
