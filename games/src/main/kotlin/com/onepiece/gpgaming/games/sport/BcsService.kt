@@ -107,12 +107,12 @@ class BcsService : PlatformService() {
         val token = balanceReq.token as BcsClientToken
         val param = mapOf(
                 "APIPassword" to token.key,
-                "MemberAccounts" to "[${balanceReq.username}]"
+                "MemberAccount" to "${balanceReq.username}"
         )
 
         val okResponse = this.doGetXml(clientToken = token, method = "/ThirdApi.asmx/GetBetTotalByUnSettlement", data = param)
         return this.bindGameResponse(okResponse = okResponse) {
-            it.asList("Data").first().asBigDecimal("DeductAmount")
+            it.asMap("result").asList("Bets").first().asBigDecimal("DeductAmount")
         }.data ?: error("not find outstanding")
     }
 
