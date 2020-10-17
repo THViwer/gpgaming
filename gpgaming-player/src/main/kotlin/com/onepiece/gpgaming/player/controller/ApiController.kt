@@ -21,6 +21,7 @@ import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.AppVersionValue
 import com.onepiece.gpgaming.beans.value.database.BlogValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
+import com.onepiece.gpgaming.beans.value.internet.web.PromotionValue
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.core.ActiveConfig
 import com.onepiece.gpgaming.core.utils.IndexUtil
@@ -254,6 +255,33 @@ open class ApiController(
             }
         }
 
+    }
+
+    @GetMapping("/promotion/latest")
+    override fun latestPromotion(): List<PromotionValue.LatestPromotionVo> {
+
+        val clientId = getClientId()
+        val promotions = promotionService.all(clientId = clientId)
+                .filter { it.status == Status.Normal && it.showLatestPromotion }
+
+        val (language, _) = getLanguageAndLaunchFormHeader()
+
+
+        val contentMap = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Promotion)
+                .filter { it.language == language }
+                .map { it.configId to it }
+                .toMap()
+
+        return promotions.mapNotNull { promotion ->
+                contentMap[promotion.id]
+                    ?.let {content ->
+                        val _c = content.getII18nContent(objectMapper = objectMapper) as I18nContent.PromotionI18n
+                        _c.latestPromotionBanner?.let {
+                            PromotionValue.LatestPromotionVo(promotionId = promotion.id, banner = it)
+                        }
+                    }
+
+        }
     }
 
     @GetMapping("/config")

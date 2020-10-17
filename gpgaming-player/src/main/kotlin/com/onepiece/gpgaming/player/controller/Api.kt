@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.beans.value.database.AppVersionValue
 import com.onepiece.gpgaming.beans.value.database.BlogValue
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
+import com.onepiece.gpgaming.beans.value.internet.web.PromotionValue
 import com.onepiece.gpgaming.player.controller.value.ApiValue
 import com.onepiece.gpgaming.player.controller.value.BannerVo
 import com.onepiece.gpgaming.player.controller.value.CompileValue
@@ -53,8 +54,13 @@ interface Api {
     @ApiOperation(tags = ["api"], value = "优惠活动")
     fun promotion(): List<PromotionVo>
 
+    @ApiOperation(tags = ["api"], value = "最后优惠活动信息")
+    fun latestPromotion(): List<PromotionValue.LatestPromotionVo>
+
+
     @ApiOperation(tags = ["api"], value = "代理域名地址")
     fun indexConfig(): CompileValue.AffSite
+
 
 //    @ApiOperation(tags = ["api"], value = "老虎机菜单")
 //    @Deprecated("推荐使用/slots方法")

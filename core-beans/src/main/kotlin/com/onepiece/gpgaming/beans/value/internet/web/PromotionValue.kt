@@ -11,6 +11,17 @@ import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
+sealed class PromotionValue {
+
+        data class LatestPromotionVo(
+
+                val promotionId: Int,
+
+                val banner: String
+
+
+        )
+}
 
 data class PromotionVo(
 
@@ -91,6 +102,9 @@ data class PromotionCoReq(
 
         @ApiModelProperty("优惠类型")
         val category: PromotionCategory,
+
+        @ApiModelProperty("是否显示到wap端首页 默认为false")
+        val showLatestPromotion: Boolean = false,
 
         @ApiModelProperty("层级Id")
         val levelId: List<Int>,

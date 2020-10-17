@@ -100,7 +100,7 @@ class PromotionServiceImpl(
 
             return Promotion(id = -100, clientId = 0, category = PromotionCategory.Special, platforms = listOf(Platform.Kiss918, Platform.Pussy888, Platform.Mega),
                     stopTime = null, ruleType = PromotionRuleType.Withdraw, levelId = emptyList(), period = PromotionPeriod.Daily, periodMaxPromotion = BigDecimal(99999999),
-                    ruleJson = ruleJson, top = true, status = Status.Normal, createdTime = now, updatedTime = now, sequence = 100, show = true, code = "")
+                    ruleJson = ruleJson, top = true, status = Status.Normal, createdTime = now, updatedTime = now, sequence = 100, show = true, code = "", showLatestPromotion = false)
         } else {
             promotionDao.get(id)
         }

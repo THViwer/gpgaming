@@ -39,6 +39,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val ruleJson = rs.getString("rule_json")
             val sequence = rs.getInt("sequence")
             val show = rs.getBoolean("show")
+            val showLatestPromotion = rs.getBoolean("show_latest_promotion")
 
             val code = rs.getString("code")
 
@@ -48,7 +49,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             Promotion(id = id, category = category, stopTime = stopTime, status = status, createdTime = createdTime,
                     clientId = clientId, top = top, updatedTime = updatedTime, platforms = platforms, levelId = levelId,
                     ruleJson = ruleJson, ruleType = ruleType, period = period, periodMaxPromotion = periodMaxPromotion,
-                    sequence = sequence, show = show, code = code)
+                    sequence = sequence, show = show, code = code, showLatestPromotion = showLatestPromotion)
         }
 
     override fun create(promotionCo: PromotionCo): Int {

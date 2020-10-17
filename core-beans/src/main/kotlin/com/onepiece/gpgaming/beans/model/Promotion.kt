@@ -25,6 +25,9 @@ data class Promotion (
         // 厅主Id
         val clientId: Int,
 
+        // 是否显示
+        val showLatestPromotion: Boolean,
+
         // 优惠类型
         val category: PromotionCategory,
 
