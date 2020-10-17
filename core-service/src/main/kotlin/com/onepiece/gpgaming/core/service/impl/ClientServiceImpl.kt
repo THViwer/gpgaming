@@ -196,7 +196,7 @@ class ClientServiceImpl(
                 val recommendedSportCo = RecommendedValue.CreateVo(clientId = clientId, contentJson = sportRecommendedJson, status = Status.Normal, type = RecommendedType.IndexSport)
                 val id = recommendedService.create(recommendedSportCo)
 
-                val indexSportI18n = I18nContent.IndexSportI18n(contentImage = contentImage)
+                val indexSportI18n = I18nContent.IndexSportI18n(contentImage = contentImage, wapContentImage = contentImage)
                 val i18nContentCo = I18nContentCo(clientId = clientId, configId = id, configType = I18nConfig.IndexSport, content = indexSportI18n, language = Language.EN)
 
                 i18nContentService.create(i18nContentCo)
