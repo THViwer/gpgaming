@@ -46,28 +46,28 @@ import java.math.BigDecimal
  * VN 越南文
  */
 
-fun main() {
-    val data = """
-        <response>
-          <errcode>000000</errcode>
-          <errtext />
-          <result>
-            <Bets>
-              <Bet>
-                <Account>01000001yb</Account>
-                <BetAmount>0</BetAmount>
-                <DeductAmount>0</DeductAmount>
-                <Count>0</Count>
-              </Bet>
-            </Bets>
-          </result>
-        </response>
-    """.trimIndent()
-
-    val p = XmlMapper().registerKotlinModule()
-            .readValue<BcsValue.OutstandingResult>(data)
-    println(p)
-}
+//fun main() {
+//    val data = """
+//        <response>
+//          <errcode>000000</errcode>
+//          <errtext />
+//          <result>
+//            <Bets>
+//              <Bet>
+//                <Account>01000001yb</Account>
+//                <BetAmount>0</BetAmount>
+//                <DeductAmount>0</DeductAmount>
+//                <Count>0</Count>
+//              </Bet>
+//            </Bets>
+//          </result>
+//        </response>
+//    """.trimIndent()
+//
+//    val p = XmlMapper().registerKotlinModule()
+//            .readValue<BcsValue.OutstandingResult>(data)
+//    println(p)
+//}
 
 
 @Service
@@ -88,6 +88,7 @@ class BcsService : PlatformService() {
         val status = try {
             when (okResponse.asString("errcode")) {
                 "000000" -> U9RequestStatus.OK
+
                 else -> U9RequestStatus.Fail
             }
         } catch (e: Exception) {
@@ -135,7 +136,7 @@ class BcsService : PlatformService() {
         val token = balanceReq.token as BcsClientToken
         val param = mapOf(
                 "APIPassword" to token.key,
-                "MemberAccount" to "${balanceReq.username}"
+                "MemberAccount" to balanceReq.username
         )
 
         val okResponse = this.doGetXml(clientToken = token, method = "/ThirdApi.asmx/GetBetTotalByUnSettlement", data = param)
