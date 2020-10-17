@@ -102,6 +102,9 @@ data class I18nContent (
             // mobile banner
             val mobileBanner: String,
 
+            // 最后的优惠banner图 只用于unclejay的wap版
+            val latestPromotionBanner: String?,
+
             // 标题
             val title: String,
 

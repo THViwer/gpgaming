@@ -47,8 +47,8 @@ interface Api {
     @ApiOperation(tags = ["api"],  value = "首页平台列表")
     fun indexPlatforms(): List<PlatformVo>
 
-//    @ApiOperation(tags = ["api"], value = "优惠活动(未排序分组)")
-//    fun promotionList(): List<PromotionVo>
+    @ApiOperation(tags = ["api"], value = "优惠活动(未排序分组)")
+    fun promotionList(): List<PromotionVo>
 
     @ApiOperation(tags = ["api"], value = "优惠活动")
     fun promotion(): List<PromotionVo>

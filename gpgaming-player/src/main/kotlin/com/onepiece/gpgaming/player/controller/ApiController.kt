@@ -194,18 +194,11 @@ open class ApiController(
     }
 
 
-//    @GetMapping("/promotion/list")
-//    override fun promotionList(): List<PromotionVo> {
-//
-//        val clientId = getClientId()
-//        val (language, launch) = getLanguageAndLaunchFormHeader()
-//
-//        val promotions = promotionService.all(clientId = clientId)
-//
-//
-//
-//
-//    }
+    @GetMapping("/promotion/list")
+    override fun promotionList(): List<PromotionVo> {
+        return this.promotion()
+                .distinctBy { it.id }
+    }
 
     @GetMapping("/promotion")
     override fun promotion(): List<PromotionVo> {
