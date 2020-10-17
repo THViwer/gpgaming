@@ -665,7 +665,7 @@ open class CashApiController(
         val checkPromotions = joinPromotions.parallelStream().map { promotion ->
 
             val platformMemberVo = getPromotionPlatformMember(platform, current)
-            val platformBalance = gameApi.balance(clientId = member.clientId, memberId = platformMemberVo.memberId, platform = platform, platformUsername = platformMemberVo.platformUsername,
+            val (platformBalance, outstanding) = gameApi.getBalanceIncludeOutstanding(clientId = member.clientId, memberId = platformMemberVo.memberId, platform = platform, platformUsername = platformMemberVo.platformUsername,
                     platformPassword = platformMemberVo.platformPassword)
 
             val platformMember = platformMemberService.get(platformMemberVo.id)
@@ -673,7 +673,7 @@ open class CashApiController(
             try {
                 val overPromotionAmount = PromotionPeriod.getOverPromotionAmount(promotion = promotion, historyOrders = historyOrders)
                 transferUtil.handlerPromotion(platformMember = platformMember, amount = amount, platformBalance = platformBalance, promotionId = promotion.id,
-                        overPromotionAmount = overPromotionAmount)
+                        overPromotionAmount = overPromotionAmount, outstanding = outstanding)
 
                 val content = contentMap["${promotion.id}:${language}"]
                         ?: contentMap["${promotion.id}:${Language.EN}"]

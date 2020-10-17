@@ -451,6 +451,22 @@ class GameApi(
 
     }
 
+    fun getBalanceIncludeOutstanding(clientId: Int, memberId: Int, platformUsername: String, platformPassword: String, platform: Platform): Pair<BigDecimal, BigDecimal> {
+        check(gamePlatformService.all().first { it.platform == platform }.status == Status.Normal) { OnePieceExceptionCode.PLATFORM_MAINTAIN }
+
+        val clientToken = this.getClientToken(clientId = clientId, platform = platform)
+
+
+        val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername, password = platformPassword)
+        val gameResponse = this.getPlatformApi(platform).balance(balanceReq)
+
+        this.useRemoteLog(clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "balance"),
+                gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_BALANCE)
+                .setScale(2, BigDecimal.ROUND_DOWN)
+
+        return gameResponse.outstanding to (gameResponse.data ?: BigDecimal.ZERO)
+    }
+
 
     /**
      * 查询会员余额

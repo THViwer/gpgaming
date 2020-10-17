@@ -76,11 +76,13 @@ class CMDService : PlatformService() {
         )
 
         val okResponse = this.doGet(clientToken = cmdClientToken, data = data)
+        var outstanding = BigDecimal.ZERO
         return this.bindGameResponse(okResponse = okResponse) {
             val betAmount = it.asList("Data").first().asBigDecimal("BetAmount") // 余额
-            val outstanding = it.asList("Data").first().asBigDecimal("Outstanding") // 未结算金额
-            betAmount.plus(outstanding)
-        }
+            outstanding = it.asList("Data").first().asBigDecimal("Outstanding") // 未结算金额
+
+            betAmount
+        }.copy(outstanding = outstanding)
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {

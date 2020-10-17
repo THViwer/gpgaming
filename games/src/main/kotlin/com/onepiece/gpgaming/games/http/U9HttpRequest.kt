@@ -81,7 +81,10 @@ data class GameResponse<T>(
         val data: T?,
 
         // log消息
-        val logInfo: String = ""
+        val logInfo: String = "",
+
+        // 查询balance的时候 可能要用 所以先这样
+        val outstanding: BigDecimal = BigDecimal.ZERO
 ) {
 
     companion object {

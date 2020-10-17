@@ -122,13 +122,12 @@ class BcsService : PlatformService() {
         )
 
         val okResponse = this.doGetXml(clientToken = token, method = "/ThirdApi.asmx/GetBalance", data = param)
+
+        val outstanding = queryOutstanding(balanceReq = balanceReq)
+
         return this.bindGameResponse(okResponse = okResponse) {
-            val balance = it.asMap("result").asBigDecimal("Balance")
-
-            val outstanding = queryOutstanding(balanceReq = balanceReq)
-
-            balance.plus(outstanding)
-        }
+            it.asMap("result").asBigDecimal("Balance")
+        }.copy(outstanding = outstanding)
     }
 
     private fun queryOutstanding(balanceReq: GameValue.BalanceReq): BigDecimal {

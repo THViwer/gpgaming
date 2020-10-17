@@ -165,7 +165,10 @@ data class Index(
                 val platform: Platform,
 
                 // 介绍图片
-                val contentImage: String
+                val contentImage: String,
+
+                // wap端介绍图片
+                val wapContentImage: String?
 
         )
 //

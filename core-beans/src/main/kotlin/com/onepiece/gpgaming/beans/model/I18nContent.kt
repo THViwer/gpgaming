@@ -124,7 +124,10 @@ data class I18nContent (
      */
     data class IndexSportI18n(
             // 介绍图片
-            val contentImage: String
+            val contentImage: String,
+
+            // wap介绍图片
+            val wapContentImage: String?
 
     ): II18nContent
 

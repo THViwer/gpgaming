@@ -80,11 +80,13 @@ class LbcService : PlatformService() {
         )
 
         val okResponse = this.doPostForm(clientToken = clientToken, method = "CheckUserBalance", formParam = param)
+
+        var outstanding = BigDecimal.ZERO
         return this.bindGameResponse(okResponse) {
             val balance= it.asList("Data").first().data["balance"]?.toString()?.toBigDecimal() ?: BigDecimal.ZERO
-            val outstanding = it.asList("Data").first().data["outstanding"]?.toString()?.toBigDecimal() ?: BigDecimal.ZERO
-            balance.plus(outstanding)
-        }
+            outstanding = it.asList("Data").first().data["outstanding"]?.toString()?.toBigDecimal() ?: BigDecimal.ZERO
+            balance
+        }.copy(outstanding = outstanding)
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {

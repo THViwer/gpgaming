@@ -162,7 +162,7 @@ class IndexUtil(
 
                 content?.let {
                     val data = content.getII18nContent(objectMapper) as I18nContent.IndexSportI18n
-                    Index.SportRecommended(contentImage = data.contentImage, platform = recommendedContent.platform)
+                    Index.SportRecommended(contentImage = data.contentImage, platform = recommendedContent.platform, wapContentImage = data.wapContentImage)
                 }
             }
 
