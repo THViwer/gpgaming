@@ -1,6 +1,8 @@
 package com.onepiece.gpgaming.games.sport
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
@@ -12,6 +14,7 @@ import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil.prefixPlatformUsern
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.DEFAULT_DATETIMEFORMATTER
+import com.onepiece.gpgaming.games.bet.JacksonMapUtil
 import com.onepiece.gpgaming.games.http.GameResponse
 import com.onepiece.gpgaming.games.http.OKParam
 import com.onepiece.gpgaming.games.http.OKResponse
@@ -42,6 +45,31 @@ import java.math.BigDecimal
  * TW 繁体中文
  * VN 越南文
  */
+
+fun main() {
+    val data = """
+        <response>
+          <errcode>000000</errcode>
+          <errtext />
+          <result>
+            <Bets>
+              <Bet>
+                <Account>01000001yb</Account>
+                <BetAmount>0</BetAmount>
+                <DeductAmount>0</DeductAmount>
+                <Count>0</Count>
+              </Bet>
+            </Bets>
+          </result>
+        </response>
+    """.trimIndent()
+
+    val p = XmlMapper().registerKotlinModule()
+            .readValue<BcsValue.OutstandingResult>(data)
+    println(p)
+}
+
+
 @Service
 class BcsService : PlatformService() {
 
@@ -112,7 +140,8 @@ class BcsService : PlatformService() {
 
         val okResponse = this.doGetXml(clientToken = token, method = "/ThirdApi.asmx/GetBetTotalByUnSettlement", data = param)
         return this.bindGameResponse(okResponse = okResponse) {
-            it.asMap("result").asList("Bets").first().asBigDecimal("DeductAmount")
+            val result = xmlMapper.readValue<BcsValue.OutstandingResult>(okResponse.response)
+            result.result.bets.first().getMapUtil().asBigDecimal("DeductAmount")
         }.data ?: error("not find outstanding")
     }
 

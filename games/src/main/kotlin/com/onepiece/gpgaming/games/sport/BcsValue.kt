@@ -72,4 +72,23 @@ sealed class BcsValue {
 
     )
 
+    @JacksonXmlRootElement(localName = "response")
+    data class OutstandingResult(
+            @JacksonXmlProperty(localName = "errcode")
+            val errorCode: String,
+
+            @JacksonXmlProperty(localName = "errtext")
+            val errtext: String?,
+
+            @JacksonXmlProperty(localName = "result")
+            val result: Result
+
+    ) {
+
+        data class Result(
+                @JacksonXmlProperty(localName = "Bets")
+                val bets: List<BetResult.Bet>
+        )
+
+    }
 }
