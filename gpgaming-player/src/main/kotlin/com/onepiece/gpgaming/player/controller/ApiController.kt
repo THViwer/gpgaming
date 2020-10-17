@@ -156,6 +156,8 @@ open class ApiController(
 
     }
 
+
+
     @GetMapping("/index/platforms")
     override fun indexPlatforms(): List<PlatformVo> {
 
@@ -190,6 +192,20 @@ open class ApiController(
             }
         }.sortedBy { it.name }
     }
+
+
+//    @GetMapping("/promotion/list")
+//    override fun promotionList(): List<PromotionVo> {
+//
+//        val clientId = getClientId()
+//        val (language, launch) = getLanguageAndLaunchFormHeader()
+//
+//        val promotions = promotionService.all(clientId = clientId)
+//
+//
+//
+//
+//    }
 
     @GetMapping("/promotion")
     override fun promotion(): List<PromotionVo> {
@@ -239,7 +255,7 @@ open class ApiController(
                     content.banner
                 }
 
-                PromotionVo(id = it.id, clientId = it.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
+                PromotionVo(id = promotion.id, clientId = it.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
                         icon = icon, platforms = promotion.platforms, title = content.title, synopsis = content.synopsis, content = content.content,
                         status = promotion.status, createdTime = it.createdTime, precautions = content.precautions, ruleType = promotion.ruleType, rule = promotion.rule)
             }
