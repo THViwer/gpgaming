@@ -142,7 +142,7 @@ class BcsService : PlatformService() {
         return this.bindGameResponse(okResponse = okResponse) {
             val result = xmlMapper.readValue<BcsValue.OutstandingResult>(okResponse.response)
             result.result.bets.first().getMapUtil().asBigDecimal("DeductAmount")
-        }.data ?: error("not find outstanding")
+        }.data ?: BigDecimal.ZERO
     }
 
 
