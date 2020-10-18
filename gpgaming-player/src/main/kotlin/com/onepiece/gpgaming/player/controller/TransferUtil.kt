@@ -293,11 +293,16 @@ open class TransferUtil(
     override fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal, outstanding: BigDecimal, transferOutAmount: BigDecimal): Boolean {
 
         val flag = when {
-            platformBalance.plus(outstanding).toDouble() <= promotion.rule.ignoreTransferOutAmount.toDouble() -> true
+            platformBalance.plus(outstanding).toDouble() <= promotion.rule.ignoreTransferOutAmount.toDouble() -> {
+                log.info("用戶:${platformMember.memberId}, 检查出款优惠，当前平台余额:$platformBalance, 未结算金额：${outstanding}, 忽略最小金额：${promotion.rule.ignoreTransferOutAmount}")
+                true
+            }
             promotion.ruleType == PromotionRuleType.Bet -> {
+                log.info("用戶:${platformMember.memberId}, 检查出款优惠，当前平台打码量:${platformMember.currentBet}, 必要打码：${platformMember.requirementBet}")
                 platformMember.currentBet.toDouble() >= platformMember.requirementBet.toDouble()
             }
             promotion.ruleType == PromotionRuleType.Withdraw -> {
+                log.info("用戶:${platformMember.memberId}, 检查出款优惠，当前平台余额:$platformBalance, 出款要求：${platformMember.requirementTransferOutAmount}")
                 platformBalance.toDouble() >= platformMember.requirementTransferOutAmount.toDouble()
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
