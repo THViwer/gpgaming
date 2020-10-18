@@ -460,11 +460,11 @@ class GameApi(
         val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername, password = platformPassword)
         val gameResponse = this.getPlatformApi(platform).balance(balanceReq)
 
-        this.useRemoteLog(clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "balance"),
+        val balance = this.useRemoteLog(clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "balance"),
                 gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_BALANCE)
                 .setScale(2, BigDecimal.ROUND_DOWN)
 
-        return gameResponse.outstanding to (gameResponse.data ?: BigDecimal.ZERO)
+        return balance to (gameResponse.outstanding)
     }
 
 
