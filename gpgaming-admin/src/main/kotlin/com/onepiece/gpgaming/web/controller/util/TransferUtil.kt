@@ -43,9 +43,9 @@ interface ITransferUtil {
 
     fun transfer(clientId: Int, username: String, cashTransferReq: CashValue.CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp
 
-    fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo?
+    fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, outstanding: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo?
 
-    fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal, transferOutAmount: BigDecimal): Boolean
+    fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal, outstanding: BigDecimal, transferOutAmount: BigDecimal): Boolean
 }
 
 
@@ -126,7 +126,7 @@ open class TransferUtil(
     private fun singleTransfer(clientId: Int, username: String, platform: Platform, cashTransferReq: CashValue.CashTransferReq, platformMemberVo: PlatformMemberVo, type: String): GameValue.TransferResp {
 
         val platformMember = platformMemberService.get(platformMemberVo.id)
-        val platformBalance = gameApi.balance(clientId = clientId, memberId = platformMemberVo.memberId, platformUsername = platformMemberVo.platformUsername,
+        val (platformBalance, outstanding) = gameApi.getBalanceIncludeOutstanding(clientId = clientId, memberId = platformMemberVo.memberId, platformUsername = platformMemberVo.platformUsername,
                 platform = platform, platformPassword = platformMember.password)
 
         return when (type) {
@@ -142,10 +142,10 @@ open class TransferUtil(
                 val amount = if (cashTransferReq.amount.toInt() == -1) platformBalance else cashTransferReq.amount
 
                 // 如果平台没有钱 则直接返回
-                if (amount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)) {
+                if (amount.toDouble() < 1) {
                     GameValue.TransferResp.successful()
                 } else {
-                    this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, amount = amount, username = username)
+                    this.platformToCenterTransfer(platformMember = platformMember, platformBalance = platformBalance, outstanding = outstanding, amount = amount, username = username)
                 }
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
@@ -164,12 +164,12 @@ open class TransferUtil(
         // 检查余额
         val wallet = walletService.getMemberWallet(platformMember.memberId)
         val amount = if (transferAmount.toInt() == -1) wallet.balance else transferAmount
-        if (amount.toDouble() <= 0) return GameValue.TransferResp.successful() // 如果金额小于等于0 返回
+        if (amount.toDouble() < 1) return GameValue.TransferResp.successful() // 如果金额小于等于0 返回
 //        check(wallet.balance.toDouble() - amount.toDouble() > 0) { OnePieceExceptionCode.BALANCE_SHORT_FAIL }
 
         // 优惠活动赠送金额
         val platformMemberTransferUo = this.handlerPromotion(platformMember = platformMember, amount = amount, promotionId = promotionId,
-                platformBalance = platformBalance, overPromotionAmount = null)
+                platformBalance = platformBalance, overPromotionAmount = null, outstanding = BigDecimal.ZERO)
 //        check(platformMemberTransferUo?.joinPlatform == null || platformMember.platform == platformMemberTransferUo.joinPlatform) { OnePieceExceptionCode.ILLEGAL_OPERATION }
 
         // 检查是否满足首次优惠
@@ -255,7 +255,7 @@ open class TransferUtil(
     /**
      * 处理优惠活动
      */
-    override fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
+    override fun handlerPromotion(platformMember: PlatformMember, platformBalance: BigDecimal, outstanding: BigDecimal, overPromotionAmount: BigDecimal?, amount: BigDecimal, promotionId: Int?): PlatformMemberTransferUo? {
 
         log.info("处理优惠信息,优惠活动Id")
 
@@ -263,7 +263,7 @@ open class TransferUtil(
         if (platformMember.joinPromotionId != null) {
             val promotion = promotionService.get(platformMember.joinPromotionId!!)
             // 是否满足清空优惠活动
-            val cleanState = this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance, platformMember = platformMember, transferOutAmount = BigDecimal.ZERO)
+            val cleanState = this.checkCleanPromotion(promotion = promotion, platformBalance = platformBalance,  outstanding = outstanding, platformMember = platformMember, transferOutAmount = BigDecimal.ZERO)
             check(cleanState) { OnePieceExceptionCode.PLATFORM_HAS_BALANCE_PROMOTION_FAIL }
         }
 
@@ -291,21 +291,26 @@ open class TransferUtil(
     /**
      * 检查是否清空优惠活动信息
      */
-    override fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal, transferOutAmount: BigDecimal): Boolean {
+    override fun checkCleanPromotion(promotion: Promotion, platformMember: PlatformMember, platformBalance: BigDecimal, outstanding: BigDecimal, transferOutAmount: BigDecimal): Boolean {
 
-        val state = when {
-            platformBalance.toDouble() <= promotion.rule.ignoreTransferOutAmount.toDouble() -> true
+        val flag = when {
+            platformBalance.plus(outstanding).toDouble() <= promotion.rule.ignoreTransferOutAmount.toDouble() -> {
+                log.info("用戶:${platformMember.memberId}, 检查出款优惠，当前平台余额:$platformBalance, 未结算金额：${outstanding}, 忽略最小金额：${promotion.rule.ignoreTransferOutAmount}")
+                true
+            }
             promotion.ruleType == PromotionRuleType.Bet -> {
+                log.info("用戶:${platformMember.memberId}, 检查出款优惠，当前平台打码量:${platformMember.currentBet}, 必要打码：${platformMember.requirementBet}")
                 platformMember.currentBet.toDouble() >= platformMember.requirementBet.toDouble()
             }
             promotion.ruleType == PromotionRuleType.Withdraw -> {
+                log.info("用戶:${platformMember.memberId}, 检查出款优惠，当前平台余额:$platformBalance, 出款要求：${platformMember.requirementTransferOutAmount}")
                 platformBalance.toDouble() >= platformMember.requirementTransferOutAmount.toDouble()
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
 
 
-        if (state) {
+        if (flag) {
             //TODO 记录clean事件 本次优惠使用多少打码量等
 
             // 记录本次优惠内转出多少钱
@@ -315,7 +320,7 @@ open class TransferUtil(
             platformMemberService.cleanTransferIn(memberId = platformMember.memberId, platform = platformMember.platform)
         }
 
-        return state
+        return flag
     }
 
 
@@ -324,7 +329,7 @@ open class TransferUtil(
     }
 
 
-    private fun platformToCenterTransfer(platformMember: PlatformMember, username: String, platformBalance: BigDecimal, amount: BigDecimal): GameValue.TransferResp {
+    private fun platformToCenterTransfer(platformMember: PlatformMember, username: String, platformBalance: BigDecimal, outstanding: BigDecimal, amount: BigDecimal): GameValue.TransferResp {
         val platform = platformMember.platform
         val from = platformMember.platform
         val to = Platform.Center
@@ -335,7 +340,7 @@ open class TransferUtil(
         // 判断是否满足转出条件
         if (platformMember.joinPromotionId != null) {
             val promotion = promotionService.get(platformMember.joinPromotionId!!)
-            val checkState = this.checkCleanPromotion(promotion = promotion, platformMember = platformMember, platformBalance = platformBalance, transferOutAmount = amount)
+            val checkState = this.checkCleanPromotion(promotion = promotion, platformMember = platformMember, platformBalance = platformBalance, transferOutAmount = amount, outstanding = outstanding)
             check(checkState) { OnePieceExceptionCode.PLATFORM_TO_CENTER_FAIL }
         }
 
