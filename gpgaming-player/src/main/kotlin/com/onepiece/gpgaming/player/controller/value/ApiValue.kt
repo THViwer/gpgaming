@@ -213,6 +213,9 @@ data class BannerVo(
         @ApiModelProperty("类型")
         val type: BannerType,
 
+        @ApiModelProperty("平台类目")
+        val platformCategory: PlatformCategory?,
+
         @ApiModelProperty("链接地址")
         val link: String?
 )
