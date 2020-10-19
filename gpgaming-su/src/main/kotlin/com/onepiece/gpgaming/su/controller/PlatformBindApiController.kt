@@ -34,7 +34,8 @@ class PlatformBindApiController(
         val platformBindCo = with(platformBindCoReq) {
             PlatformBindCo(clientId = clientId, username = username, password = password, earnestBalance = earnestBalance, platform = platform,
                     tokenJson = tokenJson, name = name, icon = icon, disableIcon = disableIcon, originIcon = originIcon, originIconOver = originIconOver,
-                    mobileIcon = mobileIcon, mobileDisableIcon = mobileDisableIcon, platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver)
+                    mobileIcon = mobileIcon, mobileDisableIcon = mobileDisableIcon, platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver,
+                    unclejayMobleIcon  = unclejayMobleIcon )
         }
         platformBindService.create(platformBindCo = platformBindCo)
     }
@@ -45,7 +46,7 @@ class PlatformBindApiController(
         val platformBindCo = with(platformBindUoReq) {
             PlatformBindUo(id = id, username = username, password = password, earnestBalance = earnestBalance, tokenJson = tokenJson, name = name, icon = icon,
                     disableIcon = disableIcon, originIcon = originIcon, originIconOver = originIconOver, mobileIcon = mobileIcon, mobileDisableIcon = mobileDisableIcon,
-                    platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver, hot = null, new = null, status = status)
+                    platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver, hot = null, new = null, status = status, unclejayMobleIcon  = unclejayMobleIcon )
         }
 
         platformBindService.update(platformBindCo)
@@ -84,9 +85,9 @@ class PlatformBindApiController(
                         username = it.username, password = it.password, open = it.status == Status.Normal, tokenJson = objectMapper.writeValueAsString(it.clientToken),
                         id = it.id, status = it.status, name = it.name, icon = it.icon, disableIcon = it.disableIcon, originIcon = it.originIcon, originIconOver = it.originIconOver,
                         platformDetailIcon = it.platformDetailIcon, platformDetailIconOver = it.platformDetailIconOver, mobileIcon = it.mobileIcon, mobileDisableIcon = it.mobileDisableIcon)
-            }?:PlatformBindSuValue.PlatformBindVo(platform = platform, backUrl = "-", clientId = clientId, earnestBalance = BigDecimal.valueOf(-1),
+            } ?: PlatformBindSuValue.PlatformBindVo(platform = platform, backUrl = "-", clientId = clientId, earnestBalance = BigDecimal.valueOf(-1),
                     username = "-", password = "-", open = false, tokenJson = "-", id = -1, status = Status.Stop, name = "", icon = "", disableIcon = "",
-                    originIconOver = "", originIcon = "",  mobileDisableIcon = "", mobileIcon = "", platformDetailIconOver = "", platformDetailIcon = "")
+                    originIconOver = "", originIcon = "", mobileDisableIcon = "", mobileIcon = "", platformDetailIconOver = "", platformDetailIcon = "")
         }
     }
 }

@@ -24,7 +24,6 @@ import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionValue
 import com.onepiece.gpgaming.beans.value.internet.web.SelectCountryResult
 import com.onepiece.gpgaming.core.ActiveConfig
-import com.onepiece.gpgaming.core.utils.IndexUtil
 import com.onepiece.gpgaming.core.service.AppDownService
 import com.onepiece.gpgaming.core.service.AppVersionService
 import com.onepiece.gpgaming.core.service.BannerService
@@ -35,6 +34,7 @@ import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.core.service.SlotGameService
+import com.onepiece.gpgaming.core.utils.IndexUtil
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.basic.MathUtil
@@ -158,7 +158,6 @@ open class ApiController(
     }
 
 
-
     @GetMapping("/index/platforms")
     override fun indexPlatforms(): List<PlatformVo> {
 
@@ -185,7 +184,7 @@ open class ApiController(
                 PlatformVo(id = it.id, name = it.name, category = it.platform.category, status = status, icon = icon,
                         launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo, disableIcon = disableIcon, originIcon = it.originIcon,
                         originIconOver = it.originIconOver, categoryDetailIcon = it.icon, platformDetailIcon = it.platformDetailIcon,
-                        platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new)
+                        platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new, unclejayMobleIcon = it.unclejayMobleIcon)
                 //TODO 设置图标
             } catch (e: Exception) {
                 log.error("", e)
@@ -273,8 +272,8 @@ open class ApiController(
                 .toMap()
 
         return promotions.mapNotNull { promotion ->
-                contentMap[promotion.id]
-                    ?.let {content ->
+            contentMap[promotion.id]
+                    ?.let { content ->
                         val _c = content.getII18nContent(objectMapper = objectMapper) as I18nContent.PromotionI18n
                         _c.latestPromotionBanner?.let {
                             PromotionValue.LatestPromotionVo(promotionId = promotion.id, banner = it)
@@ -568,7 +567,7 @@ open class ApiController(
                             status = gamePlatform.status, icon = it.icon, launchs = gamePlatform.launchList,
                             demo = gamePlatform.demo, disableIcon = it.disableIcon, originIconOver = it.originIconOver,
                             originIcon = it.originIcon, categoryDetailIcon = it.icon, platformDetailIcon = it.platformDetailIcon,
-                            platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new)
+                            platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new, unclejayMobleIcon = it.unclejayMobleIcon)
                     //TODO 配置图标
                 }
 

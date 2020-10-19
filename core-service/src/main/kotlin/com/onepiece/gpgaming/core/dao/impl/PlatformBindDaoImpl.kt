@@ -31,6 +31,7 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
 
             val name = rs.getString("name")
             val icon = rs.getString("icon")
+            val unclejayMobleIcon  = rs.getString("unclejayMobleIcon")
             val mobileIcon = rs.getString("mobile_icon")
             val disableIcon = rs.getString("disable_icon")
             val mobileDisableIcon = rs.getString("mobile_disable_icon")
@@ -47,7 +48,7 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
                     username = username, password = password, processId = processId, earnestBalance = earnestBalance,
                     tokenJson = tokenJson, hot = hot, new = new, name = name, icon = icon, mobileIcon = mobileIcon,
                     disableIcon = disableIcon, mobileDisableIcon = mobileDisableIcon, originIcon = originIcon, originIconOver = originIconOver,
-                    platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver)
+                    platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver, unclejayMobleIcon  = unclejayMobleIcon )
         }
 
     override fun get(id: Int): PlatformBind {
@@ -80,6 +81,7 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
 
                 .set("name", platformBindCo.name)
                 .set("icon", platformBindCo.icon)
+                .set("unclejayMobleIcon", platformBindCo.unclejayMobleIcon )
                 .set("mobile_icon", platformBindCo.mobileIcon)
                 .set("disable_icon", platformBindCo.disableIcon)
                 .set("mobile_disable_icon", platformBindCo.mobileDisableIcon)
@@ -102,6 +104,7 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
 
                 .set("name", platformBindUo.name)
                 .set("icon", platformBindUo.icon)
+                .set("unclejayMobleIcon", platformBindUo.unclejayMobleIcon )
                 .set("mobile_icon", platformBindUo.mobileIcon)
                 .set("disable_icon", platformBindUo.disableIcon)
                 .set("mobile_disable_icon", platformBindUo.mobileDisableIcon)

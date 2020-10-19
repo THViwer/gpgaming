@@ -30,6 +30,9 @@ data class PlatformBindCo(
         // 图标
         val icon: String,
 
+        // unclejay大的横向图标
+        val unclejayMobleIcon : String?,
+
         // 平台维护图标
         val disableIcon: String?,
 
@@ -84,6 +87,8 @@ data class PlatformBindUo(
 
         // 图标
         val icon: String?= null,
+
+        val unclejayMobleIcon : String?= null,
 
         // 平台维护图标
         val disableIcon: String?= null,

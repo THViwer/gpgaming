@@ -24,6 +24,9 @@ enum class BannerType {
     ReferralBanner,
 
     // 已删除
-    Recommended
+    Recommended,
+
+    // 优惠页面Banner
+    PromotionBanner,
 
 }

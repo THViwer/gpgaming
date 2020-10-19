@@ -70,6 +70,9 @@ data class PlatformBind(
         // 图标
         val icon: String,
 
+        // 横面大图标
+        val unclejayMobleIcon: String?,
+
         // 平台维护图标
         val disableIcon: String?,
 
@@ -90,9 +93,6 @@ data class PlatformBind(
 
         // 平台详情鼠标移动图片
         val platformDetailIconOver: String?,
-
-
-
 
 
         // 进程Id

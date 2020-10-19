@@ -3,7 +3,6 @@ package com.onepiece.gpgaming.su.controller.value
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
-import com.onepiece.gpgaming.beans.model.token.ClientToken
 import io.swagger.annotations.ApiModelProperty
 import java.math.BigDecimal
 
@@ -131,6 +130,9 @@ sealed class PlatformBindSuValue {
             // 图标
             val icon: String,
 
+            // unclejay大图标
+            val unclejayMobleIcon : String?,
+
             // 平台维护图标
             val disableIcon: String?,
 
@@ -179,6 +181,8 @@ sealed class PlatformBindSuValue {
 
             // 图标
             val icon: String,
+
+            val unclejayMobleIcon : String,
 
             // 平台维护图标
             val disableIcon: String?,

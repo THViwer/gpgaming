@@ -237,6 +237,9 @@ data class PlatformVo(
         @ApiModelProperty("图标")
         val icon: String,
 
+        @ApiModelProperty("unclejay平台大图标")
+        val unclejayMobleIcon: String?,
+
         @ApiModelProperty("原始图标")
         val originIcon: String,
 
