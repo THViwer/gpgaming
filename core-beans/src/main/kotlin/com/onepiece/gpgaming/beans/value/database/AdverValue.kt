@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.value.database
 
 import com.onepiece.gpgaming.beans.enums.BannerType
+import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
 
 data class BannerCo(
@@ -16,6 +17,8 @@ data class BannerCo(
 
         // 位置
         val type: BannerType,
+
+        val platformCategory: PlatformCategory?,
 
         // 排序
         val order: Int,
@@ -36,6 +39,8 @@ data class BannerUo(
 
         // 位置
         val type: BannerType?,
+
+        val platformCategory: PlatformCategory?,
 
         // 排序
         val order: Int?,

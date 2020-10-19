@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
 import com.onepiece.gpgaming.beans.enums.BannerType
+import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.I18nContent
 import io.swagger.annotations.ApiModelProperty
@@ -57,6 +58,9 @@ data class BannerCoReq(
         @ApiModelProperty("类型")
         val type: BannerType,
 
+        @ApiModelProperty("banner的平台类型")
+        val platformCategory: PlatformCategory?,
+
         @ApiModelProperty("连接地址")
         val link: String
 
@@ -78,6 +82,9 @@ data class BannerUoReq(
 
         @ApiModelProperty("类型")
         val type: BannerType?,
+
+        @ApiModelProperty("banner的平台类型")
+        val platformCategory: PlatformCategory?,
 
         @ApiModelProperty("连接地址")
         val link: String?,

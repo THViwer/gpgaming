@@ -1,6 +1,8 @@
 package com.onepiece.gpgaming.beans.model
 
 import com.onepiece.gpgaming.beans.enums.BannerType
+import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.Status
 import java.time.LocalDateTime
 
@@ -26,6 +28,9 @@ data class Banner(
 
         // 位置
         val type: BannerType,
+
+        // 當type=TrendingGames时 需要配置平台类型 当type=其它时 值为空
+        val platformCategory: PlatformCategory?,
 
         // 连接地址
         val link: String,

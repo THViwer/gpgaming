@@ -243,7 +243,7 @@ class ClientServiceImpl(
                 "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/banner/2019122002021606480.jpg",
                 "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/banner/2019122002022912586.jpg"
         ).forEach {
-            val bannerUo = BannerCo(clientId = clientId, type = BannerType.Banner, order = 1, link = null)
+            val bannerUo = BannerCo(clientId = clientId, type = BannerType.Banner, order = 1, link = null, platformCategory = null)
             val id = bannerService.create(bannerUo)
 
             val content = I18nContent.BannerI18n(imagePath = it, introduce = null, title = null)
@@ -257,7 +257,7 @@ class ClientServiceImpl(
                 "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/banner/2019122002010684576.jpg",
                 "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/banner/2019122002014867116.jpg"
         ).forEach {
-            val bannerUo = BannerCo(clientId = clientId, type = BannerType.Slot, order = 1, link = null)
+            val bannerUo = BannerCo(clientId = clientId, type = BannerType.Slot, order = 1, link = null, platformCategory = null)
             val id = bannerService.create(bannerUo)
 
             val content = I18nContent.BannerI18n(imagePath = it, introduce = null, title = null)
@@ -270,7 +270,7 @@ class ClientServiceImpl(
                 "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/banner/2019122002015758299.jpg",
                 "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/banner/2019122002020735253.jpg"
         ).forEach {
-            val bannerUo = BannerCo(clientId = clientId, type = BannerType.Sport, order = 1, link = null)
+            val bannerUo = BannerCo(clientId = clientId, type = BannerType.Sport, order = 1, link = null, platformCategory = null)
             val configId = bannerService.create(bannerUo)
 
             val content = I18nContent.BannerI18n(imagePath = it, introduce = null, title = null)
@@ -283,7 +283,7 @@ class ClientServiceImpl(
                 "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/banner/2019122002021606480.jpg",
                 "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/banner/2019122002022912586.jpg"
         ).forEach {
-            val bannerUo = BannerCo(clientId = clientId, type = BannerType.Live, order = 1, link = null)
+            val bannerUo = BannerCo(clientId = clientId, type = BannerType.Live, order = 1, link = null, platformCategory = null)
             val id = bannerService.create(bannerUo)
 
             val content = I18nContent.BannerI18n(imagePath = it, introduce = null, title = null)
@@ -295,7 +295,7 @@ class ClientServiceImpl(
         listOf(
                 "https://s3.ap-southeast-1.amazonaws.com/awspg1/client/1/banner/2019122002013846646.jpg"
         ).forEach {
-            val bannerUo = BannerCo(clientId = clientId, type = BannerType.Banner, order = 1, link = null)
+            val bannerUo = BannerCo(clientId = clientId, type = BannerType.Banner, order = 1, link = null, platformCategory = null)
             val id = bannerService.create(bannerUo)
 
             val content = I18nContent.BannerI18n(imagePath = it, introduce = null, title = null)

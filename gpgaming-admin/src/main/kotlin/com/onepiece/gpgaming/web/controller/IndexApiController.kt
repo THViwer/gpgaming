@@ -165,14 +165,14 @@ class IndexApiController(
     @PostMapping("/banner")
     override fun create(@RequestBody bannerCoReq: BannerCoReq) {
         val advertCo = BannerCo(clientId = getClientId(), type = bannerCoReq.type,
-                order = bannerCoReq.order, link = bannerCoReq.link)
+                order = bannerCoReq.order, link = bannerCoReq.link, platformCategory = bannerCoReq.platformCategory)
         bannerService.create(advertCo)
     }
 
     @PutMapping("/banner")
     override fun update(@RequestBody bannerUoReq: BannerUoReq) {
         val bannerUo = BannerUo(id = bannerUoReq.id, type = bannerUoReq.type,
-                order = bannerUoReq.order, link = bannerUoReq.link, status = bannerUoReq.status)
+                order = bannerUoReq.order, link = bannerUoReq.link, status = bannerUoReq.status, platformCategory = bannerUoReq.platformCategory)
         bannerService.update(bannerUo)
 
         indexUtil.generatorIndexPage(clientId = getClientId())
