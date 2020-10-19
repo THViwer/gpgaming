@@ -21,7 +21,7 @@ enum class BannerType {
     Sport,
 
     // Unclejay的wap端特定
-    ReferralBanner,
+    TrendingGames,
 
     // 已删除
     Recommended,
