@@ -26,9 +26,12 @@ class OrderIdBuilder(
 
     fun generatorDepositOrderId(): String {
 
-        val profile = if (activeConfig.profile != "prod") {
-            "T"
-        }  else ""
+        val profile = when {
+            activeConfig.profile == "prod" -> "U"
+            activeConfig.profile == "prods2" -> "U"
+            activeConfig.profile.contains("prod") -> "U"
+            else -> "T"
+        }
 
         return "${profile}BD${getCurrentTime()}${StringUtil.generateNumNonce(5)}"
     }
@@ -96,12 +99,10 @@ class OrderIdBuilder(
 
         val profile = if (activeConfig.profile != "prod") {
             "T"
-        }  else ""
+        } else ""
 
         return "${profile}P${autoClientId}${now.format(dateTimeFormatter)}$autoId"
     }
-
-
 
 
 }
