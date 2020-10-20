@@ -186,12 +186,14 @@ class UserApiController(
             LoginResp(id = member.id, role = Role.Member, username = member.username, token = token, name = member.name, autoTransfer = member.autoTransfer,
                     domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = true, vipLogo = vipLogo, vipName = vipName,
                     levelId = member.levelId, vipId = member.vipId, registerActivity = registerActivity, depositActivity = depositActivity, registerActivityVo = registerActivityVo,
-                    enableIntroduce = clientConfig.enableIntroduce)
+                    enableIntroduce = clientConfig.enableIntroduce, email = member.email ?: "-", phone = member.phone, birthday = member.birthday?.toString() ?: "-"
+            )
         } else {
             LoginResp(id = member.id, role = Role.Member, username = member.username, token = "", name = member.name, autoTransfer = member.autoTransfer,
                     domain = "https://www.${clientSite.domain}${isMobile}", country = client.country, successful = false, vipLogo = vipLogo, vipName = vipName,
                     levelId = member.levelId, vipId = member.vipId, registerActivity = false, registerActivityVo = null, depositActivity = false,
-                    enableIntroduce = clientConfig.enableIntroduce)
+                    enableIntroduce = clientConfig.enableIntroduce, email = member.email ?: "-", phone = member.phone, birthday = member.birthday?.toString() ?: "-"
+            )
         }
     }
 
@@ -251,7 +253,9 @@ class UserApiController(
         val isMobile = if (launch == LaunchMethod.Wap) "/m" else ""
         return LoginResp(id = member.id, role = Role.Member, username = member.username, token = authToken, name = member.name, autoTransfer = member.autoTransfer,
                 domain = "https://www.${webSite.domain}${isMobile}", country = client.country, successful = true, levelId = member.levelId, vipName = vipName,
-                vipLogo = vipLogo, vipId = member.vipId, registerActivity = false, depositActivity = false, registerActivityVo = null, enableIntroduce = config.enableIntroduce)
+                vipLogo = vipLogo, vipId = member.vipId, registerActivity = false, depositActivity = false, registerActivityVo = null, enableIntroduce = config.enableIntroduce,
+                email = member.email ?: "-", phone = member.phone, birthday = member.birthday?.toString() ?: "-"
+        )
 
     }
 
@@ -519,7 +523,7 @@ class UserApiController(
         check(duration.seconds <= 60) { OnePieceExceptionCode.SMS_CODE_TIMEOUT }
 
         // 修改妈妈
-        val memberUo  = MemberUo(id = req.memberId, password = req.password)
+        val memberUo = MemberUo(id = req.memberId, password = req.password)
         memberService.update(memberUo)
     }
 }

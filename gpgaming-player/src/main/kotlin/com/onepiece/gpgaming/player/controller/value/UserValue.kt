@@ -139,6 +139,15 @@ data class LoginResp(
         @ApiModelProperty("真实姓名")
         val name: String,
 
+        @ApiModelProperty("邮箱")
+        val email: String,
+
+        @ApiModelProperty("电话")
+        val phone: String,
+
+        @ApiModelProperty("生日")
+        val birthday: String,
+
         @ApiModelProperty("用户名")
         val username: String,
 
