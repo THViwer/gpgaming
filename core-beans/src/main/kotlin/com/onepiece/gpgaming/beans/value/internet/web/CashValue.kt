@@ -168,7 +168,10 @@ sealed class CashValue {
             val amount: BigDecimal,
 
             @ApiModelProperty("参加优惠活动Id")
-            var promotionId: Int?
+            var promotionId: Int?,
+
+            @ApiModelProperty("优惠码")
+            val code: String?
     )
 
     data class ThirdPayResponse(

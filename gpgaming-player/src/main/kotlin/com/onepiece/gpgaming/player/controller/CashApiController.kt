@@ -714,9 +714,14 @@ open class CashApiController(
         check(cashTransferReq.amount.toDouble() >= 1 || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.SYSTEM }
 //        check(cashTransferReq.to == Platform.Center || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.SYSTEM }
 
+        val promotionId = when {
+            cashTransferReq.promotionId != null -> cashTransferReq.promotionId
+            !cashTransferReq.code.isNullOrBlank() -> promotionService.all(clientId = current.clientId).firstOrNull{ it.code == cashTransferReq.code}?.id
+            else -> null
+        }
         // 如果转入的平台是918kiss、pussy、mega 则默认添加优惠为-100
         if (cashTransferReq.to == Platform.Kiss918 || cashTransferReq.to == Platform.Pussy888 || cashTransferReq.to == Platform.Mega) {
-            if (cashTransferReq.promotionId == null) {
+            if (promotionId == null) {
                 cashTransferReq.promotionId = -100
             }
         }
@@ -734,7 +739,7 @@ open class CashApiController(
 //        }
 
         // 如果是首存 则提示金额
-        val memberIntroduce = cashTransferReq.promotionId?.let { promotionId ->
+        val memberIntroduce = promotionId?.let { promotionId ->
             val promotion = promotionService.get(id = promotionId)
             if (promotion.category == PromotionCategory.Introduce) {
                 val memberIntroduce = memberIntroduceService.get(memberId = current.id) ?: error(OnePieceExceptionCode.ILLEGAL_OPERATION)
