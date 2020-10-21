@@ -42,7 +42,7 @@ open class TransferSyncImpl(
         transferUtil.transferInAll(clientId = current.clientId, memberId = current.id, exceptPlatform = platform, username = current.username.split("@")[1])
 
         // 从中心钱包转到
-        val cashTransferReq = CashValue.CashTransferReq(from = Platform.Center, to = platform, amount = BigDecimal.valueOf(-1), promotionId = null)
+        val cashTransferReq = CashValue.CashTransferReq(from = Platform.Center, to = platform, amount = BigDecimal.valueOf(-1), promotionId = null, code = null)
         transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = cashTransferReq, username = current.username)
     }
 
