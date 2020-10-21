@@ -741,7 +741,7 @@ open class CashApiController(
 //        }
 
         // 如果是首存 则提示金额
-        val memberIntroduce = promotionId?.let { promotionId ->
+        val memberIntroduce = promotionId?.let { _ ->
             val promotion = promotionService.get(id = promotionId)
             if (promotion.category == PromotionCategory.Introduce) {
                 val memberIntroduce = memberIntroduceService.get(memberId = current.id) ?: error(OnePieceExceptionCode.ILLEGAL_OPERATION)
@@ -757,7 +757,7 @@ open class CashApiController(
 
         if (cashTransferReq.from != Platform.Center) {
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.from, member = current)
-            val toCenterTransferReq = cashTransferReq.copy(to = Platform.Center)
+            val toCenterTransferReq = cashTransferReq.copy(to = Platform.Center, promotionId = promotionId)
             val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toCenterTransferReq, username = currentUsername())
             check(result.transfer) {
                 if (result.msg.isBlank()) OnePieceExceptionCode.TRANSFER_FAILED else result.msg
@@ -765,7 +765,7 @@ open class CashApiController(
         }
 
         if (cashTransferReq.to != Platform.Center) {
-            val toPlatformTransferReq = cashTransferReq.copy(from = Platform.Center)
+            val toPlatformTransferReq = cashTransferReq.copy(from = Platform.Center, promotionId = promotionId)
             val platformMemberVo = getPlatformMember(platform = cashTransferReq.to, member = current)
             val result = transferUtil.transfer(clientId = current.clientId, platformMemberVo = platformMemberVo, cashTransferReq = toPlatformTransferReq, username = currentUsername())
             check(result.transfer) {
