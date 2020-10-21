@@ -87,7 +87,7 @@ open class TransferUtil(
             pms.map { platformMember ->
                 async {
 
-                    val req = CashValue.CashTransferReq(from = platformMember.platform, to = Platform.Center, amount = amount, promotionId = null)
+                    val req = CashValue.CashTransferReq(from = platformMember.platform, to = Platform.Center, amount = amount, promotionId = null, code = null)
                     try {
                         val resp = singleTransfer(clientId = clientId, platform = platformMember.platform, cashTransferReq = req, type = "in",
                                 platformMemberVo = platformMember, username = username)
