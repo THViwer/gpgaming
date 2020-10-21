@@ -31,7 +31,7 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
 
             val name = rs.getString("name")
             val icon = rs.getString("icon")
-            val unclejayMobleIcon  = rs.getString("unclejayMobleIcon")
+            val unclejayMobleIcon  = rs.getString("unclejay_moble_icon")
             val mobileIcon = rs.getString("mobile_icon")
             val disableIcon = rs.getString("disable_icon")
             val mobileDisableIcon = rs.getString("mobile_disable_icon")
@@ -81,7 +81,7 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
 
                 .set("name", platformBindCo.name)
                 .set("icon", platformBindCo.icon)
-                .set("unclejayMobleIcon", platformBindCo.unclejayMobleIcon )
+                .set("unclejay_moble_icon", platformBindCo.unclejayMobleIcon )
                 .set("mobile_icon", platformBindCo.mobileIcon)
                 .set("disable_icon", platformBindCo.disableIcon)
                 .set("mobile_disable_icon", platformBindCo.mobileDisableIcon)
@@ -104,7 +104,7 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
 
                 .set("name", platformBindUo.name)
                 .set("icon", platformBindUo.icon)
-                .set("unclejayMobleIcon", platformBindUo.unclejayMobleIcon )
+                .set("unclejay_moble_icon", platformBindUo.unclejayMobleIcon )
                 .set("mobile_icon", platformBindUo.mobileIcon)
                 .set("disable_icon", platformBindUo.disableIcon)
                 .set("mobile_disable_icon", platformBindUo.mobileDisableIcon)
