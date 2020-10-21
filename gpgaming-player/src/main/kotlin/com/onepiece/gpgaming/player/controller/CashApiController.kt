@@ -710,7 +710,7 @@ open class CashApiController(
 
         val current = this.current()
 
-        log.info("用户：${current().username}，开始转账")
+        log.info("用户：${current().username}，开始转账, 优惠Id=${cashTransferReq.promotionId}, 优惠code=${cashTransferReq.code}")
         check(cashTransferReq.amount.toDouble() >= 1 || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.SYSTEM }
 //        check(cashTransferReq.to == Platform.Center || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.SYSTEM }
 
@@ -725,6 +725,8 @@ open class CashApiController(
                 cashTransferReq.promotionId = -100
             }
         }
+        log.info("用户：${current().username}，开始转账, 优惠Id=${promotionId}, 优惠code=${cashTransferReq.code}")
+
 
         check(cashTransferReq.from != cashTransferReq.to) { OnePieceExceptionCode.AUTHORITY_FAIL }
         check(cashTransferReq.amount.toDouble() > 0 || cashTransferReq.amount.toInt() == -1) { OnePieceExceptionCode.ILLEGAL_OPERATION }
