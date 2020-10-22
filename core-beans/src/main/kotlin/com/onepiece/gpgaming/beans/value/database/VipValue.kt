@@ -51,4 +51,8 @@ sealed class VipValue {
             val status: Status
     )
 
+    data class VipConfig(
+            val vipIntroductionImage: String
+    )
+
 }

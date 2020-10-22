@@ -7,10 +7,10 @@ import com.onepiece.gpgaming.beans.enums.PromotionCategory
 import com.onepiece.gpgaming.beans.enums.RecommendedType
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.ShowPosition
+import com.onepiece.gpgaming.beans.model.ClientConfig
 import com.onepiece.gpgaming.beans.model.Contact
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Recommended
-import com.onepiece.gpgaming.beans.model.ClientConfig
 import com.onepiece.gpgaming.beans.value.database.BlogValue
 import com.onepiece.gpgaming.beans.value.database.HotGameValue
 import com.onepiece.gpgaming.beans.value.internet.web.BannerCoReq
@@ -45,9 +45,10 @@ interface IndexApi {
             @RequestParam("liveChatId") liveChatId: String,
             @RequestParam("liveChatTab") liveChatTab: Boolean,
             @RequestParam("googleStatisticsId") googleStatisticsId: String,
-            @RequestParam("facebookTr") facebookTr:String,
+            @RequestParam("facebookTr") facebookTr: String,
             @RequestParam("facebookShowPosition") facebookShowPosition: ShowPosition,
-            @RequestParam("asgContent") asgContent: String
+            @RequestParam("asgContent") asgContent: String,
+            @RequestParam("vipIntroductionImage") vipIntroductionImage: String?,
     )
 
 
@@ -70,7 +71,6 @@ interface IndexApi {
     fun list(@RequestParam("config") config: I18nConfig): List<I18nContent>
 
 
-
     @ApiOperation(tags = ["web setting"], value = "首页设置 -> 列表")
     fun bannerList(): List<BannerVo>
 
@@ -83,10 +83,8 @@ interface IndexApi {
     fun update(@RequestBody bannerUoReq: BannerUoReq)
 
 
-
-
     @ApiOperation(tags = ["web setting"], value = "优惠活动 -> 列表")
-    fun promotionList(@RequestParam("category",  required = false) category: PromotionCategory? = null): List<PromotionVo>
+    fun promotionList(@RequestParam("category", required = false) category: PromotionCategory? = null): List<PromotionVo>
 
     @ApiOperation(tags = ["web setting"], value = "优惠活动 -> 创建")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -95,7 +93,6 @@ interface IndexApi {
     @ApiOperation(tags = ["web setting"], value = "优惠活动 -> 更新")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody promotionUoReq: PromotionUoReq)
-
 
 
     @ApiOperation(tags = ["web setting"], value = "推荐 -> 列表")
@@ -110,7 +107,6 @@ interface IndexApi {
     @ApiOperation(tags = ["web setting"], value = "推荐 -> 更新")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@RequestBody uoReq: RecommendedWebValue.UpdateReq)
-
 
 
     @ApiOperation(tags = ["web setting"], value = "热门游戏 -> 列表")

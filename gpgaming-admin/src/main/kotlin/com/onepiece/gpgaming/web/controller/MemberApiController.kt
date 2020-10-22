@@ -35,6 +35,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.WalletVo
 import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.dao.PayOrderDao
 import com.onepiece.gpgaming.core.dao.WithdrawDao
+import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.DepositService
 import com.onepiece.gpgaming.core.service.LevelService
@@ -91,7 +92,9 @@ class MemberApiController(
 
         private val vipService: VipService,
         private val reportService: ReportService,
-        private val memberDailyReportService: MemberDailyReportService
+        private val memberDailyReportService: MemberDailyReportService,
+
+        private val clientConfigService: ClientConfigService
 
 ) : BasicController(), MemberApi {
 

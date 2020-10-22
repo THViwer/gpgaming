@@ -61,6 +61,9 @@ data class ClientConfig(
         // 最低出款要求 (出款必须有充值 且充值过的金额 大于 该值)
         val minWithdrawRequire: BigDecimal,
 
+        // vip 背景图介绍
+        val vipIntroductionImage: String?,
+
 
         // 创建时间
         val createdTime: LocalDateTime

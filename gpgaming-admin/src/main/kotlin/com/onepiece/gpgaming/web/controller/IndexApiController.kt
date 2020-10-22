@@ -88,7 +88,8 @@ class IndexApiController(
             @RequestParam("googleStatisticsId") googleStatisticsId: String,
             @RequestParam("facebookTr") facebookTr: String,
             @RequestParam("facebookShowPosition") facebookShowPosition: ShowPosition,
-            @RequestParam("asgContent") asgContent: String
+            @RequestParam("asgContent") asgContent: String,
+            @RequestParam("vipIntroductionImage") vipIntroductionImage: String?,
     ) {
         val clientId = getClientId()
 
