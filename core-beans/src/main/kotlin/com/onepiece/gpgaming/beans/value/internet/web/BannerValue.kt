@@ -39,6 +39,8 @@ data class BannerVo(
         @ApiModelProperty("更新时间")
         val updatedTime: LocalDateTime,
 
+        @ApiModelProperty("平台类型")
+        val platformCategory: PlatformCategory?,
 
         @ApiModelProperty("国际化内容")
         val contents: List<I18nContent>

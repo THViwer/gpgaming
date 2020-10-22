@@ -159,7 +159,7 @@ class IndexApiController(
             val contents = map[it.id] ?: emptyList()
 
             BannerVo(id = it.id, clientId = it.clientId, order = it.order, type = it.type, link = it.link, status = it.status,
-                    createdTime = it.createdTime, updatedTime = it.updatedTime, contents = contents)
+                    createdTime = it.createdTime, updatedTime = it.updatedTime, contents = contents, platformCategory = it.platformCategory)
         }.filter { it.status != Status.Delete }
     }
 
