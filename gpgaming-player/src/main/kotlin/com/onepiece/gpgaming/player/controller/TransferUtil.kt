@@ -174,7 +174,7 @@ open class TransferUtil(
         // 检查是否满足首次优惠
         if (platformMemberTransferUo?.category == PromotionCategory.First) {
             val member = memberService.getMember(memberId)
-            check(!member.firstPromotion) { OnePieceExceptionCode.AUTHORITY_FAIL }
+            check(!member.firstPromotion) { OnePieceExceptionCode.PROMOTION_CANNOT_JOIN }
         }
 
         // 如果是首充优惠 更新用户已使用过首充
