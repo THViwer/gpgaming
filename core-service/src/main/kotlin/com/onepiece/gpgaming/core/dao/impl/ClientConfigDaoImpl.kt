@@ -41,6 +41,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
             val depositCommission = rs.getBigDecimal("deposit_commission")
             val shareTemplate = rs.getString("share_template")
             val minWithdrawRequire = rs.getBigDecimal("min_withdraw_require")
+            val vipIntroductionImage = rs.getString("vip_introduction_image")
 
 
             ClientConfig(id = id, clientId = clientId, keywords = keywords, description = description, createdTime = createdTime,
@@ -49,7 +50,8 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                     enableRegisterMessage = enableRegisterMessage, registerMessageTemplate = registerMessageTemplate,
                     enableIntroduce = enableIntroduce, introducePromotionId = introducePromotionId, registerCommission = registerCommission,
                     depositPeriod = depositPeriod, commissionPeriod = commissionPeriod, depositCommission = depositCommission,
-                    shareTemplate = shareTemplate, minWithdrawRequire = minWithdrawRequire, regainMessageTemplate = regainMessageTemplate)
+                    shareTemplate = shareTemplate, minWithdrawRequire = minWithdrawRequire, regainMessageTemplate = regainMessageTemplate,
+                    vipIntroductionImage = vipIntroductionImage)
         }
 
     override fun create(configUo: ClientConfigValue.ClientConfigUo): Boolean {
@@ -89,6 +91,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("facebook_tr", configUo.facebookTr)
                 .set("facebook_show_position", configUo.facebookShowPosition)
                 .set("asg_content", configUo.asgContent)
+                .set("vipIn_troduction_image", configUo.vipIntroductionImage)
 
                 .where("client_id", configUo.clientId)
                 .executeOnlyOne()
