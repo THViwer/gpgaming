@@ -56,7 +56,7 @@ object OnePieceExceptionCode {
     const val TRANSFER_TIME_FAST = "5013" // 转账时间过快
     const val PROMOTION_CODE_EXIST = "5014" // 优惠码已存在
     const val NEVER_DEPOSIT = "5015" // 从未充值 不能出款
-    class val PROMOTION_CANNOT_JOIN = "5016" // 不能参加该优惠
+    const val PROMOTION_CANNOT_JOIN = "5016" // 不能参加该优惠
 
 
     // 60000 platform method error
