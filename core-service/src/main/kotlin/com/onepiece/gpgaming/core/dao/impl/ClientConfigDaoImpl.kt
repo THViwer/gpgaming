@@ -91,7 +91,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("facebook_tr", configUo.facebookTr)
                 .set("facebook_show_position", configUo.facebookShowPosition)
                 .set("asg_content", configUo.asgContent)
-                .set("vipIn_troduction_image", configUo.vipIntroductionImage)
+                .set("vip_introduction_image", configUo.vipIntroductionImage)
 
                 .where("client_id", configUo.clientId)
                 .executeOnlyOne()
