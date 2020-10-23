@@ -86,7 +86,10 @@ data class PromotionVo(
         val promotionRuleVo: PromotionRuleVo,
 
         @ApiModelProperty("是否显示")
-        val show: Boolean
+        val show: Boolean,
+
+        @ApiModelProperty("是否显示到最后优惠")
+        val showLatestPromotion: Boolean
 
 )
 
