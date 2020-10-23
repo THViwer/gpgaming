@@ -27,7 +27,7 @@ class DelOrderTask(
         val startDate = LocalDate.now().minusWeeks(1)
         depositDao.delOldOrder(startDate = startDate)
 
-        payOrderDao.delOldOrder(startDate = startDate)
+//        payOrderDao.delOldOrder(startDate = startDate)
     }
 
 }

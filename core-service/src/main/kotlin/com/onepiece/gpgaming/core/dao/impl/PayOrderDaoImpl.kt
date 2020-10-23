@@ -223,7 +223,7 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
     }
 
     override fun delOldOrder(startDate: LocalDate) {
-        val sql = "delete  from pay_order  where  created_time > ? and `state`  != 'Successful'"
+        val sql = "delete  from pay_order  where  created_time < ? and `state`  != 'Successful'"
         jdbcTemplate.update(sql, startDate)
     }
 
