@@ -250,7 +250,8 @@ open class ApiController(
 
                 PromotionVo(id = promotion.id, clientId = it.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
                         icon = icon, platforms = promotion.platforms, title = content.title, synopsis = content.synopsis, content = content.content,
-                        status = promotion.status, createdTime = it.createdTime, precautions = content.precautions, ruleType = promotion.ruleType, rule = promotion.rule)
+                        status = promotion.status, createdTime = it.createdTime, precautions = content.precautions, ruleType = promotion.ruleType,
+                        rule = promotion.rule, showLatestPromotion = promotion.showLatestPromotion)
             }
         }
 

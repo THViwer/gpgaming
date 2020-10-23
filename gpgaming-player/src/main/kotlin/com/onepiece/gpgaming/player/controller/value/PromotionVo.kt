@@ -56,6 +56,9 @@ data class PromotionVo(
         val ruleType: PromotionRuleType,
 
         @ApiModelProperty("规则条件")
-        val rule: PromotionRules.Rule
+        val rule: PromotionRules.Rule,
+
+        @ApiModelProperty("是否显示")
+        val showLatestPromotion: Boolean
 
 )
