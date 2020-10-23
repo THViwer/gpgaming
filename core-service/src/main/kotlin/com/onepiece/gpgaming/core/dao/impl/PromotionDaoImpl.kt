@@ -69,6 +69,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("status", Status.Stop)
                 .set("show", promotionCo.show)
                 .set("code", promotionCo.code)
+                .set("show_latest_promotion", promotionCo.showLatestPromotion)
                 .executeGeneratedKey()
     }
 
@@ -87,6 +88,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("updated_time", LocalDateTime.now())
                 .set("sequence", promotionUo.sequence)
                 .set("show", promotionUo.show)
+                .set("show_latest_promotion", promotionUo.showLatestPromotion)
                 .where("id", promotionUo.id)
                 .executeOnlyOne()
     }

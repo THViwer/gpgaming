@@ -47,7 +47,9 @@ data class PromotionCo(
         val sequence: Int,
 
         // 优惠码
-        val code: String
+        val code: String,
+
+        val showLatestPromotion: Boolean
 
 )
 
@@ -86,6 +88,8 @@ data class PromotionUo(
         val sequence: Int?,
 
         // 是否前台显示
-        val show: Boolean?
+        val show: Boolean?,
+
+        val showLatestPromotion: Boolean?
 
 )

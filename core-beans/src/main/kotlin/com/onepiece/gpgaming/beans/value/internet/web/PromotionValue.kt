@@ -182,5 +182,8 @@ data class PromotionUoReq(
         val sequence: Int,
 
         @ApiModelProperty("是否前台显示")
-        val show: Boolean
+        val show: Boolean,
+
+        @ApiModelProperty("是否在最后优惠中显示")
+        val showLatestPromotion: Boolean
 )
