@@ -49,10 +49,16 @@ interface Api {
     fun indexPlatforms(): List<PlatformVo>
 
     @ApiOperation(tags = ["api"], value = "优惠活动(未排序分组)")
-    fun promotionList(): List<PromotionVo>
+    fun promotionList(
+            @RequestParam("show") show: Boolean?,
+            @RequestParam("showTransfer") showTransfer: Boolean?
+    ): List<PromotionVo>
 
     @ApiOperation(tags = ["api"], value = "优惠活动")
-    fun promotion(): List<PromotionVo>
+    fun promotion(
+            @RequestParam("show") show: Boolean?,
+            @RequestParam("showTransfer") showTransfer: Boolean?
+    ): List<PromotionVo>
 
     @ApiOperation(tags = ["api"], value = "最后优惠活动信息")
     fun latestPromotion(): List<PromotionValue.LatestPromotionVo>

@@ -40,6 +40,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             val sequence = rs.getInt("sequence")
             val show = rs.getBoolean("show")
             val showLatestPromotion = rs.getBoolean("show_latest_promotion")
+            val showTransfer = rs.getBoolean("show_transfer")
 
             val code = rs.getString("code")
 
@@ -49,7 +50,8 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
             Promotion(id = id, category = category, stopTime = stopTime, status = status, createdTime = createdTime,
                     clientId = clientId, top = top, updatedTime = updatedTime, platforms = platforms, levelId = levelId,
                     ruleJson = ruleJson, ruleType = ruleType, period = period, periodMaxPromotion = periodMaxPromotion,
-                    sequence = sequence, show = show, code = code, showLatestPromotion = showLatestPromotion)
+                    sequence = sequence, show = show, code = code, showLatestPromotion = showLatestPromotion,
+                    showTransfer = showTransfer)
         }
 
     override fun create(promotionCo: PromotionCo): Int {
@@ -70,6 +72,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("show", promotionCo.show)
                 .set("code", promotionCo.code)
                 .set("show_latest_promotion", promotionCo.showLatestPromotion)
+                .set("show_transfer", promotionCo.showTransfer)
                 .executeGeneratedKey()
     }
 
@@ -89,6 +92,7 @@ class PromotionDaoImpl : BasicDaoImpl<Promotion>("promotion"), PromotionDao {
                 .set("sequence", promotionUo.sequence)
                 .set("show", promotionUo.show)
                 .set("show_latest_promotion", promotionUo.showLatestPromotion)
+                .set("show_transfer", promotionUo.showTransfer)
                 .where("id", promotionUo.id)
                 .executeOnlyOne()
     }

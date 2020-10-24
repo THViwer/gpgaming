@@ -50,7 +50,8 @@ class PromotionServiceImpl(
         val promotionCo = PromotionCo(clientId = clientId, category = promotionCoReq.category, stopTime = promotionCoReq.stopTime, top = promotionCoReq.top,
                 levelId = promotionCoReq.levelId, ruleType = promotionCoReq.promotionRuleVo.ruleType, periodMaxPromotion = promotionCoReq.periodMaxPromotion,
                 ruleJson = promotionCoReq.promotionRuleVo.ruleJson, platforms = promotionCoReq.platforms, period = promotionCoReq.period,
-                sequence = promotionCoReq.sequence, show = promotionCoReq.show, code = promotionCoReq.code?: "", showLatestPromotion = promotionCoReq.showLatestPromotion)
+                sequence = promotionCoReq.sequence, show = promotionCoReq.show, code = promotionCoReq.code ?: "", showLatestPromotion = promotionCoReq.showLatestPromotion,
+                showTransfer = promotionCoReq.showTransfer)
         val promotionId = promotionDao.create(promotionCo)
         check(promotionId > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
@@ -75,7 +76,7 @@ class PromotionServiceImpl(
         val promotionUo = PromotionUo(id = promotionUoReq.id, category = promotionUoReq.category, stopTime = promotionUoReq.stopTime,
                 top = promotionUoReq.top, status = promotionUoReq.status, levelId = promotionUoReq.levelId, periodMaxPromotion = promotionUoReq.periodMaxPromotion,
                 ruleJson = promotionUoReq.promotionRuleVo?.ruleJson, platforms = promotionUoReq.platforms, period = promotionUoReq.period, sequence = promotionUoReq.sequence,
-                show = promotionUoReq.show, showLatestPromotion = promotionUoReq.showLatestPromotion)
+                show = promotionUoReq.show, showLatestPromotion = promotionUoReq.showLatestPromotion, showTransfer = promotionUoReq.showTransfer)
         val state = promotionDao.update(promotionUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
@@ -100,7 +101,8 @@ class PromotionServiceImpl(
 
             return Promotion(id = -100, clientId = 0, category = PromotionCategory.Special, platforms = listOf(Platform.Kiss918, Platform.Pussy888, Platform.Mega),
                     stopTime = null, ruleType = PromotionRuleType.Withdraw, levelId = emptyList(), period = PromotionPeriod.Daily, periodMaxPromotion = BigDecimal(99999999),
-                    ruleJson = ruleJson, top = true, status = Status.Normal, createdTime = now, updatedTime = now, sequence = 100, show = true, code = "", showLatestPromotion = false)
+                    ruleJson = ruleJson, top = true, status = Status.Normal, createdTime = now, updatedTime = now, sequence = 100, show = true, code = "", showLatestPromotion = false,
+                    showTransfer = true)
         } else {
             promotionDao.get(id)
         }

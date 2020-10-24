@@ -49,7 +49,9 @@ data class PromotionCo(
         // 优惠码
         val code: String,
 
-        val showLatestPromotion: Boolean
+        val showLatestPromotion: Boolean,
+
+        val showTransfer: Boolean
 
 )
 
@@ -90,6 +92,8 @@ data class PromotionUo(
         // 是否前台显示
         val show: Boolean?,
 
-        val showLatestPromotion: Boolean?
+        val showLatestPromotion: Boolean?,
+
+        val showTransfer: Boolean?
 
 )

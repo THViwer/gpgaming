@@ -138,7 +138,10 @@ data class PromotionCoReq(
         val show: Boolean,
 
         @ApiModelProperty("优惠码, 只有类型为ActivationCode时才显示")
-        val code: String?
+        val code: String?,
+
+        @ApiModelProperty("是否显示在转账界面")
+        val showTransfer: Boolean
 )
 
 
@@ -185,5 +188,8 @@ data class PromotionUoReq(
         val show: Boolean,
 
         @ApiModelProperty("是否在最后优惠中显示")
-        val showLatestPromotion: Boolean
+        val showLatestPromotion: Boolean,
+
+        @ApiModelProperty("是否显示在转账界面")
+        val showTransfer: Boolean
 )

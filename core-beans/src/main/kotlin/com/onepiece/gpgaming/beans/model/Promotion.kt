@@ -61,8 +61,11 @@ data class Promotion (
         // 序列
         val sequence: Int,
 
-        // 是否前台显示
+        // 是否前台显示 优惠界面
         val show: Boolean,
+
+        // 是否显示在转账页面
+        val showTransfer: Boolean,
 
         // 优惠码
         val code: String,
