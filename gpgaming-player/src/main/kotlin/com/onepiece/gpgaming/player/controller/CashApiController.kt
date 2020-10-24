@@ -740,6 +740,14 @@ open class CashApiController(
 //            }
 //        }
 
+        if (cashTransferReq.from == Platform.Center &&
+                (cashTransferReq.promotionId != null || cashTransferReq.code != null)
+        ) {
+            val checkResponse = this.checkPromotion(platform = cashTransferReq.to, amount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId,
+                    code = cashTransferReq.code)
+            check(!checkResponse.promotion) { OnePieceExceptionCode.PROMOTION_CANNOT_JOIN }
+        }
+
         // 如果是首存 则提示金额
         val memberIntroduce = promotionId?.let { _ ->
             val promotion = promotionService.get(id = promotionId)
