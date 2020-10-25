@@ -50,14 +50,14 @@ interface Api {
 
     @ApiOperation(tags = ["api"], value = "优惠活动(未排序分组)")
     fun promotionList(
-            @RequestParam("show") show: Boolean?,
-            @RequestParam("showTransfer") showTransfer: Boolean?
+            @RequestParam("show", required = false) show: Boolean?,
+            @RequestParam("showTransfer", required = false) showTransfer: Boolean?
     ): List<PromotionVo>
 
     @ApiOperation(tags = ["api"], value = "优惠活动")
     fun promotion(
-            @RequestParam("show") show: Boolean?,
-            @RequestParam("showTransfer") showTransfer: Boolean?
+            @RequestParam("show", required = false) show: Boolean?,
+            @RequestParam("showTransfer", required = false) showTransfer: Boolean?
     ): List<PromotionVo>
 
     @ApiOperation(tags = ["api"], value = "最后优惠活动信息")

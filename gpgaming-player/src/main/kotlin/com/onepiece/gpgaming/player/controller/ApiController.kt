@@ -196,8 +196,8 @@ open class ApiController(
 
     @GetMapping("/promotion/list")
     override fun promotionList(
-            @RequestParam("show") show: Boolean?,
-            @RequestParam("showTransfer") showTransfer: Boolean?
+            @RequestParam("show", required = false) show: Boolean?,
+            @RequestParam("showTransfer", required = false) showTransfer: Boolean?
     ): List<PromotionVo> {
         return this.promotion(show = show, showTransfer = showTransfer)
                 .distinctBy { it.id }
@@ -205,8 +205,8 @@ open class ApiController(
 
     @GetMapping("/promotion")
     override fun promotion(
-            @RequestParam("show") show: Boolean?,
-            @RequestParam("showTransfer") showTransfer: Boolean?
+            @RequestParam("show", required = false) show: Boolean?,
+            @RequestParam("showTransfer", required = false) showTransfer: Boolean?
     ): List<PromotionVo> {
 
         val clientId = getClientId()
@@ -215,8 +215,8 @@ open class ApiController(
         val allPromotion = promotionService.all(clientId)
                 .filter { it.status == Status.Normal }
                 .sortedBy { it.sequence }
-                .filter { show != null && it.show == show }
-                .filter { showTransfer != null && it.showTransfer == showTransfer }
+                .filter { show == null || it.show == show }
+                .filter { showTransfer == null || it.showTransfer == showTransfer }
                 .filter { it.category != PromotionCategory.ActivationCode } // 优惠码Code类型不显示在前台
 
         log.info("优惠列表：${allPromotion}")
