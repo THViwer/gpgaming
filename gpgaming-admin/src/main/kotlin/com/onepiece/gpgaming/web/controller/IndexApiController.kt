@@ -13,11 +13,11 @@ import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.ShowPosition
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
+import com.onepiece.gpgaming.beans.model.ClientConfig
 import com.onepiece.gpgaming.beans.model.Contact
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.PromotionRules
 import com.onepiece.gpgaming.beans.model.Recommended
-import com.onepiece.gpgaming.beans.model.ClientConfig
 import com.onepiece.gpgaming.beans.value.database.BannerCo
 import com.onepiece.gpgaming.beans.value.database.BannerUo
 import com.onepiece.gpgaming.beans.value.database.BlogValue
@@ -28,6 +28,7 @@ import com.onepiece.gpgaming.beans.value.database.RecommendedValue
 import com.onepiece.gpgaming.beans.value.internet.web.BannerCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerVo
+import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
 import com.onepiece.gpgaming.beans.value.internet.web.ContactValue
 import com.onepiece.gpgaming.beans.value.internet.web.HotGameVo
 import com.onepiece.gpgaming.beans.value.internet.web.I18nContentWebValue
@@ -36,16 +37,15 @@ import com.onepiece.gpgaming.beans.value.internet.web.PromotionRuleVo
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.PromotionVo
 import com.onepiece.gpgaming.beans.value.internet.web.RecommendedWebValue
-import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
-import com.onepiece.gpgaming.core.utils.IndexUtil
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.BlogService
+import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.core.service.RecommendedService
-import com.onepiece.gpgaming.core.service.ClientConfigService
+import com.onepiece.gpgaming.core.utils.IndexUtil
 import com.onepiece.gpgaming.web.controller.basic.BasicController
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
@@ -181,7 +181,7 @@ class IndexApiController(
 
 
     @GetMapping("/promotion")
-    override fun promotionList(@RequestParam("category",  required = false) category: PromotionCategory?): List<PromotionVo> {
+    override fun promotionList(@RequestParam("category", required = false) category: PromotionCategory?): List<PromotionVo> {
         val clientId = getClientId()
 
         val promotions = promotionService.all(clientId = clientId)
@@ -203,7 +203,8 @@ class IndexApiController(
             PromotionVo(id = promotion.id, clientId = promotion.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
                     status = promotion.status, createdTime = promotion.createdTime, updatedTime = promotion.updatedTime, i18nContents = i18nContents,
                     promotionRuleVo = promotionRuleVo, platforms = promotion.platforms, period = promotion.period, periodMaxPromotion = promotion.periodMaxPromotion,
-                    levelId = promotion.levelId, sequence = promotion.sequence, show = promotion.show, code = code, title = title, showLatestPromotion = promotion.showLatestPromotion)
+                    levelId = promotion.levelId, sequence = promotion.sequence, show = promotion.show, code = code, title = title, showLatestPromotion = promotion.showLatestPromotion,
+                    showTransfer = promotion.showTransfer)
         }.filter { category == null || category == it.category }
     }
 

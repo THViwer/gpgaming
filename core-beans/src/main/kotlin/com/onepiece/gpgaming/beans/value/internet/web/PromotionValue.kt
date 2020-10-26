@@ -89,7 +89,10 @@ data class PromotionVo(
         val show: Boolean,
 
         @ApiModelProperty("是否显示到最后优惠")
-        val showLatestPromotion: Boolean
+        val showLatestPromotion: Boolean,
+
+        @ApiModelProperty("是否显示在转账页面")
+        val showTransfer: Boolean
 
 )
 
