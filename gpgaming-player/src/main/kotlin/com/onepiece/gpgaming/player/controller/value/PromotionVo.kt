@@ -59,6 +59,12 @@ data class PromotionVo(
         val rule: PromotionRules.Rule,
 
         @ApiModelProperty("是否显示")
-        val showLatestPromotion: Boolean
+        val showLatestPromotion: Boolean,
+
+        @ApiModelProperty("是否显示")
+        val show: Boolean,
+
+        @ApiModelProperty("是否显示在转账页面")
+        val showTransfer: Boolean
 
 )

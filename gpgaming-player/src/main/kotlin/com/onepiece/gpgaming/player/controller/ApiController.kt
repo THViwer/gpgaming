@@ -32,9 +32,9 @@ import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
+import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PromotionService
 import com.onepiece.gpgaming.core.service.SlotGameService
-import com.onepiece.gpgaming.core.utils.IndexUtil
 import com.onepiece.gpgaming.player.common.TransferSync
 import com.onepiece.gpgaming.player.controller.basic.BasicController
 import com.onepiece.gpgaming.player.controller.basic.MathUtil
@@ -78,8 +78,8 @@ open class ApiController(
         private val hotGameService: HotGameService,
         private val seoService: ClientConfigService,
         private val blogService: BlogService,
-        private val indexUtil: IndexUtil,
-        private val appVersionService: AppVersionService
+        private val appVersionService: AppVersionService,
+        private val memberService: MemberService
 ) : BasicController(), Api {
 
     private val log = LoggerFactory.getLogger(ApiController::class.java)
@@ -193,33 +193,39 @@ open class ApiController(
         }.sortedBy { it.name }
     }
 
-
-    @GetMapping("/promotion/list")
-    override fun promotionList(
-            @RequestParam("show", required = false) show: Boolean?,
-            @RequestParam("showTransfer", required = false) showTransfer: Boolean?
-    ): List<PromotionVo> {
-        return this.promotion(show = show, showTransfer = showTransfer)
-                .distinctBy { it.id }
+    @GetMapping("/promotion")
+    override fun promotion(@RequestParam("page") page: String): List<PromotionVo> {
+        val promotions = this.getPromotionList()
+        return when (page) {
+            "PromotionPage" -> {
+                promotions.filter { it.show }
+            }
+            "TransferPage" -> {
+                val member = memberService.getMember(current().id)
+                val firstPromotion = member.firstPromotion
+                promotions.filter { it.showTransfer }
+                        // 如果优惠列表为首充 但该用户已使用过首充 则不显示该优惠
+                        .filter { !firstPromotion || it.category != PromotionCategory.First }
+                        .distinctBy { it.id }
+            }
+            "LatestPromotion" -> {
+                promotions.filter { it.showLatestPromotion }
+                        .distinctBy { it.id }
+            }
+            else -> promotions
+        }
     }
 
-    @GetMapping("/promotion")
-    override fun promotion(
-            @RequestParam("show", required = false) show: Boolean?,
-            @RequestParam("showTransfer", required = false) showTransfer: Boolean?
-    ): List<PromotionVo> {
 
+    private fun getPromotionList(): List<PromotionVo> {
         val clientId = getClientId()
         val (language, launch) = getLanguageAndLaunchFormHeader()
 
         val allPromotion = promotionService.all(clientId)
                 .filter { it.status == Status.Normal }
+                .filter { it.category != PromotionCategory.ActivationCode } // 该优惠不显示在所有列表 只用于用户手工输入验证码
                 .sortedBy { it.sequence }
-                .filter { show == null || it.show == show }
-                .filter { showTransfer == null || it.showTransfer == showTransfer }
-                .filter { it.category != PromotionCategory.ActivationCode } // 优惠码Code类型不显示在前台
-
-        log.info("优惠列表：${allPromotion}")
+                .toList()
 
         val promotions = arrayListOf<Promotion>()
 
@@ -244,7 +250,6 @@ open class ApiController(
             val i18nContent = i18nContentMap["${promotion.id}:${language}"]
                     ?: i18nContentMap["${promotion.id}:${Language.EN}"]
 
-
             i18nContent?.let {
                 val content = i18nContent.getII18nContent(objectMapper) as I18nContent.PromotionI18n
 
@@ -257,11 +262,12 @@ open class ApiController(
                 PromotionVo(id = promotion.id, clientId = it.clientId, category = promotion.category, stopTime = promotion.stopTime, top = promotion.top,
                         icon = icon, platforms = promotion.platforms, title = content.title, synopsis = content.synopsis, content = content.content,
                         status = promotion.status, createdTime = it.createdTime, precautions = content.precautions, ruleType = promotion.ruleType,
-                        rule = promotion.rule, showLatestPromotion = promotion.showLatestPromotion)
+                        rule = promotion.rule, showLatestPromotion = promotion.showLatestPromotion, showTransfer = promotion.showTransfer,
+                        show = promotion.show)
             }
         }
-
     }
+
 
     @GetMapping("/promotion/latest")
     override fun latestPromotion(): List<PromotionValue.LatestPromotionVo> {
