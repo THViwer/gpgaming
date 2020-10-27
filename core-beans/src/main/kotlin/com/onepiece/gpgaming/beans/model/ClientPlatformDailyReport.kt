@@ -3,16 +3,15 @@ package com.onepiece.gpgaming.beans.model
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import java.math.BigDecimal
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class ClientPlatformDailyReport(
 
         // id
-        val id: Int,
+//        val id: Int,
 
         // 报表日期
-        val day: LocalDate,
+        val day: String,
 
         // 厅主Id
         val clientId: Int,

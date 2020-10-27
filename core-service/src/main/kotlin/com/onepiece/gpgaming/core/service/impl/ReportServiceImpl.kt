@@ -402,7 +402,7 @@ class ReportServiceImpl(
 
                             val activeCount = activeCountMap["${client.id}:${platform}"] ?: 0
 
-                            ClientPlatformDailyReport(id = -1, day = startDate, clientId = client.id, activeCount = activeCount, bet = bet, win = win, platform = platform,
+                            ClientPlatformDailyReport(day = "$startDate", clientId = client.id, activeCount = activeCount, bet = bet, win = win, platform = platform,
                                     transferIn = transferIn, transferOut = transferOut, promotionAmount = promotionAmount, createdTime = LocalDateTime.now(), status = Status.Normal)
                         }
             }

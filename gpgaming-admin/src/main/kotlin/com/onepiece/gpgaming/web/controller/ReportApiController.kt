@@ -108,7 +108,6 @@ class ReportApiController(
     }
 
 
-
     @GetMapping("/analysis", "/member/month")
     override fun analysis(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = true) startDate: LocalDate,
@@ -133,7 +132,7 @@ class ReportApiController(
         val members = memberService.findByIds(ids = ids).map { it.id to it }.toMap()
 
         return list.map {
-            it.copy(username = members[it.memberId]?.username?: "")
+            it.copy(username = members[it.memberId]?.username ?: "")
         }
 
     }
@@ -143,8 +142,8 @@ class ReportApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam(value = "username", required = false) username: String?,
-            @RequestParam("minRebateAmount",  required = false) minRebateAmount: BigDecimal?,
-            @RequestParam("minPromotionAmount",  required = false) minPromotionAmount: BigDecimal?,
+            @RequestParam("minRebateAmount", required = false) minRebateAmount: BigDecimal?,
+            @RequestParam("minPromotionAmount", required = false) minPromotionAmount: BigDecimal?,
             @RequestParam("current") current: Int,
             @RequestParam("size") size: Int
     ): ReportValue.MemberTotalDetailReport {
@@ -156,7 +155,7 @@ class ReportApiController(
                 minRebateAmount = minRebateAmount, minPromotionAmount = minPromotionAmount, current = current, size = size,
                 agentId = null)
 
-        val total  = memberDailyReportService.total(query)
+        val total = memberDailyReportService.total(query)
         val history = memberDailyReportService.query(query)
 
         //查询今天的
@@ -170,7 +169,7 @@ class ReportApiController(
 //        val data = history.plus(todayData)
         val data = history
         if (data.isEmpty()) {
-            val emptyTotal = MemberReportValue.MemberReportTotal(count = 0,  totalMWin = BigDecimal.ZERO, totalBet = BigDecimal.ZERO, transferIn = BigDecimal.ZERO,
+            val emptyTotal = MemberReportValue.MemberReportTotal(count = 0, totalMWin = BigDecimal.ZERO, totalBet = BigDecimal.ZERO, transferIn = BigDecimal.ZERO,
                     transferOut = BigDecimal.ZERO, totalDepositCount = 0, totalDepositAmount = BigDecimal.ZERO, totalWithdrawCount = 0, totalWithdrawAmount = BigDecimal.ZERO,
                     totalArtificialCount = 0, totalArtificialAmount = BigDecimal.ZERO, totalThirdPayCount = 0, totalThirdPayAmount = BigDecimal.ZERO, totalRebateAmount = BigDecimal.ZERO,
                     totalPromotionAmount = BigDecimal.ZERO)
@@ -198,7 +197,7 @@ class ReportApiController(
             }
         }.sortedByDescending { it.day }
 
-        return ReportValue.MemberTotalDetailReport(data = list,  memberReportTotal = total)
+        return ReportValue.MemberTotalDetailReport(data = list, memberReportTotal = total)
 
     }
 
@@ -217,23 +216,41 @@ class ReportApiController(
         }
 
         val data = clientPlatformDailyReportService.query(query).plus(todayData).sortedByDescending { it.day }
-        return ReportValue.CPTotalReport(data)
+
+        //10.27 新需要 显示不需要分日期 显示总日期
+        val data1027 = data.groupBy { it.platform }.map {
+
+            val dailyReports = it.value
+            val first = dailyReports.first()
+
+            val bet = dailyReports.sumByDouble { r -> r.bet.toDouble() }.toBigDecimal()
+            val win = dailyReports.sumByDouble { r -> r.win.toDouble() }.toBigDecimal()
+            val transferIn = dailyReports.sumByDouble { r -> r.transferIn.toDouble() }.toBigDecimal()
+            val transferOut = dailyReports.sumByDouble { r -> r.transferOut.toDouble() }.toBigDecimal()
+            val promotionAmount = dailyReports.sumByDouble { r -> r.promotionAmount.toDouble() }.toBigDecimal()
+            val activeCount = dailyReports.sumBy { r -> r.activeCount }
+
+            first.copy(day = "$startDate~$endDate", bet = bet, win = win, transferIn = transferIn, transferOut = transferOut,
+                    promotionAmount = promotionAmount, activeCount = activeCount)
+        }
+        return ReportValue.CPTotalReport(data1027)
     }
 
 
     @GetMapping("/client/member/report")
     override fun platformMemberDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
-            @RequestParam("platform") platform:  Platform
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
+            @RequestParam("platform") platform: Platform
     ): List<ReportValue.PlatformSettleVo> {
 
         val user = this.current()
 
-        val memberQuery = MemberReportQuery(clientId = user.clientId, agentId = null, memberId = null, startDate = startDate, endDate = startDate.plusDays(1),
+        val memberQuery = MemberReportQuery(clientId = user.clientId, agentId = null, memberId = null, startDate = startDate, endDate = endDate,
                 minPromotionAmount = null, minRebateAmount = null, current = 0, size = 999999)
-        val list =  memberDailyReportDao.query(memberQuery)
+        val list = memberDailyReportDao.query(memberQuery)
 
-        return  list.mapNotNull{ report ->
+        return list.mapNotNull { report ->
             report.settles.firstOrNull { it.platform == platform }
                     ?.let { settle ->
                         ReportValue.PlatformSettleVo(memberId = report.memberId, platform = platform, username = report.username, bet = settle.bet, validBet = settle.validBet,
@@ -276,8 +293,8 @@ class ReportApiController(
 
         val data = this.clientDaily(startDate = startDate, endDate = endDate).data.map {
             with(it) {
-                ClientReportExcelVo(day = day.toString(),totalBet = totalBet, totalMWin = totalMWin, transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
-                        depositCount = depositCount,  thirdPayAmount = depositAmount, thirdPayCount = thirdPayCount, promotionAmount = promotionAmount, withdrawAmount = withdrawAmount,
+                ClientReportExcelVo(day = day.toString(), totalBet = totalBet, totalMWin = totalMWin, transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
+                        depositCount = depositCount, thirdPayAmount = depositAmount, thirdPayCount = thirdPayCount, promotionAmount = promotionAmount, withdrawAmount = withdrawAmount,
                         withdrawCount = withdrawCount, artificialAmount = artificialAmount, artificialCount = artificialCount, rebateAmount = rebateAmount, newMemberCount = newMemberCount)
             }
         }
@@ -292,7 +309,7 @@ class ReportApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
     ): ReportValue.PromotionTotalReport {
         val query = PromotionDailyReportValue.Query(clientId = current().clientId, startDate = startDate, endDate = endDate)
-        val list =  promotionDailyReportService.query(query)
+        val list = promotionDailyReportService.query(query)
 
         if (list.isEmpty()) return ReportValue.PromotionTotalReport(emptyList())
 
@@ -310,7 +327,7 @@ class ReportApiController(
                 } else ""
                 PromotionReportValue.PromotionReportVo(clientId = clientId, day = day, promotionId = promotionId,
                         promotionAmount = promotionAmount, createdTime = createdTime, status = status,
-                        promotionPlatforms = promotions[promotionId]?.platforms?.joinToString(separator = ",")?: "",
+                        promotionPlatforms = promotions[promotionId]?.platforms?.joinToString(separator = ",") ?: "",
                         promotionTitle = promotionTitle)
             }
         }
@@ -354,7 +371,7 @@ class ReportApiController(
 
         val query = TransferOrderValue.Query(clientId = this.getClientId(), promotionId = promotionId, from = null, sortBy = dbSort, username = username,
                 memberId = null, startDate = startDate, endDate = endDate, filterPromotion = true)
-        val data =  transferOrderService.query(query)
+        val data = transferOrderService.query(query)
 
         return ReportValue.PromotionMTotalReport(data)
     }

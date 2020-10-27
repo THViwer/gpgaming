@@ -31,7 +31,7 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
             val status = rs.getString("status").let { Status.valueOf(it) }
 
 
-            ClientPlatformDailyReport(id = id, day = day, clientId = clientId, platform = platform, activeCount = activeCount,
+            ClientPlatformDailyReport(day = "$day", clientId = clientId, platform = platform, activeCount = activeCount,
                     transferIn = transferIn, transferOut = transferOut, createdTime = createdTime, bet = bet, win = win,
                     promotionAmount = promotionAmount, status = status)
         }

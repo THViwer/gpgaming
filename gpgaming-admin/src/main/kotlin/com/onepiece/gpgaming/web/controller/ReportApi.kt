@@ -50,6 +50,7 @@ interface ReportApi {
     @ApiOperation(tags = ["report"], value = "会员平台报表详情")
     fun platformMemberDaily(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
             @RequestParam("platform") platform:  Platform
     ): List<ReportValue.PlatformSettleVo>
 
