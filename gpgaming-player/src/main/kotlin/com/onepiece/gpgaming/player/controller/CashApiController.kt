@@ -628,6 +628,7 @@ open class CashApiController(
 //        log.info("用户：${current.username}, 优惠列表：$promotions")
         val historyOrders = transferOrderService.queryLastPromotion(clientId = current.clientId, memberId = current.id,
                 startTime = LocalDateTime.now().minusDays(30))
+                .filter { it.to == platform }
         watch.stop()
         log.info("检查优惠 -> 查询历史订单耗时:${watch.lastTaskTimeMillis}ms")
         watch.start()
