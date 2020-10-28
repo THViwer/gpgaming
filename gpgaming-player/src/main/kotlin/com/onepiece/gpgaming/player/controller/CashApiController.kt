@@ -626,12 +626,12 @@ open class CashApiController(
 
         val joinPromotions = promotions
                 .filter {
-                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果0：${it.code.toUpperCase() == code?.toUpperCase() || it.category != PromotionCategory.ActivationCode} ")
-                    it.code.toUpperCase() == code?.toUpperCase() || (it.category != PromotionCategory.ActivationCode && code == null)
+                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果0：${promotionId == null || it.id == promotionId} ")
+                    promotionId == null || it.id == promotionId
                 }
                 .filter {
-                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果1：${promotionId == null || it.id == promotionId} ")
-                    promotionId == null || it.id == promotionId
+                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果1：${it.code.toUpperCase() == code?.toUpperCase() || it.category != PromotionCategory.ActivationCode} ")
+                    it.code.toUpperCase() == code?.toUpperCase() || (it.category != PromotionCategory.ActivationCode && code == null)
                 }
                 .filter {
                     log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果2：${it.rule.minAmount.toDouble() <= amount.toDouble() && amount.toDouble() <= it.rule.maxAmount.toDouble()} ")
@@ -745,7 +745,7 @@ open class CashApiController(
         ) {
             val checkResponse = this.checkPromotion(platform = cashTransferReq.to, amount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId,
                     code = cashTransferReq.code)
-            check(!checkResponse.promotion) { OnePieceExceptionCode.PROMOTION_CANNOT_JOIN }
+            check(checkResponse.promotion) { OnePieceExceptionCode.PROMOTION_CANNOT_JOIN }
         }
 
         // 如果是首存 则提示金额
