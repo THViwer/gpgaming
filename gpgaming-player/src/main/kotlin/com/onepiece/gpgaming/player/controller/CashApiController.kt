@@ -768,7 +768,7 @@ open class CashApiController(
         if (cashTransferReq.from == Platform.Center &&
                 (promotionId != null || cashTransferReq.code != null)
         ) {
-            val checkResponse = this.checkPromotion(platform = cashTransferReq.to, amount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId,
+            val checkResponse = this.checkPromotion(platform = cashTransferReq.to, amount = cashTransferReq.amount, promotionId = promotionId,
                     code = cashTransferReq.code)
             check(checkResponse.promotion) { OnePieceExceptionCode.PROMOTION_CANNOT_JOIN }
         }
