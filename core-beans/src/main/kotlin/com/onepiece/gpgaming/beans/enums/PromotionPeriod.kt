@@ -2,6 +2,8 @@ package com.onepiece.gpgaming.beans.enums
 
 import com.onepiece.gpgaming.beans.model.Promotion
 import com.onepiece.gpgaming.beans.model.TransferOrder
+import org.slf4j.LoggerFactory
+import org.springframework.util.StopWatch
 import java.math.BigDecimal
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -43,6 +45,8 @@ enum class PromotionPeriod {
     Unlimited;
 
     companion object {
+
+        private val log = LoggerFactory.getLogger(PromotionPeriod::class.java)
 
         fun check(promotion: Promotion, historyOrders: List<TransferOrder>): Boolean {
 
@@ -112,8 +116,15 @@ enum class PromotionPeriod {
 
         fun getOverPromotionAmount(promotion: Promotion, historyOrders: List<TransferOrder>): BigDecimal {
 
+            val watch = StopWatch()
+            watch.start()
+
             val today = LocalDate.now()
             val promotionHistory = historyOrders.filter { it.joinPromotionId == promotion.id }
+
+            watch.stop()
+            log.info("过滤优惠耗时：${watch.lastTaskTimeMillis}")
+            watch.start()
 
             val (startDate, endDate) = when (promotion.period) {
                 // 特定日期
@@ -164,9 +175,19 @@ enum class PromotionPeriod {
                 else -> today to today
             }
 
-            return promotionHistory.filter { it.createdTime >= startDate.atStartOfDay() && it.createdTime <= endDate.atStartOfDay().plusDays(1) }
+            watch.stop()
+            log.info("when条件过滤耗时：${watch.lastTaskTimeMillis}")
+            watch.start()
+
+            val history = promotionHistory.filter { it.createdTime >= startDate.atStartOfDay() && it.createdTime <= endDate.atStartOfDay().plusDays(1) }
                     .sumByDouble { it.promotionAmount.toDouble() }
                     .let { promotion.periodMaxPromotion.minus(BigDecimal.valueOf(it)).setScale(2, 2) }
+
+            watch.stop()
+            log.info("最后过滤耗时：${watch.lastTaskTimeMillis}")
+            watch.start()
+
+            return history
         }
 
 
