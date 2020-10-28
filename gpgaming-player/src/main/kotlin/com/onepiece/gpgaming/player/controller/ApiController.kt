@@ -13,10 +13,12 @@ import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
+import com.onepiece.gpgaming.beans.enums.PromotionRuleType
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
+import com.onepiece.gpgaming.beans.model.PromotionRules
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.AppVersionValue
 import com.onepiece.gpgaming.beans.value.database.BlogValue
@@ -59,6 +61,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.random.Random
 
@@ -203,9 +206,17 @@ open class ApiController(
             "TransferPage" -> {
                 val member = memberService.getMember(current().id)
                 val firstPromotion = member.firstPromotion
+
+                val now = LocalDateTime.now()
                 promotions.filter { it.showTransfer }
                         // 如果优惠列表为首充 但该用户已使用过首充 则不显示该优惠
                         .filter { !firstPromotion || it.category != PromotionCategory.First }
+                        .filter {
+                            // 过滤掉过期的活动
+                            it.stopTime?.let { stopTime ->
+                                stopTime.isAfter(now)
+                            } ?: true
+                        }
                         .distinctBy { it.id }
             }
             "LatestPromotion" -> {
