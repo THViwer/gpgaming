@@ -682,8 +682,17 @@ open class CashApiController(
 
             try {
                 val overPromotionAmount = PromotionPeriod.getOverPromotionAmount(promotion = promotion, historyOrders = historyOrders)
+                watch.stop()
+                log.info("检查优惠 -> 获得优惠金额耗时:${watch.lastTaskTimeMillis}ms")
+                watch.start()
+
                 transferUtil.handlerPromotion(platformMember = platformMember, amount = amount, platformBalance = platformBalance, promotionId = promotion.id,
                         overPromotionAmount = overPromotionAmount, outstanding = outstanding)
+
+
+                watch.stop()
+                log.info("检查优惠 -> 检查是否满足优惠活动消时:${watch.lastTaskTimeMillis}ms")
+                watch.start()
 
                 val content = contentMap["${promotion.id}:${language}"]
                         ?: contentMap["${promotion.id}:${Language.EN}"]
