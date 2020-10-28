@@ -615,14 +615,12 @@ open class CashApiController(
         val current = this.current()
 
         val member = memberService.getMember(current.id)
-        val promotions = promotionService.find(clientId = current.clientId, platform = platform).filter { it.category != PromotionCategory.Backwater }
-                .filter { it.category != PromotionCategory.Other }
+        val promotions = promotionService.find(clientId = current.clientId, platform = platform)
+                .filter { it.category != PromotionCategory.Backwater && it.category != PromotionCategory.Other }
 
-        log.info("用户：${current.username}, 优惠列表：$promotions")
-
+//        log.info("用户：${current.username}, 优惠列表：$promotions")
         val historyOrders = transferOrderService.queryLastPromotion(clientId = current.clientId, memberId = current.id,
                 startTime = LocalDateTime.now().minusDays(30))
-
 
         val joinPromotions = promotions
                 .filter {
@@ -651,7 +649,6 @@ open class CashApiController(
                     log.info("优惠层级：${promotion.levelId}, 用户层级Id：${member.levelId}")
                     log.info("用户：${current.username}, 优惠Id：${promotion.id}, 过滤结果5：${promotion.levelId.isEmpty() || promotion.levelId.contains(member.levelId)} ")
                     promotion.levelId.isEmpty() || promotion.levelId.contains(member.levelId)
-//                    promotion.levelId == null || promotion.levelId == member.levelId
                 }
 
         log.info("用户：${current.username}, 可参加优惠列表：$joinPromotions")
