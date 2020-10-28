@@ -614,24 +614,24 @@ open class CashApiController(
         val language = getHeaderLanguage()
         val current = this.current()
 
-        val watch = StopWatch()
-        watch.start()
+//        val watch = StopWatch()
+//        watch.start()
 
         val member = memberService.getMember(current.id)
         val promotions = promotionService.find(clientId = current.clientId, platform = platform)
                 .filter { it.category != PromotionCategory.Backwater && it.category != PromotionCategory.Other }
 
-        watch.stop()
-        log.info("检查优惠 -> 查询优惠耗时:${watch.lastTaskTimeMillis}ms")
-        watch.start()
+//        watch.stop()
+//        log.info("检查优惠 -> 查询优惠耗时:${watch.lastTaskTimeMillis}ms")
+//        watch.start()
 
 //        log.info("用户：${current.username}, 优惠列表：$promotions")
         val historyOrders = transferOrderService.queryLastPromotion(clientId = current.clientId, memberId = current.id,
                 startTime = LocalDateTime.now().minusDays(30))
                 .filter { it.to == platform }
-        watch.stop()
-        log.info("检查优惠 -> 查询历史订单耗时:${watch.lastTaskTimeMillis}ms")
-        watch.start()
+//        watch.stop()
+//        log.info("检查优惠 -> 查询历史订单耗时:${watch.lastTaskTimeMillis}ms")
+//        watch.start()
 
         val joinPromotions = promotions
                 .filter {
@@ -662,9 +662,9 @@ open class CashApiController(
                     promotion.levelId.isEmpty() || promotion.levelId.contains(member.levelId)
                 }
 
-        watch.stop()
-        log.info("检查优惠 -> 过滤条件耗时:${watch.lastTaskTimeMillis}ms")
-        watch.start()
+//        watch.stop()
+//        log.info("检查优惠 -> 过滤条件耗时:${watch.lastTaskTimeMillis}ms")
+//        watch.start()
 //        log.info("用户：${current.username}, 可参加优惠列表：$joinPromotions")
 
 
@@ -683,17 +683,17 @@ open class CashApiController(
 
             try {
                 val overPromotionAmount = PromotionPeriod.getOverPromotionAmount(promotion = promotion, historyOrders = historyOrders)
-                watch.stop()
-                log.info("检查优惠 -> 获得优惠金额耗时:${watch.lastTaskTimeMillis}ms")
-                watch.start()
+//                watch.stop()
+//                log.info("检查优惠 -> 获得优惠金额耗时:${watch.lastTaskTimeMillis}ms")
+//                watch.start()
 
                 transferUtil.handlerPromotion(platformMember = platformMember, amount = amount, platformBalance = platformBalance, promotionId = promotion.id,
                         overPromotionAmount = overPromotionAmount, outstanding = outstanding)
 
 
-                watch.stop()
-                log.info("检查优惠 -> 检查是否满足优惠活动消时:${watch.lastTaskTimeMillis}ms")
-                watch.start()
+//                watch.stop()
+//                log.info("检查优惠 -> 检查是否满足优惠活动消时:${watch.lastTaskTimeMillis}ms")
+//                watch.start()
 
                 val content = contentMap["${promotion.id}:${language}"]
                         ?: contentMap["${promotion.id}:${Language.EN}"]
@@ -711,9 +711,9 @@ open class CashApiController(
             }
         }.toList().filterNotNull()
 
-        watch.stop()
-        log.info("检查优惠 -> 添加国际化内容耗时:${watch.lastTaskTimeMillis}ms")
-        watch.start()
+//        watch.stop()
+//        log.info("检查优惠 -> 添加国际化内容耗时:${watch.lastTaskTimeMillis}ms")
+//        watch.start()
 
 
         return CheckPromotinResp(promotions = checkPromotions)

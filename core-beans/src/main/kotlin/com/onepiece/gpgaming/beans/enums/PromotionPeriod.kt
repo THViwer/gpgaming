@@ -123,7 +123,7 @@ enum class PromotionPeriod {
             val promotionHistory = historyOrders.filter { it.joinPromotionId == promotion.id }
 
             watch.stop()
-            log.info("过滤优惠耗时：${watch.lastTaskTimeMillis}")
+            log.info("检查优惠 -> 过滤优惠耗时：${watch.lastTaskTimeMillis}")
             watch.start()
 
             val (startDate, endDate) = when (promotion.period) {
@@ -176,7 +176,7 @@ enum class PromotionPeriod {
             }
 
             watch.stop()
-            log.info("when条件过滤耗时：${watch.lastTaskTimeMillis}")
+            log.info("检查优惠 -> when条件过滤耗时：${watch.lastTaskTimeMillis}")
             watch.start()
 
             val history = promotionHistory.filter { it.createdTime >= startDate.atStartOfDay() && it.createdTime <= endDate.atStartOfDay().plusDays(1) }
@@ -184,7 +184,7 @@ enum class PromotionPeriod {
                     .let { promotion.periodMaxPromotion.minus(BigDecimal.valueOf(it)).setScale(2, 2) }
 
             watch.stop()
-            log.info("最后过滤耗时：${watch.lastTaskTimeMillis}")
+            log.info("检查优惠 -> 最后过滤耗时：${watch.lastTaskTimeMillis}")
             watch.start()
 
             return history
