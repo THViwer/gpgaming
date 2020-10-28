@@ -766,7 +766,7 @@ open class CashApiController(
 //        }
 
         if (cashTransferReq.from == Platform.Center &&
-                (cashTransferReq.promotionId != null || cashTransferReq.code != null)
+                (promotionId != null || cashTransferReq.code != null)
         ) {
             val checkResponse = this.checkPromotion(platform = cashTransferReq.to, amount = cashTransferReq.amount, promotionId = cashTransferReq.promotionId,
                     code = cashTransferReq.code)
