@@ -223,11 +223,11 @@ class ReportApiController(
             val dailyReports = it.value
             val first = dailyReports.first()
 
-            val bet = dailyReports.sumByDouble { r -> r.bet.toDouble() }.toBigDecimal()
-            val win = dailyReports.sumByDouble { r -> r.win.toDouble() }.toBigDecimal()
-            val transferIn = dailyReports.sumByDouble { r -> r.transferIn.toDouble() }.toBigDecimal()
-            val transferOut = dailyReports.sumByDouble { r -> r.transferOut.toDouble() }.toBigDecimal()
-            val promotionAmount = dailyReports.sumByDouble { r -> r.promotionAmount.toDouble() }.toBigDecimal()
+            val bet = dailyReports.sumByDouble { r -> r.bet.toDouble() }.toBigDecimal().setScale(2, 2)
+            val win = dailyReports.sumByDouble { r -> r.win.toDouble() }.toBigDecimal().setScale(2, 2)
+            val transferIn = dailyReports.sumByDouble { r -> r.transferIn.toDouble() }.toBigDecimal().setScale(2, 2)
+            val transferOut = dailyReports.sumByDouble { r -> r.transferOut.toDouble() }.toBigDecimal().setScale(2, 2)
+            val promotionAmount = dailyReports.sumByDouble { r -> r.promotionAmount.toDouble() }.toBigDecimal().setScale(2, 2)
             val activeCount = dailyReports.sumBy { r -> r.activeCount }
 
             first.copy(day = "$startDate~$endDate", bet = bet, win = win, transferIn = transferIn, transferOut = transferOut,

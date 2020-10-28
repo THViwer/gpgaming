@@ -26,12 +26,18 @@ import com.onepiece.gpgaming.player.controller.value.SlotCategoryVo
 import com.onepiece.gpgaming.player.controller.value.StartGameResp
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseStatus
 
 @Api(tags = ["api"], description = " ")
 interface Api {
+
+    @ApiOperation(tags = ["api"], value = "Coming soon")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun comingSoon(@RequestParam("email") email: String)
 
     @ApiOperation(tags = ["api"], value = "首页配置")
     fun config(): IndexConfig

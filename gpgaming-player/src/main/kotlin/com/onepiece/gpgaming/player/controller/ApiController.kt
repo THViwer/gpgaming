@@ -13,12 +13,10 @@ import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
-import com.onepiece.gpgaming.beans.enums.PromotionRuleType
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.Promotion
-import com.onepiece.gpgaming.beans.model.PromotionRules
 import com.onepiece.gpgaming.beans.model.token.PlaytechClientToken
 import com.onepiece.gpgaming.beans.value.database.AppVersionValue
 import com.onepiece.gpgaming.beans.value.database.BlogValue
@@ -31,6 +29,7 @@ import com.onepiece.gpgaming.core.service.AppVersionService
 import com.onepiece.gpgaming.core.service.BannerService
 import com.onepiece.gpgaming.core.service.BlogService
 import com.onepiece.gpgaming.core.service.ClientConfigService
+import com.onepiece.gpgaming.core.service.ComingSoonService
 import com.onepiece.gpgaming.core.service.ContactService
 import com.onepiece.gpgaming.core.service.HotGameService
 import com.onepiece.gpgaming.core.service.I18nContentService
@@ -54,9 +53,11 @@ import com.onepiece.gpgaming.player.controller.value.PromotionVo
 import com.onepiece.gpgaming.player.controller.value.SlotCategoryVo
 import com.onepiece.gpgaming.player.controller.value.SlotGameVo
 import com.onepiece.gpgaming.player.controller.value.StartGameResp
+import com.onepiece.gpgaming.utils.RequestUtil
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -82,10 +83,18 @@ open class ApiController(
         private val seoService: ClientConfigService,
         private val blogService: BlogService,
         private val appVersionService: AppVersionService,
-        private val memberService: MemberService
+        private val memberService: MemberService,
+        private val comingSoonService: ComingSoonService
 ) : BasicController(), Api {
 
     private val log = LoggerFactory.getLogger(ApiController::class.java)
+
+    @PostMapping("/coming/soon")
+    override fun comingSoon(@RequestParam("email") email: String) {
+        val ip = RequestUtil.getIpAddress()
+        val (_, launch) = this.getLanguageAndLaunchFormHeader()
+        comingSoonService.create(ip = ip, email = email, launch = launch)
+    }
 
     @GetMapping
     override fun config(): IndexConfig {
