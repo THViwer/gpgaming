@@ -31,7 +31,7 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
 
             val name = rs.getString("name")
             val icon = rs.getString("icon")
-            val unclejayMobleIcon  = rs.getString("unclejay_moble_icon")
+            val unclejayMobileIcon  = rs.getString("unclejay_mobile_icon")
             val mobileIcon = rs.getString("mobile_icon")
             val disableIcon = rs.getString("disable_icon")
             val mobileDisableIcon = rs.getString("mobile_disable_icon")
@@ -48,7 +48,7 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
                     username = username, password = password, processId = processId, earnestBalance = earnestBalance,
                     tokenJson = tokenJson, hot = hot, new = new, name = name, icon = icon, mobileIcon = mobileIcon,
                     disableIcon = disableIcon, mobileDisableIcon = mobileDisableIcon, originIcon = originIcon, originIconOver = originIconOver,
-                    platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver, unclejayMobleIcon  = unclejayMobleIcon )
+                    platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver, unclejayMobileIcon  = unclejayMobileIcon )
         }
 
     override fun get(id: Int): PlatformBind {
@@ -104,7 +104,7 @@ class PlatformBindDaoImpl: BasicDaoImpl<PlatformBind>("platform_bind"), Platform
 
                 .set("name", platformBindUo.name)
                 .set("icon", platformBindUo.icon)
-                .set("unclejay_moble_icon", platformBindUo.unclejayMobleIcon )
+                .set("unclejay_mobile_icon", platformBindUo.unclejayMobileIcon )
                 .set("mobile_icon", platformBindUo.mobileIcon)
                 .set("disable_icon", platformBindUo.disableIcon)
                 .set("mobile_disable_icon", platformBindUo.mobileDisableIcon)

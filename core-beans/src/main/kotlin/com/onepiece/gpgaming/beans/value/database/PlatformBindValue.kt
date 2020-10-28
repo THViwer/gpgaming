@@ -88,7 +88,7 @@ data class PlatformBindUo(
         // 图标
         val icon: String?= null,
 
-        val unclejayMobleIcon : String?= null,
+        val unclejayMobileIcon : String?= null,
 
         // 平台维护图标
         val disableIcon: String?= null,

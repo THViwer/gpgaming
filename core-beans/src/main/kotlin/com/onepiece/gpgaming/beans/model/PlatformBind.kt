@@ -71,7 +71,7 @@ data class PlatformBind(
         val icon: String,
 
         // 横面大图标
-        val unclejayMobleIcon: String?,
+        val unclejayMobileIcon: String?,
 
         // 平台维护图标
         val disableIcon: String?,

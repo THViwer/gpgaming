@@ -187,7 +187,7 @@ open class ApiController(
                 PlatformVo(id = it.id, name = it.name, category = it.platform.category, status = status, icon = icon,
                         launchs = gamePlatform.launchList, platform = it.platform, demo = gamePlatform.demo, disableIcon = disableIcon, originIcon = it.originIcon,
                         originIconOver = it.originIconOver, categoryDetailIcon = it.icon, platformDetailIcon = it.platformDetailIcon,
-                        platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new, unclejayMobleIcon = it.unclejayMobleIcon)
+                        platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new, unclejayMobileIcon = it.unclejayMobileIcon)
                 //TODO 设置图标
             } catch (e: Exception) {
                 log.error("", e)
@@ -591,7 +591,7 @@ open class ApiController(
                             status = gamePlatform.status, icon = it.icon, launchs = gamePlatform.launchList,
                             demo = gamePlatform.demo, disableIcon = it.disableIcon, originIconOver = it.originIconOver,
                             originIcon = it.originIcon, categoryDetailIcon = it.icon, platformDetailIcon = it.platformDetailIcon,
-                            platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new, unclejayMobleIcon = it.unclejayMobleIcon)
+                            platformDetailIconOver = it.platformDetailIconOver, hot = it.hot, new = it.new, unclejayMobileIcon = it.unclejayMobileIcon)
                     //TODO 配置图标
                 }
 
