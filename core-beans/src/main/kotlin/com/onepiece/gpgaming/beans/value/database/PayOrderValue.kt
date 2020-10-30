@@ -86,6 +86,8 @@ sealed class PayOrderValue {
             // 操作者用户名
             val operatorUsername: String,
 
+            val firstDeposit: Boolean = false,
+
             // 备注
             val remark: String
     )

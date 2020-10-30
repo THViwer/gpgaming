@@ -122,6 +122,7 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
                 .set("remark", uo.remark)
                 .set("updated_time", LocalDateTime.now())
                 .set("state", PayState.Successful)
+                .set("first_deposit", uo.firstDeposit)
                 .where("order_id", uo.orderId)
                 .executeOnlyOne()
 
