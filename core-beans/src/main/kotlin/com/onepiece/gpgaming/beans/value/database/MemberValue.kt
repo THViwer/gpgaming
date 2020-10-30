@@ -141,6 +141,9 @@ data class MemberUo(
         // 首充优惠
         val firstPromotion: Boolean? = null,
 
+        // 首充
+        val firstDeposit: Boolean? = null,
+
         // 密码
         val password: String? = null,
 

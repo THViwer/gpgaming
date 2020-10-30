@@ -35,6 +35,7 @@ class MemberDaoImpl : BasicDaoImpl<Member>("member"), MemberDao {
             val password = rs.getString("password")
             val safetyPassword = rs.getString("safety_password")
             val firstPromotion = rs.getBoolean("first_promotion")
+            val firstDeposit = rs.getBoolean("first_deposit")
             val levelId = rs.getInt("level_id")
             val vipId = rs.getInt("vip_id")
             val autoTransfer = rs.getBoolean("auto_transfer")
@@ -58,7 +59,8 @@ class MemberDaoImpl : BasicDaoImpl<Member>("member"), MemberDao {
                     autoTransfer = autoTransfer, bossId = bossId, agentId = agentId, role = role, promoteCode = "$id",
                     formal = formal, agencyMonthFee = agencyMonthFee, saleId = saleId, saleScope = saleScope,
                     registerIp = registerIp, riskLevel = riskLevel, vipId = vipId, birthday = birthday, idCard = idCard,
-                    address = address, email = email, marketId = marketId, introduceId = introduceId)
+                    address = address, email = email, marketId = marketId, introduceId = introduceId,
+                    firstDeposit = firstDeposit)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -76,6 +78,7 @@ class MemberDaoImpl : BasicDaoImpl<Member>("member"), MemberDao {
                 .set("phone", memberCo.phone)
                 .set("password", memberCo.password)
                 .set("first_promotion", false)
+                .set("first_deposit", false)
                 .set("safety_password", memberCo.safetyPassword)
                 .set("level_id", memberCo.levelId)
                 .set("status", Status.Normal)
@@ -99,6 +102,7 @@ class MemberDaoImpl : BasicDaoImpl<Member>("member"), MemberDao {
                 .set("password", memberUo.password)
                 .set("safety_password", memberUo.safetyPassword)
                 .set("first_promotion", memberUo.firstPromotion)
+                .set("first_deposit", memberUo.firstDeposit)
                 .set("status", memberUo.status)
                 .set("level_id", memberUo.levelId)
                 .set("vip_id", memberUo.vipId)

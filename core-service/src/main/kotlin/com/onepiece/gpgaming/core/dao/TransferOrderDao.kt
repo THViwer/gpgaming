@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.model.TransferOrder
 import com.onepiece.gpgaming.beans.value.database.ClientTransferPlatformReportVo
 import com.onepiece.gpgaming.beans.value.database.ClientTransferReportVo
+import com.onepiece.gpgaming.beans.value.database.FirstDepositValue
 import com.onepiece.gpgaming.beans.value.database.MemberTransferPlatformReportVo
 import com.onepiece.gpgaming.beans.value.database.MemberTransferReportVo
 import com.onepiece.gpgaming.beans.value.database.TransferOrderCo
@@ -38,13 +39,9 @@ interface TransferOrderDao: BasicDao<TransferOrder> {
 
     fun queryProcessOrder(startDate: LocalDateTime, endDate: LocalDateTime): List<TransferOrder>
 
-//    fun reportByPlatform(memberId: Int?, from: Platform?, to: Platform?, startDate: LocalDate, endDate: LocalDate): List<MemberTransferPlatformReportVo>
-//
-//    fun report(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo>
-//
-//    fun clientReport(clientId: Int?, startDate: LocalDate, endDate: LocalDate): List<ClientPlatformTransferReportVo>
-//
-//    fun clientReportByPlatform(clientId: Int, startDate: LocalDate, endDate: LocalDate): List<ClientPlatformTransferReportVo>
+    fun queryFirstDepositFrequency(startDate: LocalDate, endDate: LocalDate): List<FirstDepositValue.FirstDepositFrequencyVo>
+
+    fun queryFirstDeposit(memberIds: List<Int>): List<FirstDepositValue.FirstDepositVo>
 
 }
 

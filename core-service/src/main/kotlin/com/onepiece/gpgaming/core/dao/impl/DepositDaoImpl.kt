@@ -12,6 +12,7 @@ import com.onepiece.gpgaming.beans.value.database.DepositLockUo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.DepositReportVo
 import com.onepiece.gpgaming.beans.value.database.DepositUo
+import com.onepiece.gpgaming.beans.value.database.FirstDepositVo
 import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
 import com.onepiece.gpgaming.core.dao.basic.getIntOrNull
@@ -42,6 +43,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
             val clientBankCardNumber = rs.getString("client_bank_card_number")
             val clientBankName = rs.getString("client_bank_name")
             val money = rs.getBigDecimal("money")
+            val firstDeposit = rs.getBoolean("first_deposit")
             val depositTime = rs.getTimestamp("deposit_time").toLocalDateTime()
             val channel = rs.getString("channel").let { DepositChannel.valueOf(it) }
             val imgPath = rs.getString("img_path")
@@ -58,7 +60,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                     memberBankCardNumber = memberBankCardNumber, processId = processId, memberName = memberName, clientBankId = clientBankId,
                     clientBankName = clientBankName, clientBankCardNumber = clientBankCardNumber, lockWaiterId = lockWaiterId,
                     lockWaiterName = lockWaiterName, depositTime = depositTime, channel = channel, username = username, memberBankId = memberBankId,
-                    clientBank = clientBank, status = status)
+                    clientBank = clientBank, status = status, firstDeposit = firstDeposit)
         }
 
     override fun findDeposit(clientId: Int, orderId: String): Deposit {
@@ -136,6 +138,7 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
                 .set("remarks", depositUo.remarks)
                 .set("process_id", UUID.randomUUID().toString())
                 .set("end_time", LocalDateTime.now())
+                .set("first_deposit", depositUo.firstDeposit)
                 .where("order_id", depositUo.orderId)
                 .where("process_id", depositUo.processId)
                 .where("lock_waiter_id", depositUo.lockWaiterId)
@@ -191,4 +194,22 @@ class DepositDaoImpl : BasicDaoImpl<Deposit>("deposit"), DepositDao {
         val sql = "delete  from deposit  where  created_time > ? and `state`  != 'Successful'"
         jdbcTemplate.update(sql, startDate)
     }
+
+    override fun queryFirstDepositDetail(startDate: LocalDate): List<FirstDepositVo> {
+        return query("client_id, count(id) first_deposit_frequency, sum(money) total_first_deposit")
+                .asWhere("created_time > ?", startDate)
+                .where("state", "Successful")
+                .where("first_deposit", true)
+                .group("client_id")
+                .execute { rs ->
+                    val clientId = rs.getInt("client_id")
+                    val firstDepositFrequency = rs.getInt("first_deposit_frequency")
+                    val totalFirstDeposit = rs.getBigDecimal("total_first_deposit")
+
+                    FirstDepositVo(clientId = clientId, firstDepositFrequency = firstDepositFrequency, totalFirstDeposit = totalFirstDeposit)
+                }
+
+    }
+
+
 }

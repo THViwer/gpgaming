@@ -5,9 +5,11 @@ import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.WalletEvent
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.PayOrder
+import com.onepiece.gpgaming.beans.value.database.FirstDepositVo
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.beans.value.database.WalletUo
 import com.onepiece.gpgaming.core.dao.PayOrderDao
+import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.WalletService
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,6 +25,9 @@ class PayOrderServiceImpl(
 
     @Autowired
     lateinit var walletService: WalletService
+
+    @Autowired
+    lateinit var memberService: MemberService
 
     override fun page(query: PayOrderValue.PayOrderQuery): Page<PayOrder> {
         val total = payOrderDao.total(query)
@@ -53,7 +58,7 @@ class PayOrderServiceImpl(
         val flag = payOrderDao.check(uo)
         check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
-        // 更新饭钱
+        // 更新钱包
         val walletUo = WalletUo(clientId = order.clientId, waiterId = null, memberId = order.memberId, money = order.amount, giftBalance = null,
                 event = WalletEvent.ThirdPay, eventId = order.orderId, remarks = uo.remark)
         walletService.update(walletUo = walletUo)
@@ -65,8 +70,9 @@ class PayOrderServiceImpl(
         val order = payOrderDao.find(orderId = orderId)
         if (order.state == PayState.Successful) return
 
+        val member = memberService.getMember(id = order.memberId)
         // 更新支付订单
-        val flag = payOrderDao.successful(orderId, thirdOrderId)
+        val flag = payOrderDao.successful(orderId, thirdOrderId, !member.firstDeposit)
         check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // 更新钱包
@@ -86,5 +92,9 @@ class PayOrderServiceImpl(
 
     override fun sumSuccessful(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): BigDecimal {
         return payOrderDao.sumSuccessful(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
+    }
+
+    override fun queryFirstDepositDetail(startDate: LocalDate): List<FirstDepositVo> {
+        return payOrderDao.queryFirstDepositDetail(startDate = startDate)
     }
 }

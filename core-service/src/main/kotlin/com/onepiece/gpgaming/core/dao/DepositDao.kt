@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.value.database.DepositLockUo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.DepositReportVo
 import com.onepiece.gpgaming.beans.value.database.DepositUo
+import com.onepiece.gpgaming.beans.value.database.FirstDepositVo
 import com.onepiece.gpgaming.core.dao.basic.BasicDao
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -32,5 +33,7 @@ interface DepositDao: BasicDao<Deposit> {
     fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo>
 
     fun delOldOrder(startDate: LocalDate)
+
+    fun queryFirstDepositDetail(startDate: LocalDate): List<FirstDepositVo>
 
 }

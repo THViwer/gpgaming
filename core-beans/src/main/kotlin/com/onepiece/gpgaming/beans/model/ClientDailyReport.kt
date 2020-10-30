@@ -38,6 +38,12 @@ data class ClientDailyReport(
         // 充值次数
         val depositCount: Int,
 
+        // 第一次充值人次
+        val firstDepositFrequency: Int = -1,
+
+        // 第一次充值金额
+        val totalFirstDeposit: BigDecimal = BigDecimal.valueOf(-1),
+
         // 充值人数
 //        val depositSequence: Int,
 

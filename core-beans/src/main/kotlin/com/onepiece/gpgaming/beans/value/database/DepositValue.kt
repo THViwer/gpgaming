@@ -100,7 +100,9 @@ data class DepositUo(
         val remarks: String?,
 
         // 锁定客服Id
-        val lockWaiterId: Int
+        val lockWaiterId: Int,
+
+        val firstDeposit: Boolean
 )
 
 data class DepositLockUo(

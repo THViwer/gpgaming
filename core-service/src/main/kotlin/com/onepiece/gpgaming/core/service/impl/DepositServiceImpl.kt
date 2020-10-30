@@ -11,11 +11,14 @@ import com.onepiece.gpgaming.beans.value.database.DepositLockUo
 import com.onepiece.gpgaming.beans.value.database.DepositQuery
 import com.onepiece.gpgaming.beans.value.database.DepositReportVo
 import com.onepiece.gpgaming.beans.value.database.DepositUo
+import com.onepiece.gpgaming.beans.value.database.FirstDepositVo
 import com.onepiece.gpgaming.beans.value.database.WalletUo
 import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
 import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.service.DepositService
+import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WalletService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -25,6 +28,9 @@ class DepositServiceImpl(
         private val depositDao: DepositDao,
         private val walletService: WalletService
 ) : DepositService {
+
+    @Autowired
+    lateinit var memberService: MemberService
 
     override fun findDeposit(clientId: Int, orderId: String): Deposit {
         return depositDao.findDeposit(clientId, orderId)
@@ -57,8 +63,12 @@ class DepositServiceImpl(
         val order = depositDao.findDeposit(depositUoReq.clientId, depositUoReq.orderId)
         check(order.state ==  DepositState.Close || order.state == DepositState.Process) { OnePieceExceptionCode.ORDER_EXPIRED }
 
+
+        val member = memberService.getMember(id = order.memberId)
+        val firstDeposit = !member.firstDeposit
+
         val depositUo = DepositUo(clientId = order.clientId, orderId = order.orderId, processId = order.processId,
-                state = depositUoReq.state, remarks = depositUoReq.remarks, lockWaiterId = depositUoReq.waiterId)
+                state = depositUoReq.state, remarks = depositUoReq.remarks, lockWaiterId = depositUoReq.waiterId, firstDeposit = firstDeposit)
         val state = depositDao.update(depositUo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
@@ -81,5 +91,9 @@ class DepositServiceImpl(
 
     override fun reportByClient(startDate: LocalDate, endDate: LocalDate): List<ClientDepositReportVo> {
         return depositDao.reportByClient(startDate, endDate)
+    }
+
+    override fun queryFirstDepositDetail(startDate: LocalDate): List<FirstDepositVo> {
+        return depositDao.queryFirstDepositDetail(startDate = startDate)
     }
 }

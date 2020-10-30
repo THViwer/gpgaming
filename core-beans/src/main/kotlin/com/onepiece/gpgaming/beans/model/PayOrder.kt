@@ -23,6 +23,9 @@ data class PayOrder (
         // 金额
         val amount: BigDecimal,
 
+        // 是否是首充
+        val firstDeposit: Boolean,
+
         // 订单Id
         val orderId: String,
 

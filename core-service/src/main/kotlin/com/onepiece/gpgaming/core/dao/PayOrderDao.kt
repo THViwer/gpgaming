@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.core.dao
 
 import com.onepiece.gpgaming.beans.model.PayOrder
+import com.onepiece.gpgaming.beans.value.database.FirstDepositVo
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -20,7 +21,7 @@ interface PayOrderDao {
 
     fun check(uo: PayOrderValue.ConstraintUo): Boolean
 
-    fun successful(orderId: String, thirdOrderId: String): Boolean
+    fun successful(orderId: String, thirdOrderId: String, firstDeposit: Boolean): Boolean
 
     fun failed(orderId: String): Boolean
 
@@ -38,5 +39,7 @@ interface PayOrderDao {
     fun sumSuccessful(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): BigDecimal
 
     fun delOldOrder(startDate: LocalDate)
+
+    fun queryFirstDepositDetail(startDate: LocalDate): List<FirstDepositVo>
 
 }

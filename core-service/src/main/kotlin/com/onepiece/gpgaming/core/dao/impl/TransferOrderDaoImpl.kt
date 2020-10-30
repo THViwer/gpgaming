@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.TransferState
 import com.onepiece.gpgaming.beans.model.TransferOrder
 import com.onepiece.gpgaming.beans.value.database.ClientTransferPlatformReportVo
 import com.onepiece.gpgaming.beans.value.database.ClientTransferReportVo
+import com.onepiece.gpgaming.beans.value.database.FirstDepositValue
 import com.onepiece.gpgaming.beans.value.database.MemberTransferPlatformReportVo
 import com.onepiece.gpgaming.beans.value.database.MemberTransferReportVo
 import com.onepiece.gpgaming.beans.value.database.TransferOrderCo
@@ -245,5 +246,13 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .where("state", "Process")
                 .where("to", "Center")
                 .execute(mapper)
+    }
+
+    override fun queryFirstDepositFrequency(startDate: LocalDate, endDate: LocalDate): List<FirstDepositValue.FirstDepositFrequencyVo> {
+        TODO("Not yet implemented")
+    }
+
+    override fun queryFirstDeposit(memberIds: List<Int>): List<FirstDepositValue.FirstDepositVo> {
+        TODO("Not yet implemented")
     }
 }

@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Wallet
 import com.onepiece.gpgaming.beans.value.database.MemberInfoValue
 import com.onepiece.gpgaming.beans.value.database.MemberIntroduceValue
+import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.database.WalletCo
 import com.onepiece.gpgaming.beans.value.database.WalletDepositUo
 import com.onepiece.gpgaming.beans.value.database.WalletFreezeUo
@@ -20,6 +21,7 @@ import com.onepiece.gpgaming.core.risk.VipUtil
 import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberIntroduceService
+import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WalletService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,6 +48,9 @@ class WalletServiceImpl(
 
     @Autowired
     lateinit var clientConfigService: ClientConfigService
+
+    @Autowired
+    lateinit var memberService: MemberService
 
     override fun getMemberWallet(memberId: Int): Wallet {
         return walletDao.getMemberWallet(memberId)
@@ -165,6 +170,15 @@ class WalletServiceImpl(
 
                 // 刷新vip等级
                 vipUtil.checkAndUpdateVip(clientId = walletUo.clientId, memberId = walletUo.memberId, amount = walletUo.money)
+
+                // 加上已是首充
+                val member = memberService.getMember(id = walletUo.memberId)
+                if (!member.firstDeposit) {
+                    val memberUo = MemberUo(id = member.id, firstDeposit = true)
+                    memberService.update(memberUo = memberUo)
+                }
+
+
             }
             WalletEvent.WITHDRAW -> {
                 val infoUo = MemberInfoValue.MemberInfoUo.ofWithdraw(memberId = walletUo.memberId, amount = walletUo.money)

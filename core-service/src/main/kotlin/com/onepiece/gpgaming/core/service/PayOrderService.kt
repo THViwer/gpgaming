@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.core.service
 
 import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.model.PayOrder
+import com.onepiece.gpgaming.beans.value.database.FirstDepositVo
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -27,4 +28,5 @@ interface PayOrderService  {
 
     fun sumSuccessful(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): BigDecimal
 
+    fun queryFirstDepositDetail(startDate: LocalDate): List<FirstDepositVo>
 }

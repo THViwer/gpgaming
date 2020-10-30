@@ -34,12 +34,15 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
             val thirdPayCount = rs.getInt("third_pay_count")
             val rebateAmount = rs.getBigDecimal("rebate_amount")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
+            val firstDepositFrequency = rs.getInt("first_deposit_frequency")
+            val totalFirstDeposit = rs.getBigDecimal("total_first_deposit")
 
 
             ClientDailyReport(id = id, day = day, bossId = bossId, clientId = clientId, transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
                     depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
                     promotionAmount = promotionAmount, artificialAmount = artificialAmount, artificialCount = artificialCount, totalBet = totalBet, totalMWin = totalMWin,
-                    thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, activeCount = activeCount)
+                    thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, activeCount = activeCount, firstDepositFrequency = firstDepositFrequency,
+                    totalFirstDeposit = totalFirstDeposit)
         }
 
     override fun create(reports: List<ClientDailyReport>) {
@@ -63,6 +66,8 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                 .set("third_pay_amount")
                 .set("third_pay_count")
                 .set("rebate_amount")
+                .set("first_deposit_frequency")
+                .set("total_first_deposit")
                 .execute { ps, entity ->
                     var x = 0
                     ps.setDate(++x, Date.valueOf(entity.day))
@@ -84,6 +89,8 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     ps.setBigDecimal(++x, entity.thirdPayAmount)
                     ps.setInt(++x, entity.thirdPayCount)
                     ps.setBigDecimal(++x, entity.rebateAmount)
+                    ps.setInt(++x, entity.firstDepositFrequency)
+                    ps.setBigDecimal(++x, entity.totalFirstDeposit)
                 }
     }
 

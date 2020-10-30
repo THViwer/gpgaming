@@ -5,6 +5,7 @@ import com.onepiece.gpgaming.beans.enums.DepositState
 import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.PayType
 import com.onepiece.gpgaming.beans.model.PayOrder
+import com.onepiece.gpgaming.beans.value.database.FirstDepositVo
 import com.onepiece.gpgaming.beans.value.database.PayOrderValue
 import com.onepiece.gpgaming.core.dao.PayOrderDao
 import com.onepiece.gpgaming.core.dao.basic.BasicDaoImpl
@@ -28,6 +29,7 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
             val payType = rs.getString("pay_type").let { PayType.valueOf(it) }
             val bank = rs.getString("bank")?.let { Bank.valueOf(it) }
             val amount = rs.getBigDecimal("amount")
+            val firstDeposit = rs.getBoolean("first_deposit")
             val orderId = rs.getString("order_id")
             val thirdOrderId = rs.getString("third_order_id")
             val operatorId = rs.getIntOrNull("operator_id")
@@ -40,7 +42,7 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
             PayOrder(id = id, clientId = clientId, memberId = memberId, username = username, amount = amount,
                     orderId = orderId, thirdOrderId = thirdOrderId, operatorId = operatorId, operatorUsername = operatorUsername,
                     remark = remark, state = state, createdTime = createdTime, updatedTime = updatedTime, payType = payType,
-                    payId = payId, bank = bank)
+                    payId = payId, bank = bank, firstDeposit = firstDeposit)
         }
 
     override fun summary(query: PayOrderValue.PayOrderQuery): List<PayOrderValue.ThirdPaySummary> {
@@ -125,11 +127,12 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
 
     }
 
-    override fun successful(orderId: String, thirdOrderId: String): Boolean {
+    override fun successful(orderId: String, thirdOrderId: String, firstDeposit: Boolean): Boolean {
         return update()
                 .set("state", PayState.Successful)
                 .set("updated_time", LocalDateTime.now())
                 .set("third_order_id", thirdOrderId)
+                .set("first_deposit", firstDeposit)
                 .where("order_id", orderId)
                 .asWhere("state != ?", PayState.Successful)
                 .executeOnlyOne()
@@ -225,6 +228,21 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
     override fun delOldOrder(startDate: LocalDate) {
         val sql = "delete  from pay_order  where  created_time < ? and `state`  != 'Successful'"
         jdbcTemplate.update(sql, startDate)
+    }
+
+    override fun queryFirstDepositDetail(startDate: LocalDate): List<FirstDepositVo> {
+        return query("client_id, count(id) first_deposit_frequency, sum(amount) total_first_deposit")
+                .asWhere("created_time > ?", startDate)
+                .where("state", "Successful")
+                .where("first_deposit", true)
+                .group("client_id")
+                .execute { rs ->
+                    val clientId = rs.getInt("client_id")
+                    val firstDepositFrequency = rs.getInt("first_deposit_frequency")
+                    val totalFirstDeposit = rs.getBigDecimal("total_first_deposit")
+
+                    FirstDepositVo(clientId = clientId, firstDepositFrequency = firstDepositFrequency, totalFirstDeposit = totalFirstDeposit)
+                }
     }
 
 }

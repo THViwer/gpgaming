@@ -57,6 +57,9 @@ data class Deposit(
         // 充值金额
         val money: BigDecimal,
 
+        // 是否是首充
+        val firstDeposit: Boolean,
+
         // 转账时间
         val depositTime: LocalDateTime,
 
