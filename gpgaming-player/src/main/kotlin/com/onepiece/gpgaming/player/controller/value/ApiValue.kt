@@ -201,6 +201,9 @@ data class BannerVo(
         @ApiModelProperty("图标")
         val icon: String,
 
+        @ApiModelProperty("pc图标")
+        val pcIcon: String?,
+
         @ApiModelProperty("标题")
         val title: String?,
 
