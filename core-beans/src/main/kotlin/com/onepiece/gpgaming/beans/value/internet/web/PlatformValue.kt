@@ -60,7 +60,9 @@ sealed class PlatformValue {
                 val platformDetailIcon: String?,
 
                 // 平台详情鼠标移动图片
-                val platformDetailIconOver: String?
+                val platformDetailIconOver: String?,
+
+                val unclejayMobileIcon: String?
         )
 
 

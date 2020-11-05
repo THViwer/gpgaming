@@ -50,7 +50,7 @@ class ClientApiController(
         val bindUo = PlatformBindUo(id = uo.id, username = null, hot = uo.hot, new = uo.new, password = null, tokenJson = null,
                 earnestBalance = null, status = null, name = uo.name, icon = uo.icon, disableIcon = uo.disableIcon, originIcon = uo.originIcon,
                 originIconOver = uo.originIconOver, mobileIcon = uo.mobileIcon, mobileDisableIcon = uo.mobileDisableIcon, platformDetailIcon = uo.platformDetailIcon,
-                platformDetailIconOver = uo.platformDetailIconOver)
+                platformDetailIconOver = uo.platformDetailIconOver, unclejayMobileIcon = uo.unclejayMobileIcon)
         platformBindService.update(bindUo)
     }
 
