@@ -131,6 +131,8 @@ data class PlatformVo(
 
         // 平台详情鼠标移动图片
         val platformDetailIconOver: String? = platformBind.platformDetailIconOver
+
+        val unclejayMobileIcon: String? = platformBind.unclejayMobileIcon
 }
 
 
