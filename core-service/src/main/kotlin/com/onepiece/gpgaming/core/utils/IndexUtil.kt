@@ -138,7 +138,7 @@ class IndexUtil(
 
                 data?.let {
                     val content = data.getII18nContent(objectMapper) as I18nContent.BannerI18n
-                    Index.BannerVo(icon = content.imagePath, link = banner.link)
+                    Index.BannerVo(pcImagePath = content.pcImagePath, mobileImagePath = content.mobileImagePath, link = banner.link)
                 }
             }
 

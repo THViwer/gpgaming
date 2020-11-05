@@ -80,7 +80,10 @@ data class Index(
 
         data class BannerVo(
                 @ApiModelProperty("图标")
-                val icon: String,
+                val pcImagePath: String?,
+
+                @ApiModelProperty("mobile图标")
+                val mobileImagePath: String?,
 
                 @ApiModelProperty("link")
                 val link: String
