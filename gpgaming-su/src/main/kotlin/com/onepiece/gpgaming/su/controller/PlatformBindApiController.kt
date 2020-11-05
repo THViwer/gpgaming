@@ -47,7 +47,7 @@ class PlatformBindApiController(
             PlatformBindUo(id = id, username = username, password = password, earnestBalance = earnestBalance, tokenJson = tokenJson, name = name, icon = icon,
                     disableIcon = disableIcon, originIcon = originIcon, originIconOver = originIconOver, mobileIcon = mobileIcon, mobileDisableIcon = mobileDisableIcon,
                     platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver, hot = null, new = null, status = status,
-                    unclejayMobileIcon = unclejayMobleIcon)
+                    unclejayMobileIcon = unclejayMobileIcon)
         }
 
         platformBindService.update(platformBindCo)

@@ -185,7 +185,7 @@ sealed class PlatformBindSuValue {
             // 图标
             val icon: String,
 
-            val unclejayMobleIcon : String?,
+            val unclejayMobileIcon : String?,
 
             // 平台维护图标
             val disableIcon: String?,
