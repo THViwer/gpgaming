@@ -87,7 +87,10 @@ data class Index(
 
                 @ApiModelProperty("link")
                 val link: String
-        )
+        ) {
+
+                val icon: String? = pcImagePath
+        }
 
         data class PlatformVo(
 
