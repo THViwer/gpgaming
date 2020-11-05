@@ -68,6 +68,8 @@ data class I18nContent (
             // pc 的banner图片地址
             val pcImagePath: String? = null,
 
+            val mobileImagePath: String? = null,
+
             val title: String?,
 
             // 介绍

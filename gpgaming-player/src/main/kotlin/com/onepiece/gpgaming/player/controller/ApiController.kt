@@ -574,7 +574,8 @@ open class ApiController(
                 val title = content.title ?: "this is title"
                 val introduce = content.introduce ?: "this is test"
                 BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type,
-                        link = it.link, introduce = introduce, title = title, platformCategory = it.platformCategory, pcIcon = content.pcImagePath)
+                        link = it.link, introduce = introduce, title = title, platformCategory = it.platformCategory, pcImagePath = content.pcImagePath,
+                        mobileImagePath = content.mobileImagePath)
             }
 
         }
@@ -626,7 +627,8 @@ open class ApiController(
             } else {
                 val content = i18nContent.getII18nContent(objectMapper) as I18nContent.BannerI18n
                 BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type, link = it.link,
-                        introduce = content.introduce, title = content.title, platformCategory = it.platformCategory, pcIcon = content.pcImagePath)
+                        introduce = content.introduce, title = content.title, platformCategory = it.platformCategory, pcImagePath = content.pcImagePath,
+                        mobileImagePath = content.mobileImagePath)
             }
         }
 
