@@ -198,8 +198,8 @@ data class BannerVo(
         @ApiModelProperty("排序")
         val order: Int,
 
-        @ApiModelProperty("图标")
-        val icon: String,
+        @ApiModelProperty("图标 已删除")
+        val icon: String = "",
 
         @ApiModelProperty("pc图标")
         val pcImagePath: String?,
