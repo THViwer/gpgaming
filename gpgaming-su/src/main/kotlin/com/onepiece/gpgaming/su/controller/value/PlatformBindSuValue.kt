@@ -82,6 +82,9 @@ sealed class PlatformBindSuValue {
             // 原始鼠标移上去图标
             val originIconOver: String,
 
+            // 横面大图标
+            val unclejayMobileIcon: String?,
+
             // 手机图标
             val mobileIcon: String,
 

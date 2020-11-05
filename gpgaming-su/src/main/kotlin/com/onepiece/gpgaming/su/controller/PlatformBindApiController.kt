@@ -35,7 +35,7 @@ class PlatformBindApiController(
             PlatformBindCo(clientId = clientId, username = username, password = password, earnestBalance = earnestBalance, platform = platform,
                     tokenJson = tokenJson, name = name, icon = icon, disableIcon = disableIcon, originIcon = originIcon, originIconOver = originIconOver,
                     mobileIcon = mobileIcon, mobileDisableIcon = mobileDisableIcon, platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver,
-                    unclejayMobleIcon  = unclejayMobleIcon )
+                    unclejayMobleIcon = unclejayMobleIcon)
         }
         platformBindService.create(platformBindCo = platformBindCo)
     }
@@ -47,7 +47,7 @@ class PlatformBindApiController(
             PlatformBindUo(id = id, username = username, password = password, earnestBalance = earnestBalance, tokenJson = tokenJson, name = name, icon = icon,
                     disableIcon = disableIcon, originIcon = originIcon, originIconOver = originIconOver, mobileIcon = mobileIcon, mobileDisableIcon = mobileDisableIcon,
                     platformDetailIcon = platformDetailIcon, platformDetailIconOver = platformDetailIconOver, hot = null, new = null, status = status,
-                    unclejayMobileIcon  = unclejayMobleIcon )
+                    unclejayMobileIcon = unclejayMobleIcon)
         }
 
         platformBindService.update(platformBindCo)
@@ -85,10 +85,11 @@ class PlatformBindApiController(
                 PlatformBindSuValue.PlatformBindVo(platform = platform, backUrl = "-", clientId = clientId, earnestBalance = it.earnestBalance,
                         username = it.username, password = it.password, open = it.status == Status.Normal, tokenJson = objectMapper.writeValueAsString(it.clientToken),
                         id = it.id, status = it.status, name = it.name, icon = it.icon, disableIcon = it.disableIcon, originIcon = it.originIcon, originIconOver = it.originIconOver,
-                        platformDetailIcon = it.platformDetailIcon, platformDetailIconOver = it.platformDetailIconOver, mobileIcon = it.mobileIcon, mobileDisableIcon = it.mobileDisableIcon)
+                        platformDetailIcon = it.platformDetailIcon, platformDetailIconOver = it.platformDetailIconOver, mobileIcon = it.mobileIcon, mobileDisableIcon = it.mobileDisableIcon,
+                        unclejayMobileIcon = it.unclejayMobileIcon)
             } ?: PlatformBindSuValue.PlatformBindVo(platform = platform, backUrl = "-", clientId = clientId, earnestBalance = BigDecimal.valueOf(-1),
                     username = "-", password = "-", open = false, tokenJson = "-", id = -1, status = Status.Stop, name = "", icon = "", disableIcon = "",
-                    originIconOver = "", originIcon = "", mobileDisableIcon = "", mobileIcon = "", platformDetailIconOver = "", platformDetailIcon = "")
+                    originIconOver = "", originIcon = "", mobileDisableIcon = "", mobileIcon = "", platformDetailIconOver = "", platformDetailIcon = "", unclejayMobileIcon = "")
         }
     }
 }
