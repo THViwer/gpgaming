@@ -63,7 +63,7 @@ data class I18nContent (
 
     data class BannerI18n(
 
-            val imagePath: String,
+            val imagePath: String = "",
 
             // pc 的banner图片地址
             val pcImagePath: String? = null,
