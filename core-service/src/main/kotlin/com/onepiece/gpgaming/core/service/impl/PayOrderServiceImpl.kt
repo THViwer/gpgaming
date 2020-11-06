@@ -56,7 +56,7 @@ class PayOrderServiceImpl(
         if (order.state == PayState.Successful) error(OnePieceExceptionCode.DATA_FAIL)
 
         val member = memberService.getMember(id = order.memberId)
-        val firstDeposit = !member.firstDeposit
+        val firstDeposit = !member.firstDeposit && order.state == PayState.Successful
 
         val flag = payOrderDao.check(uo.copy(firstDeposit = firstDeposit))
         check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
@@ -75,7 +75,8 @@ class PayOrderServiceImpl(
 
         val member = memberService.getMember(id = order.memberId)
         // 更新支付订单
-        val flag = payOrderDao.successful(orderId, thirdOrderId, !member.firstDeposit)
+        val firstDeposit = !member.firstDeposit && order.state == PayState.Successful
+        val flag = payOrderDao.successful(orderId, thirdOrderId, firstDeposit)
         check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
 
         // 更新钱包

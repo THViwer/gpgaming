@@ -65,7 +65,7 @@ class DepositServiceImpl(
 
 
         val member = memberService.getMember(id = order.memberId)
-        val firstDeposit = !member.firstDeposit
+        val firstDeposit = !member.firstDeposit && depositUoReq.state == DepositState.Successful
 
         val depositUo = DepositUo(clientId = order.clientId, orderId = order.orderId, processId = order.processId,
                 state = depositUoReq.state, remarks = depositUoReq.remarks, lockWaiterId = depositUoReq.waiterId, firstDeposit = firstDeposit)
