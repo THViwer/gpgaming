@@ -166,10 +166,18 @@ class WalletServiceImpl(
                 val infoUo = MemberInfoValue.MemberInfoUo.ofDeposit(memberId = walletUo.memberId, amount = walletUo.money)
                 memberInfoService.asyncUpdate(uo = infoUo)
 
-                this.checkIntroduce(clientId = wallet.clientId, memberId = wallet.memberId)
+                try {
+                    this.checkIntroduce(clientId = wallet.clientId, memberId = wallet.memberId)
+                } catch (e: Exception) {
+                    log.error("检查介绍失败, client_id = ${walletUo.clientId}, 参数：${walletUo}")
+                }
 
                 // 刷新vip等级
-                vipUtil.checkAndUpdateVip(clientId = walletUo.clientId, memberId = walletUo.memberId, amount = walletUo.money)
+                try {
+                    vipUtil.checkAndUpdateVip(clientId = walletUo.clientId, memberId = walletUo.memberId, amount = walletUo.money)
+                } catch (e: Exception) {
+                    log.error("刷新vip等级失败, client_id = ${walletUo.clientId}, 参数：${walletUo}")
+                }
 
                 // 加上已是首充
                 val member = memberService.getMember(id = walletUo.memberId)
