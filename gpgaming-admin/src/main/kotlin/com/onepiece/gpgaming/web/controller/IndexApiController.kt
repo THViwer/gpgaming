@@ -153,6 +153,14 @@ class IndexApiController(
         val clientId = getClientId()
 
         val map = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Banner)
+                .map {
+                    // TODO 优惠 为了过滤版本
+                    val content = it.getII18nContent(objectMapper = objectMapper) as I18nContent.BannerI18n
+                    val cContent = if (content.pcImagePath == null) {
+                        content.copy(pcImagePath = content.imagePath)
+                    } else content
+                    it.copy(contentJson = objectMapper.writeValueAsString(cContent))
+                }
                 .groupBy { it.configId }
 
         return bannerService.all(getClientId()).map {
