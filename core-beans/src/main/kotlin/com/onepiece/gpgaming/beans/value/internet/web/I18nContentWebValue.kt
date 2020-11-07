@@ -25,7 +25,13 @@ sealed class I18nContentWebValue {
 
         fun getI18nContent(objectMapper: ObjectMapper): I18nContent.II18nContent {
             return when (configType) {
-                I18nConfig.Banner -> objectMapper.readValue<I18nContent.BannerI18n>(contentJson)
+                I18nConfig.Banner -> {
+                    val content = objectMapper.readValue<I18nContent.BannerI18n>(contentJson)
+
+                    if (content.pcImagePath == null) {
+                        content.copy(pcImagePath =  content.imagePath)
+                    } else content
+                }
                 I18nConfig.IndexSport -> objectMapper.readValue<I18nContent.IndexSportI18n>(contentJson)
                 I18nConfig.Promotion -> objectMapper.readValue<I18nContent.PromotionI18n>(contentJson)
                 I18nConfig.IndexVideo -> objectMapper.readValue<I18nContent.IndexVideoI18n>(contentJson)

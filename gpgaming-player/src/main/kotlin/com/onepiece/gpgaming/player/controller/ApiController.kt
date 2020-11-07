@@ -573,8 +573,10 @@ open class ApiController(
 
                 val title = content.title ?: "this is title"
                 val introduce = content.introduce ?: "this is test"
+
+                val pcImagePath = if (content.pcImagePath == null) content.imagePath else content.pcImagePath
                 BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type,
-                        link = it.link, introduce = introduce, title = title, platformCategory = it.platformCategory, pcImagePath = content.pcImagePath,
+                        link = it.link, introduce = introduce, title = title, platformCategory = it.platformCategory, pcImagePath = pcImagePath,
                         mobileImagePath = content.mobileImagePath)
             }
 
