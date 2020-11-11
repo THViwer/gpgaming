@@ -628,8 +628,10 @@ open class ApiController(
                 null
             } else {
                 val content = i18nContent.getII18nContent(objectMapper) as I18nContent.BannerI18n
-                BannerVo(id = it.id, order = it.order, icon = content.imagePath, touchIcon = content.imagePath, type = it.type, link = it.link,
-                        introduce = content.introduce, title = content.title, platformCategory = it.platformCategory, pcImagePath = content.pcImagePath,
+
+                val pcImagePath = content.pcImagePath ?: content.imagePath
+                BannerVo(id = it.id, order = it.order, icon = pcImagePath, touchIcon = content.imagePath, type = it.type, link = it.link,
+                        introduce = content.introduce, title = content.title, platformCategory = it.platformCategory, pcImagePath = pcImagePath,
                         mobileImagePath = content.mobileImagePath)
             }
         }
