@@ -624,7 +624,7 @@ open class ApiController(
         val banners = bannerService.findByType(clientId = clientId, type = type).mapNotNull {
             val i18nContent = map["${it.id}:${language}"]
                     ?: map["${it.id}:${Language.EN}"]
-            if (i18nContent == null) {
+            if (i18nContent == null || it.status != Status.Normal) {
                 null
             } else {
                 val content = i18nContent.getII18nContent(objectMapper) as I18nContent.BannerI18n
