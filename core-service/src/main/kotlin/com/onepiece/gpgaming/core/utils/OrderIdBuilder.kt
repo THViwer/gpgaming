@@ -104,7 +104,9 @@ class OrderIdBuilder(
             else -> "T"
         }
 
-        return "${profile}P${autoClientId}${now.format(dateTimeFormatter)}$autoId"
+
+        val random = StringUtil.generateNumNonce(2)
+        return "${profile}P${autoClientId}${now.format(dateTimeFormatter)}${random}$autoId"
     }
 
 
