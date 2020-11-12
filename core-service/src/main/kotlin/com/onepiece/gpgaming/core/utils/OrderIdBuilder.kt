@@ -85,10 +85,9 @@ class OrderIdBuilder(
         val now = LocalDateTime.now()
 
         val autoId = when ("$id".length) {
-            1 -> "0000$id"
-            2 -> "000$id"
-            3 -> "00$id"
-            4 -> "0$id"
+            1 -> "000$id"
+            2 -> "00$id"
+            3 -> "0$id"
             else -> "$id"
         }
 
