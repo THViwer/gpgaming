@@ -453,22 +453,26 @@ class UserApiController(
                 .setScale(2, 2)
 
 
-        val promotion = promotionService.get(config.introducePromotionId)
-        val bet = when (promotion.rule) {
-            is PromotionRules.BetRule -> {
-                val rule = promotion.rule as PromotionRules.BetRule
-                config.registerCommission.multiply(rule.betMultiple)
-            }
-            else -> {
-                val rule = promotion.rule as PromotionRules.WithdrawRule
-                config.registerCommission.multiply(rule.transferMultiplied)
+        val bet = if (config.introducePromotionId == -1) {
+            BigDecimal.ZERO
+        } else {
+            val promotion = promotionService.get(config.introducePromotionId)
+            when (promotion.rule) {
+                is PromotionRules.BetRule -> {
+                    val rule = promotion.rule as PromotionRules.BetRule
+                    config.registerCommission.multiply(rule.betMultiple)
+                }
+                else -> {
+                    val rule = promotion.rule as PromotionRules.WithdrawRule
+                    config.registerCommission.multiply(rule.transferMultiplied)
+                }
             }
         }
 
         val webSite = webSiteService.getDataByBossId(bossId = user.bossId).first { it.clientId == user.clientId }
         val link = "https://www.${webSite.domain}/?introduceId=${user.id}"
         return UserValue.MyIntroduceDetail(link = link, introduceCount = introduceCount, overIntroduceCount = overIntroduceCount, commission = introduceCommission,
-                registerCommission = config.registerCommission, depositCommission = config.depositCommission, introducePromotionId = promotion.id, bet = bet,
+                registerCommission = config.registerCommission, depositCommission = config.depositCommission, introducePromotionId = config.introducePromotionId, bet = bet,
                 enableIntroduce = config.enableIntroduce, commissionPeriod = config.commissionPeriod, depositPeriod = config.depositPeriod, shareTemplate = config.shareTemplate)
     }
 

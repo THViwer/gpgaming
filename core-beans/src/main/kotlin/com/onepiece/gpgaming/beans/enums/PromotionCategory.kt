@@ -23,6 +23,8 @@ enum class PromotionCategory(
     // 其它(来显示在前台)
     Other("other", "其它"),
 
+    // Vip(只显示在前台 没有具体作用)
+    Vip("Vip", "VIP"),
 
     // 用作显示的优惠
     Slot("slot", "老虎机"),
