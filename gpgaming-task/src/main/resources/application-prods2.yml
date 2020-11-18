@@ -11,7 +11,7 @@ spring:
     active: dev
 
   redis:
-    host: 172.168.11.10
+    host: 172.168.99.11
     port: 6379
   output:
     ansi:
