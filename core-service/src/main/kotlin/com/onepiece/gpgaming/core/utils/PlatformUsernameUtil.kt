@@ -60,14 +60,14 @@ object PlatformUsernameUtil {
                 val username = platformUsername.replace("${prefix}_", "")
 
                 val clientId = username.substring(0, cutSize).toInt()
-                val memberId = username.substring(cutSize, username.length - cutSize).toInt()
+                val memberId = username.substring(cutSize, username.length - 2).toInt()
 
                 clientId to memberId
             }
 
             else -> {
                 val clientId = platformUsername.substring(0, cutSize).toInt()
-                val memberId = platformUsername.substring(cutSize, platformUsername.length - cutSize).toInt()
+                val memberId = platformUsername.substring(cutSize, platformUsername.length - 2).toInt()
 
                 clientId to memberId
             }
