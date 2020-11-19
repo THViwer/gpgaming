@@ -8,6 +8,8 @@ sealed class AppDownValue {
     data class Update(
             val id: Int,
 
+            val icon: String?,
+            
             val status: Status?,
 
             val iosPath: String?,

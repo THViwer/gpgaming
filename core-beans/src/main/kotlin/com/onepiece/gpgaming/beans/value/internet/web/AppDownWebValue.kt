@@ -6,6 +6,10 @@ import io.swagger.annotations.ApiModelProperty
 sealed class AppDownWebValue {
 
     data class CoReq(
+
+            @ApiModelProperty("图标")
+            val icon: String?,
+
             @ApiModelProperty("平台")
             val platform: Platform,
 

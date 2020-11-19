@@ -27,7 +27,7 @@ class AppDownApiController(
     @PostMapping
     override fun create(@RequestBody coReq: AppDownWebValue.CoReq) {
         val appDown = AppDown(id = -1, platform = coReq.platform, iosPath = coReq.iosPath, androidPath = coReq.androidPath,
-                status = Status.Normal, createdTime = LocalDateTime.now())
+                status = Status.Normal, createdTime = LocalDateTime.now(), icon = coReq.icon)
 
         appDownService.create(appDown)
     }

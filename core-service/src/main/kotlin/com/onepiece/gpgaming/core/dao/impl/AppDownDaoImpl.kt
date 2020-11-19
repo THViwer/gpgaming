@@ -17,16 +17,19 @@ class AppDownDaoImpl : BasicDaoImpl<AppDown>("app_down"), AppDownDao {
 
             val id = rs.getInt("id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
-            val iosPath  = rs.getString("ios_path")
-            val androidPath  = rs.getString("android_path")
+            val icon = rs.getString("icon")
+            val iosPath = rs.getString("ios_path")
+            val androidPath = rs.getString("android_path")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
-            AppDown(id = id, platform = platform, iosPath = iosPath, androidPath = androidPath, status = status, createdTime = createdTime)
+            AppDown(id = id, platform = platform, iosPath = iosPath, androidPath = androidPath, status = status, createdTime = createdTime,
+                    icon = icon)
         }
 
     override fun create(appDown: AppDown): Boolean {
         return insert()
+                .set("icon", appDown.icon)
                 .set("platform", appDown.platform)
                 .set("ios_path", appDown.iosPath)
                 .set("android_path", appDown.androidPath)
@@ -37,6 +40,7 @@ class AppDownDaoImpl : BasicDaoImpl<AppDown>("app_down"), AppDownDao {
     override fun update(update: AppDownValue.Update): Boolean {
         return update()
                 .set("status", update.status)
+                .set("icon", update.icon)
                 .setIfNull("ios_path", update.iosPath)
                 .setIfNull("android_path", update.androidPath)
                 .where("id", update.id)

@@ -12,6 +12,8 @@ data class AppDown(
         // 平台
         val platform: Platform,
 
+        val icon: String?,
+
         // ios下载地址
         val iosPath: String?,
 

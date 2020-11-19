@@ -491,7 +491,8 @@ open class ApiController(
                 .filter { platform == null || it.platform == platform }
                 .map {
                     val bind = bindMap[it.platform]
-                    DownloadAppVo(platform = it.platform, icon = bind?.icon ?: "", iosPath = it.iosPath, androidPath = it.androidPath)
+                    DownloadAppVo(platform = it.platform, icon = bind?.icon ?: "", iosPath = it.iosPath, androidPath = it.androidPath,
+                            banner = it.icon)
                 }
     }
 
