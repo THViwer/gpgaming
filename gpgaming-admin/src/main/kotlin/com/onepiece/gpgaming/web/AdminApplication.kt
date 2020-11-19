@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.web
 
+import com.onepiece.gpgaming.core.ActiveConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -18,6 +19,9 @@ open class AdminApplication {
     @Autowired
     private lateinit var gracefulShutdownTomcat: GracefulShutdownTomcat
 
+    @Autowired
+    private lateinit var activeConfig: ActiveConfig
+
     @Bean
     open fun servletContainer(): ServletWebServerFactory? {
         val tomcat = TomcatServletWebServerFactory()
@@ -25,11 +29,12 @@ open class AdminApplication {
         return tomcat
     }
 
+
+
 }
 
 fun main() {
     runApplication<AdminApplication>()
 
     TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"))
-
 }
