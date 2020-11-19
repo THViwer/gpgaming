@@ -7,8 +7,8 @@ import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.GamePlayClientToken
 import com.onepiece.gpgaming.beans.model.token.SpadeGamingClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
-import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.core.service.BetOrderService
+import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.bet.JacksonMapUtil
 import com.onepiece.gpgaming.games.bet.MapUtil
 import com.onepiece.gpgaming.player.controller.basic.BasicController
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import java.lang.Exception
 import java.math.BigDecimal
 import java.util.*
 
@@ -34,7 +33,7 @@ import java.util.*
 class PlatformAuthApiController(
         private val objectMapper: ObjectMapper,
         private val betOrderService: BetOrderService
-): BasicController(), PlatformAuthApi {
+) : BasicController(), PlatformAuthApi {
 
     private val log = LoggerFactory.getLogger(PlatformAuthApiController::class.java)
 
@@ -212,8 +211,12 @@ class PlatformAuthApiController(
     @PostMapping("/spadeGaming")
     override fun spadeGamingLogin(@RequestBody request: PlatformAuthValue.SpadeGamingRequest): PlatformAuthValue.SpadeGamingResponse {
         log.info("请求参数：${request}")
+
+        val platformUsername = request.acctId
+        val (clientId, _) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.SpadeGaming, platformUsername = platformUsername)
+
         val binds = platformBindService.find(Platform.SpadeGaming)
-        val bind = binds.first { (it.clientToken as SpadeGamingClientToken).memberCode == request.merchantCode }
+        val bind = binds.first { (it.clientToken as SpadeGamingClientToken).memberCode == request.merchantCode && it.clientId == clientId }
         log.info("绑定平台信息:$bind")
 
 
