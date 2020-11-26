@@ -42,4 +42,5 @@ fun main() {
     runApplication<PlayerApplication>()
 
     TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"))
+
 }
