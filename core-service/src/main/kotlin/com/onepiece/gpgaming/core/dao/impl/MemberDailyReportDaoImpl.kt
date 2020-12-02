@@ -45,8 +45,14 @@ class MemberDailyReportDaoImpl(
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val status = rs.getString("status").let { Status.valueOf(it) }
             val totalBet = rs.getBigDecimal("total_bet")
-            val totalMWin = rs.getBigDecimal("total_m_win")
+            val payout = rs.getBigDecimal("payout")
             val settles = rs.getString("settles").let { objectMapper.readValue<List<MemberDailyReport.PlatformSettle>>(it) }
+                    .map {
+                        // 为了兼容老数据
+                        val _payout = if (it.payout == BigDecimal.ZERO) it.mwin else it.payout
+                        it.copy(payout = _payout)
+                    }
+
             val thirdPayAmount = rs.getBigDecimal("third_pay_amount")
             val thirdPayCount = rs.getInt("third_pay_count")
             val rebateAmount = rs.getBigDecimal("rebate_amount")
@@ -56,7 +62,7 @@ class MemberDailyReportDaoImpl(
             MemberDailyReport(id = id, day = day, clientId = clientId, memberId = memberId, username = username,
                     transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount, withdrawAmount = withdrawAmount,
                     createdTime = createdTime, status = status, artificialAmount = artificialAmount, artificialCount = artificialCount,
-                    depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, totalMWin = totalMWin,
+                    depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, payout = payout,
                     thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, bossId = bossId,
                     rebateExecution = rebateExecution, promotionAmount = promotionAmount, agentId = agentId, superiorAgentId = superiorAgentId,
                     saleId = saleId, saleScope = saleScope, marketId = marketId)
@@ -84,7 +90,7 @@ class MemberDailyReportDaoImpl(
                 .set("artificial_amount")
                 .set("artificial_count")
                 .set("total_bet")
-                .set("total_m_win")
+                .set("payout")
                 .set("settles")
                 .set("third_pay_amount")
                 .set("third_pay_count")
@@ -112,7 +118,7 @@ class MemberDailyReportDaoImpl(
                     ps.setBigDecimal(++index, entity.artificialAmount)
                     ps.setInt(++index, entity.artificialCount)
                     ps.setBigDecimal(++index, entity.totalBet)
-                    ps.setBigDecimal(++index, entity.totalMWin)
+                    ps.setBigDecimal(++index, entity.payout)
                     ps.setString(++index, objectMapper.writeValueAsString(entity.settles))
                     ps.setBigDecimal(++index, entity.thirdPayAmount)
                     ps.setInt(++index, entity.thirdPayCount)

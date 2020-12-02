@@ -231,11 +231,11 @@ class EvolutionService : PlatformService() {
                     val code = MapResultUtil.asString(playerBet, "code")
                     val orderId = MapResultUtil.asString(playerBet, "transactionId")
                     val betAmount = MapResultUtil.asBigDecimal(playerBet, "stake")
-                    val winAmount = MapResultUtil.asBigDecimal(playerBet, "payout")
+                    val payout = MapResultUtil.asBigDecimal(playerBet, "payout")
 
                     val originData = objectMapper.writeValueAsString(bet)
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Evolution, orderId = "${orderId}:${code}", betTime = betTime,
-                            settleTime = settleTime, betAmount = betAmount, winAmount = winAmount, originData = originData, validAmount = betAmount)
+                            settleTime = settleTime, betAmount = betAmount, payout = payout, originData = originData, validAmount = betAmount)
                 }
 
             }.reduce { acc, list -> acc.plus(list) }

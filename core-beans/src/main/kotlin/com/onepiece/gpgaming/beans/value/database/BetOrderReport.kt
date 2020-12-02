@@ -15,5 +15,5 @@ data class BetOrderReport(
         val totalBet: BigDecimal,
 
         // 玩家总盈利
-        val totalWin: BigDecimal
+        val payout: BigDecimal
 )

@@ -272,13 +272,13 @@ class Pussy888Service(
                 val orderId = bet.asString("uuid")
 //            val betAmount = bet.asBigDecimal("bet")
                 val betAmount = BigDecimal.ZERO
-                val winAmount = bet.asBigDecimal("Win").negate()
+                val payout = bet.asBigDecimal("Win").negate()
                 val betTime = bet.asLocalDateTime("CreateTime", dateTimeFormatter)
 
                 val originData = objectMapper.writeValueAsString(bet.data)
 
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Kiss918, orderId = orderId, betAmount = betAmount,
-                        winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
+                        payout = payout, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
             }
         }
 

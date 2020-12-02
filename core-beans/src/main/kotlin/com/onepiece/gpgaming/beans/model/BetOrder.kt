@@ -33,7 +33,7 @@ data class BetOrder(
         val validAmount: BigDecimal,
 
         // 获得金额
-        val winAmount: BigDecimal,
+        val payout: BigDecimal,
 
         // 标记已处理打码量
         val mark: Boolean,

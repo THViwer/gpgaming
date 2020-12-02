@@ -233,17 +233,17 @@ sealed class ReportValue {
                 return data.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2)
             }
 
-        val totalMWin: BigDecimal
+        val payout: BigDecimal
             @ApiModelProperty("玩家总盈利")
             get() {
-                return data.sumByDouble { it.win.toDouble() }.toBigDecimal().setScale(2, 2)
+                return data.sumByDouble { it.payout.toDouble() }.toBigDecimal().setScale(2, 2)
             }
 
-        val totalCWin: BigDecimal
-            @ApiModelProperty("业主总盈利")
-            get() {
-                return totalBet.minus(totalMWin)
-            }
+//        val totalCWin: BigDecimal
+//            @ApiModelProperty("业主总盈利")
+//            get() {
+//                return totalBet.minus(payout)
+//            }
 
         val totalTransferIn: BigDecimal
             @ApiModelProperty("总转入金额")
@@ -330,13 +330,13 @@ sealed class ReportValue {
             val validBet: BigDecimal = BigDecimal.ZERO,
 
             // 顾客盈利
-            val mwin: BigDecimal = BigDecimal.ZERO,
+            val payout: BigDecimal = BigDecimal.ZERO,
 
             // 反水
             val rebate: BigDecimal  = BigDecimal.ZERO
     ) {
 
-        val cwin: BigDecimal = mwin.negate()
+//        val cwin: BigDecimal = mwin.negate()
 
     }
 

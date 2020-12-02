@@ -198,7 +198,7 @@ class PlaytechService(
                 val list = result.data.orders.map { bet ->
                     val orderId = bet.asString("game_server_reference_1")
                     val betAmount = bet.asBigDecimal("bet")
-                    val winAmount = bet.asBigDecimal("win")
+                    val payout = bet.asBigDecimal("win")
                     val betTime = bet.asLocalDateTime("bet_datetime", dateTimeFormat)
                     val username = bet.asString("gamzo_player_name").split("_")[1]
                     val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = pullBetOrderReq.platform,
@@ -222,7 +222,7 @@ class PlaytechService(
 //                    val platform = if (gameType.toLowerCase().contains("slot")) Platform.PlaytechSlot else Platform.PlaytechLive
 
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform, orderId = orderId, betAmount = betAmount,
-                            winAmount = winAmount, originData = originData, betTime = betTime, settleTime = betTime, validAmount = betAmount)
+                            payout = payout, originData = originData, betTime = betTime, settleTime = betTime, validAmount = betAmount)
                 }
 
                 orders.addAll(list)

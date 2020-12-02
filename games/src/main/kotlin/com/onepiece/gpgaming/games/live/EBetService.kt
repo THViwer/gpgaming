@@ -154,7 +154,7 @@ class EBetService : PlatformService() {
             it.asList("betHistories").map { mapUtil ->
                 val bet = mapUtil.asBigDecimal("bet")
                 val validBet = mapUtil.asBigDecimal("validBet")
-                val win = mapUtil.asBigDecimal("payout")
+                val payout = mapUtil.asBigDecimal("payout")
                 val orderId = mapUtil.asString("roundNo")
                 val username = mapUtil.asString("username")
 
@@ -169,7 +169,7 @@ class EBetService : PlatformService() {
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.EBet, platformUsername = username)
 
                 val originData = objectMapper.writeValueAsString(mapUtil.data)
-                BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = bet, winAmount = win, orderId = orderId, betTime = betTime, settleTime = settleTime,
+                BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = bet, payout = payout, orderId = orderId, betTime = betTime, settleTime = settleTime,
                         originData = originData, platform = Platform.EBet, validAmount = validBet)
             }
         }

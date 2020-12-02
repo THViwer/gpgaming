@@ -22,8 +22,8 @@ data class ClientPlatformDailyReport(
         // 下注金额
         val bet: BigDecimal,
 
-        // 盈利金额
-        val win: BigDecimal,
+        // 派彩
+        val payout: BigDecimal,
 
         // 转入金额
         val transferIn: BigDecimal,
@@ -48,9 +48,9 @@ data class ClientPlatformDailyReport(
 
 ) {
 
-    val clientWin: BigDecimal
-        get() {
-            return bet.minus(win)
-        }
+//    val clientWin: BigDecimal
+//        get() {
+//            return bet.minus(win)
+//        }
 
 }

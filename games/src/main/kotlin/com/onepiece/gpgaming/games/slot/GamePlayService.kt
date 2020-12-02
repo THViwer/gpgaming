@@ -238,7 +238,7 @@ class GamePlayService : PlatformService() {
                 val originData = jacksonObjectMapper().writeValueAsString(mapUtil.data)
 
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.GamePlay, orderId = orderId, betAmount = betAmount,
-                        winAmount = betAmount.plus(winLose), betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
+                        payout = betAmount.plus(winLose), betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
             }?: emptyList<BetOrderValue.BetOrderCo>()
         }
     }

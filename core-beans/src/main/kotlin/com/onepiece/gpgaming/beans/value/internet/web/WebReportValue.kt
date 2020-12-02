@@ -73,7 +73,7 @@ data class MemberReportWebVo(
         val totalBet: BigDecimal,
 
         // 盈利金额
-        val totalMWin: BigDecimal,
+        val payout: BigDecimal,
 
         // 返水金额
         val rebateAmount: BigDecimal,
@@ -87,9 +87,9 @@ data class MemberReportWebVo(
 ) {
 
     // 业主盈利
-    val totalCWin: BigDecimal
-        get() {
-            return totalBet.minus(totalMWin)
-        }
+//    val totalCWin: BigDecimal
+//        get() {
+//            return totalBet.minus(totalMWin)
+//        }
 
 }

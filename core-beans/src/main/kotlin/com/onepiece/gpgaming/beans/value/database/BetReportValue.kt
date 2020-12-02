@@ -23,7 +23,7 @@ sealed class BetReportValue {
             val validBet: BigDecimal,
 
             // 玩家盈利金额s
-            val totalWin: BigDecimal
+            val payout: BigDecimal
     )
 
     data class CBetReport(
@@ -35,7 +35,7 @@ sealed class BetReportValue {
             val totalBet: BigDecimal,
 
             // 玩家盈利金额s
-            val totalWin: BigDecimal
+            val payout: BigDecimal
     )
 
 }

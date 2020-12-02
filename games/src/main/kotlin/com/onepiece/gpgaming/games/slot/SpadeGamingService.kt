@@ -296,13 +296,13 @@ class SpadeGamingService(
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.SpadeGaming, platformUsername = username)
                 val betAmount = bet.asBigDecimal("betAmount")
                 val winLoss = bet.asBigDecimal("winLoss")
-                val winAmount = betAmount.plus(winLoss)
+                val payout = betAmount.plus(winLoss)
 
                 val betTime = bet.asLocalDateTime("ticketTime", dateTimeFormat)
 
                 val originData = objectMapper.writeValueAsString(bet.data)
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, platform = Platform.SpadeGaming, betTime = betTime,
-                        settleTime = betTime, betAmount = betAmount, winAmount = winAmount, originData = originData, validAmount = betAmount)
+                        settleTime = betTime, betAmount = betAmount, payout = payout, originData = originData, validAmount = betAmount)
             }
         }
 

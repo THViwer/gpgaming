@@ -196,12 +196,12 @@ class LbcService : PlatformService() {
                     val username = bet.asString("vendor_member_id")
                     val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Lbc, platformUsername = username, prefix = clientToken.memberCode)
                     val betAmount = bet.asBigDecimal("stake")
-                    val winAmount = bet.asBigDecimal("winlost_amount")
+                    val payout = bet.asBigDecimal("winlost_amount")
                     val betTime = bet.asLocalDateTime("transaction_time")
                     val settleTime = bet.asLocalDateTime("winlost_datetime")
 
                     val originData = objectMapper.writeValueAsString(bet.data)
-                    BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount,
+                    BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, payout = payout,
                             platform = Platform.Lbc, betTime = betTime, settleTime = settleTime, originData = originData, validAmount = betAmount)
                 }
 
@@ -214,12 +214,12 @@ class LbcService : PlatformService() {
                     val username = bet.asString("vendor_member_id")
                     val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Lbc, platformUsername = username, prefix = clientToken.memberCode)
                     val betAmount = bet.asBigDecimal("stake")
-                    val winAmount = bet.asBigDecimal("winlost_amount")
+                    val payout = bet.asBigDecimal("winlost_amount")
                     val betTime = bet.asString("transaction_time").substring(0, 19).let { LocalDateTime.parse(it) }
                     val settleTime = bet.asString("winlost_datetime").substring(0, 19).let { LocalDateTime.parse(it) }
 
                     val originData = objectMapper.writeValueAsString(bet.data)
-                    BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount,
+                    BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, payout = payout,
                             platform = Platform.Lbc, betTime = betTime, settleTime = settleTime, originData = originData, validAmount = betAmount)
                 }
 

@@ -25,8 +25,8 @@ sealed class BetOrderValue {
             // 有效投注
             val validAmount: BigDecimal,
 
-            // 获得金额
-            val winAmount: BigDecimal,
+            // 派彩
+            val payout: BigDecimal,
 
             // 原始订单数据(json格式)
             val originData: String,
@@ -50,11 +50,11 @@ sealed class BetOrderValue {
 
             val betAmount: BigDecimal,
 
-            val winAmount: BigDecimal
+            val payout: BigDecimal
 
-    )
-
-
+    ) {
+        val winAmount: BigDecimal = payout.minus(betAmount)
+    }
 
 
 }

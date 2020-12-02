@@ -211,12 +211,12 @@ class AllBetService : PlatformService() {
                 val betAmount = bet.asBigDecimal("betAmount")
                 val validAmount = bet.asBigDecimal("validAmount")
                 val winOrLoss = bet.asBigDecimal("winOrLoss")
-                val winAmount = betAmount.plus(winOrLoss)
+                val payout = betAmount.plus(winOrLoss)
                 val betTime = bet.asLocalDateTime("gameRoundStartTime", dateTimeFormat)
                 val settleTime = bet.asLocalDateTime("gameRoundEndTime", dateTimeFormat)
 
                 val originData = objectMapper.writeValueAsString(bet.data)
-                BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, betTime = betTime,
+                BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, payout = payout, betTime = betTime,
                         settleTime = settleTime, platform = Platform.AllBet, originData = originData, validAmount = validAmount)
             }
         }

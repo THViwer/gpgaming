@@ -45,7 +45,7 @@ data class MemberDailyReport(
         val settles: List<PlatformSettle>,
 
         // 顾客盈利
-        val totalMWin: BigDecimal,
+        val payout: BigDecimal,
 
         // 顾客下注
         val totalBet: BigDecimal,
@@ -153,7 +153,7 @@ data class MemberDailyReport(
 //        }
 
     // 业主盈利金额
-    val totalCWin = totalBet.minus(totalMWin)
+//    val totalCWin = totalBet.minus(totalMWin)
 
     data class PlatformSettle(
 
@@ -166,19 +166,24 @@ data class MemberDailyReport(
             // 有效投注
             val validBet: BigDecimal = BigDecimal.ZERO,
 
-            // 顾客盈利
-            val mwin: BigDecimal = BigDecimal.ZERO,
+            // 派彩 应该改为payout
+            val payout: BigDecimal = BigDecimal.ZERO,
 
             // 反水
-            val rebate: BigDecimal = BigDecimal.ZERO
+            val rebate: BigDecimal = BigDecimal.ZERO,
+
+            // 已废弃
+            val mwin: BigDecimal = BigDecimal.ZERO
     ) {
 
-        // 业主盈利
-        val cwin: BigDecimal
-            get() {
-                return bet.minus(mwin)
-            }
 
+//
+//        // 业主盈利
+//        val cwin: BigDecimal
+//            get() {
+//                return bet.minus(payout)
+//            }
+//
     }
 
 }

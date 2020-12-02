@@ -16,7 +16,7 @@ sealed class MemberDailyReportValue {
             val settles: List<MemberDailyReport.PlatformSettle>,
 
             // 顾客盈利
-            val totalMWin: BigDecimal,
+            val payout: BigDecimal,
 
             // 顾客下注
             val totalBet: BigDecimal,

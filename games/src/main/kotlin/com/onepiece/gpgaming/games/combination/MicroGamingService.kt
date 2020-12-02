@@ -302,15 +302,9 @@ class MicroGamingService : PlatformService() {
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.MicroGaming, platformUsername = username)
                 val category = bet.asString("category")
                 val amount = bet.asBigDecimal("amount")
-                val betAmount: BigDecimal
-                val winAmount: BigDecimal
-                if (category == "WAGER") {
-                    betAmount = amount
-                    winAmount = BigDecimal.ZERO
-                } else {
-                    betAmount = BigDecimal.ZERO
-                    winAmount = amount
-                }
+
+                val (betAmount, payout) = if (category == "WAGER") amount to BigDecimal.ZERO else BigDecimal.ZERO to amount
+
                 val betTime = bet.asLocalDateTime("transaction_time", betDateTimeFormat)
 
                 val platform = when (bet.asMap("meta_data").asString("item_id")) {
@@ -321,7 +315,7 @@ class MicroGamingService : PlatformService() {
 
                 val originData = objectMapper.writeValueAsString(bet.data)
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, platform = platform, betAmount = betAmount,
-                        winAmount = winAmount, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
+                        payout = payout, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
             }
         }
 

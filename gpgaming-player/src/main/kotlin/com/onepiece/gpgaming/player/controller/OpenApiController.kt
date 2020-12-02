@@ -169,16 +169,12 @@ class OpenApiController(
             val orderId = bet.asString("TransactionId")
             val messageType = bet.asString("MessageType")
 
-            val betAmount: BigDecimal
-            val winAmount: BigDecimal
-            when (messageType) {
+            val (betAmount, payout) = when (messageType) {
                 "3" -> {
-                    betAmount = bet.asBigDecimal("Amount")
-                    winAmount = BigDecimal.ZERO
+                    bet.asBigDecimal("Amount") to BigDecimal.ZERO
                 }
                 "4" -> {
-                    betAmount = BigDecimal.ZERO
-                    winAmount = bet.asBigDecimal("Amount")
+                    BigDecimal.ZERO to bet.asBigDecimal("Amount")
                 }
                 else -> error(OnePieceExceptionCode.DATA_FAIL)
             }
@@ -187,7 +183,7 @@ class OpenApiController(
             val betTime = bet.asLocalDateTime("Time")
 
             val originData = objectMapper.writeValueAsString(bet)
-            BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, platform = Platform.PNG, betAmount = betAmount, winAmount = winAmount,
+            BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, platform = Platform.PNG, betAmount = betAmount, payout = payout,
                     originData = originData, betTime = betTime, settleTime = betTime, validAmount = betAmount)
         }
 

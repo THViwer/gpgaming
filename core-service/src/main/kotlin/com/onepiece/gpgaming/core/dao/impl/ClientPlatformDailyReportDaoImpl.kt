@@ -22,7 +22,7 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
             val clientId = rs.getInt("client_id")
             val platform = rs.getString("platform").let { Platform.valueOf(it) }
             val bet = rs.getBigDecimal("bet")
-            val win = rs.getBigDecimal("win")
+            val payout = rs.getBigDecimal("payout")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
             val activeCount = rs.getInt("active_count")
@@ -32,7 +32,7 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
 
 
             ClientPlatformDailyReport(day = "$day", clientId = clientId, platform = platform, activeCount = activeCount,
-                    transferIn = transferIn, transferOut = transferOut, createdTime = createdTime, bet = bet, win = win,
+                    transferIn = transferIn, transferOut = transferOut, createdTime = createdTime, bet = bet, payout = payout,
                     promotionAmount = promotionAmount, status = status)
         }
 
@@ -44,7 +44,7 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
                 .set("transfer_in")
                 .set("transfer_out")
                 .set("bet")
-                .set("win")
+                .set("payout")
                 .set("active_count")
                 .execute { ps, entity ->
                     var x = 0
@@ -54,7 +54,7 @@ class ClientPlatformDailyReportDaoImpl : BasicDaoImpl<ClientPlatformDailyReport>
                     ps.setBigDecimal(++x, entity.transferIn)
                     ps.setBigDecimal(++x, entity.transferOut)
                     ps.setBigDecimal(++x, entity.bet)
-                    ps.setBigDecimal(++x, entity.win)
+                    ps.setBigDecimal(++x, entity.payout)
                     ps.setInt(++x, entity.activeCount)
                 }
 

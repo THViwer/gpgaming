@@ -147,7 +147,7 @@ class AnalysisDaoImpl(
             val report = MemberDailyReport(id = -1, bossId = bossId, clientId = clientId, agentId = agentId, memberId = tMemberId, username = username, depositAmount = totalDeposit,
                     depositCount = depositCount, thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, artificialAmount = artificialAmount, artificialCount = artificialCount,
                     withdrawAmount = totalWithdraw, withdrawCount = withdrawCount, transferOut = transferOut, promotionAmount = promotionAmount, transferIn = transferIn,
-                    rebateAmount = BigDecimal.ZERO, rebateExecution = true, day = startDate, settles = emptyList(), totalBet = BigDecimal.ZERO, totalMWin = BigDecimal.ZERO,
+                    rebateAmount = BigDecimal.ZERO, rebateExecution = true, day = startDate, settles = emptyList(), totalBet = BigDecimal.ZERO, payout = BigDecimal.ZERO,
                     status = Status.Normal, createdTime = LocalDateTime.now(), superiorAgentId = superiorAgentId, saleId = saleId, saleScope = saleScope, marketId = marketId)
 
             report.expand(levelId = levelId, slotRequirementBet = slotRequirementBet, liveRequirementBet = liveRequirementBet, sportRequirementBet = sportRequirementBet,

@@ -187,7 +187,7 @@ class ReportApiController(
                     MemberReportWebVo(day = day, clientId = clientId, memberId = member.id, username = member.username,
                             transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
                             withdrawAmount = withdrawAmount, artificialAmount = artificialAmount, artificialCount = artificialCount,
-                            settles = it.settles, totalMWin = it.totalMWin, totalBet = it.totalBet, thirdPayCount = thirdPayCount,
+                            settles = it.settles, payout = it.payout, totalBet = it.totalBet, thirdPayCount = thirdPayCount,
                             thirdPayAmount = thirdPayAmount, rebateAmount = it.rebateAmount,
                             promotionAmount = it.promotionAmount)
                 }
@@ -224,13 +224,13 @@ class ReportApiController(
             val first = dailyReports.first()
 
             val bet = dailyReports.sumByDouble { r -> r.bet.toDouble() }.toBigDecimal().setScale(2, 2)
-            val win = dailyReports.sumByDouble { r -> r.win.toDouble() }.toBigDecimal().setScale(2, 2)
+            val payout = dailyReports.sumByDouble { r -> r.payout.toDouble() }.toBigDecimal().setScale(2, 2)
             val transferIn = dailyReports.sumByDouble { r -> r.transferIn.toDouble() }.toBigDecimal().setScale(2, 2)
             val transferOut = dailyReports.sumByDouble { r -> r.transferOut.toDouble() }.toBigDecimal().setScale(2, 2)
             val promotionAmount = dailyReports.sumByDouble { r -> r.promotionAmount.toDouble() }.toBigDecimal().setScale(2, 2)
             val activeCount = dailyReports.sumBy { r -> r.activeCount }
 
-            first.copy(day = "$startDate~$endDate", bet = bet, win = win, transferIn = transferIn, transferOut = transferOut,
+            first.copy(day = "$startDate~$endDate", bet = bet, payout = payout, transferIn = transferIn, transferOut = transferOut,
                     promotionAmount = promotionAmount, activeCount = activeCount)
         }
         return ReportValue.CPTotalReport(data1027)
@@ -254,7 +254,7 @@ class ReportApiController(
             report.settles.firstOrNull { it.platform == platform }
                     ?.let { settle ->
                         ReportValue.PlatformSettleVo(memberId = report.memberId, platform = platform, username = report.username, bet = settle.bet, validBet = settle.validBet,
-                                mwin = settle.mwin)
+                                payout = settle.payout)
                     }
         }.sortedByDescending { it.bet }
     }

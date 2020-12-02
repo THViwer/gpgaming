@@ -21,7 +21,6 @@ import com.onepiece.gpgaming.beans.value.database.MarketDailyReportValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
-import com.onepiece.gpgaming.core.utils.MarketUtil
 import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.core.dao.BetOrderDao
 import com.onepiece.gpgaming.core.dao.LevelDao
@@ -31,7 +30,6 @@ import com.onepiece.gpgaming.core.dao.OtherPlatformReportDao
 import com.onepiece.gpgaming.core.dao.SaleDailyReportDao
 import com.onepiece.gpgaming.core.dao.TransferOrderDao
 import com.onepiece.gpgaming.core.dao.TransferReportQuery
-import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.CommissionService
 import com.onepiece.gpgaming.core.service.DepositService
@@ -39,6 +37,7 @@ import com.onepiece.gpgaming.core.service.MarketService
 import com.onepiece.gpgaming.core.service.PayOrderService
 import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.core.service.WaiterService
+import com.onepiece.gpgaming.core.utils.MarketUtil
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -117,17 +116,17 @@ class ReportServiceImpl(
 
                 otherReports["${memberId}_$platform"]
                         ?.let {
-                            MemberDailyReport.PlatformSettle(platform = platform, bet = it.bet, mwin = it.win, validBet = it.bet)
+                            MemberDailyReport.PlatformSettle(platform = platform, bet = it.bet, payout = it.win, validBet = it.bet)
                         }
             }
 
             // 平台下注金额
             val settles = (betMap[report.memberId]?.map {
-                MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, mwin = it.totalWin, validBet = it.validBet)
+                MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, payout = it.payout, validBet = it.validBet)
             } ?: emptyList()).plus(otherSettles)
 
             val totalBet = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额
-            val totalMWin = settles.sumByDouble { it.mwin.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
+            val payout = settles.sumByDouble { it.payout.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
 
             //TODO 返水比例和金额
             val level = levelIds[report.levelId]
@@ -166,7 +165,7 @@ class ReportServiceImpl(
 
             val rebateExecution = totalRebate.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
-            report.copy(rebateAmount = totalRebate, rebateExecution = rebateExecution, totalBet = totalBet, totalMWin = totalMWin, settles = settles)
+            report.copy(rebateAmount = totalRebate, rebateExecution = rebateExecution, totalBet = totalBet, payout = payout, settles = settles)
         }.filter {
             it.isHasData()
         }
@@ -395,7 +394,7 @@ class ReportServiceImpl(
                             val list = x.value
 
                             val bet = list.sumByDouble { y -> y.bet.toDouble() }.toBigDecimal().setScale(2, 2)
-                            val win = list.sumByDouble { y -> y.mwin.toDouble() }.toBigDecimal().setScale(2, 2)
+                            val payout = list.sumByDouble { y -> y.payout.toDouble() }.toBigDecimal().setScale(2, 2)
 
                             val transferInVo = transferReports["${client.id}:${platform}:${Platform.Center}"]
                             val transferOutVo = transferReports["${client.id}:${Platform.Center}:${platform}"]
@@ -406,7 +405,7 @@ class ReportServiceImpl(
 
                             val activeCount = activeCountMap["${client.id}:${platform}"] ?: 0
 
-                            ClientPlatformDailyReport(day = "$startDate", clientId = client.id, activeCount = activeCount, bet = bet, win = win, platform = platform,
+                            ClientPlatformDailyReport(day = "$startDate", clientId = client.id, activeCount = activeCount, bet = bet, payout = payout, platform = platform,
                                     transferIn = transferIn, transferOut = transferOut, promotionAmount = promotionAmount, createdTime = LocalDateTime.now(), status = Status.Normal)
                         }
             }

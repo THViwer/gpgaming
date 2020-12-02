@@ -293,23 +293,19 @@ class TTGService : PlatformService() {
                 val betTime = detail.asLocalDateTime("transactionDate", dateTimeFormat)
                 val transactionSubType = detail.asString("transactionSubType")
 
-                val betAmount: BigDecimal
-                val winAmount: BigDecimal
-                when (transactionSubType) {
+                val (betAmount, payout) = when (transactionSubType) {
                     "Wager" -> {
-                        betAmount = detail.asBigDecimal("amount").abs()
-                        winAmount = BigDecimal.ZERO
+                        detail.asBigDecimal("amount").abs() to BigDecimal.ZERO
                     }
                     else -> {
-                        betAmount = BigDecimal.ZERO
-                        winAmount = detail.asBigDecimal("amount").abs()
+                        BigDecimal.ZERO to detail.asBigDecimal("amount").abs()
                     }
                 }
 //            val handId = detail.asString("handId")
 
                 val originData = objectMapper.writeValueAsString(it.data)
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, betTime = betTime, betAmount = betAmount,
-                        winAmount = winAmount, originData = originData, platform = Platform.TTG, settleTime = betTime, validAmount = betAmount)
+                        payout = payout, originData = originData, platform = Platform.TTG, settleTime = betTime, validAmount = betAmount)
             } catch (e: Exception) {
 
 //                if (e is java.lang.NumberFormatException) {

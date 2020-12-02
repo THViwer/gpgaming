@@ -260,10 +260,10 @@ class AsiaGamingService : PlatformService() {
                     val validBetAmount = bet.asBigDecimal("validBetAmount")
 
                     val netAmount = bet.asBigDecimal("netAmount")
-                    val winAmount = betAmount.plus(netAmount)
+                    val payout = betAmount.plus(netAmount)
 
                     val originData = objectMapper.writeValueAsString(bet.data)
-                    BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform, betAmount = betAmount, winAmount = winAmount,
+                    BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform, betAmount = betAmount, payout = payout,
                             betTime = betTime, settleTime = betTime, orderId = orderId, originData = originData, validAmount = validBetAmount)
                 }
                 Platform.AsiaGamingSlot -> {
@@ -275,10 +275,10 @@ class AsiaGamingService : PlatformService() {
                     val settleTime = bet.asLocalDateTime("reckontime", dateTimeFormatter).plusHours(12) // +12 hour 使用UTC-8时区
                     val betAmount = bet.asBigDecimal("account")
                     val validAccount = bet.asBigDecimal("valid_account")
-                    val winAmount = bet.asBigDecimal("cus_account")
+                    val payout = bet.asBigDecimal("cus_account")
 
                     val originData = objectMapper.writeValueAsString(bet.data)
-                    BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform, betAmount = betAmount, winAmount = winAmount,
+                    BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform, betAmount = betAmount, payout = payout,
                             betTime = betTime, settleTime = settleTime, orderId = orderId, originData = originData, validAmount = validAccount)
 
                 }

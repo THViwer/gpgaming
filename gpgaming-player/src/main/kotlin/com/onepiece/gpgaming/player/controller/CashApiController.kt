@@ -427,7 +427,7 @@ open class CashApiController(
 
         return list.map { report ->
             with(report) {
-                MemberDailyReportValue.ReportVo(memberId = memberId, day = day, settles = settles, totalMWin = totalMWin, totalBet = totalBet,
+                MemberDailyReportValue.ReportVo(memberId = memberId, day = day, settles = settles, payout = payout, totalBet = totalBet,
                         depositAmount = depositAmount.plus(thirdPayAmount), withdrawAmount = withdrawAmount, promotionAmount = promotionAmount,
                         rebateAmount = rebateAmount, rebateExecution = rebateExecution)
             }

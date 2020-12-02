@@ -48,7 +48,7 @@ class BerOrderApiController(
                         platform = platform, startTime = startTime, endTime = endTime, memberId = member.id)
                 return list.map {
                     BetOrder(id = -1, clientId = it.clientId, memberId = it.memberId, betTime = it.betTime, settleTime = it.settleTime, betAmount = it.betAmount,
-                            winAmount = it.winAmount, mark = true, orderId = it.orderId, createdTime = it.betTime, originData = it.originData, platform = it.platform,
+                            payout = it.payout, mark = true, orderId = it.orderId, createdTime = it.betTime, originData = it.originData, platform = it.platform,
                             status = Status.Normal, validAmount = it.betAmount)
                 }
             }

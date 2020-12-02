@@ -290,10 +290,10 @@ class PragmaticService : PlatformService() {
             val settleTime = bet.asLocalDateTime("endDate", dateTimeFormat)
                     .plusHours(8) // 加8小时
             val betAmount = bet.asBigDecimal("bet")
-            val winAmount = bet.asBigDecimal("win")
+            val payout = bet.asBigDecimal("win")
 
             val originData = objectMapper.writeValueAsString(bet.data)
-            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = betAmount, winAmount = winAmount, platform = Platform.Pragmatic,
+            BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = betAmount, payout = payout, platform = Platform.Pragmatic,
                     betTime = betTime, settleTime = settleTime, orderId = orderId, originData = originData, validAmount = betAmount)
         }
 

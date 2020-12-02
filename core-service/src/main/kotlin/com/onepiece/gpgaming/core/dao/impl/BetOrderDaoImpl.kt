@@ -28,7 +28,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
             val orderId = rs.getString("order_id")
             val betAmount = rs.getBigDecimal("bet_amount")
             val validAmount = rs.getBigDecimal("valid_amount")
-            val winAmount = rs.getBigDecimal("win_amount")
+            val payout = rs.getBigDecimal("payout")
             val mark = rs.getBoolean("mark")
             val originData = rs.getString("origin_data")
             val betTime = rs.getTimestamp("bet_time").toLocalDateTime()
@@ -37,7 +37,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
             val status = rs.getString("status").let { Status.valueOf(it) }
 
             BetOrder(id = id, clientId = clientId, memberId = memberId, platform = platform, orderId = orderId, betAmount = betAmount,
-                    winAmount = winAmount, mark = mark, originData = originData, betTime = betTime, settleTime = settleTime,
+                    payout = payout, mark = mark, originData = originData, betTime = betTime, settleTime = settleTime,
                     createdTime = createdTime, status = status, validAmount = validAmount)
         }
 
@@ -59,7 +59,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 .asSet("order_id")
                 .asSet("bet_amount")
                 .asSet("valid_amount")
-                .asSet("win_amount")
+                .asSet("payout")
                 .asSet("mark")
                 .asSet("origin_data")
                 .asSet("bet_time")
@@ -76,7 +76,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 ps.setString(++x, order.orderId)
                 ps.setBigDecimal(++x, order.betAmount)
                 ps.setBigDecimal(++x, order.validAmount)
-                ps.setBigDecimal(++x, if (order.winAmount.toDouble() > 0) order.winAmount else BigDecimal.ZERO)
+                ps.setBigDecimal(++x, if (order.payout.toDouble() > 0) order.payout else BigDecimal.ZERO)
                 ps.setBoolean(++x, false)
                 ps.setString(++x, order.originData)
                 ps.setTimestamp(++x, Timestamp.valueOf(order.betTime))
@@ -115,7 +115,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
     }
 
     override fun getNotMarkBets(table: String, startId: Int): List<BetOrderValue.BetMarkVo> {
-        return query(returnColumns = "id, client_id, member_id, platform, bet_amount, win_amount", defaultTable = table)
+        return query(returnColumns = "id, client_id, member_id, platform, bet_amount, payout", defaultTable = table)
                 .asWhere("id > ?", startId)
                 .where("mark", false)
                 .limit(0, 5000)
@@ -125,9 +125,9 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                     val memberId = rs.getInt("member_id")
                     val platform = rs.getString("platform").let { Platform.valueOf(it) }
                     val betAmount = rs.getBigDecimal("bet_amount")
-                    val winAmount = rs.getBigDecimal("win_amount")
+                    val payout = rs.getBigDecimal("payout")
 
-                    BetOrderValue.BetMarkVo(id = id, clientId = clientId, memberId = memberId, platform = platform, betAmount = betAmount, winAmount = winAmount)
+                    BetOrderValue.BetMarkVo(id = id, clientId = clientId, memberId = memberId, platform = platform, betAmount = betAmount, payout = payout)
                 }
 
     }
@@ -153,7 +153,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
 
     override fun report(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<BetOrderReport> {
         return (0 until 8).map { index ->
-            query(returnColumns = "client_id, platform, sum(bet_amount) as totalBet, sum(win_amount) as totalWin", defaultTable = "bet_order_$index")
+            query(returnColumns = "client_id, platform, sum(bet_amount) as totalBet, sum(payout) as payout", defaultTable = "bet_order_$index")
                     .asWhere("settle_time > ?", startDate)
                     .asWhere("settle_time < ?", endDate)
                     .where("member_id", memberId)
@@ -163,21 +163,21 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                         val clientId = rs.getInt("client_id")
                         val platform = rs.getString("platform").let { Platform.valueOf(it) }
                         val totalBet = rs.getBigDecimal("totalBet")
-                        val totalWin = rs.getBigDecimal("totalWin")
-                        BetOrderReport(clientId = clientId, platform = platform, totalBet = totalBet, totalWin = totalWin)
+                        val payout = rs.getBigDecimal("payout")
+                        BetOrderReport(clientId = clientId, platform = platform, totalBet = totalBet, payout = payout)
                     }
         }.reduce { acc, list -> acc.plus(list) }
                 .groupBy { "${it.clientId}:${it.platform}" }
                 .map {
                     val totalBet = it.value.sumByDouble { it.totalBet.toDouble() }.toBigDecimal().setScale(2, 2)
-                    val totalWin = it.value.sumByDouble { it.totalWin.toDouble() }.toBigDecimal().setScale(2, 2)
-                    it.value.first().copy(totalBet = totalBet, totalWin = totalWin)
+                    val payout = it.value.sumByDouble { it.payout.toDouble() }.toBigDecimal().setScale(2, 2)
+                    it.value.first().copy(totalBet = totalBet, payout = payout)
                 }
     }
 
     override fun mreport(clientId: Int?, memberId: Int?, startDate: LocalDate): List<BetReportValue.MBetReport> {
         return (0 until 8).map { x ->
-            query(returnColumns = "client_id, member_id, platform, sum(bet_amount) as bet, sum(valid_amount) as valid_amount, sum(win_amount) as win", defaultTable = "bet_order_$x")
+            query(returnColumns = "client_id, member_id, platform, sum(bet_amount) as bet, sum(valid_amount) as valid_amount, sum(payout) as payout", defaultTable = "bet_order_$x")
                     .asWhere("settle_time >= ?", startDate)
                     .asWhere("settle_time < ?", startDate.plusDays(1))
                     .where("client_id", clientId)
@@ -188,10 +188,10 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                         val xMemberId = rs.getInt("member_id")
                         val platform = rs.getString("platform").let { Platform.valueOf(it) }
                         val totalBet = rs.getBigDecimal("bet")
-                        val totalWin = rs.getBigDecimal("win")
+                        val payout = rs.getBigDecimal("payout")
                         val validAmount = rs.getBigDecimal("valid_amount")
 
-                        BetReportValue.MBetReport(clientId = xClientId, memberId = xMemberId, platform = platform, totalBet = totalBet, totalWin = totalWin, validBet = validAmount)
+                        BetReportValue.MBetReport(clientId = xClientId, memberId = xMemberId, platform = platform, totalBet = totalBet, payout = payout, validBet = validAmount)
                     }
         }.reduce { a, b -> a.plus(b) }
     }
@@ -199,23 +199,23 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
 
     override fun creport(startDate: LocalDate): List<BetReportValue.CBetReport> {
         return (0 until 8).map { x ->
-            query(returnColumns = "client_id, sum(bet_amount) as bet, sum(win_amount) as win", defaultTable = "bet_order_$x")
+            query(returnColumns = "client_id, sum(bet_amount) as bet, sum(payout) as payout", defaultTable = "bet_order_$x")
                     .asWhere("settle_time >= ?", startDate)
                     .asWhere("settle_time < ?", startDate.plusDays(1))
                     .group("client_id")
                     .execute { rs ->
                         val clientId = rs.getInt("client_id")
                         val totalBet = rs.getBigDecimal("bet")
-                        val totalWin = rs.getBigDecimal("win")
+                        val payout = rs.getBigDecimal("payout")
 
-                        BetReportValue.CBetReport(clientId = clientId, totalBet = totalBet, totalWin = totalWin)
+                        BetReportValue.CBetReport(clientId = clientId, totalBet = totalBet, payout = payout)
                     }
         }.reduce { a, b -> a.plus(b) }.groupBy { it.clientId }.values.map {
             val clientId = it.first().clientId
             val totalBet = it.sumByDouble { it.totalBet.toDouble() }.toBigDecimal()
-            val totalWin = it.sumByDouble { it.totalWin.toDouble() }.toBigDecimal()
+            val payout = it.sumByDouble { it.payout.toDouble() }.toBigDecimal()
 
-            BetReportValue.CBetReport(clientId = clientId, totalBet = totalBet, totalWin = totalWin)
+            BetReportValue.CBetReport(clientId = clientId, totalBet = totalBet, payout = payout)
         }
     }
 

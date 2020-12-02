@@ -53,9 +53,9 @@ class BetOrderServiceImpl(
                 true -> maps.value.first()
                 else -> {
                     val betAmount = maps.value.sumByDouble { it.betAmount.toDouble() }.toBigDecimal().setScale(2, 2)
-                    val winAmount = maps.value.sumByDouble { it.winAmount.toDouble() }.toBigDecimal().setScale(2, 2)
+                    val payout = maps.value.sumByDouble { it.payout.toDouble() }.toBigDecimal().setScale(2, 2)
 
-                    maps.value.first().copy(id = -1, betAmount = betAmount, winAmount = winAmount)
+                    maps.value.first().copy(id = -1, betAmount = betAmount, payout = payout)
                 }
             }
         }
