@@ -181,7 +181,7 @@ data class MemberDailyReport(
     ) {
 
         @JsonIgnore
-        val mwin = this.payout.minus(this.validBet)
+        val win = this.payout.minus(this.validBet)
 
 
 //
