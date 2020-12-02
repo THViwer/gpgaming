@@ -257,6 +257,27 @@ class ReportApiController(
                                 payout = settle.payout)
                     }
         }.sortedByDescending { it.bet }
+                .groupBy { it.memberId }
+                .map {
+
+                    val first = it.value.first()
+
+
+                    // 下注
+                    val bet: BigDecimal = it.value.sumByDouble { x -> x.bet.toDouble() }.toBigDecimal().setScale(2, 2)
+
+                    // 有效投注
+                    val validBet: BigDecimal = it.value.sumByDouble { x -> x.validBet.toDouble() }.toBigDecimal().setScale(2, 2)
+
+                    // 顾客盈利
+                    val payout: BigDecimal = it.value.sumByDouble { x -> x.payout.toDouble() }.toBigDecimal().setScale(2, 2)
+
+                    // 反水
+                    val rebate: BigDecimal = it.value.sumByDouble { x -> x.rebate.toDouble() }.toBigDecimal().setScale(2, 2)
+
+                    first.copy(bet = bet, validBet = validBet, payout = payout, rebate = rebate)
+                }
+
     }
 
     @GetMapping("/client")
