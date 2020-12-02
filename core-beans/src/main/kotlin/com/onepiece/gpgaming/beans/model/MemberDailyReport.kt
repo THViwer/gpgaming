@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
 import com.onepiece.gpgaming.beans.enums.Platform
@@ -179,6 +180,7 @@ data class MemberDailyReport(
             val _mwin: BigDecimal = BigDecimal.ZERO
     ) {
 
+        @JsonIgnore
         val mwin = this.payout.minus(this.validBet)
 
 
