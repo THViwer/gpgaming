@@ -184,7 +184,7 @@ class SexyGamingService : PlatformService() {
         return this.bindGameResponse(okResponse = okResponse) {
             it.asList("transactions").map { bet ->
 
-                val orderId = bet.asString("roundId")
+                val orderId = bet.asString("platformTxId")
                 val username = bet.asString("userId")
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.SexyGaming, platformUsername = username)
                 val betAmount = try {
