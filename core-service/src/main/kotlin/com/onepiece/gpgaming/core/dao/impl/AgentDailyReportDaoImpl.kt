@@ -22,7 +22,7 @@ class AgentDailyReportDaoImpl : BasicDaoImpl<AgentDailyReport>("agent_daily_repo
             val totalDeposit = rs.getBigDecimal("total_deposit")
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
             val totalBet = rs.getBigDecimal("total_bet")
-            val totalMWin = rs.getBigDecimal("total_m_win")
+            val payout = rs.getBigDecimal("payout")
             val totalRebate = rs.getBigDecimal("total_rebate")
             val totalPromotion = rs.getBigDecimal("total_promotion")
             val newMemberCount = rs.getInt("new_member_count")
@@ -30,7 +30,7 @@ class AgentDailyReportDaoImpl : BasicDaoImpl<AgentDailyReport>("agent_daily_repo
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             AgentDailyReport(id = id, bossId = bossId, clientId = clientId, agentId = agentId, totalDeposit = totalDeposit, totalWithdraw = totalWithdraw,
-                    totalBet = totalBet, totalMWin = totalMWin, newMemberCount = newMemberCount, day = day, createdTime = createdTime,
+                    totalBet = totalBet, payout = payout, newMemberCount = newMemberCount, day = day, createdTime = createdTime,
                     superiorAgentId = superiorAgentId, totalRebate = totalRebate, totalPromotion = totalPromotion, username = usernaem)
         }
 
@@ -44,7 +44,7 @@ class AgentDailyReportDaoImpl : BasicDaoImpl<AgentDailyReport>("agent_daily_repo
                 .set("total_deposit")
                 .set("total_withdraw")
                 .set("total_bet")
-                .set("total_m_win")
+                .set("payout")
                 .set("total_rebate")
                 .set("total_promotion")
                 .set("new_member_count")
@@ -59,7 +59,7 @@ class AgentDailyReportDaoImpl : BasicDaoImpl<AgentDailyReport>("agent_daily_repo
                     ps.setBigDecimal(++x, entity.totalDeposit)
                     ps.setBigDecimal(++x, entity.totalWithdraw)
                     ps.setBigDecimal(++x, entity.totalBet)
-                    ps.setBigDecimal(++x, entity.totalMWin)
+                    ps.setBigDecimal(++x, entity.payout)
                     ps.setBigDecimal(++x, entity.totalRebate)
                     ps.setBigDecimal(++x, entity.totalPromotion)
                     ps.setInt(++x, entity.newMemberCount)

@@ -14,7 +14,7 @@ sealed class MemberReportValue {
             val count: Int,
 
             // 顾客盈利
-            val totalMWin: BigDecimal,
+            val payout: BigDecimal,
 
             // 顾客下注
             val totalBet: BigDecimal,
@@ -121,7 +121,7 @@ sealed class MemberReportValue {
             val username: String,
 
             // 顾客盈利
-            val totalMWin: BigDecimal,
+            val payout: BigDecimal,
 
             // 顾客下注
             val totalBet: BigDecimal,
@@ -213,7 +213,7 @@ sealed class MemberReportValue {
             val username: String = "",
 
             // 顾客盈利
-            val totalMWin: BigDecimal,
+            val payout: BigDecimal,
 
             // 顾客下注
             val totalBet: BigDecimal,

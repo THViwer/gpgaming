@@ -34,7 +34,7 @@ data class AgentDailyReport(
         val totalBet: BigDecimal,
 
         // 当前顾客盈利
-        val totalMWin: BigDecimal,
+        val payout: BigDecimal,
 
         // 总返水
         val totalRebate: BigDecimal,

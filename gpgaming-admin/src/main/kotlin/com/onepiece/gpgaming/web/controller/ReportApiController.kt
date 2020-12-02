@@ -169,7 +169,7 @@ class ReportApiController(
 //        val data = history.plus(todayData)
         val data = history
         if (data.isEmpty()) {
-            val emptyTotal = MemberReportValue.MemberReportTotal(count = 0, totalMWin = BigDecimal.ZERO, totalBet = BigDecimal.ZERO, transferIn = BigDecimal.ZERO,
+            val emptyTotal = MemberReportValue.MemberReportTotal(count = 0, payout = BigDecimal.ZERO, totalBet = BigDecimal.ZERO, transferIn = BigDecimal.ZERO,
                     transferOut = BigDecimal.ZERO, totalDepositCount = 0, totalDepositAmount = BigDecimal.ZERO, totalWithdrawCount = 0, totalWithdrawAmount = BigDecimal.ZERO,
                     totalArtificialCount = 0, totalArtificialAmount = BigDecimal.ZERO, totalThirdPayCount = 0, totalThirdPayAmount = BigDecimal.ZERO, totalRebateAmount = BigDecimal.ZERO,
                     totalPromotionAmount = BigDecimal.ZERO)
@@ -293,7 +293,7 @@ class ReportApiController(
 
         val data = this.clientDaily(startDate = startDate, endDate = endDate).data.map {
             with(it) {
-                ClientReportExcelVo(day = day.toString(), totalBet = totalBet, totalMWin = totalMWin, transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
+                ClientReportExcelVo(day = day.toString(), totalBet = totalBet, payout = payout, transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
                         depositCount = depositCount, thirdPayAmount = depositAmount, thirdPayCount = thirdPayCount, promotionAmount = promotionAmount, withdrawAmount = withdrawAmount,
                         withdrawCount = withdrawCount, artificialAmount = artificialAmount, artificialCount = artificialCount, rebateAmount = rebateAmount, newMemberCount = newMemberCount)
             }

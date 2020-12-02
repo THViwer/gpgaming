@@ -224,7 +224,7 @@ class ReportServiceImpl(
                 val mCommission = memberCommissions.first { it.activeCount > memberActive.activeCount }
                 val memberCommissionAmount =
                         (memberCommission.totalBet
-                                .minus(memberCommission.totalMWin)
+                                .minus(memberCommission.payout)
                                 .minus(memberCommission.totalRebate)
                                 .minus(memberCommission.totalPromotion))
                                 .multiply(mCommission.scale)

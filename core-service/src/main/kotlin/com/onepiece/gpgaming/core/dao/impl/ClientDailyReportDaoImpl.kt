@@ -29,7 +29,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
             val artificialCount = rs.getInt("artificial_count")
             val newMemberCount = rs.getInt("new_member_count")
             val totalBet = rs.getBigDecimal("total_bet")
-            val totalMWin = rs.getBigDecimal("total_m_win")
+            val payout = rs.getBigDecimal("payout")
             val thirdPayAmount = rs.getBigDecimal("third_pay_amount")
             val thirdPayCount = rs.getInt("third_pay_count")
             val rebateAmount = rs.getBigDecimal("rebate_amount")
@@ -40,7 +40,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
 
             ClientDailyReport(id = id, day = day, bossId = bossId, clientId = clientId, transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
                     depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
-                    promotionAmount = promotionAmount, artificialAmount = artificialAmount, artificialCount = artificialCount, totalBet = totalBet, totalMWin = totalMWin,
+                    promotionAmount = promotionAmount, artificialAmount = artificialAmount, artificialCount = artificialCount, totalBet = totalBet, payout = payout,
                     thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, activeCount = activeCount, firstDepositFrequency = firstDepositFrequency,
                     totalFirstDeposit = totalFirstDeposit)
         }
@@ -62,7 +62,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                 .set("artificial_count")
                 .set("new_member_count")
                 .set("total_bet")
-                .set("total_m_win")
+                .set("payout")
                 .set("third_pay_amount")
                 .set("third_pay_count")
                 .set("rebate_amount")
@@ -85,7 +85,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     ps.setInt(++x, entity.artificialCount)
                     ps.setInt(++x, entity.newMemberCount)
                     ps.setBigDecimal(++x, entity.totalBet)
-                    ps.setBigDecimal(++x, entity.totalMWin)
+                    ps.setBigDecimal(++x, entity.payout)
                     ps.setBigDecimal(++x, entity.thirdPayAmount)
                     ps.setInt(++x, entity.thirdPayCount)
                     ps.setBigDecimal(++x, entity.rebateAmount)

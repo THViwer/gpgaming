@@ -253,7 +253,7 @@ sealed class AgentValue {
             val totalBet: BigDecimal,
 
             // 当前顾客盈利
-            val totalMWin: BigDecimal,
+            val payout: BigDecimal,
 
             // 下级代理佣金
             val subAgentCommission: BigDecimal,
@@ -280,7 +280,7 @@ sealed class AgentValue {
             val totalBet: BigDecimal,
 
             // 顾客盈利
-            val totalMWin: BigDecimal,
+            val payout: BigDecimal,
 
             // 返水
             val totalRebate: BigDecimal,

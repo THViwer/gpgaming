@@ -24,7 +24,7 @@ data class ClientDailyReport(
         val totalBet: BigDecimal,
 
         // 盈利金额
-        val totalMWin: BigDecimal,
+        val payout: BigDecimal,
 
         // 转入金额
         val transferIn: BigDecimal,
@@ -83,6 +83,6 @@ data class ClientDailyReport(
 ) {
 
     // 业主盈利金额
-    val totalCWin: BigDecimal = totalBet.minus(totalMWin)
+//    val totalCWin: BigDecimal = totalBet.minus(totalMWin)
 
 }

@@ -30,7 +30,7 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
             val totalDeposit = rs.getBigDecimal("total_deposit")
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
             val totalBet = rs.getBigDecimal("total_bet")
-            val totalMWin = rs.getBigDecimal("total_m_win")
+            val payout = rs.getBigDecimal("payout")
             val memberCommissionScale = rs.getBigDecimal("member_commission_scale")
             val totalRebate  =  rs.getBigDecimal("total_rebate")
             val totalPromotion  = rs.getBigDecimal("total_promotion")
@@ -41,7 +41,7 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
 
             AgentMonthReport(id  =  id, day = day, bossId = bossId, clientId = clientId, superiorAgentId = superiorAgentId, agentId = agentId, agentCommission = agentCommission,
                     agentActiveCount = agentActiveCount, agentCommissionScale = agentCommissionScale, memberCommission = memberCommission, memberActiveCount = memberActiveCount,
-                    totalDeposit = totalDeposit, totalWithdraw = totalWithdraw, totalBet = totalBet, totalMWin = totalMWin,  memberCommissionScale = memberCommissionScale,
+                    totalDeposit = totalDeposit, totalWithdraw = totalWithdraw, totalBet = totalBet, payout = payout,  memberCommissionScale = memberCommissionScale,
                     createdTime = createdTime, totalRebate = totalRebate, totalPromotion = totalPromotion, commissionExecution = commissionExecution, newMemberCount = newMemberCount,
                     agencyMonthFee = agencyMonthFee, username = username)
 
@@ -67,7 +67,7 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
                 .set("total_deposit")
                 .set("total_withdraw")
                 .set("total_bet")
-                .set("total_m_win")
+                .set("payout")
                 .set("commission_execution")
                 .set("agency_month_fee")
                 .execute { ps, entity ->
@@ -91,7 +91,7 @@ class AgentMonthReportDaoImpl : BasicDaoImpl<AgentMonthReport>("agent_month_repo
                     ps.setBigDecimal(++x,  entity.totalDeposit)
                     ps.setBigDecimal(++x, entity.totalWithdraw)
                     ps.setBigDecimal(++x, entity.totalBet)
-                    ps.setBigDecimal(++x, entity.totalMWin)
+                    ps.setBigDecimal(++x, entity.payout)
                     ps.setBoolean(++x, entity.commissionExecution)
                     ps.setBigDecimal(++x, entity.agencyMonthFee)
                 }

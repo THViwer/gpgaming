@@ -183,7 +183,7 @@ class AnalysisDaoImpl(
                 m.username username,
                 m.agent_id superior_agent_id,
                 IFNULL(mr.total_bet, 0) total_bet,
-                IFNULL(mr.total_m_win, 0) total_m_win,
+                IFNULL(mr.payout, 0) payout,
                 IFNULL(mr.total_deposit, 0) total_deposit,
                 IFNULL(mr.total_withdraw, 0) total_withdraw,
                 IFNULL(mr.total_rebate, 0) total_rebate,
@@ -195,7 +195,7 @@ class AnalysisDaoImpl(
             			boss_id, 
             			agent_id, 
             			sum(total_bet) total_bet, 
-            			sum(total_m_win) total_m_win,
+            			sum(payout) payout,
             			sum(deposit_amount + third_pay_amount) total_deposit,
                         sum(withdraw_amount) total_withdraw,
             			sum(rebate_amount) total_rebate,
@@ -219,14 +219,14 @@ class AnalysisDaoImpl(
             val usernaem = rs.getString("username")
             val superiorAgentId = rs.getInt("superior_agent_id")
             val totalBet = rs.getBigDecimal("total_bet")
-            val totalMWin = rs.getBigDecimal("total_m_win")
+            val payout = rs.getBigDecimal("payout")
             val totalDeposit = rs.getBigDecimal("total_deposit")
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
             val totalRebate = rs.getBigDecimal("total_rebate")
             val totalPromotion = rs.getBigDecimal("total_promotion")
             val newMemberCount = rs.getInt("new_member_count")
 
-            AgentDailyReport(id = -1, bossId = bossId, clientId = clientId, agentId = agentId, totalBet = totalBet, totalMWin = totalMWin,
+            AgentDailyReport(id = -1, bossId = bossId, clientId = clientId, agentId = agentId, totalBet = totalBet, payout = payout,
                     totalDeposit = totalDeposit, totalWithdraw = totalWithdraw, totalRebate = totalRebate,
                     totalPromotion = totalPromotion, newMemberCount = newMemberCount, day = startDate,
                     superiorAgentId = superiorAgentId, createdTime = LocalDateTime.now(), username = usernaem)
@@ -261,7 +261,7 @@ class AnalysisDaoImpl(
                    sum(total_deposit) total_deposit,
                    sum(total_withdraw) total_withdraw,
                    sum(total_bet) total_bet,
-                   sum(total_m_win) total_m_win,
+                   sum(payout) payout,
                    sum(total_rebate) total_rebate,
                    sum(total_promotion) total_promotion,
                    count(new_member_count) new_member_count
@@ -277,12 +277,12 @@ class AnalysisDaoImpl(
             val totalDeposit = rs.getBigDecimal("total_deposit")
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
             val totalBet = rs.getBigDecimal("total_bet")
-            val totalMWin = rs.getBigDecimal("total_m_win")
+            val payout = rs.getBigDecimal("payout")
             val totalRebate = rs.getBigDecimal("total_rebate")
             val totalPromotion = rs.getBigDecimal("total_promotion")
             val newMemberCount = rs.getInt("new_member_count")
             AgentDailyReport(id = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = -1, totalDeposit = totalDeposit, totalWithdraw = totalWithdraw,
-                    totalBet = totalBet, totalMWin = totalMWin, totalRebate = totalRebate, totalPromotion = totalPromotion, newMemberCount = newMemberCount,
+                    totalBet = totalBet, payout = payout, totalRebate = totalRebate, totalPromotion = totalPromotion, newMemberCount = newMemberCount,
                     createdTime = LocalDateTime.now(), day = startDate, clientId = clientId, username = username)
         }
 
@@ -300,7 +300,7 @@ class AnalysisDaoImpl(
                    sum(total_deposit) total_deposit,
                    sum(total_withdraw) total_withdraw,
                    sum(total_bet) total_bet,
-                   sum(total_m_win) total_m_win,
+                   sum(payout) payout,
                    sum(total_rebate) total_rebate,
                    sum(total_promotion) total_promotion,
                    sum(new_member_count) new_member_count
@@ -318,13 +318,13 @@ class AnalysisDaoImpl(
             val totalDeposit = rs.getBigDecimal("total_deposit")
             val totalWithdraw = rs.getBigDecimal("total_withdraw")
             val totalBet = rs.getBigDecimal("total_bet")
-            val totalMWin = rs.getBigDecimal("total_m_win")
+            val payout = rs.getBigDecimal("payout")
             val totalRebate = rs.getBigDecimal("total_rebate")
             val totalPromotion = rs.getBigDecimal("total_promotion")
             val newMemberCount = rs.getInt("new_member_count")
 
             AgentMonthReport(id = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = mAgentId, totalDeposit = totalDeposit,
-                    totalWithdraw = totalWithdraw, totalBet = totalBet, totalMWin = totalMWin, totalPromotion = totalPromotion, totalRebate = totalRebate,
+                    totalWithdraw = totalWithdraw, totalBet = totalBet, payout = payout, totalPromotion = totalPromotion, totalRebate = totalRebate,
                     day = startDate, agentCommissionScale = BigDecimal.ZERO, agentActiveCount = 0, agentCommission = BigDecimal.ZERO,
                     memberCommissionScale = BigDecimal.ZERO, memberActiveCount = 0, memberCommission = BigDecimal.ZERO,
                     createdTime = LocalDateTime.now(), clientId = clientId, commissionExecution = false, newMemberCount = newMemberCount,
@@ -339,7 +339,7 @@ class AnalysisDaoImpl(
                    r.boss_id,
                    r.client_id,
                    sum(r.total_bet) total_bet,
-                   sum(r.total_m_win) total_m_win,
+                   sum(r.payout) payout,
                    sum(r.transfer_in) transfer_in,
                    sum(r.transfer_out) transfer_out,
                    sum(r.artificial_amount) artificial_amount,
@@ -364,7 +364,7 @@ class AnalysisDaoImpl(
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val totalBet = rs.getBigDecimal("total_bet")
-            val totalMWin = rs.getBigDecimal("total_m_win")
+            val payout = rs.getBigDecimal("payout")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
             val artificialAmount = rs.getBigDecimal("artificial_amount")
@@ -379,7 +379,7 @@ class AnalysisDaoImpl(
             val promotionAmount = rs.getBigDecimal("promotion_amount")
             val newMemberCount = rs.getInt("new_member_count")
 
-            ClientDailyReport(id = -1, day = startDate, bossId = bossId, clientId = clientId, totalBet = totalBet, totalMWin = totalMWin,
+            ClientDailyReport(id = -1, day = startDate, bossId = bossId, clientId = clientId, totalBet = totalBet, payout = payout,
                     transferIn = transferIn, transferOut = transferOut, artificialAmount = artificialAmount, artificialCount = artificialCount,
                     depositAmount = depositAmount, depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount,
                     rebateAmount = rebateAmount, promotionAmount = promotionAmount, thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount,

@@ -133,7 +133,7 @@ class MemberDailyReportDaoImpl(
 
         val columns = """
             count(*) as count,
-            sum(total_m_win) as totalMWin,
+            sum(payout) as payout,
             sum(total_bet) as totalBet,
             sum(transfer_in) as transferIn,
             sum(transfer_out) as transferOut,
@@ -158,7 +158,7 @@ class MemberDailyReportDaoImpl(
                 .asWhere("promotion_amount >= ?", query.minPromotionAmount)
                 .executeOnlyOne { rs ->
                     val count = rs.getInt("count")
-                    val totalMWin = rs.getBigDecimal("totalMWin") ?: BigDecimal.ZERO
+                    val payout = rs.getBigDecimal("payout") ?: BigDecimal.ZERO
                     val totalBet = rs.getBigDecimal("totalBet") ?: BigDecimal.ZERO
                     val transferIn = rs.getBigDecimal("transferIn") ?: BigDecimal.ZERO
                     val transferOut = rs.getBigDecimal("transferOut") ?: BigDecimal.ZERO
@@ -173,7 +173,7 @@ class MemberDailyReportDaoImpl(
                     val totalRebateAmount = rs.getBigDecimal("totalRebateAmount") ?: BigDecimal.ZERO
                     val totalPromotionAmount = rs.getBigDecimal("totalPromotionAmount") ?: BigDecimal.ZERO
 
-                    MemberReportValue.MemberReportTotal(count = count, totalMWin = totalMWin, totalBet = totalBet, transferIn = transferIn,
+                    MemberReportValue.MemberReportTotal(count = count, payout = payout, totalBet = totalBet, transferIn = transferIn,
                             transferOut = transferOut, totalDepositCount = totalDepositCount, totalDepositAmount = totalDepositAmount,
                             totalWithdrawCount = totalWithdrawCount, totalWithdrawAmount = totalWithdrawAmount,
                             totalArtificialCount = totalArtificialCount, totalArtificialAmount = totalArtificialAmount,
@@ -232,7 +232,7 @@ class MemberDailyReportDaoImpl(
             MemberAnalysisSort.WithdrawSeqMax -> "withdraw_count"
             MemberAnalysisSort.DepositMax -> "deposit_amount"
             MemberAnalysisSort.DepositSeqMax -> "deposit_count"
-            MemberAnalysisSort.WinMax -> "total_m_win"
+            MemberAnalysisSort.WinMax -> "payout"
             MemberAnalysisSort.LossMax -> "total_m_loss"
             MemberAnalysisSort.PromotionMax -> "promotion_amount"
         }
@@ -244,8 +244,8 @@ class MemberDailyReportDaoImpl(
             		member_id,
                     username,
             		sum(total_bet) total_bet,
-            		sum(total_m_win) total_m_win,
-            		sum(total_bet-total_m_win) total_m_loss,
+            		sum(payout) payout,
+            		sum(total_bet-payout) total_m_loss,
             		sum(deposit_amount+third_pay_amount) deposit_amount,
             		sum(deposit_count+third_pay_count) deposit_count,
             		sum(withdraw_amount) withdraw_amount,
@@ -262,7 +262,7 @@ class MemberDailyReportDaoImpl(
             val memberId = rs.getInt("member_id")
             val username = rs.getString("username")
             val totalBet = rs.getBigDecimal("total_bet")
-            val totalMWin = rs.getBigDecimal("total_m_win")
+            val payout = rs.getBigDecimal("payout")
             val totalMLoss = rs.getBigDecimal("total_m_loss")
             val depositAmount = rs.getBigDecimal("deposit_amount")
             val depositCount = rs.getInt("deposit_count")
@@ -273,7 +273,7 @@ class MemberDailyReportDaoImpl(
             val rebateAmount = rs.getBigDecimal("rebate_amount")
             val promotionAmount = rs.getBigDecimal("promotion_amount")
 
-            MemberReportValue.AnalysisVo(memberId = memberId, username = username, totalBet = totalBet, totalMWin = totalMWin, totalMLoss = totalMLoss,
+            MemberReportValue.AnalysisVo(memberId = memberId, username = username, totalBet = totalBet, payout = payout, totalMLoss = totalMLoss,
                     depositAmount = depositAmount, depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount,
                     artificialAmount = artificialAmount, artificialCount = artificialCount, rebateAmount = rebateAmount,
                     promotionAmount = promotionAmount, clientId = query.clientId)
@@ -290,7 +290,7 @@ class MemberDailyReportDaoImpl(
             agent_id,
             superior_agent_id,
             sum(total_bet) total_bet,
-            sum(total_m_win) total_m_win,
+            sum(payout) payout,
             sum(transfer_in) transfer_in,
             sum(transfer_out) transfer_out,
             sum(deposit_count) deposit_count,
@@ -330,7 +330,7 @@ class MemberDailyReportDaoImpl(
                     val artificialAmount = rs.getBigDecimal("artificial_amount")
                     val artificialCount = rs.getInt("artificial_count")
                     val totalBet = rs.getBigDecimal("total_bet")
-                    val totalMWin = rs.getBigDecimal("total_m_win")
+                    val payout = rs.getBigDecimal("payout")
                     val thirdPayAmount = rs.getBigDecimal("third_pay_amount")
                     val thirdPayCount = rs.getInt("third_pay_count")
                     val rebateAmount = rs.getBigDecimal("rebate_amount")
@@ -339,7 +339,7 @@ class MemberDailyReportDaoImpl(
 
                     MemberReportValue.MemberMonthReport(bossId = bossId, clientId = clientId, agentId = agentId, memberId = memberId, username = username,
                             transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount, depositCount = depositCount, withdrawAmount = withdrawAmount,
-                            withdrawCount = withdrawCount, artificialAmount = artificialAmount, artificialCount = artificialCount, totalBet = totalBet, totalMWin = totalMWin,
+                            withdrawCount = withdrawCount, artificialAmount = artificialAmount, artificialCount = artificialCount, totalBet = totalBet, payout = payout,
                             thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, promotionAmount = promotionAmount,
                             superiorAgentId = superiorAgentId, day = query.startDate)
                 }

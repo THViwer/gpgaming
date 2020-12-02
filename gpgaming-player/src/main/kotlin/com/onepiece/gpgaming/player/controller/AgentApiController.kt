@@ -214,7 +214,7 @@ class AgentApiController(
         val reportQuery = AgentReportValue.AgentMonthQuery(bossId = current.bossId, clientId = current.clientId,  agentId = current.id)
         return agentMonthReportDao.query(reportQuery).map {
             AgentValue.AgentCommissionVo(day = it.day, totalDeposit = it.totalDeposit, totalWithdraw = it.totalWithdraw, totalBet = it.totalBet,
-                    totalMWin = it.totalMWin,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,
+                    payout = it.payout,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,
                     subAgentCommission = it.agentCommission, memberCommission = it.memberCommission, agentId = it.agentId, username = it.username)
         }
     }
@@ -230,7 +230,7 @@ class AgentApiController(
         val reportQuery = AgentReportValue.AgentMonthQuery(bossId = current.bossId, clientId = current.clientId,  superiorAgentId = superiorAgentId)
         return agentMonthReportDao.query(reportQuery).map {
             AgentValue.AgentCommissionVo(day = it.day, totalDeposit = it.totalDeposit, totalWithdraw = it.totalWithdraw, totalBet = it.totalBet,
-                    totalMWin = it.totalMWin,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,
+                    payout = it.payout,  totalRebate = it.totalRebate, totalPromotion = it.totalPromotion, newMemberCount = it.newMemberCount,
                     subAgentCommission = it.agentCommission, memberCommission = it.memberCommission, agentId = it.agentId, username = it.username)
         }
     }
@@ -257,7 +257,7 @@ class AgentApiController(
 
             val newUsername = "${first}****${last}"
 
-            AgentValue.MemberCommissionVo(username = newUsername, totalBet = it.totalBet, totalMWin = it.totalMWin, totalRebate = it.rebateAmount,
+            AgentValue.MemberCommissionVo(username = newUsername, totalBet = it.totalBet, payout = it.payout, totalRebate = it.rebateAmount,
                     totalPromotion = it.promotionAmount)
         }
     }

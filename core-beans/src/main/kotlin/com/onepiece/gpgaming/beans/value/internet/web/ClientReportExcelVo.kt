@@ -11,8 +11,8 @@ data class ClientReportExcelVo(
         @ExcelProperty("下注金额")
         val totalBet: BigDecimal,
 
-        @ExcelProperty("盈利金额")
-        val totalMWin: BigDecimal,
+        @ExcelProperty("派彩金额")
+        val payout: BigDecimal,
 
         @ExcelProperty("转入金额")
         val transferIn: BigDecimal,
