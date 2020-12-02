@@ -180,7 +180,6 @@ data class MemberDailyReport(
             val _mwin: BigDecimal = BigDecimal.ZERO
     ) {
 
-        @JsonIgnore
         val win = this.payout.minus(this.validBet)
 
 
