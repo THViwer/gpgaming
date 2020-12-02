@@ -10,6 +10,8 @@ sealed class AppDownWebValue {
             @ApiModelProperty("图标")
             val icon: String?,
 
+            val mobileIcon: String?,
+
             @ApiModelProperty("平台")
             val platform: Platform,
 

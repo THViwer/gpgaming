@@ -9,7 +9,9 @@ sealed class AppDownValue {
             val id: Int,
 
             val icon: String?,
-            
+
+            val mobileIcon: String?,
+
             val status: Status?,
 
             val iosPath: String?,

@@ -14,6 +14,8 @@ data class AppDown(
 
         val icon: String?,
 
+        val mobileIcon: String?,
+
         // ios下载地址
         val iosPath: String?,
 

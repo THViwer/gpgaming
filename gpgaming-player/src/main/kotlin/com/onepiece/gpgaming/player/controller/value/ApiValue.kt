@@ -303,6 +303,8 @@ data class DownloadAppVo(
         @ApiModelProperty("图标")
         val icon: String,
 
+        val mobileIcon: String?,
+
         @ApiModelProperty("banner")
         val banner: String?,
 
