@@ -49,7 +49,7 @@ class MemberDailyReportDaoImpl(
             val settles = rs.getString("settles").let { objectMapper.readValue<List<MemberDailyReport.PlatformSettle>>(it) }
                     .map {
                         // 为了兼容老数据
-                        val _payout = if (it.payout == BigDecimal.ZERO) it.mwin else it.payout
+                        val _payout = if (it.payout == BigDecimal.ZERO) it._mwin else it.payout
                         it.copy(payout = _payout)
                     }
 
