@@ -48,6 +48,8 @@ data class ClientPlatformDailyReport(
 
 ) {
 
+    val totalMWin = this.payout.minus(this.bet)
+
 //    val clientWin: BigDecimal
 //        get() {
 //            return bet.minus(win)

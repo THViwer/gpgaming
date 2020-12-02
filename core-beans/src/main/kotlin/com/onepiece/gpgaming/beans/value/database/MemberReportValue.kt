@@ -244,7 +244,9 @@ sealed class MemberReportValue {
 
             //  优惠金额
             val promotionAmount: BigDecimal
-    )
+    ) {
+        val totalMWin: BigDecimal = this.payout.minus(this.totalBet)
+    }
 
     data class SaleMemberReportVo(
 

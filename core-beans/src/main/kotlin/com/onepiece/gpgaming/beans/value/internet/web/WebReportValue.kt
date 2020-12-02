@@ -86,6 +86,8 @@ data class MemberReportWebVo(
 
 ) {
 
+    val totalMWin: BigDecimal = this.payout.minus(this.totalBet)
+
     // 业主盈利
 //    val totalCWin: BigDecimal
 //        get() {

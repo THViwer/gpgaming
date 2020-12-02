@@ -53,4 +53,8 @@ data class BetOrder(
         // 状态
         val status: Status
 
-)
+) {
+
+    val winAmount: BigDecimal = this.payout.minus(this.validAmount)
+
+}

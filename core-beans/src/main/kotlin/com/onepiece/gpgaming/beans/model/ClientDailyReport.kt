@@ -82,6 +82,8 @@ data class ClientDailyReport(
 
 ) {
 
+    val totalMWin = this.payout.minus(this.totalBet)
+
     // 业主盈利金额
 //    val totalCWin: BigDecimal = totalBet.minus(totalMWin)
 
