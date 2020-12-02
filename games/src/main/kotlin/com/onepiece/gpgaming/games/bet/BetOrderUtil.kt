@@ -53,6 +53,11 @@ class BetOrderUtil private constructor(
         return this
     }
 
+    fun setValidAmount(key: String): BetOrderUtil {
+        validAmount = mapUtil.asBigDecimal(key)
+        return this
+    }
+
     fun setWinAmount(key: String): BetOrderUtil {
         payout = mapUtil.asBigDecimal(key)
         return this
