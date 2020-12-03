@@ -213,13 +213,13 @@ class DreamGamingService : PlatformService() {
         return this.bindGameResponse(okResponse = okResponse) { mapUtil ->
             val orders = mapUtil.asList("list").map { bet ->
                 BetOrderUtil.instance(platform = Platform.DreamGaming, mapUtil = bet)
-                        .set("orderId", "id")
-                        .set("username", "userName")
-                        .set("betAmount", "betPoints")
-                        .set("validAmount", "availableBet")
-                        .set("winAmount", "winOrLoss")
-                        .set("betTime", "betTime", dateTimeFormat)
-                        .set("settleTime", "calTime", dateTimeFormat)
+                        .setOrderId("id")
+                        .setUsername("userName")
+                        .setBetAmount("betPoints")
+                        .setValidAmount("availableBet")
+                        .setPayout("winOrLoss")
+                        .setBetTime("betTime", dateTimeFormat)
+                        .setSettleTime("calTime", dateTimeFormat)
                         .build(objectMapper)
             }
 

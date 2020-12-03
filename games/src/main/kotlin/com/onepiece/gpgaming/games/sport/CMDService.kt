@@ -185,7 +185,8 @@ class CMDService : PlatformService() {
                     val username = bet.asString("SourceName")
                     val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.CMD, platformUsername = username)
                     val betAmount = bet.asBigDecimal("BetAmount")
-                    val payout = bet.asBigDecimal("WinAmount")
+                    val winAmount = bet.asBigDecimal("WinAmount")
+                    val payout = winAmount.plus(betAmount)
                     val betTime = LocalDateTime.ofInstant(Instant.ofEpochMilli((bet.asLong("TransDate") - 621355968000000000) / 10000), ZoneId.of("Asia/Shanghai")).minusHours(8)
                     val settleTime = LocalDateTime.ofInstant(Instant.ofEpochMilli((bet.asLong("StateUpdateTs") - 621355968000000000) / 10000), ZoneId.of("Asia/Shanghai")).minusHours(8)
 
