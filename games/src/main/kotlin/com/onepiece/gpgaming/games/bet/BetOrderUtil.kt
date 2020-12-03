@@ -55,6 +55,9 @@ class BetOrderUtil private constructor(
 
     fun setValidAmount(key: String): BetOrderUtil {
         validAmount = mapUtil.asBigDecimal(key)
+        if (validAmount == BigDecimal.ZERO) {
+            validAmount = betAmount
+        }
         return this
     }
 

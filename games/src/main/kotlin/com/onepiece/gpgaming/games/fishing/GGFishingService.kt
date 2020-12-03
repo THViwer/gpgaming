@@ -207,7 +207,7 @@ class GGFishingService : PlatformService() {
                     val co = BetOrderUtil.instance(platform = Platform.GGFishing, mapUtil = bet)
                             .setOrderId("id")
                             .setUsername("userId")
-                            .setBetAmount("betAmount")
+                            .setBetAmount("realBetAmount")
                             .setWinAmount("realPayAmount")
                             .setValidAmount("realBetAmount")
                             .setBetTime("betTransTime", dateTimeFormat)
