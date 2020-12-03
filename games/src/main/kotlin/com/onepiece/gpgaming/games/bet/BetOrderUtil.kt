@@ -63,6 +63,11 @@ class BetOrderUtil private constructor(
         return this
     }
 
+    fun setPayout(key: String): BetOrderUtil {
+        payout = mapUtil.asBigDecimal(key)
+        return this
+    }
+
     fun setBetTime(key: String, dateTimeFormatter: DateTimeFormatter = dateTimeFormat): BetOrderUtil {
         betTime = mapUtil.asLocalDateTime(key, dateTimeFormatter)
         return this

@@ -204,7 +204,7 @@ class GGFishingService : PlatformService() {
             val gameResponse = this.bindGameResponse(okResponse = okResponse) { mapUtil ->
                  mapUtil.asList("transactions").map { bet ->
 
-                    BetOrderUtil.instance(platform = Platform.GGFishing, mapUtil = bet)
+                    val co = BetOrderUtil.instance(platform = Platform.GGFishing, mapUtil = bet)
                             .setOrderId("id")
                             .setUsername("userId")
                             .setBetAmount("betAmount")
@@ -213,6 +213,9 @@ class GGFishingService : PlatformService() {
                             .setBetTime("betTransTime", dateTimeFormat)
                             .setSettleTime("updateTime", dateTimeFormat)
                             .build(objectMapper)
+
+                     //payout暂时只有玩家派彩  所以先要
+                     co.copy(payout = co.payout.minus(co.betAmount))
                 }
             }
 
