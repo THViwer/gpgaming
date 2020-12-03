@@ -297,14 +297,14 @@ class SaGamingService : PlatformService() {
                 val betTime = bet.asLocalDateTime("BetTime")
                 val settleTime = bet.asLocalDateTime("PayoutTime")
                 val betAmount = bet.asBigDecimal("BetAmount")
-                val rolling = bet.asBigDecimal("Rolling")
+//                val rolling = bet.asBigDecimal("Rolling")
                 val resultAmount = bet.asBigDecimal("ResultAmount")
                 val payout = betAmount.plus(resultAmount)
 
                 val originData = objectMapper.writeValueAsString(bet.data)
 
                 BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, platform = Platform.SaGaming, betTime = betTime,
-                        settleTime = settleTime, betAmount = betAmount, payout = payout, originData = originData, validAmount = rolling)
+                        settleTime = settleTime, betAmount = betAmount, payout = payout, originData = originData, validAmount = betAmount)
 
             } ?: emptyList()
         }
