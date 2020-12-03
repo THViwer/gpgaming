@@ -180,7 +180,7 @@ data class MemberDailyReport(
             val _mwin: BigDecimal = BigDecimal.ZERO
     ) {
 
-        val win = this.payout.minus(this.validBet)
+        val win = this.payout.minus(this.bet)
 
 
 //

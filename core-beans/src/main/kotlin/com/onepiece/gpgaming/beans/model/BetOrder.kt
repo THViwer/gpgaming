@@ -55,6 +55,6 @@ data class BetOrder(
 
 ) {
 
-    val winAmount: BigDecimal = this.payout.minus(this.validAmount)
+    val winAmount: BigDecimal = this.payout.minus(this.betAmount)
 
 }

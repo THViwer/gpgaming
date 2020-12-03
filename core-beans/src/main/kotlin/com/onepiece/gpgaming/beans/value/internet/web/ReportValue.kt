@@ -336,7 +336,7 @@ sealed class ReportValue {
             val rebate: BigDecimal  = BigDecimal.ZERO
     ) {
 
-        val mwin = this.payout.minus(this.validBet)
+        val mwin = this.payout.minus(this.bet)
 
 //        val cwin: BigDecimal = mwin.negate()
 
