@@ -196,7 +196,8 @@ class LbcService : PlatformService() {
                     val username = bet.asString("vendor_member_id")
                     val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Lbc, platformUsername = username, prefix = clientToken.memberCode)
                     val betAmount = bet.asBigDecimal("stake")
-                    val payout = bet.asBigDecimal("winlost_amount")
+                    val winlostAmount = bet.asBigDecimal("winlost_amount")
+                    val payout = betAmount.plus(winlostAmount)
                     val betTime = bet.asLocalDateTime("transaction_time")
                     val settleTime = bet.asLocalDateTime("winlost_datetime")
 
