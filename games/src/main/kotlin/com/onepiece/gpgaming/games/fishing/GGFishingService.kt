@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.GGFishingClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
+import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.bet.BetOrderUtil
@@ -204,18 +205,18 @@ class GGFishingService : PlatformService() {
             val gameResponse = this.bindGameResponse(okResponse = okResponse) { mapUtil ->
                  mapUtil.asList("transactions").map { bet ->
 
-                    val co = BetOrderUtil.instance(platform = Platform.GGFishing, mapUtil = bet)
-                            .setOrderId("id")
-                            .setUsername("userId")
-                            .setBetAmount("realBetAmount")
-                            .setWinAmount("realPayAmount")
-                            .setValidAmount("realBetAmount")
-                            .setBetTime("betTransTime", dateTimeFormat)
-                            .setSettleTime("updateTime", dateTimeFormat)
-                            .build(objectMapper)
+                     val orderId = bet.asString("id")
+                     val username = bet.asString("userId")
+                     val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.GGFishing, platformUsername = username)
+                     val betAmount = bet.asBigDecimal("realBetAmount")
+                     val realPayAmount = bet.asBigDecimal("realPayAmount")
+                     val betTime = bet.asLocalDateTime("betTransTime", dateTimeFormat)
+                     val settleTime = bet.asLocalDateTime("updateTime", dateTimeFormat)
 
-                     //payout暂时只有玩家派彩  所以先要
-                     co.copy(payout = co.payout.minus(co.betAmount))
+                     val payout = realPayAmount.minus(betAmount)
+
+                     BetOrderValue.BetOrderCo(orderId = orderId, memberId = memberId, clientId = clientId, betAmount = betAmount, validAmount = betAmount,
+                     betTime = betTime, settleTime = settleTime, payout = payout, originData = objectMapper.writeValueAsString(bet), platform = Platform.GGFishing)
                 }
             }
 
