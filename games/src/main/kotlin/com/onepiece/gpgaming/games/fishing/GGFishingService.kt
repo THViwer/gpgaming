@@ -3,14 +3,11 @@ package com.onepiece.gpgaming.games.fishing
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.U9RequestStatus
-import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.token.GGFishingClientToken
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
-import com.onepiece.gpgaming.games.bet.BetOrderUtil
-import com.onepiece.gpgaming.games.bet.MapUtil
 import com.onepiece.gpgaming.games.http.GameResponse
 import com.onepiece.gpgaming.games.http.OKParam
 import com.onepiece.gpgaming.games.http.OKResponse
@@ -203,20 +200,20 @@ class GGFishingService : PlatformService() {
             val okResponse = this.doGet(clientToken = clientToken, path = "getTransactionsByLastUpdateDate", data = data)
 
             val gameResponse = this.bindGameResponse(okResponse = okResponse) { mapUtil ->
-                 mapUtil.asList("transactions").map { bet ->
+                mapUtil.asList("transactions").map { bet ->
 
-                     val orderId = bet.asString("id")
-                     val username = bet.asString("userId")
-                     val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.GGFishing, platformUsername = username)
-                     val betAmount = bet.asBigDecimal("realBetAmount")
-                     val realPayAmount = bet.asBigDecimal("realPayAmount")
-                     val betTime = bet.asLocalDateTime("betTransTime", dateTimeFormat)
-                     val settleTime = bet.asLocalDateTime("updateTime", dateTimeFormat)
+                    val orderId = bet.asString("id")
+                    val username = bet.asString("userId")
+                    val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.GGFishing, platformUsername = username)
+                    val betAmount = bet.asBigDecimal("realBetAmount")
+                    val payout = bet.asBigDecimal("realPayAmount")
+                    val betTime = bet.asLocalDateTime("betTransTime", dateTimeFormat)
+                    val settleTime = bet.asLocalDateTime("updateTime", dateTimeFormat)
 
-                     val payout = realPayAmount.minus(betAmount)
+//                    val payout = realPayAmount.minus(betAmount)
 
-                     BetOrderValue.BetOrderCo(orderId = orderId, memberId = memberId, clientId = clientId, betAmount = betAmount, validAmount = betAmount,
-                     betTime = betTime, settleTime = settleTime, payout = payout, originData = objectMapper.writeValueAsString(bet), platform = Platform.GGFishing)
+                    BetOrderValue.BetOrderCo(orderId = orderId, memberId = memberId, clientId = clientId, betAmount = betAmount, validAmount = betAmount,
+                            betTime = betTime, settleTime = settleTime, payout = payout, originData = objectMapper.writeValueAsString(bet), platform = Platform.GGFishing)
                 }
             }
 
