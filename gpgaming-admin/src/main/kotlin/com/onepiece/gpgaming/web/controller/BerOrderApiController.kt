@@ -66,7 +66,7 @@ class BerOrderApiController(
                 val query = BetOrderValue.BetOrderQuery(clientId = clientId, memberId = member.id, platform = platform, betStartTime = startTime, betEndTime = endTime)
                 betOrderService.getBets(query = query)
             }
-        }
+        }.sortedByDescending { it.betTime }
     }
 
     @GetMapping("/last500")
