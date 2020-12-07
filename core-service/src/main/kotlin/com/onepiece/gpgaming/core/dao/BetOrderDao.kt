@@ -28,7 +28,11 @@ interface BetOrderDao: BasicDao<BetOrder> {
 
     fun batch(orders: List<BetOrderValue.BetOrderCo>)
 
+
+    fun getBets(query: BetOrderValue.BetOrderQuery): List<BetOrder>
+
     fun getBets(clientId: Int, memberId: Int, platform: Platform): List<BetOrder>
+
 
     fun last500(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): List<BetOrder>
 

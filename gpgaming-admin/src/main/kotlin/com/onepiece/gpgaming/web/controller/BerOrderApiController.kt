@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.web.controller
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.BetOrder
+import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
@@ -61,7 +62,10 @@ class BerOrderApiController(
 
                 return mapOf("url" to html)
             }
-            else -> betOrderService.getBets(clientId = clientId, memberId = member.id, platform = platform)
+            else -> {
+                val query = BetOrderValue.BetOrderQuery(clientId = clientId, memberId = member.id, platform = platform, betStartTime = startTime, betEndTime = endTime)
+                betOrderService.getBets(query = query)
+            }
         }
     }
 

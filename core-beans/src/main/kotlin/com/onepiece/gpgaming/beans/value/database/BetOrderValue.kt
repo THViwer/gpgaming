@@ -6,6 +6,19 @@ import java.time.LocalDateTime
 
 sealed class BetOrderValue {
 
+    data class BetOrderQuery(
+            
+            val clientId: Int,
+
+            val memberId: Int,
+
+            val platform: Platform,
+
+            val betStartTime: LocalDateTime,
+
+            val betEndTime: LocalDateTime
+    )
+
     data class BetOrderCo(
             // 厅主
             val clientId: Int,

@@ -89,6 +89,21 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
         })
     }
 
+    override fun getBets(query: BetOrderValue.BetOrderQuery): List<BetOrder> {
+        val table = this.getRuleTable(query.clientId, query.memberId)
+
+        return query(defaultTable = table)
+                .where("client_id", query.clientId)
+                .where("member_id", query.memberId)
+                .where("platform", query.platform)
+                .asWhere("bet_time => ?", query.betStartTime)
+                .asWhere("bet_time <= ?", query.betEndTime)
+                .sort("id desc")
+                //TODO 暂时不分页
+                .limit(0, 500)
+                .execute(mapper)
+    }
+
     override fun getBets(clientId: Int, memberId: Int, platform: Platform): List<BetOrder> {
         val table = this.getRuleTable(clientId, memberId)
 

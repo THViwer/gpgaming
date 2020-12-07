@@ -18,9 +18,15 @@ class BetOrderServiceImpl(
         private val redisService: RedisService
 ) : BetOrderService {
 
+
     override fun batch(orders: List<BetOrderValue.BetOrderCo>) {
         betOrderDao.batch(orders)
     }
+
+    override fun getBets(query: BetOrderValue.BetOrderQuery): List<BetOrder> {
+        return betOrderDao.getBets(query = query)
+    }
+
 
     override fun getBets(clientId: Int, memberId: Int, platform: Platform): List<BetOrder> {
         return betOrderDao.getBets(clientId, memberId, platform)
