@@ -96,7 +96,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 .where("client_id", query.clientId)
                 .where("member_id", query.memberId)
                 .where("platform", query.platform)
-                .asWhere("bet_time => ?", query.betStartTime)
+                .asWhere("bet_time >= ?", query.betStartTime)
                 .asWhere("bet_time <= ?", query.betEndTime)
                 .sort("id desc")
                 //TODO 暂时不分页
