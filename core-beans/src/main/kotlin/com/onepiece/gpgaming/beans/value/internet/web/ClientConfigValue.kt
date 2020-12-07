@@ -21,6 +21,8 @@ sealed class ClientConfigValue {
             // 是否打开新的窗口
             val liveChatTab: Boolean,
 
+            val gtag: String,
+
             // google统计Id
             val googleStatisticsId: String,
 

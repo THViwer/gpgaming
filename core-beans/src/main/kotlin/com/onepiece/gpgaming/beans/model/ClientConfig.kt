@@ -20,6 +20,8 @@ data class ClientConfig(
         val description: String,
         // google统计Id
         val googleStatisticsId: String,
+
+        val gtag: String,
         //面子书广告
         val facebookTr: String,
         // facebook显示位置

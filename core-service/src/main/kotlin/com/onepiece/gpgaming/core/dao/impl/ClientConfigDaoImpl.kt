@@ -22,6 +22,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
             val description = rs.getString("description")
             val liveChatId = rs.getString("live_chat_id")
             val liveChatTab = rs.getBoolean("live_chat_tab")
+            val gtag = rs.getString("gtag")
             val googleStatisticsId = rs.getString("google_statistics_id")
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val facebookTr = rs.getString("facebook_tr")
@@ -51,7 +52,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                     enableIntroduce = enableIntroduce, introducePromotionId = introducePromotionId, registerCommission = registerCommission,
                     depositPeriod = depositPeriod, commissionPeriod = commissionPeriod, depositCommission = depositCommission,
                     shareTemplate = shareTemplate, minWithdrawRequire = minWithdrawRequire, regainMessageTemplate = regainMessageTemplate,
-                    vipIntroductionImage = vipIntroductionImage)
+                    vipIntroductionImage = vipIntroductionImage, gtag = gtag)
         }
 
     override fun create(configUo: ClientConfigValue.ClientConfigUo): Boolean {
@@ -62,6 +63,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("description", configUo.description)
                 .set("live_chat_id", configUo.liveChatId)
                 .set("live_chat_tab", configUo.liveChatTab)
+                .set("gtag", configUo.gtag)
                 .set("google_statistics_id", configUo.googleStatisticsId)
                 .set("facebook_tr", configUo.facebookTr)
                 .set("facebook_show_position", configUo.facebookShowPosition)
@@ -87,6 +89,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("description", configUo.description)
                 .set("live_chat_id", configUo.liveChatId)
                 .set("live_chat_tab", configUo.liveChatTab)
+                .set("gtag", configUo.gtag)
                 .set("google_statistics_id", configUo.googleStatisticsId)
                 .set("facebook_tr", configUo.facebookTr)
                 .set("facebook_show_position", configUo.facebookShowPosition)
