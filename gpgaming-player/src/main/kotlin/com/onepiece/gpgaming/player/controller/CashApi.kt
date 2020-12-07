@@ -25,6 +25,8 @@ import com.onepiece.gpgaming.player.controller.value.MemberBankCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankUoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankVo
 import com.onepiece.gpgaming.player.controller.value.MemberDailyReportValue
+import com.onepiece.gpgaming.player.controller.value.PromotionShowVo
+import com.onepiece.gpgaming.player.controller.value.PromotionVo
 import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
 import com.onepiece.gpgaming.player.controller.value.WithdrawCoReq
 import io.swagger.annotations.Api
@@ -76,7 +78,7 @@ interface CashApi {
             @RequestParam("payId") payId: Int,
             @RequestParam("amount") amount: BigDecimal,
             @RequestParam("responseUrl") responseUrl: String,
-            @RequestParam("selectBank",  required = false) selectBank: Bank?
+            @RequestParam("selectBank", required = false) selectBank: Bank?
     ): ThirdPayValue.SelectPayResult
 
 //    @ApiOperation(tags = ["cash"], value = "第三方充值 -> 列表")
@@ -132,6 +134,13 @@ interface CashApi {
 
 //    @ApiOperation(tags = ["cash"], value = "取款 -> 检查")
 //    fun checkWithdrawDetail(): CheckWithdrawDetail
+
+    @ApiOperation(tags = ["cash"], value = "中心 -> 平台 获得该平台的优惠活动列表")
+    fun getPromotion(
+            @RequestParam("platform") platform: Platform,
+            @RequestParam("promotionId", required = false) promotionId: Int?,
+            @RequestParam("code", required = false) code: String?
+    ): List<PromotionShowVo>
 
     @ApiOperation(tags = ["cash"], value = "中心 -> 平台 检查是否有优惠活动并提示")
     fun checkPromotion(

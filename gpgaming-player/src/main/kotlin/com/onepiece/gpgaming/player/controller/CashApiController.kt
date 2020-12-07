@@ -75,6 +75,7 @@ import com.onepiece.gpgaming.player.controller.value.MemberBankCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankUoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankVo
 import com.onepiece.gpgaming.player.controller.value.MemberDailyReportValue
+import com.onepiece.gpgaming.player.controller.value.PromotionShowVo
 import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
 import com.onepiece.gpgaming.player.controller.value.WithdrawCoReq
 import com.onepiece.gpgaming.player.jwt.JwtUser
@@ -602,6 +603,68 @@ open class CashApiController(
 //
 //        TODO("Not yet implemented")
 //    }
+
+    @GetMapping("/promotion/data")
+    override fun getPromotion(@RequestParam("platform") platform: Platform,
+                              @RequestParam("promotionId", required = false) promotionId: Int?,
+                              @RequestParam("code", required = false) code: String?): List<PromotionShowVo> {
+
+        val language = getHeaderLanguage()
+        val current = this.current()
+
+        val member = memberService.getMember(current.id)
+        val promotions = promotionService.find(clientId = current.clientId, platform = platform)
+                .filter { it.category != PromotionCategory.Backwater && it.category != PromotionCategory.Other }
+
+        val historyOrders = transferOrderService.queryLastPromotion(clientId = current.clientId, memberId = current.id,
+                startTime = LocalDateTime.now().minusDays(30))
+
+        val joinPromotions = promotions
+                .filter {
+                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果0：${promotionId == null || it.id == promotionId} ")
+                    promotionId == null || it.id == promotionId
+                }
+                .filter {
+                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果1：${it.code.toUpperCase() == code?.toUpperCase() || it.category != PromotionCategory.ActivationCode} ")
+                    it.code.toUpperCase() == code?.toUpperCase() || (it.category != PromotionCategory.ActivationCode && code == null)
+                }
+                .filter {
+                    log.info("用户：${current.username}, 优惠Id：${it.id}, 过滤结果3：${!member.firstPromotion || it.category != PromotionCategory.First} ")
+                    !member.firstPromotion || it.category != PromotionCategory.First
+                }
+                .filter { promotion ->
+                    log.info("用户：${current.username}, 优惠Id：${promotion.id}, 过滤结果4：${PromotionPeriod.check(promotion = promotion, historyOrders = historyOrders)} ")
+
+                    PromotionPeriod.check(promotion = promotion, historyOrders = historyOrders)
+                }
+                .filter { promotion ->
+                    log.info("用户：${current.username}, 优惠Id：${promotion.id}, 过滤结果5：${promotion.levelId.isEmpty() || promotion.levelId.contains(member.levelId)} ")
+                    promotion.levelId.isEmpty() || promotion.levelId.contains(member.levelId)
+                }
+                .toList()
+
+
+        val contentMap = i18nContentService.getConfigType(clientId = current.clientId, configType = I18nConfig.Promotion)
+                .map {
+                    "${it.configId}:${it.language}" to it
+                }.toMap()
+
+        return joinPromotions.map { promotion ->
+            try {
+                val content = contentMap["${promotion.id}:${language}"]
+                        ?: contentMap["${promotion.id}:${Language.EN}"]
+
+                content?.let {
+                    val mContent = content.getII18nContent(objectMapper = objectMapper) as I18nContent.PromotionI18n
+
+                    PromotionShowVo(promotionId = promotion.id, title = mContent.title, minAmount = promotion.rule.minAmount, maxAmount = promotion.rule.maxAmount)
+                }
+            } catch (e: Exception) {
+                log.error("处理优惠信息错误:", e)
+                null
+            }
+        }.toList().filterNotNull()
+    }
 
     @GetMapping("/check/promotion")
     override fun checkPromotion(
