@@ -810,10 +810,13 @@ open class CashApiController(
     @GetMapping("/promotion")
     override fun getPromotionList(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = false) startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate,
+            @RequestParam("type") type: String
     ): List<TransferOrder> {
         val user = this.current()
-        val query = TransferOrderValue.Query(clientId = user.clientId, memberId = user.id, startDate = startDate, endDate = endDate, filterPromotion = true, from = Platform.Center,
+
+        val filterPromotion = type == "promotion"
+        val query = TransferOrderValue.Query(clientId = user.clientId, memberId = user.id, startDate = startDate, endDate = endDate, filterPromotion = filterPromotion, from = null,
                 username = null, promotionId = null)
         return transferOrderService.query(query)
     }

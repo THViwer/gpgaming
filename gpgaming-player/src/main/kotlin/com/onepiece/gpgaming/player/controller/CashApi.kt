@@ -160,7 +160,8 @@ interface CashApi {
     @ApiOperation(tags = ["cash"], value = "中心 -> 优惠活动列表")
     fun getPromotionList(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = false) startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate,
+            @RequestParam("type", defaultValue = "transfer") type: String
     ): List<TransferOrder>
 
     @ApiOperation(tags = ["cash"], value = "转账")
