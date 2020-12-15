@@ -165,7 +165,7 @@ class ReportServiceImpl(
 
             val rebateExecution = totalRebate.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
-            report.copy(rebateAmount = totalRebate, rebateExecution = rebateExecution, totalBet = totalBet, payout = payout, settles = settles)
+            report.copy(rebateAmount = totalRebate, rebateExecution = rebateExecution, totalBet = totalBet, payout = payout, settles = settleList)
         }.filter {
             it.isHasData()
         }
