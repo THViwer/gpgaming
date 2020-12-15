@@ -177,7 +177,13 @@ data class MemberDailyReport(
 
             // 已废弃
             @JsonProperty("mwin")
-            val _mwin: BigDecimal = BigDecimal.ZERO
+            val _mwin: BigDecimal = BigDecimal.ZERO,
+
+            // 必要打码
+            val requirementBet: BigDecimal = BigDecimal.ZERO,
+
+            // 反水比例
+            val rebateScale: BigDecimal = BigDecimal.ZERO
     ) {
 
         val win = this.payout.minus(this.bet)

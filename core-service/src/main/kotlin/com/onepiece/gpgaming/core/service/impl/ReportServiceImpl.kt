@@ -136,27 +136,47 @@ class ReportServiceImpl(
 
             val settleList = settles.map {
                 // 公式 (有效打码-优惠金额需要打码) * 游戏平台返水比例
-                val rebate = when (it.platform.category) {
-                    PlatformCategory.Fishing ->
-                        (it.validBet.minus(report.fishRequirementBet))
+                when (it.platform.category) {
+                    PlatformCategory.Fishing -> {
+                        val rebate = (it.validBet.minus(report.fishRequirementBet))
                                 .multiply(level.fishRebate)
                                 .divide(BigDecimal.valueOf(100))
-                    PlatformCategory.Slot ->
-                        (it.validBet.minus(report.slotRequirementBet))
+                                .let { x ->
+                                    if (x.toDouble() <= 0) BigDecimal.ZERO else x
+                                }
+
+                        it.copy(rebate = rebate, requirementBet = report.fishRequirementBet, rebateScale = level.fishRebate)
+                    }
+
+                    PlatformCategory.Slot -> {
+                        val rebate = (it.validBet.minus(report.slotRequirementBet))
                                 .multiply(level.slotRebate)
                                 .divide(BigDecimal.valueOf(100))
-                    PlatformCategory.LiveVideo ->
-                        (it.validBet.minus(report.liveRequirementBet))
+                                .let { x ->
+                                    if (x.toDouble() <= 0) BigDecimal.ZERO else x
+                                }
+                        it.copy(rebate = rebate, requirementBet = report.slotRequirementBet, rebateScale = level.slotRebate)
+                    }
+                    PlatformCategory.LiveVideo -> {
+                        val rebate = (it.validBet.minus(report.liveRequirementBet))
                                 .multiply(level.liveRebate)
                                 .divide(BigDecimal.valueOf(100))
-                    PlatformCategory.Sport ->
-                        (it.validBet.minus(report.sportRequirementBet))
+                                .let { x ->
+                                    if (x.toDouble() <= 0) BigDecimal.ZERO else x
+                                }
+                        it.copy(rebate = rebate, requirementBet = report.liveRequirementBet, rebateScale = level.liveRebate)
+
+                    }
+                    PlatformCategory.Sport -> {
+                        val rebate = (it.validBet.minus(report.sportRequirementBet))
                                 .multiply(level.sportRebate)
                                 .divide(BigDecimal.valueOf(100))
-                }.let { x ->
-                    if (x.toDouble() <= 0) BigDecimal.ZERO else x
+                                .let { x ->
+                                    if (x.toDouble() <= 0) BigDecimal.ZERO else x
+                                }
+                        it.copy(rebate = rebate, requirementBet = report.sportRequirementBet, rebateScale = level.sportRebate)
+                    }
                 }
-                it.copy(rebate = rebate)
             }
 
             val totalRebate = settleList.sumByDouble { it.rebate.toDouble() }

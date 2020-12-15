@@ -22,6 +22,7 @@ import com.onepiece.gpgaming.beans.enums.WithdrawState
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.model.PlatformMember
+import com.onepiece.gpgaming.beans.model.TransferOrder
 import com.onepiece.gpgaming.beans.model.pay.InstantPayConfig
 import com.onepiece.gpgaming.beans.model.pay.MaxiPayConfig
 import com.onepiece.gpgaming.beans.model.pay.SurePayConfig
@@ -42,6 +43,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.DepositValue
 import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.beans.value.internet.web.SelectPayVo
 import com.onepiece.gpgaming.beans.value.internet.web.ThirdPayValue
+import com.onepiece.gpgaming.beans.value.internet.web.TransferOrderValue
 import com.onepiece.gpgaming.beans.value.internet.web.WithdrawValue
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.ClientBankService
@@ -435,6 +437,29 @@ open class CashApiController(
         }
     }
 
+    @GetMapping("/daily/platform/rebate")
+    override fun platformRebate(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
+    ): List<MemberDailyReportValue.PlatformSettleVo> {
+        val user = this.current()
+        val memberQuery = MemberReportQuery(clientId = user.clientId, memberId = user.id, startDate = startDate, endDate = endDate, agentId = null,
+                current = 0, size = 1000, minPromotionAmount = null, minRebateAmount = null)
+        val list = memberDailyReportService.query(memberQuery)
+        if (list.isEmpty()) return emptyList()
+
+
+        return list.map {
+            val settles = it.settles
+            settles.map { settle ->
+                MemberDailyReportValue.PlatformSettleVo(day = it.day, platform = settle.platform, bet = settle.bet, validBet = settle.validBet, payout = settle.payout, rebate = settle.rebate,
+                        requirementBet = settle.requirementBet, rebateScale = settle.rebateScale)
+            }
+        }.reduce { acc, list ->
+            acc.plus(list)
+        }
+    }
+
     @PostMapping("/upload/proof")
     override fun uploadProof(@RequestParam("file") file: MultipartFile): Map<String, String> {
         val url = AwsS3Util.upload(file = file, clientId = current().clientId, category = "bank_proof")
@@ -782,6 +807,17 @@ open class CashApiController(
         return CheckPromotinResp(promotions = checkPromotions)
     }
 
+    @GetMapping("/promotion")
+    override fun getPromotionList(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = false) startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate
+    ): List<TransferOrder> {
+        val user = this.current()
+        val query = TransferOrderValue.Query(clientId = user.clientId, memberId = user.id, startDate = startDate, endDate = endDate, filterPromotion = true, from = Platform.Center,
+                username = null, promotionId = null)
+        return transferOrderService.query(query)
+    }
+
     @Synchronized
     private fun getPromotionPlatformMember(platform: Platform, member: JwtUser): PlatformMemberVo {
         return getPlatformMember(platform, member)
@@ -804,7 +840,7 @@ open class CashApiController(
 
         val promotionId = when {
             cashTransferReq.promotionId != null -> cashTransferReq.promotionId
-            !cashTransferReq.code.isNullOrBlank() -> promotionService.all(clientId = current.clientId).firstOrNull{ it.code == cashTransferReq.code}?.id
+            !cashTransferReq.code.isNullOrBlank() -> promotionService.all(clientId = current.clientId).firstOrNull { it.code == cashTransferReq.code }?.id
             else -> null
         }
         // 如果转入的平台是918kiss、pussy、mega 则默认添加优惠为-100

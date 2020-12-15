@@ -7,6 +7,7 @@ import com.onepiece.gpgaming.beans.enums.PayState
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.WithdrawState
+import com.onepiece.gpgaming.beans.model.TransferOrder
 import com.onepiece.gpgaming.beans.value.internet.web.BankVo
 import com.onepiece.gpgaming.beans.value.internet.web.CashValue
 import com.onepiece.gpgaming.beans.value.internet.web.ClientBankVo
@@ -103,6 +104,12 @@ interface CashApi {
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
     ): List<MemberDailyReportValue.ReportVo>
 
+    @ApiOperation(tags = ["cash"], value = "个人报表 -> 平台返水详情")
+    fun platformRebate(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
+    ): List<MemberDailyReportValue.PlatformSettleVo>
+
     @ApiOperation(tags = ["cash"], value = "充值列表")
     fun deposit(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
@@ -149,6 +156,12 @@ interface CashApi {
             @RequestParam("promotionId", required = false) promotionId: Int?,
             @RequestParam("code", required = false) code: String?
     ): CheckPromotinResp
+
+    @ApiOperation(tags = ["cash"], value = "中心 -> 优惠活动列表")
+    fun getPromotionList(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = false) startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate
+    ): List<TransferOrder>
 
     @ApiOperation(tags = ["cash"], value = "转账")
     fun transfer(
