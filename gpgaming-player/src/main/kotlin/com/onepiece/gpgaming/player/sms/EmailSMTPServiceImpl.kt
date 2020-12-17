@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.player.sms
 
 import org.springframework.scheduling.annotation.Async
+import org.springframework.stereotype.Service
 import java.util.*
 import javax.activation.DataHandler
 import javax.mail.Message
@@ -9,7 +10,7 @@ import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeMessage
 
 
-
+@Service
 open class EmailSMTPServiceImpl: EmailSMTPService {
     // for example, smtp.mailgun.org
     private val smtp_server = "smtppro.zoho.com"

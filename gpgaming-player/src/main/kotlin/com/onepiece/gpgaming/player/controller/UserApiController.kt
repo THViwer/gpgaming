@@ -324,7 +324,7 @@ class UserApiController(
 
 
         try {
-            if (registerReq.email != null && registerReq.email.contains("@")) {
+            if (registerReq.email != null && registerReq.email.contains("@") && bossId == 10000) {
                 emailSMTPService.send(username = registerReq.username, email = registerReq.email)
             }
         } catch (e: Exception) {
