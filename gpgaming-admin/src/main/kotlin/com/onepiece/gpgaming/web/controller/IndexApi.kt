@@ -49,7 +49,8 @@ interface IndexApi {
             @RequestParam("facebookTr") facebookTr: String,
             @RequestParam("facebookShowPosition") facebookShowPosition: ShowPosition,
             @RequestParam("asgContent") asgContent: String,
-            @RequestParam("vipIntroductionImage") vipIntroductionImage: String?
+            @RequestParam("vipIntroductionImage") vipIntroductionImage: String?,
+            @RequestParam("oneSingal") oneSingal: String?
     )
 
 

@@ -36,7 +36,9 @@ sealed class ClientConfigValue {
             val asgContent: String,
 
             // vip 背景图介绍
-            val vipIntroductionImage: String?
+            val vipIntroductionImage: String?,
+
+            val oneSingal: String?
     )
 
     data class ClientConfigVo(
@@ -67,7 +69,9 @@ sealed class ClientConfigValue {
             val asgContent: String,
 
             // vip 背景图配置
-            val vipIntroductionImage: String?
+            val vipIntroductionImage: String?,
+
+            val oneSingal: String?
     )
 
     data class IntroduceUo(

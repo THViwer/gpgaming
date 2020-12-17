@@ -21,7 +21,7 @@ class SmsService(
     companion object {
         const val MAX_SPLIT = 1
         const val path = "https://www.sms123.net/api/send.php"
-        const val apiKey = "105155917afc6231e03e5240a54d3121"
+        const val apiKey = "c7789fd544b75a96a6a97bb47b79c8ae"
     }
 
 

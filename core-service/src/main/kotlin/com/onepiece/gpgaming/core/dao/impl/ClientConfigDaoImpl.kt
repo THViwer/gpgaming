@@ -32,6 +32,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
             val enableRegisterMessage = rs.getBoolean("enable_register_message")
             val registerMessageTemplate = rs.getString("register_message_template")
                 val regainMessageTemplate = rs.getString("regain_message_template")
+            val oneSingal = rs.getString("one_singal")
 
 
             val enableIntroduce = rs.getBoolean("enable_introduce")
@@ -52,7 +53,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                     enableIntroduce = enableIntroduce, introducePromotionId = introducePromotionId, registerCommission = registerCommission,
                     depositPeriod = depositPeriod, commissionPeriod = commissionPeriod, depositCommission = depositCommission,
                     shareTemplate = shareTemplate, minWithdrawRequire = minWithdrawRequire, regainMessageTemplate = regainMessageTemplate,
-                    vipIntroductionImage = vipIntroductionImage, gtag = gtag)
+                    vipIntroductionImage = vipIntroductionImage, gtag = gtag, oneSingal = oneSingal)
         }
 
     override fun create(configUo: ClientConfigValue.ClientConfigUo): Boolean {
@@ -67,6 +68,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("google_statistics_id", configUo.googleStatisticsId)
                 .set("facebook_tr", configUo.facebookTr)
                 .set("facebook_show_position", configUo.facebookShowPosition)
+                .set("one_singal", configUo.oneSingal)
 
                 .set("enable_introduce", false)
                 .set("introduce_promotion_id", -1)
@@ -95,6 +97,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("facebook_show_position", configUo.facebookShowPosition)
                 .set("asg_content", configUo.asgContent)
                 .set("vip_introduction_image", configUo.vipIntroductionImage)
+                .set("one_singal", configUo.oneSingal)
 
                 .where("client_id", configUo.clientId)
                 .executeOnlyOne()

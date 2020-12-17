@@ -90,14 +90,15 @@ class IndexApiController(
             @RequestParam("facebookTr") facebookTr: String,
             @RequestParam("facebookShowPosition") facebookShowPosition: ShowPosition,
             @RequestParam("asgContent") asgContent: String,
-            @RequestParam("vipIntroductionImage") vipIntroductionImage: String?
+            @RequestParam("vipIntroductionImage") vipIntroductionImage: String?,
+            @RequestParam("oneSingal") oneSingal: String?
     ) {
         val clientId = getClientId()
 
         val seoUo = ClientConfigValue.ClientConfigUo(clientId = clientId, title = title, keywords = keywords, description = description,
                 liveChatId = liveChatId, googleStatisticsId = googleStatisticsId, facebookTr = facebookTr, liveChatTab = liveChatTab,
                 asgContent = asgContent, facebookShowPosition = facebookShowPosition, vipIntroductionImage = vipIntroductionImage,
-                gtag = gtag)
+                gtag = gtag, oneSingal = oneSingal)
         seoService.update(seoUo)
     }
 

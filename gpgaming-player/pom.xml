@@ -188,6 +188,13 @@
             <version>1.21</version>
         </dependency>
 
+        <!-- 邮件 -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+
 
     </dependencies>
 
