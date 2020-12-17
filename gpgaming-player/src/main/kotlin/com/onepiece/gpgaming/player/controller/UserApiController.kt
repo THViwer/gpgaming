@@ -42,6 +42,7 @@ import com.onepiece.gpgaming.player.controller.value.UserValue
 import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.player.jwt.JwtUser
 import com.onepiece.gpgaming.player.sms.EmailSMTPService
+import com.onepiece.gpgaming.player.sms.EmailSMTPServiceImpl
 import com.onepiece.gpgaming.player.sms.SmsService
 import com.onepiece.gpgaming.utils.RequestUtil
 import com.onepiece.gpgaming.utils.StringUtil
@@ -82,7 +83,8 @@ class UserApiController(
         private val i18nContentService: I18nContentService,
         private val objectMapper: ObjectMapper,
         private val analysisDao: AnalysisDao,
-        private val smsContentService: SmsContentService
+        private val smsContentService: SmsContentService,
+        private val emailSMTPService: EmailSMTPService
 ) : BasicController(), UserApi {
 
     companion object {
@@ -323,7 +325,7 @@ class UserApiController(
 
         try {
             if (registerReq.email != null && registerReq.email.contains("@")) {
-                EmailSMTPService.send(username = registerReq.username, email = registerReq.email)
+                emailSMTPService.send(username = registerReq.username, email = registerReq.email)
             }
         } catch (e: Exception) {
 
