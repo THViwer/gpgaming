@@ -41,6 +41,7 @@ import com.onepiece.gpgaming.player.controller.value.RegisterReq
 import com.onepiece.gpgaming.player.controller.value.UserValue
 import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.player.jwt.JwtUser
+import com.onepiece.gpgaming.player.sms.EmailSMTPService
 import com.onepiece.gpgaming.player.sms.SmsService
 import com.onepiece.gpgaming.utils.RequestUtil
 import com.onepiece.gpgaming.utils.StringUtil
@@ -318,6 +319,15 @@ class UserApiController(
         } ?: clientConfigService.get(clientId = clientId).registerMessageTemplate
 
         smsService.send(clientId = clientId, mobile = registerReq.phone, message = messageTemplate.replace("\${username}", registerReq.username))
+
+
+        try {
+            if (registerReq.email != null && registerReq.email.contains("@")) {
+                EmailSMTPService.send(username = registerReq.username, email = registerReq.email)
+            }
+        } catch (e: Exception) {
+
+        }
 
         val loginReq = LoginReq(username = registerReq.username, password = registerReq.password)
         return this.login(loginReq)

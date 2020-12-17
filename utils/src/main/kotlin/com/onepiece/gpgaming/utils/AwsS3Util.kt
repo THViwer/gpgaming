@@ -116,20 +116,20 @@ object AwsS3Util {
 }
 
 
-fun main() {
-    val file = File("/Users/cabbage/Downloads/apk")
-    val list = file.listFiles().map { file ->
-        val url = AwsS3Util.uploadLocalFile(file, "apk/${file.name.replace(" ", "")}")
-        file.name to url
-    }
-
-    list.forEach {
-        println("${it.first} -- ${it.second}")
-    }
-
-}
-
+//fun main() {
+//    val file = File("/Users/cabbage/Downloads/apk")
+//    val list = file.listFiles().map { file ->
+//        val url = AwsS3Util.uploadLocalFile(file, "apk/${file.name.replace(" ", "")}")
+//        file.name to url
+//    }
 //
+//    list.forEach {
+//        println("${it.first} -- ${it.second}")
+//    }
+//
+//}
+
+
 //fun main() {
 ////    val fileList = File("/Users/cabbage/Desktop/logo/logo1225")
 ////
@@ -164,9 +164,9 @@ fun main() {
 ////    val path = AwsS3Util.uploadLocalFile(file, "client/1/sport/s2.png")
 ////    println(path)
 //
-//    val file = File("/Users/cabbage/Downloads/paylogo")
+//    val file = File("/Users/cabbage/Downloads/Thanks for signing up with UNCLE JAY/images")
 //    val list = file.listFiles().map { file ->
-//        val url = AwsS3Util.uploadLocalFile(file, "bank/logo/${file.name.replace(" ", "")}")
+//        val url = AwsS3Util.uploadLocalFile(file, "uncle/email/${file.name.replace(" ", "")}")
 //        file.name to url
 //    }
 //

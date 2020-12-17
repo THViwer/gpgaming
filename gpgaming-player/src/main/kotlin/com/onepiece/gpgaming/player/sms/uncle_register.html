@@ -1,27 +1,3 @@
-package com.onepiece.gpgaming.player.sms
-
-import org.springframework.scheduling.annotation.Async
-import java.util.*
-import javax.activation.DataHandler
-import javax.mail.Message
-import javax.mail.Session
-import javax.mail.internet.InternetAddress
-import javax.mail.internet.MimeMessage
-
-
-object EmailSMTPService {
-    // for example, smtp.mailgun.org
-    private const val smtp_server = "smtppro.zoho.com"
-    private const val auth_username = "team@unclejay.com"
-    private const val auth_password = "Unclejay@888"
-
-    private const val from = "team@unclejay.com"
-    private const val EMAIL_TO_CC = ""
-
-    private const val title = "Thanks for signing up with UNCLE JAY!"
-
-    fun getHtmlContent(username: String): String {
-        return """
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" style="width:100%;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0">
 <head>
@@ -128,7 +104,7 @@ a[x-apple-data-detectors] {
                                                 <td valign="top" align="center" style="padding:0;Margin:0;width:560px">
                                                     <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                                                         <tr style="border-collapse:collapse">
-                                                            <td align="center" class="es-m-p5t" style="padding:0;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:21px;color:#FFFFFF">Dear ${username},</p><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:21px;color:#FFFFFF"><br></p><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:30px;color:#FFFFFF"><strong>Thanks for signing up with UNCLE JAY!</strong></p></td>
+                                                            <td align="center" class="es-m-p5t" style="padding:0;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:21px;color:#FFFFFF">Dear {username},</p><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:21px;color:#FFFFFF"><br></p><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:30px;color:#FFFFFF"><strong>Thanks for signing up with UNCLE JAY!</strong></p></td>
                                                         </tr>
                                                     </table></td>
                                             </tr>
@@ -251,54 +227,3 @@ a[x-apple-data-detectors] {
 </div>
 </body>
 </html>
-        """.trimIndent()
-    }
-
-    @Async
-    fun send(username: String, email: String) {
-        val prop = System.getProperties()
-//        prop.setProperty("mail.smtp.auth", "true");//开启认证
-//        prop.setProperty("mail.debug", "true");//启用调试
-        prop.setProperty("mail.smtp.timeout", "200000");//设置链接超时
-        prop.setProperty("mail.smtp.port", "25");//设置端口
-        prop.setProperty("mail.smtp.socketFactory.port", "465");//设置ssl端口
-        prop.setProperty("mail.smtp.socketFactory.fallback", "false");
-        prop.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-
-        val session = Session.getInstance(prop, null)
-        val msg = MimeMessage(session)
-
-        // from
-        msg.setFrom(InternetAddress(from))
-
-        // to
-        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email, false))
-
-        // cc
-        msg.setRecipients(Message.RecipientType.CC, InternetAddress.parse(EMAIL_TO_CC, false))
-
-        // subject
-        msg.subject = title
-
-        // content
-//        msg.setText(getHtmlContent(username = username))
-        msg.dataHandler = DataHandler(HTMLDataSource(getHtmlContent(username = username)))
-        msg.sentDate = Date()
-
-        // Get SMTPTransport
-        val t = session.getTransport("smtp")
-
-        // connect
-        t.connect(smtp_server, auth_username, auth_password)
-
-        // send
-        t.sendMessage(msg, msg.allRecipients)
-        t.close()
-    }
-
-}
-
-
-//fun main() {
-//    EmailSMTPService.send("cabbage", "cabbage.cgh@gmail.com")
-//}
