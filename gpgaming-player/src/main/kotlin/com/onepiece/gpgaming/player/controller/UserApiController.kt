@@ -280,9 +280,23 @@ class UserApiController(
         val clientId = client.id
 
         // 代理
-        val agent = registerReq.promoteCode?.let {
-            memberService.findByBossIdAndCode(bossId = bossId, promoteCode = registerReq.promoteCode)
-        } ?: memberService.getDefaultAgent(bossId = bossId)
+        val agent = when {
+            registerReq.affid != null -> {
+                memberService.getMember(id = registerReq.affid.toInt())
+            }
+            registerReq.affCode != null -> {
+                memberService.getMember(id = registerReq.affCode.toInt())
+            }
+            registerReq.promoteCode != null -> {
+                memberService.findByBossIdAndCode(bossId = bossId, promoteCode = registerReq.promoteCode)
+            }
+            else -> {
+                memberService.getDefaultAgent(bossId = bossId)
+            }
+        }
+//        val agent = registerReq.promoteCode?.let {
+//            memberService.findByBossIdAndCode(bossId = bossId, promoteCode = registerReq.promoteCode)
+//        } ?: memberService.getDefaultAgent(bossId = bossId)
 
         val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
 

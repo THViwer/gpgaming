@@ -258,6 +258,10 @@ data class RegisterReq(
         @ApiModelProperty("推广码")
         val promoteCode: String?,
 
+        val affCode: String?,
+
+        val affid: String?,
+
         @ApiModelProperty("电销人员Id")
         val saleCode: String?,
 
