@@ -290,10 +290,8 @@ class UserApiController(
             registerReq.promoteCode != null -> {
                 memberService.findByBossIdAndCode(bossId = bossId, promoteCode = registerReq.promoteCode)
             }
-            else -> {
-                memberService.getDefaultAgent(bossId = bossId)
-            }
-        }
+            else -> null
+        } ?: memberService.getDefaultAgent(bossId = bossId)
 //        val agent = registerReq.promoteCode?.let {
 //            memberService.findByBossIdAndCode(bossId = bossId, promoteCode = registerReq.promoteCode)
 //        } ?: memberService.getDefaultAgent(bossId = bossId)
