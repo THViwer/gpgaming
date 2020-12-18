@@ -171,7 +171,7 @@ class UserApiController(
             val introduce = memberIntroduceService.get(memberId = member.id)
             val registerActivity = introduce?.registerActivity ?: true
             val depositActivity = introduce?.depositActivity ?: true
-            val registerActivityVo = if (!registerActivity) {
+            val registerActivityVo = if (!registerActivity && clientConfig.introducePromotionId > 0) {
 //                val clientConfig = clientConfigService.get(clientId = member.clientId)
                 val promotion = promotionService.get(clientConfig.introducePromotionId)
 
