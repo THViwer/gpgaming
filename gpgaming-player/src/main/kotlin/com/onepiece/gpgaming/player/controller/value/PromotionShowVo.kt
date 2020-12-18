@@ -14,6 +14,9 @@ data class PromotionShowVo(
         val maxAmount: BigDecimal,
 
         // 优惠标题
-        val title: String
+        val title: String,
+
+        // 规则
+        val ruleJson: String
 
 )
