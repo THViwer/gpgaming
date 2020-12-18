@@ -163,7 +163,7 @@ class MemberApiController(
                         loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteCode = it.promoteCode, idCard = it.idCard,
                         country = client.country, agentId = agentId, agentUsername = agentUsername, saleId = it.saleId, saleUsername = saleUsername,
                         registerIp = it.registerIp, riskLevel = it.riskLevel, address = it.address, email = it.email, birthday = it.birthday,
-                        marketId = it.marketId, saleScope = it.saleScope)
+                        marketId = it.marketId, saleScope = it.saleScope, introduceId = it.introduceId)
             }
         }
 
