@@ -44,7 +44,7 @@ interface IndexApi {
             @RequestParam("description") description: String,
             @RequestParam("liveChatId") liveChatId: String,
             @RequestParam("liveChatTab") liveChatTab: Boolean,
-            @RequestParam("gtag") gtag: String,
+            @RequestParam("gtag", defaultValue = "") gtag: String,
             @RequestParam("googleStatisticsId") googleStatisticsId: String,
             @RequestParam("facebookTr") facebookTr: String,
             @RequestParam("facebookShowPosition") facebookShowPosition: ShowPosition,
