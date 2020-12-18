@@ -273,6 +273,9 @@ data class MemberVo(
         @ApiModelProperty("营销Id")
         val marketId: Int,
 
+        @ApiModelProperty("介绍Id")
+        val introduceId: Int,
+
         @ApiModelProperty("电销用户名")
         val saleUsername: String,
 
@@ -339,6 +342,7 @@ data class MemberVo(
         @ApiModelProperty("注册来源")
         get() {
             return when {
+                introduceId > 0 -> RegisterSource.Introduce
                 marketId > 0 -> RegisterSource.Market
                 saleId > 0 && saleScope == SaleScope.Own -> RegisterSource.Sale
                 agentId > 0 && agentUsername != "default_agent" -> RegisterSource.Agent

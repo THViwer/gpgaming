@@ -8,6 +8,9 @@ enum class RegisterSource {
     // 代理
     Agent,
 
+    // 会员介绍
+    Introduce,
+
     // 营销
     Market,
 
