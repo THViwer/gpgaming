@@ -14,7 +14,6 @@ import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.Deposit
-import com.onepiece.gpgaming.beans.model.MemberDailyReport
 import com.onepiece.gpgaming.beans.model.PayOrder
 import com.onepiece.gpgaming.beans.model.Wallet
 import com.onepiece.gpgaming.beans.model.Withdraw
@@ -340,9 +339,9 @@ data class MemberVo(
         @ApiModelProperty("注册来源")
         get() {
             return when {
-                agentId > 0 -> RegisterSource.Agent
                 marketId > 0 -> RegisterSource.Market
                 saleId > 0 && saleScope == SaleScope.Own -> RegisterSource.Sale
+                agentId > 0 && agentUsername != "default_agent" -> RegisterSource.Agent
                 else -> RegisterSource.Own
             }
 
