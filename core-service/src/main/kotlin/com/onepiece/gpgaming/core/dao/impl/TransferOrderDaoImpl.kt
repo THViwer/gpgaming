@@ -194,6 +194,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
                 .where("join_promotion_id", query.promotionId)
                 .asWhere("join_promotion_id is not null", query.filterPromotion)
                 .asWhere("join_promotion_id != -100", query.filterPromotion)
+                .where("member_id", query.memberId)
                 .where("username", query.username)
                 .sort(query.sortBy)
                 .limit(query.current, query.size)
