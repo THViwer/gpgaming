@@ -256,20 +256,7 @@ data class RegisterReq(
         val safetyPassword: String = "1234",
 
         @ApiModelProperty("推广码")
-        val promoteCode: String?,
-
-        val affCode: String?,
-
         val affid: String?,
-
-        @ApiModelProperty("电销人员Id")
-        val saleCode: String?,
-
-        @ApiModelProperty("营销Id")
-        val marketId: Int?,
-
-        @ApiModelProperty("介绍Id")
-        val introduceId: Int?,
 
         @ApiModelProperty("链路code")
         val chainCode: String?,

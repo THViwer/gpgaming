@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.I18nConfig
 import com.onepiece.gpgaming.beans.enums.Language
 import com.onepiece.gpgaming.beans.enums.LaunchMethod
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.RegisterSource
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
@@ -280,27 +281,19 @@ class UserApiController(
         val clientId = client.id
 
         // 代理
-        val agent = when {
-            registerReq.affid != null -> {
-                memberService.getMember(id = registerReq.affid.toInt())
-            }
-            registerReq.affCode != null -> {
-                memberService.getMember(id = registerReq.affCode.toInt())
-            }
-            registerReq.promoteCode != null -> {
-                memberService.findByBossIdAndCode(bossId = bossId, promoteCode = registerReq.promoteCode)
-            }
-            else -> null
-        } ?: memberService.getDefaultAgent(bossId = bossId)
-//        val agent = registerReq.promoteCode?.let {
-//            memberService.findByBossIdAndCode(bossId = bossId, promoteCode = registerReq.promoteCode)
-//        } ?: memberService.getDefaultAgent(bossId = bossId)
+        val affid = registerReq.affid ?: "10"
+        val (source, id) = RegisterSource.split(affid)
+        val agent = when (source) {
+            RegisterSource.Agent -> memberService.getMember(id = id)
+            else -> memberService.getDefaultAgent(bossId = bossId)
+        }
+
 
         val defaultLevel = levelService.getDefaultLevel(clientId = clientId)
 
-        val saleId = registerReq.saleCode?.toInt() ?: -1
-        val marketId = registerReq.marketId ?: -1
-        val introduceId = registerReq.introduceId ?: -1
+        val saleId = if (source == RegisterSource.Sale) id else -1
+        val marketId = if (source == RegisterSource.Market) id else -1
+        val introduceId = if (source == RegisterSource.Introduce) id else -1
 
         val phone = registerReq.phone.let {
             val firstPhone = it.substring(0, 3)
@@ -312,7 +305,7 @@ class UserApiController(
             }
         }
         val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
-                levelId = defaultLevel.id, name = registerReq.name, phone = phone, promoteCode = registerReq.promoteCode, bossId = bossId, agentId = agent.id,
+                levelId = defaultLevel.id, name = registerReq.name, phone = phone, promoteCode = affid, bossId = bossId, agentId = agent.id,
                 role = Role.Member, formal = true, saleId = saleId, registerIp = RequestUtil.getIpAddress(), birthday = registerReq.birthday,
                 email = registerReq.email, marketId = marketId, introduceId = introduceId)
         memberService.create(memberCo)
@@ -321,17 +314,18 @@ class UserApiController(
         chainUtil.clickRv(registerReq.chainCode)
 
         // 通知
-        if (registerReq.marketId != null) {
-            marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
+        if (marketId != -1) {
+            marketUtil.addRV(clientId = clientId, marketId = marketId)
         }
 
         // 发送短信
-        val messageTemplate = registerReq.marketId?.let {
-            val market = marketService.get(id = it)
-            marketUtil.addRV(clientId = clientId, marketId = registerReq.marketId)
+        val messageTemplate = if (marketId != -1) {
+            val market = marketService.get(id = marketId)
+            marketUtil.addRV(clientId = clientId, marketId = marketId)
             market.messageTemplate.replace("\${code}", market.promotionCode)
-        } ?: clientConfigService.get(clientId = clientId).registerMessageTemplate
-
+        } else {
+            clientConfigService.get(clientId = clientId).registerMessageTemplate
+        }
         smsService.send(clientId = clientId, mobile = registerReq.phone, message = messageTemplate.replace("\${username}", registerReq.username))
 
 
@@ -494,7 +488,8 @@ class UserApiController(
         }
 
         val webSite = webSiteService.getDataByBossId(bossId = user.bossId).first { it.clientId == user.clientId }
-        val link = "https://www.${webSite.domain}/?introduceId=${user.id}"
+        val affid = RegisterSource.splice(source = RegisterSource.Introduce, id = user.id)
+        val link = "https://www.${webSite.domain}/?affid=$affid"
         return UserValue.MyIntroduceDetail(link = link, introduceCount = introduceCount, overIntroduceCount = overIntroduceCount, commission = introduceCommission,
                 registerCommission = config.registerCommission, depositCommission = config.depositCommission, introducePromotionId = config.introducePromotionId, bet = bet,
                 enableIntroduce = config.enableIntroduce, commissionPeriod = config.commissionPeriod, depositPeriod = config.depositPeriod, shareTemplate = config.shareTemplate)

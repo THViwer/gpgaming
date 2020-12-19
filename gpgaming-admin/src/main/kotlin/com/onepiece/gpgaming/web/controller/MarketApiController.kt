@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.onepiece.gpgaming.beans.enums.RegisterSource
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.ClientConfig
@@ -50,7 +51,8 @@ class MarketApiController(
 //            val  promotion = promotions.first { it.id == market.promotionId }
 
 //            val links = webSites.map { s -> "https://www.${s.domain}/market/${market.id}" }
-            val links = webSites.map { s -> "https://www.${s.domain}/?marketId=${market.id}" }
+            val affid = RegisterSource.splice(source = RegisterSource.Market, id = market.id)
+            val links = webSites.map { s -> "https://www.${s.domain}/?affid=$affid" }
             MarketingValue.MarketVo(promotionId = market.promotionId, promotionCode = market.promotionCode, messageTemplate = market.messageTemplate,
                     name = market.name, links = links, id = market.id)
         }

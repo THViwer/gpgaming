@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.onepiece.gpgaming.beans.enums.RegisterSource
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
@@ -53,14 +54,15 @@ class SalesmanApiController(
         val webSite = webSiteService.getDataByBossId(bossId = current.bossId)
                 .first { it.status == Status.Normal && it.clientId == current.clientId }
 
-        val saleCode = when {
-            current.id < 10 -> "0000${current.id}"
-            current.id < 100 -> "000${current.id}"
-            current.id < 1000 -> "00${current.id}"
-            current.id < 10000 -> "0${current.id}"
-            else -> "${current.id}"
-        }
-        val saleLink = "https://www.${webSite.domain}?saleCode=${saleCode}"
+//        val saleCode = when {
+//            current.id < 10 -> "0000${current.id}"
+//            current.id < 100 -> "000${current.id}"
+//            current.id < 1000 -> "00${current.id}"
+//            current.id < 10000 -> "0${current.id}"
+//            else -> "${current.id}"
+//        }
+        val affid = RegisterSource.splice(source = RegisterSource.Sale, id = current.id)
+        val saleLink = "https://www.${webSite.domain}?affid=$affid"
 
         val saleId = if (current.role == Role.Sale) current.id else null
 
@@ -71,7 +73,7 @@ class SalesmanApiController(
         val todayQuery = infoQuery.copy(neverCall = false, minCall = today, maxCall = today.plusDays(1))
         val todayCallCount = memberInfoService.count(todayQuery)
 
-        return SalesmanValue.SaleInfo(name = current.username, saleCode = saleCode, saleLink = saleLink, neverCallCount = neverCallCount,
+        return SalesmanValue.SaleInfo(name = current.username, saleCode = affid, saleLink = saleLink, neverCallCount = neverCallCount,
                 todayCallCount = todayCallCount)
     }
 
