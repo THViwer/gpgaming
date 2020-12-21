@@ -29,6 +29,8 @@ data class ClientConfig(
         // asg 广告内容
         val asgContent: String,
 
+        val telegram: String,
+
         val oneSingal: String,
 
         /** live chat  */

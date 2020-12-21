@@ -32,6 +32,8 @@ sealed class ClientConfigValue {
             //facebook 显示位置
             val facebookShowPosition: ShowPosition,
 
+            val telegram: String,
+
             // asg content
             val asgContent: String,
 
@@ -67,6 +69,8 @@ sealed class ClientConfigValue {
 
             // asg content
             val asgContent: String,
+
+            val telegram: String,
 
             // vip 背景图配置
             val vipIntroductionImage: String?,

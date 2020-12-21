@@ -26,7 +26,7 @@ class ClientConfigServiceImpl(
             if (list.isEmpty()) {
                 val seoUo = ClientConfigValue.ClientConfigUo(clientId = clientId, title = "", keywords = "", description = "",
                         googleStatisticsId = "", liveChatId = "", facebookTr = "", liveChatTab = true, asgContent = "",
-                        facebookShowPosition = ShowPosition.Index, vipIntroductionImage = null, gtag = "", oneSingal = "")
+                        facebookShowPosition = ShowPosition.Index, vipIntroductionImage = null, gtag = "", oneSingal = "", telegram = "")
                 clientConfigDao.create(seoUo)
                 clientConfigDao.all(clientId).first()
             } else {

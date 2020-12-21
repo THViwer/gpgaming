@@ -28,6 +28,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
             val facebookTr = rs.getString("facebook_tr")
             val facebookShowPosition = rs.getString("facebook_show_position")
                     .let { ShowPosition.valueOf(it) }
+            val telegram = rs.getString("telegram")
             val asgContent = rs.getString("asg_content")
             val enableRegisterMessage = rs.getBoolean("enable_register_message")
             val registerMessageTemplate = rs.getString("register_message_template")
@@ -53,7 +54,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                     enableIntroduce = enableIntroduce, introducePromotionId = introducePromotionId, registerCommission = registerCommission,
                     depositPeriod = depositPeriod, commissionPeriod = commissionPeriod, depositCommission = depositCommission,
                     shareTemplate = shareTemplate, minWithdrawRequire = minWithdrawRequire, regainMessageTemplate = regainMessageTemplate,
-                    vipIntroductionImage = vipIntroductionImage, gtag = gtag, oneSingal = oneSingal)
+                    vipIntroductionImage = vipIntroductionImage, gtag = gtag, oneSingal = oneSingal, telegram = telegram)
         }
 
     override fun create(configUo: ClientConfigValue.ClientConfigUo): Boolean {
@@ -68,6 +69,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("google_statistics_id", configUo.googleStatisticsId)
                 .set("facebook_tr", configUo.facebookTr)
                 .set("facebook_show_position", configUo.facebookShowPosition)
+                .set("telegram", configUo.telegram)
                 .set("one_singal", configUo.oneSingal)
 
                 .set("enable_introduce", false)
@@ -98,6 +100,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("asg_content", configUo.asgContent)
                 .set("vip_introduction_image", configUo.vipIntroductionImage)
                 .set("one_singal", configUo.oneSingal)
+                .set("telegram", configUo.telegram)
 
                 .where("client_id", configUo.clientId)
                 .executeOnlyOne()

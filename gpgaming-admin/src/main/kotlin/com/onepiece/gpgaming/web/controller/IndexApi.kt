@@ -16,6 +16,7 @@ import com.onepiece.gpgaming.beans.value.database.HotGameValue
 import com.onepiece.gpgaming.beans.value.internet.web.BannerCoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerUoReq
 import com.onepiece.gpgaming.beans.value.internet.web.BannerVo
+import com.onepiece.gpgaming.beans.value.internet.web.ClientConfigValue
 import com.onepiece.gpgaming.beans.value.internet.web.ContactValue
 import com.onepiece.gpgaming.beans.value.internet.web.HotGameVo
 import com.onepiece.gpgaming.beans.value.internet.web.I18nContentWebValue
@@ -39,18 +40,7 @@ interface IndexApi {
     @ApiOperation(tags = ["web setting"], value = "seo -> 更新")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun seo(
-            @RequestParam("title") title: String,
-            @RequestParam("keywords") keywords: String,
-            @RequestParam("description") description: String,
-            @RequestParam("liveChatId") liveChatId: String,
-            @RequestParam("liveChatTab") liveChatTab: Boolean,
-            @RequestParam("gtag", defaultValue = "", required = false) gtag: String,
-            @RequestParam("googleStatisticsId") googleStatisticsId: String,
-            @RequestParam("facebookTr") facebookTr: String,
-            @RequestParam("facebookShowPosition") facebookShowPosition: ShowPosition,
-            @RequestParam("asgContent") asgContent: String,
-            @RequestParam("vipIntroductionImage", defaultValue = "", required = false) vipIntroductionImage: String?,
-            @RequestParam("oneSingal", defaultValue = "", required = false) oneSingal: String?
+            @RequestBody configUo: ClientConfigValue.ClientConfigUo
     )
 
 

@@ -80,26 +80,10 @@ class IndexApiController(
 
     @PutMapping("/seo")
     override fun seo(
-            @RequestParam("title") title: String,
-            @RequestParam("keywords") keywords: String,
-            @RequestParam("description") description: String,
-            @RequestParam("liveChatId") liveChatId: String,
-            @RequestParam("liveChatTab") liveChatTab: Boolean,
-            @RequestParam("gtag") gtag: String,
-            @RequestParam("googleStatisticsId") googleStatisticsId: String,
-            @RequestParam("facebookTr") facebookTr: String,
-            @RequestParam("facebookShowPosition") facebookShowPosition: ShowPosition,
-            @RequestParam("asgContent") asgContent: String,
-            @RequestParam("vipIntroductionImage") vipIntroductionImage: String?,
-            @RequestParam("oneSingal") oneSingal: String?
+            @RequestBody configUo: ClientConfigValue.ClientConfigUo
     ) {
         val clientId = getClientId()
-
-        val seoUo = ClientConfigValue.ClientConfigUo(clientId = clientId, title = title, keywords = keywords, description = description,
-                liveChatId = liveChatId, googleStatisticsId = googleStatisticsId, facebookTr = facebookTr, liveChatTab = liveChatTab,
-                asgContent = asgContent, facebookShowPosition = facebookShowPosition, vipIntroductionImage = vipIntroductionImage,
-                gtag = gtag, oneSingal = oneSingal)
-        seoService.update(seoUo)
+        seoService.update(configUo.copy(clientId = clientId))
     }
 
     @GetMapping("/i18n/languages")
