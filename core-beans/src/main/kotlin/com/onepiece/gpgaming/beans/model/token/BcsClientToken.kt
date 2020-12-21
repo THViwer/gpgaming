@@ -9,6 +9,6 @@ class BcsClientToken (
         val currency: String,
 
         // new column
-        val companyKey: String = "JQcaNCnEHkfd478MdWsCdRccWDXBsEaZ"
+        val companyKey: String = "BCTP7Y7acC"
 
 ): ClientToken
