@@ -44,13 +44,13 @@ interface IndexApi {
             @RequestParam("description") description: String,
             @RequestParam("liveChatId") liveChatId: String,
             @RequestParam("liveChatTab") liveChatTab: Boolean,
-            @RequestParam("gtag", defaultValue = "") gtag: String,
+            @RequestParam("gtag", defaultValue = "", required = false) gtag: String,
             @RequestParam("googleStatisticsId") googleStatisticsId: String,
             @RequestParam("facebookTr") facebookTr: String,
             @RequestParam("facebookShowPosition") facebookShowPosition: ShowPosition,
             @RequestParam("asgContent") asgContent: String,
-            @RequestParam("vipIntroductionImage", defaultValue = "") vipIntroductionImage: String?,
-            @RequestParam("oneSingal", defaultValue = "") oneSingal: String?
+            @RequestParam("vipIntroductionImage", defaultValue = "", required = false) vipIntroductionImage: String?,
+            @RequestParam("oneSingal", defaultValue = "", required = false) oneSingal: String?
     )
 
 
