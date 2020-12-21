@@ -21,6 +21,6 @@ data class Contacts(
         val instagram: Contact?,
 
         @ApiModelProperty("telegram")
-        val telegram: String?
+        val telegram: Contact?
 
 )

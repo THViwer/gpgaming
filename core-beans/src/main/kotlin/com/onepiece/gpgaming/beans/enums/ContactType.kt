@@ -10,6 +10,8 @@ enum class ContactType {
 
     YouTuBe,
 
-    Instagram
+    Instagram,
+
+    Telegram
 
 }

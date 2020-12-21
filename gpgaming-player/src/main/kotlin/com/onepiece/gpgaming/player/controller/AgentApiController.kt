@@ -195,9 +195,10 @@ class AgentApiController(
         val  facebook = list.firstOrNull { it.type == ContactType.Facebook }
         val  youTuBe = list.firstOrNull { it.type == ContactType.YouTuBe }
         val  instagram = list.firstOrNull { it.type == ContactType.Instagram }
+        val  telegram = list.firstOrNull { it.type == ContactType.Telegram }
 
         return Contacts(wechatContact = wechatContact, whatsappContact = whatContact, facebook = facebook, youtube = youTuBe,
-                instagram = instagram)
+                instagram = instagram, telegram = telegram)
     }
 
     @GetMapping("/sub")
