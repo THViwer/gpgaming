@@ -658,9 +658,10 @@ open class ApiController(
         val facebook = list.firstOrNull { it.type == ContactType.Facebook }
         val youTuBe = list.firstOrNull { it.type == ContactType.YouTuBe }
         val instagram = list.firstOrNull { it.type == ContactType.Instagram }
+        val telegram = list.firstOrNull { it.type == ContactType.Telegram }
 
         return Contacts(wechatContact = wechatContact, whatsappContact = whatContact, facebook = facebook, youtube = youTuBe,
-                instagram = instagram)
+                instagram = instagram, telegram = telegram)
     }
 
     @GetMapping("/seo")
@@ -675,8 +676,7 @@ open class ApiController(
         val seo = seoService.get(clientId = clientId)
         return ClientConfigValue.ClientConfigVo(title = seo.title, keywords = seo.keywords, description = seo.description, liveChatId = seo.liveChatId,
                 googleStatisticsId = seo.googleStatisticsId, facebookTr = seo.facebookTr, liveChatTab = seo.liveChatTab, asgContent = seo.asgContent,
-                facebookShowPosition = seo.facebookShowPosition, vipIntroductionImage = seo.vipIntroductionImage, gtag = seo.gtag, oneSingal = seo.oneSingal,
-                telegram = seo.telegram)
+                facebookShowPosition = seo.facebookShowPosition, vipIntroductionImage = seo.vipIntroductionImage, gtag = seo.gtag, oneSingal = seo.oneSingal)
     }
 
     @GetMapping("/select/country")
