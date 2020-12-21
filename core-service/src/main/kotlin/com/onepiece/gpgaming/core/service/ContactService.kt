@@ -7,9 +7,9 @@ import com.onepiece.gpgaming.beans.model.Contact
 
 interface ContactService {
 
-    fun create(clientId: Int, type: ContactType, role: Role, number: String, qrCode: String?)
+    fun create(clientId: Int, type: ContactType, role: Role, number: String, qrCode: String?, telegram: String?)
 
-    fun update(id: Int, number: String, status: Status, qrCode: String?)
+    fun update(id: Int, number: String, status: Status, qrCode: String?, telegram: String?)
 
     fun list(clientId: Int): List<Contact>
 

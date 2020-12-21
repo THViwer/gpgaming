@@ -349,11 +349,11 @@ class IndexApiController(
         }
 
         check(create.role == Role.Member || create.role == Role.Agent) { OnePieceExceptionCode.DATA_FAIL }
-        contactService.create(clientId = getClientId(), type = create.type, number = create.number, qrCode = create.qrCode, role = create.role)
+        contactService.create(clientId = getClientId(), type = create.type, number = create.number, qrCode = create.qrCode, role = create.role, telegram = create.telegram)
     }
 
     @PutMapping("/contactUs")
     override fun update(@RequestBody update: ContactValue.Update) {
-        contactService.update(id = update.id, number = update.number, status = update.status, qrCode = update.qrCode)
+        contactService.update(id = update.id, number = update.number, status = update.status, qrCode = update.qrCode, telegram = update.telegram)
     }
 }

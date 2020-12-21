@@ -14,6 +14,8 @@ sealed class ContactValue {
             @ApiModelProperty("二维码图片")
             val qrCode: String?,
 
+            val telegram: String?,
+
             @ApiModelProperty("角色 Member / Agent")
             val role: Role = Role.Member,
 
@@ -28,6 +30,7 @@ sealed class ContactValue {
             @ApiModelProperty("号码(微信号或whatsapp)")
             val number: String,
 
+            val telegram: String?,
 
             @ApiModelProperty("二维码图片")
             val qrCode: String?,

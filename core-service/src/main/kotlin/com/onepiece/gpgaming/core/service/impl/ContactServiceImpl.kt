@@ -14,13 +14,13 @@ class ContactServiceImpl(
         private val contactDao: ContactDao
 ) : ContactService {
 
-    override fun create(clientId: Int, type: ContactType, role: Role, number: String, qrCode: String?) {
-        val state = contactDao.create(clientId = clientId, type = type, role = role, number = number, qrCode = qrCode)
+    override fun create(clientId: Int, type: ContactType, role: Role, number: String, qrCode: String?, telegram: String?) {
+        val state = contactDao.create(clientId = clientId, type = type, role = role, number = number, qrCode = qrCode, telegram = telegram)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 
-    override fun update(id: Int, number: String, status: Status, qrCode: String?) {
-        val state = contactDao.update(id = id, number = number, status = status, qrCode = qrCode)
+    override fun update(id: Int, number: String, status: Status, qrCode: String?, telegram: String?) {
+        val state = contactDao.update(id = id, number = number, status = status, qrCode = qrCode, telegram = telegram)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 

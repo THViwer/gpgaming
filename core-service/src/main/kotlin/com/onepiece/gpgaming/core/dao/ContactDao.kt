@@ -8,8 +8,8 @@ import com.onepiece.gpgaming.core.dao.basic.BasicDao
 
 interface ContactDao : BasicDao<Contact> {
 
-    fun create(clientId: Int, type: ContactType,  role: Role, number: String, qrCode: String?): Boolean
+    fun create(clientId: Int, type: ContactType,  role: Role, number: String, qrCode: String?, telegram: String?): Boolean
 
-    fun update(id: Int, number: String, status: Status, qrCode: String?): Boolean
+    fun update(id: Int, number: String, status: Status, qrCode: String?, telegram: String?): Boolean
 
 }

@@ -21,27 +21,30 @@ class ContactDaoImpl : BasicDaoImpl<Contact>("contact"), ContactDao {
             val type = rs.getString("type").let { ContactType.valueOf(it) }
             val number = rs.getString("number")
             val qrCode = rs.getString("qr_code")
+            val telegram = rs.getString("telegram")
             val status = rs.getString("status").let { Status.valueOf(it) }
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
 
             Contact(id = id, clientId = clientId, type = type, number = number, status = status, createdTime = createdTime, qrCode = qrCode,
-                    role = role)
+                    role = role, telegram = telegram)
         }
 
-    override fun create(clientId: Int, type: ContactType, role: Role, number: String, qrCode: String?): Boolean {
+    override fun create(clientId: Int, type: ContactType, role: Role, number: String, qrCode: String?, telegram: String?): Boolean {
         return insert().set("client_id", clientId)
                 .set("type", type)
                 .set("number", number)
                 .set("qr_code", qrCode)
+                .set("telegram", telegram)
                 .set("role", role)
                 .set("status", Status.Normal)
                 .executeOnlyOne()
     }
 
-    override fun update(id: Int, number: String, status: Status, qrCode: String?): Boolean {
+    override fun update(id: Int, number: String, status: Status, qrCode: String?, telegram: String?): Boolean {
         return update()
                 .set("number", number)
                 .set("qr_code", qrCode)
+                .set("telegram", telegram)
                 .set("status", status)
                 .where("id", id)
                 .executeOnlyOne()

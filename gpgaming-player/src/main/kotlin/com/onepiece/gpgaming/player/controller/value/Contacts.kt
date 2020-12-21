@@ -18,6 +18,9 @@ data class Contacts(
         val youtube: Contact?,
 
         @ApiModelProperty("instagram")
-        val instagram: Contact?
+        val instagram: Contact?,
+
+        @ApiModelProperty("telegram")
+        val telegram: String?
 
 )

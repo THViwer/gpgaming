@@ -28,6 +28,8 @@ data class Contact (
         // 二维码图片
         val qrCode: String?,
 
+        val telegram: String?,
+
         // 状态
         val status: Status,
 
