@@ -208,7 +208,7 @@ class ReportServiceImpl(
         val agents = memberDao.query(query = memberQuery, current = 0, size = 999999)
 
         // 代理佣金配置
-        val commissions = commissionService.all().sortedBy { it.activeCount }
+        val commissions = commissionService.all().sortedByDescending { it.activeCount }
 
         // 会员佣金列表
         val memberCollect = analysisDao.agentMonthReport(agentId = null, startDate = startDate, endDate = endDate)
@@ -241,16 +241,19 @@ class ReportServiceImpl(
                 // 计算会员佣金
                 val memberCommission = memberCollect[agent.id] ?: AgentMonthReport.empty(bossId = agent.bossId, clientId = agent.clientId, agentId = agent.id, day = startDate)
                 val memberActive = memberActives[agent.id] ?: AnalysisValue.ActiveCollect(agentId = -1, activeCount = 0)
-                val mCommission = memberCommissions.first { it.activeCount > memberActive.activeCount }
-                val memberCommissionAmount =
-                        (memberCommission.totalBet
-                                .minus(memberCommission.payout)
-                                .minus(memberCommission.totalRebate)
-                                .minus(memberCommission.totalPromotion))
-                                .multiply(mCommission.scale)
-                                .divide(BigDecimal.valueOf(100))
-                                .setScale(2, 2)
+                val mCommission = memberCommissions.first { it.activeCount > memberActive.activeCount && memberCommission.totalBet.toDouble() > it.minTotalBet} // TODO 111
 
+                val memberCommissionAmount = if (mCommission.fixedCommission.toDouble() > 0) {
+                    mCommission.fixedCommission // 暂时只有uj会配置固定佣金
+                } else {
+                    (memberCommission.totalBet
+                            .minus(memberCommission.payout)
+                            .minus(memberCommission.totalRebate)
+                            .minus(memberCommission.totalPromotion))
+                            .multiply(mCommission.scale)
+                            .divide(BigDecimal.valueOf(100))
+                            .setScale(2, 2)
+                }
                 val commissionExecution = memberCommissionAmount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
                 memberCommission.copy(bossId = agent.bossId, clientId = agent.clientId, memberCommission = memberCommissionAmount, memberCommissionScale = mCommission.scale,

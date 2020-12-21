@@ -26,7 +26,13 @@ sealed class CommissionValue {
             val scale: BigDecimal,
 
             // 状态
-            val status: Status
+            val status: Status,
+
+            // 最小打码量
+            val minTotalBet: Int = 0,
+
+            // 固定佣金 暂时只用于uj 如果设置该值 则佣金比例会无效
+            val fixedCommission: BigDecimal = BigDecimal.ZERO
 
     )
 
@@ -44,7 +50,13 @@ sealed class CommissionValue {
             val scale: BigDecimal,
 
             // 状态
-            val status: Status
+            val status: Status,
+
+            // 最小打码量
+            val minTotalBet: Int = 0,
+
+            // 固定佣金 暂时只用于uj 如果设置该值 则佣金比例会无效
+            val fixedCommission: BigDecimal = BigDecimal.ZERO
     )
 
 
