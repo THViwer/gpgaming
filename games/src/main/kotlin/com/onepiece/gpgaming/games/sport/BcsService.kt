@@ -338,7 +338,6 @@ class BcsService : PlatformService() {
                "LoginIP":"127.0.0.1",
                "Language":"$lang",
                "PageStyle":"SP3",
-               "HostUrl":"google.com",
                "OddsStyle":"MY"
             }
         """.trimIndent()
