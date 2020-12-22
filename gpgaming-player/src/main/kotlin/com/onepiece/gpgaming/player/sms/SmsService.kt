@@ -21,7 +21,8 @@ class SmsService(
     companion object {
         const val MAX_SPLIT = 1
         const val path = "https://www.sms123.net/api/send.php"
-        const val apiKey = "105155917afc6231e03e5240a54d3121"
+        const val otherApiKey = "105155917afc6231e03e5240a54d3121"
+        const val ujApiKey = "b0367dacb9ecf1b74a21e55dce145788"
     }
 
 
@@ -44,6 +45,11 @@ class SmsService(
             }
 
             val data = mobiles.subList(start, end)
+
+            val apiKey = when (clientId) {
+                10001, 10002 -> ujApiKey
+                else -> otherApiKey
+            }
 
 
             val successful = try {
