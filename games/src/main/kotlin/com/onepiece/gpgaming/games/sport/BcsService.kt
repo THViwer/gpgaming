@@ -343,7 +343,8 @@ class BcsService : PlatformService() {
         """.trimIndent()
         val okResponse = this.doPostJson(clientToken = token, method = "/SportApi/Login", data = data)
         return this.bindGameResponse(okResponse = okResponse) {
-            it.asString("Data")
+            val url = it.asString("Data")
+            if (url.contains("https")) url else "https:$url"
         }
 
 
