@@ -2,8 +2,10 @@ package com.onepiece.gpgaming.player.sms
 
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.onepiece.gpgaming.beans.enums.Country
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.value.database.SmsContentValue
+import com.onepiece.gpgaming.core.service.ClientService
 import com.onepiece.gpgaming.core.service.SmsContentService
 import com.onepiece.gpgaming.games.http.OkHttpUtil
 import org.slf4j.LoggerFactory
@@ -13,7 +15,8 @@ import java.util.*
 @Service
 class SmsService(
         private val okHttpUtil: OkHttpUtil,
-        private val smsContentService: SmsContentService
+        private val smsContentService: SmsContentService,
+        private val clientService: ClientService
 ) {
 
     private val log = LoggerFactory.getLogger(SmsService::class.java)
@@ -75,13 +78,38 @@ class SmsService(
 
 
     fun send(clientId: Int, mobile: String, message: String) {
-        this.send(clientId = clientId, mobiles = listOf(mobile), message = message)
+        val client = clientService.get(id = clientId)
+        val newMobile = when (client.country) {
+            Country.Malaysia -> if (mobile.substring(0, 2) == "60") mobile else "60$mobile"
+            Country.Singapore -> if (mobile.substring(0, 2) == "65") mobile else "65$mobile"
+            Country.Indonesia -> if (mobile.substring(0, 2) == "62") mobile else "62$mobile"
+            Country.Thailand -> if (mobile.substring(0, 2) == "66") mobile else "66$mobile"
+            Country.Vietnam -> if (mobile.substring(0, 2) == "84") mobile else "84$mobile"
+            else -> if (mobile.substring(0, 2) == "60") mobile else "60$mobile"
+        }
+
+        this.send(clientId = clientId, mobiles = listOf(newMobile), message = message)
     }
 
     fun send(clientId: Int, mobile: String, memberId: Int, message: String, code: String? = null) {
-        this.send(clientId = clientId, mobiles = listOf(mobile), message = message, code = code, memberIds = memberId)
+        val client = clientService.get(id = clientId)
+        val newMobile = when (client.country) {
+            Country.Malaysia -> if (mobile.substring(0, 2) == "60") mobile else "60$mobile"
+            Country.Singapore -> if (mobile.substring(0, 2) == "65") mobile else "65$mobile"
+            Country.Indonesia -> if (mobile.substring(0, 2) == "62") mobile else "62$mobile"
+            Country.Thailand -> if (mobile.substring(0, 2) == "66") mobile else "66$mobile"
+            Country.Vietnam -> if (mobile.substring(0, 2) == "84") mobile else "84$mobile"
+            else -> if (mobile.substring(0, 2) == "60") mobile else "60$mobile"
+        }
+
+        this.send(clientId = clientId, mobiles = listOf(newMobile), message = message, code = code, memberIds = memberId)
     }
 
+}
+
+fun main() {
+    val s = "sss111"
+    println(s.substring(0, 2))
 }
 
 //fun main() {
