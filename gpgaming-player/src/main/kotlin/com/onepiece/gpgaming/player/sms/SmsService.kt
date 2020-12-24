@@ -107,10 +107,6 @@ class SmsService(
 
 }
 
-fun main() {
-    val s = "sss111"
-    println(s.substring(0, 2))
-}
 
 //fun main() {
 //    val okHttpUtil = OkHttpUtil(objectMapper = jacksonObjectMapper(), xmlMapper = XmlMapper())
