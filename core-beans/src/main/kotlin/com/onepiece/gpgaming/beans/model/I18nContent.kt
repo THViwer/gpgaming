@@ -105,7 +105,7 @@ data class I18nContent (
             val banner: String,
 
             // mobile banner
-            val mobileBanner: String,
+            val mobileBanner: String = "",
 
             // 标题
             val title: String,
