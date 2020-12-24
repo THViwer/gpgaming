@@ -229,7 +229,19 @@ data class BalanceVo(
         val totalBet: BigDecimal,
 
         @ApiModelProperty("周打码量")
-        val weekBet: BigDecimal = BigDecimal.ZERO
+        val weekBet: BigDecimal = BigDecimal.ZERO,
+
+        @ApiModelProperty("参加优惠活动Id")
+        val joinPromotionId: Int?,
+
+        @ApiModelProperty("参加优惠活动Id")
+        val promotionTitle: String = "",
+
+        @ApiModelProperty("当前打码量")
+        val currentBet: BigDecimal,
+
+        @ApiModelProperty("需要打码量")
+        val requirementBet: BigDecimal
 
 //        @ApiModelProperty("是否可以转入 中心 -> 平台")
 //        val transferIn: Boolean
