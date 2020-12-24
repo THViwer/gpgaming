@@ -20,12 +20,12 @@ enum class Platform(
     Pragmatic(PlatformCategory.Slot, "Pragmatic Play", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/pragmatic.png"),
     SpadeGaming(PlatformCategory.Slot, "Spadegaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/spadegaming.png"),
     TTG(PlatformCategory.Slot, "Top Trend", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/top.png"),
-    MicroGaming(PlatformCategory.Slot,  "Microgaming Slot", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
-    PlaytechSlot(PlatformCategory.Slot, "Playtech Slot", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"), // mac下的chrome有问题 需要用safari启动 启动游戏需要白名单
+    MicroGaming(PlatformCategory.Slot,  "Microgaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
+    PlaytechSlot(PlatformCategory.Slot, "Playtech", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"), // mac下的chrome有问题 需要用safari启动 启动游戏需要白名单
     PNG(PlatformCategory.Slot, "Play'n GO", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgo.png"),
     GamePlay(PlatformCategory.Slot, "Game Play", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playgame.png"), // 不能添加 sg服务器 从hk转发
-    SimplePlay(PlatformCategory.Slot,  "SaGaming Slot","https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"), // 就是sa 的slot  测试环境启动游戏需要白名单
-    AsiaGamingSlot(PlatformCategory.Slot, "AgGaming Slot", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
+    SimplePlay(PlatformCategory.Slot,  "Sa Gaming","https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"), // 就是sa 的slot  测试环境启动游戏需要白名单
+    AsiaGamingSlot(PlatformCategory.Slot, "Asia Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
 
     // live video
     CT(PlatformCategory.LiveVideo, "ct"), //TODO 已删除getGamePlatform
@@ -35,10 +35,10 @@ enum class Platform(
     SexyGaming(PlatformCategory.LiveVideo, "Sexy Gaming"),
     Fgg(PlatformCategory.LiveVideo, "FGG Gaming"), //TODO 已删除
     AllBet(PlatformCategory.LiveVideo, "Allbet"),
-    SaGaming(PlatformCategory.LiveVideo, "SaGaming Live", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"),
-    AsiaGamingLive(PlatformCategory.LiveVideo, "AgGaming Live", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
-    MicroGamingLive(PlatformCategory.LiveVideo,  "Microgaming Live", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
-    PlaytechLive(PlatformCategory.LiveVideo, "Playtech Live", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"),
+    SaGaming(PlatformCategory.LiveVideo, "SA Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/sagaming.png"),
+    AsiaGamingLive(PlatformCategory.LiveVideo, "Asia Gaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/asiagaming.png"),
+    MicroGamingLive(PlatformCategory.LiveVideo,  "Microgaming", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/microgaming.png"),
+    PlaytechLive(PlatformCategory.LiveVideo, "Playtech", "https://s3.ap-southeast-1.amazonaws.com/awspg1/hotGame/logo/playtech.png"),
     EBet(PlatformCategory.LiveVideo, "Ebet"),
 
     // sport
