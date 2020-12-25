@@ -227,6 +227,7 @@ open class TransferUtil(
 
         // 转账失败 进行回滚
         if (!transferResp.transfer) {
+            log.warn("订单Id:${transferOrderId}进行订单回滚操作")
             this.transferRollBack(clientId = clientId, memberId = memberId, money = amount, from = from, to = to, transferOrderId = transferOrderId)
         }
 
