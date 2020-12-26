@@ -77,6 +77,7 @@ import com.onepiece.gpgaming.player.controller.value.MemberBankCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankUoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankVo
 import com.onepiece.gpgaming.player.controller.value.MemberDailyReportValue
+import com.onepiece.gpgaming.player.controller.value.PromotionHistoryVo
 import com.onepiece.gpgaming.player.controller.value.PromotionShowVo
 import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
 import com.onepiece.gpgaming.player.controller.value.WithdrawCoReq
@@ -824,24 +825,76 @@ open class CashApiController(
         // endDate需要+1
         val query = TransferOrderValue.Query(clientId = user.clientId, memberId = user.id, startDate = startDate, endDate = endDate.plusDays(1), filterPromotion = filterPromotion, from = null,
                 username = null, promotionId = null)
-        val orders =  transferOrderService.query(query)
+        val orders = transferOrderService.query(query)
 
         val promotions = i18nContentService.getConfigType(clientId = user.clientId, configType = I18nConfig.Promotion)
-                .map { "${it.configId}:${it.language}" to
-                        try {
-                            (it.getII18nContent(objectMapper) as I18nContent.PromotionI18n).title
-                        } catch (e: Exception) {
-                            ""
-                        }
+                .map {
+                    "${it.configId}:${it.language}" to
+                            try {
+                                (it.getII18nContent(objectMapper) as I18nContent.PromotionI18n).title
+                            } catch (e: Exception) {
+                                ""
+                            }
                 }.toMap()
 
         return orders.map {
 
-            val promotionTitle = it.joinPromotionId?.let {  pid ->
+            val promotionTitle = it.joinPromotionId?.let { pid ->
                 promotions["${pid}:${language}"] ?: promotions["${pid}:${Language.EN}"] ?: "None"
             } ?: ""
             it.promotionTitle = promotionTitle
             it
+        }
+    }
+
+    @GetMapping("/promotion/history")
+    override fun promotionHistory(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = false) startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate
+    ): List<PromotionHistoryVo> {
+
+        val member = this.current()
+        val language = getHeaderLanguage()
+
+        // 订单列表
+        val query = TransferOrderValue.Query(clientId = member.clientId, memberId = member.id, startDate = startDate, endDate = endDate.plusDays(1), filterPromotion = true,
+                from = null, username = null, promotionId = null)
+        val orders = transferOrderService.query(query)
+
+        // 优惠标题列表
+        val promotions = i18nContentService.getConfigType(clientId = member.clientId, configType = I18nConfig.Promotion)
+                .map {
+                    "${it.configId}:${it.language}" to
+                            try {
+                                (it.getII18nContent(objectMapper) as I18nContent.PromotionI18n).title
+                            } catch (e: Exception) {
+                                ""
+                            }
+                }.toMap()
+
+        // 平台会员
+        val platformMembers = platformMemberService.findPlatformMember(memberId = member.id)
+                .map { it.platform to it }
+                .toMap()
+
+        // 组装数据
+        return orders.map { order ->
+            val promotionTitle = order.joinPromotionId?.let { pid ->
+                promotions["${pid}:${language}"] ?: promotions["${pid}:${Language.EN}"] ?: "None"
+            } ?: ""
+
+            val platformMember = platformMembers[order.to]
+            var currentBet = BigDecimal.valueOf(-1)
+            var requirementBet = BigDecimal.valueOf(-1)
+            var status = PromotionHistoryVo.PromotionStatus.Done
+            if (platformMember?.joinPromotionId == order.joinPromotionId) {
+                currentBet = platformMember?.currentBet ?: BigDecimal.ZERO
+                requirementBet = platformMember?.requirementBet ?: BigDecimal.ZERO
+                status = PromotionHistoryVo.PromotionStatus.Process
+            }
+
+            PromotionHistoryVo(orderId = order.orderId, createdTime = order.createdTime, promotionTitle = promotionTitle, promotionAmount = order.promotionAmount,
+                    from = order.from, to = order.to, currentBet = currentBet, requirementBet = requirementBet, status = status, amount = order.money)
         }
 
 
@@ -946,7 +999,7 @@ open class CashApiController(
         return when {
             cashTransferReq.from == Platform.Center -> {
                 val fromBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, totalBet = BigDecimal.ZERO, currentBet = BigDecimal.ZERO,
-                requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "")
+                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "")
                 val toBalance = this.balance(platform = cashTransferReq.to)
 
                 listOf(fromBalance, toBalance)
@@ -1054,7 +1107,7 @@ open class CashApiController(
         return when (platform) {
             Platform.Center -> {
                 BalanceVo(platform = platform, balance = walletBalance, transfer = true, tips = null, centerBalance = walletBalance, totalBet = BigDecimal.ZERO, currentBet = BigDecimal.ZERO,
-                requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "")
+                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "")
             }
             else -> {
                 // 判断用户是否有参加活动

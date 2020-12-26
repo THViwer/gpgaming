@@ -26,6 +26,7 @@ import com.onepiece.gpgaming.player.controller.value.MemberBankCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankUoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankVo
 import com.onepiece.gpgaming.player.controller.value.MemberDailyReportValue
+import com.onepiece.gpgaming.player.controller.value.PromotionHistoryVo
 import com.onepiece.gpgaming.player.controller.value.PromotionShowVo
 import com.onepiece.gpgaming.player.controller.value.PromotionVo
 import com.onepiece.gpgaming.player.controller.value.WalletNoteVo
@@ -163,6 +164,12 @@ interface CashApi {
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate,
             @RequestParam("type", defaultValue = "Transfer") type: String
     ): List<TransferOrder>
+
+    @ApiOperation(tags = ["cash"], value = "中心 -> history 优惠列表")
+    fun promotionHistory(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = false) startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate", required = false) endDate: LocalDate
+    ) : List<PromotionHistoryVo>
 
     @ApiOperation(tags = ["cash"], value = "转账")
     fun transfer(
