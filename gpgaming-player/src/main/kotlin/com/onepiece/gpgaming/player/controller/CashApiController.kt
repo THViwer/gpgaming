@@ -818,12 +818,33 @@ open class CashApiController(
             @RequestParam("type") type: String
     ): List<TransferOrder> {
         val user = this.current()
+        val language = getHeaderLanguage()
 
         val filterPromotion = type == "Promotion"
         // endDate需要+1
         val query = TransferOrderValue.Query(clientId = user.clientId, memberId = user.id, startDate = startDate, endDate = endDate.plusDays(1), filterPromotion = filterPromotion, from = null,
                 username = null, promotionId = null)
-        return transferOrderService.query(query)
+        val orders =  transferOrderService.query(query)
+
+        val promotions = i18nContentService.getConfigType(clientId = user.clientId, configType = I18nConfig.Promotion)
+                .map { "${it.configId}:${it.language}" to
+                        try {
+                            (it.getII18nContent(objectMapper) as I18nContent.PromotionI18n).title
+                        } catch (e: Exception) {
+                            ""
+                        }
+                }.toMap()
+
+        return orders.map {
+
+            val promotionTitle = it.joinPromotionId?.let {  pid ->
+                promotions["${pid}:${language}"] ?: promotions["${pid}:${Language.EN}"] ?: "None"
+            } ?: ""
+            it.promotionTitle = promotionTitle
+            it
+        }
+
+
     }
 
     @Synchronized
