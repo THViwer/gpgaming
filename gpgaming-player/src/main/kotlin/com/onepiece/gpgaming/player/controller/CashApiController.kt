@@ -666,6 +666,10 @@ open class CashApiController(
                     log.info("用户：${current.username}, 优惠Id：${promotion.id}, 过滤结果5：${promotion.levelId.isEmpty() || promotion.levelId.contains(member.levelId)} ")
                     promotion.levelId.isEmpty() || promotion.levelId.contains(member.levelId)
                 }
+                .filter {
+                    // 只显示在转账页面的
+                    it.showTransfer
+                }
                 .toList()
 
 
