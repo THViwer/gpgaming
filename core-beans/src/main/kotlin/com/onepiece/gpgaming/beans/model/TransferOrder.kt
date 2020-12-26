@@ -58,4 +58,10 @@ data class TransferOrder(
 
         // 状态
         val status: Status
-)
+) {
+
+    // 优惠标题 主要用于页面显示
+    var promotionTitle: String = ""
+
+
+}
