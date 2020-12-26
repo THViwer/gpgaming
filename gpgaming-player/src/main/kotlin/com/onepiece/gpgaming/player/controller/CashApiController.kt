@@ -820,7 +820,8 @@ open class CashApiController(
         val user = this.current()
 
         val filterPromotion = type == "Promotion"
-        val query = TransferOrderValue.Query(clientId = user.clientId, memberId = user.id, startDate = startDate, endDate = endDate, filterPromotion = filterPromotion, from = null,
+        // endDate需要+1
+        val query = TransferOrderValue.Query(clientId = user.clientId, memberId = user.id, startDate = startDate, endDate = endDate.plusDays(1), filterPromotion = filterPromotion, from = null,
                 username = null, promotionId = null)
         return transferOrderService.query(query)
     }
