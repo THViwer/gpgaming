@@ -557,7 +557,8 @@ class UserApiController(
 
         val message = "Your verification code: $code"
 
-        smsService.send(clientId = clientId, memberId = -1, mobile = phone, message = message, code = code)
+        val smsId = smsService.send(clientId = clientId, memberId = -1, mobile = phone, message = message, code = code)
+        return UserValue.PhoneCodeResp(smsId = smsId)
 
     }
 
