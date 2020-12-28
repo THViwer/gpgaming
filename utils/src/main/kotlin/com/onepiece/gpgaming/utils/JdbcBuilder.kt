@@ -263,10 +263,10 @@ open class Query(
             sql.append(" limit $current, $size")
         }
 
-        log.info("------db------")
-        log.info("sql = $sql")
-        log.info("param = $param")
-        log.info("------db------")
+//        log.info("------db------")
+//        log.info("sql = $sql")
+//        log.info("param = $param")
+//        log.info("------db------")
 
         return sql.toString()
     }
