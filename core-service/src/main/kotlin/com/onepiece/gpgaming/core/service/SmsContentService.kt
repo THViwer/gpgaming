@@ -5,8 +5,10 @@ import com.onepiece.gpgaming.beans.value.database.SmsContentValue
 
 interface SmsContentService {
 
-    fun create(co: SmsContentValue.SmsContentCo)
+    fun create(co: SmsContentValue.SmsContentCo): Int
 
     fun findLastSms(memberId: Int): SmsContent?
+
+    fun findLastSms(phone: String): SmsContent?
 
 }

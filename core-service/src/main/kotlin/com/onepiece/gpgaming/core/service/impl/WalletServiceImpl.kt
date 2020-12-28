@@ -23,6 +23,7 @@ import com.onepiece.gpgaming.core.service.MemberInfoService
 import com.onepiece.gpgaming.core.service.MemberIntroduceService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WalletService
+import com.onepiece.gpgaming.core.utils.ApplicationVersion
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -83,7 +84,8 @@ class WalletServiceImpl(
             WalletEvent.Commission,
             WalletEvent.ThirdPay,
             WalletEvent.DEPOSIT,
-            WalletEvent.INTRODUCE_DEPOSIT_COMMISSION -> {
+            WalletEvent.INTRODUCE_DEPOSIT_COMMISSION,
+            WalletEvent.INTRODUCE_REGISTER_COMMISSION -> {
                 val walletDepositUo = WalletDepositUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
                 walletDao.deposit(walletDepositUo)
             }
@@ -138,6 +140,7 @@ class WalletServiceImpl(
             WalletEvent.TRANSFER_IN,
             WalletEvent.Artificial,
             WalletEvent.INTRODUCE_DEPOSIT_COMMISSION,
+            WalletEvent.INTRODUCE_REGISTER_COMMISSION,
             WalletEvent.TRANSFER_OUT_ROLLBACK -> {
                 money = walletUo.money
                 afterMoney = wallet.balance.plus(walletUo.money)
@@ -167,7 +170,8 @@ class WalletServiceImpl(
                 memberInfoService.asyncUpdate(uo = infoUo)
 
                 try {
-                    this.checkIntroduce(clientId = wallet.clientId, memberId = wallet.memberId)
+                    val totalDeposit = wallet.totalDepositBalance.plus(money)
+                    this.checkIntroduce(clientId = wallet.clientId, memberId = wallet.memberId, totalDeposit = totalDeposit)
                 } catch (e: Exception) {
                     log.error("检查介绍失败, client_id = ${walletUo.clientId}, 参数：${walletUo}")
                 }
@@ -207,27 +211,44 @@ class WalletServiceImpl(
         return wallet.balance.plus(walletUo.money)
     }
 
-    private fun checkIntroduce(clientId: Int, memberId: Int) {
+    private fun checkIntroduce(clientId: Int, memberId: Int, totalDeposit: BigDecimal) {
         val memberInfo = memberInfoService.get(memberId = memberId)
         memberIntroduceService.get(memberId = memberId)?.let { introduce ->
             if (!introduce.depositActivity) {
-                val config = clientConfigService.get(clientId = clientId)
 
-                val endDay = memberInfo.createdTime.plusDays(config.commissionPeriod.toLong())
-                if (endDay >= LocalDateTime.now() && memberInfo.totalDeposit.toDouble() > config.depositPeriod.toDouble()) {
+                when (ApplicationVersion.checkIsNewVersion(clientId)) {
+                    true -> { // 新的推荐奖励
+                        if (totalDeposit.toDouble() >= ApplicationVersion.INTRODUCE_DEPOSIT_NEED_AMOUNT) {
+                            val commission = ApplicationVersion.INTRODUCE_REGISTER_DEPOSIT_COMMISSION
+                            val walletUo = WalletUo(clientId = clientId, waiterId = null, memberId = introduce.memberId, money = commission, giftBalance = null,
+                                    eventId = null, event = WalletEvent.INTRODUCE_DEPOSIT_COMMISSION, remarks = "introduce deposit commission")
+                            this.update(walletUo)
 
-                    val commission = config.depositCommission
+                            val introduceUo = MemberIntroduceValue.MemberIntroduceUo(id = introduce.id, depositActivity = true, registerActivity = null,
+                                    introduceCommission = commission)
+                            memberIntroduceService.update(introduceUo)
+                        }
+                    }
+                    else -> { // 老的推荐奖励
+                        val config = clientConfigService.get(clientId = clientId)
 
-                    val walletUo = WalletUo(clientId = clientId, waiterId = null, memberId = introduce.memberId, money = commission, giftBalance = null,
-                            eventId = null, event = WalletEvent.INTRODUCE_DEPOSIT_COMMISSION, remarks = "introduce deposit commission")
-                    this.update(walletUo)
+                        val endDay = memberInfo.createdTime.plusDays(config.commissionPeriod.toLong())
+                        if (endDay >= LocalDateTime.now() && memberInfo.totalDeposit.toDouble() > config.depositPeriod.toDouble()) {
 
-                    val myWalletUo = walletUo.copy(memberId = introduce.introduceId)
-                    this.update(myWalletUo)
+                            val commission = config.depositCommission
 
-                    val introduceUo = MemberIntroduceValue.MemberIntroduceUo(id = introduce.id, depositActivity = true, registerActivity = null,
-                            introduceCommission = config.depositCommission)
-                    memberIntroduceService.update(introduceUo)
+                            val walletUo = WalletUo(clientId = clientId, waiterId = null, memberId = introduce.memberId, money = commission, giftBalance = null,
+                                    eventId = null, event = WalletEvent.INTRODUCE_DEPOSIT_COMMISSION, remarks = "introduce deposit commission")
+                            this.update(walletUo)
+
+                            val myWalletUo = walletUo.copy(memberId = introduce.introduceId)
+                            this.update(myWalletUo)
+
+                            val introduceUo = MemberIntroduceValue.MemberIntroduceUo(id = introduce.id, depositActivity = true, registerActivity = null,
+                                    introduceCommission = config.depositCommission)
+                            memberIntroduceService.update(introduceUo)
+                        }
+                    }
                 }
             }
         }

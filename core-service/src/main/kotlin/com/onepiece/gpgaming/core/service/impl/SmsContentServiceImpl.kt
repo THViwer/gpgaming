@@ -12,12 +12,17 @@ class SmsContentServiceImpl(
         private val smsContentDao: SmsContentDao
 ) : SmsContentService {
 
-    override fun create(co: SmsContentValue.SmsContentCo) {
-        val flag = smsContentDao.create(smsContentCo = co)
-        check(flag) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+    override fun create(co: SmsContentValue.SmsContentCo): Int {
+        val id = smsContentDao.create(smsContentCo = co)
+        check(id > 0) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+        return id
     }
 
     override fun findLastSms(memberId: Int): SmsContent? {
         return smsContentDao.findLastSms(memberId = memberId)
+    }
+
+    override fun findLastSms(phone: String): SmsContent? {
+        return smsContentDao.findLastSms(phone = phone)
     }
 }

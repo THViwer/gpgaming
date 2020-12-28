@@ -3,6 +3,10 @@ package com.onepiece.gpgaming.beans.model
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
+/**
+ * 老的推荐奖励 推荐的金额配置化
+ * 新的推荐奖励 推荐一个 注册金得2元, 充值满50元 得5元
+ */
 data class MemberIntroduce(
 
         // 用户Id

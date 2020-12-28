@@ -79,5 +79,11 @@ interface UserApi {
     @ApiOperation(tags = ["user"], value = "平台用户 -> 找回密码")
     fun regain(@RequestBody req: UserValue.RegainReq)
 
+    @ApiOperation(tags = ["user"], value = "平台用户 -> 发短信验证")
+    fun sendPhoneCode(@RequestParam("phone") phone: String)
+
+    @ApiOperation(tags = ["user"], value = "平台用户 -> 验证短信码")
+    fun verifyPhoneCode(@RequestBody req: UserValue.VerifyPhoneCodeReq)
+
 
 }

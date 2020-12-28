@@ -43,7 +43,6 @@ import com.onepiece.gpgaming.player.controller.value.UserValue
 import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.player.jwt.JwtUser
 import com.onepiece.gpgaming.player.sms.EmailSMTPService
-import com.onepiece.gpgaming.player.sms.EmailSMTPServiceImpl
 import com.onepiece.gpgaming.player.sms.SmsService
 import com.onepiece.gpgaming.utils.RequestUtil
 import com.onepiece.gpgaming.utils.StringUtil
@@ -275,8 +274,6 @@ class UserApiController(
         check(registerReq.country != Country.Default)
 
         val bossId = getBossId()
-        log.info("bossId = $bossId")
-        log.info("clients = ${clientService.all()}")
         val client = clientService.all().filter { it.bossId == bossId }.first { it.country == registerReq.country }
         val clientId = client.id
 
@@ -548,5 +545,30 @@ class UserApiController(
         // 修改妈妈
         val memberUo = MemberUo(id = req.memberId, password = req.password)
         memberService.update(memberUo)
+    }
+
+    @GetMapping("/sms/verify")
+    override fun sendPhoneCode(@RequestParam("phone") phone: String) {
+        val clientId = this.getClientId()
+
+        val config = clientConfigService.get(clientId = clientId)
+        val code = StringUtil.generateNumNonce(6)
+//        val message = config.regainMessageTemplate.replace("\${code}", code)
+
+        val message = "Your verification code: $code"
+
+        smsService.send(clientId = clientId, memberId = -1, mobile = phone, message = message, code = code)
+
+    }
+
+    @PutMapping("/sms/verify")
+    override fun verifyPhoneCode(@RequestBody req: UserValue.VerifyPhoneCodeReq) {
+        val smsContent = smsContentService.findLastSms(phone = req.phone)
+        checkNotNull(smsContent) { OnePieceExceptionCode.SYSTEM }
+        check(req.code == smsContent.code) { OnePieceExceptionCode.SMS_CODE_ERROR }
+
+        // 检查时间
+        val duration = Duration.between(smsContent.createdTime, LocalDateTime.now())
+        check(duration.seconds <= 60) { OnePieceExceptionCode.SMS_CODE_TIMEOUT }
     }
 }

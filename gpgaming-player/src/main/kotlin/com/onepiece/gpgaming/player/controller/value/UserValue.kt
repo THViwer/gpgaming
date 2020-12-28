@@ -104,6 +104,18 @@ sealed class UserValue {
             val phone: String
     )
 
+    data class VerifyPhoneCodeReq(
+            val phone: String,
+            // 验证码
+            val code: String,
+
+            val msgId: String
+    )
+
+    data class PhoneCodeResp(
+            val smsId: String
+    )
+
     data  class RegainReq(
             // 会员Id
             val memberId: Int,

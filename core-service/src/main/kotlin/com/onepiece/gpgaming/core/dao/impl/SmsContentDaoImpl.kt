@@ -26,7 +26,7 @@ class SmsContentDaoImpl : SmsContentDao, BasicDaoImpl<SmsContent>("sms_content")
                     createdTime = createdTime, clientId = clientId, successful = successful, code = code)
         }
 
-    override fun create(smsContentCo: SmsContentValue.SmsContentCo): Boolean {
+    override fun create(smsContentCo: SmsContentValue.SmsContentCo): Int {
         return insert()
                 .set("client_id", smsContentCo.clientId)
                 .set("level_id", smsContentCo.levelId)
@@ -35,13 +35,22 @@ class SmsContentDaoImpl : SmsContentDao, BasicDaoImpl<SmsContent>("sms_content")
                 .set("code", smsContentCo.code)
                 .set("content", smsContentCo.content)
                 .set("successful", smsContentCo.successful)
-                .executeOnlyOne()
+                .executeGeneratedKey()
     }
 
 
     override fun findLastSms(memberId: Int): SmsContent? {
         return query()
                 .where("member_ids", memberId)
+                .asWhere("code is not null")
+                .sort("id desc")
+                .limit(0, 1)
+                .executeMaybeOne(mapper)
+    }
+
+    override fun findLastSms(phone: String): SmsContent? {
+        return query()
+                .where("phone", phone)
                 .asWhere("code is not null")
                 .sort("id desc")
                 .limit(0, 1)

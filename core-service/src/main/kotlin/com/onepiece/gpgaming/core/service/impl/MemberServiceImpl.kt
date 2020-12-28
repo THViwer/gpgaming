@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.base.Page
 import com.onepiece.gpgaming.beans.enums.Role
 import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
+import com.onepiece.gpgaming.beans.enums.WalletEvent
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.Member
 import com.onepiece.gpgaming.beans.value.database.LoginHistoryValue
@@ -14,6 +15,7 @@ import com.onepiece.gpgaming.beans.value.database.MemberIntroduceValue
 import com.onepiece.gpgaming.beans.value.database.MemberQuery
 import com.onepiece.gpgaming.beans.value.database.MemberUo
 import com.onepiece.gpgaming.beans.value.database.WalletCo
+import com.onepiece.gpgaming.beans.value.database.WalletUo
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.MemberDao
 import com.onepiece.gpgaming.core.risk.RiskUtil
@@ -23,6 +25,7 @@ import com.onepiece.gpgaming.core.service.MemberIntroduceService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.WaiterService
 import com.onepiece.gpgaming.core.service.WalletService
+import com.onepiece.gpgaming.core.utils.ApplicationVersion
 import com.onepiece.gpgaming.utils.RedisService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -205,6 +208,13 @@ class MemberServiceImpl(
             val memberIntroduceCo = MemberIntroduceValue.MemberIntroduceCo(memberId = id, introduceId = memberCo.introduceId, name = memberCo.name,
                     registerIp = memberCo.registerIp)
             memberIntroduceService.create(memberIntroduceCo)
+
+            if (ApplicationVersion.checkIsNewVersion(memberCo.clientId)) {
+                val walletUo = WalletUo(clientId = memberCo.clientId, memberId = memberCo.introduceId, event = WalletEvent.INTRODUCE_REGISTER_COMMISSION, eventId = null,
+                        money = ApplicationVersion.INTRODUCE_REGISTER_COMMISSION, remarks = "introduce register commission", waiterId = null)
+                walletService.update(walletUo)
+
+            }
         }
 
         return id

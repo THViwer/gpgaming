@@ -29,6 +29,9 @@ enum class WalletEvent {
     // 介绍充值佣金
     INTRODUCE_DEPOSIT_COMMISSION,
 
+    // 介绍时注册佣金 新版UJ会使用
+    INTRODUCE_REGISTER_COMMISSION,
+
     // 转出
     TRANSFER_OUT,
 

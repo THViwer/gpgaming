@@ -39,8 +39,9 @@ class SmsService(
     )
 
 
-    fun send(clientId: Int, message: String, mobiles: List<String>, code: String? = null, memberIds: Int? = null) {
+    fun send(clientId: Int, message: String, mobiles: List<String>, code: String? = null, memberIds: Int? = null): List<Int> {
 
+        val ids = arrayListOf<Int>()
         repeat(mobiles.size) { x ->
             val start = x * MAX_SPLIT
             val end = ((x + 1) * MAX_SPLIT).let {
@@ -70,14 +71,16 @@ class SmsService(
                     content = message, successful = successful,
                     code = code
             )
-            smsContentService.create(co = co)
+            val id = smsContentService.create(co = co)
+            ids.add(id)
 
-            if (mobiles.size <= end) return
+            if (mobiles.size <= end) return ids
         }
+        return ids
     }
 
 
-    fun send(clientId: Int, mobile: String, message: String) {
+    fun send(clientId: Int, mobile: String, message: String): Int {
         val client = clientService.get(id = clientId)
         val newMobile = when (client.country) {
             Country.Malaysia -> if (mobile.substring(0, 2) == "60") mobile else "60$mobile"
@@ -88,10 +91,11 @@ class SmsService(
             else -> if (mobile.substring(0, 2) == "60") mobile else "60$mobile"
         }
 
-        this.send(clientId = clientId, mobiles = listOf(newMobile), message = message)
+        val ids = this.send(clientId = clientId, mobiles = listOf(newMobile), message = message)
+        return ids.first()
     }
 
-    fun send(clientId: Int, mobile: String, memberId: Int, message: String, code: String? = null) {
+    fun send(clientId: Int, mobile: String, memberId: Int, message: String, code: String? = null): Int {
         val client = clientService.get(id = clientId)
         val newMobile = when (client.country) {
             Country.Malaysia -> if (mobile.substring(0, 2) == "60") mobile else "60$mobile"
@@ -102,7 +106,8 @@ class SmsService(
             else -> if (mobile.substring(0, 2) == "60") mobile else "60$mobile"
         }
 
-        this.send(clientId = clientId, mobiles = listOf(newMobile), message = message, code = code, memberIds = memberId)
+        val ids = this.send(clientId = clientId, mobiles = listOf(newMobile), message = message, code = code, memberIds = memberId)
+        return ids.first()
     }
 
 }
