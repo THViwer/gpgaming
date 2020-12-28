@@ -153,6 +153,7 @@ class MemberApiController(
                 .toMap()
 
         log.info("代理列表：${agentMap.map { it.key }}")
+        log.info("代理列表：${agentMap.map { it.value }}")
 
         val sales = waiterService.findClientWaiters(clientId = clientId).filter { it.role == Role.Sale }
         val saleMap = sales.map { it.id to it }.toMap()
