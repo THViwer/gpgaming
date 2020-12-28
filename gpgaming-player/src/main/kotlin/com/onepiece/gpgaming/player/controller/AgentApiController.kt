@@ -159,7 +159,7 @@ class AgentApiController(
 
 //            val promoteURL = "https://www.${it.domain}?affid=${agent.promoteCode}"
 //            val mobilePromoteURL = "https://www.${it.domain}/m?affid=${agent.promoteCode}"
-            val promoteURL = "https://www.${it.domain}?affid=$affid}"
+            val promoteURL = "https://www.${it.domain}?affid=$affid"
             val mobilePromoteURL = "https://www.${it.domain}/m?affid=$affid"
 
             AgentValue.PromoteVo(country = it.country, promoteURL = promoteURL, mobilePromoteURL = mobilePromoteURL)
