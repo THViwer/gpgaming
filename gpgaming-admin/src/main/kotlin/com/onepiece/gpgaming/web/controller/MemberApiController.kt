@@ -140,7 +140,7 @@ class MemberApiController(
 
         val ids = page.data.map { it.agentId }
         val walletQuery = WalletQuery(clientId = clientId, memberIds = ids)
-//        log.info("代理Id列表：${walletQuery}")
+        log.info("代理Id列表：${walletQuery}")
         val memberMap = walletService.query(walletQuery).map { it.memberId to it }.toMap()
 
         val agentIds = page.data.map { it.agentId }
@@ -150,7 +150,7 @@ class MemberApiController(
                 .map { it.id to it }
                 .toMap()
 
-//        log.info("代理Id列表：${agentMap}")
+        log.info("代理Id列表：${agentMap}")
 
         val sales = waiterService.findClientWaiters(clientId = clientId).filter { it.role == Role.Sale }
         val saleMap = sales.map { it.id to it }.toMap()
@@ -158,7 +158,7 @@ class MemberApiController(
         val data = page.data.map {
 
             val agent = agentMap[it.agentId]
-//            log.info("代理信息：${agent}")
+            log.info("代理信息：${agent}")
             val (agentId, agentUsername) = (agent?.id ?: -1) to (agent?.username ?: "-")
 
             val sale = saleMap[it.saleId]
