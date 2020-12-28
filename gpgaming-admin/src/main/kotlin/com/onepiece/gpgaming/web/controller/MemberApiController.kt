@@ -162,7 +162,7 @@ class MemberApiController(
 
             val agent = agentMap[it.agentId]
             log.info("代理信息：${agent}")
-            val (agentId, agentUsername) = (agent?.id ?: -1) to (agent?.username ?: "-")
+            val agentUsername = agent?.username ?: "-"
 
             val sale = saleMap[it.saleId]
             val saleUsername = sale?.username ?: "-"
