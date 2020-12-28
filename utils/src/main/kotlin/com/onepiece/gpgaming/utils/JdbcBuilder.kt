@@ -166,6 +166,8 @@ open class Query(
     private var current: Int? = null
     private var size: Int? = null
 
+    private val log = LoggerFactory.getLogger(Query::class.java)
+
     fun where(k: String, v: Any?): Query {
         if (v == null) return this
 
@@ -260,6 +262,11 @@ open class Query(
         if (current != null && size != null) {
             sql.append(" limit $current, $size")
         }
+
+        log.info("------db------")
+        log.info("sql = $sql")
+        log.info("param = $param")
+        log.info("------db------")
 
         return sql.toString()
     }

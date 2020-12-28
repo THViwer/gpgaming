@@ -138,19 +138,21 @@ class MemberApiController(
 
         val levels = levelService.all(clientId).map { it.id to it }.toMap()
 
-        val ids = page.data.map { it.agentId }
+        // 查询余额
+        val ids = page.data.map { it.id }
         val walletQuery = WalletQuery(clientId = clientId, memberIds = ids)
-        log.info("代理Id列表：${walletQuery}")
         val memberMap = walletService.query(walletQuery).map { it.memberId to it }.toMap()
 
+        // 查询代理信息
         val agentIds = page.data.map { it.agentId }
         val agentQuery = MemberQuery(ids = agentIds)
+        log.info("代理id列表：${agentIds}")
         val agentMap = memberService.query(memberQuery = agentQuery, current = 0, size = 999999)
                 .data
                 .map { it.id to it }
                 .toMap()
 
-        log.info("代理Id列表：${agentMap}")
+        log.info("代理列表：${agentMap.map { it.key }}")
 
         val sales = waiterService.findClientWaiters(clientId = clientId).filter { it.role == Role.Sale }
         val saleMap = sales.map { it.id to it }.toMap()
