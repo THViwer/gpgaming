@@ -170,7 +170,7 @@ class MemberApiController(
                 MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name ?: "error level",
                         balance = memberMap[it.id]?.balance ?: BigDecimal.valueOf(-1), status = it.status, createdTime = createdTime,
                         loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteCode = it.promoteCode, idCard = it.idCard,
-                        country = client.country, agentId = agentId, agentUsername = agentUsername, saleId = it.saleId, saleUsername = saleUsername,
+                        country = client.country, agentId = it.agentId, agentUsername = agentUsername, saleId = it.saleId, saleUsername = saleUsername,
                         registerIp = it.registerIp, riskLevel = it.riskLevel, address = it.address, email = it.email, birthday = it.birthday,
                         marketId = it.marketId, saleScope = it.saleScope, introduceId = it.introduceId)
             }
