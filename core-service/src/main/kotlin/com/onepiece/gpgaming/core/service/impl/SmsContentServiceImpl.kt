@@ -25,4 +25,8 @@ class SmsContentServiceImpl(
     override fun findLastSms(phone: String): SmsContent? {
         return smsContentDao.findLastSms(phone = phone)
     }
+
+    override fun get(id: Int): SmsContent {
+        return smsContentDao.get(id = id)
+    }
 }

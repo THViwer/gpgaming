@@ -11,4 +11,6 @@ interface SmsContentService {
 
     fun findLastSms(phone: String): SmsContent?
 
+    fun get(id: Int): SmsContent
+
 }

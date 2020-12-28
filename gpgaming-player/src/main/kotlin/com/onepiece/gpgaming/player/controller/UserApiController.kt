@@ -548,7 +548,7 @@ class UserApiController(
     }
 
     @GetMapping("/sms/verify")
-    override fun sendPhoneCode(@RequestParam("phone") phone: String) {
+    override fun sendPhoneCode(@RequestParam("phone") phone: String): UserValue.PhoneCodeResp {
         val clientId = this.getClientId()
 
         val config = clientConfigService.get(clientId = clientId)
@@ -563,8 +563,7 @@ class UserApiController(
 
     @PutMapping("/sms/verify")
     override fun verifyPhoneCode(@RequestBody req: UserValue.VerifyPhoneCodeReq) {
-        val smsContent = smsContentService.findLastSms(phone = req.phone)
-        checkNotNull(smsContent) { OnePieceExceptionCode.SYSTEM }
+        val smsContent = smsContentService.get(id = req.msgId.toInt())
         check(req.code == smsContent.code) { OnePieceExceptionCode.SMS_CODE_ERROR }
 
         // 检查时间

@@ -105,7 +105,7 @@ sealed class UserValue {
     )
 
     data class VerifyPhoneCodeReq(
-            val phone: String,
+
             // 验证码
             val code: String,
 
