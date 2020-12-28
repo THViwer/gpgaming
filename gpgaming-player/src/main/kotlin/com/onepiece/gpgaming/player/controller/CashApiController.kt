@@ -1182,7 +1182,7 @@ open class CashApiController(
 
         val i18nContents = i18nContentService.getConfigType(clientId = clientId, configType = I18nConfig.Promotion)
                 .map {
-                    val k = "${it.id}:${it.language}"
+                    val k = "${it.configId}:${it.language}"
                     val v = it.getII18nContent(objectMapper) as I18nContent.PromotionI18n
                     k to v
                 }.toMap()
