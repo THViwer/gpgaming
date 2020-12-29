@@ -223,7 +223,9 @@ sealed class AgentValue {
             val formal: Boolean,
 
             // 创建时间
-            val createdTime: LocalDateTime
+            val createdTime: LocalDateTime,
+
+            val status: Status
 
     ) {
 
