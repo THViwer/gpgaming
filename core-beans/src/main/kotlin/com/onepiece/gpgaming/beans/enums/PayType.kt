@@ -31,7 +31,7 @@ enum class PayType(
 
     InstantPay(greyLogo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/FPXpay_gray.png",
             logo = "https://s3.ap-southeast-1.amazonaws.com/awspg1/bank/logo/FPXpay_ori.png",
-            sort = 1
+            sort = 0
     ),
     ;
 
