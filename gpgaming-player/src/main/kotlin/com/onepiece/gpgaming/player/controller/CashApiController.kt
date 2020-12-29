@@ -1107,7 +1107,7 @@ open class CashApiController(
         return when (platform) {
             Platform.Center -> {
                 BalanceVo(platform = platform, balance = walletBalance, transfer = true, tips = null, centerBalance = walletBalance, totalBet = BigDecimal.ZERO, currentBet = BigDecimal.ZERO,
-                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "")
+                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO)
             }
             else -> {
                 // 判断用户是否有参加活动
@@ -1137,7 +1137,7 @@ open class CashApiController(
                 } ?: ""
 
                 BalanceVo(platform = platform, balance = platformBalance, transfer = transfer, tips = tips, centerBalance = walletBalance, totalBet = totalBet, currentBet = platformMember.currentBet,
-                        requirementBet = platformMember.requirementBet, joinPromotionId = null, promotionTitle = title)
+                        requirementBet = platformMember.requirementBet, joinPromotionId = null, promotionTitle = title, requirementTransferOutAmount = platformMember.requirementTransferOutAmount)
             }
         }
     }
@@ -1196,7 +1196,7 @@ open class CashApiController(
 
             when (platformMember == null) {
                 true -> BalanceVo(platform = it.platform, balance = BigDecimal.ZERO, transfer = true, tips = null, centerBalance = wallet.balance, totalBet = BigDecimal.ZERO, currentBet = BigDecimal.ZERO,
-                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "")
+                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ONE)
                 else -> {
                     val platformBalance = try {
                         gameApi.balance(clientId = clientId, memberId = platformMember.memberId, platformUsername = platformMember.username, platform = it.platform,
@@ -1223,7 +1223,7 @@ open class CashApiController(
                     val (transfer, tips) = this.checkCanTransferOutAndTips(platformMember = platformMember, platformBalance = platformBalance, language = language)
                     BalanceVo(platform = it.platform, balance = platformBalance, transfer = transfer, tips = tips, centerBalance = wallet.balance, totalBet = totalBet,
                             weekBet = historyBet.plus(todayBet), currentBet = platformMember.currentBet, requirementBet = platformMember.requirementBet, joinPromotionId = platformMember.joinPromotionId,
-                            promotionTitle = title)
+                            promotionTitle = title, requirementTransferOutAmount = platformMember.requirementTransferOutAmount)
                 }
             }.let {
                 log.info("平台：${it.platform}, 查询余额耗时：${System.currentTimeMillis() - watch}ms")

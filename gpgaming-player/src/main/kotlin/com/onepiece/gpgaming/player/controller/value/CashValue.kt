@@ -241,7 +241,11 @@ data class BalanceVo(
         val currentBet: BigDecimal,
 
         @ApiModelProperty("需要打码量")
-        val requirementBet: BigDecimal
+        val requirementBet: BigDecimal,
+
+
+        // 转出到中心平台
+        val requirementTransferOutAmount: BigDecimal
 
 //        @ApiModelProperty("是否可以转入 中心 -> 平台")
 //        val transferIn: Boolean
