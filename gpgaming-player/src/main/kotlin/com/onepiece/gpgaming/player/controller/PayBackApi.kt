@@ -3,6 +3,7 @@ package com.onepiece.gpgaming.player.controller
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.RequestBody
+import javax.servlet.http.HttpServletRequest
 
 @Api(tags = ["payment"], description = " ")
 interface PayBackApi  {
@@ -18,7 +19,8 @@ interface PayBackApi  {
 
 
     @ApiOperation(tags = ["payment"], value = "instantpay")
-    fun instantpay(@RequestBody req: InstantPayResponse)
+    fun instantpay(request: HttpServletRequest): String
+//    fun instantpay(@RequestBody req: InstantPayResponse)
 
 
     data class InstantPayResponse(

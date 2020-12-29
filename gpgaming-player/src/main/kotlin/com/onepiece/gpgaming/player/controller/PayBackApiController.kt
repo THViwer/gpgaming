@@ -1,15 +1,14 @@
 package com.onepiece.gpgaming.player.controller
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.core.service.PayOrderService
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
+import javax.servlet.http.HttpServletRequest
 
 
 @RestController
@@ -141,27 +140,78 @@ class PayBackApiController(
         }
     }
 
+    @PostMapping("/instantpay", produces = ["application/json;charset=utf-8"])
+    override fun instantpay(request: HttpServletRequest): String {
 
-    @PostMapping("/instantpay")
-    override fun instantpay(@RequestBody req: PayBackApi.InstantPayResponse) {
+        val amount = request.getParameter("amount")
+        val charge = request.getParameter("charge")
+        val transactionStatus = request.getParameter("transactionStatus")
+        val createdDateTime = request.getParameter("createdDateTime")
+        val modificationDateTime = request.getParameter("modificationDateTime")
+        val transactionId = request.getParameter("transactionId")
+        val platformTransactionId = request.getParameter("platformTransactionId")
+        val timestamp = request.getParameter("timestamp")
+        val playerId = request.getParameter("playerId")
+        val sign = request.getParameter("sign")
 
+        val data = listOf(
+                "amount=$amount",
+                "charge=$charge",
+                "transactionStatus=$transactionStatus",
+                "createdDateTime=$createdDateTime",
+                "modificationDateTime=$modificationDateTime",
+                "transactionId=$transactionId",
+                "platformTransactionId=$platformTransactionId",
+                "timestamp=$timestamp",
+                "playerId=$playerId",
+                "sign=$sign"
+        )
 
         log.info("----------------")
         log.info("----------------")
         log.info("instant pay 获得response:")
-        log.info(jacksonObjectMapper().writeValueAsString(req))
+        log.info(data.joinToString("&"))
         log.info("----------------")
         log.info("----------------")
 
-        when (req.transactionStatus) {
-            2 -> {
-                payOrderService.successful(orderId = req.platformTransactionId, thirdOrderId = req.transactionId)
+        when (transactionStatus) {
+            "2" -> {
+                payOrderService.successful(orderId = platformTransactionId, thirdOrderId = transactionId)
             }
-            3  -> {
-                payOrderService.failed(orderId = req.platformTransactionId)
+            "3" -> {
+                payOrderService.failed(orderId = platformTransactionId)
             }
         }
 
+        return """
+            {
+             "status": "ok",
+            }
+        """.trimIndent()
+
 
     }
+
+//    @PostMapping("/instantpay")
+//    override fun instantpay(@RequestBody req: PayBackApi.InstantPayResponse) {
+//
+//
+//        log.info("----------------")
+//        log.info("----------------")
+//        log.info("instant pay 获得response:")
+//        log.info(jacksonObjectMapper().writeValueAsString(req))
+//        log.info("----------------")
+//        log.info("----------------")
+//
+//        when (req.transactionStatus) {
+//            2 -> {
+//                payOrderService.successful(orderId = req.platformTransactionId, thirdOrderId = req.transactionId)
+//            }
+//            3  -> {
+//                payOrderService.failed(orderId = req.platformTransactionId)
+//            }
+//        }
+//
+//
+//    }
 }
