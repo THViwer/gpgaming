@@ -999,7 +999,7 @@ open class CashApiController(
         return when {
             cashTransferReq.from == Platform.Center -> {
                 val fromBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, totalBet = BigDecimal.ZERO, currentBet = BigDecimal.ZERO,
-                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "")
+                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO)
                 val toBalance = this.balance(platform = cashTransferReq.to)
 
                 listOf(fromBalance, toBalance)
@@ -1007,7 +1007,7 @@ open class CashApiController(
             cashTransferReq.to == Platform.Center -> {
                 val fromBalance = this.balance(platform = cashTransferReq.from)
                 val toBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, totalBet = BigDecimal.ZERO, currentBet = BigDecimal.ZERO,
-                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "")
+                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO)
 
                 listOf(fromBalance, toBalance)
             }
@@ -1015,7 +1015,7 @@ open class CashApiController(
                 val fromBalance = this.balance(platform = cashTransferReq.from)
                 val toBalance = this.balance(platform = cashTransferReq.to)
                 val centerBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, totalBet = BigDecimal.ZERO, currentBet = BigDecimal.ZERO,
-                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "")
+                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO)
 
                 listOf(fromBalance, toBalance, centerBalance)
             }
@@ -1155,7 +1155,7 @@ open class CashApiController(
         // 查询主钱包
         val wallet = walletService.getMemberWallet(memberId = memberId)
         val walletBalanceVo = BalanceVo(platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, centerBalance = wallet.balance, totalBet = BigDecimal.valueOf(-1), currentBet = BigDecimal.ZERO,
-                requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "")
+                requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO)
 
         // 查询厅主开通的平台列表
         val platforms = platformBindService.findClientPlatforms(clientId)
