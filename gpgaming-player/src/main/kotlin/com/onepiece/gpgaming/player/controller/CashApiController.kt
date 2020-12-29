@@ -999,7 +999,7 @@ open class CashApiController(
         return when {
             cashTransferReq.from == Platform.Center -> {
                 val fromBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, totalBet = BigDecimal.ZERO, currentBet = BigDecimal.ZERO,
-                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO)
+                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO)
                 val toBalance = this.balance(platform = cashTransferReq.to)
 
                 listOf(fromBalance, toBalance)
@@ -1007,7 +1007,7 @@ open class CashApiController(
             cashTransferReq.to == Platform.Center -> {
                 val fromBalance = this.balance(platform = cashTransferReq.from)
                 val toBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, totalBet = BigDecimal.ZERO, currentBet = BigDecimal.ZERO,
-                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO)
+                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO)
 
                 listOf(fromBalance, toBalance)
             }
@@ -1015,7 +1015,7 @@ open class CashApiController(
                 val fromBalance = this.balance(platform = cashTransferReq.from)
                 val toBalance = this.balance(platform = cashTransferReq.to)
                 val centerBalance = BalanceVo(centerBalance = wallet.balance, platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, totalBet = BigDecimal.ZERO, currentBet = BigDecimal.ZERO,
-                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO)
+                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO)
 
                 listOf(fromBalance, toBalance, centerBalance)
             }
@@ -1107,7 +1107,7 @@ open class CashApiController(
         return when (platform) {
             Platform.Center -> {
                 BalanceVo(platform = platform, balance = walletBalance, transfer = true, tips = null, centerBalance = walletBalance, totalBet = BigDecimal.ZERO, currentBet = BigDecimal.ZERO,
-                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO)
+                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO)
             }
             else -> {
                 // 判断用户是否有参加活动
@@ -1137,7 +1137,8 @@ open class CashApiController(
                 } ?: ""
 
                 BalanceVo(platform = platform, balance = platformBalance, transfer = transfer, tips = tips, centerBalance = walletBalance, totalBet = totalBet, currentBet = platformMember.currentBet,
-                        requirementBet = platformMember.requirementBet, joinPromotionId = null, promotionTitle = title, requirementTransferOutAmount = platformMember.requirementTransferOutAmount)
+                        requirementBet = platformMember.requirementBet, joinPromotionId = null, promotionTitle = title, requirementTransferOutAmount = platformMember.requirementTransferOutAmount,
+                        ignoreTransferOutAmount = platformMember.ignoreTransferOutAmount)
             }
         }
     }
@@ -1155,7 +1156,7 @@ open class CashApiController(
         // 查询主钱包
         val wallet = walletService.getMemberWallet(memberId = memberId)
         val walletBalanceVo = BalanceVo(platform = Platform.Center, balance = wallet.balance, transfer = true, tips = null, centerBalance = wallet.balance, totalBet = BigDecimal.valueOf(-1), currentBet = BigDecimal.ZERO,
-                requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO)
+                requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ZERO, ignoreTransferOutAmount = BigDecimal.ZERO)
 
         // 查询厅主开通的平台列表
         val platforms = platformBindService.findClientPlatforms(clientId)
@@ -1196,7 +1197,7 @@ open class CashApiController(
 
             when (platformMember == null) {
                 true -> BalanceVo(platform = it.platform, balance = BigDecimal.ZERO, transfer = true, tips = null, centerBalance = wallet.balance, totalBet = BigDecimal.ZERO, currentBet = BigDecimal.ZERO,
-                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ONE)
+                        requirementBet = BigDecimal.ZERO, joinPromotionId = null, promotionTitle = "", requirementTransferOutAmount = BigDecimal.ONE, ignoreTransferOutAmount = BigDecimal.ZERO)
                 else -> {
                     val platformBalance = try {
                         gameApi.balance(clientId = clientId, memberId = platformMember.memberId, platformUsername = platformMember.username, platform = it.platform,
@@ -1223,7 +1224,7 @@ open class CashApiController(
                     val (transfer, tips) = this.checkCanTransferOutAndTips(platformMember = platformMember, platformBalance = platformBalance, language = language)
                     BalanceVo(platform = it.platform, balance = platformBalance, transfer = transfer, tips = tips, centerBalance = wallet.balance, totalBet = totalBet,
                             weekBet = historyBet.plus(todayBet), currentBet = platformMember.currentBet, requirementBet = platformMember.requirementBet, joinPromotionId = platformMember.joinPromotionId,
-                            promotionTitle = title, requirementTransferOutAmount = platformMember.requirementTransferOutAmount)
+                            promotionTitle = title, requirementTransferOutAmount = platformMember.requirementTransferOutAmount, ignoreTransferOutAmount = platformMember.ignoreTransferOutAmount)
                 }
             }.let {
                 log.info("平台：${it.platform}, 查询余额耗时：${System.currentTimeMillis() - watch}ms")

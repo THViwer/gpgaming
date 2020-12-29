@@ -245,7 +245,10 @@ data class BalanceVo(
 
 
         // 转出到中心平台
-        val requirementTransferOutAmount: BigDecimal
+        val requirementTransferOutAmount: BigDecimal,
+
+        // 当金额小于时 不需要打码量和转出金额限制
+        val ignoreTransferOutAmount: BigDecimal
 
 //        @ApiModelProperty("是否可以转入 中心 -> 平台")
 //        val transferIn: Boolean
