@@ -149,6 +149,7 @@ class PayBackApiController(
         val createdDateTime = request.getParameter("createdDateTime")
         val modificationDateTime = request.getParameter("modificationDateTime")
         val transactionId = request.getParameter("transactionId")
+                .split("-").last()
         val platformTransactionId = request.getParameter("platformTransactionId")
         val timestamp = request.getParameter("timestamp")
         val playerId = request.getParameter("playerId")
@@ -215,3 +216,4 @@ class PayBackApiController(
 //
 //    }
 }
+
