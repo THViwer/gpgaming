@@ -149,8 +149,8 @@ class PayBackApiController(
         val createdDateTime = request.getParameter("createdDateTime")
         val modificationDateTime = request.getParameter("modificationDateTime")
         val transactionId = request.getParameter("transactionId")
-        val platformTransactionId = request.getParameter("platformTransactionId")
                 .split("-").last()
+        val platformTransactionId = request.getParameter("platformTransactionId")
         val timestamp = request.getParameter("timestamp")
         val playerId = request.getParameter("playerId")
         val sign = request.getParameter("sign")
@@ -177,10 +177,10 @@ class PayBackApiController(
 
         when (transactionStatus) {
             "2" -> {
-                payOrderService.successful(orderId = platformTransactionId, thirdOrderId = transactionId)
+                payOrderService.successful(orderId = transactionId, thirdOrderId = platformTransactionId)
             }
             "3" -> {
-                payOrderService.failed(orderId = platformTransactionId)
+                payOrderService.failed(orderId = transactionId)
             }
         }
 
