@@ -115,7 +115,7 @@ open class TransferUtil(
      * 如果轩心账金额为-1 则是转全部
      */
 //    @Transactional(rollbackFor = [Exception::class], propagation = Propagation.REQUIRES_NEW)
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+//    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     override fun transfer(clientId: Int, username: String, cashTransferReq: CashValue.CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp {
         val (type, platform) = if (cashTransferReq.from == Platform.Center) "out" to cashTransferReq.to else "in" to cashTransferReq.from
         return singleTransfer(clientId = clientId, platform = platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo, username = username)
