@@ -137,7 +137,7 @@ class AgentApiController(
         val agentId = when {
             superiorAgentId != null -> superiorAgentId
             username != null -> {
-                memberService.findByUsername(clientId = getClientId(), username = username)?.id?: -1
+                memberService.findByUsername(clientId = getClientId(), username = username)?.id?: return emptyList()
             }
             else -> -1
         }
