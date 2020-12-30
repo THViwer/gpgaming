@@ -21,7 +21,7 @@ class TransferOrderServiceImpl(
         private val transferOrderDao: TransferOrderDao
 ) : TransferOrderService {
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional(propagation = Propagation.SUPPORTS)
     override fun create(transferOrderCo: TransferOrderCo) {
         val state = transferOrderDao.create(transferOrderCo)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
