@@ -65,6 +65,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- 邮件 -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+
         <!-- inner service -->
         <dependency>
             <groupId>com.onepiece.gpgaming</groupId>

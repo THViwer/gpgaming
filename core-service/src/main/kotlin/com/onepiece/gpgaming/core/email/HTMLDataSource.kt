@@ -1,4 +1,4 @@
-package com.onepiece.gpgaming.player.sms
+package com.onepiece.gpgaming.core.email
 
 import java.io.ByteArrayInputStream
 import java.io.IOException

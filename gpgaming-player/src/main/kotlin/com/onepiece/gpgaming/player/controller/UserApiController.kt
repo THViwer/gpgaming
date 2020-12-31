@@ -42,7 +42,7 @@ import com.onepiece.gpgaming.player.controller.value.RegisterReq
 import com.onepiece.gpgaming.player.controller.value.UserValue
 import com.onepiece.gpgaming.player.jwt.AuthService
 import com.onepiece.gpgaming.player.jwt.JwtUser
-import com.onepiece.gpgaming.player.sms.EmailSMTPService
+import com.onepiece.gpgaming.core.email.EmailSMTPService
 import com.onepiece.gpgaming.player.sms.SmsService
 import com.onepiece.gpgaming.utils.RequestUtil
 import com.onepiece.gpgaming.utils.StringUtil

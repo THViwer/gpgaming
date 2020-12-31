@@ -17,6 +17,7 @@ import com.onepiece.gpgaming.beans.value.database.WalletUo
 import com.onepiece.gpgaming.beans.value.database.WalletWithdrawUo
 import com.onepiece.gpgaming.core.dao.WalletDao
 import com.onepiece.gpgaming.core.dao.WalletNoteDao
+import com.onepiece.gpgaming.core.email.EmailSMTPService
 import com.onepiece.gpgaming.core.risk.VipUtil
 import com.onepiece.gpgaming.core.service.ClientConfigService
 import com.onepiece.gpgaming.core.service.MemberInfoService
@@ -33,7 +34,8 @@ import java.time.LocalDateTime
 @Service
 class WalletServiceImpl(
         private val walletDao: WalletDao,
-        private val walletNoteDao: WalletNoteDao
+        private val walletNoteDao: WalletNoteDao,
+        private val emailSMTPService: EmailSMTPService
 ) : WalletService {
 
     private val log = LoggerFactory.getLogger(WalletServiceImpl::class.java)
@@ -188,6 +190,10 @@ class WalletServiceImpl(
                 if (!member.firstDeposit) {
                     val memberUo = MemberUo(id = member.id, firstDeposit = true)
                     memberService.update(memberUo = memberUo)
+
+                    if (member.email != null && member.email != "") {
+                        emailSMTPService.firstDepositSend(username = member.username, email = member.email!!)
+                    }
                 }
 
 
