@@ -21,7 +21,7 @@ interface PayOrderDao {
 
     fun check(uo: PayOrderValue.ConstraintUo): Boolean
 
-    fun successful(orderId: String, thirdOrderId: String, firstDeposit: Boolean): Boolean
+    fun successful(orderId: String, thirdOrderId: String, firstDeposit: Boolean?): Boolean
 
     fun failed(orderId: String): Boolean
 

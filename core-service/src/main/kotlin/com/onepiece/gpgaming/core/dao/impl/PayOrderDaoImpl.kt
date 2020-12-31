@@ -128,7 +128,7 @@ class PayOrderDaoImpl : BasicDaoImpl<PayOrder>("pay_order"), PayOrderDao {
 
     }
 
-    override fun successful(orderId: String, thirdOrderId: String, firstDeposit: Boolean): Boolean {
+    override fun successful(orderId: String, thirdOrderId: String, firstDeposit: Boolean?): Boolean {
         return update()
                 .set("state", PayState.Successful)
                 .set("updated_time", LocalDateTime.now())
