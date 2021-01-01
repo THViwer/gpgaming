@@ -127,7 +127,7 @@ class MegaService : PlatformService() {
         val okResponse = this.doPost(method = "open.mega.balance.transfer.query", data = data, clientToken = clientToken)
         //TODO 判断是否转账成功
         return this.bindGameResponse(okResponse = okResponse) {
-            val successful = it.asMap("result").asInt("total") >= 0
+            val successful = it.asMap("result").asInt("total") > 0
             GameValue.TransferResp.of(successful)
         }
     }
