@@ -25,15 +25,22 @@ open class EmailSMTPServiceImpl: EmailSMTPService {
 
 
     @Async
-    override fun send(username: String, email: String) {
+    override fun send(clientId: Int, username: String, email: String) {
         val content = EmailContent.formRegisterContent(username = username)
-        this.sendEmail(email = email, content = content)
+
+        when (clientId) {
+            10001 -> { this.sendEmail(email = email, content = content) }
+            else -> {  }
+        }
     }
 
     @Async
-    override fun firstDepositSend(username: String, email: String) {
+    override fun firstDepositSend(clientId: Int, username: String, email: String) {
         val content = EmailContent.firstDeposit()
-        this.sendEmail( email = email, content = content)
+        when (clientId) {
+            10001 -> { this.sendEmail( email = email, content = content) }
+            else -> {}
+        }
     }
 
     private fun sendEmail(email: String, content: String) {

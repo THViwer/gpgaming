@@ -192,7 +192,7 @@ class WalletServiceImpl(
                     memberService.update(memberUo = memberUo)
 
                     if (member.email != null && member.email != "") {
-                        emailSMTPService.firstDepositSend(username = member.username, email = member.email!!)
+                        emailSMTPService.firstDepositSend(clientId = member.clientId, username = member.username, email = member.email!!)
                     }
                 }
 

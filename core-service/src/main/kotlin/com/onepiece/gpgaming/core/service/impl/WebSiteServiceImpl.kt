@@ -54,10 +54,16 @@ class WebSiteServiceImpl(
     }
 
     override fun match(url: String): WebSite {
-        return this.all().first { url.contains(it.domain) }
+//        val firstMatchUrl = url.removeSuffix("https://").removeSuffix("www.")
+        val sites = this.all()
+
+        val removeHttpUrl = url.removePrefix("https://")
+        val path = removeHttpUrl.substring(removeHttpUrl.indexOf(".") + 1, removeHttpUrl.length)
+
+        return sites.firstOrNull { it.domain == path } ?: sites.first { url.contains(it.domain) }
     }
 
     override fun matchReturnBossId(url: String): Int {
-        return this.all().first { url.contains(it.domain) }.bossId
+        return this.match(url = url).bossId
     }
 }

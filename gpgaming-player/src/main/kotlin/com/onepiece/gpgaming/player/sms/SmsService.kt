@@ -81,6 +81,10 @@ class SmsService(
 
 
     fun send(clientId: Int, mobile: String, message: String): Int {
+
+        // TOD0 暂时只有uj发
+        if (clientId == 10001) return 0
+
         val client = clientService.get(id = clientId)
         val newMobile = when (client.country) {
             Country.Malaysia -> if (mobile.substring(0, 2) == "60") mobile else "60$mobile"
@@ -96,6 +100,9 @@ class SmsService(
     }
 
     fun send(clientId: Int, mobile: String, memberId: Int, message: String, code: String? = null): Int {
+
+        if (clientId == 10001) return 0
+
         val client = clientService.get(id = clientId)
         val newMobile = when (client.country) {
             Country.Malaysia -> if (mobile.substring(0, 2) == "60") mobile else "60$mobile"
