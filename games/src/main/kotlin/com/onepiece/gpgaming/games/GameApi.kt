@@ -531,11 +531,16 @@ class GameApi(
                     amount = amount, type = type)
 
             //TODO 如果是kiss918和Pussy888 则不能check
-            val checkResp = when (platform) {
-                Platform.Kiss918, Platform.Pussy888 -> if (resp.transfer) resp else this.checkTransfer(clientId = clientId, memberId = memberId, platform = platform, checkTransferReq = checkTransferReq)
-                else -> this.checkTransfer(clientId = clientId, memberId = memberId, platform = platform, checkTransferReq = checkTransferReq)
+            val checkResp = when  {
+                platform == Platform.Kiss918 || platform == Platform.Pussy888 -> {
+                    if (resp.transfer)
+                        resp
+                    else
+                        this.checkTransfer(clientId = clientId, memberId = memberId, platform = platform, checkTransferReq = checkTransferReq)
+                }
+                resp.transfer -> this.checkTransfer(clientId = clientId, memberId = memberId, platform = platform, checkTransferReq = checkTransferReq)
+                else -> resp
             }
-//            val checkResp = this.checkTransfer(platform = platform, checkTransferReq = checkTransferReq)
 
             val balance = when {
                 platform == Platform.Kiss918 || platform == Platform.Pussy888 -> originBalance.plus(amount)

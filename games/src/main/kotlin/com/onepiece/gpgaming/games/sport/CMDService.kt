@@ -117,7 +117,7 @@ class CMDService : PlatformService() {
         )
         val okResponse = this.doGet(clientToken = cmdClientToken, data = data)
         return this.bindGameResponse(okResponse = okResponse) {
-            val successful = it.asList("Data").size == 1
+            val successful = it.asList("Data").first().asInt("Status") == 1 // 状态1为成功 其它的都是失败
             GameValue.TransferResp.of(successful)
         }
     }
