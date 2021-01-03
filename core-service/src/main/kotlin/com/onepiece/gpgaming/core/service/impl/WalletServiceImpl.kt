@@ -84,10 +84,13 @@ class WalletServiceImpl(
 
             WalletEvent.Rebate,
             WalletEvent.Commission,
-            WalletEvent.ThirdPay,
-            WalletEvent.DEPOSIT,
             WalletEvent.INTRODUCE_DEPOSIT_COMMISSION,
             WalletEvent.INTRODUCE_REGISTER_COMMISSION -> {
+                val walletDepositUo = WalletDepositUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
+                walletDao.deposit(walletDepositUo)
+            }
+            WalletEvent.ThirdPay,
+            WalletEvent.DEPOSIT -> {
                 val walletDepositUo = WalletDepositUo(id = wallet.id, processId = wallet.processId, money = walletUo.money)
                 walletDao.deposit(walletDepositUo)
             }

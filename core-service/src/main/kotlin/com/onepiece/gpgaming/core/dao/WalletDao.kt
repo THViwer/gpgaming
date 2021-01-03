@@ -22,6 +22,8 @@ interface WalletDao: BasicDao<Wallet> {
 
     fun freeze(walletFreezeUo: WalletFreezeUo): Boolean
 
+    fun otherAddAmount(walletDepositUo: WalletDepositUo): Boolean
+
     fun deposit(walletDepositUo: WalletDepositUo): Boolean
 
     fun withdraw(walletWithdrawUo: WalletWithdrawUo): Boolean

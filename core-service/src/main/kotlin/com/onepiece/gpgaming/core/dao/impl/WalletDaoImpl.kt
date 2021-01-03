@@ -76,6 +76,14 @@ class WalletDaoImpl : BasicDaoImpl<Wallet>("wallet"), WalletDao {
 //                .executeOnlyOne()
 //    }
 
+    override fun otherAddAmount(walletDepositUo: WalletDepositUo): Boolean {
+        return update().asSet("balance = balance + ${walletDepositUo.money}")
+                .set("process_id", UUID.randomUUID().toString())
+                .where("id", walletDepositUo.id)
+                .where("process_id", walletDepositUo.processId)
+                .executeOnlyOne()
+    }
+
     override fun deposit(walletDepositUo: WalletDepositUo): Boolean {
         return update().asSet("balance = balance + ${walletDepositUo.money}")
                 .asSet("total_deposit_balance = total_deposit_balance + ${walletDepositUo.money}")
