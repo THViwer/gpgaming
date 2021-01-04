@@ -605,8 +605,8 @@ class MemberApiController(
     @GetMapping("/member/report/info")
     override fun memberDailyReport(
             @RequestParam("memberId") memberId: Int,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
     ): MemberDailyDetail {
         val clientId = getClientId()
         return memberTodayDetailUtil.getMemberDetails(clientId =  clientId, memberId = memberId, startDate = startDate, endDate = endDate)

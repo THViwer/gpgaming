@@ -40,27 +40,30 @@ class MemberTodayDetailUtil(
         val totalDeposit = list.sumByDouble { it.totalDeposit.toDouble() }.toBigDecimal().setScale(2, 2)
         val totalDepositFrequency = list.sumBy { it.totalDepositFrequency }
         val totalWithdraw = list.sumByDouble { it.totalWithdraw.toDouble() }.toBigDecimal().setScale(2, 2)
+        val totalWithdrawFrequency = list.sumBy { it.totalWithdrawFrequency }
         val totalPromotion = list.sumByDouble { it.totalPromotion.toDouble() }.toBigDecimal().setScale(2, 2)
 
-        val settles = list.map { it.settles }.reduce { acc, _list -> acc.plus(_list) }
-                .groupBy { it.platform }
-                .map {
-                    val vs = it.value
+        val settles = if (list.isNotEmpty()) {
+            list.map { it.settles }.reduce { acc, _list -> acc.plus(_list) }
+                    .groupBy { it.platform }
+                    .map {
+                        val vs = it.value
 
-                    val bet = vs.sumByDouble { x -> x.bet.toDouble() }.toBigDecimal().setScale(2, 2)
-                    val validBet = vs.sumByDouble { x -> x.validBet.toDouble() }.toBigDecimal().setScale(2, 2)
-                    val payout = vs.sumByDouble { x -> x.payout.toDouble() }.toBigDecimal().setScale(2, 2)
-                    val rebate = vs.sumByDouble { x -> x.rebate.toDouble() }.toBigDecimal().setScale(2, 2)
-                    val requirementBet = vs.sumByDouble { x -> x.requirementBet.toDouble() }.toBigDecimal().setScale(2, 2)
-                    val totalIn = vs.sumByDouble { x -> x.totalIn.toDouble() }.toBigDecimal().setScale(2, 2)
-                    val totalOut = vs.sumByDouble { x -> x.totalOut.toDouble() }.toBigDecimal().setScale(2, 2)
+                        val bet = vs.sumByDouble { x -> x.bet.toDouble() }.toBigDecimal().setScale(2, 2)
+                        val validBet = vs.sumByDouble { x -> x.validBet.toDouble() }.toBigDecimal().setScale(2, 2)
+                        val payout = vs.sumByDouble { x -> x.payout.toDouble() }.toBigDecimal().setScale(2, 2)
+                        val rebate = vs.sumByDouble { x -> x.rebate.toDouble() }.toBigDecimal().setScale(2, 2)
+                        val requirementBet = vs.sumByDouble { x -> x.requirementBet.toDouble() }.toBigDecimal().setScale(2, 2)
+                        val totalIn = vs.sumByDouble { x -> x.totalIn.toDouble() }.toBigDecimal().setScale(2, 2)
+                        val totalOut = vs.sumByDouble { x -> x.totalOut.toDouble() }.toBigDecimal().setScale(2, 2)
 
-                    MemberDailyReport.PlatformSettle(platform = it.key, bet = bet, validBet = validBet, payout = payout, rebate = rebate,
-                            requirementBet = requirementBet, totalIn = totalIn, totalOut = totalOut)
-                }
+                        MemberDailyReport.PlatformSettle(platform = it.key, bet = bet, validBet = validBet, payout = payout, rebate = rebate,
+                                requirementBet = requirementBet, totalIn = totalIn, totalOut = totalOut)
+                    }
+        } else emptyList()
 
         return MemberDailyDetail(memberId = memberId, totalDeposit = totalDeposit, totalDepositFrequency = totalDepositFrequency, totalWithdraw = totalWithdraw,
-                totalWithdrawFrequency = totalDepositFrequency, totalPromotion = totalPromotion, settles = settles)
+                totalWithdrawFrequency = totalWithdrawFrequency, totalPromotion = totalPromotion, settles = settles)
     }
 
     fun getHistory(clientId: Int, memberId: Int, startDate: LocalDate, endDate: LocalDate): List<MemberDailyDetail> {

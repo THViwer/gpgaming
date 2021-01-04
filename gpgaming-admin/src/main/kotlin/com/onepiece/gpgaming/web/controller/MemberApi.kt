@@ -152,8 +152,8 @@ interface MemberApi {
     @ApiOperation(tags = ["user"], value = "会员 -> 报表汇总详情")
     fun memberDailyReport(
             @RequestParam("memberId") memberId: Int,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
     ): MemberDailyDetail
 
 
