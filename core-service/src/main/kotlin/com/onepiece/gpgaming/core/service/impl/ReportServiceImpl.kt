@@ -102,6 +102,12 @@ class ReportServiceImpl(
         val betReports = betOrderDao.mreport(clientId = null, memberId = null, startDate = startDate)
         val betMap = betReports.groupBy { it.memberId }
 
+        // 转账详情
+        val transferQuery = TransferReportQuery(clientId = null, memberId = memberId, startDate = startDate, endDate = endDate, from = null, to = null)
+        val transferReports = transferOrderDao.memberPlatformReport(transferQuery)
+                .map { "${it.from}:${it.to}" to it }
+                .toMap()
+
         //TODO  Kiss918、Pussy888、Mega
         val otherReports = otherPlatformReportDao.list(startDate = startDate)
                 .map { "${it.memberId}_${it.platform}" to it }
@@ -122,7 +128,10 @@ class ReportServiceImpl(
 
             // 平台下注金额
             val settles = (betMap[report.memberId]?.map {
-                MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, payout = it.payout, validBet = it.validBet)
+                val totalIn = transferReports["${it.platform}:${Platform.Center}"]?.money ?: BigDecimal.ZERO
+                val totalOut = transferReports["${Platform.Center}:${it.platform}"]?.money ?: BigDecimal.ZERO
+
+                MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, payout = it.payout, validBet = it.validBet, totalIn = totalOut)
             } ?: emptyList()).plus(otherSettles)
 
             val totalBet = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额
@@ -241,7 +250,7 @@ class ReportServiceImpl(
                 // 计算会员佣金
                 val memberCommission = memberCollect[agent.id] ?: AgentMonthReport.empty(bossId = agent.bossId, clientId = agent.clientId, agentId = agent.id, day = startDate)
                 val memberActive = memberActives[agent.id] ?: AnalysisValue.ActiveCollect(agentId = -1, activeCount = 0)
-                val mCommission = memberCommissions.first { it.activeCount > memberActive.activeCount && memberCommission.totalBet.toDouble() > it.minTotalBet} // TODO 111
+                val mCommission = memberCommissions.first { it.activeCount > memberActive.activeCount && memberCommission.totalBet.toDouble() > it.minTotalBet } // TODO 111
 
                 val memberCommissionAmount = if (mCommission.fixedCommission.toDouble() > 0) {
                     mCommission.fixedCommission // 暂时只有uj会配置固定佣金

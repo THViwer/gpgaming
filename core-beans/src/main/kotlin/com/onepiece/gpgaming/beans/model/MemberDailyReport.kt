@@ -1,8 +1,6 @@
 package com.onepiece.gpgaming.beans.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonValue
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.SaleScope
 import com.onepiece.gpgaming.beans.enums.Status
@@ -183,7 +181,13 @@ data class MemberDailyReport(
             val requirementBet: BigDecimal = BigDecimal.ZERO,
 
             // 反水比例
-            val rebateScale: BigDecimal = BigDecimal.ZERO
+            val rebateScale: BigDecimal = BigDecimal.ZERO,
+
+            // 转入 平台 => 中心
+            val totalIn: BigDecimal = BigDecimal.ZERO,
+
+            // 转出 中心 => 平台
+            val totalOut: BigDecimal = BigDecimal.ZERO
     ) {
 
         val win = this.payout.minus(this.bet)

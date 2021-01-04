@@ -32,6 +32,8 @@ import com.onepiece.gpgaming.beans.value.internet.web.MemberVo
 import com.onepiece.gpgaming.beans.value.internet.web.MemberWalletInfo
 import com.onepiece.gpgaming.beans.value.internet.web.UserValue
 import com.onepiece.gpgaming.beans.value.internet.web.WalletVo
+import com.onepiece.gpgaming.core.daily.MemberDailyDetail
+import com.onepiece.gpgaming.core.daily.MemberTodayDetailUtil
 import com.onepiece.gpgaming.core.dao.DepositDao
 import com.onepiece.gpgaming.core.dao.PayOrderDao
 import com.onepiece.gpgaming.core.dao.WithdrawDao
@@ -95,7 +97,8 @@ class MemberApiController(
         private val reportService: ReportService,
         private val memberDailyReportService: MemberDailyReportService,
 
-        private val clientConfigService: ClientConfigService
+        private val clientConfigService: ClientConfigService,
+        private val memberTodayDetailUtil: MemberTodayDetailUtil
 
 ) : BasicController(), MemberApi {
 
@@ -597,5 +600,15 @@ class MemberApiController(
         check(toWaiter.role == Role.Sale) { "to sale id error" }
 
         memberService.moveSale(clientId = user.clientId, fromSaleId = fromSaleId, toSaleId = toSaleId)
+    }
+
+    @GetMapping("/member/report/info")
+    override fun memberDailyReport(
+            @RequestParam("memberId") memberId: Int,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerStartDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "registerEndDate") endDate: LocalDate
+    ): MemberDailyDetail {
+        val clientId = getClientId()
+        return memberTodayDetailUtil.getMemberDetails(clientId =  clientId, memberId = memberId, startDate = startDate, endDate = endDate)
     }
 }
