@@ -89,7 +89,7 @@ sealed class BcsValue {
             @JsonProperty("ErrorMessage")
             val errorMessage: String?,
 
-            @JacksonXmlProperty(localName = "Data")
+            @JsonProperty( "Data")
             val result: List<Bet>?
     )
 
