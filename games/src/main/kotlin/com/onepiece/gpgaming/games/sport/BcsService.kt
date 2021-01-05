@@ -430,12 +430,13 @@ class BcsService : PlatformService() {
 //                    val turnover = bet.asBigDecimal("Turnover")
                     val win = bet.asBigDecimal("Win")
                     val payout = betAmount.plus(win)
-                    val betTime = bet.asString("BetDate").split("+").first().let {
+
+                    val betTime = bet.asString("BetDate").split("+").firstOrNull().let {
                         LocalDateTime.parse(it)
-                    }
-                    val settleTime = bet.asString("UpdateTime").split("+").first().let {
+                    }?: LocalDateTime.MIN
+                    val settleTime = bet.asString("UpdateTime").split("+").firstOrNull()?.let {
                         LocalDateTime.parse(it)
-                    }
+                    }?: LocalDateTime.MIN
 
                     val sortNo = bet.asString("SortNo")
                     if (sortNo > nextId) nextId = sortNo
