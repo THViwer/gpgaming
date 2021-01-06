@@ -44,6 +44,8 @@ enum class PermissionType(
     REPORT_MANAGE("-1", "5000", "报表", "报表"),
     REPORT_SYSTEM("5000", "5100", "系统报表", "系统报表"),
     REPORT_MEMBER("5000", "5200", "会员报表", "会员报表"),
+    REPORT_MEMBER_EXCEL("5200", "5201", "会员报表导出", "会员报表导出"),
+
     REPORT_PROMOTION("5000", "5300", "优惠报表", "优惠报表"),
     REPORT_ANALYSIS("5000", "5400", "会员分析", "会员分析"),
 

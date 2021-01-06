@@ -189,7 +189,7 @@ class ReportApiController(
                             withdrawAmount = withdrawAmount, artificialAmount = artificialAmount, artificialCount = artificialCount,
                             settles = it.settles, payout = it.payout, totalBet = it.totalBet, thirdPayCount = thirdPayCount,
                             thirdPayAmount = thirdPayAmount, rebateAmount = it.rebateAmount,
-                            promotionAmount = it.promotionAmount)
+                            promotionAmount = it.promotionAmount, phone = member.phone)
                 }
             } catch (e: Exception) {
                 log.error("", e)
@@ -199,6 +199,29 @@ class ReportApiController(
 
         return ReportValue.MemberTotalDetailReport(data = list, memberReportTotal = total)
 
+    }
+
+
+    @GetMapping("/member/excel")
+    override fun memberDailyExcel(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
+            @RequestParam(value = "username", required = false) username: String?,
+            @RequestParam("minRebateAmount", required = false) minRebateAmount: BigDecimal?,
+            @RequestParam("minPromotionAmount", required = false) minPromotionAmount: BigDecimal?
+    ) {
+
+        val data = this.memberDaily(startDate = startDate, endDate = endDate, username = username, minRebateAmount = minRebateAmount,
+                minPromotionAmount = minPromotionAmount, current = 0, size = 999999)
+                .data
+
+        val response = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).response!!
+        val name = "member_report_${startDate.toString().replace("-", "")}_${endDate.toString().replace("_", "")}"
+
+        response.contentType = "application/vnd.ms-excel";
+        response.characterEncoding = "utf-8";
+        response.setHeader("Content-disposition", "attachment;filename=$name.xlsx")
+        EasyExcel.write(response.outputStream, MemberReportWebVo::class.java).autoCloseStream(false).sheet("member").doWrite(data)
     }
 
     @GetMapping("/client/platform")

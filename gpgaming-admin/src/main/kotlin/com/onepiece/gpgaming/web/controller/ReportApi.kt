@@ -32,6 +32,15 @@ interface ReportApi {
             @RequestParam("size") size: Int
     ): ReportValue.MemberTotalDetailReport
 
+    @ApiOperation(tags = ["report"], value = "会员报表导出")
+    fun memberDailyExcel(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate,
+            @RequestParam(value = "username", required = false) username: String?,
+            @RequestParam("minRebateAmount",  required = false) minRebateAmount: BigDecimal?,
+            @RequestParam("minPromotionAmount",  required = false) minPromotionAmount: BigDecimal?
+    )
+
     @ApiOperation(tags = ["user"], value = "会员 -> 分析查询")
     fun analysis(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "startDate", required = true) startDate: LocalDate,
