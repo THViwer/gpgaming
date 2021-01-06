@@ -110,7 +110,7 @@ class EBetService : PlatformService() {
                 "rechargeReqId" to checkTransferReq.orderId,
                 "currency" to clientToken.currency,
                 // 为了签名
-                "username" to checkTransferReq.username
+                "username" to checkTransferReq.orderId
         )
 
         val okResponse = this.doPost(data = data, clientToken = clientToken, path = "/api/rechargestatus")
