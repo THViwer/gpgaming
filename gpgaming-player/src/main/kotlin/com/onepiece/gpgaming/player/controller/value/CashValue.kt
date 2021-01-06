@@ -199,6 +199,10 @@ data class CheckPromotinResp(
 
 }
 
+data class CheckCodeResp(
+        val status:  Boolean
+)
+
 data class CashTransferResp(
 
         @ApiModelProperty("转出平台的余额")

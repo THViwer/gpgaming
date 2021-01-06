@@ -20,6 +20,7 @@ import com.onepiece.gpgaming.player.controller.value.CashDepositResp
 import com.onepiece.gpgaming.player.controller.value.CashWithdrawResp
 import com.onepiece.gpgaming.player.controller.value.CheckBankResp
 import com.onepiece.gpgaming.player.controller.value.CheckBetResp
+import com.onepiece.gpgaming.player.controller.value.CheckCodeResp
 import com.onepiece.gpgaming.player.controller.value.CheckPromotinResp
 import com.onepiece.gpgaming.player.controller.value.DepositCoReq
 import com.onepiece.gpgaming.player.controller.value.MemberBankCoReq
@@ -157,6 +158,11 @@ interface CashApi {
             @RequestParam("promotionId", required = false) promotionId: Int?,
             @RequestParam("code", required = false) code: String?
     ): CheckPromotinResp
+
+    @ApiOperation(tags = ["cash"], value = "中心 -> 平台 检查优惠码")
+    fun checkCode(
+            @RequestParam("code") code: String
+    ): CheckCodeResp
 
     @ApiOperation(tags = ["cash"], value = "中心 -> 优惠活动列表")
     fun getPromotionList(

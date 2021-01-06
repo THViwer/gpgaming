@@ -70,6 +70,7 @@ import com.onepiece.gpgaming.player.controller.value.CashDepositResp
 import com.onepiece.gpgaming.player.controller.value.CashWithdrawResp
 import com.onepiece.gpgaming.player.controller.value.CheckBankResp
 import com.onepiece.gpgaming.player.controller.value.CheckBetResp
+import com.onepiece.gpgaming.player.controller.value.CheckCodeResp
 import com.onepiece.gpgaming.player.controller.value.CheckPromotinResp
 import com.onepiece.gpgaming.player.controller.value.CheckPromotionVo
 import com.onepiece.gpgaming.player.controller.value.DepositCoReq
@@ -810,6 +811,14 @@ open class CashApiController(
 
 
         return CheckPromotinResp(promotions = checkPromotions)
+    }
+
+    @GetMapping("/check/promotion/code")
+    override fun checkCode(@RequestParam("code") code: String): CheckCodeResp {
+        val clientId = getClientId()
+        val promotion = promotionService.all(clientId = clientId).firstOrNull { it.code == code }
+        val status = promotion != null && promotion.status == Status.Normal
+        return CheckCodeResp(status = status)
     }
 
     @GetMapping("/promotion")
