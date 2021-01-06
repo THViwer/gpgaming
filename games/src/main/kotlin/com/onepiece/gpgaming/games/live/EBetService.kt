@@ -28,7 +28,7 @@ class EBetService : PlatformService() {
 
     private fun doPost(data: HashMap<String, Any>, clientToken: EBetClientToken, path: String): OKResponse {
 
-        val username = data["username"]?.toString() ?: ""
+        val username = data["username"]?.toString() ?: data["signStr"]?.toString() ?: ""
         val timestamp = data["timestamp"]?.toString() ?: ""
         val signKey = "$username${timestamp}"
         val sign = EBetSignUtil.sign(signKey, clientToken.privateKey)
@@ -110,7 +110,7 @@ class EBetService : PlatformService() {
                 "rechargeReqId" to checkTransferReq.orderId,
                 "currency" to clientToken.currency,
                 // 为了签名
-                "username" to checkTransferReq.orderId
+                "signStr" to checkTransferReq.orderId
         )
 
         val okResponse = this.doPost(data = data, clientToken = clientToken, path = "/api/rechargestatus")
