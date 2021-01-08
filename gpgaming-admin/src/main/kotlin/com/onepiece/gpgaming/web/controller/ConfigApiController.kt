@@ -10,12 +10,16 @@ import com.onepiece.gpgaming.beans.enums.PlatformCategory
 import com.onepiece.gpgaming.beans.enums.PromotionCategory
 import com.onepiece.gpgaming.beans.enums.WalletEvent
 import com.onepiece.gpgaming.core.ActiveConfig
+import com.onepiece.gpgaming.core.email.EmailSMTPService
 import com.onepiece.gpgaming.core.service.GamePlatformService
+import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.utils.AwsS3Util
 import com.onepiece.gpgaming.web.controller.basic.BasicController
+import com.onepiece.gpgaming.web.controller.value.EmailReq
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -24,7 +28,9 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 class ConfigApiController(
         private val gamePlatformService: GamePlatformService,
-        private val activeConfig: ActiveConfig
+        private val activeConfig: ActiveConfig,
+        private val memberService: MemberService,
+        private val emailSMTPService: EmailSMTPService
 ) : BasicController(), ConfigApi {
 
     @GetMapping("/config/enum")
@@ -81,4 +87,19 @@ class ConfigApiController(
                 "path" to url
         )
     }
+
+    @PostMapping("/email/send")
+    override fun sendEmail(@RequestBody req: EmailReq) {
+
+        if (req.memberIds.isEmpty()) return
+        val members = memberService.findByIds(ids = req.memberIds)
+        if (members.isEmpty()) return
+
+        val emails = members.mapNotNull { it.email }
+        if (emails.isEmpty()) return
+
+        emailSMTPService.sends(emails = emails.joinToString(separator = ","), smtp_server = req.smtp_server, auth_username = req.auth_username, auth_password = req.auth_username,
+                content = req.content)
+    }
+
 }

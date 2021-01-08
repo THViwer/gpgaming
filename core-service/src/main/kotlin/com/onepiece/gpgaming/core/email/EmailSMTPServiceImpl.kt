@@ -13,9 +13,9 @@ import javax.mail.internet.MimeMessage
 @Service
 open class EmailSMTPServiceImpl : EmailSMTPService {
     // for example, smtp.mailgun.org
-    private val smtp_server = "smtppro.zoho.com"
-    private val auth_username = "team@unclejay.com"
-    private val auth_password = "Unclejay@888"
+    private val Smtp_server = "smtppro.zoho.com"
+    private val Auth_username = "team@unclejay.com"
+    private val Auth_password = "Unclejay@888"
 
     private val from = "team@unclejay.com"
     private val EMAIL_TO_CC = ""
@@ -57,7 +57,11 @@ open class EmailSMTPServiceImpl : EmailSMTPService {
         }
     }
 
-    private fun sendEmail(email: String, content: String) {
+    override fun sends(emails: String, content:  String,  smtp_server: String, auth_username: String, auth_password: String) {
+        this.sendEmail(email = emails, content = content, smtp_server = smtp_server, auth_password = auth_password, auth_username = auth_username)
+    }
+
+    private fun sendEmail(email: String, content: String, smtp_server: String = Smtp_server, auth_username: String = Auth_username, auth_password: String = Auth_password) {
         val prop = System.getProperties()
 //        prop.setProperty("mail.smtp.auth", "true");//开启认证
 //        prop.setProperty("mail.debug", "true");//启用调试

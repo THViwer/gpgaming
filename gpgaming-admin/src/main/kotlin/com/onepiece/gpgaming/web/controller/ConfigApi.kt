@@ -3,11 +3,16 @@ package com.onepiece.gpgaming.web.controller
 import com.onepiece.gpgaming.beans.enums.Bank
 import com.onepiece.gpgaming.beans.enums.FileCategory
 import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.web.controller.value.EmailReq
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.multipart.MultipartFile
 
 @Api(tags = ["config"], description = " ")
@@ -32,6 +37,9 @@ interface ConfigApi {
             @RequestParam("file") file: MultipartFile): Map<String, String>
 
 
+    @ApiOperation(tags = ["config"], value = "发送邮件")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun sendEmail(@RequestBody req: EmailReq)
 }
 
 sealed class EnumTypes {
