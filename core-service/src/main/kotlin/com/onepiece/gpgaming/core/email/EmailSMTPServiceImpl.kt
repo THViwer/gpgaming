@@ -11,7 +11,7 @@ import javax.mail.internet.MimeMessage
 
 
 @Service
-open class EmailSMTPServiceImpl: EmailSMTPService {
+open class EmailSMTPServiceImpl : EmailSMTPService {
     // for example, smtp.mailgun.org
     private val smtp_server = "smtppro.zoho.com"
     private val auth_username = "team@unclejay.com"
@@ -23,23 +23,37 @@ open class EmailSMTPServiceImpl: EmailSMTPService {
     private val title = "Thanks for signing up with UNCLE JAY!"
 
 
-
     @Async
     override fun send(clientId: Int, username: String, email: String) {
-        val content = EmailContent.formRegisterContent(username = username)
 
         when (clientId) {
-            10001 -> { this.sendEmail(email = email, content = content) }
-            else -> {  }
+            10001 -> {
+                val content = EmailContent.formRegisterContent(username = username)
+                this.sendEmail(email = email, content = content)
+            }
+            10002 -> {
+                val content = UJSGEmailContent.formRegisterContent(username = username)
+                this.sendEmail(email = email, content = content)
+            }
+
+            else -> {
+            }
         }
     }
 
     @Async
     override fun firstDepositSend(clientId: Int, username: String, email: String) {
-        val content = EmailContent.firstDeposit()
         when (clientId) {
-            10001 -> { this.sendEmail( email = email, content = content) }
-            else -> {}
+            10001 -> {
+                val content = EmailContent.firstDeposit()
+                this.sendEmail(email = email, content = content)
+            }
+            10002 -> {
+                val content = UJSGEmailContent.firstDeposit()
+                this.sendEmail(email = email, content = content)
+            }
+            else -> {
+            }
         }
     }
 
