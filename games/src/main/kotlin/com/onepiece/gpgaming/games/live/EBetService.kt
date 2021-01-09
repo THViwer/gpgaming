@@ -15,6 +15,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -165,12 +166,13 @@ class EBetService : PlatformService() {
 
                 val settleTime = betTime
 
+                val validAmount = if (mapUtil.asString("gameType") == "RE1") BigDecimal.ZERO else validBet // 如果是轮盘 则有效投注为0元
 
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.EBet, platformUsername = username)
 
                 val originData = objectMapper.writeValueAsString(mapUtil.data)
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, betAmount = bet, payout = payout, orderId = orderId, betTime = betTime, settleTime = settleTime,
-                        originData = originData, platform = Platform.EBet, validAmount = validBet)
+                        originData = originData, platform = Platform.EBet, validAmount = validAmount)
             }
         }
 

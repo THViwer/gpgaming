@@ -312,10 +312,12 @@ class MicroGamingService : PlatformService() {
                     else -> Platform.MicroGaming
                 }
 
+                // 如果是轮盘 有效打码为0元
+                val validAmount = if (bet.asMap("meta_data").asString("item_id") == "1936") BigDecimal.ZERO else betAmount
 
                 val originData = objectMapper.writeValueAsString(bet.data)
                 BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, orderId = orderId, platform = platform, betAmount = betAmount,
-                        payout = payout, betTime = betTime, settleTime = betTime, originData = originData, validAmount = betAmount)
+                        payout = payout, betTime = betTime, settleTime = betTime, originData = originData, validAmount = validAmount)
             }
         }
 

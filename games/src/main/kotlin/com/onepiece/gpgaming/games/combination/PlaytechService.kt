@@ -221,8 +221,10 @@ class PlaytechService(
 //                    val gameType = bet.asString("game_type")
 //                    val platform = if (gameType.toLowerCase().contains("slot")) Platform.PlaytechSlot else Platform.PlaytechLive
 
+                    val validAmount = if (gameType == "rol") BigDecimal.ZERO else betAmount // 如果类型为轮盘 则有效打码为）
+
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = platform, orderId = orderId, betAmount = betAmount,
-                            payout = payout, originData = originData, betTime = betTime, settleTime = betTime, validAmount = betAmount)
+                            payout = payout, originData = originData, betTime = betTime, settleTime = betTime, validAmount = validAmount)
                 }
 
                 orders.addAll(list)

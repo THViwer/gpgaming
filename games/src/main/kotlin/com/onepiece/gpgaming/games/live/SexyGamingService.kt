@@ -211,8 +211,10 @@ class SexyGamingService : PlatformService() {
 
                 val originData = objectMapper.writeValueAsString(bet.data)
 
+                val validAmount = if (bet.asString("gameType") == "MX-LIVE-009") BigDecimal.ZERO else realBetAmount // 如果是轮盘 有效投注为0元
+
                 BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, betAmount = betAmount, payout = payout, betTime = betTime,
-                        settleTime = settleTime, originData = originData, platform = Platform.SexyGaming, validAmount = realBetAmount)
+                        settleTime = settleTime, originData = originData, platform = Platform.SexyGaming, validAmount = validAmount)
             }
 
         }

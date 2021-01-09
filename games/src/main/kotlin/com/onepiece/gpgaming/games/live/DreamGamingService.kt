@@ -212,7 +212,7 @@ class DreamGamingService : PlatformService() {
         val okResponse = this.doPost(clientToken = clientToken, method = "/game/getReport/${clientToken.agentName}", data = data)
         return this.bindGameResponse(okResponse = okResponse) { mapUtil ->
             val orders = mapUtil.asList("list").map { bet ->
-                BetOrderUtil.instance(platform = Platform.DreamGaming, mapUtil = bet)
+                val order = BetOrderUtil.instance(platform = Platform.DreamGaming, mapUtil = bet)
                         .setOrderId("id")
                         .setUsername("userName")
                         .setBetAmount("betPoints")
@@ -221,6 +221,9 @@ class DreamGamingService : PlatformService() {
                         .setBetTime("betTime", dateTimeFormat)
                         .setSettleTime("calTime", dateTimeFormat)
                         .build(objectMapper)
+
+                val  validAmount = if (bet.asInt("gameType") == 4) BigDecimal.ZERO else order.validAmount // 如果是轮盘 有效打码为0
+                order.copy(validAmount = validAmount)
             }
 
             val ids = orders.map { it.orderId.toLong() }

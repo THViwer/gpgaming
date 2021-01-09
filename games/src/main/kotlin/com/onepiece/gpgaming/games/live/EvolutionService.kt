@@ -227,15 +227,26 @@ class EvolutionService : PlatformService() {
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.Evolution, platformUsername = username)
 
                 val playerBets = MapResultUtil.asList(bet, "bets")
+
+                val casinoId = bet["casinoId"]?.toString() ?: ""
+
                 playerBets.map { playerBet ->
                     val code = MapResultUtil.asString(playerBet, "code")
                     val orderId = MapResultUtil.asString(playerBet, "transactionId")
                     val betAmount = MapResultUtil.asBigDecimal(playerBet, "stake")
                     val payout = MapResultUtil.asBigDecimal(playerBet, "payout")
 
+                    // 如果是轮盘 有效打码为0
+                    val validAmount = when (casinoId) {
+                        "lkcbrbdckjxajdol", "7x0b1tgh7agmf6hv", "AmericanTable001", "vctlz20yfnmp1ylr",
+                            "wzg6kdkad1oe7m5k", "48z5pjps3ntvqc1b", "SpeedAutoRo00001", "01rb77cq1gtenhmo",
+                            "f1f4rm9xgh4j3u2z", "LightningTable01", "InstantRo0000001" -> BigDecimal.ZERO
+                        else -> betAmount
+                    }
+
                     val originData = objectMapper.writeValueAsString(bet)
                     BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Evolution, orderId = "${orderId}:${code}", betTime = betTime,
-                            settleTime = settleTime, betAmount = betAmount, payout = payout, originData = originData, validAmount = betAmount)
+                            settleTime = settleTime, betAmount = betAmount, payout = payout, originData = originData, validAmount = validAmount)
                 }
 
             }.reduce { acc, list -> acc.plus(list) }

@@ -131,7 +131,8 @@ class ReportServiceImpl(
                 val totalIn = transferReports["${it.platform}:${Platform.Center}"]?.money ?: BigDecimal.ZERO
                 val totalOut = transferReports["${Platform.Center}:${it.platform}"]?.money ?: BigDecimal.ZERO
 
-                MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, payout = it.payout, validBet = it.validBet, totalIn = totalOut)
+                MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, payout = it.payout, validBet = it.validBet, totalIn = totalIn,
+                        totalOut = totalOut)
             } ?: emptyList()).plus(otherSettles)
 
             val totalBet = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额

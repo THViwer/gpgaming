@@ -303,8 +303,10 @@ class SaGamingService : PlatformService() {
 
                 val originData = objectMapper.writeValueAsString(bet.data)
 
+                val validAmount = if (bet.asString("GameType") == "830") BigDecimal.ZERO else rolling // 如果是轮盘 有效打码为0
+
                 BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, platform = Platform.SaGaming, betTime = betTime,
-                        settleTime = settleTime, betAmount = betAmount, payout = payout, originData = originData, validAmount = rolling)
+                        settleTime = settleTime, betAmount = betAmount, payout = payout, originData = originData, validAmount = validAmount)
 
             } ?: emptyList()
         }
