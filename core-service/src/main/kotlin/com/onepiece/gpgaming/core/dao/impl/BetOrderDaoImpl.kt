@@ -125,7 +125,7 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                 .where("client_id", clientId)
                 .where("member_id", memberId)
                 .sort("bet_time desc")
-                .limit(0, 500)
+                .limit(0, 2000)
                 .execute(mapper)
     }
 

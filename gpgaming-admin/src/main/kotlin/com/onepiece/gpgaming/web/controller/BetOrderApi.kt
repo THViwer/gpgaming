@@ -5,8 +5,10 @@ import com.onepiece.gpgaming.beans.model.BetOrder
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseStatus
 import java.time.LocalDateTime
 
 @Api(tags = ["bet"], description = "平台订单")
@@ -22,5 +24,9 @@ interface BetOrderApi {
 
     @ApiOperation(tags = ["bet"], value = "下注订单最后500条")
     fun last500(@RequestParam("username") username: String): List<BetOrder>
+
+    @ApiOperation(tags = ["bet"], value = "下注订单导出")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun lastExcel(@RequestParam("username") username: String)
 
 }

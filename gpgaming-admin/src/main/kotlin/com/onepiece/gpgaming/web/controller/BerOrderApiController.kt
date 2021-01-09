@@ -1,9 +1,11 @@
 package com.onepiece.gpgaming.web.controller
 
+import com.alibaba.excel.EasyExcel
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.BetOrder
 import com.onepiece.gpgaming.beans.value.database.BetOrderValue
+import com.onepiece.gpgaming.beans.value.internet.web.ClientReportExcelVo
 import com.onepiece.gpgaming.core.service.BetOrderService
 import com.onepiece.gpgaming.core.service.MemberService
 import com.onepiece.gpgaming.core.service.PlatformMemberService
@@ -11,12 +13,15 @@ import com.onepiece.gpgaming.games.GameApi
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.slot.MegaService
 import com.onepiece.gpgaming.web.controller.basic.BasicController
+import com.onepiece.gpgaming.web.controller.value.BetOrderExcel
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -78,5 +83,25 @@ class BerOrderApiController(
         val endDate = LocalDate.now()
         val startDate = endDate.minusWeeks(1)
         return betOrderService.last500(clientId = getClientId(), memberId = member.id, startDate = startDate, endDate = endDate)
+    }
+
+    @GetMapping("/excel")
+    override fun lastExcel(@RequestParam("username") username: String) {
+
+
+        val data = this.last500(username = username).map {
+            with(it) {
+                BetOrderExcel(memberId = memberId, orderId = orderId, platform = platform, betAmount = betAmount, validAmount = validAmount, payout = payout,
+                        mark = mark, betTime = betTime, settleTime = settleTime, createdTime = createdTime)
+            }
+        }
+
+        val response = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).response!!
+        val name = "${username}_bet_order"
+
+        response.contentType = "application/vnd.ms-excel";
+        response.characterEncoding = "utf-8";
+        response.setHeader("Content-disposition", "attachment;filename=$name.xlsx")
+        EasyExcel.write(response.outputStream, ClientReportExcelVo::class.java).autoCloseStream(false).sheet("member").doWrite(data)
     }
 }
