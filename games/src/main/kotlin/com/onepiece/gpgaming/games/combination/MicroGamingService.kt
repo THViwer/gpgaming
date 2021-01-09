@@ -308,7 +308,7 @@ class MicroGamingService : PlatformService() {
                 val betTime = bet.asLocalDateTime("transaction_time", betDateTimeFormat)
 
                 val platform = when (bet.asMap("meta_data").asString("item_id")) {
-                    "1930", "1921", "2048", "2049", "1931", "1922", "1936", "1912" -> Platform.MicroGamingLive
+                    "1930", "1921", "2048", "2049", "1931", "1922", "1936", "1912", "1925", "2055", "2057", "1926", "1939", "1913", "1002" -> Platform.MicroGamingLive
                     else -> Platform.MicroGaming
                 }
 
