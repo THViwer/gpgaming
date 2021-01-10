@@ -73,7 +73,10 @@ class MemberTodayDetailUtil(
         val history = memberDailyReportService.query(reportQuery)
 
         return history.map { report ->
-            MemberDailyDetail(memberId = report.memberId, totalDeposit = report.depositAmount, totalDepositFrequency = report.depositCount,
+            val totalDeposit = report.depositAmount.plus(report.thirdPayAmount)
+            val totalDepositFrequency = report.depositCount.plus(report.thirdPayCount)
+
+            MemberDailyDetail(memberId = report.memberId, totalDeposit = totalDeposit, totalDepositFrequency = totalDepositFrequency,
                     totalWithdraw = report.withdrawAmount, totalWithdrawFrequency = report.withdrawCount, totalPromotion = report.promotionAmount,
                     settles = report.settles)
         }
