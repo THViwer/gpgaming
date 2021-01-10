@@ -90,6 +90,9 @@ data class MemberReportWebVo(
         @ExcelProperty("总下注")
         val totalBet: BigDecimal,
 
+        @ExcelProperty("下注次数")
+        val betCount: Int,
+
         // 盈利金额
         @ExcelProperty("总支出")
         val payout: BigDecimal,

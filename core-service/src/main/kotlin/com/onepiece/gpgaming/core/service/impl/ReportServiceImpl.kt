@@ -132,11 +132,12 @@ class ReportServiceImpl(
                 val totalOut = transferReports["${Platform.Center}:${it.platform}"]?.money ?: BigDecimal.ZERO
 
                 MemberDailyReport.PlatformSettle(platform = it.platform, bet = it.totalBet, payout = it.payout, validBet = it.validBet, totalIn = totalIn,
-                        totalOut = totalOut)
+                        totalOut = totalOut, betCount = it.betCount)
             } ?: emptyList()).plus(otherSettles)
 
             val totalBet = settles.sumByDouble { it.bet.toDouble() }.toBigDecimal().setScale(2, 2) // 总下注金额
             val payout = settles.sumByDouble { it.payout.toDouble() }.toBigDecimal().setScale(2, 2) // 玩家总盈利金额
+            val betCount = settles.sumBy { it.betCount }
 
             //TODO 返水比例和金额
             val level = levelIds[report.levelId]
@@ -195,7 +196,7 @@ class ReportServiceImpl(
 
             val rebateExecution = totalRebate.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
-            report.copy(rebateAmount = totalRebate, rebateExecution = rebateExecution, totalBet = totalBet, payout = payout, settles = settleList)
+            report.copy(rebateAmount = totalRebate, rebateExecution = rebateExecution, totalBet = totalBet, payout = payout, settles = settleList, betCount = betCount)
         }.filter {
             it.isHasData()
         }
@@ -469,7 +470,7 @@ class ReportServiceImpl(
             val totalFirstDeposit = firstDeposit?.totalFirstDeposit ?: BigDecimal.ZERO
 
 
-            it.copy(activeCount = activeCount, firstDepositFrequency = firstDepositFrequency, totalFirstDeposit = totalFirstDeposit)
+            it.copy(activeCount = activeCount, firstDepositFrequency = firstDepositFrequency, totalFirstDeposit = totalFirstDeposit, betCount = it.betCount)
         }
     }
 }

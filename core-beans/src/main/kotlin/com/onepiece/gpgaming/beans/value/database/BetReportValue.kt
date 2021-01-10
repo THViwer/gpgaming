@@ -19,6 +19,8 @@ sealed class BetReportValue {
             // 下注金额
             val totalBet: BigDecimal,
 
+            val betCount: Int,
+
             // 有效投注
             val validBet: BigDecimal,
 

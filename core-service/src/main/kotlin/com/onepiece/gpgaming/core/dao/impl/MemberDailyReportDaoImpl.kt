@@ -45,6 +45,7 @@ class MemberDailyReportDaoImpl(
             val createdTime = rs.getTimestamp("created_time").toLocalDateTime()
             val status = rs.getString("status").let { Status.valueOf(it) }
             val totalBet = rs.getBigDecimal("total_bet")
+            val betCount = rs.getInt("bet_count")
             val payout = rs.getBigDecimal("payout")
             val settles = rs.getString("settles").let { objectMapper.readValue<List<MemberDailyReport.PlatformSettle>>(it) }
                     .map {
@@ -65,7 +66,7 @@ class MemberDailyReportDaoImpl(
                     depositCount = depositCount, withdrawCount = withdrawCount, settles = settles, totalBet = totalBet, payout = payout,
                     thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, bossId = bossId,
                     rebateExecution = rebateExecution, promotionAmount = promotionAmount, agentId = agentId, superiorAgentId = superiorAgentId,
-                    saleId = saleId, saleScope = saleScope, marketId = marketId)
+                    saleId = saleId, saleScope = saleScope, marketId = marketId, betCount = betCount)
         }
 
     override fun create(reports: List<MemberDailyReport>) {
@@ -90,6 +91,7 @@ class MemberDailyReportDaoImpl(
                 .set("artificial_amount")
                 .set("artificial_count")
                 .set("total_bet")
+                .set("bet_count")
                 .set("payout")
                 .set("settles")
                 .set("third_pay_amount")
@@ -118,6 +120,7 @@ class MemberDailyReportDaoImpl(
                     ps.setBigDecimal(++index, entity.artificialAmount)
                     ps.setInt(++index, entity.artificialCount)
                     ps.setBigDecimal(++index, entity.totalBet)
+                    ps.setInt(++index, entity.betCount)
                     ps.setBigDecimal(++index, entity.payout)
                     ps.setString(++index, objectMapper.writeValueAsString(entity.settles))
                     ps.setBigDecimal(++index, entity.thirdPayAmount)
@@ -135,6 +138,7 @@ class MemberDailyReportDaoImpl(
             count(*) as count,
             sum(payout) as payout,
             sum(total_bet) as totalBet,
+            sum(bet_count) as betCount,
             sum(transfer_in) as transferIn,
             sum(transfer_out) as transferOut,
             sum(deposit_count) as totalDepositCount,
@@ -160,6 +164,7 @@ class MemberDailyReportDaoImpl(
                     val count = rs.getInt("count")
                     val payout = rs.getBigDecimal("payout") ?: BigDecimal.ZERO
                     val totalBet = rs.getBigDecimal("totalBet") ?: BigDecimal.ZERO
+                    val betCount = rs.getInt("betCount")
                     val transferIn = rs.getBigDecimal("transferIn") ?: BigDecimal.ZERO
                     val transferOut = rs.getBigDecimal("transferOut") ?: BigDecimal.ZERO
                     val totalDepositCount = rs.getInt("totalDepositCount")
@@ -178,7 +183,7 @@ class MemberDailyReportDaoImpl(
                             totalWithdrawCount = totalWithdrawCount, totalWithdrawAmount = totalWithdrawAmount,
                             totalArtificialCount = totalArtificialCount, totalArtificialAmount = totalArtificialAmount,
                             totalThirdPayCount = totalThirdPayCount, totalThirdPayAmount = totalThirdPayAmount,
-                            totalRebateAmount = totalRebateAmount, totalPromotionAmount = totalPromotionAmount)
+                            totalRebateAmount = totalRebateAmount, totalPromotionAmount = totalPromotionAmount, betCount = betCount)
                 }
     }
 

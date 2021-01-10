@@ -199,6 +199,12 @@ sealed class ReportValue {
                 return data.sumByDouble { it.totalBet.toDouble() }.toBigDecimal().setScale(2, 2)
             }
 
+        val betCount: Int
+            @ApiModelProperty("下注次数")
+            get() {
+                return data.sumBy { it.betCount }
+            }
+
         val payout: BigDecimal
             @ApiModelProperty("盈利金额")
             get() {
@@ -220,7 +226,7 @@ sealed class ReportValue {
 
     }
 
-    data class CPTotalReport (
+    data class CPTotalReport(
 
             @ApiModelProperty("数据列表")
             val data: List<ClientPlatformDailyReport>
@@ -315,7 +321,7 @@ sealed class ReportValue {
     data class PlatformSettleVo(
 
             // 会员Id
-            val memberId:  Int,
+            val memberId: Int,
 
             // 用户名
             val username: String,
@@ -333,7 +339,7 @@ sealed class ReportValue {
             val payout: BigDecimal = BigDecimal.ZERO,
 
             // 反水
-            val rebate: BigDecimal  = BigDecimal.ZERO
+            val rebate: BigDecimal = BigDecimal.ZERO
     ) {
 
         val mwin = this.payout.minus(this.bet)

@@ -29,6 +29,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
             val artificialCount = rs.getInt("artificial_count")
             val newMemberCount = rs.getInt("new_member_count")
             val totalBet = rs.getBigDecimal("total_bet")
+            val betCount = rs.getInt("bet_count")
             val payout = rs.getBigDecimal("payout")
             val thirdPayAmount = rs.getBigDecimal("third_pay_amount")
             val thirdPayCount = rs.getInt("third_pay_count")
@@ -42,7 +43,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount, createdTime = createdTime, newMemberCount = newMemberCount,
                     promotionAmount = promotionAmount, artificialAmount = artificialAmount, artificialCount = artificialCount, totalBet = totalBet, payout = payout,
                     thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, rebateAmount = rebateAmount, activeCount = activeCount, firstDepositFrequency = firstDepositFrequency,
-                    totalFirstDeposit = totalFirstDeposit)
+                    totalFirstDeposit = totalFirstDeposit, betCount = betCount)
         }
 
     override fun create(reports: List<ClientDailyReport>) {
@@ -62,6 +63,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                 .set("artificial_count")
                 .set("new_member_count")
                 .set("total_bet")
+                .set("bet_count")
                 .set("payout")
                 .set("third_pay_amount")
                 .set("third_pay_count")
@@ -85,6 +87,7 @@ class ClientDailyReportDaoImpl : BasicDaoImpl<ClientDailyReport>("client_daily_r
                     ps.setInt(++x, entity.artificialCount)
                     ps.setInt(++x, entity.newMemberCount)
                     ps.setBigDecimal(++x, entity.totalBet)
+                    ps.setInt(++x, entity.betCount)
                     ps.setBigDecimal(++x, entity.payout)
                     ps.setBigDecimal(++x, entity.thirdPayAmount)
                     ps.setInt(++x, entity.thirdPayCount)

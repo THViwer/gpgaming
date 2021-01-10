@@ -172,7 +172,7 @@ class ReportApiController(
             val emptyTotal = MemberReportValue.MemberReportTotal(count = 0, payout = BigDecimal.ZERO, totalBet = BigDecimal.ZERO, transferIn = BigDecimal.ZERO,
                     transferOut = BigDecimal.ZERO, totalDepositCount = 0, totalDepositAmount = BigDecimal.ZERO, totalWithdrawCount = 0, totalWithdrawAmount = BigDecimal.ZERO,
                     totalArtificialCount = 0, totalArtificialAmount = BigDecimal.ZERO, totalThirdPayCount = 0, totalThirdPayAmount = BigDecimal.ZERO, totalRebateAmount = BigDecimal.ZERO,
-                    totalPromotionAmount = BigDecimal.ZERO)
+                    totalPromotionAmount = BigDecimal.ZERO, betCount = 0)
             return ReportValue.MemberTotalDetailReport(data = emptyList(), memberReportTotal = emptyTotal)
         }
 //
@@ -189,7 +189,7 @@ class ReportApiController(
                             withdrawAmount = withdrawAmount, artificialAmount = artificialAmount, artificialCount = artificialCount,
                             settles = it.settles, payout = it.payout, totalBet = it.totalBet, thirdPayCount = thirdPayCount,
                             thirdPayAmount = thirdPayAmount, rebateAmount = it.rebateAmount,
-                            promotionAmount = it.promotionAmount, phone = member.phone)
+                            promotionAmount = it.promotionAmount, phone = member.phone, betCount = it.betCount)
                 }
             } catch (e: Exception) {
                 log.error("", e)

@@ -227,7 +227,8 @@ class AnalysisDaoImpl(
                     depositCount = depositCount, thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, artificialAmount = artificialAmount, artificialCount = artificialCount,
                     withdrawAmount = totalWithdraw, withdrawCount = withdrawCount, transferOut = transferOut, promotionAmount = promotionAmount, transferIn = transferIn,
                     rebateAmount = BigDecimal.ZERO, rebateExecution = true, day = startDate, settles = emptyList(), totalBet = BigDecimal.ZERO, payout = BigDecimal.ZERO,
-                    status = Status.Normal, createdTime = LocalDateTime.now(), superiorAgentId = superiorAgentId, saleId = saleId, saleScope = saleScope, marketId = marketId)
+                    status = Status.Normal, createdTime = LocalDateTime.now(), superiorAgentId = superiorAgentId, saleId = saleId, saleScope = saleScope, marketId = marketId,
+                    betCount = 0)
 
             report.expand(levelId = levelId, slotRequirementBet = slotRequirementBet, liveRequirementBet = liveRequirementBet, sportRequirementBet = sportRequirementBet,
                     fishRequirementBet = fishRequirementBet)
@@ -418,6 +419,7 @@ class AnalysisDaoImpl(
                    r.boss_id,
                    r.client_id,
                    sum(r.total_bet) total_bet,
+                   sum(bet_count) bet_count,
                    sum(r.payout) payout,
                    sum(r.transfer_in) transfer_in,
                    sum(r.transfer_out) transfer_out,
@@ -443,6 +445,7 @@ class AnalysisDaoImpl(
             val bossId = rs.getInt("boss_id")
             val clientId = rs.getInt("client_id")
             val totalBet = rs.getBigDecimal("total_bet")
+            val betCount = rs.getInt("bet_count")
             val payout = rs.getBigDecimal("payout")
             val transferIn = rs.getBigDecimal("transfer_in")
             val transferOut = rs.getBigDecimal("transfer_out")
@@ -462,7 +465,7 @@ class AnalysisDaoImpl(
                     transferIn = transferIn, transferOut = transferOut, artificialAmount = artificialAmount, artificialCount = artificialCount,
                     depositAmount = depositAmount, depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount,
                     rebateAmount = rebateAmount, promotionAmount = promotionAmount, thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount,
-                    newMemberCount = newMemberCount, createdTime = LocalDateTime.now(), activeCount = 0)
+                    newMemberCount = newMemberCount, createdTime = LocalDateTime.now(), activeCount = 0, betCount = betCount)
 
         }
 

@@ -19,6 +19,9 @@ sealed class MemberReportValue {
             // 顾客下注
             val totalBet: BigDecimal,
 
+            // 下注次数
+            val betCount: Int,
+
             // 转入金额
             val transferIn: BigDecimal,
 

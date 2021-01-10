@@ -23,6 +23,8 @@ data class ClientDailyReport(
         // 下注金额
         val totalBet: BigDecimal,
 
+        val betCount: Int,
+
         // 盈利金额
         val payout: BigDecimal,
 
