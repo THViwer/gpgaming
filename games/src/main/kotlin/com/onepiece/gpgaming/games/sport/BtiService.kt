@@ -1,79 +1,226 @@
 package com.onepiece.gpgaming.games.sport
 
+import com.onepiece.gpgaming.beans.enums.Language
+import com.onepiece.gpgaming.beans.enums.LaunchMethod
+import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.enums.U9RequestStatus
 import com.onepiece.gpgaming.beans.model.token.BtiClientToken
+import com.onepiece.gpgaming.beans.model.token.ClientToken
+import com.onepiece.gpgaming.beans.value.database.BetOrderValue
+import com.onepiece.gpgaming.core.utils.PlatformUsernameUtil
 import com.onepiece.gpgaming.games.GameValue
 import com.onepiece.gpgaming.games.PlatformService
 import com.onepiece.gpgaming.games.http.GameResponse
+import com.onepiece.gpgaming.games.http.OKParam
+import com.onepiece.gpgaming.games.http.OKResponse
+import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.format.DateTimeFormatter
 import java.util.*
 
+@Service
 class BtiService : PlatformService() {
+
+    fun doPostXml(path: String, data: Map<String, String>): OKResponse {
+
+        val okParam = OKParam.ofPostXml(url = path, param = "", formParam = data)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
+        if (!okResponse.ok) return okResponse
+
+        val errorCode = okResponse.mapUtil.asString("ErrorCode")
+        if (errorCode != "NoError") return okResponse.copy(status = U9RequestStatus.Fail)
+
+        return okResponse
+    }
 
 
     override fun register(registerReq: GameValue.RegisterReq): GameResponse<String> {
-        TODO("Not yet implemented")
+        val clientToken = registerReq.token as BtiClientToken
+        val data = mapOf(
+                "AgentUserName" to clientToken.agentUsername,
+                "AgentPassword" to clientToken.agentPassword,
+                "MerchantCustomerCode" to registerReq.username,
+                "LoginName" to registerReq.username,
+                "CurrencyCode" to clientToken.currencyCode,
+                "CountryCode" to clientToken.countryCode,
+
+                "City" to "Kuala Lumpur",
+
+                "FirstName" to UUID.randomUUID().toString().substring(0, 3),
+                "LastName" to UUID.randomUUID().toString().substring(3, 6),
+                "Group1ID" to "1",
+
+
+                "CustomerMoreInfo" to "",
+                "CustomerDefaultLanguage" to "en",
+                "DomainID" to "",
+                "DateOfBirth" to ""
+        )
+
+        val response = this.doPostXml(path = "${clientToken.apiPath}/CreateTestUser", data = data)
+        return this.bindGameResponse(okResponse = response) {
+            registerReq.username
+        }
     }
 
     override fun balance(balanceReq: GameValue.BalanceReq): GameResponse<BigDecimal> {
-        TODO("Not yet implemented")
+        val clientToken = balanceReq.token as BtiClientToken
+        val data = mapOf(
+                "AgentUserName" to clientToken.agentUsername,
+                "AgentPassword" to clientToken.agentPassword,
+                "MerchantCustomerCode" to balanceReq.username
+        )
+
+        val response = this.doPostXml(path = "${clientToken.apiPath}/GetBalance", data = data)
+        return this.bindGameResponse(okResponse = response) {
+            it.asBigDecimal("Balance")
+        }
     }
 
     override fun transfer(transferReq: GameValue.TransferReq): GameResponse<GameValue.TransferResp> {
-        TODO("Not yet implemented")
+        val clientToken = transferReq.token as BtiClientToken
+
+        return if (transferReq.amount.toDouble() > 0) {
+            val data = mapOf(
+                    "AgentUserName" to clientToken.agentUsername,
+                    "AgentPassword" to clientToken.agentPassword,
+                    "MerchantCustomerCode" to transferReq.username,
+                    "Amount" to "${transferReq.amount.abs()}",
+                    "RefTransactionCode" to transferReq.orderId,
+                    "BonusCode" to ""
+            )
+
+            val okResponse = this.doPostXml(path = "${clientToken.apiPath}/TransferToWHL", data = data)
+            this.bindGameResponse(okResponse) {
+                val balance = it.asBigDecimal("Balance")
+                GameValue.TransferResp.of(balance = balance, platformOrderId = transferReq.orderId, successful = true)
+            }
+
+        } else {
+            val data = mapOf(
+                    "AgentUserName" to clientToken.agentUsername,
+                    "AgentPassword" to clientToken.agentPassword,
+                    "MerchantCustomerCode" to transferReq.username,
+                    "Amount" to "${transferReq.amount.abs()}",
+                    "RefTransactionCode" to transferReq.orderId
+            )
+
+            val okResponse = this.doPostXml(path = "${clientToken.apiPath}/TransferFromWHL", data = data)
+            this.bindGameResponse(okResponse) {
+                val balance = it.asBigDecimal("Balance")
+                GameValue.TransferResp.successful(balance = balance, platformOrderId = transferReq.orderId)
+            }
+        }
     }
 
     override fun checkTransfer(checkTransferReq: GameValue.CheckTransferReq): GameResponse<GameValue.TransferResp> {
-        TODO("Not yet implemented")
+
+        val clientToken = checkTransferReq.token as BtiClientToken
+
+        val data = mapOf(
+                "AgentUserName" to clientToken.agentUsername,
+                "AgentPassword" to clientToken.agentPassword,
+                "RefTransactionCode" to checkTransferReq.orderId
+        )
+
+        val okResponse = this.doPostXml(path = "${clientToken.apiPath}/CheckTransaction", data = data)
+        return this.bindGameResponse(okResponse = okResponse) {
+            val balance = it.asBigDecimal("Balance")
+            GameValue.TransferResp.successful(balance = balance)
+        }
+    }
+
+    override fun startDemo(token: ClientToken, language: Language, launch: LaunchMethod): GameResponse<String> {
+        val tokenClient = token as BtiClientToken
+        return GameResponse.of(tokenClient.gamePath)
     }
 
     override fun start(startReq: GameValue.StartReq): GameResponse<String> {
 //        用亚洲版进入游戏-https：// [brand-game-domain] / [lang] / asian-view /
 //        用欧洲版进入游戏-https：// [brand-game-domain] / [lang] / sports /
 //        用手机版进入游戏-https：// [brand-game-domain] / [lang] / sports /
-        return super.start(startReq)
+        val clientToken = startReq.token as BtiClientToken
+
+        val data = mapOf(
+                "AgentUserName" to clientToken.agentUsername,
+                "AgentPassword" to clientToken.agentPassword,
+                "MerchantCustomerCode" to startReq.username
+        )
+        val okResponse = this.doPostXml(path = "${clientToken.apiPath}/GetCustomerAuthToken", data = data)
+        val authToken = this.bindGameResponse(okResponse = okResponse) {
+            it.asString("AuthToken")
+        }.data ?: error("Bti 未获得用户token")
+
+        val language = when (startReq.language) {
+            Language.EN -> "en"
+            Language.CN -> "zh"
+            Language.MY -> "ms"
+            Language.VI -> "vi"
+            Language.TH -> "th"
+            else -> "en"
+        }
+
+        val url = "${clientToken.gamePath}/$language/asian-view/?operatorToken=$authToken"
+        return GameResponse.of(url)
     }
-}
 
-fun main() {
-    val clientId = 1
-    val memberId = 1
-    val clientToken = BtiClientToken(path = "https://whlapi3.bti360.io/WHLCustomers.asmx")
-    val name = ""
-    val password = ""
-    val username = UUID.randomUUID().toString().replace("-", "").substring(0, 10)
+    val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/mm/dd'T'hh:mm:ss")
 
-    println("username = $username")
-    val registerReq = GameValue.RegisterReq(clientId = clientId, memberId = memberId, token = clientToken, name = name,
-            password = password, username = username)
+    override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
 
-    /**
-     * AgentUserName 是 string(50) 商户于 BTi 之帐户
-    AgentPassword 是 string(50) 商户于 BTi 之密码
-    MerchantCustomerCode 是 string(50) 于商户系统之独特客户辨识符
-    LoginName 是 string(50) 客户用于登入商户系统。(必须为独特的)
-    CurrencyCode 是 string(3) 博彩帐户会以什么货币建立。 ISO 4217.
-    Eg EUR
-    CountryCode 是 string(2) 玩家声称来自的国家。 ISO 3166-1. Eg DE
-    City 是 string(50) 用户的城市
-    FirstName 是 string(100) 名字
-    LastName 是 string(100) 姓氏
-    Group1ID 是 string(255) 玩家当前 VIP 等级 (数字)
-    CustomerMoreInfo 是 string(4000) 未使用，请传入空白。 CustomerDefaultLanguage 是 string(2) 玩家偏好语言。 ISO 639-1. Eg it
-    DomainID 是 String 域 ID。若玩家未在域中请传入空白。
-    DateOfBirth
-     */
+        val clientToken = pullBetOrderReq.token as BtiClientToken
 
-    val body = """
-        <?xml version="1.0" encoding="utf-8"?> 
-        <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-          xmlns:soap12="http://www.w3.org/2003/05/soap-envelope"> 
-          <soap12:Body> 
-            <GetSpeech xmlns="http://xmlme.com/WebServices"> 
-              <Request>string</Request> 
-            </GetSpeech> 
-          </soap12:Body> 
-        </soap12:Envelope>
-    """.trimIndent()
+        val from = pullBetOrderReq.startTime.format(dateTimeFormatter)
+        val to = pullBetOrderReq.endTime.format(dateTimeFormatter)
+        val data = """
+            {
+               "from":"$from",
+               "to":"$to"
+            }
+        """.trimIndent()
 
+        val token = this.getToken(clientToken)
+        if (token.isBlank()) error("BTI token 获得异常")
+
+        val okParam = OKParam.ofPost(url = "${clientToken.orderApiPath}/dataAPI/bettinghistory?token=$token", param = data)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
+
+
+        val list = okResponse.mapUtil.asList("Bets")
+        if (list.isEmpty()) return GameResponse.of(emptyList())
+
+        val orders = list.filter { it.asString("Status") != "Opened" }.map { order ->
+
+            val merchantCustomerID = order.asString("MerchantCustomerID")
+            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.BTI, platformUsername = merchantCustomerID)
+            val bet = order.asBigDecimal("TotalStake")
+            val betTime = order.asLocalDateTime("CreationDate")
+            val validBet = order.asBigDecimal("ValidStake")
+            val payout = order.asBigDecimal("Return")
+            val settleTime = order.asLocalDateTime("BetSettledDate")
+            val orderId = order.asString("PurchaseID")
+
+            val originData = objectMapper.writeValueAsString(order.data)
+            BetOrderValue.BetOrderCo(clientId = clientId, platform = Platform.BTI, memberId = memberId, betAmount = bet, validAmount = validBet,
+                    payout = payout, betTime = betTime, settleTime = settleTime, orderId = orderId, originData = originData)
+
+        }
+        return GameResponse.of(data = orders)
+    }
+
+    private fun getToken(clientToken: BtiClientToken): String {
+
+        val data = """
+            { 
+             "agentUserName": "${clientToken.agentUsername}", 
+             "agentPassword": "${clientToken.agentPassword}" 
+            }
+        """.trimIndent()
+        val okParam = OKParam.ofPost(url = "${clientToken.orderApiPath}/dataAPI/gettoken", param = data)
+        val okResponse = u9HttpRequest.startRequest(okParam = okParam)
+
+        return this.bindGameResponse(okResponse = okResponse) {
+            it.asString("token")
+        }.data ?: ""
+    }
 }

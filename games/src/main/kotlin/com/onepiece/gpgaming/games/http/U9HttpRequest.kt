@@ -66,8 +66,8 @@ data class OKParam private constructor(
             return OKParam(url = url, param = param, headers = headers, mediaType = U9HttpRequest.MEDIA_JSON, method = HttpMethod.POST, formParam = formParam)
         }
 
-        fun ofPostXml(url: String, param: String, headers: Map<String, String> = emptyMap()): OKParam {
-            return OKParam(url = url, param = param, headers = headers, mediaType = U9HttpRequest.MEDIA_XML, method = HttpMethod.POST)
+        fun ofPostXml(url: String, param: String, headers: Map<String, String> = emptyMap(), formParam: Map<String, Any> = emptyMap()): OKParam {
+            return OKParam(url = url, param = param, headers = headers, formParam = formParam, mediaType = U9HttpRequest.MEDIA_XML, method = HttpMethod.POST)
         }
 
     }

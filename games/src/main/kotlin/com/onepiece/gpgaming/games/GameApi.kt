@@ -39,6 +39,7 @@ import com.onepiece.gpgaming.games.slot.SimplePlayService
 import com.onepiece.gpgaming.games.slot.SpadeGamingService
 import com.onepiece.gpgaming.games.slot.TTGService
 import com.onepiece.gpgaming.games.sport.BcsService
+import com.onepiece.gpgaming.games.sport.BtiService
 import com.onepiece.gpgaming.games.sport.CMDService
 import com.onepiece.gpgaming.games.sport.LbcService
 import com.onepiece.gpgaming.utils.RedisService
@@ -83,6 +84,7 @@ class GameApi(
         private val lbcService: LbcService,
         private val bcsService: BcsService,
         private val cmdService: CMDService,
+        private val btiService: BtiService,
 
         // fishing
         private val ggFishingService: GGFishingService,
@@ -126,6 +128,7 @@ class GameApi(
             Platform.Lbc -> lbcService
             Platform.Bcs -> bcsService
             Platform.CMD -> cmdService
+            Platform.BTI -> btiService
 
             // fishing
             Platform.GGFishing -> ggFishingService
@@ -365,6 +368,7 @@ class GameApi(
             Platform.MicroGamingLive,
             Platform.AsiaGamingLive,
             Platform.EBet,
+            Platform.BTI,
             Platform.Bcs -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, launch = launch, language = language, password = platformPassword, redirectUrl = getRequestDomain())
                 val gameResponse = this.getPlatformApi(platform).start(startReq)
@@ -384,7 +388,8 @@ class GameApi(
         return when (platform) {
             Platform.Lbc,
             Platform.Bcs,
-            Platform.CMD -> {
+            Platform.BTI,
+                    Platform . CMD -> {
                 val gameResponse = this.getPlatformApi(platform).startDemo(token = clientToken, language = language, launch = launch)
                 this.useRemoteLog(clientId = clientId, platform = platform, head = this.bindLogHead(clientId, -1, platform, "start sport demo"),
                         gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_LAUNCH_GAME)
@@ -531,7 +536,7 @@ class GameApi(
                     amount = amount, type = type)
 
             //TODO 如果是kiss918和Pussy888 则不能check
-            val checkResp = when  {
+            val checkResp = when {
                 platform == Platform.Kiss918 || platform == Platform.Pussy888 -> {
                     if (resp.transfer)
                         resp
@@ -548,7 +553,7 @@ class GameApi(
                 checkResp.transfer -> checkResp.balance
                 else -> BigDecimal.valueOf(-1)
             }
-            return checkResp.copy(balance = balance, msg = gameResponse.okResponse.message?: "")
+            return checkResp.copy(balance = balance, msg = gameResponse.okResponse.message ?: "")
         } catch (e: Exception) {
             log.error("转账失败第${index}次，请求参数：$transferReq ", e)
 
@@ -687,6 +692,5 @@ class GameApi(
             "A$it$memberId"
         }
     }
-
 
 }

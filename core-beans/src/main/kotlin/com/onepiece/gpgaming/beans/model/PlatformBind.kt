@@ -6,6 +6,7 @@ import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.model.token.AllBetClientToken
 import com.onepiece.gpgaming.beans.model.token.AsiaGamingClientToken
 import com.onepiece.gpgaming.beans.model.token.BcsClientToken
+import com.onepiece.gpgaming.beans.model.token.BtiClientToken
 import com.onepiece.gpgaming.beans.model.token.CMDClientToken
 import com.onepiece.gpgaming.beans.model.token.ClientToken
 import com.onepiece.gpgaming.beans.model.token.DefaultClientToken
@@ -123,6 +124,7 @@ data class PlatformBind(
                 Platform.SpadeGaming -> SpadeGamingClientToken::class.java
                 Platform.TTG -> TTGClientToken::class.java
                 Platform.CMD -> CMDClientToken::class.java
+                Platform.BTI -> BtiClientToken::class.java
                 Platform.GoldDeluxe -> GoldDeluxeClientToken::class.java
                 Platform.Bcs -> BcsClientToken::class.java
                 Platform.PlaytechSlot -> PlaytechClientToken::class.java
