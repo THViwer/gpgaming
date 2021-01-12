@@ -210,6 +210,15 @@ class BetOrderDaoImpl : BasicDaoImpl<BetOrder>("bet_order"), BetOrderDao {
                         BetReportValue.MBetReport(clientId = xClientId, memberId = xMemberId, platform = platform, totalBet = totalBet, payout = payout, validBet = validAmount, betCount = betCount)
                     }
         }.reduce { a, b -> a.plus(b) }
+                .groupBy { "${it.clientId}_${it.memberId}_${it.platform}" }
+                .map {
+                    val first = it.value.first()
+                    val totalBet = it.value.sumByDouble { x -> x.totalBet.toDouble() }.toBigDecimal().setScale(2, 2)
+                    val payout = it.value.sumByDouble { x -> x.payout.toDouble() }.toBigDecimal().setScale(2, 2)
+                    val validBet = it.value.sumByDouble { x -> x.validBet.toDouble() }.toBigDecimal().setScale(2, 2)
+                    val betCount = it.value.sumBy { x -> x.betCount }
+                    first.copy(totalBet = totalBet, payout = payout, validBet = validBet, betCount = betCount)
+                }
     }
 
 
