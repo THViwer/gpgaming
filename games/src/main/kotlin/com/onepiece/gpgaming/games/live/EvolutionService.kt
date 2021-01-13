@@ -221,6 +221,11 @@ class EvolutionService : PlatformService() {
                     .plusHours(8) // 需要+8小时
             val bets = MapResultUtil.asList(games, "participants")
 
+            val tableId = try {
+                MapResultUtil.asMap(games, "table")["id"]?.toString() ?: ""
+            } catch (e: Exception) {
+                ""
+            }
             bets.map { bet ->
 
                 val username = MapResultUtil.asString(bet, "playerId")
@@ -228,7 +233,6 @@ class EvolutionService : PlatformService() {
 
                 val playerBets = MapResultUtil.asList(bet, "bets")
 
-                val casinoId = bet["casinoId"]?.toString() ?: ""
 
                 playerBets.map { playerBet ->
                     val code = MapResultUtil.asString(playerBet, "code")
@@ -237,7 +241,7 @@ class EvolutionService : PlatformService() {
                     val payout = MapResultUtil.asBigDecimal(playerBet, "payout")
 
                     // 如果是轮盘 有效打码为0
-                    val validAmount = when (casinoId) {
+                    val validAmount = when (tableId) {
                         "lkcbrbdckjxajdol", "7x0b1tgh7agmf6hv", "AmericanTable001", "vctlz20yfnmp1ylr",
                             "wzg6kdkad1oe7m5k", "48z5pjps3ntvqc1b", "SpeedAutoRo00001", "01rb77cq1gtenhmo",
                             "f1f4rm9xgh4j3u2z", "LightningTable01", "InstantRo0000001" -> BigDecimal.ZERO
