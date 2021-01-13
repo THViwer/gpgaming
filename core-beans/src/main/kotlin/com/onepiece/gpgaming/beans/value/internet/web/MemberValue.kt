@@ -85,6 +85,10 @@ sealed class MemberValue {
             @ApiModelProperty("电话")
             val phone: String,
 
+            @ExcelProperty("邮箱")
+            @ApiModelProperty("邮箱")
+            val email: String?,
+
 
             @ExcelProperty("充值金额")
             @ApiModelProperty("充值金额")

@@ -316,7 +316,7 @@ class MemberApiController(
 
             MemberValue.FollowVo(memberId = member.id, username = member.username, phone = member.phone, registerTime = member.createdTime,
                     lastLoginTime = member.loginTime, depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
-                    withdrawCount = withdrawCount, lastDepositTime = lastDepositTime, lastWithdrawTime = lastWithdrawTime)
+                    withdrawCount = withdrawCount, lastDepositTime = lastDepositTime, lastWithdrawTime = lastWithdrawTime, email = member.email)
         }
     }
 
