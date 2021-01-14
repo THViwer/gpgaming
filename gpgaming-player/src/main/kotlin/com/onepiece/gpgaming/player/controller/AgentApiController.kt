@@ -159,8 +159,8 @@ class AgentApiController(
 
 //            val promoteURL = "https://www.${it.domain}?affid=${agent.promoteCode}"
 //            val mobilePromoteURL = "https://www.${it.domain}/m?affid=${agent.promoteCode}"
-            val promoteURL = "https://www.${it.domain}?affid=$affid"
-            val mobilePromoteURL = "https://www.${it.domain}/m?affid=$affid"
+            val promoteURL = "https://www.${it.domain}/#?affid=$affid"
+            val mobilePromoteURL = "https://www.${it.domain}/#?affid=$affid"
 
             AgentValue.PromoteVo(country = it.country, promoteURL = promoteURL, mobilePromoteURL = mobilePromoteURL)
         }
@@ -168,7 +168,7 @@ class AgentApiController(
         val mainSite = webSiteService.getDataByBossId(bossId = -1).first { it.clientId == bossId && it.country == Country.Default }
 //        val defaultClient = clientService.getMainClient(bossId = bossId) ?: error("")
 //        val defaultSite = sites.first { it.clientId == defaultClient.id }
-        val subAgentPromoteUrl = "https://aff.${mainSite.domain}?affid=$affid"
+        val subAgentPromoteUrl = "https://aff.${mainSite.domain}/#?affid=$affid"
 
         // 导航页
         val guideUrl = "https://www.${mainSite.domain}"

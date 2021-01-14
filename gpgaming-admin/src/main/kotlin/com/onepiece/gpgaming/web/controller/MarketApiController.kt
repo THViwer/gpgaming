@@ -52,7 +52,7 @@ class MarketApiController(
 
 //            val links = webSites.map { s -> "https://www.${s.domain}/market/${market.id}" }
             val affid = RegisterSource.splice(source = RegisterSource.Market, id = market.id)
-            val links = webSites.map { s -> "https://www.${s.domain}/?affid=$affid" }
+            val links = webSites.map { s -> "https://www.${s.domain}/?#affid=$affid" }
             MarketingValue.MarketVo(promotionId = market.promotionId, promotionCode = market.promotionCode, messageTemplate = market.messageTemplate,
                     name = market.name, links = links, id = market.id)
         }

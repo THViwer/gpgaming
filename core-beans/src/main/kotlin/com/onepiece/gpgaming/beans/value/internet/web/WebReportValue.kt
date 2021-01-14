@@ -37,7 +37,7 @@ data class MemberReportWebVo(
 
         // 日期
         @ExcelProperty("日期")
-        val day: LocalDate,
+        val day: String,
 
         // 厅主Id
         @ExcelProperty("业主id")

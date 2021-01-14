@@ -486,7 +486,7 @@ class UserApiController(
 
         val webSite = webSiteService.getDataByBossId(bossId = user.bossId).first { it.clientId == user.clientId }
         val affid = RegisterSource.splice(source = RegisterSource.Introduce, id = user.id)
-        val link = "https://www.${webSite.domain}/?affid=$affid"
+        val link = "https://www.${webSite.domain}/#/?affid=$affid"
         return UserValue.MyIntroduceDetail(link = link, introduceCount = introduceCount, overIntroduceCount = overIntroduceCount, commission = introduceCommission,
                 registerCommission = config.registerCommission, depositCommission = config.depositCommission, introducePromotionId = config.introducePromotionId, bet = bet,
                 enableIntroduce = config.enableIntroduce, commissionPeriod = config.commissionPeriod, depositPeriod = config.depositPeriod, shareTemplate = config.shareTemplate)

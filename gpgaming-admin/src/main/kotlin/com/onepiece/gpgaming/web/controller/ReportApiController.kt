@@ -179,23 +179,81 @@ class ReportApiController(
         val ids = data.map { it.memberId }.toList()
         val members = memberService.findByIds(ids).map { it.id to it }.toMap()
 
-        val list = history.mapNotNull {
+        // history處理
+        val day = "${startDate}~${endDate}"
+
+        val list = history.groupBy { it.memberId }.mapNotNull {
 
             try {
-                val member = members[it.memberId] ?: error(OnePieceExceptionCode.DATA_FAIL)
-                with(it) {
-                    MemberReportWebVo(day = day, clientId = clientId, memberId = member.id, username = member.username,
-                            transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
-                            withdrawAmount = withdrawAmount, artificialAmount = artificialAmount, artificialCount = artificialCount,
-                            settles = it.settles, payout = it.payout, totalBet = it.totalBet, thirdPayCount = thirdPayCount,
-                            thirdPayAmount = thirdPayAmount, rebateAmount = it.rebateAmount,
-                            promotionAmount = it.promotionAmount, phone = member.phone, betCount = it.betCount)
-                }
+
+                val v = it.value
+                val first = v.first()
+
+                val member = members[first.memberId] ?: error(OnePieceExceptionCode.DATA_FAIL)
+
+                val transferIn = v.sumByDouble { x -> x.transferIn.toDouble() }.toBigDecimal().setScale(2, 2)
+                val transferOut = v.sumByDouble { x -> x.transferOut.toDouble() }.toBigDecimal().setScale(2, 2)
+                val depositAmount = v.sumByDouble { x -> x.depositAmount.toDouble() }.toBigDecimal().setScale(2, 2)
+                val depositCount = v.sumBy { x -> x.depositCount }
+                val thirdPayAmount = v.sumByDouble { x -> x.thirdPayAmount.toDouble() }.toBigDecimal().setScale(2, 2)
+                val thirdPayCount = v.sumBy { x -> x.thirdPayCount }
+                val withdrawAmount = v.sumByDouble { x -> x.withdrawAmount.toDouble() }.toBigDecimal().setScale(2, 2)
+                val withdrawCount = v.sumBy { x -> x.withdrawCount }
+                val artificialAmount = v.sumByDouble { x -> x.artificialAmount.toDouble() }.toBigDecimal().setScale(2, 2)
+                val artificialCount = v.sumBy { x -> x.artificialCount }
+                val payout = v.sumByDouble { x -> x.payout.toDouble() }.toBigDecimal().setScale(2, 2)
+                val totalBet = v.sumByDouble { x -> x.totalBet.toDouble() }.toBigDecimal().setScale(2, 2)
+                val betCount = v.sumBy { x -> x.betCount }
+                val rebateAmount = v.sumByDouble { x -> x.rebateAmount.toDouble() }.toBigDecimal().setScale(2, 2)
+                val promotionAmount = v.sumByDouble { x -> x.promotionAmount.toDouble() }.toBigDecimal().setScale(2, 2)
+
+
+                val settles = v.map { x -> x.settles }.reduce { a, b -> a.plus(b) }
+                        .groupBy { y -> y.platform }
+                        .map { z ->
+                            val ss = z.value
+                            val f1 = ss.first()
+
+                            val bet = ss.sumByDouble { w -> w.bet.toDouble() }.toBigDecimal().setScale(2, 2)
+                            val betCount = ss.sumBy { w -> w.betCount }
+                            val validBet = ss.sumByDouble { w -> w.validBet.toDouble() }.toBigDecimal().setScale(2, 2)
+                            val payout = ss.sumByDouble { w -> w.payout.toDouble() }.toBigDecimal().setScale(2, 2)
+                            val rebate = ss.sumByDouble { w -> w.rebate.toDouble() }.toBigDecimal().setScale(2, 2)
+                            val requirementBet = ss.sumByDouble { w -> w.requirementBet.toDouble() }.toBigDecimal().setScale(2, 2)
+                            val totalIn = ss.sumByDouble { w -> w.totalIn.toDouble() }.toBigDecimal().setScale(2, 2)
+                            val totalOut = ss.sumByDouble { w -> w.totalOut.toDouble() }.toBigDecimal().setScale(2, 2)
+
+                            f1.copy(bet = bet, betCount = betCount, validBet = validBet, payout = payout, rebate = rebate, requirementBet = requirementBet, totalIn = totalIn,
+                                    totalOut = totalOut)
+                        }
+
+                MemberReportWebVo(day = day, transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount, thirdPayAmount = thirdPayAmount,
+                        thirdPayCount = thirdPayCount, withdrawAmount = withdrawAmount, artificialAmount = artificialAmount, artificialCount = artificialCount,
+                        payout = payout, totalBet = totalBet, betCount = betCount, rebateAmount = rebateAmount, promotionAmount = promotionAmount, settles = settles,
+                        clientId = member.clientId, username = member.username, memberId = member.id, phone = member.phone)
             } catch (e: Exception) {
                 log.error("", e)
                 null
             }
-        }.sortedByDescending { it.day }
+        }
+
+//        val list = history.mapNotNull {
+//
+//            try {
+//                val member = members[it.memberId] ?: error(OnePieceExceptionCode.DATA_FAIL)
+//                with(it) {
+//                    MemberReportWebVo(day = day, clientId = clientId, memberId = member.id, username = member.username,
+//                            transferIn = transferIn, transferOut = transferOut, depositAmount = depositAmount,
+//                            withdrawAmount = withdrawAmount, artificialAmount = artificialAmount, artificialCount = artificialCount,
+//                            settles = it.settles, payout = it.payout, totalBet = it.totalBet, thirdPayCount = thirdPayCount,
+//                            thirdPayAmount = thirdPayAmount, rebateAmount = it.rebateAmount,
+//                            promotionAmount = it.promotionAmount, phone = member.phone, betCount = it.betCount)
+//                }
+//            } catch (e: Exception) {
+//                log.error("", e)
+//                null
+//            }
+//        }.sortedByDescending { it.day }
 
         return ReportValue.MemberTotalDetailReport(data = list, memberReportTotal = total)
 

@@ -62,7 +62,7 @@ class SalesmanApiController(
 //            else -> "${current.id}"
 //        }
         val affid = RegisterSource.splice(source = RegisterSource.Sale, id = current.id)
-        val saleLink = "https://www.${webSite.domain}?affid=$affid"
+        val saleLink = "https://www.${webSite.domain}/#?affid=$affid"
 
         val saleId = if (current.role == Role.Sale) current.id else null
 
