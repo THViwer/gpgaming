@@ -226,7 +226,7 @@ class EvolutionService : PlatformService() {
             } catch (e: Exception) {
                 ""
             }
-            val id= MapResultUtil.asMap(games, "id")
+            val id= MapResultUtil.asString(games, "id")
 
             bets.map { bet ->
 
