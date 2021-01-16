@@ -226,6 +226,8 @@ class EvolutionService : PlatformService() {
             } catch (e: Exception) {
                 ""
             }
+            val id= MapResultUtil.asMap(games, "id")
+
             bets.map { bet ->
 
                 val username = MapResultUtil.asString(bet, "playerId")
@@ -249,7 +251,7 @@ class EvolutionService : PlatformService() {
                     }
 
                     val originData = objectMapper.writeValueAsString(bet)
-                    BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Evolution, orderId = "${orderId}:${code}", betTime = betTime,
+                    BetOrderValue.BetOrderCo(clientId = clientId, memberId = memberId, platform = Platform.Evolution, orderId = "${id}:${orderId}:${code}", betTime = betTime,
                             settleTime = settleTime, betAmount = betAmount, payout = payout, originData = originData, validAmount = validAmount)
                 }
 
