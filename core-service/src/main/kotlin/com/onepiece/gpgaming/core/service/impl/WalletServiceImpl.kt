@@ -229,7 +229,7 @@ class WalletServiceImpl(
                     true -> { // 新的推荐奖励
                         if (totalDeposit.toDouble() >= ApplicationVersion.INTRODUCE_DEPOSIT_NEED_AMOUNT) {
                             val commission = ApplicationVersion.INTRODUCE_REGISTER_DEPOSIT_COMMISSION
-                            val walletUo = WalletUo(clientId = clientId, waiterId = null, memberId = introduce.memberId, money = commission, giftBalance = null,
+                            val walletUo = WalletUo(clientId = clientId, waiterId = null, memberId = introduce.introduceId, money = commission, giftBalance = null,
                                     eventId = null, event = WalletEvent.INTRODUCE_DEPOSIT_COMMISSION, remarks = "introduce deposit commission")
                             this.update(walletUo)
 
