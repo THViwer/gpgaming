@@ -153,6 +153,7 @@ open class WebSecurityConfig: WebSecurityConfigurerAdapter(){
                         "/api/auth/",
 
                         "/user/regain",
+                        "/user/sms/verify",
 
                         "/pay/**"
                 ).permitAll()
