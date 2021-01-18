@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.model.BetOrder
+import com.onepiece.gpgaming.beans.value.database.BetOrderValue
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.format.annotation.DateTimeFormat
@@ -28,5 +29,12 @@ interface BetOrderApi {
     @ApiOperation(tags = ["bet"], value = "下注订单导出")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun lastExcel(@RequestParam("username") username: String)
+
+    @ApiOperation(tags = ["bet"], value = "订单补偿")
+    fun compensatory(
+            @RequestParam("platform") platform: Platform,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
+    ): List<BetOrderValue.BetOrderCo>
 
 }

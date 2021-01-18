@@ -116,18 +116,18 @@ object AwsS3Util {
 }
 
 
-//fun main() {
-//    val file = File("/Users/cabbage/Downloads/apk")
-//    val list = file.listFiles().map { file ->
-//        val url = AwsS3Util.uploadLocalFile(file, "apk/${file.name.replace(" ", "")}")
-//        file.name to url
-//    }
-//
-//    list.forEach {
-//        println("${it.first} -- ${it.second}")
-//    }
-//
-//}
+fun main() {
+    val file = File("/Users/cabbage/Desktop/jay")
+    val list = file.listFiles().map { file ->
+        val url = AwsS3Util.uploadLocalFile(file, "bank/logo/${file.name.replace(" ", "")}")
+        file.name to url
+    }
+
+    list.forEach {
+        println("${it.first} -- ${it.second}")
+    }
+
+}
 
 
 //fun main() {

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -103,5 +104,51 @@ class BerOrderApiController(
         response.characterEncoding = "utf-8";
         response.setHeader("Content-disposition", "attachment;filename=$name.xlsx")
         EasyExcel.write(response.outputStream, ClientReportExcelVo::class.java).autoCloseStream(false).sheet("member").doWrite(data)
+    }
+
+
+    @GetMapping("/compensatory")
+    override fun compensatory(
+            @RequestParam("platform") platform: Platform,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("startTime") startTime: LocalDateTime,
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @RequestParam("endTime") endTime: LocalDateTime
+    ): List<BetOrderValue.BetOrderCo> {
+
+        val clientId = getClientId()
+        val bind = platformBindService.find(clientId = clientId, platform = platform)
+        val response = gameApi.pullBets(platformBind = bind, startTime = startTime, endTime = endTime)
+
+        val now = LocalDateTime.now()
+        val duration = Duration.between(startTime, now)
+        if (duration.toDays() > 1) error("参数错误")
+
+        val d1 = Duration.between(startTime, endTime)
+        if (duration.toHours() > 1) error("参数错误")
+
+        when (platform) {
+            Platform.SpadeGaming,
+                Platform.TTG,
+                Platform.MicroGaming,
+                Platform.PlaytechSlot,
+                Platform.PlaytechLive,
+                Platform.GamePlay,
+                Platform.SimplePlay,
+                Platform.AsiaGamingSlot,
+                Platform.AsiaGamingLive,
+                Platform.DreamGaming,
+                Platform.Evolution,
+                Platform.SexyGaming,
+                Platform.AllBet,
+                Platform.EBet,
+                Platform.BTI -> {
+
+            }
+            else -> error("平台错误")
+        }
+
+        val orders = response.data ?: emptyList()
+        if (orders.isNotEmpty())
+            betOrderService.batch(orders = orders)
+        return orders
     }
 }
