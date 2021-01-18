@@ -277,6 +277,10 @@ class UserApiController(
         val client = clientService.all().filter { it.bossId == bossId }.first { it.country == registerReq.country }
         val clientId = client.id
 
+        // 检查手机号是否存在
+        val pm = memberService.findByBossIdAndPhone(bossId = bossId, phone = registerReq.phone)
+        check(pm == null) { "phone is exist" }
+
         // 代理
         val affid = registerReq.affid ?: "10"
         val (source, id) = RegisterSource.split(affid)
