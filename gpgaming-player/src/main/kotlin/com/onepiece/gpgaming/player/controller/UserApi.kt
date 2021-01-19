@@ -83,6 +83,7 @@ interface UserApi {
     fun sendPhoneCode(@RequestParam("phone") phone: String): UserValue.PhoneCodeResp
 
     @ApiOperation(tags = ["user"], value = "平台用户 -> 验证短信码")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun verifyPhoneCode(@RequestBody req: UserValue.VerifyPhoneCodeReq)
 
 
