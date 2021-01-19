@@ -98,8 +98,8 @@ class EBetService : PlatformService() {
 
         val okResponse = this.doPost(data = data, clientToken = clientToken, path = "/api/recharge")
         return this.bindGameResponse(okResponse = okResponse) {
-            val successful = it.asBigDecimal("money").toDouble() > 0
-            GameValue.TransferResp.of(successful = successful)
+            val balance = it.asBigDecimal("money")
+            GameValue.TransferResp.of(successful = true, balance = balance)
         }
     }
 
