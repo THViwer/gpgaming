@@ -277,8 +277,18 @@ class UserApiController(
         val client = clientService.all().filter { it.bossId == bossId }.first { it.country == registerReq.country }
         val clientId = client.id
 
+        val phone = registerReq.phone.let {
+            val firstPhone = it.substring(0, 3)
+            if (firstPhone == "600") {
+                val lastPhone = it.substring(3, it.length)
+                "60$lastPhone"
+            } else {
+                it
+            }
+        }
+
         // 检查手机号是否存在
-        val pm = memberService.findByBossIdAndPhone(bossId = bossId, phone = registerReq.phone)
+        val pm = memberService.findByBossIdAndPhone(bossId = bossId, phone = phone)
         check(pm == null) { "phone is exist" }
 
         // 代理
@@ -296,15 +306,6 @@ class UserApiController(
         val marketId = if (source == RegisterSource.Market) id else -1
         val introduceId = if (source == RegisterSource.Introduce) id else -1
 
-        val phone = registerReq.phone.let {
-            val firstPhone = it.substring(0, 3)
-            if (firstPhone == "600") {
-                val lastPhone = it.substring(3, it.length)
-                "60$lastPhone"
-            } else {
-                it
-            }
-        }
         val memberCo = MemberCo(clientId = clientId, username = registerReq.username, password = registerReq.password, safetyPassword = registerReq.safetyPassword,
                 levelId = defaultLevel.id, name = registerReq.name, phone = phone, promoteCode = affid, bossId = bossId, agentId = agent.id,
                 role = Role.Member, formal = true, saleId = saleId, registerIp = RequestUtil.getIpAddress(), birthday = registerReq.birthday,
@@ -377,8 +378,19 @@ class UserApiController(
 
     @GetMapping("/check/phone/{phone}")
     override fun checkPhone(@PathVariable("phone") phone: String): CheckUsernameResp {
+
+        val newPhone = phone.let {
+            val firstPhone = it.substring(0, 3)
+            if (firstPhone == "600") {
+                val lastPhone = it.substring(3, it.length)
+                "60$lastPhone"
+            } else {
+                it
+            }
+        }
+
         val bossId = getBossId()
-        val exist = memberService.findByBossIdAndPhone(bossId, phone) != null
+        val exist = memberService.findByBossIdAndPhone(bossId, newPhone) != null
         return CheckUsernameResp(exist)
     }
 
