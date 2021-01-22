@@ -223,7 +223,7 @@ class UserApiController(
         // 登陆
         val token = authService.login(bossId = member.bossId, clientId = member.clientId, username = member.username, role = member.role)
 
-        val loginPath = if (site.clientId == 100001) {
+        val loginPath = if (site.clientId == 10001) {
                     "https://www.unclejay66.com/#?t=$token"
         } else {
             "https://www.${site.domain}/#?t=$token"
