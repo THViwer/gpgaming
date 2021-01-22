@@ -157,10 +157,16 @@ class AgentApiController(
         val affid = RegisterSource.splice(source = RegisterSource.Agent, id = agent.id)
         val urls = sites.groupBy { it.country }.map { it.value.first() }.map {
 
+            val domain = if (it.clientId == 10001) {
+                "unclejay66.com"
+            } else {
+                it.domain
+            }
+
 //            val promoteURL = "https://www.${it.domain}?affid=${agent.promoteCode}"
 //            val mobilePromoteURL = "https://www.${it.domain}/m?affid=${agent.promoteCode}"
-            val promoteURL = "https://www.${it.domain}/#?affid=$affid"
-            val mobilePromoteURL = "https://www.${it.domain}/#?affid=$affid"
+            val promoteURL = "https://www.${domain}/#?affid=$affid"
+            val mobilePromoteURL = "https://www.${domain}/#?affid=$affid"
 
             AgentValue.PromoteVo(country = it.country, promoteURL = promoteURL, mobilePromoteURL = mobilePromoteURL)
         }
