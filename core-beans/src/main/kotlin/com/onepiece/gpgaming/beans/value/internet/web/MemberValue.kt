@@ -280,6 +280,9 @@ data class MemberVo(
         @ApiModelProperty("介绍Id")
         val introduceId: Int,
 
+        @ApiModelProperty("介绍用户名")
+        val introduceUsername: String = "",
+
         @ApiModelProperty("电销用户名")
         val saleUsername: String,
 
