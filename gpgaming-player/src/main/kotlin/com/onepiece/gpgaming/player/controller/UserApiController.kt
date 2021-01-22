@@ -222,7 +222,14 @@ class UserApiController(
 
         // 登陆
         val token = authService.login(bossId = member.bossId, clientId = member.clientId, username = member.username, role = member.role)
-        return LoginByAdminResponse(loginPath = "https://www.${site.domain}/#?t=$token")
+
+        val loginPath = if (site.clientId == 100001) {
+                    "https://www.unclejay66.com/#?t=$token"
+        } else {
+            "https://www.${site.domain}/#?t=$token"
+        }
+
+        return LoginByAdminResponse(loginPath = loginPath)
     }
 
     @GetMapping("/login/detail")
