@@ -1,10 +1,13 @@
 package com.onepiece.gpgaming.task.controller
 
+import com.onepiece.gpgaming.beans.model.IntroduceDailyReport
+import com.onepiece.gpgaming.core.dao.IntroduceDailyReportDao
 import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.task.PromotionTask
 import com.onepiece.gpgaming.task.RebateTask
 import com.onepiece.gpgaming.task.ReportTask
 import com.onepiece.gpgaming.task.SexyGamingTask
+import com.onepiece.gpgaming.task.introduce.util.IntroduceReportUtil
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -17,12 +20,26 @@ class DemoController(
         private val reportTask: ReportTask,
         private val promotionTask: PromotionTask,
         private val sexyGamingTask: SexyGamingTask,
-        private val rebateTask: RebateTask
+        private val rebateTask: RebateTask,
+        private val introduceReportUtil: IntroduceReportUtil,
+        private val introduceDailyReportDao: IntroduceDailyReportDao
 ) {
 
     @GetMapping("/sexyGaming")
     fun sexyGaming() {
         sexyGamingTask.reconciliation()
+    }
+
+    @GetMapping("/introduceReportTest")
+    fun introduceReportTest(): List<IntroduceDailyReport> {
+        val startDate = "2021-01-01".let { LocalDate.parse(it) }
+        val data =  introduceReportUtil.startDailyReport(startDate = startDate)
+        try {
+            introduceDailyReportDao.batch(data)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return data
     }
 
     @GetMapping("/report")
@@ -32,8 +49,8 @@ class DemoController(
 
         return when (type) {
             "member" -> reportService.startMemberReport(startDate = startDate)
-            "agent" ->  reportService.startAgentReport(startDate = startDate)
-            "agentMonth" ->  reportService.startAgentMonthReport(today = startDate)
+            "agent" -> reportService.startAgentReport(startDate = startDate)
+            "agentMonth" -> reportService.startAgentMonthReport(today = startDate)
             "client" -> reportService.startClientReport(startDate = startDate)
             "clientPlatform" -> reportService.startClientPlatformReport(startDate)
             "sale" -> reportService.startSaleReport(startDate = startDate)

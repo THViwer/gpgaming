@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Service
@@ -191,7 +192,7 @@ class WalletServiceImpl(
                 // 加上已是首充
                 val member = memberService.getMember(id = walletUo.memberId)
                 if (!member.firstDeposit) {
-                    val memberUo = MemberUo(id = member.id, firstDeposit = true)
+                    val memberUo = MemberUo(id = member.id, firstDeposit = true, firstDepositDay = LocalDate.now())
                     memberService.update(memberUo = memberUo)
 
                     if (member.email != null && member.email != "") {

@@ -1,6 +1,7 @@
 package com.onepiece.gpgaming.task
 
 import com.onepiece.gpgaming.beans.model.TaskTimerType
+import com.onepiece.gpgaming.core.dao.IntroduceDailyReportDao
 import com.onepiece.gpgaming.core.dao.SaleDailyReportDao
 import com.onepiece.gpgaming.core.dao.SaleMonthReportDao
 import com.onepiece.gpgaming.core.service.AgentDailyReportService
@@ -12,6 +13,7 @@ import com.onepiece.gpgaming.core.service.MemberDailyReportService
 import com.onepiece.gpgaming.core.service.MemberPlatformDailyReportService
 import com.onepiece.gpgaming.core.service.ReportService
 import com.onepiece.gpgaming.core.service.TaskTimerService
+import com.onepiece.gpgaming.task.introduce.util.IntroduceReportUtil
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -30,7 +32,9 @@ class ReportTask(
         private val clientPlatformDailyReportService: ClientPlatformDailyReportService,
         private val memberPlatformDailyReportService: MemberPlatformDailyReportService,
 
-        private val taskTimerService: TaskTimerService
+        private val taskTimerService: TaskTimerService,
+        private val introduceReportUtil: IntroduceReportUtil,
+        private val introduceDailyReportDao: IntroduceDailyReportDao
 ) {
 
     private val log = LoggerFactory.getLogger(ReportTask::class.java)
@@ -59,6 +63,15 @@ class ReportTask(
 
         this.startClientReport(startDate = localDate)
     }
+
+    @Scheduled(cron = "0 15 0 * * ?")
+    fun startIntroduceReport() {
+        val startDate = LocalDate.now().minusDays(1)
+
+        val data = introduceReportUtil.startDailyReport(startDate = startDate)
+        introduceDailyReportDao.batch(data = data)
+    }
+
 
     @Scheduled(cron = "0 0 3 1 * ?")
     fun startMonth() {
@@ -109,9 +122,9 @@ class ReportTask(
     }
 
     // 营销日报表
-    fun startMarkReport(startDate: LocalDate)  {
+    fun startMarkReport(startDate: LocalDate) {
         tryLock(localDate = startDate, type = TaskTimerType.MarketDaily) {
-            val data =  reportService.startMarkReport(startDate = startDate)
+            val data = reportService.startMarkReport(startDate = startDate)
             marketDailyReportService.batch(data = data)
         }
 
@@ -132,7 +145,7 @@ class ReportTask(
     // 代理日报表
     fun startAgentReport(startDate: LocalDate) {
         tryLock(localDate = startDate, type = TaskTimerType.AgentDaily) {
-            val data = reportService.startAgentReport(startDate =  startDate)
+            val data = reportService.startAgentReport(startDate = startDate)
             agentDailyReportService.create(data = data)
         }
     }
@@ -145,15 +158,15 @@ class ReportTask(
         val month = startDate.minusMonths(1)
 
         tryLock(localDate = month, type = TaskTimerType.AgentMonth) {
-            val data = reportService.startAgentMonthReport(today =  month)
+            val data = reportService.startAgentMonthReport(today = month)
             agentMonthReportService.create(data = data)
         }
     }
 
-//    // 厅主平台日报表
+    //    // 厅主平台日报表
     fun startClientPlatformReport(startDate: LocalDate) {
         tryLock(localDate = startDate, type = TaskTimerType.ClientPlatformDaily) {
-            val data = reportService.startClientPlatformReport(startDate= startDate)
+            val data = reportService.startClientPlatformReport(startDate = startDate)
             clientPlatformDailyReportService.create(data)
         }
     }
@@ -165,8 +178,6 @@ class ReportTask(
             clientDailyReportService.create(data)
         }
     }
-
-
 
 
 }

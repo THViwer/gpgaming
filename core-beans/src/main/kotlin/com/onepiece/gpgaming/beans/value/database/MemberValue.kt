@@ -144,6 +144,8 @@ data class MemberUo(
         // 首充
         val firstDeposit: Boolean? = null,
 
+        val firstDepositDay: LocalDate? = null,
+
         // 密码
         val password: String? = null,
 

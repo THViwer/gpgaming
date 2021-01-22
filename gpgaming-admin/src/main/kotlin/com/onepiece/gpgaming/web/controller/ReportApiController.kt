@@ -9,6 +9,7 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.I18nContent
 import com.onepiece.gpgaming.beans.value.database.ClientReportQuery
+import com.onepiece.gpgaming.beans.value.database.IntroduceDailyReportValue
 import com.onepiece.gpgaming.beans.value.database.MemberReportQuery
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.beans.value.database.PromotionDailyReportValue
@@ -22,6 +23,7 @@ import com.onepiece.gpgaming.core.dao.MemberDailyReportDao
 import com.onepiece.gpgaming.core.service.ClientDailyReportService
 import com.onepiece.gpgaming.core.service.ClientPlatformDailyReportService
 import com.onepiece.gpgaming.core.service.I18nContentService
+import com.onepiece.gpgaming.core.service.IntroduceDailyReportService
 import com.onepiece.gpgaming.core.service.MemberDailyReportService
 import com.onepiece.gpgaming.core.service.MemberPlatformDailyReportService
 import com.onepiece.gpgaming.core.service.MemberService
@@ -58,7 +60,8 @@ class ReportApiController(
         private val promotionService: PromotionService,
         private val i18nContentService: I18nContentService,
         private val objectMapper: ObjectMapper,
-        private val memberDailyReportDao: MemberDailyReportDao
+        private val memberDailyReportDao: MemberDailyReportDao,
+        private val introduceDailyReportService: IntroduceDailyReportService
 ) : BasicController(), ReportApi {
 
     private val log = LoggerFactory.getLogger(ReportApiController::class.java)
@@ -476,5 +479,16 @@ class ReportApiController(
         val data = transferOrderService.query(query)
 
         return ReportValue.PromotionMTotalReport(data)
+    }
+
+    @GetMapping("/introduce")
+    override fun introduceReport(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
+    ): List<IntroduceDailyReportValue.IntroduceDailyReportTotal> {
+        val clientId = this.getClientId()
+
+        val query = IntroduceDailyReportValue.IntroduceDailyReportQuery(clientId = clientId, startDate = startDate, endDate = endDate)
+        return introduceDailyReportService.total(query)
     }
 }

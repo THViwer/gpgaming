@@ -36,6 +36,9 @@ class MemberDaoImpl : BasicDaoImpl<Member>("member"), MemberDao {
             val safetyPassword = rs.getString("safety_password")
             val firstPromotion = rs.getBoolean("first_promotion")
             val firstDeposit = rs.getBoolean("first_deposit")
+            val firstDepositDay = rs.getString("first_deposit_day")?.let {
+                if (it.isNullOrBlank()) null else LocalDate.parse(it)
+            }
             val levelId = rs.getInt("level_id")
             val vipId = rs.getInt("vip_id")
             val autoTransfer = rs.getBoolean("auto_transfer")
@@ -60,7 +63,7 @@ class MemberDaoImpl : BasicDaoImpl<Member>("member"), MemberDao {
                     formal = formal, agencyMonthFee = agencyMonthFee, saleId = saleId, saleScope = saleScope,
                     registerIp = registerIp, riskLevel = riskLevel, vipId = vipId, birthday = birthday, idCard = idCard,
                     address = address, email = email, marketId = marketId, introduceId = introduceId,
-                    firstDeposit = firstDeposit)
+                    firstDeposit = firstDeposit, firstDepositDay = firstDepositDay)
         }
 
     override fun create(memberCo: MemberCo): Int {
@@ -103,6 +106,7 @@ class MemberDaoImpl : BasicDaoImpl<Member>("member"), MemberDao {
                 .set("safety_password", memberUo.safetyPassword)
                 .set("first_promotion", memberUo.firstPromotion)
                 .set("first_deposit", memberUo.firstDeposit)
+                .set("first_deposit_day", memberUo.firstDepositDay)
                 .set("status", memberUo.status)
                 .set("level_id", memberUo.levelId)
                 .set("vip_id", memberUo.vipId)

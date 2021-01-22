@@ -2,6 +2,7 @@ package com.onepiece.gpgaming.web.controller
 
 import com.onepiece.gpgaming.beans.enums.MemberAnalysisSort
 import com.onepiece.gpgaming.beans.enums.Platform
+import com.onepiece.gpgaming.beans.value.database.IntroduceDailyReportValue
 import com.onepiece.gpgaming.beans.value.database.MemberReportValue
 import com.onepiece.gpgaming.beans.value.internet.web.ReportValue
 import io.swagger.annotations.Api
@@ -99,5 +100,11 @@ interface ReportApi {
             @RequestParam("sortBy") sortBy: String,
             @RequestParam("desc") desc: Boolean
     ): ReportValue.PromotionMTotalReport
+
+    @ApiOperation(tags = ["report"], value = "介绍人员报表")
+    fun introduceReport(
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("startDate") startDate: LocalDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam("endDate") endDate: LocalDate
+    ): List<IntroduceDailyReportValue.IntroduceDailyReportTotal>
 
 }

@@ -64,6 +64,9 @@ data class Member(
         // 是否已有首充值
         val firstDeposit: Boolean,
 
+        // 首充日期
+        val firstDepositDay: LocalDate?,
+
         // 启动游戏自动转账
         val autoTransfer: Boolean,
 
