@@ -59,7 +59,7 @@ class AsiaGamingService : PlatformService() {
                 "method=lg",
                 "actype=1", // 1 真钱 2 试玩
                 "password=${registerReq.password}",
-                "oddtype=C",
+//                "oddtype=C",
                 "cur=${clientToken.currency}"
         )
 
@@ -206,7 +206,7 @@ class AsiaGamingService : PlatformService() {
                 "sid=${clientToken.agentCode}${StringUtil.generateNumNonce(15)}",
                 "lang=${getLang(startSlotReq.language)}",
                 "gameType=${startSlotReq.gameId}",
-                "oddtype=A",
+//                "oddtype=A",
                 "cur=${clientToken.currency}",
                 mh5
         ).filter { it.isNotBlank() }
@@ -233,7 +233,7 @@ class AsiaGamingService : PlatformService() {
                 "sid=${clientToken.agentCode}${StringUtil.generateNumNonce(15)}",
                 "lang=${getLang(startReq.language)}",
                 "gameType=$gameType",
-                "oddtype=A",
+//                "oddtype=A",
                 "cur=${clientToken.currency}",
                 mh5
         ).filter { it.isNotBlank() }
