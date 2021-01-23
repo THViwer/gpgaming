@@ -59,7 +59,7 @@ class AsiaGamingService : PlatformService() {
                 "method=lg",
                 "actype=1", // 1 真钱 2 试玩
                 "password=${registerReq.password}",
-//                "oddtype=C",
+                "oddtype=C",
                 "cur=${clientToken.currency}"
         )
 
