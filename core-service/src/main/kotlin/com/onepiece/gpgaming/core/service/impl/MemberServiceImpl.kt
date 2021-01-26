@@ -208,13 +208,6 @@ class MemberServiceImpl(
             val memberIntroduceCo = MemberIntroduceValue.MemberIntroduceCo(memberId = id, introduceId = memberCo.introduceId, name = memberCo.name,
                     registerIp = memberCo.registerIp)
             memberIntroduceService.create(memberIntroduceCo)
-
-            if (ApplicationVersion.checkIsNewVersion(memberCo.clientId)) {
-                val walletUo = WalletUo(clientId = memberCo.clientId, memberId = memberCo.introduceId, event = WalletEvent.INTRODUCE_REGISTER_COMMISSION, eventId = null,
-                        money = ApplicationVersion.INTRODUCE_REGISTER_COMMISSION, remarks = "introduce register commission", waiterId = null)
-                walletService.update(walletUo)
-
-            }
         }
 
         return id

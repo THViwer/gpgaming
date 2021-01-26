@@ -198,6 +198,14 @@ class WalletServiceImpl(
                     if (member.email != null && member.email != "") {
                         emailSMTPService.firstDepositSend(clientId = member.clientId, username = member.username, email = member.email!!)
                     }
+
+                    // 判断如果有介绍人 首充之后会有介绍佣金
+                    if (ApplicationVersion.checkIsNewVersion(member.clientId) && member.introduceId > 0) {
+                        val itwUo = WalletUo(clientId = member.clientId, memberId = member.introduceId, event = WalletEvent.INTRODUCE_REGISTER_COMMISSION, eventId = null,
+                                money = ApplicationVersion.INTRODUCE_REGISTER_COMMISSION, remarks = "introduce register commission", waiterId = null)
+                        update(itwUo)
+                    }
+
                 }
 
 
