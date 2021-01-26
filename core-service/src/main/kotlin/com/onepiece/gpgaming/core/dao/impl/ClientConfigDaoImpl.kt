@@ -31,7 +31,7 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
             val asgContent = rs.getString("asg_content")
             val enableRegisterMessage = rs.getBoolean("enable_register_message")
             val registerMessageTemplate = rs.getString("register_message_template")
-                val regainMessageTemplate = rs.getString("regain_message_template")
+            val regainMessageTemplate = rs.getString("regain_message_template")
             val oneSingal = rs.getString("one_singal")
 
 
@@ -45,6 +45,9 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
             val minWithdrawRequire = rs.getBigDecimal("min_withdraw_require")
             val vipIntroductionImage = rs.getString("vip_introduction_image")
 
+            val emailUser = rs.getString("email_user")
+            val emailPwd = rs.getString("email_pwd")
+            val emailFrom = rs.getString("email_from")
 
             ClientConfig(id = id, clientId = clientId, keywords = keywords, description = description, createdTime = createdTime,
                     title = title, liveChatId = liveChatId, googleStatisticsId = googleStatisticsId, facebookTr = facebookTr,
@@ -53,7 +56,8 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                     enableIntroduce = enableIntroduce, introducePromotionId = introducePromotionId, registerCommission = registerCommission,
                     depositPeriod = depositPeriod, commissionPeriod = commissionPeriod, depositCommission = depositCommission,
                     shareTemplate = shareTemplate, minWithdrawRequire = minWithdrawRequire, regainMessageTemplate = regainMessageTemplate,
-                    vipIntroductionImage = vipIntroductionImage, gtag = gtag, oneSingal = oneSingal)
+                    vipIntroductionImage = vipIntroductionImage, gtag = gtag, oneSingal = oneSingal, emailUser = emailUser, emailFrom = emailFrom,
+                    emailPwd = emailPwd)
         }
 
     override fun create(configUo: ClientConfigValue.ClientConfigUo): Boolean {
@@ -98,6 +102,10 @@ class ClientConfigDaoImpl : BasicDaoImpl<ClientConfig>("client_config"), ClientC
                 .set("asg_content", configUo.asgContent)
                 .set("vip_introduction_image", configUo.vipIntroductionImage)
                 .set("one_singal", configUo.oneSingal)
+
+                .set("email_user", configUo.emailUser)
+                .set("email_pwd", configUo.emailPwd)
+                .set("email_from", configUo.emailFrom)
 
                 .where("client_id", configUo.clientId)
                 .executeOnlyOne()

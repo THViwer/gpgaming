@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.email
 
+import com.onepiece.gpgaming.core.service.ClientConfigService
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import java.util.*
@@ -11,7 +12,9 @@ import javax.mail.internet.MimeMessage
 
 
 @Service
-open class EmailSMTPServiceImpl : EmailSMTPService {
+open class EmailSMTPServiceImpl(
+        private val clientConfigService: ClientConfigService
+) : EmailSMTPService {
     // for example, smtp.mailgun.org
     private val Smtp_server = "smtppro.zoho.com"
     private val Auth_username = "team@unclejay.com"
@@ -26,14 +29,19 @@ open class EmailSMTPServiceImpl : EmailSMTPService {
     @Async
     override fun send(clientId: Int, username: String, email: String) {
 
+        val config = clientConfigService.get(clientId = clientId)
+        val emailUser = if (config.emailUser.isNotBlank()) config.emailUser else Auth_username
+        val emailPwd = if (config.emailPwd.isNotBlank()) config.emailUser else Auth_password
+        val emailFrom = if (config.emailFrom.isNotBlank()) config.emailUser else from
+
         when (clientId) {
             10001 -> {
                 val content = EmailContent.formRegisterContent(username = username)
-                this.sendEmail(email = email, content = content)
+                this.sendEmail(email = email, content = content, auth_username = emailUser, auth_password = emailPwd, emailFrom = emailFrom)
             }
             10002 -> {
                 val content = UJSGEmailContent.formRegisterContent(username = username)
-                this.sendEmail(email = email, content = content)
+                this.sendEmail(email = email, content = content, auth_username = emailUser, auth_password = emailPwd, emailFrom = emailFrom)
             }
 
             else -> {
@@ -43,14 +51,20 @@ open class EmailSMTPServiceImpl : EmailSMTPService {
 
     @Async
     override fun firstDepositSend(clientId: Int, username: String, email: String) {
+
+        val config = clientConfigService.get(clientId = clientId)
+        val emailUser = if (config.emailUser.isNotBlank()) config.emailUser else Auth_username
+        val emailPwd = if (config.emailPwd.isNotBlank()) config.emailUser else Auth_password
+        val emailFrom = if (config.emailFrom.isNotBlank()) config.emailUser else from
+
         when (clientId) {
             10001 -> {
                 val content = EmailContent.firstDeposit()
-                this.sendEmail(email = email, content = content)
+                this.sendEmail(email = email, content = content, auth_username = emailUser, auth_password = emailPwd, emailFrom = emailFrom)
             }
             10002 -> {
                 val content = UJSGEmailContent.firstDeposit()
-                this.sendEmail(email = email, content = content)
+                this.sendEmail(email = email, content = content, auth_username = emailUser, auth_password = emailPwd, emailFrom = emailFrom)
             }
             else -> {
             }
@@ -61,7 +75,7 @@ open class EmailSMTPServiceImpl : EmailSMTPService {
         this.sendEmail(email = emails, content = content, smtp_server = smtp_server, auth_password = auth_password, auth_username = auth_username)
     }
 
-    private fun sendEmail(email: String, content: String, smtp_server: String = Smtp_server, auth_username: String = Auth_username, auth_password: String = Auth_password) {
+    private fun sendEmail(email: String, content: String, smtp_server: String = Smtp_server, auth_username: String = Auth_username, auth_password: String = Auth_password, emailFrom: String = from) {
         val prop = System.getProperties()
 //        prop.setProperty("mail.smtp.auth", "true");//开启认证
 //        prop.setProperty("mail.debug", "true");//启用调试
@@ -75,7 +89,7 @@ open class EmailSMTPServiceImpl : EmailSMTPService {
         val msg = MimeMessage(session)
 
         // from
-        msg.setFrom(InternetAddress(from))
+        msg.setFrom(InternetAddress(emailFrom))
 
         // to
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email, false))

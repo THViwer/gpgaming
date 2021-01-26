@@ -39,7 +39,15 @@ sealed class ClientConfigValue {
             // vip 背景图介绍
             val vipIntroductionImage: String?,
 
-            val oneSingal: String?
+            val oneSingal: String?,
+
+            val emailUser: String?,
+
+            // 用户密码
+            val emailPwd: String?,
+
+            // 发件人
+            val emailFrom: String?
     )
 
     data class ClientConfigVo(

@@ -68,6 +68,15 @@ data class ClientConfig(
         // vip 背景图介绍
         val vipIntroductionImage: String?,
 
+        // 邮件相关
+        // 邮箱用户名
+        val emailUser: String,
+
+        // 用户密码
+        val emailPwd: String,
+
+        // 发件人
+        val emailFrom: String,
 
         // 创建时间
         val createdTime: LocalDateTime
