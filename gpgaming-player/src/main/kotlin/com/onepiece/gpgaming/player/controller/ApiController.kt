@@ -596,6 +596,7 @@ open class ApiController(
         val gamePlatforms = gamePlatformService.all()
 
         val platforms = platformBindService.findClientPlatforms(clientId = clientId)
+                .filter { it.status != Status.Delete }
                 .filter { it.platform.category == category }
                 .map {
                     val gamePlatform = it.platform.getGamePlatform(gamePlatforms)
