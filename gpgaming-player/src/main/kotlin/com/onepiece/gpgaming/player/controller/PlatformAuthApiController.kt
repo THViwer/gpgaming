@@ -237,10 +237,11 @@ class PlatformAuthApiController(
         val orders = mapUtil.asList("Messages").filter {
             val messageType = it.asString("MessageType")
             messageType == "3" || messageType == "4"
-        }.map { bet ->
+        }.mapNotNull { bet ->
 
             val orderId = bet.asString("TransactionId")
             val messageType = bet.asString("MessageType")
+            val gid = bet.asInt("GameId")
 
             val (betAmount, payout) = when (messageType) {
                 "3" -> {
@@ -256,9 +257,19 @@ class PlatformAuthApiController(
             val betTime = bet.asLocalDateTime("Time")
                     .plusHours(8) // 下注时间+8时区
 
+            val validAmount = when (gid) { // 这些游戏不计算有效打码量
+                // pc
+                409, 52, 57, 35, 270, 54, 53, 31, 276, 269, 271, 11, 318, 55, 324 -> BigDecimal.ZERO
+                // mobile
+                100409, 100052, 100057, 100035, 100270, 100054, 100053, 100031, 100276, 100269, 100271, 100011, 100318, 100055, 100324 -> BigDecimal.ZERO
+                else -> betAmount
+            }
+
             val originData = objectMapper.writeValueAsString(bet)
             BetOrderValue.BetOrderCo(orderId = orderId, clientId = clientId, memberId = memberId, platform = Platform.PNG, betAmount = betAmount, payout = payout,
-                    originData = originData, betTime = betTime, settleTime = betTime, validAmount = betAmount)
+                    originData = originData, betTime = betTime, settleTime = betTime, validAmount = validAmount)
+
+
         }
 
         betOrderService.batch(orders)
