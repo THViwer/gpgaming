@@ -57,7 +57,8 @@ class BtiService : PlatformService() {
                 "DateOfBirth" to ""
         )
 
-        val response = this.doPostXml(path = "${clientToken.apiPath}/CreateTestUser", data = data)
+//        val response = this.doPostXml(path = "${clientToken.apiPath}/CreateTestUser", data = data)
+        val response = this.doPostXml(path = "${clientToken.apiPath}/CreateUser", data = data)
         return this.bindGameResponse(okResponse = response) {
             registerReq.username
         }
