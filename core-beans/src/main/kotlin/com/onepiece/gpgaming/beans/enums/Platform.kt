@@ -46,7 +46,7 @@ enum class Platform(
     Lbc(PlatformCategory.Sport, "I-Sport"),
     Bcs(PlatformCategory.Sport, "S-Sport"),
     CMD(PlatformCategory.Sport, "C-Sport"),
-    BTI(PlatformCategory.Sport, "B-Sport"),
+    BTI(PlatformCategory.Sport, "Jay-Sport"),
 
     // fishing
     GGFishing(PlatformCategory.Fishing, "GGFishing")
