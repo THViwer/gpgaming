@@ -161,7 +161,12 @@ class BtiService : PlatformService() {
             else -> "en"
         }
 
-        val url = "${clientToken.gamePath}/$language/asian-view/?operatorToken=$authToken"
+        val launch = when (startReq.launch) {
+            LaunchMethod.Web -> "asian-view"
+            else -> "sports"
+        }
+
+        val url = "${clientToken.gamePath}/$language/${launch}/?operatorToken=$authToken"
         return GameResponse.of(url)
     }
 
