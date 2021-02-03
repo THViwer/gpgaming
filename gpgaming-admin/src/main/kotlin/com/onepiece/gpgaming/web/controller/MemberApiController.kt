@@ -294,6 +294,10 @@ class MemberApiController(
         val withdraws = withdrawDao.query(query = withdrawQuery, current = 0, size = 999999)
                 .groupBy { it.memberId }
 
+        val agents = memberService.findByIds(members.map { it.agentId })
+                .map { it.id to it }
+                .toMap()
+
 
         return members.map { member ->
 
@@ -321,9 +325,12 @@ class MemberApiController(
             val lastWithdrawTime = mWithdraws.maxBy { it.createdTime }?.createdTime
 
 
+            val agentUsername = agents[member.agentId]?.username ?: ""
             MemberValue.FollowVo(memberId = member.id, username = member.username, phone = member.phone, registerTime = member.createdTime,
                     lastLoginTime = member.loginTime, depositMoney = depositMoney, depositCount = depositCount, withdrawMoney = withdrawMoney,
-                    withdrawCount = withdrawCount, lastDepositTime = lastDepositTime, lastWithdrawTime = lastWithdrawTime, email = member.email)
+                    withdrawCount = withdrawCount, lastDepositTime = lastDepositTime, lastWithdrawTime = lastWithdrawTime, email = member.email,
+                    agentId = member.agentId, introduceId = member.introduceId, marketId = member.marketId, saleId = member.saleId,
+                    saleScope = member.saleScope, agentUsername = agentUsername)
         }
     }
 
@@ -616,6 +623,6 @@ class MemberApiController(
             @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(value = "endDate") endDate: LocalDate
     ): MemberDailyDetail {
         val clientId = getClientId()
-        return memberTodayDetailUtil.getMemberDetails(clientId =  clientId, memberId = memberId, startDate = startDate, endDate = endDate)
+        return memberTodayDetailUtil.getMemberDetails(clientId = clientId, memberId = memberId, startDate = startDate, endDate = endDate)
     }
 }

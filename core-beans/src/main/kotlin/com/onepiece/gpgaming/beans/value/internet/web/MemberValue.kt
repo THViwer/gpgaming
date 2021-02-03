@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.beans.value.internet.web
 
+import com.alibaba.excel.annotation.ExcelIgnore
 import com.alibaba.excel.annotation.ExcelProperty
 import com.alibaba.excel.converters.Converter
 import com.alibaba.excel.enums.CellDataTypeEnum
@@ -163,9 +164,54 @@ sealed class MemberValue {
             @ApiModelProperty("几天未登陆)")
             val neverLoginDays: Int? = lastLoginTime?.let {
                 Duration.between(it, LocalDateTime.now()).toDays()
-            }?.toInt()
+            }?.toInt(),
 
-    )
+
+            // 下面字段不显示
+            @ExcelIgnore
+            val agentId: Int,
+
+            @ExcelIgnore
+            val agentUsername: String,
+
+            @ExcelIgnore
+            val saleId: Int,
+
+            @ExcelIgnore
+            val saleScope: SaleScope,
+
+            @ExcelIgnore
+            val marketId: Int,
+
+            @ExcelIgnore
+            val introduceId: Int
+
+    ) {
+
+        val registerSource: RegisterSource
+            get() {
+                return when {
+                    introduceId > 0 -> RegisterSource.Introduce
+                    marketId > 0 -> RegisterSource.Market
+                    saleId > 0 && saleScope == SaleScope.Own -> RegisterSource.Sale
+                    agentId > 0 && agentUsername != "default_agent" -> RegisterSource.Agent
+                    else -> RegisterSource.Own
+                }
+
+            }
+
+        val affid: Int
+            get() {
+                return when {
+                    introduceId > 0 -> introduceId
+                    marketId > 0 -> marketId
+                    saleId > 0 && saleScope == SaleScope.Own -> saleId
+                    agentId > 0 && agentUsername != "default_agent" -> agentId
+                    else -> -1
+                }
+            }
+
+    }
 
 
     data class Agent(
@@ -347,6 +393,7 @@ data class MemberVo(
 
     val registerSource: RegisterSource
         @ApiModelProperty("注册来源")
+
         get() {
             return when {
                 introduceId > 0 -> RegisterSource.Introduce
@@ -355,9 +402,7 @@ data class MemberVo(
                 agentId > 0 && agentUsername != "default_agent" -> RegisterSource.Agent
                 else -> RegisterSource.Own
             }
-
         }
-
 }
 
 data class MemberWalletInfo(
