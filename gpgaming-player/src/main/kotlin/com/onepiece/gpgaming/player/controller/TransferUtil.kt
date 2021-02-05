@@ -355,10 +355,11 @@ open class TransferUtil(
 
         // 生成转账订单
         val transferOrderId = orderIdBuilder.generatorTransferOrderId(clientId = clientId, platform = platform, transfer = "in", platformUsername = platformMember.username)
+        log.info("订单：${transferOrderId}, 开始创建db订单")
         val transferOrderCo = TransferOrderCo(orderId = transferOrderId, clientId = clientId, memberId = memberId, money = amount, promotionAmount = BigDecimal.ZERO,
                 from = from, to = to, joinPromotionId = null, promotionJson = null, username = username, requirementBet = BigDecimal.ZERO, promotionPreMoney = amount)
         transferOrderService.create(transferOrderCo)
-
+        log.info("订单：${transferOrderId}, 创建db订单结束")
 
         //调用平台接口取款
         val transferResp = gameApi.transfer(clientId = clientId, memberId = memberId, platformUsername = platformMember.username,
