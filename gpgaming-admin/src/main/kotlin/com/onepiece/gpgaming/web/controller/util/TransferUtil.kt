@@ -238,7 +238,7 @@ open class TransferUtil(
             val transferOrderUo = TransferOrderUo(orderId = transferOrderId, state = state, transferOutAmount = null)
             transferOrderService.update(transferOrderUo)
         } catch (e: Exception) {
-            log.error("可能造成死锁， Center => ${platformMember.platform}, 用户: username, 订单Id：$transferOrderId")
+            log.error("可能造成死锁， 2 => Center => ${platformMember.platform}, 用户: username, 订单Id：$transferOrderId", e)
         }
 
         return transferResp
@@ -380,7 +380,7 @@ open class TransferUtil(
             if (transferResp.transfer)
                 platformMemberService.cleanTransferIn(memberId = memberId, platform = platform, transferOutAmount = amount)
         } catch (e: Exception) {
-            log.error("可能造成死锁，${platformMember.platform} => Center, 用户: username, 订单Id：$transferOrderId")
+            log.error("可能造成死锁， 4 => Center => ${platformMember.platform}, 用户: username, 订单Id：$transferOrderId", e)
         }
 
         return transferResp

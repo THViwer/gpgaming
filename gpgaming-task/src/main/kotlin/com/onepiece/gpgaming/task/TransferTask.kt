@@ -92,7 +92,7 @@ class TransferTask(
             if (transferResp.transfer)
                 platformMemberService.cleanTransferIn(memberId = memberId, platform = platform, transferOutAmount = amount)
         } catch (e: Exception) {
-            log.error("可能造成死锁，${platformMember.platform} => Center, 用户: username, 订单Id：$transferOrderId")
+            log.error("可能造成死锁， 5 => Center => ${platformMember.platform}, 用户: username, 订单Id：$transferOrderId", e)
         }
     }
 
