@@ -384,13 +384,15 @@ open class TransferUtil(
                 orderId = transferOrderId, amount = amount.negate(), platform = platform, originBalance = platformBalance, platformPassword = platformMember.password)
 
         // 中心钱包加钱
-        val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_IN, money = amount,
-                remarks = "$platform => Center", waiterId = null, eventId = transferOrderId)
-        walletService.update(walletUo)
-
-        if (!transferResp.transfer) {
-            this.transferRollBack(clientId = clientId, memberId = memberId, money = amount, from = from, to = to, transferOrderId = transferOrderId)
+        if (transferResp.transfer) {
+            val walletUo = WalletUo(clientId = clientId, memberId = memberId, event = WalletEvent.TRANSFER_IN, money = amount,
+                    remarks = "$platform => Center", waiterId = null, eventId = transferOrderId)
+            walletService.update(walletUo)
         }
+
+//        if (!transferResp.transfer) {
+//            this.transferRollBack(clientId = clientId, memberId = memberId, money = amount, from = from, to = to, transferOrderId = transferOrderId)
+//        }
 
         // 更新转账订单
         try {
