@@ -118,7 +118,12 @@ open class TransferUtil(
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     override fun transfer(clientId: Int, username: String, cashTransferReq: CashValue.CashTransferReq, platformMemberVo: PlatformMemberVo): GameValue.TransferResp {
         val (type, platform) = if (cashTransferReq.from == Platform.Center) "out" to cashTransferReq.to else "in" to cashTransferReq.from
-        return singleTransfer(clientId = clientId, platform = platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo, username = username)
+        try {
+            return singleTransfer(clientId = clientId, platform = platform, cashTransferReq = cashTransferReq, type = type, platformMemberVo = platformMemberVo, username = username)
+        } catch (e: Exception) {
+            log.error("转账失败，转账类型：$type, 转账平台：$platform, 转账用户：${platformMemberVo.memberId}", e)
+            throw e
+        }
     }
 
 
