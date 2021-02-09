@@ -34,6 +34,7 @@ interface MemberApi {
 
     @ApiOperation(tags = ["user"], value = "会员 -> 列表")
     fun query(
+            @RequestParam(value = "id", required = false) id: Int?,
             @RequestParam(value = "username", required = false) username: String?,
             @RequestParam(value = "name", required = false) name: String?,
             @RequestParam(value = "phone", required = false) phone: String?,

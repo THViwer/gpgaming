@@ -111,6 +111,7 @@ class MemberApiController(
 
     @GetMapping("/member")
     override fun query(
+            @RequestParam(value = "id", required = false) id: Int?,
             @RequestParam(value = "username", required = false) username: String?,
             @RequestParam(value = "name", required = false) name: String?,
             @RequestParam(value = "phone", required = false) phone: String?,
@@ -135,7 +136,7 @@ class MemberApiController(
 
         val query = MemberQuery(clientId = clientId, startTime = null, endTime = null, username = username,
                 levelId = levelId, status = status, promoteCode = promoteCode, name = name, phone = phone,
-                role = Role.Member, bossId = null, agentId = null)
+                role = Role.Member, bossId = null, agentId = null, ids = id?.let { listOf(id) })
         val page = memberService.query(query, current, size)
         if (page.total == 0) return MemberPage(total = 0, data = emptyList())
 
@@ -178,7 +179,7 @@ class MemberApiController(
             val introduceUsername = introduces[it.introduceId]?.username ?: ""
 
             with(it) {
-                MemberVo(id = id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name ?: "error level",
+                MemberVo(id = this.id, username = it.username, levelId = it.levelId, level = levels[it.levelId]?.name ?: "error level",
                         balance = memberMap[it.id]?.balance ?: BigDecimal.valueOf(-1), status = it.status, createdTime = createdTime,
                         loginIp = loginIp, loginTime = loginTime, name = it.name, phone = it.phone, promoteCode = it.promoteCode, idCard = it.idCard,
                         country = client.country, agentId = it.agentId, agentUsername = agentUsername, saleId = it.saleId, saleUsername = saleUsername,
