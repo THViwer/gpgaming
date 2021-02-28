@@ -75,6 +75,7 @@ class PlaytechService(
                 "player_name=${clientToken.prefix}_${balanceReq.username}",
                 "server_name=${clientToken.serverName}"
         )
+
         val okResponse = this.doGet(clientToken = clientToken, path = "/backoffice/player/serverBalance", data = data)
 
         val status = try {
