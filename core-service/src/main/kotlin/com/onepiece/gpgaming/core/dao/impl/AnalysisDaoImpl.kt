@@ -81,23 +81,23 @@ class AnalysisDaoImpl(
                 ) t1 on m.id = t1.member_id
             
                 left join (
-                    select t.member_id, sum(requirement_bet)  slot_requirement_bet from platform_member t 
-                    where platform in ('Joker', 'Kiss918', 'Pussy888', 'Mega', 'Pragmatic', 'SpadeGaming', 'TTG', 'MicroGaming', 'PlaytechSlot', 'PNG', 'GamePlay', 'SimplePlay', 'AsiaGamingSlot')
+                    select member_id, sum(requirement_bet) as slot_requirement_bet from transfer_order where  state = 'Successful' and created_time > '$startDate' and created_time < '$endDate' 
+                    and `to` in ('Joker', 'Kiss918', 'Pussy888', 'Mega', 'Pragmatic', 'SpadeGaming', 'TTG', 'MicroGaming', 'PlaytechSlot', 'PNG', 'GamePlay', 'SimplePlay', 'AsiaGamingSlot')
                     group by member_id
                 ) st on m.id = st.member_id
                 left join (
-                    select t.member_id, sum(requirement_bet)  live_requirement_bet from platform_member t 
-                    where platform in ('CT', 'DreamGaming', 'Evolution', 'GoldDeluxe', 'SexyGaming', 'Fgg', 'AllBet', 'SaGaming', 'AsiaGamingLive', 'MicroGamingLive', 'PlaytechLive', 'EBet')
+                    select member_id, sum(requirement_bet) as live_requirement_bet from transfer_order where  state = 'Successful' and created_time > '$startDate' and created_time < '$endDate' 
+                    and `to` in ('CT', 'DreamGaming', 'Evolution', 'GoldDeluxe', 'SexyGaming', 'Fgg', 'AllBet', 'SaGaming', 'AsiaGamingLive', 'MicroGamingLive', 'PlaytechLive', 'EBet')
                     group by member_id
                 ) lt on m.id = lt.member_id
                 left join (
-                    select t.member_id, sum(requirement_bet)  sport_requirement_bet from platform_member t 
-                    where platform in ('Lbc', 'Bcs', 'CMD')
+                    select member_id, sum(requirement_bet) as sport_requirement_bet from transfer_order where  state = 'Successful' and created_time > '$startDate' and created_time < '$endDate' 
+                    and `to` in ('Lbc', 'Bcs', 'CMD')
                     group by member_id
                 ) spt on m.id = spt.member_id
                 left join (
-                    select t.member_id, sum(requirement_bet)  fish_requirement_bet from platform_member t 
-                    where platform in ('GGFishing')
+                    select member_id, sum(requirement_bet) as fish_requirement_bet from transfer_order where  state = 'Successful' and created_time > '$startDate' and created_time < '$endDate' 
+                    and `to` in ('Lbc', 'Bcs', 'CMD')
                     group by member_id
                 ) ft on m.id = ft.member_id
             
