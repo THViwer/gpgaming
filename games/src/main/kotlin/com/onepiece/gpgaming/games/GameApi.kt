@@ -52,49 +52,49 @@ import java.time.LocalDateTime
 
 @Component
 class GameApi(
-        private val platformBindService: PlatformBindService,
-        private val platformMemberService: PlatformMemberService,
-        private val redisService: RedisService,
-        private val gamePlatformService: GamePlatformService,
+    private val platformBindService: PlatformBindService,
+    private val platformMemberService: PlatformMemberService,
+    private val redisService: RedisService,
+    private val gamePlatformService: GamePlatformService,
 
-        // slot
+    // slot
 //        private val jokerService: JokerService,
-        private val kiss918Service: Kiss918Service,
-        private val pussy888Service: Pussy888Service,
-        private val megaService: MegaService,
-        private val pragmaticService: PragmaticService,
-        private val spadeGamingService: SpadeGamingService,
-        private val ttgService: TTGService,
-        private val microGameService: MicroGamingService,
-        private val gamePlayService: GamePlayService,
-        private val simplePlayService: SimplePlayService,
+    private val kiss918Service: Kiss918Service,
+    private val pussy888Service: Pussy888Service,
+    private val megaService: MegaService,
+    private val pragmaticService: PragmaticService,
+    private val spadeGamingService: SpadeGamingService,
+    private val ttgService: TTGService,
+    private val microGameService: MicroGamingService,
+    private val gamePlayService: GamePlayService,
+    private val simplePlayService: SimplePlayService,
 
-        // live game
+    // live game
 //        private val goldDeluxeService: GoldDeluxeService,
-        private val evolutionService: EvolutionService,
-        private val sexyGamingService: SexyGamingService,
+    private val evolutionService: EvolutionService,
+    private val sexyGamingService: SexyGamingService,
 //        private val fggService: FggService,
-        private val allBetService: AllBetService,
-        private val dreamGamingService: DreamGamingService,
-        private val pngService: PNGService,
-        private val eBetService: EBetService,
+    private val allBetService: AllBetService,
+    private val dreamGamingService: DreamGamingService,
+    private val pngService: PNGService,
+    private val eBetService: EBetService,
 
-        // sport
+    // sport
 //        private val sboService: SboService,
-        private val lbcService: LbcService,
-        private val bcsService: BcsService,
-        private val cmdService: CMDService,
-        private val btiService: BtiService,
+    private val lbcService: LbcService,
+    private val bcsService: BcsService,
+    private val cmdService: CMDService,
+    private val btiService: BtiService,
 
-        // fishing
-        private val ggFishingService: GGFishingService,
+    // fishing
+    private val ggFishingService: GGFishingService,
 
-        // slot and live
-        private val playtechService: PlaytechService,
-        private val saGamingService: SaGamingService,
-        private val asiaGamingService: AsiaGamingService,
+    // slot and live
+    private val playtechService: PlaytechService,
+    private val saGamingService: SaGamingService,
+    private val asiaGamingService: AsiaGamingService,
 
-        private val pullOrderTaskDao: PullOrderTaskDao
+    private val pullOrderTaskDao: PullOrderTaskDao
 ) {
 
     private val log = LoggerFactory.getLogger(GameApi::class.java)
@@ -150,12 +150,12 @@ class GameApi(
     }
 
     private fun <T> useRemoteLog(
-            clientId: Int,
-            platform: Platform,
-            taskType: PullOrderTask.OrderTaskType,
-            head: String,
-            gameResponse: GameResponse<T>,
-            save: Boolean = true
+        clientId: Int,
+        platform: Platform,
+        taskType: PullOrderTask.OrderTaskType,
+        head: String,
+        gameResponse: GameResponse<T>,
+        save: Boolean = true
     ): T {
 
         val okResponse = gameResponse.okResponse
@@ -192,12 +192,12 @@ class GameApi(
     }
 
     private fun <T> useRemoteLogByPull(
-            clientId: Int,
-            platform: Platform,
-            taskType: PullOrderTask.OrderTaskType,
-            head: String,
-            gameResponse: GameResponse<T>,
-            save: Boolean = true
+        clientId: Int,
+        platform: Platform,
+        taskType: PullOrderTask.OrderTaskType,
+        head: String,
+        gameResponse: GameResponse<T>,
+        save: Boolean = true
     ): String {
 
         val okResponse = gameResponse.okResponse
@@ -238,10 +238,12 @@ class GameApi(
             val headers = okResponse.okParam.headers.map { "${it.key}=${it.value}" }.joinToString(separator = "&")
 
             val now = LocalDateTime.now()
-            val task = PullOrderTask(id = -1, clientId = clientId, platform = platform, param = okResponse.param,
-                    path = okResponse.url, response = okResponse.response, type = taskType, status = okResponse.status,
-                    startTime = now, endTime = now, message = okResponse.message ?: "", formParam = formParam,
-                    headers = headers, nonce = okResponse.okParam.nonce, logInfo = logInfo)
+            val task = PullOrderTask(
+                id = -1, clientId = clientId, platform = platform, param = okResponse.param,
+                path = okResponse.url, response = okResponse.response, type = taskType, status = okResponse.status,
+                startTime = now, endTime = now, message = okResponse.message ?: "", formParam = formParam,
+                headers = headers, nonce = okResponse.okParam.nonce, logInfo = logInfo
+            )
             pullOrderTaskDao.create(task)
         }
     }
@@ -271,13 +273,17 @@ class GameApi(
             val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
             // 注册账号
-            val registerReq = GameValue.RegisterReq(token = clientToken, username = generatorUsername, password = generatorPassword, name = name,
-                    clientId = clientId, memberId = memberId)
+            val registerReq = GameValue.RegisterReq(
+                token = clientToken, username = generatorUsername, password = generatorPassword, name = name,
+                clientId = clientId, memberId = memberId
+            )
             val gameResponse = getPlatformApi(platform).register(registerReq)
 
             try {
-                val platformUsername = this.useRemoteLog(clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "register"),
-                        gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_REGISTER)
+                val platformUsername = this.useRemoteLog(
+                    clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "register"),
+                    gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_REGISTER
+                )
                 platformMemberService.create(clientId = clientId, memberId = memberId, platform = platform, platformUsername = platformUsername, platformPassword = generatorPassword)
             } catch (e: Exception) {
 
@@ -372,8 +378,10 @@ class GameApi(
             Platform.Bcs -> {
                 val startReq = GameValue.StartReq(token = clientToken, username = platformUsername, launch = launch, language = language, password = platformPassword, redirectUrl = getRequestDomain())
                 val gameResponse = this.getPlatformApi(platform).start(startReq)
-                this.useRemoteLog(clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "start"), gameResponse = gameResponse,
-                        taskType = PullOrderTask.OrderTaskType.API_LAUNCH_GAME)
+                this.useRemoteLog(
+                    clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "start"), gameResponse = gameResponse,
+                    taskType = PullOrderTask.OrderTaskType.API_LAUNCH_GAME
+                )
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -389,10 +397,12 @@ class GameApi(
             Platform.Lbc,
             Platform.Bcs,
             Platform.BTI,
-                    Platform . CMD -> {
+            Platform.CMD -> {
                 val gameResponse = this.getPlatformApi(platform).startDemo(token = clientToken, language = language, launch = launch)
-                this.useRemoteLog(clientId = clientId, platform = platform, head = this.bindLogHead(clientId, -1, platform, "start sport demo"),
-                        gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_LAUNCH_GAME)
+                this.useRemoteLog(
+                    clientId = clientId, platform = platform, head = this.bindLogHead(clientId, -1, platform, "start sport demo"),
+                    gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_LAUNCH_GAME
+                )
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -401,14 +411,18 @@ class GameApi(
     /**
      * 开始游戏(老虎机)
      */
-    fun start(clientId: Int, memberId: Int, platformUsername: String, platformPassword: String, platform: Platform, gameId: String, language: Language,
-              launchMethod: LaunchMethod): String {
+    fun start(
+        clientId: Int, memberId: Int, platformUsername: String, platformPassword: String, platform: Platform, gameId: String, language: Language,
+        launchMethod: LaunchMethod
+    ): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
 
         //TODO 跳转url
-        val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = platformUsername, gameId = gameId, language = language,
-                launchMethod = launchMethod, password = platformPassword, redirectUrl = getRequestDomain())
+        val startSlotReq = GameValue.StartSlotReq(
+            token = clientToken, username = platformUsername, gameId = gameId, language = language,
+            launchMethod = launchMethod, password = platformPassword, redirectUrl = getRequestDomain()
+        )
         return when (platform) {
             Platform.Joker,
             Platform.Pragmatic,
@@ -422,8 +436,10 @@ class GameApi(
             Platform.AsiaGamingSlot -> {
                 val gameResponse = getPlatformApi(platform).startSlot(startSlotReq)
 
-                this.useRemoteLog(clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "start"), gameResponse = gameResponse,
-                        taskType = PullOrderTask.OrderTaskType.API_LAUNCH_GAME)
+                this.useRemoteLog(
+                    clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "start"), gameResponse = gameResponse,
+                    taskType = PullOrderTask.OrderTaskType.API_LAUNCH_GAME
+                )
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -433,12 +449,16 @@ class GameApi(
     /**
      * 开始老虎机试玩
      */
-    fun startSlotDemo(clientId: Int, platform: Platform, gameId: String, language: Language,
-                      launchMethod: LaunchMethod): String {
+    fun startSlotDemo(
+        clientId: Int, platform: Platform, gameId: String, language: Language,
+        launchMethod: LaunchMethod
+    ): String {
 
         val clientToken = this.getClientToken(clientId = clientId, platform = platform)
-        val startSlotReq = GameValue.StartSlotReq(token = clientToken, username = "", gameId = gameId, language = language,
-                launchMethod = launchMethod, password = "-", redirectUrl = getRequestDomain())
+        val startSlotReq = GameValue.StartSlotReq(
+            token = clientToken, username = "", gameId = gameId, language = language,
+            launchMethod = launchMethod, password = "-", redirectUrl = getRequestDomain()
+        )
 
         return when (platform) {
             Platform.SpadeGaming,
@@ -465,9 +485,11 @@ class GameApi(
         val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername, password = platformPassword)
         val gameResponse = this.getPlatformApi(platform).balance(balanceReq)
 
-        val balance = this.useRemoteLog(clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "balance"),
-                gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_BALANCE)
-                .setScale(2, BigDecimal.ROUND_DOWN)
+        val balance = this.useRemoteLog(
+            clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "balance"),
+            gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_BALANCE
+        )
+            .setScale(2, BigDecimal.ROUND_DOWN)
 
         return balance to (gameResponse.outstanding)
     }
@@ -485,24 +507,27 @@ class GameApi(
         val balanceReq = GameValue.BalanceReq(token = clientToken, username = platformUsername, password = platformPassword)
         val gameResponse = this.getPlatformApi(platform).balance(balanceReq)
 
-        return this.useRemoteLog(clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "balance"),
-                gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_BALANCE)
-                .setScale(2, BigDecimal.ROUND_DOWN)
+        return this.useRemoteLog(
+            clientId = clientId, platform = platform, head = bindLogHead(clientId, memberId, platform, "balance"),
+            gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_BALANCE
+        )
+            .setScale(2, BigDecimal.ROUND_DOWN)
     }
 
 
     /**
      * 转账
      */
-    fun transfer(clientId: Int,
-                 memberId: Int,
-                 platformUsername: String,
-                 platformPassword: String,
-                 platform: Platform,
-                 orderId: String,
-                 originBalance: BigDecimal,
-                 amount: BigDecimal,
-                 index: Int = 0
+    fun transfer(
+        clientId: Int,
+        memberId: Int,
+        platformUsername: String,
+        platformPassword: String,
+        platform: Platform,
+        orderId: String,
+        originBalance: BigDecimal,
+        amount: BigDecimal,
+        index: Int = 0
     ): GameValue.TransferResp {
 
         check(gamePlatformService.all().first { it.platform == platform }.status == Status.Normal) { OnePieceExceptionCode.PLATFORM_MAINTAIN }
@@ -521,19 +546,25 @@ class GameApi(
         if (index > 2) {
             val type = if (amount.toDouble() > 0) "deposit" else "withdraw"
             // 检查转账是否成功
-            val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = orderId,
-                    amount = amount, type = type)
+            val checkTransferReq = GameValue.CheckTransferReq(
+                token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = orderId,
+                amount = amount, type = type
+            )
             return this.checkTransfer(clientId = clientId, memberId = memberId, platform = platform, checkTransferReq = checkTransferReq)
         }
 
         return try {
             val gameResponse = this.getPlatformApi(platform).transfer(transferReq)
-            val resp = this.useRemoteLog(clientId = clientId, platform = platform, head = this.bindLogHead(clientId, memberId, platform, "transfer"),
-                    gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_TRANSFER)
+            val resp = this.useRemoteLog(
+                clientId = clientId, platform = platform, head = this.bindLogHead(clientId, memberId, platform, "transfer"),
+                gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_TRANSFER
+            )
 
             val type = if (amount.toDouble() > 0) "deposit" else "withdraw"
-            val checkTransferReq = GameValue.CheckTransferReq(token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = resp.platformOrderId,
-                    amount = amount, type = type)
+            val checkTransferReq = GameValue.CheckTransferReq(
+                token = clientToken, username = platformUsername, orderId = orderId, platformOrderId = resp.platformOrderId,
+                amount = amount, type = type
+            )
 
             //TODO 如果是kiss918和Pussy888 则不能check
             val checkResp = when {
@@ -578,8 +609,10 @@ class GameApi(
             if (index > 2) return GameValue.TransferResp.failed()
 
             val gameResponse = this.getPlatformApi(platform).checkTransfer(checkTransferReq)
-            return this.useRemoteLog(clientId = clientId, platform = platform, head = this.bindLogHead(clientId, memberId, platform, "check transfer"),
-                    gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_TRANSFER_CHECK)
+            return this.useRemoteLog(
+                clientId = clientId, platform = platform, head = this.bindLogHead(clientId, memberId, platform, "check transfer"),
+                gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_TRANSFER_CHECK
+            )
         } catch (e: Exception) {
             log.error("查询转账失败第${index}次，请求参数：$checkTransferReq ", e)
             return this.checkTransfer(clientId, memberId, platform, checkTransferReq, index + 1)
@@ -597,8 +630,10 @@ class GameApi(
             Platform.Kiss918, Platform.Mega, Platform.Pussy888, Platform.SexyGaming, Platform.Bcs, Platform.AllBet, Platform.TTG -> {
                 val betOrderReq = GameValue.BetOrderReq(token = clientToken, startTime = startTime, endTime = endTime, username = platformUsername)
                 val gameResponse = getPlatformApi(platform).queryBetOrder(betOrderReq)
-                this.useRemoteLog(clientId = clientId, platform = platform, head = this.bindLogHead(clientId, memberId, platform, "query bet order"), gameResponse = gameResponse,
-                        taskType = PullOrderTask.OrderTaskType.API_QUERY_BET)
+                this.useRemoteLog(
+                    clientId = clientId, platform = platform, head = this.bindLogHead(clientId, memberId, platform, "query bet order"), gameResponse = gameResponse,
+                    taskType = PullOrderTask.OrderTaskType.API_QUERY_BET
+                )
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -614,8 +649,10 @@ class GameApi(
             Platform.Kiss918, Platform.Pussy888, Platform.Mega -> {
                 val req = GameValue.ReportQueryReq(token = clientToken, startDate = startDate)
                 val gameResponse = getPlatformApi(platform).queryReport(req)
-                this.useRemoteLog(clientId = clientId, platform = platform, head = this.bindLogHead(clientId, -1, platform, "query report"),
-                        gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_QUERY_REPORT)
+                this.useRemoteLog(
+                    clientId = clientId, platform = platform, head = this.bindLogHead(clientId, -1, platform, "query report"),
+                    gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_QUERY_REPORT
+                )
             }
             else -> error(OnePieceExceptionCode.DATA_FAIL)
         }
@@ -650,12 +687,17 @@ class GameApi(
             Platform.AsiaGamingSlot,
             Platform.PlaytechSlot,
             Platform.EBet,
+            Platform.BTI,
             Platform.PlaytechLive -> {
-                val pullBetOrderReq = GameValue.PullBetOrderReq(clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken,
-                        platform = platformBind.platform)
+                val pullBetOrderReq = GameValue.PullBetOrderReq(
+                    clientId = platformBind.clientId, startTime = startTime, endTime = endTime, token = platformBind.clientToken,
+                    platform = platformBind.platform
+                )
                 val gameResponse = getPlatformApi(platformBind.platform).pullBetOrders(pullBetOrderReq)
-                val logInfo = this.useRemoteLogByPull(clientId = platformBind.clientId, platform = platformBind.platform, head = "clientId=${platformBind.clientId},platform=${platformBind.platform} -> pullBets",
-                        gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_PULL_BET, save = false)
+                val logInfo = this.useRemoteLogByPull(
+                    clientId = platformBind.clientId, platform = platformBind.platform, head = "clientId=${platformBind.clientId},platform=${platformBind.platform} -> pullBets",
+                    gameResponse = gameResponse, taskType = PullOrderTask.OrderTaskType.API_PULL_BET, save = false
+                )
 
                 gameResponse.copy(logInfo = logInfo)
             }
