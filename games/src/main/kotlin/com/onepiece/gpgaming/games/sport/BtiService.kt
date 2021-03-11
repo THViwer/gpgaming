@@ -172,7 +172,7 @@ class BtiService : PlatformService() {
         return GameResponse.of(url)
     }
 
-    val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd'T'hh:mm:ss")
+    val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd'T'HH:mm:ss")
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
 
