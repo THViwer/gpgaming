@@ -159,6 +159,7 @@ class ReportTask(
 
         tryLock(localDate = month, type = TaskTimerType.AgentMonth) {
             val data = reportService.startAgentMonthReport(today = month)
+            log.info("代理月报表数据：$data")
             agentMonthReportService.create(data = data)
         }
     }
