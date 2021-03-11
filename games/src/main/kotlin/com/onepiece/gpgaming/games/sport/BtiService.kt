@@ -202,7 +202,7 @@ class BtiService : PlatformService() {
                 val merchantCustomerID = order.asString("MerchantCustomerID")
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.BTI, platformUsername = merchantCustomerID)
                 val bet = order.asBigDecimal("TotalStake")
-                val betTime = order.asLocalDateTime("CreationDate")
+                val betTime = order.asLocalDateTime("CreationDate").plusHours(12) // 暂时+12
                 val validBet = order.asBigDecimal("ValidStake")
                 val payout = order.asBigDecimal("Return")
                 val settleTime = order.asLocalDateTime("BetSettledDate")
