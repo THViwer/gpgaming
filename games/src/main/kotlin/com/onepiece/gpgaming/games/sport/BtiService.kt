@@ -15,6 +15,7 @@ import com.onepiece.gpgaming.games.http.OKParam
 import com.onepiece.gpgaming.games.http.OKResponse
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.net.URLEncoder
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -188,7 +189,8 @@ class BtiService : PlatformService() {
         val token = this.getToken(clientToken)
         if (token.isBlank()) error("BTI token 获得异常")
 
-        val okParam = OKParam.ofPost(url = "${clientToken.orderApiPath}/dataAPI/bettinghistory?token=$token", param = data)
+        val newToken = URLEncoder.encode(token)
+        val okParam = OKParam.ofPost(url = "${clientToken.orderApiPath}/dataAPI/bettinghistory?token=$newToken", param = data)
         val okResponse = u9HttpRequest.startRequest(okParam = okParam)
 
         return this.bindGameResponse(okResponse = okResponse) { map ->
