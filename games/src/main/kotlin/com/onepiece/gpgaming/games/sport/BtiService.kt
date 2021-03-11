@@ -178,8 +178,8 @@ class BtiService : PlatformService() {
 
         val clientToken = pullBetOrderReq.token as BtiClientToken
 
-        val from = pullBetOrderReq.startTime.format(dateTimeFormatter)
-        val to = pullBetOrderReq.endTime.format(dateTimeFormatter)
+        val from = pullBetOrderReq.startTime.minusHours(12).format(dateTimeFormatter)
+        val to = pullBetOrderReq.endTime.minusHours(12).format(dateTimeFormatter)
         val data = """
             {
                "from":"$from",
