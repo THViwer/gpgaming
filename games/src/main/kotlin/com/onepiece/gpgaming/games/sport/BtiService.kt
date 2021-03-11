@@ -178,8 +178,8 @@ class BtiService : PlatformService() {
 
         val clientToken = pullBetOrderReq.token as BtiClientToken
 
-        val from = pullBetOrderReq.startTime.minusHours(12).format(dateTimeFormatter)
-        val to = pullBetOrderReq.endTime.minusHours(12).format(dateTimeFormatter)
+        val from = pullBetOrderReq.startTime.minusHours(8).format(dateTimeFormatter)
+        val to = pullBetOrderReq.endTime.minusHours(8).format(dateTimeFormatter)
         val data = """
             {
                "from":"$from",
@@ -202,10 +202,10 @@ class BtiService : PlatformService() {
                 val merchantCustomerID = order.asString("MerchantCustomerID")
                 val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.BTI, platformUsername = merchantCustomerID)
                 val bet = order.asBigDecimal("TotalStake")
-                val betTime = order.asLocalDateTime("CreationDate").plusHours(12) // 暂时+12
+                val betTime = order.asLocalDateTime("CreationDate").plusHours(8) // 暂时+12
                 val validBet = order.asBigDecimal("ValidStake")
                 val payout = order.asBigDecimal("Return")
-                val settleTime = order.asLocalDateTime("UpdateDate").plusHours(12)
+                val settleTime = order.asLocalDateTime("UpdateDate").plusHours(8)
                 val orderId = order.asString("PurchaseID")
 
                 val originData = objectMapper.writeValueAsString(order.data)
