@@ -267,7 +267,10 @@ class ReportServiceImpl(
 
                 val mCommission = memberCommissions.firstOrNull { it.activeCount > memberActive.activeCount && memberCommission.totalBet.toDouble() > it.minTotalBet } // TODO 111
                 when {
-                    mCommission == null -> null
+                    mCommission == null -> {
+                        log.info("未匹配到合格的佣金列表,clientId: ${agent.clientId}, 代理用户名：${agent.username}")
+                        null
+                    }
                     mCommission.fixedCommission.toDouble() > 0 -> mCommission.fixedCommission // 暂时只有uj会配置固定佣金
                     else ->  (memberCommission.totalBet
                         .minus(memberCommission.payout)
