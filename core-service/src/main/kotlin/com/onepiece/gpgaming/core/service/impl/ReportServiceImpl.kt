@@ -282,7 +282,7 @@ class ReportServiceImpl(
                 }?.let {memberCommissionAmount ->
                     val commissionExecution = memberCommissionAmount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
-                    memberCommission.copy(bossId = agent.bossId, clientId = agent.clientId, memberCommission = memberCommissionAmount, memberCommissionScale = mCommission.scale,
+                    memberCommission.copy(bossId = agent.bossId, clientId = agent.clientId, memberCommission = memberCommissionAmount, memberCommissionScale = mCommission?.scale ?: BigDecimal.ZERO,
                         memberActiveCount = memberActive.activeCount, commissionExecution = commissionExecution, agencyMonthFee = agent.agencyMonthFee, username = agent.username)
                 }
             } catch (e: Exception) {
