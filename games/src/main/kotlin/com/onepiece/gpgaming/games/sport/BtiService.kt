@@ -16,6 +16,7 @@ import com.onepiece.gpgaming.games.http.OKResponse
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.net.URLEncoder
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -171,7 +172,7 @@ class BtiService : PlatformService() {
         return GameResponse.of(url)
     }
 
-    val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/mm/dd'T'hh:mm:ss")
+    val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd'T'hh:mm:ss")
 
     override fun pullBetOrders(pullBetOrderReq: GameValue.PullBetOrderReq): GameResponse<List<BetOrderValue.BetOrderCo>> {
 
