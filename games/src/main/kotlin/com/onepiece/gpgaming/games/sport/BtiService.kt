@@ -191,27 +191,26 @@ class BtiService : PlatformService() {
         val okParam = OKParam.ofPost(url = "${clientToken.orderApiPath}/dataAPI/bettinghistory?token=$token", param = data)
         val okResponse = u9HttpRequest.startRequest(okParam = okParam)
 
+        return this.bindGameResponse(okResponse = okResponse) { map ->
+            val list = map.asList("Bets")
 
-        val list = okResponse.mapUtil.asList("Bets")
-        if (list.isEmpty()) return GameResponse.of(emptyList())
+            list.filter { it.asString("Status") != "Opened" }.map { order ->
 
-        val orders = list.filter { it.asString("Status") != "Opened" }.map { order ->
+                val merchantCustomerID = order.asString("MerchantCustomerID")
+                val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.BTI, platformUsername = merchantCustomerID)
+                val bet = order.asBigDecimal("TotalStake")
+                val betTime = order.asLocalDateTime("CreationDate")
+                val validBet = order.asBigDecimal("ValidStake")
+                val payout = order.asBigDecimal("Return")
+                val settleTime = order.asLocalDateTime("BetSettledDate")
+                val orderId = order.asString("PurchaseID")
 
-            val merchantCustomerID = order.asString("MerchantCustomerID")
-            val (clientId, memberId) = PlatformUsernameUtil.prefixPlatformUsername(platform = Platform.BTI, platformUsername = merchantCustomerID)
-            val bet = order.asBigDecimal("TotalStake")
-            val betTime = order.asLocalDateTime("CreationDate")
-            val validBet = order.asBigDecimal("ValidStake")
-            val payout = order.asBigDecimal("Return")
-            val settleTime = order.asLocalDateTime("BetSettledDate")
-            val orderId = order.asString("PurchaseID")
-
-            val originData = objectMapper.writeValueAsString(order.data)
-            BetOrderValue.BetOrderCo(clientId = clientId, platform = Platform.BTI, memberId = memberId, betAmount = bet, validAmount = validBet,
+                val originData = objectMapper.writeValueAsString(order.data)
+                BetOrderValue.BetOrderCo(clientId = clientId, platform = Platform.BTI, memberId = memberId, betAmount = bet, validAmount = validBet,
                     payout = payout, betTime = betTime, settleTime = settleTime, orderId = orderId, originData = originData)
 
+            }
         }
-        return GameResponse.of(data = orders)
     }
 
     private fun getToken(clientToken: BtiClientToken): String {
