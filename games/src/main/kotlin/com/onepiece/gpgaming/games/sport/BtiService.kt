@@ -205,7 +205,7 @@ class BtiService : PlatformService() {
                 val betTime = order.asLocalDateTime("CreationDate").plusHours(12) // 暂时+12
                 val validBet = order.asBigDecimal("ValidStake")
                 val payout = order.asBigDecimal("Return")
-                val settleTime = order.asLocalDateTime("BetSettledDate")
+                val settleTime = order.asLocalDateTime("UpdateDate")
                 val orderId = order.asString("PurchaseID")
 
                 val originData = objectMapper.writeValueAsString(order.data)
