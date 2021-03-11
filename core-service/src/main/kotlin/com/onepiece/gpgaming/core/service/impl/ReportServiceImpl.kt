@@ -217,18 +217,24 @@ class ReportServiceImpl(
         val memberQuery = MemberQuery(bossId = null, role = Role.Agent, clientId = null, agentId = null, username = null,
                 name = null, phone = null, status = null, levelId = null, promoteCode = null, startTime = null, endTime = null)
         val agents = memberDao.query(query = memberQuery, current = 0, size = 999999)
+        log.info("step 1 end")
 
         // 代理佣金配置
         val commissions = commissionService.all().sortedByDescending { it.activeCount }
+        log.info("step 2 end")
 
         // 会员佣金列表
         val memberCollect = analysisDao.agentMonthReport(agentId = null, startDate = startDate, endDate = endDate)
                 .map { it.agentId to it }
                 .toMap()
+        log.info("step 3 end")
+
         // 会员存活人数
         val memberActives = analysisDao.memberActiveCollect(startDate = startDate, endDate = endDate)
                 .map { it.agentId to it }
                 .toMap()
+        log.info("step 4 end")
+
 
 
         // 下级代理佣金
@@ -239,6 +245,8 @@ class ReportServiceImpl(
         val superiorActives = analysisDao.agentActiveCollect(startDate = startDate, endDate = endDate)
                 .map { it.agentId to it }
                 .toMap()
+        log.info("step 5 end")
+
 
         // 计算所有代理的会员佣金
         val process = agents.filter { it.formal && it.username != "default_agent" }.mapNotNull { agent ->
@@ -248,10 +256,14 @@ class ReportServiceImpl(
 
                 //TODO 操 有问题？
                 val memberCommissions = commissions.filter { agent.bossId == it.bossId }.filter { it.type == CommissionType.MemberCommission }
+                log.info("step 6 _ 1 end")
 
                 // 计算会员佣金
                 val memberCommission = memberCollect[agent.id] ?: AgentMonthReport.empty(bossId = agent.bossId, clientId = agent.clientId, agentId = agent.id, day = startDate)
                 val memberActive = memberActives[agent.id] ?: AnalysisValue.ActiveCollect(agentId = -1, activeCount = 0)
+
+                log.info("会员佣金列表：$memberCommissions")
+                log.info("会员存活人数：${memberActive.activeCount}, 会员充值：${memberCommission.totalBet}")
                 val mCommission = memberCommissions.first { it.activeCount > memberActive.activeCount && memberCommission.totalBet.toDouble() > it.minTotalBet } // TODO 111
 
                 val memberCommissionAmount = if (mCommission.fixedCommission.toDouble() > 0) {
