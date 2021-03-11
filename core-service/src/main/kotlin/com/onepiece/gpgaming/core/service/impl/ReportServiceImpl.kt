@@ -264,23 +264,24 @@ class ReportServiceImpl(
 
                 log.info("会员佣金列表：$memberCommissions")
                 log.info("会员存活人数：${memberActive.activeCount}, 会员充值：${memberCommission.totalBet}")
-                val mCommission = memberCommissions.first { it.activeCount > memberActive.activeCount && memberCommission.totalBet.toDouble() > it.minTotalBet } // TODO 111
 
-                val memberCommissionAmount = if (mCommission.fixedCommission.toDouble() > 0) {
-                    mCommission.fixedCommission // 暂时只有uj会配置固定佣金
-                } else {
-                    (memberCommission.totalBet
-                            .minus(memberCommission.payout)
-                            .minus(memberCommission.totalRebate)
-                            .minus(memberCommission.totalPromotion))
-                            .multiply(mCommission.scale)
-                            .divide(BigDecimal.valueOf(100))
-                            .setScale(2, 2)
-                }
-                val commissionExecution = memberCommissionAmount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
+                val mCommission = memberCommissions.firstOrNull { it.activeCount > memberActive.activeCount && memberCommission.totalBet.toDouble() > it.minTotalBet } // TODO 111
+                when {
+                    mCommission == null -> null
+                    mCommission.fixedCommission.toDouble() > 0 -> mCommission.fixedCommission // 暂时只有uj会配置固定佣金
+                    else ->  (memberCommission.totalBet
+                        .minus(memberCommission.payout)
+                        .minus(memberCommission.totalRebate)
+                        .minus(memberCommission.totalPromotion))
+                        .multiply(mCommission.scale)
+                        .divide(BigDecimal.valueOf(100))
+                        .setScale(2, 2)
+                }?.let {memberCommissionAmount ->
+                    val commissionExecution = memberCommissionAmount.setScale(2, 2) == BigDecimal.ZERO.setScale(2, 2)
 
-                memberCommission.copy(bossId = agent.bossId, clientId = agent.clientId, memberCommission = memberCommissionAmount, memberCommissionScale = mCommission.scale,
+                    memberCommission.copy(bossId = agent.bossId, clientId = agent.clientId, memberCommission = memberCommissionAmount, memberCommissionScale = mCommission.scale,
                         memberActiveCount = memberActive.activeCount, commissionExecution = commissionExecution, agencyMonthFee = agent.agencyMonthFee, username = agent.username)
+                }
             } catch (e: Exception) {
                 log.error("agent month report error: ", e)
                 null
