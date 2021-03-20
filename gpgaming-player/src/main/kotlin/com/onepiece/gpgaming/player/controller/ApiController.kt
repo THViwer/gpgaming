@@ -309,7 +309,7 @@ open class ApiController(
                     ?.let { content ->
                         val _c = content.getII18nContent(objectMapper = objectMapper) as I18nContent.PromotionI18n
                         _c.latestPromotionBanner?.let {
-                            PromotionValue.LatestPromotionVo(promotionId = promotion.id, banner = it)
+                            PromotionValue.LatestPromotionVo(promotionId = promotion.id, banner = it, title = _c.title)
                         }
                     }
 

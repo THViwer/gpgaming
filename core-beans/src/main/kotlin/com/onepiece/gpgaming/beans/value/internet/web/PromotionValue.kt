@@ -17,6 +17,8 @@ sealed class PromotionValue {
 
                 val promotionId: Int,
 
+                val title: String,
+
                 val banner: String
 
 
