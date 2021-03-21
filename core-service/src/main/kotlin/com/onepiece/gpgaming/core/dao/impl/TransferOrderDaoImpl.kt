@@ -47,12 +47,15 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
             val updatedTime = rs.getTimestamp("updated_time").toLocalDateTime()
             val status = rs.getString("status").let { Status.valueOf(it) }
             val lock = rs.getBoolean("lock")
+            val unlockDate=  rs.getString("unlock_date")?.let {
+                LocalDate.parse(it)
+            }
 
             TransferOrder(
                 orderId = orderId, clientId = clientId, memberId = memberId, money = money, promotionAmount = promotionAmount,
                 from = from, to = to, state = state, createdTime = createdTime, updatedTime = updatedTime, joinPromotionId = joinPromotionId,
                 promotionJson = promotionJson, username = username, status = status, transferOutAmount = transferOutAmount,
-                requirementBet = requirementBet, promotionPreMoney = promotionPreMoney, lock = lock
+                requirementBet = requirementBet, promotionPreMoney = promotionPreMoney, lock = lock, unlockDate = unlockDate
             )
         }
 
@@ -266,6 +269,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
     override fun unlockOrder(memberId: Int, platform: Platform, joinPromotionId: Int): Boolean {
         update()
             .set("lock", false)
+            .set("unlock_date", LocalDate.now())
             .where("member_id", memberId)
             .where("to", platform)
             .where("join_promotion_id", joinPromotionId)

@@ -4,6 +4,7 @@ import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.Status
 import com.onepiece.gpgaming.beans.enums.TransferState
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class TransferOrder(
@@ -37,6 +38,9 @@ data class TransferOrder(
 
         // 是否被锁定
         val lock: Boolean = false,
+
+        // 解锁时间
+        val unlockDate: LocalDate?,
 
         // 优惠信息
         val promotionJson: String?,
