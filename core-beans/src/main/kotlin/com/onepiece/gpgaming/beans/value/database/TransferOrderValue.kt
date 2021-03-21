@@ -43,7 +43,7 @@ data class TransferOrderCo(
         // 转入平台
         val to: Platform,
 
-        val lock: Boolean
+        val lock: Boolean = false
 )
 
 data class TransferOrderUo(
