@@ -267,7 +267,7 @@ class TransferOrderDaoImpl : BasicDaoImpl<TransferOrder>("transfer_order"), Tran
         update()
             .set("lock", false)
             .where("member_id", memberId)
-            .where("platform", platform)
+            .where("to", platform)
             .where("join_promotion_id", joinPromotionId)
             .where("lock", true)
             .execute()
