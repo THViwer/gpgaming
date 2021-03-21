@@ -10,6 +10,7 @@ import com.onepiece.gpgaming.beans.value.internet.web.PlatformMemberVo
 import com.onepiece.gpgaming.beans.value.order.BetCacheVo
 import com.onepiece.gpgaming.core.OnePieceRedisKeyConstant
 import com.onepiece.gpgaming.core.dao.PlatformMemberDao
+import com.onepiece.gpgaming.core.dao.TransferOrderDao
 import com.onepiece.gpgaming.core.service.PlatformMemberService
 import com.onepiece.gpgaming.utils.RedisService
 import org.slf4j.LoggerFactory
@@ -21,7 +22,8 @@ import java.math.BigDecimal
 @Service
 class PlatformMemberServiceImpl(
         private val platformMemberDao: PlatformMemberDao,
-        private val redisService: RedisService
+        private val redisService: RedisService,
+        private val transferOrderDao: TransferOrderDao
 ) : PlatformMemberService {
 
     private val log = LoggerFactory.getLogger(PlatformMemberServiceImpl::class.java)
@@ -122,8 +124,17 @@ class PlatformMemberServiceImpl(
     }
 
     override fun cleanTransferIn(memberId: Int, platform: Platform, transferOutAmount: BigDecimal) {
+
+        val pm = this.findPlatformMember(memberId = memberId).firstOrNull { it.platform == platform }
+
         val state = platformMemberDao.cleanTransferIn(memberId, platform, transferOutAmount)
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
+
+
+        // 解锁订单
+        if (pm != null) {
+            transferOrderDao.unlockOrder(memberId = memberId, platform = platform, joinPromotionId = pm.joinPromotionId ?: 0)
+        }
     }
 
     override fun batchBet(data: List<BetCacheVo>) {
