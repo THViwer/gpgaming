@@ -43,6 +43,8 @@ interface TransferOrderDao: BasicDao<TransferOrder> {
 
     fun queryFirstDeposit(memberIds: List<Int>): List<FirstDepositValue.FirstDepositVo>
 
+    fun unlockOrder(memberId: Int, platform: Platform, joinPromotionId: Int): Boolean
+
 }
 
 data class TransferActiveCount(

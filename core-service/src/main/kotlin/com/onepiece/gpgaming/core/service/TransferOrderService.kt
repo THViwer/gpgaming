@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.service
 
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.model.TransferOrder
 import com.onepiece.gpgaming.beans.value.database.TransferOrderCo
 import com.onepiece.gpgaming.beans.value.database.TransferOrderReportVo
@@ -22,6 +23,8 @@ interface TransferOrderService {
     fun report(startDate: LocalDate): List<TransferOrderReportVo>
 
     fun queryLastPromotion(clientId: Int, memberId: Int, startTime: LocalDateTime): List<TransferOrder>
+
+    fun unlockOrder(memberId: Int, platform: Platform, joinPromotionId: Int)
 
 
 //    fun report(member: Int?, startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo>

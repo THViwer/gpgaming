@@ -35,6 +35,9 @@ data class TransferOrder(
         // 参加活动Id
         val joinPromotionId: Int?,
 
+        // 是否被锁定
+        val lock: Boolean = false,
+
         // 优惠信息
         val promotionJson: String?,
 

@@ -363,6 +363,9 @@ open class TransferUtil(
 
             // 清理平台会员优惠信息
             platformMemberService.cleanTransferIn(memberId = platformMember.memberId, platform = platformMember.platform)
+
+            // 解锁订单
+            transferOrderService.unlockOrder(platform = platformMember.platform, joinPromotionId = platformMember.joinPromotionId ?: 0)
         }
 
         return flag

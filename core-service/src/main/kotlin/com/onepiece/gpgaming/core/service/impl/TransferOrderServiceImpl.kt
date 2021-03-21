@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.service.impl
 
+import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.exceptions.OnePieceExceptionCode
 import com.onepiece.gpgaming.beans.model.TransferOrder
 import com.onepiece.gpgaming.beans.value.database.TransferOrderCo
@@ -23,7 +24,10 @@ class TransferOrderServiceImpl(
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     override fun create(transferOrderCo: TransferOrderCo) {
-        val state = transferOrderDao.create(transferOrderCo)
+
+        val lock = transferOrderCo.requirementBet.toDouble() > 0
+
+        val state = transferOrderDao.create(transferOrderCo.copy(lock = lock))
         check(state) { OnePieceExceptionCode.DB_CHANGE_FAIL }
     }
 
@@ -55,6 +59,10 @@ class TransferOrderServiceImpl(
 
     override fun queryLastPromotion(clientId: Int, memberId: Int, startTime: LocalDateTime): List<TransferOrder> {
         return transferOrderDao.queryLastPromotion(clientId, memberId, startTime)
+    }
+
+    override fun unlockOrder(memberId: Int, platform: Platform, joinPromotionId: Int) {
+        transferOrderDao.unlockOrder(memberId = memberId, platform = platform, joinPromotionId = joinPromotionId)
     }
 
     //    override fun report(startDate: LocalDate, endDate: LocalDate): List<MemberTransferReportVo> {

@@ -29,6 +29,8 @@ class AnalysisDaoImpl(
 
     override fun memberReport(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<MemberDailyReport> {
 
+        val transferStartDate = endDate.plusMonths(6)
+
         val tmq = memberId?.let { " and m.id = $it" } ?: ""
         val sql = """
             select
@@ -81,23 +83,27 @@ class AnalysisDaoImpl(
                 ) t1 on m.id = t1.member_id
             
                 left join (
-                    select member_id, sum(requirement_bet) as slot_requirement_bet from transfer_order where  state = 'Successful' and created_time > '$startDate' and created_time < '$endDate' 
+                    select member_id, sum(requirement_bet) as slot_requirement_bet from transfer_order where  state = 'Successful' and created_time > '$transferStartDate' and created_time < '$endDate' 
                     and `to` in ('Joker', 'Kiss918', 'Pussy888', 'Mega', 'Pragmatic', 'SpadeGaming', 'TTG', 'MicroGaming', 'PlaytechSlot', 'PNG', 'GamePlay', 'SimplePlay', 'AsiaGamingSlot')
+                    and `lock` = true
                     group by member_id
                 ) st on m.id = st.member_id
                 left join (
-                    select member_id, sum(requirement_bet) as live_requirement_bet from transfer_order where  state = 'Successful' and created_time > '$startDate' and created_time < '$endDate' 
+                    select member_id, sum(requirement_bet) as live_requirement_bet from transfer_order where  state = 'Successful' and created_time > '$transferStartDate' and created_time < '$endDate' 
                     and `to` in ('CT', 'DreamGaming', 'Evolution', 'GoldDeluxe', 'SexyGaming', 'Fgg', 'AllBet', 'SaGaming', 'AsiaGamingLive', 'MicroGamingLive', 'PlaytechLive', 'EBet')
+                    and `lock` = true
                     group by member_id
                 ) lt on m.id = lt.member_id
                 left join (
-                    select member_id, sum(requirement_bet) as sport_requirement_bet from transfer_order where  state = 'Successful' and created_time > '$startDate' and created_time < '$endDate' 
+                    select member_id, sum(requirement_bet) as sport_requirement_bet from transfer_order where  state = 'Successful' and created_time > '$transferStartDate' and created_time < '$endDate' 
                     and `to` in ('Lbc', 'Bcs', 'CMD')
+                    and `lock` = true
                     group by member_id
                 ) spt on m.id = spt.member_id
                 left join (
-                    select member_id, sum(requirement_bet) as fish_requirement_bet from transfer_order where  state = 'Successful' and created_time > '$startDate' and created_time < '$endDate' 
+                    select member_id, sum(requirement_bet) as fish_requirement_bet from transfer_order where  state = 'Successful' and created_time > '$transferStartDate' and created_time < '$endDate' 
                     and `to` in ('Lbc', 'Bcs', 'CMD')
+                    and `lock` = true
                     group by member_id
                 ) ft on m.id = ft.member_id
             
