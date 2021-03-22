@@ -64,7 +64,7 @@ class AnalysisDaoImpl(
             from member m
                 left join (
                     select member_id, sum(money) total_deposit, count(*) deposit_count from deposit d
-                    where d.created_time > '$startDate' and d.created_time < '${endDate}' and d.state = 'Successful' group by member_id
+                    where d.created_time > '$startDate' and d.created_time < '$endDate' and d.state = 'Successful' group by member_id
                 ) d on m.id = d.member_id
                 left join (
                     select member_id, sum(amount) third_pay_amount, count(*) third_pay_count from pay_order p
