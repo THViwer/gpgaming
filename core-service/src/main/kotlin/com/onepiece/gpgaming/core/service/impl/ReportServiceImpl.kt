@@ -95,11 +95,11 @@ class ReportServiceImpl(
 
         // 报表数据
         val list = analysisDao.memberReport(memberId = memberId, startDate = startDate, endDate = endDate)
-        log.info("----------------")
-        log.info("----------------")
-        log.info(jacksonObjectMapper().writeValueAsString(list))
-        log.info("----------------")
-        log.info("----------------")
+//        log.info("----------------")
+//        log.info("----------------")
+//        log.info(jacksonObjectMapper().writeValueAsString(list))
+//        log.info("----------------")
+//        log.info("----------------")
 
         // 会员对应返水比例
         val levelIds = levelDao.all().map { it.id to it }.toMap()
