@@ -32,7 +32,7 @@ class AnalysisDaoImpl(
 
     override fun memberReport(memberId: Int?, startDate: LocalDate, endDate: LocalDate): List<MemberDailyReport> {
 
-        val transferStartDate = endDate.plusMonths(6)
+        val transferStartDate = endDate.minusMonths(6)
         val today = endDate.minusDays(1)
 
         val tmq = memberId?.let { " and m.id = $it" } ?: ""
