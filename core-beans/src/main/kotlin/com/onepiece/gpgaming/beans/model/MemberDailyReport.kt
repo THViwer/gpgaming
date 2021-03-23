@@ -10,79 +10,79 @@ import java.time.LocalDateTime
 
 data class MemberDailyReport(
 
-        val id: Int,
+    val id: Int,
 
-        // 日期
-        val day: LocalDate,
+    // 日期
+    val day: LocalDate,
 
-        // bossId
-        val bossId: Int,
+    // bossId
+    val bossId: Int,
 
-        // 厅主Id
-        val clientId: Int,
+    // 厅主Id
+    val clientId: Int,
 
-        // 上级代理
-        val superiorAgentId: Int,
+    // 上级代理
+    val superiorAgentId: Int,
 
-        // 代理
-        val agentId: Int,
+    // 代理
+    val agentId: Int,
 
-        // 电销人员Id
-        val saleId: Int,
+    // 电销人员Id
+    val saleId: Int,
 
-        // 营销Id
-        val marketId: Int,
+    // 营销Id
+    val marketId: Int,
 
-        // 电销类型
-        val saleScope: SaleScope,
+    // 电销类型
+    val saleScope: SaleScope,
 
-        // 会员Id
-        val memberId: Int,
+    // 会员Id
+    val memberId: Int,
 
-        // 用户名
-        val username: String,
+    // 用户名
+    val username: String,
 
-        // 平台结算列表
-        val settles: List<PlatformSettle>,
+    // 平台结算列表
+    val settles: List<PlatformSettle>,
 
-        // 顾客盈利
-        val payout: BigDecimal,
+    // 顾客盈利
+    val payout: BigDecimal,
 
-        // 顾客下注
-        val totalBet: BigDecimal,
+    // 顾客下注
+    val totalBet: BigDecimal,
 
-        // 下注次数
-        val betCount: Int,
+    // 下注次数
+    val betCount: Int,
 
-        // 转入金额
-        val transferIn: BigDecimal,
+    // 转入金额
+    val transferIn: BigDecimal,
 
-        // 转出金额
-        val transferOut: BigDecimal,
+    // 转出金额
+    val transferOut: BigDecimal,
 
-        // 存款次数
-        val depositCount: Int,
+    // 存款次数
+    val depositCount: Int,
 
-        // 充值金额
-        val depositAmount: BigDecimal,
+    // 充值金额
+    val depositAmount: BigDecimal,
 
-        // 取款次数
-        val withdrawCount: Int,
+    // 取款次数
+    val withdrawCount: Int,
 
-        // 人工提存金额
-        val artificialAmount: BigDecimal,
+    // 人工提存金额
+    val artificialAmount: BigDecimal,
 
-        // 人工提存次数
-        val artificialCount: Int,
+    // 人工提存次数
+    val artificialCount: Int,
 
-        // 自动入款金额
-        val thirdPayAmount: BigDecimal,
+    // 自动入款金额
+    val thirdPayAmount: BigDecimal,
 
-        // 自动入款次数
-        val thirdPayCount: Int,
+    // 自动入款次数
+    val thirdPayCount: Int,
 
-        // 取款金额
-        val withdrawAmount: BigDecimal,
+    // 取款金额
+    val withdrawAmount: BigDecimal,
 //
 //        // 老虎机返水金额
 //        val slotRebate: BigDecimal,
@@ -96,47 +96,64 @@ data class MemberDailyReport(
 //        // 体育返水金额
 //        val sportRebate: BigDecimal,
 
-        //  优惠金额
-        val promotionAmount: BigDecimal,
+    //  优惠金额
+    val promotionAmount: BigDecimal,
 
-        // 返水金额
-        val rebateAmount: BigDecimal,
+    // 返水金额
+    val rebateAmount: BigDecimal,
 
-        // 反水金额是否已进行
-        val rebateExecution: Boolean,
+    // 反水金额是否已进行
+    val rebateExecution: Boolean,
 
-        // 创建时间
-        val createdTime: LocalDateTime,
+    // 创建时间
+    val createdTime: LocalDateTime,
 
-        // 状态
-        val status: Status
+    // 状态
+    val status: Status,
+
+
+    //下面不保存到数据库
+    //会员层级
+    val levelId: Int = 0,
+
+    //优惠必要打码
+    val slotRequirementBet: BigDecimal = BigDecimal.ZERO,
+
+    // 真人必要打码
+    val liveRequirementBet: BigDecimal = BigDecimal.ZERO,
+
+    // 体育必要打码
+    val sportRequirementBet: BigDecimal = BigDecimal.ZERO,
+
+    // 捕鱼必要打码
+    val fishRequirementBet: BigDecimal = BigDecimal.ZERO
 
 ) {
 
     //会员层级
-    var levelId: Int = 0
-
-    //优惠必要打码
-    var slotRequirementBet: BigDecimal = BigDecimal.ZERO
-
-    // 真人必要打码
-    var liveRequirementBet: BigDecimal = BigDecimal.ZERO
-
-    // 体育必要打码
-    var sportRequirementBet: BigDecimal = BigDecimal.ZERO
-
-    // 捕鱼必要打码
-    var fishRequirementBet: BigDecimal = BigDecimal.ZERO
-
-    fun expand(levelId: Int, slotRequirementBet: BigDecimal, liveRequirementBet: BigDecimal, sportRequirementBet: BigDecimal, fishRequirementBet: BigDecimal): MemberDailyReport {
-        this.levelId = levelId
-        this.slotRequirementBet = slotRequirementBet
-        this.liveRequirementBet = liveRequirementBet
-        this.sportRequirementBet = sportRequirementBet
-        this.fishRequirementBet = fishRequirementBet
-
-        return this
-    }
+//    var levelId: Int = 0
+//
+//    //优惠必要打码
+//    var slotRequirementBet: BigDecimal = BigDecimal.ZERO
+//
+//    // 真人必要打码
+//    var liveRequirementBet: BigDecimal = BigDecimal.ZERO
+//
+//    // 体育必要打码
+//    var sportRequirementBet: BigDecimal = BigDecimal.ZERO
+//
+//    // 捕鱼必要打码
+//    var fishRequirementBet: BigDecimal = BigDecimal.ZERO
+//
+//    fun expand(levelId: Int, slotRequirementBet: BigDecimal, liveRequirementBet: BigDecimal, sportRequirementBet: BigDecimal, fishRequirementBet: BigDecimal): MemberDailyReport {
+//        this.levelId = levelId
+//        this.slotRequirementBet = slotRequirementBet
+//        this.liveRequirementBet = liveRequirementBet
+//        this.sportRequirementBet = sportRequirementBet
+//        this.fishRequirementBet = fishRequirementBet
+//
+//        return this
+//    }
 
     fun isHasData(): Boolean {
         return depositCount > 0 || thirdPayCount > 0 || withdrawCount > 0 || rebateAmount.toDouble() > 0 && promotionAmount.toDouble() > 0 || totalBet.toDouble() > 0
@@ -161,38 +178,38 @@ data class MemberDailyReport(
 
     data class PlatformSettle(
 
-            // 平台
-            val platform: Platform,
+        // 平台
+        val platform: Platform,
 
-            // 下注
-            val bet: BigDecimal = BigDecimal.ZERO,
+        // 下注
+        val bet: BigDecimal = BigDecimal.ZERO,
 
-            val betCount: Int = 0,
+        val betCount: Int = 0,
 
-            // 有效投注
-            val validBet: BigDecimal = BigDecimal.ZERO,
+        // 有效投注
+        val validBet: BigDecimal = BigDecimal.ZERO,
 
-            // 派彩 应该改为payout
-            val payout: BigDecimal = BigDecimal.ZERO,
+        // 派彩 应该改为payout
+        val payout: BigDecimal = BigDecimal.ZERO,
 
-            // 反水
-            val rebate: BigDecimal = BigDecimal.ZERO,
+        // 反水
+        val rebate: BigDecimal = BigDecimal.ZERO,
 
-            // 已废弃
-            @JsonProperty("mwin")
-            val _mwin: BigDecimal = BigDecimal.ZERO,
+        // 已废弃
+        @JsonProperty("mwin")
+        val _mwin: BigDecimal = BigDecimal.ZERO,
 
-            // 必要打码
-            val requirementBet: BigDecimal = BigDecimal.ZERO,
+        // 必要打码
+        val requirementBet: BigDecimal = BigDecimal.ZERO,
 
-            // 反水比例
-            val rebateScale: BigDecimal = BigDecimal.ZERO,
+        // 反水比例
+        val rebateScale: BigDecimal = BigDecimal.ZERO,
 
-            // 转入 平台 => 中心
-            val totalIn: BigDecimal = BigDecimal.ZERO,
+        // 转入 平台 => 中心
+        val totalIn: BigDecimal = BigDecimal.ZERO,
 
-            // 转出 中心 => 平台
-            val totalOut: BigDecimal = BigDecimal.ZERO
+        // 转出 中心 => 平台
+        val totalOut: BigDecimal = BigDecimal.ZERO
     ) {
 
         val win = this.payout.minus(this.bet)

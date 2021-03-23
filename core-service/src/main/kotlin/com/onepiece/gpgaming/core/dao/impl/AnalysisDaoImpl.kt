@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 
 @Repository
 class AnalysisDaoImpl(
-        private val jdbcTemplate: JdbcTemplate
+    private val jdbcTemplate: JdbcTemplate
 ) : AnalysisDao {
 
     fun getQuery(defaultTable: String, returnColumns: String?): Query {
@@ -229,16 +229,18 @@ class AnalysisDaoImpl(
             val sportRequirementBet = rs.getBigDecimal("sport_requirement_bet")
             val fishRequirementBet = rs.getBigDecimal("fish_requirement_bet")
 
+            MemberDailyReport(
+                id = -1, bossId = bossId, clientId = clientId, agentId = agentId, memberId = tMemberId, username = username, depositAmount = totalDeposit,
+                depositCount = depositCount, thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, artificialAmount = artificialAmount, artificialCount = artificialCount,
+                withdrawAmount = totalWithdraw, withdrawCount = withdrawCount, transferOut = transferOut, promotionAmount = promotionAmount, transferIn = transferIn,
+                rebateAmount = BigDecimal.ZERO, rebateExecution = true, day = startDate, settles = emptyList(), totalBet = BigDecimal.ZERO, payout = BigDecimal.ZERO,
+                status = Status.Normal, createdTime = LocalDateTime.now(), superiorAgentId = superiorAgentId, saleId = saleId, saleScope = saleScope, marketId = marketId,
+                betCount = 0, levelId = levelId, slotRequirementBet = slotRequirementBet, liveRequirementBet = liveRequirementBet, sportRequirementBet = sportRequirementBet,
+                fishRequirementBet = fishRequirementBet
+            )
 
-            val report = MemberDailyReport(id = -1, bossId = bossId, clientId = clientId, agentId = agentId, memberId = tMemberId, username = username, depositAmount = totalDeposit,
-                    depositCount = depositCount, thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount, artificialAmount = artificialAmount, artificialCount = artificialCount,
-                    withdrawAmount = totalWithdraw, withdrawCount = withdrawCount, transferOut = transferOut, promotionAmount = promotionAmount, transferIn = transferIn,
-                    rebateAmount = BigDecimal.ZERO, rebateExecution = true, day = startDate, settles = emptyList(), totalBet = BigDecimal.ZERO, payout = BigDecimal.ZERO,
-                    status = Status.Normal, createdTime = LocalDateTime.now(), superiorAgentId = superiorAgentId, saleId = saleId, saleScope = saleScope, marketId = marketId,
-                    betCount = 0)
-
-            report.expand(levelId = levelId, slotRequirementBet = slotRequirementBet, liveRequirementBet = liveRequirementBet, sportRequirementBet = sportRequirementBet,
-                    fishRequirementBet = fishRequirementBet)
+//            report.expand(levelId = levelId, slotRequirementBet = slotRequirementBet, liveRequirementBet = liveRequirementBet, sportRequirementBet = sportRequirementBet,
+//                    fishRequirementBet = fishRequirementBet)
         })
     }
 
@@ -313,10 +315,12 @@ class AnalysisDaoImpl(
             val totalPromotion = rs.getBigDecimal("total_promotion")
             val newMemberCount = rs.getInt("new_member_count")
 
-            AgentDailyReport(id = -1, bossId = bossId, clientId = clientId, agentId = agentId, totalBet = totalBet, payout = payout,
-                    totalDeposit = totalDeposit, totalWithdraw = totalWithdraw, totalRebate = totalRebate,
-                    totalPromotion = totalPromotion, newMemberCount = newMemberCount, day = startDate,
-                    superiorAgentId = superiorAgentId, createdTime = LocalDateTime.now(), username = usernaem)
+            AgentDailyReport(
+                id = -1, bossId = bossId, clientId = clientId, agentId = agentId, totalBet = totalBet, payout = payout,
+                totalDeposit = totalDeposit, totalWithdraw = totalWithdraw, totalRebate = totalRebate,
+                totalPromotion = totalPromotion, newMemberCount = newMemberCount, day = startDate,
+                superiorAgentId = superiorAgentId, createdTime = LocalDateTime.now(), username = usernaem
+            )
         })
     }
 
@@ -368,9 +372,11 @@ class AnalysisDaoImpl(
             val totalRebate = rs.getBigDecimal("total_rebate")
             val totalPromotion = rs.getBigDecimal("total_promotion")
             val newMemberCount = rs.getInt("new_member_count")
-            AgentDailyReport(id = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = -1, totalDeposit = totalDeposit, totalWithdraw = totalWithdraw,
-                    totalBet = totalBet, payout = payout, totalRebate = totalRebate, totalPromotion = totalPromotion, newMemberCount = newMemberCount,
-                    createdTime = LocalDateTime.now(), day = startDate, clientId = clientId, username = username)
+            AgentDailyReport(
+                id = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = -1, totalDeposit = totalDeposit, totalWithdraw = totalWithdraw,
+                totalBet = totalBet, payout = payout, totalRebate = totalRebate, totalPromotion = totalPromotion, newMemberCount = newMemberCount,
+                createdTime = LocalDateTime.now(), day = startDate, clientId = clientId, username = username
+            )
         }
 
     }
@@ -410,12 +416,14 @@ class AnalysisDaoImpl(
             val totalPromotion = rs.getBigDecimal("total_promotion")
             val newMemberCount = rs.getInt("new_member_count")
 
-            AgentMonthReport(id = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = mAgentId, totalDeposit = totalDeposit,
-                    totalWithdraw = totalWithdraw, totalBet = totalBet, payout = payout, totalPromotion = totalPromotion, totalRebate = totalRebate,
-                    day = startDate, agentCommissionScale = BigDecimal.ZERO, agentActiveCount = 0, agentCommission = BigDecimal.ZERO,
-                    memberCommissionScale = BigDecimal.ZERO, memberActiveCount = 0, memberCommission = BigDecimal.ZERO,
-                    createdTime = LocalDateTime.now(), clientId = clientId, commissionExecution = false, newMemberCount = newMemberCount,
-                    agencyMonthFee = BigDecimal.ZERO, username = "None")
+            AgentMonthReport(
+                id = -1, bossId = bossId, superiorAgentId = superiorAgentId, agentId = mAgentId, totalDeposit = totalDeposit,
+                totalWithdraw = totalWithdraw, totalBet = totalBet, payout = payout, totalPromotion = totalPromotion, totalRebate = totalRebate,
+                day = startDate, agentCommissionScale = BigDecimal.ZERO, agentActiveCount = 0, agentCommission = BigDecimal.ZERO,
+                memberCommissionScale = BigDecimal.ZERO, memberActiveCount = 0, memberCommission = BigDecimal.ZERO,
+                createdTime = LocalDateTime.now(), clientId = clientId, commissionExecution = false, newMemberCount = newMemberCount,
+                agencyMonthFee = BigDecimal.ZERO, username = "None"
+            )
         }
     }
 
@@ -468,11 +476,13 @@ class AnalysisDaoImpl(
             val promotionAmount = rs.getBigDecimal("promotion_amount")
             val newMemberCount = rs.getInt("new_member_count")
 
-            ClientDailyReport(id = -1, day = startDate, bossId = bossId, clientId = clientId, totalBet = totalBet, payout = payout,
-                    transferIn = transferIn, transferOut = transferOut, artificialAmount = artificialAmount, artificialCount = artificialCount,
-                    depositAmount = depositAmount, depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount,
-                    rebateAmount = rebateAmount, promotionAmount = promotionAmount, thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount,
-                    newMemberCount = newMemberCount, createdTime = LocalDateTime.now(), activeCount = 0, betCount = betCount)
+            ClientDailyReport(
+                id = -1, day = startDate, bossId = bossId, clientId = clientId, totalBet = totalBet, payout = payout,
+                transferIn = transferIn, transferOut = transferOut, artificialAmount = artificialAmount, artificialCount = artificialCount,
+                depositAmount = depositAmount, depositCount = depositCount, withdrawAmount = withdrawAmount, withdrawCount = withdrawCount,
+                rebateAmount = rebateAmount, promotionAmount = promotionAmount, thirdPayAmount = thirdPayAmount, thirdPayCount = thirdPayCount,
+                newMemberCount = newMemberCount, createdTime = LocalDateTime.now(), activeCount = 0, betCount = betCount
+            )
 
         }
 
@@ -597,9 +607,11 @@ class AnalysisDaoImpl(
 
             val agencyMonthFee = rs.getBigDecimal("agency_month_fee")
 
-            AgentValue.SubAgentVo(id = id, username = username, phone = phone, formal = formal, memberCount = memberCount,
-                    createdTime = createdTime, agencyMonthFee = agencyMonthFee, name = name, superiorAgentId = superiorAgentId,
-                    superiorUsername = "-", subAgentCount = agentCount, status = status)
+            AgentValue.SubAgentVo(
+                id = id, username = username, phone = phone, formal = formal, memberCount = memberCount,
+                createdTime = createdTime, agencyMonthFee = agencyMonthFee, name = name, superiorAgentId = superiorAgentId,
+                superiorUsername = "-", subAgentCount = agentCount, status = status
+            )
         }
     }
 
