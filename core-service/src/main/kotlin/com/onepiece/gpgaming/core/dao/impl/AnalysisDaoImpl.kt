@@ -11,6 +11,7 @@ import com.onepiece.gpgaming.beans.value.database.AgentValue
 import com.onepiece.gpgaming.beans.value.database.AnalysisValue
 import com.onepiece.gpgaming.core.dao.AnalysisDao
 import com.onepiece.gpgaming.utils.Query
+import org.slf4j.LoggerFactory
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Repository
@@ -22,6 +23,8 @@ import java.time.LocalDateTime
 class AnalysisDaoImpl(
     private val jdbcTemplate: JdbcTemplate
 ) : AnalysisDao {
+
+    private val log = LoggerFactory.getLogger(AnalysisDaoImpl::class.java)
 
     fun getQuery(defaultTable: String, returnColumns: String?): Query {
         return Query(jdbcTemplate, defaultTable, returnColumns)
@@ -117,6 +120,14 @@ class AnalysisDaoImpl(
             where m.role  = 'Member' ${tmq};
         """.trimIndent()
 
+
+        log.info("println sql")
+        log.info("----------------")
+        log.info("----------------")
+        log.info(sql)
+        log.info("----------------")
+        log.info("----------------")
+
         return jdbcTemplate.query(sql, RowMapper { rs, _ ->
 
             val bossId = rs.getInt("boss_id")
@@ -143,6 +154,7 @@ class AnalysisDaoImpl(
 
             val slotRequirementBet = rs.getBigDecimal("slot_requirement_bet")
             val liveRequirementBet = rs.getBigDecimal("live_requirement_bet")
+            log.info("$memberId--------$liveRequirementBet")
             val sportRequirementBet = rs.getBigDecimal("sport_requirement_bet")
             val fishRequirementBet = rs.getBigDecimal("fish_requirement_bet")
 
