@@ -154,7 +154,8 @@ class AnalysisDaoImpl(
 
             val slotRequirementBet = rs.getBigDecimal("slot_requirement_bet")
             val liveRequirementBet = rs.getBigDecimal("live_requirement_bet")
-            log.info("$tMemberId--------$liveRequirementBet")
+            if (tMemberId == 21621)
+                log.info("$tMemberId--------$liveRequirementBet")
             val sportRequirementBet = rs.getBigDecimal("sport_requirement_bet")
             val fishRequirementBet = rs.getBigDecimal("fish_requirement_bet")
 
