@@ -1,5 +1,6 @@
 package com.onepiece.gpgaming.core.service.impl
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.onepiece.gpgaming.beans.enums.CommissionType
 import com.onepiece.gpgaming.beans.enums.Platform
 import com.onepiece.gpgaming.beans.enums.PlatformCategory
@@ -94,6 +95,11 @@ class ReportServiceImpl(
 
         // 报表数据
         val list = analysisDao.memberReport(memberId = memberId, startDate = startDate, endDate = endDate)
+        log.info("----------------")
+        log.info("----------------")
+        log.info(jacksonObjectMapper().writeValueAsString(list))
+        log.info("----------------")
+        log.info("----------------")
 
         // 会员对应返水比例
         val levelIds = levelDao.all().map { it.id to it }.toMap()
