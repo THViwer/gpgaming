@@ -189,7 +189,7 @@ enum class Bank(
         fun of(country: Country): List<Bank> {
             return when (country) {
                 Country.Malaysia -> {
-                    listOf(MBB, CIMB, HLB, PBB, RHB, AMB, UOB, RAKYAT, OCBC, HSBC, ISLAM, AFFIN, ALLIANCE, BSN, CITI, SCB, AGRO)
+                    listOf(MBB, CIMB, HLB, PBB, RHB, AMB, UOB, RAKYAT, OCBC, HSBC, ISLAM, AFFIN, ALLIANCE, BSN, CITI, SCB, AGRO, B_MUAMALAT)
                 }
                 Country.Singapore -> {
                     listOf(DBS, OCBC, UOB, POSB, CIMB, SCB, MBB)
