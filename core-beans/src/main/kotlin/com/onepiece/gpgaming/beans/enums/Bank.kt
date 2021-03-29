@@ -171,6 +171,16 @@ enum class Bank(
             mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/POSB_withdrawGray.png"
     ),
 
+    B_MUAMALAT(
+        cname = "Bank Muamalat",
+        logo = "${SystemConstant.AWS_BANK_LOGO_URL}/B.muamalat1.png",
+        grayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/B.muamalat2.png",
+        mLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/B.muamalat1.png",
+        mGrayLogo = "${SystemConstant.AWS_BANK_LOGO_URL}/B.muamalat2.png"
+    ),
+
+
+
 
     ;
 
