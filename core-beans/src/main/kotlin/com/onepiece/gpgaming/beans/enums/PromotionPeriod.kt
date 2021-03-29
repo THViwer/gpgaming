@@ -35,6 +35,9 @@ enum class PromotionPeriod {
     // 每周
     Weekly,
 
+    // 周末一次
+    WeekendOnce,
+
     // 每月一次
     MonthlyOnce,
 
@@ -88,6 +91,13 @@ enum class PromotionPeriod {
                     val monday = today.with(DayOfWeek.MONDAY)
                     val sunday = today.with(DayOfWeek.SUNDAY)
                     this.checkPeriodOnce(history = historyOrders, startDate = monday, endDate = sunday)
+                }
+                WeekendOnce -> {
+                    val saturday = today.with(DayOfWeek.SATURDAY)
+                    val sunday = today.with(DayOfWeek.SUNDAY)
+
+                    (today.dayOfWeek == DayOfWeek.SATURDAY || today.dayOfWeek == DayOfWeek.SUNDAY)
+                            && this.checkPeriodOnce(history = historyOrders, startDate = saturday, endDate = sunday)
                 }
                 MonthlyOnce -> {
                     val firstDayOfMonth = today.with(TemporalAdjusters.firstDayOfMonth())
@@ -151,6 +161,12 @@ enum class PromotionPeriod {
                     val sunday = today.with(DayOfWeek.SUNDAY)
 
                     monday to sunday
+                }
+                WeekendOnce -> {
+                    val saturday = today.with(DayOfWeek.SATURDAY)
+                    val sunday = today.with(DayOfWeek.SUNDAY)
+
+                    saturday to sunday
                 }
                 MonthlyOnce -> {
                     val firstDayOfMonth = today.with(TemporalAdjusters.firstDayOfMonth())
