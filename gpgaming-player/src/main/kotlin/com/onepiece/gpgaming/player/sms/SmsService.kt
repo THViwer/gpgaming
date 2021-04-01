@@ -14,9 +14,9 @@ import java.util.*
 
 @Service
 class SmsService(
-        private val okHttpUtil: OkHttpUtil,
-        private val smsContentService: SmsContentService,
-        private val clientService: ClientService
+    private val okHttpUtil: OkHttpUtil,
+    private val smsContentService: SmsContentService,
+    private val clientService: ClientService
 ) {
 
     private val log = LoggerFactory.getLogger(SmsService::class.java)
@@ -26,16 +26,17 @@ class SmsService(
         const val path = "https://www.sms123.net/api/send.php"
         const val otherApiKey = "105155917afc6231e03e5240a54d3121"
         const val ujApiKey = "b0367dacb9ecf1b74a21e55dce145788"
+        const val uupbetKey = "6dc30d2759f41253b0831b6ed195a7a2"
     }
 
 
     data class SmsResponse(
 
-            val status: String,
+        val status: String,
 
-            @JsonIgnore
-            @JsonAnySetter
-            val resultData: Map<String, Any> = hashMapOf()
+        @JsonIgnore
+        @JsonAnySetter
+        val resultData: Map<String, Any> = hashMapOf()
     )
 
 
@@ -51,6 +52,7 @@ class SmsService(
             val data = mobiles.subList(start, end)
 
             val apiKey = when (clientId) {
+                2 -> uupbetKey
                 10001, 10002 -> ujApiKey
                 else -> otherApiKey
             }
@@ -67,9 +69,10 @@ class SmsService(
                 false
             }
 
-            val co = SmsContentValue.SmsContentCo(clientId = clientId, levelId = null, memberIds = memberIds, phones = data.joinToString(separator = ","),
-                    content = message, successful = successful,
-                    code = code
+            val co = SmsContentValue.SmsContentCo(
+                clientId = clientId, levelId = null, memberIds = memberIds, phones = data.joinToString(separator = ","),
+                content = message, successful = successful,
+                code = code
             )
             val id = smsContentService.create(co = co)
             ids.add(id)
@@ -82,8 +85,12 @@ class SmsService(
 
     fun send(clientId: Int, mobile: String, message: String): Int {
 
-        // TOD0 暂时只有uj发
-        if (clientId != 10001) return 0
+        // uupbet 和 uj 才能发短信
+        when (clientId) {
+            2,
+            10001 -> { }
+            else -> return 0
+        }
 
         val client = clientService.get(id = clientId)
         val newMobile = when (client.country) {
@@ -101,7 +108,12 @@ class SmsService(
 
     fun send(clientId: Int, mobile: String, memberId: Int, message: String, code: String? = null): Int {
 
-        if (clientId != 10001) return 0
+        // uupbet 和 uj 才能发短信
+        when (clientId) {
+            2,
+            10001 -> { }
+            else -> return 0
+        }
 
         val client = clientService.get(id = clientId)
         val newMobile = when (client.country) {
