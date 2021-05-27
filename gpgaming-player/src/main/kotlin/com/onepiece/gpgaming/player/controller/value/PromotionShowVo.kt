@@ -16,6 +16,9 @@ data class PromotionShowVo(
         // 优惠标题
         val title: String,
 
+        // banner
+        val banner: String,
+
         // 规则
         val ruleJson: String
 
