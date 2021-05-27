@@ -689,7 +689,7 @@ open class CashApiController(
                     val mContent = content.getII18nContent(objectMapper = objectMapper) as I18nContent.PromotionI18n
 
                     PromotionShowVo(promotionId = promotion.id, title = mContent.title, minAmount = promotion.rule.minAmount, maxAmount = promotion.rule.maxAmount, ruleJson = promotion.ruleJson,
-                            banner = mContent.banner)
+                            banner = mContent.banner, mobileBanner = mContent.mobileBanner)
                 }
             } catch (e: Exception) {
                 log.error("处理优惠信息错误:", e)

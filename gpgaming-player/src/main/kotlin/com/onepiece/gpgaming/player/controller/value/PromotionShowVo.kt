@@ -19,6 +19,9 @@ data class PromotionShowVo(
         // banner
         val banner: String,
 
+        // mobile banner
+        val mobileBanner: String,
+
         // 规则
         val ruleJson: String
 
