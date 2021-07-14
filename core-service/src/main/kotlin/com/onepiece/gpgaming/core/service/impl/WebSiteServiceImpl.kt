@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service
 class WebSiteServiceImpl(
         private val webSiteDao: WebSiteDao,
         private val redisService: RedisService
-): WebSiteService {
+) : WebSiteService {
     private val log = LoggerFactory.getLogger(WebSiteServiceImpl::class.java)
 
     override fun all(): List<WebSite> {
@@ -55,7 +55,7 @@ class WebSiteServiceImpl(
 
     override fun match(url: String): WebSite {
 //        val firstMatchUrl = url.removeSuffix("https://").removeSuffix("www.")
-        val sites = this.all()
+        val sites = this.all().filter { it.bossId != -1 }
 
         val removeHttpUrl = url.removePrefix("https://").removeSuffix("/#/")
         val path = removeHttpUrl.substring(removeHttpUrl.indexOf(".") + 1, removeHttpUrl.length)
