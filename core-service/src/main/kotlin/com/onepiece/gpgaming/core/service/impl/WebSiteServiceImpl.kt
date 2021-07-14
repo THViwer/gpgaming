@@ -57,13 +57,15 @@ class WebSiteServiceImpl(
 //        val firstMatchUrl = url.removeSuffix("https://").removeSuffix("www.")
         val sites = this.all()
 
-        val removeHttpUrl = url.removePrefix("https://").substringBefore("/")
-        val path = removeHttpUrl.substring(removeHttpUrl.indexOf(".") + 1, removeHttpUrl.length)
+        val path = url.removePrefix("https://").substringAfter(".").substringBefore("/")
+        val site = sites.firstOrNull { it.domain == path } ?: sites.first { url.contains(it.domain) }
 
-        return sites.firstOrNull { it.domain == path } ?: sites.first { url.contains(it.domain) }
+        log.info("请求url:$url , 匹配到业主：${site.clientId}, 域名：${site.domain}")
+        return site
     }
 
     override fun matchReturnBossId(url: String): Int {
         return this.match(url = url).bossId
     }
 }
+
