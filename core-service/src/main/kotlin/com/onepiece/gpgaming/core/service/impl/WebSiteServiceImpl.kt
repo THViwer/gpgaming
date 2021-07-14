@@ -57,7 +57,7 @@ class WebSiteServiceImpl(
 //        val firstMatchUrl = url.removeSuffix("https://").removeSuffix("www.")
         val sites = this.all()
 
-        val removeHttpUrl = url.removePrefix("https://")
+        val removeHttpUrl = url.removePrefix("https://").removeSuffix("/#/")
         val path = removeHttpUrl.substring(removeHttpUrl.indexOf(".") + 1, removeHttpUrl.length)
 
         return sites.firstOrNull { it.domain == path } ?: sites.first { url.contains(it.domain) }
