@@ -55,9 +55,9 @@ class WebSiteServiceImpl(
 
     override fun match(url: String): WebSite {
 //        val firstMatchUrl = url.removeSuffix("https://").removeSuffix("www.")
-        val sites = this.all().filter { it.bossId != -1 }
+        val sites = this.all()
 
-        val removeHttpUrl = url.removePrefix("https://").removeSuffix("/#/")
+        val removeHttpUrl = url.removePrefix("https://").substringBefore("/")
         val path = removeHttpUrl.substring(removeHttpUrl.indexOf(".") + 1, removeHttpUrl.length)
 
         return sites.firstOrNull { it.domain == path } ?: sites.first { url.contains(it.domain) }
