@@ -42,6 +42,8 @@ interface MemberApi {
             @RequestParam(value = "status", required = false) status: Status?,
             @RequestParam(value = "promoteCode", required = false) promoteCode: String?,
 
+
+            @RequestParam(value = "agentId") agentId: Int?,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): MemberPage

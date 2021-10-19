@@ -118,6 +118,7 @@ class MemberApiController(
             @RequestParam(value = "levelId", required = false) levelId: Int?,
             @RequestParam(value = "status", required = false) status: Status?,
             @RequestParam(value = "promoteCode", required = false) promoteCode: String?,
+            @RequestParam(value = "agentId") agentId: Int?,
             @RequestParam(value = "current", defaultValue = "0") current: Int,
             @RequestParam(value = "size", defaultValue = "10") size: Int
     ): MemberPage {
@@ -136,7 +137,7 @@ class MemberApiController(
 
         val query = MemberQuery(clientId = clientId, startTime = null, endTime = null, username = username,
                 levelId = levelId, status = status, promoteCode = promoteCode, name = name, phone = phone,
-                role = Role.Member, bossId = null, agentId = null, ids = id?.let { listOf(id) })
+                role = Role.Member, bossId = null, agentId = agentId, ids = id?.let { listOf(id) })
         val page = memberService.query(query, current, size)
         if (page.total == 0) return MemberPage(total = 0, data = emptyList())
 
